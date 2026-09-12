@@ -82,3 +82,8 @@
 - 共享工作树上跑回滚会覆盖别人未提交的 config 修改；脚本会把回滚前的 config 留在 releases/_pre-rollback/，演练时不要急着删。
 - 「失败阻止合并」是 GitHub 分支保护设置，仓库文件里做不到；命令写在 runbook/release.md §2，需要仓库管理员执行。
 - colima 里 `docker build` 拉 PyPI 包很慢（psycopg-binary 6.5 MB 卡了十几分钟），镜像重建要放后台并在 CI 里用 GHA 缓存；本机验证优先用 uvicorn 直连。
+
+## 票 30 读图
+- models.yaml 校验禁止 needs_vision 链里出现 vision:false 的模型，所以 07 §6「备用模型不支持图片」在运行时表现为：视觉模型全部不可用（缺 key / 未配置）→ Router 把整条链都 skipped → ModelInvokeError.attempts 全为 skipped。vision 模块据此判 no_vision 并给用户固定提示，而不是看 error 文案。
+- 读图放在检索之前而非并行：CP-in 要求观察项在任何后续模型调用之前检查（09 §1），顺序执行让 R4 命中时 retrieve / synthesize 一次都不跑；代价是含图轮多一次串行调用，预算 12 s 在 40 s 的含图 run deadline 内。
+- 多会话同改 graph.py 时，用 `git show HEAD:file` + 本票 patch 重建 blob 后 `git update-index --cacheinfo` 只暂存自己的 hunk，再用 `git write-tree` + `git archive` 导出暂存树跑测试，可以在不等对方收尾的情况下提交可导入、可测试的版本。
