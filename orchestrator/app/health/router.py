@@ -7,6 +7,7 @@ from typing import Any
 from fastapi import APIRouter, Query, Response
 
 from app.health.checks import check_db, check_models, check_redis, check_weknora
+from app.replay import runtime as replay_runtime
 from app.settings import settings
 
 router = APIRouter(tags=["health"])
@@ -52,7 +53,7 @@ class HealthAggregator:
             and default_lane is not None
             and default_lane.status == "ok"
         )
-        return {
+        body = {
             "status": "ok" if critical_ok else "degraded",
             "lane": settings.model_lane,
             "cache_ttl_s": CACHE_TTL_S,
@@ -63,6 +64,11 @@ class HealthAggregator:
                 "models": {lane: h.as_dict() for lane, h in models.items()},
             },
         }
+        # 票 43：回放模式只在 REPLAY_CASE_ID 设置时出现；前端据此显示「演示回放」徽标
+        replay = replay_runtime.describe()
+        if replay is not None:
+            body["replay"] = replay
+        return body
 
 
 aggregator = HealthAggregator()

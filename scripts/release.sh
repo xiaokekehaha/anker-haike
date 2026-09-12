@@ -8,8 +8,9 @@ ver() { grep -m1 -E '^version:' "$1" 2>/dev/null | awk '{print $2}' || echo "-";
 pyconst() { grep -m1 -E "^$2\s*=" "$1" 2>/dev/null | sed -E 's/.*=[[:space:]]*"([^"]+)".*/\1/' || echo "-"; }
 KB_VER="$(python3 -c "import json,sys; print(json.load(open('data/knowledge/manifest.json'))['kb_ver'])" 2>/dev/null || echo "-（未入库）")"
 WEKNORA_TAG="$(grep -m1 -E '^WEKNORA_VERSION=' .env 2>/dev/null | cut -d= -f2 || true)"; WEKNORA_TAG="${WEKNORA_TAG:-$(grep -m1 -oE 'WEKNORA_VERSION:-v[0-9.]+' docker-compose.yml | cut -d- -f2)}"
-REPLAY="$(ls -1 replay/manifest*.json 2>/dev/null | head -1 || echo "-（票 43 未录制）")"
+REPLAY="$(ls -1 replay/*/manifest.json 2>/dev/null | xargs -n1 dirname 2>/dev/null | xargs -n1 basename 2>/dev/null | paste -sd, - || true)"; REPLAY="${REPLAY:-"-（票 43 未录制）"}"
 TBD="$(grep -c -iE 'TBD|todo' config/models.yaml || true)"
+BAKEOFF="$(test -f reports/bakeoff/bakeoff.md && head -1 reports/bakeoff/bakeoff.md | sed -E 's/^# bake-off 结果（(.*)）$/\1/' || echo "-（未跑，make bakeoff）")"
 OWNER="$(git remote get-url origin 2>/dev/null | sed -E 's#.*github.com[:/]([^/]+)/.*#\1#' || echo owner)"
 
 mkdir -p "releases/$REL"
@@ -28,6 +29,7 @@ cat > RELEASE.md <<MD
 | 镜像 tag | \`ghcr.io/$OWNER/haike-orchestrator:$REL\`（CI 构建；本机 \`make up\` 为 haike/orchestrator:dev） |
 | prompt_ver | system $(pyconst orchestrator/app/prompts/system.py PROMPT_VERSION) / reply $(pyconst orchestrator/app/prompts/reply.py REPLY_PROMPT_VERSION) |
 | models.yaml | $(ver config/models.yaml)（TBD / TODO 计数：$TBD，须为 0 才能冻结，票 42） |
+| bake-off | $BAKEOFF（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | $(ver config/rules/safety_terms.yaml) |
 | products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
 | kb_ver | $KB_VER |

@@ -26,6 +26,14 @@ export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh }: P
           <span><strong>智能服务</strong><span className={styles.brandCaption}>ANKER · SMART CARE</span></span>
         </a>
         <div className={styles.health}>
+          {snapshot?.replay && (
+            <span className={styles.replay} data-status={snapshot.replay.status} role="status"
+              title={snapshot.replay.status === 'ok'
+                ? `回放录制包 ${snapshot.replay.caseId}${snapshot.replay.title ? `：${snapshot.replay.title}` : ''}；模型与知识库均为录制结果`
+                : `回放录制包 ${snapshot.replay.caseId} 与当前版本不符（replay_incompatible）`}>
+              {snapshot.replay.status === 'ok' ? '演示回放' : '回放不可用'}
+            </span>
+          )}
           <ul className={styles.services} aria-label="组件健康状态" aria-live="polite" aria-atomic="true">
             {services.map(({ key, label, status, model }) => (
               <li key={key} className={styles.service} title={model ? '当前通道的模型配置状态，尚未验证实际调用' : undefined}>

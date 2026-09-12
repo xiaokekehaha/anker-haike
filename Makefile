@@ -52,6 +52,16 @@ kb-verify: ## 打印各知识库解析状态与 custom_metadata
 kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）
 	cd orchestrator && uv run --env-file ../.env haike-kb snapshot $(if $(DIR),import $(DIR),export)
 
+## ---- 回放（票 43）----
+replay-record: ## 真实模型 + WeKnora 跑内置脚本并录制：make replay-record CASE=a1_hair_wrap [SCENARIO=a1_hair_wrap]
+	cd orchestrator && uv run --env-file ../.env haike-replay record $(CASE) $(if $(SCENARIO),--scenario $(SCENARIO),)
+replay-verify: ## 断网重放录制包并核对（未命中 / 缺事件非零退出）：make replay-verify CASE=a1_hair_wrap
+	cd orchestrator && uv run --env-file ../.env haike-replay verify $(CASE)
+replay-check: ## 录制包清单与当前 prompt / models / kb / rules 版本比对：make replay-check CASE=a1_hair_wrap
+	cd orchestrator && uv run --env-file ../.env haike-replay check $(CASE)
+replay-list: ## 列出录制包
+	cd orchestrator && uv run --env-file ../.env haike-replay list
+
 ## ---- 契约（票 03 / 04）----
 contracts: ## 由 Pydantic 导出 Schema，并生成前端类型与 Zod 校验器
 	cd contracts && uv run haike-contracts-export

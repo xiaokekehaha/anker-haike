@@ -21,6 +21,7 @@ services:
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis123}@redis:6379/0
       WEKNORA_BASE_URL: http://weknora-app:8080
       MODEL_LANE: ${MODEL_LANE:-domestic}
+      REPLAY_CASE_ID: ${REPLAY_CASE_ID:-}   # 票 43：非空即回放模式，录制包已随镜像打包
     ports:
       - "${ORCHESTRATOR_PORT:-8000}:8000"
     volumes:

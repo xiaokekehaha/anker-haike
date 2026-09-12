@@ -44,6 +44,16 @@ class Settings(BaseSettings):
         default=str(REPO_ROOT / "config" / "rules" / "safety_terms.yaml"), alias="RULES_CONFIG_PATH"
     )
 
+    # 票 43：回放模式。REPLAY_CASE_ID 非空即启用：ReplayRouter / ReplayKnowledgeAdapter 只按 replay/<case_id>/ 录制包命中；
+    # 清单 {prompt_ver, models_ver, kb_ver, rules_ver} 与当前不符时启动报 replay_incompatible。
+    replay_case_id: str = Field(default="", alias="REPLAY_CASE_ID")
+    replay_dir: str = Field(default=str(REPO_ROOT / "replay"), alias="REPLAY_DIR")
+    # kb_ver 来源：知识库入库 manifest（票 26）；容器里没有 manifest 时可用 KB_VER 直接给出
+    kb_manifest_path: str = Field(
+        default=str(REPO_ROOT / "data" / "knowledge" / "manifest.json"), alias="KB_MANIFEST_PATH"
+    )
+    kb_ver: str = Field(default="", alias="KB_VER")
+
     health_timeout_s: float = Field(default=2.0, alias="HEALTH_TIMEOUT_S")
     db_pool_max: int = Field(default=10, alias="DB_POOL_MAX")
     static_dir: str = Field(default=str(REPO_ROOT / "frontend" / "dist"), alias="STATIC_DIR")
@@ -57,6 +67,7 @@ class Settings(BaseSettings):
             "weknora_base_url": self.weknora_base_url,
             "weknora_api_key": "set" if self.weknora_api_key else "missing",
             "model_lane": self.model_lane,
+            "replay_case_id": self.replay_case_id or "-",
         }
 
 

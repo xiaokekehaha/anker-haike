@@ -39,3 +39,6 @@
 - 票 40 后端（A 线接手会话）：receipt.py 增 warranty.receipt_ocr 调用（ReceiptOcr schema：四字段 + 逐字段 confidence + unreadable；失败 / 无视觉模型 → 空字段全 unreadable），graph.py receipt_extract 真接 OCR 并写 pending_card(confirm_receipt)，await_input 发 receipt_card，apply_action 处理 confirm_receipt（edited[] 入 receipt 与 card_results）与确认阶段 skip（needs_manual_check）。确认后 status 为票 41 lookup 前的占位（L1 insufficient / 否则 needs_manual_check）。6 项新测试（假 router 分文本 / 视觉两个假模型，避免 synthesize / reply 消耗 OCR 脚本）；隔离暂存树 59 项、全量工作树 312 项通过。期间另一会话反复改写 app/diagnose/vision.py，receipt.py 已去掉对其内部函数的依赖。
 - B 与 A 在票 30 撞车一次（B 误覆盖 vision.py，已回退，A 的实现保留）。前端集成后浏览器端到端通过。
 - 票 49 / 46 收尾（A）：镜像换国内源后构建成功；容器首次跑新代码暴露三处容器专属问题（config 路径、alembic 文件、旧镜像配新配置）并修复。回滚演练 2 s；代理验证：401 / 200 / 301、SSE 首字节 11 ms、限速 60 并发 39×429、prod 组合只有 proxy 发布端口、镜像扫描无密钥。两票标 done；分支保护需管理员在 GitHub 开。
+
+- 票 43（Claude Code B，2026-09-13）：新增 `orchestrator/app/replay/`（录制包 / ReplayRouter / ReplayKnowledgeAdapter / runtime 开关 / A1–A3 脚本 / `haike-replay` CLI）；models / knowledge runtime 在 REPLAY_CASE_ID 设置时切换实现；main 启动核对清单，不符抛 ReplayIncompatible；/health 增 replay 块，HeaderBar 增「演示回放」徽标；`Hit.status` 让回放证据标 replay。用真实 DeepSeek + WeKnora 录制 A1 / A2 / A3 三包（模型 4 / 4 / 8 条，检索各 2 条），`haike-replay verify` 断网重放三案例零 miss、evidence 全 replay；进程级实测回放启动与 prompt_ver 不符启动失败。后端 380 项（含新增 7）、前端 123 项、tsc / build 通过。与 34/35（1a）会话互通范围，未改 graph.py。
+

@@ -20,3 +20,7 @@
   .services { flex: 1; justify-content: space-between; gap: 12px; }
   .refresh { margin-left: 10px; }
 }
+
+/* 票 43：回放模式徽标 —— 全程录制数据，须一眼可辨 */
+.replay { font-size: 11px; letter-spacing: 1px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--warning); color: var(--warning); white-space: nowrap; }
+.replay[data-status='down'] { border-color: var(--danger, #c0392b); color: var(--danger, #c0392b); }

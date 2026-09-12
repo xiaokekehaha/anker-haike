@@ -70,9 +70,10 @@ class Hit:
     counter_evidence: bool = False
     knowledge_title: str | None = None
     parent_chunk_id: str | None = None
+    status: Literal["ok", "replay"] = "ok"  # 票 43：回放命中的证据标 replay
 
     def as_evidence_item(self) -> dict[str, Any]:
-        """契约 evidence.items[] 形状（status 由调用方按 ok / replay 填）。"""
+        """契约 evidence.items[] 形状（status：真实检索 ok，回放命中 replay）。"""
         return {
             "evidence_id": self.evidence_id,
             "source": self.source,
@@ -81,7 +82,7 @@ class Hit:
             "chunk_id": self.chunk_id,
             "snippet": self.snippet,
             "score": max(0.0, min(1.0, self.score)),
-            "status": "ok",
+            "status": self.status,
         }
 
 

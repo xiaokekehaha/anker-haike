@@ -35,6 +35,13 @@ describe('health API', () => {
     expect(() => parseHealth(body)).toThrow('无法读取服务状态');
   });
 
+  it('keeps the replay block when present and drops malformed ones', () => {
+    const ok = { ...degraded, replay: { status: 'ok', case_id: 'a1_hair_wrap', title: 'A1', model_hits: 3 } };
+    expect(parseHealth(ok).replay).toEqual({ status: 'ok', caseId: 'a1_hair_wrap', title: 'A1' });
+    expect(parseHealth({ ...degraded, replay: { status: 'weird' } }).replay).toBeUndefined();
+    expect(parseHealth(degraded).replay).toBeUndefined();
+  });
+
   it('rejects non-health errors even if the body looks like a snapshot', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify(degraded), { status: 500 })));
     await expect(fetchHealth(new AbortController().signal)).rejects.toThrow('暂时无法连接服务');

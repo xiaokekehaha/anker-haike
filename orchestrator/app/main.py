@@ -13,6 +13,7 @@ from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
 from app.models.runtime import set_model_router
 from app.plans import PlanLibrary
+from app.replay.runtime import get_replay_package
 from app.sessions.router import router as sessions_router
 from app.sessions.runtime import close_session_runtime, open_session_runtime
 from app.settings import settings
@@ -27,7 +28,16 @@ async def _lifespan(app: FastAPI):
     # 票 09：模型配置缺失或不一致时启动失败（ConfigError 列出具体项）
     models_cfg = load_models_config(settings.models_config_path, lane_override=settings.model_lane)
     app.state.model_registry = ModelRegistry(models_cfg)
-    app.state.model_router = ModelRouter(app.state.model_registry)
+    # 票 43：REPLAY_CASE_ID 设置时加载录制包并核对 {prompt_ver, models_ver, kb_ver, rules_ver}；
+    # 不符抛 ReplayIncompatible → 进程启动失败（不静默降级到真实模型）
+    app.state.replay = get_replay_package()
+    if app.state.replay is not None:
+        from app.replay.router import ReplayRouter
+
+        app.state.model_router = ReplayRouter(app.state.model_registry, app.state.replay)
+        log.warning("REPLAY MODE %s", app.state.replay.describe())
+    else:
+        app.state.model_router = ModelRouter(app.state.model_registry)
     set_model_router(app.state.model_router)  # 票 17：图节点取用同一 Router（含全局有界门）
     log.info("models %s", app.state.model_registry.describe())
     # 票 19 / 31：产品目录与排障计划进 L4 内存缓存；计划 next_on / 证据引用不合法时启动失败

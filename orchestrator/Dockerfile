@@ -27,6 +27,8 @@ COPY orchestrator/app ./app
 COPY orchestrator/alembic.ini ./alembic.ini
 COPY orchestrator/migrations ./migrations
 COPY config ./config
+# 票 43：回放录制包随镜像打包（REPLAY_CASE_ID=<case_id> 启用；清单不符启动即失败）
+COPY replay ./replay
 # 票 02：镜像内构建前端，不依赖宿主机事先生成 dist
 COPY --from=frontend-build /frontend/dist ./static/
 
@@ -36,7 +38,8 @@ ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
     CATALOG_CONFIG_PATH=/srv/config/products.yaml \
     PLANS_CONFIG_PATH=/srv/config/plans.yaml \
     FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
-    RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml
+    RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
+    REPLAY_DIR=/srv/replay KB_MANIFEST_PATH=/srv/replay/kb_manifest.json
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=3 \
   CMD curl -fsS http://localhost:8000/health/live || exit 1
