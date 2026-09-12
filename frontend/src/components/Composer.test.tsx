@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { Composer } from './Composer';
+import { Composer, REDIAGNOSE_HINT } from './Composer';
 import { UserBubble } from './UserBubble';
 import { checkImage, MAX_IMAGE_BYTES } from '../lib/image';
 
@@ -73,7 +73,19 @@ describe('checkImage', () => {
 });
 
 describe('pending input modes', () => {
-  it.each(['select_product', 'step_feedback', 'confirm_receipt'] as const)('restricts %s to card actions while keeping human request available', (pendingKind) => {
+  it('lets the user supplement or correct while a step card waits (rediagnose, ticket 37)', async () => {
+    const onSend = vi.fn().mockResolvedValue(true);
+    const onChange = vi.fn();
+    render(<Composer value="其实还有异响" onChange={onChange} onSend={onSend} pendingKind="step_feedback" />);
+    expect(screen.getByText(REDIAGNOSE_HINT)).toBeVisible();
+    expect(screen.getByLabelText('补充新情况或纠正')).toBeEnabled();
+    expect(screen.getByTestId('image-input')).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: '发送' }));
+    await waitFor(() => expect(onSend).toHaveBeenCalledWith('其实还有异响', [], 'fault'));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(''));
+  });
+
+  it.each(['select_product', 'confirm_receipt'] as const)('restricts %s to card actions while keeping human request available', (pendingKind) => {
     const onSend = vi.fn();
     const onRequestHuman = vi.fn();
     render(<Composer value="旧草稿" onChange={vi.fn()} onSend={onSend} onRequestHuman={onRequestHuman} pendingKind={pendingKind} />);

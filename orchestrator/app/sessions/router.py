@@ -17,6 +17,7 @@ from pydantic import BaseModel, ValidationError
 from app.images import ImageRejected
 from app.images.runtime import get_image_store
 from app.sessions import sse
+from app.sessions.graph import in_guide
 from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
 from app.sessions.snapshot import action_pending_apply, build_snapshot
@@ -223,10 +224,40 @@ async def post_action(session_id: str, request: Request):
             return conflict("run_active", f"session has active run {snap.active_run.run_id}")
         if action.kind == "request_human":
             pass  # 忽略 version 与 pending 校验（08 §4 步骤 4）
+        elif action.kind == "rediagnose" and not continue_run:
+            # 票 37（08 §4）：stage ∈ {guide, verify} 且无 active run；不绑定卡片，但 version 必须最新；
+            # 若正等待卡片，只允许在步骤卡等待期间（凭证 / 产品卡不接受补充文本）
+            if action.expected_version != snap.version:
+                return conflict(
+                    "stale_version", f"expected {action.expected_version}, current {snap.version}"
+                )
+            if not in_guide(state.values or {}):
+                return conflict("not_allowed_now", f"rediagnose is not allowed at stage {snap.stage}")
+            pending = snap.pending_input
+            if pending is not None and pending.kind != "step_feedback":
+                return conflict(
+                    "not_allowed_now", f"rediagnose is not allowed while awaiting {pending.kind}"
+                )
+            if not (action.payload.text or "").strip() and not action.payload.image_ids:
+                raise HTTPException(
+                    422, detail={"code": "invalid_action", "message": "rediagnose needs text or image_ids"}
+                )
+            if action.payload.image_ids:
+                img_store = get_image_store(request.app)
+                known = (
+                    {r.image_id for r in await img_store.refs(session_id, list(action.payload.image_ids))}
+                    if img_store is not None
+                    else set()
+                )
+                unknown = [i for i in action.payload.image_ids if i not in known]
+                if unknown:
+                    raise HTTPException(
+                        422,
+                        detail={"code": "invalid_action", "message": f"unknown image_ids {unknown}"},
+                    )
         elif not continue_run:
             if action.kind not in _CARD_KINDS:
-                # rediagnose（票 37）接入前先拒绝
-                return conflict("not_allowed_now", f"{action.kind} is not supported yet")
+                return conflict("not_allowed_now", f"{action.kind} is not supported")
             if action.expected_version != snap.version:
                 return conflict(
                     "stale_version", f"expected {action.expected_version}, current {snap.version}"
@@ -247,8 +278,8 @@ async def post_action(session_id: str, request: Request):
             dumped = action.model_dump(mode="json")
             if continue_run:
                 handle = await manager.start(session_id, continue_run=True)
-            elif action.kind == "request_human" and not _has_interrupt(state):
-                # 没有挂起的 interrupt：从 START 进图直达 human_request（不能 Command(resume)）
+            elif action.kind in ("request_human", "rediagnose") and not _has_interrupt(state):
+                # 没有挂起的 interrupt：从 START 进图直达 human_request / rediagnose（不能 Command(resume)）
                 handle = await manager.start(session_id, entry_action=dumped)
             else:
                 handle = await manager.start(session_id, resume=dumped)

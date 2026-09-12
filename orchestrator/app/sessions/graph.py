@@ -46,10 +46,11 @@ from app.faultcards.runtime import get_fault_card_library
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
 from app.images.runtime import current_image_store
 from app.intake import extract_intake
+from app.intake.rediagnose import extract_rediagnose
 from app.knowledge.adapter import KnowledgeScope
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.models.runtime import get_model_router
-from app.observability.runtime import record
+from app.observability.runtime import record, run_id_context
 from app.plans.runtime import get_plan_library
 from app.prompts import reassurance_messages, reply_messages
 from app.rules import get_rules_service
@@ -137,6 +138,8 @@ class SessionState(TypedDict, total=False):
     card_ready_ms: int | None
     guide_trace: Annotated[list[dict[str, Any]], operator.add]
     _verify: dict[str, Any] | None
+    # 票 37：apply_action(rediagnose) → rediagnose 节点的瞬态路由标记
+    _rediagnose: bool | None
 
 
 def _delay() -> float:
@@ -586,6 +589,23 @@ async def apply_action(state: SessionState) -> SessionState:
         update.update({"card_results": results, "receipt": receipt})
     elif action.get("kind") == "step_feedback":
         update.update(_apply_step_feedback(state, action, pc, results))
+    elif action.get("kind") == "rediagnose":
+        # 票 37：等待步骤反馈时用户改为补充 / 纠正 → 旧步骤卡作废（不记反馈、不计数），
+        # 文本与图片交 rediagnose 节点（同 /messages 路径），随后重新诊断
+        payload = action.get("payload") or {}
+        if pc.get("card_id"):
+            results[pc["card_id"]] = {"superseded": "rediagnose", "action_id": action.get("action_id")}
+        update.update(
+            {
+                "card_results": results,
+                "text": payload.get("text") or "",
+                "image_ids": list(payload.get("image_ids") or []),
+                # 动作 run 的 state.run_id 仍是上一条消息 run 的（Command(resume) 不带输入）；
+                # 补充消息要归入本 run 的 timeline 位置，故取运行器上下文里的当前 run_id
+                "run_id": run_id_context.get() or state.get("run_id", ""),
+                "_rediagnose": True,
+            }
+        )
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -605,6 +625,8 @@ async def apply_action(state: SessionState) -> SessionState:
 
 
 def route_after_apply(state: SessionState) -> str:
+    if state.get("_rediagnose"):
+        return "rediagnose"
     if state.get("escalate_reason"):
         return "escalate"
     if state.get("out_of_scope"):
@@ -662,12 +684,26 @@ def _apply_step_feedback(
 
 
 def route_entry(state: SessionState) -> str:
-    """START 分流：无 interrupt 时到达的全局动作直达 human_request，其余走 intake。"""
-    if state.get("entry") == "action" and (state.get("last_action") or {}).get("kind") == (
-        "request_human"
-    ):
-        return "human_request"
+    """START 分流：无 interrupt 时到达的全局动作直达 human_request；guide / verify 阶段的新消息与
+    rediagnose 动作走 rediagnose（03 §133：该阶段 /messages 等价于 rediagnose），其余走 intake。"""
+    kind = (state.get("last_action") or {}).get("kind")
+    if state.get("entry") == "action":
+        if kind == "request_human":
+            return "human_request"
+        if kind == "rediagnose":
+            return "rediagnose"
+    if state.get("entry") == "message" and in_guide(state):
+        return "rediagnose"
     return "intake"
+
+
+def in_guide(state: SessionState) -> bool:
+    """票 37：rediagnose 允许时机——stage ∈ {guide, verify}（08 §4），或正等待步骤反馈。"""
+    pc = state.get("pending_card") or {}
+    if state.get("stage") in ("guide", "verify") or pc.get("kind") == "step_feedback":
+        return True
+    # rediagnose 后停在澄清追问（stage 仍为 intake/rediagnose）：用户的回答继续按补充处理，保留步骤上下文
+    return state.get("substage") == "rediagnose" and bool(state.get("steps_executed"))
 
 
 def _human_request_update(state: SessionState, action: dict[str, Any]) -> SessionState:
@@ -1239,6 +1275,162 @@ def route_after_guide(state: SessionState) -> str:
     return "escalate" if state.get("escalate_reason") else "await_input"
 
 
+# ---------------- 票 37：rediagnose 中途补充与纠正 ----------------
+
+
+def _recent_steps(state: SessionState, n: int = 3) -> list[dict[str, Any]]:
+    steps = list(state.get("steps_executed") or [])
+    pc = state.get("pending_card") or {}
+    recent = [{"title": s.get("title"), "feedback": s.get("feedback")} for s in steps[-n:]]
+    if pc.get("kind") == "step_feedback":
+        recent.append({"title": (pc.get("payload") or {}).get("step", {}).get("title"), "feedback": None})
+    return recent
+
+
+async def rediagnose(state: SessionState) -> SessionState:
+    """guide / verify 阶段的自由文本 / 图片（票 37，03 §1.2 多轮、§1.4.1 多轮更新规则）。
+
+    1. 记录用户消息与图片引用（同 intake）；旧步骤卡作废（不记反馈、不计数）。
+    2. CP-in 先于任何模型调用：R3 / R4 直接升级，不跑知识召回。
+    3. 一次 intake 任务调用做**增量**抽取（已确认产品 / 有效症状 / 最近步骤入上下文）：
+       新增合并、明确否定才删除、抽取失败不清空；原文含具体故障描述时回退为一条症状。
+    4. 产品纠正线索交 disambiguate（单命中 → 重新确认并清旧证据；多命中 → 出卡；冲突 → 澄清），
+       不由模型直接写 confirmed_sku；无增量且原文只剩指代 → 澄清（连续两次仍不明 → R7，走 clarify 既有计数）。
+    5. steps_executed / counters / exhausted_plans 原样保留；plan_cursor 清空，由 retrieve 重新给出。
+    """
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "intake", "substage": "rediagnose"})
+    session_id = state.get("session_id", "")
+    run_id = state.get("run_id", "")
+    text = state.get("text", "") or ""
+    image_ids = list(state.get("image_ids") or [])
+    new_refs: list[dict[str, Any]] = []
+    if image_ids and (img_store := current_image_store()) is not None:
+        for ref in await img_store.refs(session_id, image_ids):
+            new_refs.append({**ref.public(), "run_id": run_id})
+    user_msg = {
+        "role": "user",
+        "text": text,
+        "image_ids": image_ids,
+        "images": [
+            {k: r[k] for k in ("image_id", "purpose", "sha256", "mime", "size")} for r in new_refs
+        ],
+        "run_id": run_id,
+        "at": state.get("at", ""),
+        "rediagnose": True,
+    }
+    results = dict(state.get("card_results") or {})
+    stale = state.get("pending_card")
+    if stale and stale.get("kind") == "step_feedback" and stale.get("card_id") not in results:
+        results[stale["card_id"]] = {"superseded": "rediagnose"}
+    cp = get_rules_service().check_in(text=text, session_id=session_id)
+    update: SessionState = {
+        "stage": "intake",
+        "substage": "rediagnose",
+        "messages": [*state.get("messages", []), user_msg],
+        "safety_flags": [*state.get("safety_flags", []), *cp.flags],
+        "image_refs": [*state.get("image_refs", []), *new_refs],
+        "card_results": results,
+        "pending_card": None,
+        "last_action": None,
+        "abandoned_card": None,
+        "_rediagnose": None,
+        "_verify": None,
+        "_decision": None,
+        "plan_cursor": None,
+        "diagnose_outcome": None,
+        "retrieval_trace": [
+            {"event": "rediagnose", "session_id": session_id, "run_id": run_id,
+             "superseded_card": (stale or {}).get("card_id"), "images": len(new_refs)}
+        ],
+    }
+    if cp.escalate:
+        update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
+        return update  # R3 / R4：不再发起任何模型调用，也不检索
+    catalog = get_catalog()
+    has_symptom_text = clarify_mod._has_symptom_text(catalog, text)
+    product = state.get("product_confirmed") or {}
+    outcome = await extract_rediagnose(
+        get_model_router(),
+        text,
+        context={
+            "product": product.get("name") or product_term(dict(state)) or None,
+            "symptoms": list(state.get("symptoms") or []),
+            "recent_steps": _recent_steps(state),
+        },
+        session_id=session_id,
+        lane=_lane(),
+        has_image=bool(new_refs),
+        prev_emotion=state.get("emotion"),
+        fallback_symptom=text.strip() if has_symptom_text else None,
+    )
+    update.update(
+        {
+            "emotion": outcome.emotion,
+            "product_hints": outcome.product_hints,
+            "symptoms": outcome.symptoms,
+            "model_trace": [
+                *state.get("model_trace", []),
+                *([outcome.model_trace] if outcome.model_trace else []),
+            ],
+        }
+    )
+    log.info(
+        "rediagnose session=%s added=%s removed=%s hints=%s degraded=%s images=%d steps_kept=%d",
+        session_id, outcome.added, outcome.removed, outcome.product_hints, outcome.degraded,
+        len(new_refs), len(state.get("steps_executed") or []),
+        extra={"event": "rediagnose", "session_id": session_id, "run_id": run_id,
+               "added": outcome.added, "removed": outcome.removed, "product_hints": outcome.product_hints,
+               "degraded": outcome.degraded, "needs_clarification": outcome.needs_clarification},
+    )
+    if outcome.wants_human:
+        update["safety_flags"] = [
+            *update["safety_flags"],
+            {"rule_id": "R3", "source": "rediagnose", "term": "wants_human", "ts": state.get("at", "")},
+        ]
+        update["escalate_reason"] = "R3"
+        return update
+    # 澄清判定（后端规则，不信模型置信度，09 §1.1）：
+    # - 「还是不吸」「这个又不行了」在已有有效症状时是承接，不追问，沿用产品 + 未解决症状重新检索；
+    # - 没有任何事实增量、没有新图片、原文只剩指代、且此前也没有有效症状 → 问一句具体的；
+    # - 模型标 needs_clarification（纠正对象不唯一）且没给出产品线索 / 新现象 → 同样澄清。
+    no_facts = not outcome.changed and not new_refs
+    symptoms = list(outcome.symptoms)
+    if not symptoms:
+        # 此前抽取也失败过（有效症状为空）：承接更早轮次里最后一句含具体故障描述的原文（03 §1.4.1 规则 3），
+        # 让 query 不是孤立的「还是」「这个」
+        earlier = [  # state.messages 尚不含本轮消息
+            m.get("text", "") for m in (state.get("messages") or []) if m.get("role") == "user"
+        ]
+        prior = next((t for t in reversed(earlier) if clarify_mod._has_symptom_text(catalog, t)), None)
+        if prior:
+            symptoms = [prior.strip()]
+            update["symptoms"] = symptoms
+    if (no_facts and not has_symptom_text and not symptoms) or (
+        outcome.needs_clarification and not outcome.product_hints and not outcome.added
+    ):
+        decision = clarify_mod._clarify(
+            dict(state.get("clarification") or {}),
+            "symptom",
+            {"observations": list(state.get("observations") or [])},
+        )
+        update.update(decision.update)
+        update["_decision"] = {"outcome": decision.outcome, "reason": decision.reason, **decision.detail}
+        if decision.outcome == "escalate":
+            update["escalate_reason"] = "R7"
+    return update
+
+
+def route_after_rediagnose(state: SessionState) -> str:
+    if state.get("escalate_reason"):
+        return "escalate"
+    if (state.get("_decision") or {}).get("outcome") == "clarify":
+        return "clarify"
+    if (state.get("emotion") or {}).get("strategy", "normal") != "normal" and get_model_router() is not None:
+        return "reassure"
+    return "disambiguate"
+
+
 # ---------------- 票 36：A1 完成——结束语与 done(completed) ----------------
 
 
@@ -1526,8 +1718,16 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("guide", guide)
     g.add_node("close", close)
     g.add_edge("close", END)
+    g.add_node("rediagnose", rediagnose)
     g.add_conditional_edges(
-        START, route_entry, {"intake": "intake", "human_request": "human_request"}
+        "rediagnose",
+        route_after_rediagnose,
+        {"escalate": "escalate", "clarify": "clarify", "reassure": "reassure", "disambiguate": "disambiguate"},
+    )
+    g.add_conditional_edges(
+        START,
+        route_entry,
+        {"intake": "intake", "human_request": "human_request", "rediagnose": "rediagnose"},
     )
     g.add_edge("human_request", "escalate")
     g.add_edge("out_of_scope", "escalate")
@@ -1564,6 +1764,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "out_of_scope": "out_of_scope",
             "guide": "guide",
             "close": "close",
+            "rediagnose": "rediagnose",
         },
     )
     g.add_conditional_edges(

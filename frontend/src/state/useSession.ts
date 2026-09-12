@@ -135,7 +135,8 @@ export function useSession() {
     if (operation.current || stateRef.current.activeRun) return false;
     const files = opts.files ?? [];
     const pending = stateRef.current.pendingInput?.kind;
-    if (pending && pending !== 'upload_receipt') return false;
+    // 票 37：等待步骤反馈时的自由文本 / 图片即 rediagnose（后端按 guide / verify 阶段处理，旧步骤卡作废）
+    if (pending && pending !== 'upload_receipt' && pending !== 'step_feedback') return false;
     if (pending === 'upload_receipt' && (opts.purpose !== 'receipt' || files.length === 0)) return false;
     if (!text.trim() && files.length === 0) return false;
     // 后端表单要求非空文本；纯图片消息用准确的附件说明。

@@ -207,10 +207,11 @@ async def test_action_conflicts_and_validation(mem_runtime):
         }
         r = await client.post(f"/sessions/{sid}/actions", json=bad_kind)
         assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
-        # rediagnose（票 37）暂未接入；request_human 已在票 25 接入（见 test_sessions_human）
+        # rediagnose（票 37）只在 guide / verify 阶段允许：等待产品卡时 → not_allowed_now（版本正确时）
         r = await client.post(
             f"/sessions/{sid}/actions",
-            json={"action_id": "a", "expected_version": 0, "kind": "rediagnose", "payload": {}},
+            json={"action_id": "a", "expected_version": pending["version"], "kind": "rediagnose",
+                  "payload": {"text": "还有异响"}},
         )
         assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
         # 契约校验失败 → 422

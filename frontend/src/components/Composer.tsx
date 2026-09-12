@@ -25,9 +25,10 @@ type Props = {
 
 const WAITING_HINT = {
   select_product: '请先在上方卡片选择产品。',
-  step_feedback: '请先在步骤卡反馈操作结果，补充说明可填写在卡片内。',
   confirm_receipt: '请在上方核对订单号、购买渠道等信息，确认或跳过。',
 };
+// 票 37：等待步骤反馈时仍可补充新情况 / 照片 / 纠正型号，提交即 rediagnose（后端 guide / verify 阶段的消息等价于 rediagnose）
+export const REDIAGNOSE_HINT = '补充信息将重新判断故障：可以描述新情况、上传照片或纠正型号；操作结果请仍在上方步骤卡反馈。';
 let seq = 0;
 function makePreview(file: File): string | null {
   try { return typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : null; }
@@ -49,7 +50,8 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const submittingRef = useRef(false);
   const generation = useRef(0);
   const receipt = pendingKind === 'upload_receipt';
-  const cardOnly = pendingKind !== null && !receipt;
+  const rediagnose = pendingKind === 'step_feedback';
+  const cardOnly = pendingKind !== null && !receipt && !rediagnose;
   const busy = processing || submitting;
   const inputBlocked = !!offline || runBusy || cardOnly || busy;
   const hasContent = receipt ? attachments.length > 0 : value.trim().length > 0 || attachments.length > 0;
@@ -141,20 +143,21 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   }
 
   const hint = offline ? '可以先填写问题；对话服务暂未接通，目前无法发送。'
-    : cardOnly ? WAITING_HINT[pendingKind]
+    : cardOnly ? WAITING_HINT[pendingKind as keyof typeof WAITING_HINT]
+    : rediagnose ? REDIAGNOSE_HINT
     : receipt ? '请上传订单截图、发票或收据，可附带备注；单张 5 MB 内。也可以跳过，由人工协助核实。'
     : '支持文字与图片（单张 5 MB 内，会自动压缩），说不清楚也没关系。';
 
   return (
     <form className={styles.composer} onSubmit={(e) => { e.preventDefault(); void submit(); }} aria-label={receipt ? '上传购买凭证' : '发送消息'}>
       <div className={styles.heading}>
-        <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : '描述你的问题'}</label>
-        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : '直接输入，不用先选产品'}</span>
+        <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : rediagnose ? '补充新情况或纠正' : '描述你的问题'}</label>
+        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : rediagnose ? '会重新判断故障，已做的步骤保留' : '直接输入，不用先选产品'}</span>
       </div>
       <div className={styles.box}>
         <textarea id={inputId} ref={inputRef} className={styles.input} rows={3} maxLength={4000} value={value}
           disabled={cardOnly || runBusy || submitting} onChange={(e) => onChange(e.target.value)}
-          placeholder={receipt ? '可补充购买平台、店铺或其他需要说明的信息…' : '点击这里输入，例如：我的耳机只有一边有声音，重置后还是不行…'}
+          placeholder={receipt ? '可补充购买平台、店铺或其他需要说明的信息…' : rediagnose ? '例如：其实还有异响 / 说错了，我的是 X10…' : '点击这里输入，例如：我的耳机只有一边有声音，重置后还是不行…'}
           aria-describedby={`${inputId}-hint`} />
         {attachments.length > 0 && (
           <ul className={styles.attachments} aria-label="待发送图片">
