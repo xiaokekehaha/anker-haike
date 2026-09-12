@@ -1,0 +1,22 @@
+.header { background: var(--surface); border-bottom: 1px solid var(--border); }
+.inner { max-width: 1192px; margin: auto; padding: 22px 36px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: flex; gap: 12px; align-items: center; text-decoration: none; }
+.mark { background: var(--accent); color: var(--on-accent); width: 42px; height: 42px; border-radius: 13px; font-size: 28px; display: grid; place-items: center; }
+.brand strong { font-size: 18px; font-weight: 650; letter-spacing: 1px; }
+.brandCaption { display: block; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); margin-top: 4px; }
+.health { display: flex; align-items: center; gap: 24px; }
+.services { list-style: none; display: flex; gap: 26px; padding: 0; margin: 0; }
+.service { display: flex; align-items: center; gap: 9px; font-size: 12px; line-height: 1.4; }
+.serviceStatus { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); flex-shrink: 0; }
+.dot[data-status="ok"] { background: var(--ok); }
+.dot[data-status="down"] { background: var(--danger); }
+.refresh { border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 50%; width: 36px; height: 36px; display: grid; place-items: center; }
+.refresh:hover:not(:disabled) { background: var(--subtle); color: var(--accent); }
+@media (max-width: 660px) {
+  .inner { padding: 20px; flex-wrap: wrap; gap: 20px; }
+  .brand strong { font-size: 17px; }
+  .health { width: 100%; justify-content: space-between; gap: 12px; }
+  .services { flex: 1; justify-content: space-between; gap: 12px; }
+  .refresh { margin-left: 10px; }
+}

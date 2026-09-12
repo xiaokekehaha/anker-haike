@@ -4,7 +4,11 @@
 
 **Blocked by:** 03（contracts 包：事件 / 动作 / 快照 Pydantic 模型与 JSON Schema）
 
-**Status:** ready-for-agent
+**Status:** in-progress
+
+**Owner:** Codex（2026-09-12 认领，本轮仅此一票）
+
+**协作边界：** Codex 负责前端契约生成与运行时校验、独立 CI workflow、`contracts/fixtures/` 骨架；复用票 03 的 Pydantic 定义与导出入口，不修改 `contracts/haike_contracts/`。票 03 仍由 Claude Code 完成，最终以其导出的 Schema 联调验收。独立记录见 `../../2026-09-12_smart-service-contracts-codegen/`。
 
 - [ ] 生成的 TS 类型与 05 文档摘录的 ServerEvent / PendingKind 形状一致
 - [ ] CI 步骤在类型漂移时失败，并打印差异

@@ -1,0 +1,158 @@
+# 智能服务赛道单机部署。启动：make up；停止：make down；重置数据：make reset
+# 镜像版本固定，变更须同步 RELEASE.md（票 49）。
+name: haike
+
+x-weknora-version: &weknora_version ${WEKNORA_VERSION:-v0.8.0}
+
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: orchestrator/Dockerfile
+    image: haike/orchestrator:dev
+    env_file: .env
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      DATABASE_URL: postgresql://${HAIKE_DB_USER:-haike}:${HAIKE_DB_PASSWORD:-haike}@postgres:5432/${HAIKE_DB_NAME:-haike}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis123}@redis:6379/0
+      WEKNORA_BASE_URL: http://weknora-app:8080
+      MODEL_LANE: ${MODEL_LANE:-domestic}
+    ports:
+      - "${ORCHESTRATOR_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  postgres:
+    # WeKnora 官方使用的镜像，自带 pgvector 与 pg_search；编排服务共用实例、独立数据库
+    image: paradedb/paradedb:v0.22.2-pg17
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+      POSTGRES_DB: ${DB_NAME:-WeKnora}
+      HAIKE_DB_USER: ${HAIKE_DB_USER:-haike}
+      HAIKE_DB_PASSWORD: ${HAIKE_DB_PASSWORD:-haike}
+      HAIKE_DB_NAME: ${HAIKE_DB_NAME:-haike}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-WeKnora}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 1m
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.0-alpine
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-redis123}"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $${REDIS_PASSWORD:-redis123} ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis123}
+    restart: unless-stopped
+
+  weknora-docreader:
+    image: wechatopenai/weknora-docreader:${WEKNORA_VERSION:-v0.8.0}
+    environment:
+      TZ: Asia/Shanghai
+      LOG_LEVEL: info
+      MAX_FILE_SIZE_MB: 50
+      DOCREADER_GRPC_PORT: 50051
+    volumes:
+      - docreader-tmp:/tmp
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=localhost:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  weknora-app:
+    image: wechatopenai/weknora-app:${WEKNORA_VERSION:-v0.8.0}
+    environment:
+      GIN_MODE: release
+      LOG_LEVEL: info
+      TZ: Asia/Shanghai
+      AUTO_MIGRATE: "true"
+      DB_DRIVER: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres123}
+      DB_NAME: ${DB_NAME:-WeKnora}
+      RETRIEVE_DRIVER: postgres
+      DOCREADER_ADDR: weknora-docreader:50051
+      DOCREADER_TRANSPORT: grpc
+      STREAM_MANAGER_TYPE: redis
+      REDIS_ADDR: redis:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis123}
+      STORAGE_TYPE: local
+      LOCAL_STORAGE_BASE_DIR: /data/files
+      JWT_SECRET: ${WEKNORA_JWT_SECRET:-haike-dev-jwt-secret-change-me}
+      SYSTEM_AES_KEY: ${WEKNORA_SYSTEM_AES_KEY:-haike-dev-aes-key-32bytes-change!}
+      OLLAMA_OPTIONAL: "true"
+      NEO4J_ENABLE: "false"
+      WEKNORA_LANGUAGE: zh-CN
+      # Embedding / Rerank 走百炼远程（D17），在票 26 配置
+      EMBEDDING_PROVIDER: openai
+      EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      EMBEDDING_API_KEY: ${DASHSCOPE_API_KEY:-}
+      EMBEDDING_MODEL_NAME: ${EMBEDDING_MODEL_NAME:-}
+      RERANK_PROVIDER: generic
+      RERANK_BASE_URL: ${RERANK_BASE_URL:-}
+      RERANK_API_KEY: ${DASHSCOPE_API_KEY:-}
+      RERANK_MODEL_NAME: ${RERANK_MODEL_NAME:-}
+    volumes:
+      - weknora-files:/data/files
+    ports:
+      - "${WEKNORA_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      weknora-docreader:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # 仅用于在 WeKnora 网页里建 tenant、拿 API key（票 26）；默认不起：docker compose --profile ui up -d
+  weknora-ui:
+    image: wechatopenai/weknora-ui:${WEKNORA_VERSION:-v0.8.0}
+    profiles: ["ui"]
+    environment:
+      APP_HOST: weknora-app
+      APP_PORT: 8080
+      APP_SCHEME: http
+      DEFAULT_LOCALE: zh-CN
+      MAX_FILE_SIZE_MB: 50
+    ports:
+      - "${WEKNORA_UI_PORT:-8081}:80"
+    depends_on:
+      weknora-app:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  redis-data:
+  docreader-tmp:
+  weknora-files:
