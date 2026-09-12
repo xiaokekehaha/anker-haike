@@ -30,7 +30,7 @@ create table if not exists sessions (
     updated_at         timestamptz not null default now()
 );
 create table if not exists session_events (
-    session_id  text not null references sessions(session_id) on delete cascade,
+    session_id  text not null,
     seq         integer not null,
     run_id      text not null,
     event_json  jsonb not null,
@@ -38,7 +38,9 @@ create table if not exists session_events (
     primary key (session_id, seq)
 );
 create index if not exists session_events_run_idx on session_events(session_id, run_id, seq);
+alter table session_events drop constraint if exists session_events_session_id_fkey;
 """
+# 注：session_events 不外键到 sessions——投影表可整行删除后由事件日志 + checkpoint 重建（08 §2，票 07）。
 
 
 class SessionNotFound(LookupError):
@@ -64,17 +66,38 @@ class SessionRow:
     updated_at: datetime
 
 
+@dataclass
+class EventRecord:
+    seq: int
+    run_id: str
+    created_at: datetime
+    event: dict[str, Any]
+
+
 class SessionStore(Protocol):
     async def create_session(self) -> SessionRow: ...
     async def get_session(self, session_id: str) -> SessionRow: ...
+    async def session_exists(self, session_id: str) -> bool: ...
     async def try_start_run(self, session_id: str, run_id: str) -> SessionRow: ...
     async def finish_run(
-        self, session_id: str, run_id: str, *, stage: str | None = None
+        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
     ) -> int: ...
     async def append_event(self, session_id: str, run_id: str, event: dict[str, Any]) -> int: ...
     async def list_events(
         self, session_id: str, *, run_id: str | None = None, after_seq: int = 0
     ) -> list[dict[str, Any]]: ...
+    async def list_event_records(self, session_id: str) -> list[EventRecord]: ...
+    async def list_session_ids(self) -> list[str]: ...
+    async def upsert_projection(
+        self,
+        session_id: str,
+        *,
+        version: int,
+        stage: str,
+        active_run_id: str | None,
+        pending_input: dict | None,
+    ) -> None: ...
+    async def delete_projection(self, session_id: str) -> None: ...
 
 
 def new_session_id() -> str:
@@ -125,15 +148,17 @@ class PostgresSessionStore:
             raise SessionNotFound(session_id)
         raise ActiveRunConflict(session_id, cur_row["active_run_id"])
 
-    async def finish_run(self, session_id: str, run_id: str, *, stage: str | None = None) -> int:
-        """释放 active run 并把 version +1（票 05 粒度：每个 run 一次提交；票 07 细化到 checkpoint）。"""
+    async def finish_run(
+        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
+    ) -> int:
+        """释放 active run，并把 checkpoint 推导出的 version 写入投影（08 §2：每次 checkpoint 提交 +1）。"""
         async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
             await cur.execute(
                 """update sessions
-                   set active_run_id = null, version = version + 1,
+                   set active_run_id = null, version = %s,
                        stage = coalesce(%s, stage), updated_at = now()
                    where session_id = %s and active_run_id = %s returning version""",
-                (stage, session_id, run_id),
+                (version, stage, session_id, run_id),
             )
             row = await cur.fetchone()
         if row is None:
@@ -165,6 +190,63 @@ class PostgresSessionStore:
             rows = await cur.fetchall()
         return [r["event_json"] for r in rows]
 
+    async def session_exists(self, session_id: str) -> bool:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                """select exists(select 1 from sessions where session_id = %(s)s)
+                       or exists(select 1 from session_events where session_id = %(s)s) as ok""",
+                {"s": session_id},
+            )
+            return bool((await cur.fetchone())["ok"])
+
+    async def list_event_records(self, session_id: str) -> list[EventRecord]:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                """select seq, run_id, created_at, event_json from session_events
+                   where session_id = %s order by seq""",
+                (session_id,),
+            )
+            rows = await cur.fetchall()
+        return [EventRecord(r["seq"], r["run_id"], r["created_at"], r["event_json"]) for r in rows]
+
+    async def list_session_ids(self) -> list[str]:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                """select session_id from sessions
+                   union select distinct session_id from session_events order by 1"""
+            )
+            return [r["session_id"] for r in await cur.fetchall()]
+
+    async def upsert_projection(
+        self,
+        session_id: str,
+        *,
+        version: int,
+        stage: str,
+        active_run_id: str | None,
+        pending_input: dict | None,
+    ) -> None:
+        async with self._pool.connection() as conn:
+            await conn.execute(
+                """insert into sessions(session_id, version, stage, active_run_id, pending_input_json)
+                   values (%s, %s, %s, %s, %s)
+                   on conflict (session_id) do update set
+                       version = excluded.version, stage = excluded.stage,
+                       active_run_id = excluded.active_run_id,
+                       pending_input_json = excluded.pending_input_json, updated_at = now()""",
+                (
+                    session_id,
+                    version,
+                    stage,
+                    active_run_id,
+                    Jsonb(pending_input) if pending_input is not None else None,
+                ),
+            )
+
+    async def delete_projection(self, session_id: str) -> None:
+        async with self._pool.connection() as conn:
+            await conn.execute("delete from sessions where session_id = %s", (session_id,))
+
 
 def _row(r: dict) -> SessionRow:
     return SessionRow(
@@ -179,8 +261,8 @@ def _row(r: dict) -> SessionRow:
 
 @dataclass
 class _MemSession:
-    row: SessionRow
-    events: list[dict[str, Any]] = field(default_factory=list)
+    row: SessionRow | None
+    events: list[EventRecord] = field(default_factory=list)
 
 
 class InMemorySessionStore:
@@ -197,23 +279,33 @@ class InMemorySessionStore:
         return row
 
     async def get_session(self, session_id: str) -> SessionRow:
-        return self._get(session_id).row
+        row = self._get(session_id).row
+        if row is None:
+            raise SessionNotFound(session_id)
+        return row
+
+    async def session_exists(self, session_id: str) -> bool:
+        return session_id in self._sessions
 
     async def try_start_run(self, session_id: str, run_id: str) -> SessionRow:
         async with self._lock:
             s = self._get(session_id)
+            if s.row is None:
+                raise SessionNotFound(session_id)
             if s.row.active_run_id is not None:
                 raise ActiveRunConflict(session_id, s.row.active_run_id)
             s.row.active_run_id = run_id
             return s.row
 
-    async def finish_run(self, session_id: str, run_id: str, *, stage: str | None = None) -> int:
+    async def finish_run(
+        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
+    ) -> int:
         async with self._lock:
             s = self._get(session_id)
-            if s.row.active_run_id != run_id:
+            if s.row is None or s.row.active_run_id != run_id:
                 raise SessionNotFound(session_id)
             s.row.active_run_id = None
-            s.row.version += 1
+            s.row.version = version
             if stage:
                 s.row.stage = stage
             return s.row.version
@@ -223,14 +315,43 @@ class InMemorySessionStore:
             s = self._get(session_id)
             seq = len(s.events) + 1
             # 与 Postgres 一致：存 JSON 可序列化副本
-            s.events.append(json.loads(json.dumps(event)))
+            s.events.append(
+                EventRecord(seq, run_id, datetime.now(UTC), json.loads(json.dumps(event)))
+            )
             return seq
 
     async def list_events(
         self, session_id: str, *, run_id: str | None = None, after_seq: int = 0
     ) -> list[dict[str, Any]]:
         s = self._get(session_id)
-        return [e for e in s.events[after_seq:] if run_id is None or e.get("run_id") == run_id]
+        return [r.event for r in s.events[after_seq:] if run_id is None or r.run_id == run_id]
+
+    async def list_event_records(self, session_id: str) -> list[EventRecord]:
+        return list(self._get(session_id).events)
+
+    async def list_session_ids(self) -> list[str]:
+        return sorted(self._sessions)
+
+    async def upsert_projection(
+        self,
+        session_id: str,
+        *,
+        version: int,
+        stage: str,
+        active_run_id: str | None,
+        pending_input: dict | None,
+    ) -> None:
+        s = self._sessions.setdefault(session_id, _MemSession(None))
+        s.row = SessionRow(
+            session_id, version, stage, active_run_id, pending_input, datetime.now(UTC)
+        )
+
+    async def delete_projection(self, session_id: str) -> None:
+        s = self._sessions.get(session_id)
+        if s is not None:
+            s.row = None
+            if not s.events:
+                del self._sessions[session_id]
 
     def _get(self, session_id: str) -> _MemSession:
         try:

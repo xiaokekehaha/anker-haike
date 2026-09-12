@@ -7,7 +7,7 @@ import pytest
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
-from app.sessions.store import ActiveRunConflict, PostgresSessionStore
+from app.sessions.store import ActiveRunConflict, PostgresSessionStore, SessionNotFound
 from app.settings import settings
 
 
@@ -57,9 +57,9 @@ async def test_pg_roundtrip_conflict_and_seq(pg_store):
     assert seqs == [1, 2, 3]
     assert [e["seq"] for e in await pg_store.list_events(sid, after_seq=1)] == [2, 3]
 
-    assert await pg_store.finish_run(sid, "run-a", stage="diagnose") == 1
+    assert await pg_store.finish_run(sid, "run-a", version=5, stage="diagnose") == 5
     after = await pg_store.get_session(sid)
-    assert after.active_run_id is None and after.stage == "diagnose" and after.version == 1
+    assert after.active_run_id is None and after.stage == "diagnose" and after.version == 5
 
     # 第二个 run 的 seq 接着排
     await pg_store.try_start_run(sid, "run-b")
@@ -78,3 +78,38 @@ async def test_pg_concurrent_start_only_one_wins(pg_store):
     winners = [r for r in results if not isinstance(r, Exception)]
     losers = [r for r in results if isinstance(r, ActiveRunConflict)]
     assert len(winners) == 1 and len(losers) == 4
+
+
+async def test_pg_projection_delete_and_rebuild(pg_store):
+    """删除投影行后事件日志仍在，可从事件日志 + checkpoint 重建（票 07 验收项 3）。"""
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    from app.sessions import runner
+    from app.sessions.graph import build_graph
+    from app.sessions.snapshot import build_snapshot, rebuild_projection
+
+    graph = build_graph(InMemorySaver())
+    sid = (await pg_store.create_session()).session_id
+    async for _ in runner.run_message(pg_store, graph, sid, "你好"):
+        pass
+    before = await build_snapshot(pg_store, graph, sid)
+    before_row = await pg_store.get_session(sid)
+
+    await pg_store.delete_projection(sid)
+    assert await pg_store.session_exists(sid)  # 事件日志未受影响
+    assert (
+        len(await pg_store.list_event_records(sid)) == len(before.timeline) + 3
+    )  # run_started/2 progress/done - user_message
+    with pytest.raises(SessionNotFound):
+        await pg_store.get_session(sid)
+
+    after = await rebuild_projection(pg_store, graph, sid)
+    assert after == before
+    row = await pg_store.get_session(sid)
+    assert (row.version, row.stage, row.active_run_id, row.pending_input) == (
+        before_row.version,
+        before_row.stage,
+        None,
+        None,
+    )
+    assert sid in await pg_store.list_session_ids()

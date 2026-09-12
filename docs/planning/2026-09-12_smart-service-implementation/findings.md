@@ -14,3 +14,8 @@
 - 内存存储的单测没有暴露上述问题，只有连真实 Postgres 才复现。约定：涉及数据库的票，集成测试用与运行时完全相同的连接参数，并至少跑一次本机真实链路。
 - 本机 orchestrator/.venv 解析到 Python 3.14，而 Dockerfile 用 3.12-slim；镜像构建是 3.12 兼容性的实际把关点。
 - httpx ASGITransport 不触发 lifespan，测试通过 app.state 注入内存存储与 InMemorySaver；B 的模型注册也在 lifespan 内，因此单测不依赖模型 key。
+
+## 票 07 快照与投影
+- LangGraph checkpoint metadata.step 在同一 thread 上跨 run 单调递增（含输入 checkpoint 的 step -1 起算），可直接作为契约 version 的来源，无需自维护计数器。异常 run 仍会写入输入 checkpoint，version 会 +1。
+- session_events 一开始外键到 sessions 并级联删除，与「投影表可丢弃后重建」矛盾；已去掉外键。规则：事件日志与 checkpoint 不得依赖任何投影表。
+- 事件协议里没有用户消息事件，timeline 的 user_message 只能来自 checkpoint 状态；节点在写 messages 时必须带 run_id，否则无法定位到 timeline 位置。后续改图状态的票需保持这一约定。

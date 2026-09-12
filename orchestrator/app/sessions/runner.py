@@ -10,6 +10,7 @@ import logging
 import time
 import uuid
 from collections.abc import AsyncIterator
+from datetime import UTC, datetime
 from typing import Any
 
 from haike_contracts.events import parse_event
@@ -81,7 +82,13 @@ async def run_message(
     async def pump() -> None:
         try:
             config = {"configurable": {"thread_id": session_id}}
-            payload = {"session_id": session_id, "text": text, "image_ids": image_ids or []}
+            payload = {
+                "session_id": session_id,
+                "run_id": run_id,
+                "at": datetime.now(UTC).isoformat(),
+                "text": text,
+                "image_ids": image_ids or [],
+            }
             async for mode, chunk in graph.astream(
                 payload, config, stream_mode=["custom", "updates"]
             ):
@@ -134,11 +141,11 @@ async def run_message(
     finally:
         if not task.done():
             task.cancel()
+        version = await checkpoint_version(graph, session_id, fallback=row.version)
         try:
-            version = await store.finish_run(session_id, run_id, stage=stage)
+            await store.finish_run(session_id, run_id, version=version, stage=stage)
         except Exception:
             log.exception("finish_run failed session=%s run=%s", session_id, run_id)
-            version = row.version
         # 必以 done 结束；若消费者已断开，done 仍要落库（票 08 续接读取）
         done = await em.emit(
             {"type": "done", "reason": "error" if failed else "completed", "version": version}
@@ -156,3 +163,17 @@ def _error(
         "recoverable": recoverable,
         "retry_with_same_action": retry,
     }
+
+
+async def checkpoint_version(
+    graph: CompiledStateGraph, session_id: str, *, fallback: int = 0
+) -> int:
+    """version = 最新 checkpoint 的 step + 1（step 跨 run 单调递增，无 checkpoint 时为 0）。"""
+    try:
+        state = await graph.aget_state({"configurable": {"thread_id": session_id}})
+    except Exception:
+        log.exception("aget_state failed session=%s", session_id)
+        return fallback
+    if not state.metadata:
+        return 0
+    return int(state.metadata.get("step", -1)) + 1

@@ -26,6 +26,9 @@ dependencies = [
 [project.scripts]
 haike-route-table = "app.models.cli:route_table"
 haike-model-probe = "app.models.cli:probe"
+haike-sessions-rebuild = "app.sessions.cli:rebuild"
+haike-seed = "app.seed_cli:seed"
+haike-plans-schema = "app.seed_cli:plans_schema"
 
 [dependency-groups]
 dev = [

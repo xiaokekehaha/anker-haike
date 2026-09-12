@@ -10,9 +10,9 @@
 4. 票 04 TS 类型生成与 CI 比对 — complete（Codex；50 项前端测试 + 6 项生成器回归、双端 fixtures、类型检查与构建通过；CI 已接入，未触发远端运行）
 5. 票 05 会话创建与 SSE 基础流 — complete（A：orchestrator/app/sessions，11 项测试 + 真实 Postgres 链路实测）
 6. 票 06 前端 reducer 与 SSE 解析 — pending（前端票，建议 Codex 在票 04 后认领）
-7. 票 07 快照接口与投影表 — pending（Claude Code A，下一票）
+7. 票 07 快照接口与投影表 — complete（A：GET /sessions/{id}、timeline 折叠、sessions-rebuild CLI，真实 Postgres 删行重建一致）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
-9. 票 09–14 模型层（M2） — in_progress（Claude Code B：09 complete，10 进行中，11–12 排队；13–14 依赖票 05，届时再协调）
+9. 票 09–14 模型层（M2） — in_progress（Claude Code B：09–12 complete；13–14 依赖票 05，待 A 完成后协调）
 10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending
 
 ## 并行分工（2026-09-12 起，三方同一工作树）
@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A：票 05 已完成，进入票 07；B：票 09 模型配置与路由；Codex：票 04 已完成，本轮结束，票 06 尚未认领。
+A：票 07 已完成，票 08 后端部分（GET /sessions/{id}/runs/{run_id}/events 续接）可开始，前端部分等 Codex 票 06；B：票 09 模型配置与路由；Codex：票 04 已完成，本轮结束，票 06 尚未认领。

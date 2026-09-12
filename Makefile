@@ -27,13 +27,31 @@ test: ## 后端单元测试
 	cd orchestrator && uv run pytest -q
 lint: ## ruff 检查
 	cd orchestrator && uv run ruff check .
+
+## ---- 模型层（票 09）----
+route-table: ## 从 config/models.yaml 生成路由展示表（LANE=domestic|overseas）
+	cd orchestrator && uv run --env-file ../.env haike-route-table $(if $(LANE),--lane $(LANE),)
+model-probe: ## 对 task 发一次最简调用：make model-probe TASK=intake [ALIAS=deepseek]
+	cd orchestrator && uv run --env-file ../.env haike-model-probe $(or $(TASK),intake) $(if $(ALIAS),--alias $(ALIAS),)
 	cd contracts && uv run --group dev ruff check .
 
 .PHONY: contracts contracts-check contracts-test
+## ---- 参考数据（票 19 / 31）----
+seed: ## 写入 products / plans 参考数据到 PostgreSQL（幂等）：make seed [WHAT=products|plans]
+	cd orchestrator && uv run --env-file ../.env haike-seed $(or $(WHAT),all)
+plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
+	cd orchestrator && uv run haike-plans-schema --enum
+
 ## ---- 契约（票 03 / 04）----
-contracts: ## 由 Pydantic 模型导出三份 JSON Schema 到 contracts/schema/（前端 TS 生成由票 04 追加在此之后）
+contracts: ## 由 Pydantic 导出 Schema，并生成前端类型与 Zod 校验器
 	cd contracts && uv run haike-contracts-export
+	npm --prefix frontend run contracts:generate
 contracts-check: ## 校验已提交的 Schema 与模型一致（CI 用，漂移则非零退出）
 	cd contracts && uv run haike-contracts-export --check
+	npm --prefix frontend run contracts:check
 contracts-test: ## 契约单测（样例校验、导出稳定性）
 	cd contracts && uv run pytest -q
+
+## ---- 会话（票 07）----
+sessions-rebuild: ## 从事件日志 + checkpoint 重建 sessions 投影表：make sessions-rebuild ARGS="--all"
+	cd orchestrator && uv run --env-file ../.env haike-sessions-rebuild $(ARGS)

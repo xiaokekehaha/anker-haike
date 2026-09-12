@@ -18,10 +18,16 @@ from langgraph.graph.state import CompiledStateGraph
 
 class SessionState(TypedDict, total=False):
     session_id: str
+    run_id: str  # 当前 run，由运行器随输入写入，用户消息据此归入 timeline 对应位置
+    at: str  # 本 run 收到消息的时间（ISO），用于 timeline user_message.at
     text: str
     stage: str
+    substage: str | None
     image_ids: list[str]
-    messages: list[dict[str, Any]]
+    messages: list[dict[str, Any]]  # {role, text, image_ids, run_id, at}
+    # card_id -> 用户对卡片的结果（selected_sku / feedback+note / confirmed_fields+skipped_reason），
+    # 由后续票的 apply_action 节点写入；快照折叠 timeline 时读取（票 07）
+    card_results: dict[str, dict[str, Any]]
 
 
 def _delay() -> float:
@@ -35,10 +41,14 @@ async def intake(state: SessionState) -> SessionState:
     if state.get("text") == "__raise__":  # 测试钩子：异常路径
         raise RuntimeError("placeholder node failure")
     await asyncio.sleep(_delay())
-    return {
-        "stage": "intake",
-        "messages": [*state.get("messages", []), {"role": "user", "text": state.get("text", "")}],
+    user_msg = {
+        "role": "user",
+        "text": state.get("text", ""),
+        "image_ids": list(state.get("image_ids") or []),
+        "run_id": state.get("run_id", ""),
+        "at": state.get("at", ""),
     }
+    return {"stage": "intake", "messages": [*state.get("messages", []), user_msg]}
 
 
 async def reply(state: SessionState) -> SessionState:
