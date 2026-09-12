@@ -38,4 +38,26 @@ npm --prefix frontend run build
 
 ## 目录边界
 
-`src/state` 管理健康轮询；`src/api` 请求和校验健康响应；`src/types` 为健康类型；`src/components` 为 HeaderBar；`src/styles` 为系统主题和全局样式。票 04 后续生成的事件类型与票 06 reducer / SSE 解析不在本票实现范围。
+`src/state` 管理健康轮询；`src/api` 请求、健康校验与事件校验；`src/types` 为健康及生成的契约类型；`src/components` 为 HeaderBar；`src/styles` 为系统主题和全局样式。会话 reducer / SSE 解析由票 06 接入。
+
+## 契约生成与 CI（票 04）
+
+唯一来源为 `contracts/haike_contracts/` 中的 Python 模型，导出到 `contracts/schema/`。安装前端依赖后，从仓库根目录执行：
+
+```bash
+make contracts                 # Python → JSON Schema → TypeScript / Zod
+make contracts-check           # 只检查，不覆盖生成产物；漂移时非零退出
+npm --prefix frontend test
+npm --prefix frontend run test:codegen
+uv run --project contracts python frontend/scripts/validate-fixtures.py
+```
+
+生成文件：`src/types/events.ts`、`actions.ts`、`snapshot.ts` 和 `src/api/events-schema.ts`。生成器保留动作响应 `ActionResult` / `ActionConflict`，并导出 `PendingKind` / `ActionKind` / `TimelineItem`，供后续 reducer 使用。生成文件禁止手改；SHA-256 注释也会让仅修改数值范围等无法用 TypeScript 表达的约束触发检查。
+
+只重建前端产物可运行 `npm --prefix frontend run contracts:generate`；只检查前端漂移运行 `npm --prefix frontend run contracts:check`，后者打印统一格式差异，缺失文件同样失败。
+
+`parseServerEvent(value: unknown): ServerEvent | null` 接收已解码的事件对象。它通过从相同 Schema 构建的 Zod 校验器验证；非法事件返回 null，后续 SSE 消费方应跳过。日志只包含固定错误码与问题数，不记录消息、凭证、未知字段名或完整验证错误。Zod 的 fromJSONSchema 是实验 API，版本已锁定，并在生成阶段验证兼容性；升级须通过协议样本与边界回归。
+
+共享样本位于 `contracts/fixtures/`；`a1.json` 当前是空占位，不表示 A1 业务链路已完成。`events.valid.json` 的 15 种事件由前端 Zod 与后端 Pydantic 共同验证。
+
+`.github/workflows/contracts.yml` 重新导出 Python Schema 并打印 git diff，随后检查前端产物、共享样本、单元测试与构建。所有操作仅作用于代码和 fixture，不访问数据库或模型服务。

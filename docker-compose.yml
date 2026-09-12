@@ -112,12 +112,17 @@ services:
       EMBEDDING_BASE_URL: ${EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
       EMBEDDING_API_KEY: ${DASHSCOPE_API_KEY:-}
       EMBEDDING_MODEL_NAME: ${EMBEDDING_MODEL_NAME:-}
-      RERANK_PROVIDER: generic
-      RERANK_BASE_URL: ${RERANK_BASE_URL:-}
+      RERANK_PROVIDER: aliyun
+      RERANK_BASE_URL: ${RERANK_BASE_URL:-https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank}
       RERANK_API_KEY: ${DASHSCOPE_API_KEY:-}
-      RERANK_MODEL_NAME: ${RERANK_MODEL_NAME:-}
+      RERANK_MODEL_NAME: ${RERANK_MODEL_NAME:-gte-rerank-v2}
+      # 票 26：内置模型由 YAML 登记（环境变量本身不会注册模型）
+      BUILTIN_MODELS_CONFIG: /app/config/builtin_models.yaml
+      # 远程模型地址白名单（本机 embedding 桩用 host.docker.internal；生产留空）
+      SSRF_WHITELIST_EXTRA: ${SSRF_WHITELIST_EXTRA:-}
     volumes:
       - weknora-files:/data/files
+      - ./deploy/weknora/builtin_models.yaml:/app/config/builtin_models.yaml:ro
     ports:
       - "${WEKNORA_PORT:-8080}:8080"
     depends_on:

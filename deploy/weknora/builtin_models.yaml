@@ -1,0 +1,26 @@
+# WeKnora 内置模型登记（票 26）。挂载到 weknora-app 的 /app/config/builtin_models.yaml 并设 BUILTIN_MODELS_CONFIG。
+# 只传 EMBEDDING_* / RERANK_* 环境变量不会自动注册模型（官方 BUILTIN_MODELS.md）；此文件引用同名变量，启动时同步。
+# Embedding：百炼 text-embedding-v4，1024 维（与 pgvector 索引一致；换模型需重建索引，kb_ver 与之绑定）。
+# Rerank：百炼 gte-rerank-v2 走 aliyun 嵌套协议；qwen3-rerank 的 /compatible-api/v1/reranks 与 WeKnora generic 的 /rerank 不兼容，
+#         待上游适配后再切换。Rerank 不可用时问答链回退召回结果继续（官方 rerank.go 回退路径）。
+models:
+  - name: ${EMBEDDING_MODEL_NAME:-text-embedding-v4}
+    type: Embedding
+    source: remote
+    description: 百炼 text-embedding-v4 · 1024 维
+    is_default: true
+    parameters:
+      provider: openai
+      base_url: ${EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      api_key: ${EMBEDDING_API_KEY}
+      embedding_parameters:
+        dimension: 1024
+  - name: ${RERANK_MODEL_NAME:-gte-rerank-v2}
+    type: Rerank
+    source: remote
+    description: 百炼 gte-rerank-v2（aliyun 协议）
+    is_default: true
+    parameters:
+      provider: aliyun
+      base_url: ${RERANK_BASE_URL:-https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank}
+      api_key: ${RERANK_API_KEY}

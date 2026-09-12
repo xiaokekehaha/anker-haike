@@ -2,6 +2,10 @@
 // Source: contracts/schema/actions.schema.json
 // SHA-256: 7ba75f6b6c6f6e87b667b8a638b9b519edeb13dd39ca1eb870ddea11f20eb666
 
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ActionRequest".
+ */
 export type ActionRequest =
   | SelectProductAction
   | StepFeedbackAction
@@ -68,7 +72,20 @@ export type InterruptId5 = string | null;
 export type Kind5 = 'rediagnose';
 export type ImageIds = string[];
 export type Text = string | null;
+export type Code = 'version_mismatch' | 'stale_card' | 'not_allowed_now' | 'run_active';
+export type Message = string;
+export type ActionId6 = string;
+export type Replayed = boolean;
+export type RunId = string;
+export type VersionAfter = number | null;
 
+export interface ActionRequestSchema {
+  contract: ActionRequest;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SelectProductAction".
+ */
 export interface SelectProductAction {
   action_id: ActionId;
   card_id: CardId;
@@ -77,9 +94,17 @@ export interface SelectProductAction {
   kind: Kind;
   payload: SelectProductPayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SelectProductPayload".
+ */
 export interface SelectProductPayload {
   sku: Sku;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "StepFeedbackAction".
+ */
 export interface StepFeedbackAction {
   action_id: ActionId1;
   card_id: CardId1;
@@ -88,10 +113,18 @@ export interface StepFeedbackAction {
   kind: Kind1;
   payload: StepFeedbackPayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "StepFeedbackPayload".
+ */
 export interface StepFeedbackPayload {
   feedback: Feedback;
   note?: Note;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmReceiptAction".
+ */
 export interface ConfirmReceiptAction {
   action_id: ActionId2;
   card_id: CardId2;
@@ -100,16 +133,28 @@ export interface ConfirmReceiptAction {
   kind: Kind2;
   payload: ConfirmReceiptPayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmReceiptPayload".
+ */
 export interface ConfirmReceiptPayload {
   edited?: Edited;
   fields: ReceiptFields;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ReceiptFields".
+ */
 export interface ReceiptFields {
   amount?: Amount;
   channel?: Channel;
   order_no?: OrderNo;
   purchase_date?: PurchaseDate;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SkipReceiptAction".
+ */
 export interface SkipReceiptAction {
   action_id: ActionId3;
   card_id: CardId3;
@@ -118,11 +163,18 @@ export interface SkipReceiptAction {
   kind: Kind3;
   payload: SkipReceiptPayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SkipReceiptPayload".
+ */
 export interface SkipReceiptPayload {
   reason: Reason;
 }
 /**
  * 任何时刻可用；服务端忽略 version 与 pending 校验，有 active run 先取消。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RequestHumanAction".
  */
 export interface RequestHumanAction {
   action_id: ActionId4;
@@ -132,9 +184,16 @@ export interface RequestHumanAction {
   kind: Kind4;
   payload?: RequestHumanPayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RequestHumanPayload".
+ */
 export interface RequestHumanPayload {}
 /**
  * guide / verify 阶段且无 active run；无绑定卡片。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RediagnoseAction".
  */
 export interface RediagnoseAction {
   action_id: ActionId5;
@@ -144,9 +203,42 @@ export interface RediagnoseAction {
   kind: Kind5;
   payload: RediagnosePayload;
 }
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RediagnosePayload".
+ */
 export interface RediagnosePayload {
   image_ids?: ImageIds;
   text?: Text;
+}
+/**
+ * 409 响应体：附最新快照供前端重建（08 §4 第 3 步）。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ActionConflict".
+ */
+export interface ActionConflict {
+  code: Code;
+  message: Message;
+  snapshot: Snapshot;
+}
+/**
+ * SessionSnapshot 序列化结果；此处用 dict 避免循环引用
+ */
+export interface Snapshot {
+  [k: string]: unknown;
+}
+/**
+ * 写入 session_actions.result_json 并在幂等重放时返回。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ActionResult".
+ */
+export interface ActionResult {
+  action_id: ActionId6;
+  replayed?: Replayed;
+  run_id: RunId;
+  version_after?: VersionAfter;
 }
 
 export type ActionKind = ActionRequest['kind'];

@@ -80,8 +80,15 @@ class TaskRoute(_Strict):
 
 class RetrySpec(_Strict):
     same_model_max: int = Field(default=1, ge=0)
+    rate_limit_max: int = Field(default=3, ge=0)
+    """429 专用：同模型最多重试次数，退避 1 / 2 / 4 s + 抖动（07 §13）。"""
     chain_max: int = Field(default=3, ge=1)
     sdk_max_retries: int = Field(default=0, ge=0)
+
+
+class ConcurrencySpec(_Strict):
+    max_in_flight: int = Field(default=50, ge=1)
+    """全局同时进行的模型调用上限，满则立即拒绝（07 §13）。"""
 
 
 class ModelsConfig(_Strict):
@@ -91,6 +98,7 @@ class ModelsConfig(_Strict):
     models: dict[str, ModelSpec]
     lanes: dict[str, dict[str, TaskRoute]]
     retry: RetrySpec = Field(default_factory=RetrySpec)
+    concurrency: ConcurrencySpec = Field(default_factory=ConcurrencySpec)
 
     # ---- 查询 ----
     def route(self, task: str, lane: str | None = None) -> TaskRoute:

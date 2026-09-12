@@ -40,7 +40,18 @@ export async function renderArtifacts(schemaDir) {
     if (schema.title !== title) throw new Error(`Expected ${title} in ${path}`);
     const json = JSON.stringify(schema, null, 2);
     const header = banner(name, json);
-    const types = await compile(structuredClone(schema), title, {
+    // 编译器对根 oneOf 不导出未引用的 $defs；通过对象根统一导出所有定义。
+    // 包装只用于 TS 生成，运行时校验仍使用未经改写的原始 Schema。
+    const { $defs, ...rootSchema } = structuredClone(schema);
+    const typeSchema = {
+      title: `${title}Schema`,
+      type: 'object',
+      additionalProperties: false,
+      properties: { contract: { $ref: `#/$defs/${title}` } },
+      required: ['contract'],
+      $defs: { ...$defs, [title]: rootSchema },
+    };
+    const types = await compile(typeSchema, `${title}Schema`, {
       bannerComment: header,
       unreachableDefinitions: true,
       unknownAny: true,

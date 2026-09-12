@@ -2,6 +2,10 @@
 // Source: contracts/schema/events.schema.json
 // SHA-256: fbe7af9cc58280c64bbd71266a0e3b0e8cee1ede7f5c834ee05877d2f27ad7ac
 
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ServerEvent".
+ */
 export type ServerEvent =
   | RunStarted
   | Ping
@@ -217,6 +221,13 @@ export type Type14 = 'done';
  */
 export type Version4 = number;
 
+export interface ServerEventSchema {
+  contract: ServerEvent;
+}
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "RunStarted".
+ */
 export interface RunStarted {
   deadline_ms: DeadlineMs;
   resumed: Resumed;
@@ -224,11 +235,19 @@ export interface RunStarted {
   seq: Seq;
   type: Type;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Ping".
+ */
 export interface Ping {
   run_id: RunId1;
   seq: Seq1;
   type: Type1;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Progress".
+ */
 export interface Progress {
   run_id: RunId2;
   seq: Seq2;
@@ -236,6 +255,10 @@ export interface Progress {
   substage?: Substage;
   type: Type2;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ToolCall".
+ */
 export interface ToolCall {
   name: Name;
   run_id: RunId3;
@@ -245,6 +268,10 @@ export interface ToolCall {
   tool_id: ToolId;
   type: Type3;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "MessageStart".
+ */
 export interface MessageStart {
   message_id: MessageId;
   replaces?: Replaces;
@@ -252,6 +279,10 @@ export interface MessageStart {
   seq: Seq4;
   type: Type4;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Message".
+ */
 export interface Message {
   delta: Delta;
   message_id: MessageId1;
@@ -259,6 +290,10 @@ export interface Message {
   seq: Seq5;
   type: Type5;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "MessageEnd".
+ */
 export interface MessageEnd {
   message_id: MessageId2;
   model_tier?: ModelTier;
@@ -267,6 +302,10 @@ export interface MessageEnd {
   status: Status1;
   type: Type6;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ProductCard".
+ */
 export interface ProductCard {
   candidates: Candidates;
   card_id: CardId;
@@ -275,6 +314,10 @@ export interface ProductCard {
   type: Type7;
   version: Version;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ProductCandidate".
+ */
 export interface ProductCandidate {
   category: Category;
   image?: Image;
@@ -282,6 +325,10 @@ export interface ProductCandidate {
   name: Name1;
   sku: Sku;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "StepCard".
+ */
 export interface StepCard {
   card_id: CardId1;
   run_id: RunId8;
@@ -292,6 +339,9 @@ export interface StepCard {
 }
 /**
  * step_card 的唯一层级：step 对象（08 §5）。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "TroubleshootStep".
  */
 export interface TroubleshootStep {
   caution?: Caution;
@@ -304,12 +354,20 @@ export interface TroubleshootStep {
   step_no: StepNo;
   title: Title;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Evidence".
+ */
 export interface Evidence {
   items: Items;
   run_id: RunId9;
   seq: Seq9;
   type: Type9;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "EvidenceItem".
+ */
 export interface EvidenceItem {
   chunk_id: ChunkId;
   doc_id: DocId;
@@ -320,6 +378,10 @@ export interface EvidenceItem {
   source: Source;
   status?: Status2;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ReceiptCard".
+ */
 export interface ReceiptCard {
   card_id: CardId2;
   confidence?: Confidence;
@@ -333,12 +395,20 @@ export interface ReceiptCard {
 export interface Confidence {
   [k: string]: number;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ReceiptFields".
+ */
 export interface ReceiptFields {
   amount?: Amount;
   channel?: Channel;
   order_no?: OrderNo;
   purchase_date?: PurchaseDate;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "AwaitingInput".
+ */
 export interface AwaitingInput {
   card_id: CardId3;
   interrupt_id: InterruptId;
@@ -348,6 +418,10 @@ export interface AwaitingInput {
   type: Type11;
   version: Version3;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "EscalationSummaryEvent".
+ */
 export interface EscalationSummaryEvent {
   card_id: CardId4;
   run_id: RunId12;
@@ -357,6 +431,9 @@ export interface EscalationSummaryEvent {
 }
 /**
  * escalation_summary 的唯一层级：summary 对象（08 §5）。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "EscalationSummary".
  */
 export interface EscalationSummary {
   emotion: Emotion;
@@ -369,22 +446,37 @@ export interface EscalationSummary {
   receipt: ReceiptOutcome;
   steps?: Steps;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Emotion".
+ */
 export interface Emotion {
   level: Level;
   strategy: Strategy;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ModelTraceItem".
+ */
 export interface ModelTraceItem {
   attempts: Attempts;
   lane: Lane;
   model_used: ModelUsed;
   task: Task;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "EscalationReason".
+ */
 export interface EscalationReason {
   rule_id: RuleId;
   text: Text;
 }
 /**
  * 凭证核对结果：只有已核实事实与下一步，不含质保资格结论（D16，09 §5.2）。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ReceiptOutcome".
  */
 export interface ReceiptOutcome {
   conflicts?: Conflicts;
@@ -395,11 +487,19 @@ export interface ReceiptOutcome {
 export interface VerifiedFacts {
   [k: string]: string;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ExecutedStep".
+ */
 export interface ExecutedStep {
   feedback: Feedback;
   step_id: StepId1;
   title: Title1;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Error".
+ */
 export interface Error {
   code: Code;
   message: Message1;
@@ -409,6 +509,10 @@ export interface Error {
   seq: Seq13;
   type: Type13;
 }
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Done".
+ */
 export interface Done {
   reason: Reason;
   run_id: RunId14;

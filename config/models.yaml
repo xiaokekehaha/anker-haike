@@ -23,8 +23,8 @@ models:
   glm:          {provider: zhipu,     id: TBD, vision: false, structured: native,      timeout_s: 20}
   glm-flash:    {provider: zhipu,     id: TBD, vision: false, structured: native,      timeout_s: 15}
   glm-v:        {provider: zhipu,     id: TBD, vision: true,  structured: native,      max_images: 10, timeout_s: 30}
-  embed-primary:  {provider: dashscope, id: TBD, kind: embedding, dim: 1024}
-  rerank-primary: {provider: dashscope, id: TBD, kind: rerank}
+  embed-primary:  {provider: dashscope, id: text-embedding-v4, kind: embedding, dim: 1024}
+  rerank-primary: {provider: dashscope, id: gte-rerank-v2, kind: rerank}
 
 lanes:
   domestic:
@@ -46,4 +46,7 @@ lanes:
     escalate.summary:      {chain: [haiku, sonnet],                 effort: low}
     warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],          effort: low,    needs_vision: true}
 
-retry: {same_model_max: 1, chain_max: 3, sdk_max_retries: 0}
+# same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
+retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}
+# 全局同时进行的模型调用上限，满则立即返回 error(recoverable=true)（07 §13）
+concurrency: {max_in_flight: 50}

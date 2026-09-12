@@ -1,0 +1,17 @@
+[
+  {"type":"run_started","seq":1,"run_id":"fixture_run_01","resumed":false,"deadline_ms":90000},
+  {"type":"ping","seq":2,"run_id":"fixture_run_01"},
+  {"type":"progress","seq":3,"run_id":"fixture_run_01","stage":"diagnose","substage":null},
+  {"type":"tool_call","seq":4,"run_id":"fixture_run_01","tool_id":"fixture_tool_01","name":"knowledge.search","status":"finished","summary":"找到滤网维护说明"},
+  {"type":"message_start","seq":5,"run_id":"fixture_run_01","message_id":"fixture_message_01","replaces":"fixture_message_old"},
+  {"type":"message","seq":6,"run_id":"fixture_run_01","message_id":"fixture_message_01","delta":"我们先检查滤网。"},
+  {"type":"message_end","seq":7,"run_id":"fixture_run_01","message_id":"fixture_message_01","status":"completed","model_tier":"fallback"},
+  {"type":"product_card","seq":8,"run_id":"fixture_run_01","card_id":"fixture_product_card","version":0,"candidates":[{"sku":"fixture_sku_01","name":"示例扫地机","category":"robot_vacuum","image":null,"in_scope":true}]},
+  {"type":"step_card","seq":9,"run_id":"fixture_run_01","card_id":"fixture_step_card","version":1,"step":{"step_id":"fixture_step_01","plan_id":"fixture_plan_01","plan_version":1,"step_no":1,"title":"检查滤网","instruction":"关闭设备后检查滤网是否堵塞。","expected_result":"滤网通畅","caution":"先关闭设备","evidence_ids":["fixture_evidence_01"]}},
+  {"type":"evidence","seq":10,"run_id":"fixture_run_01","items":[{"evidence_id":"fixture_evidence_01","source":"示例维护说明","doc_id":"fixture_doc_01","doc_version":"1","chunk_id":"fixture_chunk_01","snippet":"关闭设备后再检查滤网。","score":0.9,"status":"ok"}]},
+  {"type":"receipt_card","seq":11,"run_id":"fixture_run_01","card_id":"fixture_receipt_card","version":2,"fields":{"order_no":"DEMO-ORDER-001","channel":"示例渠道","purchase_date":"2026-01-01","amount":"999.00"},"confidence":{"order_no":0.9,"channel":0.6},"unreadable":[]},
+  {"type":"awaiting_input","seq":12,"run_id":"fixture_run_01","kind":"confirm_receipt","interrupt_id":"fixture_interrupt_01","card_id":"fixture_receipt_card","version":2},
+  {"type":"escalation_summary","seq":13,"run_id":"fixture_run_01","card_id":"fixture_summary_card","summary":{"product":"示例扫地机","problem":"吸力异常","observations":["滤网已检查"],"hypotheses":["需要进一步检查"],"steps":[{"step_id":"fixture_step_01","title":"检查滤网","feedback":"not_solved"}],"reason":{"rule_id":"R2","text":"用户请求人工处理"},"emotion":{"level":"anxious","strategy":"reassure_first"},"receipt":{"status":"needs_manual_check","verified_facts":{},"conflicts":[],"next_step":"由人工核对凭证"},"model_trace":[{"task":"diagnose.synthesize","model_used":"fixture_model","lane":"domestic","attempts":1}]}},
+  {"type":"error","seq":14,"run_id":"fixture_run_01","code":"dependency_unavailable","message":"服务暂不可用","recoverable":true,"retry_with_same_action":true},
+  {"type":"done","seq":15,"run_id":"fixture_run_01","reason":"error","version":3}
+]

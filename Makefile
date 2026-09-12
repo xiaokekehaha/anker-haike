@@ -42,6 +42,16 @@ seed: ## 写入 products / plans 参考数据到 PostgreSQL（幂等）：make s
 plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
 	cd orchestrator && uv run haike-plans-schema --enum
 
+## ---- 知识库（票 26）----
+kb-bootstrap: ## 在本机 WeKnora 自助注册项目独立 tenant，并把 API key 写入 .env
+	cd orchestrator && uv run --env-file ../.env haike-kb bootstrap
+kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=1 清理多余条目）
+	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(PRUNE),--prune,)
+kb-verify: ## 打印各知识库解析状态与 custom_metadata
+	cd orchestrator && uv run --env-file ../.env haike-kb verify
+kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）
+	cd orchestrator && uv run --env-file ../.env haike-kb snapshot $(if $(DIR),import $(DIR),export)
+
 ## ---- 契约（票 03 / 04）----
 contracts: ## 由 Pydantic 导出 Schema，并生成前端类型与 Zod 校验器
 	cd contracts && uv run haike-contracts-export

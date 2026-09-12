@@ -4,11 +4,14 @@ LangGraph 节点只认 task 名；模型选择、降级链、参数映射全部�
 """
 
 from app.models.config import ConfigError, ModelsConfig, load_models_config
+from app.models.queue import BoundedGate, CapacityExceeded
 from app.models.registry import ModelNotConfigured, ModelRegistry, ResolvedModel
 from app.models.router import Attempt, ModelInvokeError, ModelResult, ModelRouter
 
 __all__ = [
     "Attempt",
+    "BoundedGate",
+    "CapacityExceeded",
     "ConfigError",
     "ModelInvokeError",
     "ModelNotConfigured",

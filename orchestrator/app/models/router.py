@@ -11,6 +11,10 @@
 - 能力不匹配（需视觉而模型无视觉）与别名未配置：路由前跳过，记 skipped，不计入重试。
 - 预算：单次超时 = min(模型 timeout_s, 剩余预算)；剩余不足以退避或再调一次时立即停止并返回最后错误。
 - ModelRouter 是唯一重试层：厂商 SDK max_retries=0（registry 构建时固定）。
+
+限流与容量（票 12，07 §13）
+- 429 同模型最多 `retry.rate_limit_max` 次，退避 1 / 2 / 4 s + [0, 0.5) s 抖动，仍受预算约束。
+- 全局有界门 `concurrency.max_in_flight`（默认 50）：满时 invoke 立即抛 CapacityExceeded，不排队。
 """
 
 from __future__ import annotations
@@ -30,6 +34,7 @@ from langchain_core.messages.utils import convert_to_messages
 from pydantic import BaseModel, ValidationError
 
 from app.models.config import Structured, TaskRoute
+from app.models.queue import BoundedGate
 from app.models.registry import ModelRegistry, ResolvedModel
 
 T = TypeVar("T", bound=BaseModel)
@@ -201,8 +206,10 @@ class ModelRouter:
         clock: Callable[[], float] = time.perf_counter,
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
         rng: Callable[[], float] = random.random,
+        gate: BoundedGate | None = None,
     ):
         self.registry = registry
+        self.gate = gate or BoundedGate(registry.cfg.concurrency.max_in_flight)
         self._factory = model_factory or (
             lambda r, route: registry.build(
                 r.alias, effort=route.effort, max_tokens=route.max_tokens
@@ -212,6 +219,7 @@ class ModelRouter:
         self._sleep = sleep
         self._rng = rng
         self.same_model_max = registry.cfg.retry.same_model_max
+        self.rate_limit_max = registry.cfg.retry.rate_limit_max
         self.chain_max = registry.cfg.retry.chain_max
 
     async def invoke(
@@ -224,6 +232,29 @@ class ModelRouter:
         session_id: str | None = None,
         lane: str | None = None,
         method: Method | None = None,
+    ) -> ModelResult[T]:
+        """结构化调用；全局门满时立即抛 CapacityExceeded（映射为 recoverable error）。"""
+        async with self.gate.slot(task):
+            return await self._invoke(
+                task,
+                messages,
+                schema,
+                budget_ms=budget_ms,
+                session_id=session_id,
+                lane=lane,
+                method=method,
+            )
+
+    async def _invoke(
+        self,
+        task: str,
+        messages: Sequence[BaseMessage | tuple[str, str] | dict[str, Any]],
+        schema: type[T],
+        *,
+        budget_ms: int,
+        session_id: str | None,
+        lane: str | None,
+        method: Method | None,
     ) -> ModelResult[T]:
         route = self.registry.cfg.route(task, lane)
         lane = lane or self.registry.cfg.default_lane
@@ -290,7 +321,10 @@ class ModelRouter:
                         usage=_usage(raw_msg),
                         attempts=attempts,
                     )
-                if outcome not in RETRYABLE or retry_no >= self.same_model_max:
+                max_retries = (
+                    self.rate_limit_max if outcome == "rate_limited" else self.same_model_max
+                )
+                if outcome not in RETRYABLE or retry_no >= max_retries:
                     break  # 拒答 / 其他错误 / 同模型重试用尽 → 下一家
                 if outcome == "schema_error":
                     msgs = [

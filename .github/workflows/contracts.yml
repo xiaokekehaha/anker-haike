@@ -1,0 +1,58 @@
+name: Contract consistency
+
+on:
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'frontend/**'
+      - 'Makefile'
+      - '.github/workflows/contracts.yml'
+  push:
+    paths:
+      - 'contracts/**'
+      - 'frontend/**'
+      - 'Makefile'
+      - '.github/workflows/contracts.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+        with:
+          version: '0.12.9'
+          enable-cache: true
+          cache-dependency-glob: contracts/uv.lock
+      - name: Install locked dependencies
+        run: |
+          uv sync --project contracts --frozen
+          npm --prefix frontend ci
+      - name: Regenerate Python schemas and show drift
+        run: |
+          uv run --project contracts --no-sync haike-contracts-export
+          git ls-files --error-unmatch contracts/schema/events.schema.json contracts/schema/actions.schema.json contracts/schema/snapshot.schema.json
+          git diff --exit-code -- contracts/schema
+      - name: Check generated TypeScript and Zod artifacts
+        run: npm --prefix frontend run contracts:check
+      - name: Validate shared fixtures and regression tests
+        run: |
+          uv run --project contracts --no-sync python frontend/scripts/validate-fixtures.py
+          uv run --project contracts --no-sync pytest -q contracts/tests
+          npm --prefix frontend test
+          npm --prefix frontend run test:codegen
+      - name: Type-check and build the frontend
+        run: npm --prefix frontend run build

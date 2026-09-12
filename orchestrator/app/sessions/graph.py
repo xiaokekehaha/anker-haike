@@ -1,5 +1,7 @@
 """票 05 的占位图：intake → reply 两个节点，只发 progress，不调模型。
 
+票 15：intake 节点末尾运行 CP-in（规则服务，任何模型调用之前）；R3 / R4 命中写 safety_flags 并
+经条件边直接进入 escalate 节点，不再经过 reply 及后续任何会调用模型的节点。
 后续票在此图上替换 / 扩展节点（17 intake 抽取、18 安抚流、20 三段式等待……）。
 节点通过 get_stream_writer() 发自定义事件，运行器映射为契约事件。
 """
@@ -15,6 +17,8 @@ from langgraph.config import get_stream_writer
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from app.rules import get_rules_service
+
 
 class SessionState(TypedDict, total=False):
     session_id: str
@@ -28,6 +32,9 @@ class SessionState(TypedDict, total=False):
     # card_id -> 用户对卡片的结果（selected_sku / feedback+note / confirmed_fields+skipped_reason），
     # 由后续票的 apply_action 节点写入；快照折叠 timeline 时读取（票 07）
     card_results: dict[str, dict[str, Any]]
+    # 票 15：CP-in 命中记录 {rule_id, source, term, ts}，跨 run 累积；escalate_reason 为触发升级的规则编号
+    safety_flags: list[dict[str, Any]]
+    escalate_reason: str | None
 
 
 def _delay() -> float:
@@ -48,7 +55,27 @@ async def intake(state: SessionState) -> SessionState:
         "run_id": state.get("run_id", ""),
         "at": state.get("at", ""),
     }
-    return {"stage": "intake", "messages": [*state.get("messages", []), user_msg]}
+    # CP-in：任何模型调用之前（票 15，09 §1）
+    cp = get_rules_service().check_in(text=state.get("text"), session_id=state.get("session_id"))
+    update: SessionState = {
+        "stage": "intake",
+        "messages": [*state.get("messages", []), user_msg],
+        "safety_flags": [*state.get("safety_flags", []), *cp.flags],
+    }
+    if cp.escalate:
+        update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
+    return update
+
+
+def route_after_intake(state: SessionState) -> str:
+    return "escalate" if state.get("escalate_reason") else "reply"
+
+
+async def escalate(state: SessionState) -> SessionState:
+    """安全 / 人工升级占位：只推进阶段；摘要卡在票 16。"""
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "escalate", "substage": "summarize"})
+    return {"stage": "escalate", "substage": "summarize"}
 
 
 async def reply(state: SessionState) -> SessionState:
@@ -62,7 +89,11 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g = StateGraph(SessionState)
     g.add_node("intake", intake)
     g.add_node("reply", reply)
+    g.add_node("escalate", escalate)
     g.add_edge(START, "intake")
-    g.add_edge("intake", "reply")
+    g.add_conditional_edges(
+        "intake", route_after_intake, {"reply": "reply", "escalate": "escalate"}
+    )
     g.add_edge("reply", END)
+    g.add_edge("escalate", END)
     return g.compile(checkpointer=checkpointer)

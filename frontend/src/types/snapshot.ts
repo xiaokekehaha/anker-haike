@@ -127,6 +127,13 @@ export type Timeline = (
 )[];
 export type Version4 = number;
 
+export interface SessionSnapshotSchema {
+  contract: SessionSnapshot;
+}
+/**
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "SessionSnapshot".
+ */
 export interface SessionSnapshot {
   active_run?: ActiveRun | null;
   cancelled_run?: CancelledRun | null;
@@ -139,7 +146,7 @@ export interface SessionSnapshot {
   version: Version4;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ActiveRun".
  */
 export interface ActiveRun {
@@ -148,7 +155,7 @@ export interface ActiveRun {
   started_at: StartedAt;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "CancelledRun".
  */
 export interface CancelledRun {
@@ -156,7 +163,7 @@ export interface CancelledRun {
   run_id: RunId1;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "LastError".
  */
 export interface LastError {
@@ -166,7 +173,7 @@ export interface LastError {
 /**
  * 当前唯一允许的用户输入；与 awaiting_input 事件同结构（08 §1、§6）。
  *
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "PendingInput".
  */
 export interface PendingInput {
@@ -176,7 +183,7 @@ export interface PendingInput {
   version: Version;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "UserMessageItem".
  */
 export interface UserMessageItem {
@@ -189,7 +196,7 @@ export interface UserMessageItem {
 /**
  * message_start / message / message_end 折叠后的完整文本。
  *
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "AssistantMessageItem".
  */
 export interface AssistantMessageItem {
@@ -201,7 +208,7 @@ export interface AssistantMessageItem {
   text: Text1;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ToolItem".
  */
 export interface ToolItem {
@@ -212,7 +219,7 @@ export interface ToolItem {
   tool_id: ToolId;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ProductCardItem".
  */
 export interface ProductCardItem {
@@ -223,7 +230,7 @@ export interface ProductCardItem {
   version: Version1;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ProductCandidate".
  */
 export interface ProductCandidate {
@@ -234,7 +241,7 @@ export interface ProductCandidate {
   sku: Sku;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "StepCardItem".
  */
 export interface StepCardItem {
@@ -248,7 +255,7 @@ export interface StepCardItem {
 /**
  * step_card 的唯一层级：step 对象（08 §5）。
  *
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "TroubleshootStep".
  */
 export interface TroubleshootStep {
@@ -263,7 +270,7 @@ export interface TroubleshootStep {
   title: Title;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ReceiptCardItem".
  */
 export interface ReceiptCardItem {
@@ -280,7 +287,7 @@ export interface Confidence {
   [k: string]: number;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ReceiptFields".
  */
 export interface ReceiptFields {
@@ -290,7 +297,7 @@ export interface ReceiptFields {
   purchase_date?: PurchaseDate;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "EvidenceItemGroup".
  */
 export interface EvidenceItemGroup {
@@ -298,7 +305,7 @@ export interface EvidenceItemGroup {
   kind: Kind7;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "EvidenceItem".
  */
 export interface EvidenceItem {
@@ -312,7 +319,7 @@ export interface EvidenceItem {
   status?: Status2;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "SummaryItem".
  */
 export interface SummaryItem {
@@ -323,7 +330,7 @@ export interface SummaryItem {
 /**
  * escalation_summary 的唯一层级：summary 对象（08 §5）。
  *
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "EscalationSummary".
  */
 export interface EscalationSummary {
@@ -338,7 +345,7 @@ export interface EscalationSummary {
   steps?: Steps;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "Emotion".
  */
 export interface Emotion {
@@ -346,7 +353,7 @@ export interface Emotion {
   strategy: Strategy;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ModelTraceItem".
  */
 export interface ModelTraceItem {
@@ -356,7 +363,7 @@ export interface ModelTraceItem {
   task: Task;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "EscalationReason".
  */
 export interface EscalationReason {
@@ -366,7 +373,7 @@ export interface EscalationReason {
 /**
  * 凭证核对结果：只有已核实事实与下一步，不含质保资格结论（D16，09 §5.2）。
  *
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ReceiptOutcome".
  */
 export interface ReceiptOutcome {
@@ -379,7 +386,7 @@ export interface VerifiedFacts {
   [k: string]: string;
 }
 /**
- * This interface was referenced by `SessionSnapshot`'s JSON-Schema
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ExecutedStep".
  */
 export interface ExecutedStep {

@@ -34,6 +34,16 @@ class Settings(BaseSettings):
         default=str(REPO_ROOT / "config" / "models.yaml"), alias="MODELS_CONFIG_PATH"
     )
 
+    catalog_config_path: str = Field(
+        default=str(REPO_ROOT / "config" / "products.yaml"), alias="CATALOG_CONFIG_PATH"
+    )
+    plans_config_path: str = Field(
+        default=str(REPO_ROOT / "config" / "plans.yaml"), alias="PLANS_CONFIG_PATH"
+    )
+    rules_config_path: str = Field(
+        default=str(REPO_ROOT / "config" / "rules" / "safety_terms.yaml"), alias="RULES_CONFIG_PATH"
+    )
+
     health_timeout_s: float = Field(default=2.0, alias="HEALTH_TIMEOUT_S")
     db_pool_max: int = Field(default=10, alias="DB_POOL_MAX")
     static_dir: str = Field(default=str(REPO_ROOT / "frontend" / "dist"), alias="STATIC_DIR")
