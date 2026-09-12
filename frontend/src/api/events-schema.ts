@@ -1,0 +1,1194 @@
+// Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
+// Source: contracts/schema/events.schema.json
+// SHA-256: fbe7af9cc58280c64bbd71266a0e3b0e8cee1ede7f5c834ee05877d2f27ad7ac
+import * as z from 'zod';
+import type { ServerEvent } from '../types/events';
+
+// 类型和校验器来自同一份 Schema；此断言只连接动态转换结果与生成的静态类型。
+export const serverEventSchema = z.fromJSONSchema({
+  "$defs": {
+    "AwaitingInput": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "select_product",
+            "step_feedback",
+            "upload_receipt",
+            "confirm_receipt"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "awaiting_input",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "kind",
+        "interrupt_id",
+        "card_id",
+        "version"
+      ],
+      "title": "AwaitingInput",
+      "type": "object"
+    },
+    "Done": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "enum": [
+            "completed",
+            "awaiting_input",
+            "error",
+            "cancelled"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "done",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "description": "本 run 结束后的会话版本",
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "reason",
+        "version"
+      ],
+      "title": "Done",
+      "type": "object"
+    },
+    "Emotion": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "enum": [
+            "calm",
+            "anxious",
+            "angry"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "strategy": {
+          "enum": [
+            "normal",
+            "reassure_first",
+            "reassure_and_shorten"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "strategy"
+      ],
+      "title": "Emotion",
+      "type": "object"
+    },
+    "Error": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "recoverable": {
+          "title": "Recoverable",
+          "type": "boolean"
+        },
+        "retry_with_same_action": {
+          "default": false,
+          "title": "Retry With Same Action",
+          "type": "boolean"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "error",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "code",
+        "message",
+        "recoverable"
+      ],
+      "title": "Error",
+      "type": "object"
+    },
+    "EscalationReason": {
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "text"
+      ],
+      "title": "EscalationReason",
+      "type": "object"
+    },
+    "EscalationSummary": {
+      "additionalProperties": false,
+      "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
+      "properties": {
+        "emotion": {
+          "$ref": "#/$defs/Emotion"
+        },
+        "hypotheses": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "model_trace": {
+          "items": {
+            "$ref": "#/$defs/ModelTraceItem"
+          },
+          "title": "Model Trace",
+          "type": "array"
+        },
+        "observations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observations",
+          "type": "array"
+        },
+        "problem": {
+          "title": "Problem",
+          "type": "string"
+        },
+        "product": {
+          "title": "Product",
+          "type": "string"
+        },
+        "reason": {
+          "$ref": "#/$defs/EscalationReason"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptOutcome"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/ExecutedStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product",
+        "problem",
+        "reason",
+        "emotion",
+        "receipt"
+      ],
+      "title": "EscalationSummary",
+      "type": "object"
+    },
+    "EscalationSummaryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "summary": {
+          "$ref": "#/$defs/EscalationSummary"
+        },
+        "type": {
+          "const": "escalation_summary",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "card_id",
+        "summary"
+      ],
+      "title": "EscalationSummaryEvent",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/EvidenceItem"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "evidence",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "items"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "chunk_id": {
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "doc_id": {
+          "title": "Doc Id",
+          "type": "string"
+        },
+        "doc_version": {
+          "title": "Doc Version",
+          "type": "string"
+        },
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "snippet": {
+          "title": "Snippet",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "default": "ok",
+          "enum": [
+            "ok",
+            "replay"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "source",
+        "doc_id",
+        "doc_version",
+        "chunk_id",
+        "snippet",
+        "score"
+      ],
+      "title": "EvidenceItem",
+      "type": "object"
+    },
+    "ExecutedStep": {
+      "additionalProperties": false,
+      "properties": {
+        "feedback": {
+          "enum": [
+            "solved",
+            "not_solved",
+            "cannot_do"
+          ],
+          "title": "Feedback",
+          "type": "string"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "title",
+        "feedback"
+      ],
+      "title": "ExecutedStep",
+      "type": "object"
+    },
+    "Message": {
+      "additionalProperties": false,
+      "properties": {
+        "delta": {
+          "title": "Delta",
+          "type": "string"
+        },
+        "message_id": {
+          "title": "Message Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "message",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "message_id",
+        "delta"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "MessageEnd": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "title": "Message Id",
+          "type": "string"
+        },
+        "model_tier": {
+          "anyOf": [
+            {
+              "enum": [
+                "primary",
+                "fallback"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Tier"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "aborted"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "type": {
+          "const": "message_end",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "message_id",
+        "status"
+      ],
+      "title": "MessageEnd",
+      "type": "object"
+    },
+    "MessageStart": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "title": "Message Id",
+          "type": "string"
+        },
+        "replaces": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "替换先前中断的消息",
+          "title": "Replaces"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "message_start",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "message_id"
+      ],
+      "title": "MessageStart",
+      "type": "object"
+    },
+    "ModelTraceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "minimum": 1,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "lane": {
+          "title": "Lane",
+          "type": "string"
+        },
+        "model_used": {
+          "title": "Model Used",
+          "type": "string"
+        },
+        "task": {
+          "title": "Task",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task",
+        "model_used",
+        "lane",
+        "attempts"
+      ],
+      "title": "ModelTraceItem",
+      "type": "object"
+    },
+    "Ping": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "ping",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type"
+      ],
+      "title": "Ping",
+      "type": "object"
+    },
+    "ProductCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image"
+        },
+        "in_scope": {
+          "title": "In Scope",
+          "type": "boolean"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "sku": {
+          "title": "Sku",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sku",
+        "name",
+        "category",
+        "in_scope"
+      ],
+      "title": "ProductCandidate",
+      "type": "object"
+    },
+    "ProductCard": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/ProductCandidate"
+          },
+          "minItems": 1,
+          "title": "Candidates",
+          "type": "array"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "product_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "card_id",
+        "version",
+        "type",
+        "candidates"
+      ],
+      "title": "ProductCard",
+      "type": "object"
+    },
+    "Progress": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "stage": {
+          "enum": [
+            "intake",
+            "disambiguate",
+            "out_of_scope",
+            "diagnose",
+            "guide",
+            "verify",
+            "escalate",
+            "done"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "substage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Substage"
+        },
+        "type": {
+          "const": "progress",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "stage"
+      ],
+      "title": "Progress",
+      "type": "object"
+    },
+    "ReceiptCard": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "confidence": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Confidence",
+          "type": "object"
+        },
+        "fields": {
+          "$ref": "#/$defs/ReceiptFields"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "receipt_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "unreadable": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unreadable",
+          "type": "array"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "card_id",
+        "version",
+        "type",
+        "fields"
+      ],
+      "title": "ReceiptCard",
+      "type": "object"
+    },
+    "ReceiptFields": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "channel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Channel"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "purchase_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Date"
+        }
+      },
+      "title": "ReceiptFields",
+      "type": "object"
+    },
+    "ReceiptOutcome": {
+      "additionalProperties": false,
+      "description": "凭证核对结果：只有已核实事实与下一步，不含质保资格结论（D16，09 §5.2）。",
+      "properties": {
+        "conflicts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "next_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Step"
+        },
+        "status": {
+          "enum": [
+            "not_collected",
+            "insufficient",
+            "order_verified",
+            "order_product_mismatch",
+            "needs_manual_check",
+            "channel_in_directory",
+            "channel_unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "verified_facts": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Verified Facts",
+          "type": "object"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ReceiptOutcome",
+      "type": "object"
+    },
+    "RunStarted": {
+      "additionalProperties": false,
+      "properties": {
+        "deadline_ms": {
+          "description": "本 run 故障时的最大总时长；前端硬上限 = deadline + 5 s",
+          "exclusiveMinimum": 0,
+          "title": "Deadline Ms",
+          "type": "integer"
+        },
+        "resumed": {
+          "title": "Resumed",
+          "type": "boolean"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "run_started",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "resumed",
+        "deadline_ms"
+      ],
+      "title": "RunStarted",
+      "type": "object"
+    },
+    "StepCard": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "step": {
+          "$ref": "#/$defs/TroubleshootStep"
+        },
+        "type": {
+          "const": "step_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "card_id",
+        "version",
+        "type",
+        "step"
+      ],
+      "title": "StepCard",
+      "type": "object"
+    },
+    "ToolCall": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "started",
+            "finished",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
+        "tool_id": {
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "tool_call",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "type",
+        "tool_id",
+        "name",
+        "status"
+      ],
+      "title": "ToolCall",
+      "type": "object"
+    },
+    "TroubleshootStep": {
+      "additionalProperties": false,
+      "description": "step_card 的唯一层级：step 对象（08 §5）。",
+      "properties": {
+        "caution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Caution"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "expected_result": {
+          "title": "Expected Result",
+          "type": "string"
+        },
+        "instruction": {
+          "title": "Instruction",
+          "type": "string"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_version": {
+          "minimum": 1,
+          "title": "Plan Version",
+          "type": "integer"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        },
+        "step_no": {
+          "minimum": 1,
+          "title": "Step No",
+          "type": "integer"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "plan_id",
+        "plan_version",
+        "step_no",
+        "title",
+        "instruction",
+        "expected_result"
+      ],
+      "title": "TroubleshootStep",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "awaiting_input": "#/$defs/AwaitingInput",
+      "done": "#/$defs/Done",
+      "error": "#/$defs/Error",
+      "escalation_summary": "#/$defs/EscalationSummaryEvent",
+      "evidence": "#/$defs/Evidence",
+      "message": "#/$defs/Message",
+      "message_end": "#/$defs/MessageEnd",
+      "message_start": "#/$defs/MessageStart",
+      "ping": "#/$defs/Ping",
+      "product_card": "#/$defs/ProductCard",
+      "progress": "#/$defs/Progress",
+      "receipt_card": "#/$defs/ReceiptCard",
+      "run_started": "#/$defs/RunStarted",
+      "step_card": "#/$defs/StepCard",
+      "tool_call": "#/$defs/ToolCall"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/RunStarted"
+    },
+    {
+      "$ref": "#/$defs/Ping"
+    },
+    {
+      "$ref": "#/$defs/Progress"
+    },
+    {
+      "$ref": "#/$defs/ToolCall"
+    },
+    {
+      "$ref": "#/$defs/MessageStart"
+    },
+    {
+      "$ref": "#/$defs/Message"
+    },
+    {
+      "$ref": "#/$defs/MessageEnd"
+    },
+    {
+      "$ref": "#/$defs/ProductCard"
+    },
+    {
+      "$ref": "#/$defs/StepCard"
+    },
+    {
+      "$ref": "#/$defs/Evidence"
+    },
+    {
+      "$ref": "#/$defs/ReceiptCard"
+    },
+    {
+      "$ref": "#/$defs/AwaitingInput"
+    },
+    {
+      "$ref": "#/$defs/EscalationSummaryEvent"
+    },
+    {
+      "$ref": "#/$defs/Error"
+    },
+    {
+      "$ref": "#/$defs/Done"
+    }
+  ],
+  "title": "ServerEvent"
+}, { registry: z.registry() }) as z.ZodType<ServerEvent>;

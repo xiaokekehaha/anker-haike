@@ -4,7 +4,9 @@
 
 **Blocked by:** 01（Compose 骨架与 /health 聚合）
 
-**Status:** ready-for-agent
+**Status:** in-progress
+
+**Owner:** Claude Code B（模型层线，2026-09-12 认领；改动范围 `orchestrator/app/models/`、`orchestrator/scripts/`、`config/models.yaml`、orchestrator 依赖；不动 `orchestrator/app/sessions/`、`contracts/`、`frontend/`）
 
 - [ ] 配置缺失或不一致时启动失败并指出具体项
 - [ ] MODEL_LANE 环境变量切换默认通道

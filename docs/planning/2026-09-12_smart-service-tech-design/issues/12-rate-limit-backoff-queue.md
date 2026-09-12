@@ -4,7 +4,9 @@
 
 **Blocked by:** 11（降级链与 task 预算）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+**Owner:** Claude Code B（模型层线，2026-09-12 认领，排队，票 11 后）
 
 - [ ] 并发压测下队列满时请求快速失败，返回 error(recoverable=true)
 - [ ] 退避时间与抖动范围有单元测试

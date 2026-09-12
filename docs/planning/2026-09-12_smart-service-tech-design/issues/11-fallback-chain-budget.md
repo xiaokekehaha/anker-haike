@@ -4,7 +4,9 @@
 
 **Blocked by:** 10（结构化 invoke：三种输出策略与 Pydantic 校验）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+**Owner:** Claude Code B（模型层线，2026-09-12 认领，排队，票 10 后）
 
 - [ ] 假 provider 可按序注入超时、429、拒答、schema 错误，attempts 记录与预期一致
 - [ ] 预算耗尽立即停止并返回最后错误，不尝试剩余模型

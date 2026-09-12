@@ -1,0 +1,1045 @@
+{
+  "$defs": {
+    "ActiveRun": {
+      "additionalProperties": false,
+      "properties": {
+        "deadline_at": {
+          "title": "Deadline At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "started_at": {
+          "title": "Started At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "started_at",
+        "deadline_at"
+      ],
+      "title": "ActiveRun",
+      "type": "object"
+    },
+    "AssistantMessageItem": {
+      "additionalProperties": false,
+      "description": "message_start / message / message_end 折叠后的完整文本。",
+      "properties": {
+        "kind": {
+          "const": "assistant_message",
+          "title": "Kind",
+          "type": "string"
+        },
+        "message_id": {
+          "title": "Message Id",
+          "type": "string"
+        },
+        "model_tier": {
+          "anyOf": [
+            {
+              "enum": [
+                "primary",
+                "fallback"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Tier"
+        },
+        "replaces": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replaces"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "aborted",
+            "streaming"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "message_id",
+        "text",
+        "status"
+      ],
+      "title": "AssistantMessageItem",
+      "type": "object"
+    },
+    "CancelledRun": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "title": "At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "at"
+      ],
+      "title": "CancelledRun",
+      "type": "object"
+    },
+    "Emotion": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "enum": [
+            "calm",
+            "anxious",
+            "angry"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "strategy": {
+          "enum": [
+            "normal",
+            "reassure_first",
+            "reassure_and_shorten"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "strategy"
+      ],
+      "title": "Emotion",
+      "type": "object"
+    },
+    "EscalationReason": {
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "text"
+      ],
+      "title": "EscalationReason",
+      "type": "object"
+    },
+    "EscalationSummary": {
+      "additionalProperties": false,
+      "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
+      "properties": {
+        "emotion": {
+          "$ref": "#/$defs/Emotion"
+        },
+        "hypotheses": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "model_trace": {
+          "items": {
+            "$ref": "#/$defs/ModelTraceItem"
+          },
+          "title": "Model Trace",
+          "type": "array"
+        },
+        "observations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observations",
+          "type": "array"
+        },
+        "problem": {
+          "title": "Problem",
+          "type": "string"
+        },
+        "product": {
+          "title": "Product",
+          "type": "string"
+        },
+        "reason": {
+          "$ref": "#/$defs/EscalationReason"
+        },
+        "receipt": {
+          "$ref": "#/$defs/ReceiptOutcome"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/ExecutedStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product",
+        "problem",
+        "reason",
+        "emotion",
+        "receipt"
+      ],
+      "title": "EscalationSummary",
+      "type": "object"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "chunk_id": {
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "doc_id": {
+          "title": "Doc Id",
+          "type": "string"
+        },
+        "doc_version": {
+          "title": "Doc Version",
+          "type": "string"
+        },
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "snippet": {
+          "title": "Snippet",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "default": "ok",
+          "enum": [
+            "ok",
+            "replay"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "source",
+        "doc_id",
+        "doc_version",
+        "chunk_id",
+        "snippet",
+        "score"
+      ],
+      "title": "EvidenceItem",
+      "type": "object"
+    },
+    "EvidenceItemGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/EvidenceItem"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "kind": {
+          "const": "evidence",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "items"
+      ],
+      "title": "EvidenceItemGroup",
+      "type": "object"
+    },
+    "ExecutedStep": {
+      "additionalProperties": false,
+      "properties": {
+        "feedback": {
+          "enum": [
+            "solved",
+            "not_solved",
+            "cannot_do"
+          ],
+          "title": "Feedback",
+          "type": "string"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "title",
+        "feedback"
+      ],
+      "title": "ExecutedStep",
+      "type": "object"
+    },
+    "LastError": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "title": "At",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "at"
+      ],
+      "title": "LastError",
+      "type": "object"
+    },
+    "ModelTraceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "minimum": 1,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "lane": {
+          "title": "Lane",
+          "type": "string"
+        },
+        "model_used": {
+          "title": "Model Used",
+          "type": "string"
+        },
+        "task": {
+          "title": "Task",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task",
+        "model_used",
+        "lane",
+        "attempts"
+      ],
+      "title": "ModelTraceItem",
+      "type": "object"
+    },
+    "PendingInput": {
+      "additionalProperties": false,
+      "description": "当前唯一允许的用户输入；与 awaiting_input 事件同结构（08 §1、§6）。",
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "select_product",
+            "step_feedback",
+            "upload_receipt",
+            "confirm_receipt"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "interrupt_id",
+        "card_id",
+        "version"
+      ],
+      "title": "PendingInput",
+      "type": "object"
+    },
+    "ProductCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image"
+        },
+        "in_scope": {
+          "title": "In Scope",
+          "type": "boolean"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "sku": {
+          "title": "Sku",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sku",
+        "name",
+        "category",
+        "in_scope"
+      ],
+      "title": "ProductCandidate",
+      "type": "object"
+    },
+    "ProductCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/ProductCandidate"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "product_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "selected_sku": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "用户已选结果",
+          "title": "Selected Sku"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "candidates"
+      ],
+      "title": "ProductCardItem",
+      "type": "object"
+    },
+    "ReceiptCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "confidence": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Confidence",
+          "type": "object"
+        },
+        "confirmed_fields": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReceiptFields"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fields": {
+          "$ref": "#/$defs/ReceiptFields"
+        },
+        "kind": {
+          "const": "receipt_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "skipped_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "unreadable",
+                "later"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skipped Reason"
+        },
+        "unreadable": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unreadable",
+          "type": "array"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "fields"
+      ],
+      "title": "ReceiptCardItem",
+      "type": "object"
+    },
+    "ReceiptFields": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "channel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Channel"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "purchase_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Date"
+        }
+      },
+      "title": "ReceiptFields",
+      "type": "object"
+    },
+    "ReceiptOutcome": {
+      "additionalProperties": false,
+      "description": "凭证核对结果：只有已核实事实与下一步，不含质保资格结论（D16，09 §5.2）。",
+      "properties": {
+        "conflicts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "next_step": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Step"
+        },
+        "status": {
+          "enum": [
+            "not_collected",
+            "insufficient",
+            "order_verified",
+            "order_product_mismatch",
+            "needs_manual_check",
+            "channel_in_directory",
+            "channel_unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "verified_facts": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Verified Facts",
+          "type": "object"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ReceiptOutcome",
+      "type": "object"
+    },
+    "StepCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "feedback": {
+          "anyOf": [
+            {
+              "enum": [
+                "solved",
+                "not_solved",
+                "cannot_do"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Feedback"
+        },
+        "kind": {
+          "const": "step_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "step": {
+          "$ref": "#/$defs/TroubleshootStep"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "step"
+      ],
+      "title": "StepCardItem",
+      "type": "object"
+    },
+    "SummaryItem": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "escalation_summary",
+          "title": "Kind",
+          "type": "string"
+        },
+        "summary": {
+          "$ref": "#/$defs/EscalationSummary"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "summary"
+      ],
+      "title": "SummaryItem",
+      "type": "object"
+    },
+    "ToolItem": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "tool",
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "started",
+            "finished",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
+        "tool_id": {
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "tool_id",
+        "name",
+        "status"
+      ],
+      "title": "ToolItem",
+      "type": "object"
+    },
+    "TroubleshootStep": {
+      "additionalProperties": false,
+      "description": "step_card 的唯一层级：step 对象（08 §5）。",
+      "properties": {
+        "caution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Caution"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "expected_result": {
+          "title": "Expected Result",
+          "type": "string"
+        },
+        "instruction": {
+          "title": "Instruction",
+          "type": "string"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_version": {
+          "minimum": 1,
+          "title": "Plan Version",
+          "type": "integer"
+        },
+        "step_id": {
+          "title": "Step Id",
+          "type": "string"
+        },
+        "step_no": {
+          "minimum": 1,
+          "title": "Step No",
+          "type": "integer"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "step_id",
+        "plan_id",
+        "plan_version",
+        "step_no",
+        "title",
+        "instruction",
+        "expected_result"
+      ],
+      "title": "TroubleshootStep",
+      "type": "object"
+    },
+    "UserMessageItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "title": "At",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "image_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Image Ids",
+          "type": "array"
+        },
+        "kind": {
+          "const": "user_message",
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "text",
+        "at"
+      ],
+      "title": "UserMessageItem",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "active_run": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ActiveRun"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "cancelled_run": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CancelledRun"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "last_error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LastError"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "pending_input": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PendingInput"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "session_id": {
+      "title": "Session Id",
+      "type": "string"
+    },
+    "stage": {
+      "enum": [
+        "intake",
+        "disambiguate",
+        "out_of_scope",
+        "diagnose",
+        "guide",
+        "verify",
+        "escalate",
+        "done"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "substage": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Substage"
+    },
+    "timeline": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "assistant_message": "#/$defs/AssistantMessageItem",
+            "escalation_summary": "#/$defs/SummaryItem",
+            "evidence": "#/$defs/EvidenceItemGroup",
+            "product_card": "#/$defs/ProductCardItem",
+            "receipt_card": "#/$defs/ReceiptCardItem",
+            "step_card": "#/$defs/StepCardItem",
+            "tool": "#/$defs/ToolItem",
+            "user_message": "#/$defs/UserMessageItem"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/UserMessageItem"
+          },
+          {
+            "$ref": "#/$defs/AssistantMessageItem"
+          },
+          {
+            "$ref": "#/$defs/ToolItem"
+          },
+          {
+            "$ref": "#/$defs/ProductCardItem"
+          },
+          {
+            "$ref": "#/$defs/StepCardItem"
+          },
+          {
+            "$ref": "#/$defs/ReceiptCardItem"
+          },
+          {
+            "$ref": "#/$defs/EvidenceItemGroup"
+          },
+          {
+            "$ref": "#/$defs/SummaryItem"
+          }
+        ]
+      },
+      "title": "Timeline",
+      "type": "array"
+    },
+    "version": {
+      "minimum": 0,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "session_id",
+    "version",
+    "stage"
+  ],
+  "title": "SessionSnapshot",
+  "type": "object"
+}

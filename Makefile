@@ -27,3 +27,13 @@ test: ## 后端单元测试
 	cd orchestrator && uv run pytest -q
 lint: ## ruff 检查
 	cd orchestrator && uv run ruff check .
+	cd contracts && uv run --group dev ruff check .
+
+.PHONY: contracts contracts-check contracts-test
+## ---- 契约（票 03 / 04）----
+contracts: ## 由 Pydantic 模型导出三份 JSON Schema 到 contracts/schema/（前端 TS 生成由票 04 追加在此之后）
+	cd contracts && uv run haike-contracts-export
+contracts-check: ## 校验已提交的 Schema 与模型一致（CI 用，漂移则非零退出）
+	cd contracts && uv run haike-contracts-export --check
+contracts-test: ## 契约单测（样例校验、导出稳定性）
+	cd contracts && uv run pytest -q

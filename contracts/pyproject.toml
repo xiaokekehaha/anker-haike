@@ -6,7 +6,11 @@ requires-python = ">=3.12"
 dependencies = ["pydantic>=2.12"]
 
 [dependency-groups]
-dev = ["pytest>=8.4", "ruff>=0.14"]
+dev = [
+    "jsonschema>=4.23",
+    "pytest>=8.4",
+    "ruff>=0.14",
+]
 
 [project.scripts]
 haike-contracts-export = "haike_contracts.export:main"

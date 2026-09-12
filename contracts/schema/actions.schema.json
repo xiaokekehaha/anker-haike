@@ -1,0 +1,560 @@
+{
+  "$defs": {
+    "ActionConflict": {
+      "additionalProperties": false,
+      "description": "409 响应体：附最新快照供前端重建（08 §4 第 3 步）。",
+      "properties": {
+        "code": {
+          "enum": [
+            "version_mismatch",
+            "stale_card",
+            "not_allowed_now",
+            "run_active"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "snapshot": {
+          "additionalProperties": true,
+          "description": "SessionSnapshot 序列化结果；此处用 dict 避免循环引用",
+          "title": "Snapshot",
+          "type": "object"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "snapshot"
+      ],
+      "title": "ActionConflict",
+      "type": "object"
+    },
+    "ActionResult": {
+      "additionalProperties": false,
+      "description": "写入 session_actions.result_json 并在幂等重放时返回。",
+      "properties": {
+        "action_id": {
+          "title": "Action Id",
+          "type": "string"
+        },
+        "replayed": {
+          "default": false,
+          "title": "Replayed",
+          "type": "boolean"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "version_after": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version After"
+        }
+      },
+      "required": [
+        "action_id",
+        "run_id"
+      ],
+      "title": "ActionResult",
+      "type": "object"
+    },
+    "ConfirmReceiptAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "confirm_receipt",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ConfirmReceiptPayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "interrupt_id",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "ConfirmReceiptAction",
+      "type": "object"
+    },
+    "ConfirmReceiptPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "edited": {
+          "items": {
+            "enum": [
+              "order_no",
+              "channel",
+              "purchase_date",
+              "amount"
+            ],
+            "type": "string"
+          },
+          "title": "Edited",
+          "type": "array"
+        },
+        "fields": {
+          "$ref": "#/$defs/ReceiptFields"
+        }
+      },
+      "required": [
+        "fields"
+      ],
+      "title": "ConfirmReceiptPayload",
+      "type": "object"
+    },
+    "ReceiptFields": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "channel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Channel"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "purchase_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Date"
+        }
+      },
+      "title": "ReceiptFields",
+      "type": "object"
+    },
+    "RediagnoseAction": {
+      "additionalProperties": false,
+      "description": "guide / verify 阶段且无 active run；无绑定卡片。",
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Card Id"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interrupt Id"
+        },
+        "kind": {
+          "const": "rediagnose",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/RediagnosePayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "kind",
+        "payload"
+      ],
+      "title": "RediagnoseAction",
+      "type": "object"
+    },
+    "RediagnosePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "image_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Image Ids",
+          "type": "array"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        }
+      },
+      "title": "RediagnosePayload",
+      "type": "object"
+    },
+    "RequestHumanAction": {
+      "additionalProperties": false,
+      "description": "任何时刻可用；服务端忽略 version 与 pending 校验，有 active run 先取消。",
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Card Id"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interrupt Id"
+        },
+        "kind": {
+          "const": "request_human",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/RequestHumanPayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "kind"
+      ],
+      "title": "RequestHumanAction",
+      "type": "object"
+    },
+    "RequestHumanPayload": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "RequestHumanPayload",
+      "type": "object"
+    },
+    "SelectProductAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "select_product",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/SelectProductPayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "interrupt_id",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "SelectProductAction",
+      "type": "object"
+    },
+    "SelectProductPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "sku": {
+          "title": "Sku",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sku"
+      ],
+      "title": "SelectProductPayload",
+      "type": "object"
+    },
+    "SkipReceiptAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "skip_receipt",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/SkipReceiptPayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "interrupt_id",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "SkipReceiptAction",
+      "type": "object"
+    },
+    "SkipReceiptPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "enum": [
+            "none",
+            "unreadable",
+            "later"
+          ],
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "SkipReceiptPayload",
+      "type": "object"
+    },
+    "StepFeedbackAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "interrupt_id": {
+          "title": "Interrupt Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "step_feedback",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/StepFeedbackPayload"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "interrupt_id",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "StepFeedbackAction",
+      "type": "object"
+    },
+    "StepFeedbackPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "feedback": {
+          "enum": [
+            "solved",
+            "not_solved",
+            "cannot_do"
+          ],
+          "title": "Feedback",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "feedback"
+      ],
+      "title": "StepFeedbackPayload",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "confirm_receipt": "#/$defs/ConfirmReceiptAction",
+      "rediagnose": "#/$defs/RediagnoseAction",
+      "request_human": "#/$defs/RequestHumanAction",
+      "select_product": "#/$defs/SelectProductAction",
+      "skip_receipt": "#/$defs/SkipReceiptAction",
+      "step_feedback": "#/$defs/StepFeedbackAction"
+    },
+    "propertyName": "kind"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/SelectProductAction"
+    },
+    {
+      "$ref": "#/$defs/StepFeedbackAction"
+    },
+    {
+      "$ref": "#/$defs/ConfirmReceiptAction"
+    },
+    {
+      "$ref": "#/$defs/SkipReceiptAction"
+    },
+    {
+      "$ref": "#/$defs/RequestHumanAction"
+    },
+    {
+      "$ref": "#/$defs/RediagnoseAction"
+    }
+  ],
+  "title": "ActionRequest"
+}

@@ -27,7 +27,9 @@ class _Event(Strict):
 class RunStarted(_Event):
     type: Literal["run_started"]
     resumed: bool
-    deadline_ms: int = Field(gt=0, description="本 run 故障时的最大总时长；前端硬上限 = deadline + 5 s")
+    deadline_ms: int = Field(
+        gt=0, description="本 run 故障时的最大总时长；前端硬上限 = deadline + 5 s"
+    )
 
 
 class Ping(_Event):

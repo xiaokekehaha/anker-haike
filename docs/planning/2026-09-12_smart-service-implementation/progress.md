@@ -9,3 +9,4 @@
 - 用户要求安装 Docker：通过 Homebrew 安装 colima + docker CLI + compose 插件（后台进行）。
 - 上一会话中断处：票 03 contracts 包已写出 5 个模块（未登记）；本会话先回头完成票 01 的 Docker 实测。
 - 票 01 Docker 实测：colima 已运行；`make up` 首次拉取镜像 + 构建 orchestrator 镜像（含前端构建阶段）成功，五容器 healthy。/health 逐组件 ok；停 redis / weknora-app / postgres 后 3 s / 4 s / 3 s 内可见 down，恢复 3–4 s；postgres 停机时 503。`make down` → `make up` 后 haike 库数据保留。首页静态 200，日志无 error。票 01 标 done，票 02 的容器级验收随之补齐。
+- 发现两个 Claude Code 会话同时在收尾票 03（contracts/tests 被互相覆盖）。约定：原会话为 A（会话骨架线，票 03/05/07/08），本会话为 B（模型层线，票 09–12），Codex 前端线（04/06）。B 已撤回对 05/07 的认领，不再改 `contracts/`；票 03 由 A 按其测试收尾。

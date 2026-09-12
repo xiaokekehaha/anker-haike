@@ -4,7 +4,9 @@
 
 **Blocked by:** 09（models.yaml 加载、校验与别名路由）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+**Owner:** Claude Code B（模型层线，2026-09-12 认领，排队，票 09 后）
 
 - [ ] 三种策略各有一个模型走通并通过同一 Schema 校验；json_object 策略以 DeepSeek（默认测试 key）为验证模型
 - [ ] 校验失败时第二次请求包含错误提示，再失败抛出带 attempts 的异常
