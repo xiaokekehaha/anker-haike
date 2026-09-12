@@ -17,6 +17,7 @@ from typing import Any
 
 from haike_contracts.events import parse_event
 from langgraph.graph.state import CompiledStateGraph
+from langgraph.types import Command
 
 from app.sessions.store import SessionStore
 
@@ -61,14 +62,16 @@ async def run_message(
     store: SessionStore,
     graph: CompiledStateGraph,
     session_id: str,
-    text: str,
+    text: str | None = None,
     *,
+    resume: dict[str, Any] | None = None,
     image_ids: list[str] | None = None,
     deadline_ms: int = DEFAULT_DEADLINE_MS,
     ping_interval_s: float | None = None,
     cancel_event: asyncio.Event | None = None,
 ) -> AsyncIterator[dict[str, Any]]:
-    """占用 active run，产出契约事件字典。调用前 store.try_start_run 已成功。"""
+    """占用 active run，产出契约事件字典。text 为新消息；resume 为对 interrupt 的动作（票 20），
+    此时以 Command(resume=action) 恢复图，run_started.resumed=True。"""
     run_id = uuid.uuid4().hex
     if ping_interval_s is None:
         ping_interval_s = PING_INTERVAL_S  # 运行时读取，便于测试覆写
@@ -82,17 +85,22 @@ async def run_message(
     started = time.monotonic()
     stage: str | None = None
     reason = "completed"
+    interrupted = False
 
     async def pump() -> None:
         try:
             config = {"configurable": {"thread_id": session_id}}
-            payload = {
-                "session_id": session_id,
-                "run_id": run_id,
-                "at": datetime.now(UTC).isoformat(),
-                "text": text,
-                "image_ids": image_ids or [],
-            }
+            payload: Any
+            if resume is not None:
+                payload = Command(resume=resume)
+            else:
+                payload = {
+                    "session_id": session_id,
+                    "run_id": run_id,
+                    "at": datetime.now(UTC).isoformat(),
+                    "text": text or "",
+                    "image_ids": image_ids or [],
+                }
             async for mode, chunk in graph.astream(
                 payload, config, stream_mode=["custom", "updates"]
             ):
@@ -109,7 +117,9 @@ async def run_message(
     task = asyncio.create_task(pump())
     watcher = asyncio.create_task(watch_cancel()) if cancel_event is not None else None
     try:
-        yield await em.emit({"type": "run_started", "resumed": False, "deadline_ms": deadline_ms})
+        yield await em.emit(
+            {"type": "run_started", "resumed": resume is not None, "deadline_ms": deadline_ms}
+        )
         while True:
             remaining = deadline_ms / 1000 - (time.monotonic() - started)
             if remaining <= 0:
@@ -125,6 +135,8 @@ async def run_message(
                 yield await em.emit({"type": "ping"})
                 continue
             if item is _GRAPH_DONE:
+                if interrupted:
+                    reason = "awaiting_input"
                 break
             if item is _CANCELLED:
                 # 取消：中止当前节点（其中的模型调用随之中止），状态停在上一个 checkpoint
@@ -146,6 +158,15 @@ async def run_message(
             elif mode == "custom" and isinstance(chunk, dict) and "type" in chunk:
                 # 后续票的卡片 / tool_call 等事件在此透传，契约校验兜底
                 yield await em.emit(chunk)
+            elif mode == "updates" and isinstance(chunk, dict) and "__interrupt__" in chunk:
+                # 图在 await_input 中断：awaiting_input 的 version 由节点随中断载荷带出（langgraph_step），
+                # 不在此查 checkpoint——PostgresSaver 写入异步，此刻可能尚未落地
+                interrupted = True
+                for intr in chunk["__interrupt__"]:
+                    value = dict(getattr(intr, "value", {}) or {})
+                    if "version" not in value:
+                        value["version"] = await checkpoint_version(graph, session_id)
+                    yield await em.emit({"type": "awaiting_input", **value})
             # updates 模式：状态迁移日志，票 07 用于 version 递增；此处仅记录
             elif mode == "updates":
                 log.debug(

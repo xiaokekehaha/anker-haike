@@ -47,11 +47,20 @@ class RunManager:
         self._live: dict[str, RunHandle] = {}
 
     # ---- 启动 ----
-    async def start(self, session_id: str, text: str, **kw: Any) -> RunHandle:
-        """占用 active run 并落库 run_started 后返回；ActiveRunConflict 在此同步抛出。"""
+    async def start(
+        self, session_id: str, text: str | None = None, *, resume: dict | None = None, **kw: Any
+    ) -> RunHandle:
+        """占用 active run 并落库 run_started 后返回；ActiveRunConflict 在此同步抛出。
+        text 为新消息，resume 为对 interrupt 的动作（票 20）。"""
         cancel_event = asyncio.Event()
         gen = runner.run_message(
-            self._store, self._graph, session_id, text, cancel_event=cancel_event, **kw
+            self._store,
+            self._graph,
+            session_id,
+            text,
+            resume=resume,
+            cancel_event=cancel_event,
+            **kw,
         )
         first = await anext(gen)  # try_start_run + run_started；冲突在这里抛
         handle = RunHandle(session_id=session_id, run_id=first["run_id"], cancel_event=cancel_event)

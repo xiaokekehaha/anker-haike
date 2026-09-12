@@ -43,7 +43,13 @@ async def test_disconnect_does_not_cancel_run(mem_runtime, monkeypatch):
     assert (await mem_runtime.get_session(sid)).active_run_id == handle.run_id
     await _wait_done(mem_runtime, sid)
     events = await mem_runtime.list_events(sid, run_id=handle.run_id)
-    assert [e["type"] for e in events] == ["run_started", "progress", "progress", "done"]
+    assert [e["type"] for e in events] == [
+        "run_started",
+        "progress",
+        "progress",
+        "progress",
+        "done",
+    ]
     assert events[-1]["reason"] == "completed"
     assert not manager.is_live(handle.run_id)
 

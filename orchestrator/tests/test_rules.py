@@ -150,4 +150,4 @@ async def test_normal_message_still_goes_to_reply(mem_runtime):
     finally:
         set_rules_service(None)
     stages = [e["stage"] for e in sse.parse(resp.text) if e["type"] == "progress"]
-    assert stages == ["intake", "diagnose"]
+    assert stages == ["intake", "disambiguate", "diagnose"]

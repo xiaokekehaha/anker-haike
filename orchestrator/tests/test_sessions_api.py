@@ -40,10 +40,14 @@ async def test_message_stream_order_and_event_log(mem_runtime):
 
     types = [e["type"] for e in events]
     assert types[0] == "run_started" and types[-1] == "done"
-    assert types[1:-1] == ["progress", "progress"]
-    assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "diagnose"]
-    # version = checkpoint step + 1：一轮两节点写 4 个 checkpoint（输入 + 2 节点 + 结束）→ 3
-    assert events[-1]["reason"] == "completed" and events[-1]["version"] == 3
+    assert types[1:-1] == ["progress"] * 3
+    assert [e["stage"] for e in events if e["type"] == "progress"] == [
+        "intake",
+        "disambiguate",
+        "diagnose",
+    ]
+    # version = checkpoint step + 1：一轮 intake / disambiguate / reply 三节点 → 4
+    assert events[-1]["reason"] == "completed" and events[-1]["version"] == 4
     assert events[0]["resumed"] is False and events[0]["deadline_ms"] == runner.DEFAULT_DEADLINE_MS
     for e in events:
         parse_event(e)  # 全部符合契约
@@ -57,7 +61,7 @@ async def test_message_stream_order_and_event_log(mem_runtime):
     assert len({e["run_id"] for e in logged}) == 1
 
     row = await mem_runtime.get_session(sid)
-    assert row.version == 3 and row.active_run_id is None and row.stage == "diagnose"
+    assert row.version == 4 and row.active_run_id is None and row.stage == "diagnose"
 
 
 async def test_second_turn_continues_seq_and_version(mem_runtime):
@@ -66,7 +70,7 @@ async def test_second_turn_continues_seq_and_version(mem_runtime):
         first, _ = await _send(client, sid, "第一句")
         second, _ = await _send(client, sid, "第二句")
     assert second[0]["seq"] == first[-1]["seq"] + 1
-    assert second[-1]["version"] == 7  # 第二轮 checkpoint 续增
+    assert second[-1]["version"] == 9  # 第二轮 checkpoint 续增
     assert first[0]["run_id"] != second[0]["run_id"]
 
 
@@ -144,7 +148,7 @@ async def test_concurrent_second_message_rejected_409(mem_runtime, monkeypatch):
     assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
     # 只产生了一个 run
     assert len({e["run_id"] for e in await mem_runtime.list_events(sid)}) == 1
-    assert (await mem_runtime.get_session(sid)).version == 3
+    assert (await mem_runtime.get_session(sid)).version == 4
 
 
 async def test_unknown_session_404_and_empty_text_422(mem_runtime):

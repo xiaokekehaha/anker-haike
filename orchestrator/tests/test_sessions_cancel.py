@@ -78,10 +78,10 @@ async def test_cancel_between_nodes_keeps_completed_checkpoint(mem_runtime, monk
         snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
     assert snap.cancelled_run is not None and snap.cancelled_run.run_id == handle.run_id
     assert snap.active_run is None and snap.pending_input is None
-    assert snap.stage == "intake"  # intake 的 checkpoint 保留，reply 未提交
+    assert snap.stage == "disambiguate"  # intake / disambiguate 的 checkpoint 保留，reply 未提交
     assert [i.kind for i in snap.timeline] == ["user_message"]  # intake 写入的用户消息保留
     state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
-    assert state.values["stage"] == "intake" and state.next == ("reply",)
+    assert state.values["stage"] == "disambiguate" and state.next == ("reply",)
 
 
 async def test_cancel_keeps_pending_input_from_before(mem_runtime, monkeypatch):

@@ -248,7 +248,7 @@ async def test_get_snapshot_idle_after_turn(mem_runtime):
         await client.post(f"/sessions/{sid}/messages", data={"text": "充不上电"})
         resp = await client.get(f"/sessions/{sid}")
     snap = SessionSnapshot.model_validate(resp.json())
-    assert snap.version == 3 and snap.stage == "diagnose"
+    assert snap.version == 4 and snap.stage == "diagnose"
     assert snap.active_run is None and snap.pending_input is None and snap.last_error is None
     assert [i.kind for i in snap.timeline] == ["user_message"]
     assert snap.timeline[0].text == "充不上电"
@@ -281,7 +281,7 @@ async def test_get_snapshot_during_active_run_and_409_body(mem_runtime, monkeypa
         )
         await task
         final = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
-    assert final.active_run is None and final.version == 3
+    assert final.active_run is None and final.version == 4
 
 
 async def test_get_snapshot_after_error_run(mem_runtime):
@@ -320,7 +320,7 @@ async def test_delete_projection_then_rebuild_matches(mem_runtime):
         None,
         None,
     )
-    assert row.version == 7 and [i["kind"] for i in after["timeline"]] == [
+    assert row.version == 9 and [i["kind"] for i in after["timeline"]] == [
         "user_message",
         "user_message",
     ]

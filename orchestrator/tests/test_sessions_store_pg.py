@@ -98,8 +98,8 @@ async def test_pg_projection_delete_and_rebuild(pg_store):
     await pg_store.delete_projection(sid)
     assert await pg_store.session_exists(sid)  # 事件日志未受影响
     assert (
-        len(await pg_store.list_event_records(sid)) == len(before.timeline) + 3
-    )  # run_started/2 progress/done - user_message
+        len(await pg_store.list_event_records(sid)) == len(before.timeline) + 4
+    )  # run_started + 3 progress + done（票 20 起含 disambiguate）
     with pytest.raises(SessionNotFound):
         await pg_store.get_session(sid)
 
@@ -113,3 +113,41 @@ async def test_pg_projection_delete_and_rebuild(pg_store):
         None,
     )
     assert sid in await pg_store.list_session_ids()
+
+
+async def test_pg_saver_awaiting_input_version_matches_done(pg_store):
+    """回归（票 20）：真实 AsyncPostgresSaver 下 awaiting_input.version 必须等于 done.version 与快照 version。
+    内存 saver 同步写入测不出这个竞态。"""
+    from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+
+    from app.sessions import runner
+    from app.sessions.graph import build_graph
+    from app.sessions.snapshot import build_snapshot
+
+    saver = AsyncPostgresSaver(pg_store._pool)  # type: ignore[arg-type]
+    await saver.setup()
+    graph = build_graph(saver)
+    sid = (await pg_store.create_session()).session_id
+    events = [e async for e in runner.run_message(pg_store, graph, sid, "我的 S1 Pro 不吸了")]
+    types = [e["type"] for e in events]
+    assert types[-3:] == ["product_card", "awaiting_input", "done"]
+    card, awaiting, done = events[-3], events[-2], events[-1]
+    assert done["reason"] == "awaiting_input"
+    assert card["version"] == awaiting["version"] == done["version"]
+    snap = await build_snapshot(pg_store, graph, sid)
+    assert snap.version == done["version"] and snap.pending_input.version == done["version"]
+    # 恢复后 prepare_card 仍只执行一次
+    action = {
+        "action_id": "a1",
+        "interrupt_id": awaiting["interrupt_id"],
+        "card_id": awaiting["card_id"],
+        "expected_version": awaiting["version"],
+        "kind": "select_product",
+        "payload": {"sku": "EUFY-S1-PRO"},
+    }
+    resumed = [e async for e in runner.run_message(pg_store, graph, sid, resume=action)]
+    assert resumed[0]["resumed"] is True and resumed[-1]["reason"] == "completed"
+    state = await graph.aget_state({"configurable": {"thread_id": sid}})
+    assert (
+        state.values["prepare_card_calls"] == 1 and state.values["product_state"] == "confirmed_sku"
+    )

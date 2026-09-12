@@ -1,5 +1,6 @@
 """会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
-GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel。"""
+GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel、
+POST /sessions/{id}/actions（票 20 基本通路；幂等 / 会话锁在票 22，完整 409 语义在票 23）。"""
 
 from __future__ import annotations
 
@@ -8,8 +9,9 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Form, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
+from haike_contracts.actions import parse_action
 from haike_contracts.snapshot import SessionSnapshot
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from app.sessions import sse
 from app.sessions.manager import RunNotActive
@@ -95,6 +97,51 @@ async def resume_events(
     if not manager.is_live(run_id) and not await store.list_events(session_id, run_id=run_id):
         raise HTTPException(404, detail={"code": "run_not_found", "message": run_id})
     return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
+
+
+_CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_receipt"}
+
+
+@router.post("/{session_id}/actions")
+async def post_action(session_id: str, request: Request):
+    """动作协议（08 §4）：校验后以 Command(resume=action) 恢复图并开新 SSE 流。"""
+    store, graph, manager = _runtime(request)
+    await _ensure_exists(store, session_id)
+    try:
+        action = parse_action(await request.json())
+    except (ValidationError, ValueError) as exc:
+        raise HTTPException(
+            422, detail={"code": "invalid_action", "message": str(exc)[:500]}
+        ) from None
+
+    snap = await build_snapshot(store, graph, session_id)
+
+    def conflict(code: str, message: str) -> JSONResponse:
+        return JSONResponse(
+            status_code=409,
+            content={"code": code, "message": message, "snapshot": snap.model_dump(mode="json")},
+        )
+
+    if snap.active_run is not None:
+        return conflict("run_active", f"session has active run {snap.active_run.run_id}")
+    if action.kind not in _CARD_KINDS:
+        # request_human（票 25）、rediagnose（票 37）在各自票接入
+        return conflict("not_allowed_now", f"{action.kind} is not supported yet")
+    pending = snap.pending_input
+    if pending is None or pending.kind != action.kind:
+        return conflict("not_allowed_now", f"no pending input of kind {action.kind}")
+    if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
+        return conflict("stale_card", "card_id / interrupt_id do not match pending input")
+    if action.expected_version != snap.version:
+        return conflict(
+            "version_mismatch", f"expected {action.expected_version}, current {snap.version}"
+        )
+
+    try:
+        handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
+    except ActiveRunConflict as exc:
+        return conflict("run_active", f"session has active run {exc.active_run_id}")
+    return _sse(manager.subscribe(session_id, handle.run_id, after_seq=0))
 
 
 @router.post("/{session_id}/cancel", response_model=CancelResult)
