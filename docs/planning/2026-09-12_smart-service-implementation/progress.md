@@ -58,3 +58,5 @@
 
 - 票 50（接手会话，2026-09-13）：新增 `app/observability/alerts.py`（AlertManager 四规则 + 冷却 / 恢复 + WebhookSink / EmailSink；`record()` 钩子观察 model_call / knowledge_search / model_queue_full；lifespan 起 health-watch 循环；`/health` 增 alerts 块）。实测无效模型 key：3 次链耗尽 → webhook 4 s 收到 model_chain_failed，冷却抑制后续 9 次。运行手册 docs/runbook/operations.md 覆盖 04 §1 全部风险行 + 密钥轮换 + 速查 + 回滚自测清单。后端 422 项通过。
 
+- 票 45（接手会话，2026-09-13）：新增 `app/inspection/`（Harness 进程内运行时 + TaskFake 按 task 分脚本假模型（含流式）+ ScriptedAdapter + run_metric 捕获；29 个 stub 场景分 boundary / routing / rewrite / concurrency 四组，可选 live 组；报告 JSON / Markdown 到 reports/inspection/，findings.md 固定块回填冻结判定），`make inspect` / `haike-inspect`。开发中两处返工：TaskFake 的流式调用不经 `_next`，需同样按 task 选队列；步骤卡 card_id 只由 (session, plan, step) 决定，纠正型号后若仍同计划则「旧卡 = 新卡」，过期按钮场景改为让第二轮换计划。全组 29/29 通过；`--live` 对本机 DeepSeek + WeKnora 跑 A1：first_visible 4.3 s、card_ready 5.8 s、首卡滚刷缠发。后端 432 项通过。
+

@@ -87,6 +87,9 @@ db-check: ## 版本不一致时非零退出（CI / 上线前）
 	cd orchestrator && uv run --env-file ../.env haike-db check
 db-revision: ## 新建一条空迁移：make db-revision MSG="add session_images"
 	cd orchestrator && uv run alembic -c alembic.ini revision -m "$(MSG)"
+inspect: ## 故障与边界场景巡检（票 45）：stub 模型一条命令跑完并回填 findings.md；make inspect LIVE=http://127.0.0.1:8000 追加真实 A1 样例
+	cd orchestrator && uv run --env-file ../.env haike-inspect $(if $(LIVE),--live $(LIVE),) $(if $(GROUP),--group $(GROUP),)
+
 retention-purge: ## 按分类 TTL 清理一轮（会话 24 h / 追踪 7 d）并打印统计：make retention-purge [HOURS=24]
 	cd orchestrator && uv run --env-file ../.env haike-retention purge $(if $(HOURS),--session-hours $(HOURS),)
 

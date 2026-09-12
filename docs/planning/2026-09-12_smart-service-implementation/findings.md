@@ -105,3 +105,14 @@
 - 多文件 compose 的相对路径全部以第一个文件的目录为基准，不是各自文件目录。
 - zsh 里把命令存进字符串变量不会按空格拆分，脚本用函数包装 compose 组合命令。
 - 分支保护不是仓库文件能表达的，CI 的「阻止合并」要在 GitHub 设置或用 gh api 开一次。
+
+<!-- inspection:start -->
+## 巡检结果（票 45，自动回填，最近一次）
+- 时间 2026-09-12T21:43:14.200722+00:00，git `6eb6adc`，模式 `stub+live`，报告 `reports/inspection/inspection-20260912T214314Z.md`
+- 场景 30/30 通过；失败：无
+- 延迟（stub 模型，运行器口径）：first_visible_ms p95 18 ms，card_ready_ms p95 24 ms
+- 5 并发通过率 100%（墙钟 26 ms）
+- 改写开关：rewrite_off_no_call=1 轮/0 次改写/standard_flow；rewrite_on_no_match_rescued=2 轮/1 次改写/evidence；rewrite_on_empty_scope=1 轮/0 次改写/standard_flow；rewrite_on_partial_unavailable=1 轮/0 次改写/standard_flow；rewrite_on_invalid_candidate=1 轮/1 次改写/standard_flow；rewrite_on_second_round_empty=2 轮/1 次改写/standard_flow；rewrite_on_image_contention=2 轮/0 次改写/evidence
+- 真实模型语义样例：[{"first_visible_ms": 4254, "card_ready_ms": 5753, "step": {"plan_id": "rv_suction_hair_wrap", "step_id": "s1", "title": "检查并清理滚刷"}}]
+- 冻结判定：**可冻结**（全部场景通过）
+<!-- inspection:end -->
