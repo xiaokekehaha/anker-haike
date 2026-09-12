@@ -1,16 +1,17 @@
-"""会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）。"""
+"""会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
+GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）。"""
 
 from __future__ import annotations
 
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Form, HTTPException, Request
+from fastapi import APIRouter, Form, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from haike_contracts.snapshot import SessionSnapshot
 from pydantic import BaseModel
 
-from app.sessions import runner, sse
+from app.sessions import sse
 from app.sessions.snapshot import build_snapshot
 from app.sessions.store import ActiveRunConflict
 
@@ -26,17 +27,18 @@ class SessionCreated(BaseModel):
 def _runtime(request: Request):
     store = getattr(request.app.state, "session_store", None)
     graph = getattr(request.app.state, "session_graph", None)
-    if store is None or graph is None:
+    manager = getattr(request.app.state, "run_manager", None)
+    if store is None or graph is None or manager is None:
         raise HTTPException(
             503,
             detail={"code": "sessions_unavailable", "message": "会话存储未就绪（数据库不可用）"},
         )
-    return store, graph
+    return store, graph, manager
 
 
 @router.post("", status_code=201, response_model=SessionCreated)
 async def create_session(request: Request) -> SessionCreated:
-    store, _ = _runtime(request)
+    store, _, _ = _runtime(request)
     row = await store.create_session()
     return SessionCreated(session_id=row.session_id, version=row.version)
 
@@ -47,13 +49,10 @@ async def post_message(
     request: Request,
     text: Annotated[str, Form(min_length=1, max_length=4000)],
 ):
-    store, graph = _runtime(request)
+    store, graph, manager = _runtime(request)
     await _ensure_exists(store, session_id)
-
-    stream = runner.run_message(store, graph, session_id, text)
-    # 先取首事件：若 active run 冲突在此抛出，可返回普通 409 而不是半截 SSE
     try:
-        first = await anext(stream)
+        handle = await manager.start(session_id, text)
     except ActiveRunConflict as exc:
         # 409 附最新权威快照供前端重建（08 §4 第 3 步）
         snap = await build_snapshot(store, graph, session_id)
@@ -65,14 +64,33 @@ async def post_message(
                 "snapshot": snap.model_dump(mode="json"),
             },
         )
+    # run 已在后台执行；本响应只是从 seq 0 起的订阅者，断开不影响 run（08 §7）
+    return _sse(manager.subscribe(session_id, handle.run_id, after_seq=0))
 
+
+@router.get("/{session_id}/runs/{run_id}/events")
+async def resume_events(
+    session_id: str,
+    run_id: str,
+    request: Request,
+    after_seq: Annotated[int, Query(ge=0)] = 0,
+    last_event_id: Annotated[str | None, Header(alias="Last-Event-ID")] = None,
+):
+    """续接：先重放 session_events 中 seq > after_seq 的本 run 事件，再接实时流（08 §6 规则 2）。
+    也接受标准 SSE 重连头 Last-Event-ID（取两者较大值）。"""
+    store, _, manager = _runtime(request)
+    await _ensure_exists(store, session_id)
+    if last_event_id and last_event_id.isdigit():
+        after_seq = max(after_seq, int(last_event_id))
+    if not manager.is_live(run_id) and not await store.list_events(session_id, run_id=run_id):
+        raise HTTPException(404, detail={"code": "run_not_found", "message": run_id})
+    return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
+
+
+def _sse(events) -> StreamingResponse:
     async def body():
-        try:
-            yield sse.encode(first)
-            async for ev in stream:
-                yield sse.encode(ev)
-        finally:
-            await stream.aclose()
+        async for ev in events:
+            yield sse.encode(ev)
 
     return StreamingResponse(body(), media_type="text/event-stream", headers=sse.SSE_HEADERS)
 
@@ -80,7 +98,7 @@ async def post_message(
 @router.get("/{session_id}", response_model=SessionSnapshot)
 async def get_snapshot(session_id: str, request: Request) -> SessionSnapshot:
     """权威快照（08 §6）：由 checkpoint 与事件日志派生，不读投影表。"""
-    store, graph = _runtime(request)
+    store, graph, _ = _runtime(request)
     await _ensure_exists(store, session_id)
     return await build_snapshot(store, graph, session_id)
 

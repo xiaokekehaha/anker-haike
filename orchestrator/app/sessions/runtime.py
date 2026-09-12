@@ -9,6 +9,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg_pool import AsyncConnectionPool
 
 from app.sessions.graph import build_graph
+from app.sessions.manager import RunManager
 from app.sessions.store import PostgresSessionStore
 from app.settings import settings
 
@@ -18,6 +19,7 @@ log = logging.getLogger("sessions.runtime")
 async def open_session_runtime(app: FastAPI) -> None:
     app.state.session_store = None
     app.state.session_graph = None
+    app.state.run_manager = None
     app.state.session_pool = None
     app.state.session_checkpointer_cm = None
     try:
@@ -38,12 +40,19 @@ async def open_session_runtime(app: FastAPI) -> None:
         app.state.session_pool = pool
         app.state.session_store = store
         app.state.session_graph = build_graph(saver)
-        log.info("session runtime ready")
+        manager = RunManager(store, app.state.session_graph)
+        app.state.run_manager = manager
+        # 票 08：上次进程留下的 active run 以 error → done(error) 收尾，快照恢复到可继续状态
+        fixed = await manager.reconcile_orphans()
+        log.info("session runtime ready (orphan runs finalized: %d)", len(fixed))
     except Exception as exc:  # noqa: BLE001 - 启动期数据库故障要可见但不致命
         log.error("session runtime unavailable: %s: %s", type(exc).__name__, str(exc)[:200])
 
 
 async def close_session_runtime(app: FastAPI) -> None:
+    manager = getattr(app.state, "run_manager", None)
+    if manager is not None:
+        await manager.shutdown()
     pool = getattr(app.state, "session_pool", None)
     if pool is not None:
         await pool.close()

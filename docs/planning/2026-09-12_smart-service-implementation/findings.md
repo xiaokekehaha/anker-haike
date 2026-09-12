@@ -19,3 +19,8 @@
 - LangGraph checkpoint metadata.step 在同一 thread 上跨 run 单调递增（含输入 checkpoint 的 step -1 起算），可直接作为契约 version 的来源，无需自维护计数器。异常 run 仍会写入输入 checkpoint，version 会 +1。
 - session_events 一开始外键到 sessions 并级联删除，与「投影表可丢弃后重建」矛盾；已去掉外键。规则：事件日志与 checkpoint 不得依赖任何投影表。
 - 事件协议里没有用户消息事件，timeline 的 user_message 只能来自 checkpoint 状态；节点在写 messages 时必须带 run_id，否则无法定位到 timeline 位置。后续改图状态的票需保持这一约定。
+
+## 票 08 续接
+- 票 05 把 run 写成请求内的生成器，客户端断开会触发 finally 取消图任务，违反 08 §7；票 08 改为 RunManager 后台执行。规则：任何长任务不得与 HTTP 响应生命周期绑定。
+- httpx ASGITransport 会把 SSE 响应整体收完再返回，不能模拟「收到首帧即断开」；断连 / 中途续接语义要直接驱动 RunManager 或在真实 uvicorn 上用 curl --max-time 验证。
+- 实时广播在进程内存，orchestrator 目前单副本；多副本部署前需改 Redis pub/sub 或粘性路由，已在票 08 记录，票 46 / 49 评估。

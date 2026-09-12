@@ -159,6 +159,7 @@ async def test_unknown_session_404_and_empty_text_422(mem_runtime):
 async def test_sessions_503_when_store_unavailable():
     app.state.session_store = None
     app.state.session_graph = None
+    app.state.run_manager = None
     async with _client() as client:
         resp = await client.post("/sessions")
     assert resp.status_code == 503 and resp.json()["detail"]["code"] == "sessions_unavailable"

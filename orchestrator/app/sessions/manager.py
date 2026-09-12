@@ -1,0 +1,135 @@
+"""RunManager：run 在后台任务里执行并广播，HTTP 响应只是订阅者（08 §6–7，票 08）。
+
+- 断开连接不等于取消：run 继续跑到 done 或 deadline，事件照常落库。
+- subscribe(run_id, after_seq)：先从 session_events 重放，再接实时；以 seq 去重，不重复不丢失。
+- 进程重启后内存里没有 live run：启动时 reconcile 把孤儿 run 以 error → done(error) 收尾。
+"""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+from collections.abc import AsyncIterator
+from dataclasses import dataclass, field
+from typing import Any
+
+from langgraph.graph.state import CompiledStateGraph
+
+from app.sessions import runner
+from app.sessions.store import SessionStore
+
+log = logging.getLogger("sessions.manager")
+
+_END = object()
+
+
+@dataclass
+class RunHandle:
+    session_id: str
+    run_id: str
+    task: asyncio.Task | None = None
+    subscribers: set[asyncio.Queue] = field(default_factory=set)
+    finished: bool = False
+
+
+class RunManager:
+    def __init__(self, store: SessionStore, graph: CompiledStateGraph) -> None:
+        self._store = store
+        self._graph = graph
+        self._live: dict[str, RunHandle] = {}
+
+    # ---- 启动 ----
+    async def start(self, session_id: str, text: str, **kw: Any) -> RunHandle:
+        """占用 active run 并落库 run_started 后返回；ActiveRunConflict 在此同步抛出。"""
+        gen = runner.run_message(self._store, self._graph, session_id, text, **kw)
+        first = await anext(gen)  # try_start_run + run_started；冲突在这里抛
+        handle = RunHandle(session_id=session_id, run_id=first["run_id"])
+        self._live[handle.run_id] = handle
+        handle.task = asyncio.create_task(
+            self._drain(handle, gen, first), name=f"run-{handle.run_id}"
+        )
+        return handle
+
+    async def _drain(self, handle: RunHandle, gen: AsyncIterator[dict], first: dict) -> None:
+        try:
+            self._broadcast(handle, first)
+            async for ev in gen:
+                self._broadcast(handle, ev)
+        except Exception:
+            log.exception("run drain failed run=%s", handle.run_id)
+        finally:
+            handle.finished = True
+            for q in list(handle.subscribers):
+                q.put_nowait(_END)
+            self._live.pop(handle.run_id, None)
+
+    def _broadcast(self, handle: RunHandle, ev: dict) -> None:
+        for q in list(handle.subscribers):
+            q.put_nowait(ev)
+
+    # ---- 订阅 ----
+    def is_live(self, run_id: str) -> bool:
+        return run_id in self._live and not self._live[run_id].finished
+
+    async def subscribe(
+        self, session_id: str, run_id: str, after_seq: int = 0
+    ) -> AsyncIterator[dict]:
+        """先重放 seq > after_seq 的历史，再接实时；实时事件按 seq 过滤掉重放已覆盖的部分。"""
+        queue: asyncio.Queue = asyncio.Queue()
+        handle = self._live.get(run_id)
+        if handle is not None and not handle.finished:
+            handle.subscribers.add(queue)  # 先订阅再读历史，避免中间漏事件
+        try:
+            history = await self._store.list_events(session_id, run_id=run_id, after_seq=after_seq)
+            last = after_seq
+            for ev in history:
+                last = ev["seq"]
+                yield ev
+            if handle is None or handle.finished:
+                return
+            while True:
+                item = await queue.get()
+                if item is _END:
+                    return
+                if item["seq"] <= last:
+                    continue
+                last = item["seq"]
+                yield item
+                if item["type"] == "done":
+                    return
+        finally:
+            if handle is not None:
+                handle.subscribers.discard(queue)
+
+    # ---- 重启后的孤儿 run ----
+    async def reconcile_orphans(self) -> list[tuple[str, str]]:
+        """把投影表里仍标 active 但本进程没有在跑的 run 以 error → done(error) 收尾（服务重启）。"""
+        fixed: list[tuple[str, str]] = []
+        for session_id, run_id in await self._store.list_active_runs():
+            if self.is_live(run_id):
+                continue
+            em = runner.RunEmitter(self._store, session_id, run_id)
+            prior = await self._store.list_events(session_id)
+            em.last_seq = max((e["seq"] for e in prior), default=0)
+            already_done = any(e["run_id"] == run_id and e["type"] == "done" for e in prior)
+            version = await runner.checkpoint_version(self._graph, session_id)
+            if not already_done:
+                await em.emit(
+                    {
+                        "type": "error",
+                        "code": "server_restarted",
+                        "message": "编排服务重启，本轮处理中断，请重新发送",
+                        "recoverable": True,
+                        "retry_with_same_action": False,
+                    }
+                )
+                await em.emit({"type": "done", "reason": "error", "version": version})
+            await self._store.finish_run(session_id, run_id, version=version)
+            fixed.append((session_id, run_id))
+            log.warning("orphan run finalized session=%s run=%s", session_id, run_id)
+        return fixed
+
+    async def shutdown(self) -> None:
+        for h in list(self._live.values()):
+            if h.task and not h.task.done():
+                h.task.cancel()

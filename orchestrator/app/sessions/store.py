@@ -88,6 +88,7 @@ class SessionStore(Protocol):
     ) -> list[dict[str, Any]]: ...
     async def list_event_records(self, session_id: str) -> list[EventRecord]: ...
     async def list_session_ids(self) -> list[str]: ...
+    async def list_active_runs(self) -> list[tuple[str, str]]: ...
     async def upsert_projection(
         self,
         session_id: str,
@@ -217,6 +218,13 @@ class PostgresSessionStore:
             )
             return [r["session_id"] for r in await cur.fetchall()]
 
+    async def list_active_runs(self) -> list[tuple[str, str]]:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                "select session_id, active_run_id from sessions where active_run_id is not null"
+            )
+            return [(r["session_id"], r["active_run_id"]) for r in await cur.fetchall()]
+
     async def upsert_projection(
         self,
         session_id: str,
@@ -331,6 +339,13 @@ class InMemorySessionStore:
 
     async def list_session_ids(self) -> list[str]:
         return sorted(self._sessions)
+
+    async def list_active_runs(self) -> list[tuple[str, str]]:
+        return [
+            (sid, s.row.active_run_id)
+            for sid, s in self._sessions.items()
+            if s.row is not None and s.row.active_run_id
+        ]
 
     async def upsert_projection(
         self,
