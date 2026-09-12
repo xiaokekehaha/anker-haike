@@ -124,7 +124,9 @@ class ActionResult(Strict):
 class ActionConflict(Strict):
     """409 响应体：附最新快照供前端重建（08 §4 第 3 步）。"""
 
-    code: Literal["version_mismatch", "stale_card", "not_allowed_now", "run_active"]
+    code: Literal["stale_version", "stale_card", "not_allowed_now", "run_active"]
+    """stale_version：expected_version 不符；stale_card：interrupt_id / card_id 过期；
+    not_allowed_now：kind 不在允许时机；run_active：会话有进行中的 run（票 23，08 §4 步骤 3）。"""
     message: str
     snapshot: dict = Field(description="SessionSnapshot 序列化结果；此处用 dict 避免循环引用")
 

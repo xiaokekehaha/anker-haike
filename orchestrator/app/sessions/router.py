@@ -1,6 +1,6 @@
 """会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
 GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel、
-POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁；完整 409 语义在票 23）。"""
+POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁 + 票 23 三种 409 与重试语义）。"""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from pydantic import BaseModel, ValidationError
 from app.sessions import sse
 from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
-from app.sessions.snapshot import build_snapshot
+from app.sessions.snapshot import action_pending_apply, build_snapshot
 from app.sessions.store import ActiveRunConflict
 
 log = logging.getLogger("sessions.router")
@@ -150,8 +150,11 @@ async def post_action(session_id: str, request: Request):
                 },
             )
 
-        # 3. 校验（票 23 完整化）
+        # 3. 校验（票 23）
         snap = await build_snapshot(store, graph, session_id)
+        # 同一 action_id 重试且图停在「动作已接收、apply_action 未成功」：跳过校验，从待执行节点继续
+        state = await graph.aget_state({"configurable": {"thread_id": session_id}})
+        continue_run = snap.active_run is None and action_pending_apply(state) == action.action_id
 
         def conflict(code: str, message: str) -> JSONResponse:
             return JSONResponse(
@@ -163,23 +166,34 @@ async def post_action(session_id: str, request: Request):
                 },
             )
 
+        # 08 §4 步骤 3 的顺序：version → card → kind（票 23）。快照随 409 返回供前端重建
         if snap.active_run is not None:
             return conflict("run_active", f"session has active run {snap.active_run.run_id}")
-        if action.kind not in _CARD_KINDS:
-            return conflict("not_allowed_now", f"{action.kind} is not supported yet")
-        pending = snap.pending_input
-        if pending is None or pending.kind != action.kind:
-            return conflict("not_allowed_now", f"no pending input of kind {action.kind}")
-        if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
-            return conflict("stale_card", "card_id / interrupt_id do not match pending input")
-        if action.expected_version != snap.version:
-            return conflict(
-                "version_mismatch", f"expected {action.expected_version}, current {snap.version}"
-            )
+        if not continue_run:
+            if action.kind not in _CARD_KINDS:
+                # 全局动作不校 version / pending（08 §4 步骤 4）：request_human（票 25）、rediagnose（票 37）接入前先拒绝
+                return conflict("not_allowed_now", f"{action.kind} is not supported yet")
+            if action.expected_version != snap.version:
+                return conflict(
+                    "stale_version", f"expected {action.expected_version}, current {snap.version}"
+                )
+            pending = snap.pending_input
+            if pending is None:
+                return conflict("not_allowed_now", "no pending input")
+            if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
+                return conflict("stale_card", "card_id / interrupt_id do not match pending input")
+            if not _kind_allowed(action.kind, pending.kind):
+                return conflict(
+                    "not_allowed_now",
+                    f"{action.kind} is not allowed while awaiting {pending.kind}",
+                )
 
         # 4. 启动 run 并写占位（占位带 run_id：进程中途挂掉时，重放仍能定位到该 run 的事件）
         try:
-            handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
+            if continue_run:
+                handle = await manager.start(session_id, continue_run=True)
+            else:
+                handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
         except ActiveRunConflict as exc:
             return conflict("run_active", f"session has active run {exc.active_run_id}")
         inserted = await store.try_insert_action(
@@ -217,11 +231,23 @@ async def post_action(session_id: str, request: Request):
     )
 
 
+def _kind_allowed(kind: str, pending_kind: str) -> bool:
+    """08 §4 允许时机表：skip_receipt 在 upload_receipt / confirm_receipt 下均可，其余 kind 须与 pending 相同。"""
+    if kind == "skip_receipt":
+        return pending_kind in ("upload_receipt", "confirm_receipt")
+    return kind == pending_kind
+
+
 async def _finish_action(store, manager, handle, action_id: str, release) -> None:
     try:
         await manager.wait_finished(handle)
         events = await store.list_events(handle.session_id, run_id=handle.run_id)
         done = next((e for e in reversed(events) if e["type"] == "done"), None)
+        if done is not None and done["reason"] in ("error", "cancelled"):
+            # 动作未被应用：撤销占位，同一 action_id 重试时真正执行而不是重放失败流（票 23，
+            # 与 error.retry_with_same_action=true 配套）。apply_action 以 card_id 幂等，重放副作用安全
+            await store.delete_action(handle.session_id, action_id)
+            return
         await store.set_action_result(
             handle.session_id,
             action_id,

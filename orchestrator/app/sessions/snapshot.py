@@ -26,6 +26,16 @@ async def build_snapshot(
     version = int(state.metadata.get("step", -1)) + 1 if state.metadata else 0
 
     folded = fold_timeline(records, values)
+    # pending_input 以 checkpoint 里仍挂起的 interrupt 为准（08 §2 权威来源）：动作 run 出错 / 取消后
+    # 事件日志的最后一个 run 不是 awaiting_input，但图仍停在 await_input，用户仍可（重试）响应（票 23）
+    if folded["active_run"] is None:
+        pending_from_ckpt = _pending_from_interrupts(state, version)
+        if pending_from_ckpt is not None:
+            folded["pending_input"] = pending_from_ckpt
+        elif action_pending_apply(state) is not None:
+            # 动作已被 await_input 接收、apply_action 尚未成功（run 出错 / 取消）：不再等待用户输入，
+            # 前端按 error.retry_with_same_action 复用 action_id 重试即可继续
+            folded["pending_input"] = None
     last_progress = next(
         (r.event["stage"] for r in reversed(records) if r.event["type"] == "progress"), None
     )
@@ -241,6 +251,30 @@ async def rebuild_projection(
         pending_input=snap.pending_input.model_dump() if snap.pending_input else None,
     )
     return snap
+
+
+def action_pending_apply(state: Any) -> str | None:
+    """图停在 apply_action 之前且状态里带着已接收的动作 → 返回其 action_id，否则 None（票 23）。"""
+    if "apply_action" not in (getattr(state, "next", ()) or ()):
+        return None
+    if _pending_from_interrupts(state, 0) is not None:
+        return None
+    last = (getattr(state, "values", None) or {}).get("last_action") or {}
+    return last.get("action_id") or None
+
+
+def _pending_from_interrupts(state: Any, version: int) -> dict[str, Any] | None:
+    for task in getattr(state, "tasks", ()) or ():
+        for intr in getattr(task, "interrupts", ()) or ():
+            value = getattr(intr, "value", None)
+            if isinstance(value, dict) and {"kind", "card_id"} <= set(value):
+                return {
+                    "kind": value["kind"],
+                    "interrupt_id": value.get("interrupt_id", value["card_id"]),
+                    "card_id": value["card_id"],
+                    "version": version,
+                }
+    return None
 
 
 def _msg_stub(message_id: str) -> dict[str, Any]:

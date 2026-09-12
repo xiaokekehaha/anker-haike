@@ -65,13 +65,15 @@ async def run_message(
     text: str | None = None,
     *,
     resume: dict[str, Any] | None = None,
+    continue_run: bool = False,
     image_ids: list[str] | None = None,
     deadline_ms: int = DEFAULT_DEADLINE_MS,
     ping_interval_s: float | None = None,
     cancel_event: asyncio.Event | None = None,
 ) -> AsyncIterator[dict[str, Any]]:
     """占用 active run，产出契约事件字典。text 为新消息；resume 为对 interrupt 的动作（票 20），
-    此时以 Command(resume=action) 恢复图，run_started.resumed=True。"""
+    此时以 Command(resume=action) 恢复图，run_started.resumed=True。continue_run=True 为「同一 action_id 重试」
+    （票 23）：动作已被 await_input 接收但 apply_action 未成功，以 None 输入让图从待执行节点继续。"""
     run_id = uuid.uuid4().hex
     if ping_interval_s is None:
         ping_interval_s = PING_INTERVAL_S  # 运行时读取，便于测试覆写
@@ -86,6 +88,7 @@ async def run_message(
     stage: str | None = None
     reason = "completed"
     interrupted = False
+    is_action = resume is not None or continue_run
 
     async def pump() -> None:
         try:
@@ -93,6 +96,8 @@ async def run_message(
             payload: Any
             if resume is not None:
                 payload = Command(resume=resume)
+            elif continue_run:
+                payload = None
             else:
                 payload = {
                     "session_id": session_id,
@@ -118,7 +123,7 @@ async def run_message(
     watcher = asyncio.create_task(watch_cancel()) if cancel_event is not None else None
     try:
         yield await em.emit(
-            {"type": "run_started", "resumed": resume is not None, "deadline_ms": deadline_ms}
+            {"type": "run_started", "resumed": is_action, "deadline_ms": deadline_ms}
         )
         while True:
             remaining = deadline_ms / 1000 - (time.monotonic() - started)
@@ -126,7 +131,12 @@ async def run_message(
                 task.cancel()
                 reason = "error"
                 yield await em.emit(
-                    _error("deadline_exceeded", "run exceeded deadline", recoverable=True)
+                    _error(
+                        "deadline_exceeded",
+                        "run exceeded deadline",
+                        recoverable=True,
+                        retry=is_action,
+                    )
                 )
                 break
             try:
@@ -147,7 +157,15 @@ async def run_message(
             if isinstance(item, Exception):
                 reason = "error"
                 log.exception("graph failed session=%s run=%s", session_id, run_id, exc_info=item)
-                yield await em.emit(_error("node_failed", f"{type(item).__name__}: {item}"[:300]))
+                # 动作 run 失败：状态停在中断前的 checkpoint、动作未被应用，前端可复用 action_id 重试（票 23）
+                yield await em.emit(
+                    _error(
+                        "node_failed",
+                        f"{type(item).__name__}: {item}"[:300],
+                        recoverable=is_action,
+                        retry=is_action,
+                    )
+                )
                 break
             mode, chunk = item
             if mode == "custom" and isinstance(chunk, dict) and chunk.get("type") == "progress":

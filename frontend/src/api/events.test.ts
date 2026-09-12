@@ -28,7 +28,7 @@ describe('shared event contract', () => {
     expectTypeOf(event.step.evidence_ids).toEqualTypeOf<string[] | undefined>();
     expectTypeOf<PendingKind>().toEqualTypeOf<'select_product' | 'step_feedback' | 'upload_receipt' | 'confirm_receipt'>();
     expectTypeOf<ActionResult['replayed']>().toEqualTypeOf<boolean | undefined>();
-    expectTypeOf<ActionConflict['code']>().toEqualTypeOf<'version_mismatch' | 'stale_card' | 'not_allowed_now' | 'run_active'>();
+    expectTypeOf<ActionConflict['code']>().toEqualTypeOf<'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active'>();
     expectTypeOf<ActionRequest['kind']>().toEqualTypeOf<'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'request_human' | 'rediagnose'>();
     expectTypeOf<TimelineItem>().toEqualTypeOf<NonNullable<SessionSnapshot['timeline']>[number]>();
   });

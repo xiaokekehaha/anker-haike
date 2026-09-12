@@ -93,7 +93,7 @@ async def test_two_different_actions_are_serialized_not_rejected(mem_runtime, mo
         r1, r2 = await asyncio.gather(t1, t2)
     assert r1.status_code == 200 and sse.parse(r1.text)[-1]["reason"] == "completed"
     assert r2.status_code == 409
-    assert r2.json()["code"] == "not_allowed_now"  # 串行后 pending 已被消费
+    assert r2.json()["code"] == "stale_version"  # 串行后 version 已前进（08 §4 先校 version）
     assert r2.json()["snapshot"]["pending_input"] is None
     state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
     assert state.values["product_confirmed"]["sku"] == "EUFY-S1-PRO"

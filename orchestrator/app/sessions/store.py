@@ -112,6 +112,7 @@ class SessionStore(Protocol):
     ) -> bool: ...
     async def get_action(self, session_id: str, action_id: str) -> dict | None: ...
     async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None: ...
+    async def delete_action(self, session_id: str, action_id: str) -> None: ...
 
 
 def new_session_id() -> str:
@@ -293,6 +294,14 @@ class PostgresSessionStore:
                 (Jsonb(result), session_id, action_id),
             )
 
+    async def delete_action(self, session_id: str, action_id: str) -> None:
+        """动作未被应用（run 出错 / 取消）时撤销占位，让同一 action_id 的重试真正执行（票 23）。"""
+        async with self._pool.connection() as conn:
+            await conn.execute(
+                "delete from session_actions where session_id = %s and action_id = %s",
+                (session_id, action_id),
+            )
+
 
 def _row(r: dict) -> SessionRow:
     return SessionRow(
@@ -419,6 +428,9 @@ class InMemorySessionStore:
 
     async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None:
         self._actions[(session_id, action_id)] = json.loads(json.dumps(result))
+
+    async def delete_action(self, session_id: str, action_id: str) -> None:
+        self._actions.pop((session_id, action_id), None)
 
     def _get(self, session_id: str) -> _MemSession:
         try:

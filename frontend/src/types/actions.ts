@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 7ba75f6b6c6f6e87b667b8a638b9b519edeb13dd39ca1eb870ddea11f20eb666
+// SHA-256: 36a49abb5761038ba8502b1910e239387ca57fc48e52164e0d0061b9cce80470
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -72,7 +72,7 @@ export type InterruptId5 = string | null;
 export type Kind5 = 'rediagnose';
 export type ImageIds = string[];
 export type Text = string | null;
-export type Code = 'version_mismatch' | 'stale_card' | 'not_allowed_now' | 'run_active';
+export type Code = 'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active';
 export type Message = string;
 export type ActionId6 = string;
 export type Replayed = boolean;

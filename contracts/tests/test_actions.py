@@ -45,6 +45,6 @@ def test_request_human_is_global_and_payload_defaults_empty():
 
 def test_result_and_conflict_models():
     ActionResult(action_id="a", run_id="r", replayed=True, version_after=18)
-    ActionConflict(code="version_mismatch", message="m", snapshot={"session_id": "s"})
+    ActionConflict(code="stale_version", message="m", snapshot={"session_id": "s"})
     with pytest.raises(ValidationError):
         ActionConflict(code="unknown", message="m", snapshot={})

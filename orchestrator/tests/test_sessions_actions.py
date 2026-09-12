@@ -181,7 +181,7 @@ async def test_action_conflicts_and_validation(mem_runtime):
             f"/sessions/{sid}/actions",
             json=_action(pending, "EUFY-S1-PRO", expected_version=pending["version"] + 5),
         )
-        assert r.status_code == 409 and r.json()["code"] == "version_mismatch"
+        assert r.status_code == 409 and r.json()["code"] == "stale_version"
         assert r.json()["snapshot"]["version"] == pending["version"]
         # 卡片不对
         r = await client.post(
@@ -216,9 +216,9 @@ async def test_action_conflicts_and_validation(mem_runtime):
         # 冲突不改变状态：正确动作仍可通过
         ok = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
         assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "completed"
-        # 已消费的 pending 再发 → not_allowed_now
+        # 已消费的 pending 再发（新 action_id）：version 已前进 → stale_version（08 §4 先校 version）
         again = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
-        assert again.status_code == 409 and again.json()["code"] == "not_allowed_now"
+        assert again.status_code == 409 and again.json()["code"] == "stale_version"
 
 
 async def test_message_while_awaiting_is_new_run_not_resume(mem_runtime):

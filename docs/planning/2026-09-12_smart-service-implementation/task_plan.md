@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A 线（接手会话）：票 22 已完成；下一票 23 版本冲突 409（stale_version / stale_card / not_allowed_now + 快照、retry_with_same_action 语义），前端部分留给票 06 之后的 Codex。B 继续 13/14、16/17/18。
+A 线（接手会话）：票 22、23 后端已完成并提交；08 §4 动作协议剩余步骤 4（request_human 全局动作）归票 25、rediagnose 归票 37。A 线下一候选：票 21 前端待 Codex、票 24 product_state 三分与 R7（依赖 21）；或票 29 图片上传（依赖 21）。B 继续 13/14、16/17/18。

@@ -40,3 +40,12 @@
 - 会话锁持有到 run 结束是 08 §4 的要求，但意味着第二个动作可能等到接近 run deadline；若演示中体验不佳，可改为「锁只覆盖校验 + 启动，run 期间由 active_run 守卫返回 run_active」——这是产品决策，记入票 23 讨论。
 - 用 `async with` 风格的锁在「响应返回后仍需持有」的场景要手动 `__aenter__/__aexit__`，并用 handoff 标记决定由谁释放；本票第一版漏了 409 分支释放，靶向测试（短超时 + 409 后再动作）才抓出来。
 - 再次出现并行会话改同一文件（store.py）。约定升级：动手前在票面写 Owner 与目录边界；看到目录已有 Owner 的会话不得写入。
+
+## 票 22 / 23 动作协议
+- 会话锁持有到动作 run 结束，Postgres 实现独占一条池连接（默认池 10）：并发活跃动作数不能超过池余量，否则后续请求在 getconn 上等待直至 lock_timeout。演示规模足够；多副本或高并发前改 Redis lock（08 §4 允许），已记入票 46 / 49 评估项。
+- 「复用 action_id 重试」的真实语义不是重发 Command(resume)：resume 时 await_input 已消费 interrupt 并提交 checkpoint（version 前进），失败发生在 apply_action。此时 checkpoint 无中断、`next=('apply_action',)`、状态里留有 last_action。服务端据此识别同 action_id 的重试，以 None 输入让图从 apply_action 继续，并跳过 version / pending 校验；快照 pending_input 为空（不再等待用户输入）。其他 action_id 在这个半状态下得到 not_allowed_now。
+- 动作 run 以 error / cancelled 结束时撤销 session_actions 占位（否则重试只会重放失败流）；completed / awaiting_input 才回填结果。apply_action 以 card_id 幂等，重复继续不重放副作用。
+- 快照 pending_input 的优先级：active_run 非空 → 空；checkpoint 里有挂起 interrupt → 以它为准（interrupt_id = card_id，version 取快照 version）；图停在 apply_action 前且带 last_action → 空；否则回退到事件日志折叠（保留票 38 「取消后 pending 不变」的语义与其构造式测试）。
+- 校验顺序里把全局动作（request_human / rediagnose）放在 version 检查之前分流：08 §4 步骤 4 规定它们不校 version 与 pending，票 25 / 37 接入前统一返回 not_allowed_now。
+- 契约错误码 version_mismatch 改名 stale_version（票 23 票面用词）：`make contracts` 重生成 Schema 与前端类型，同时更新了 Codex 线的 frontend/src/api/events.test.ts 里的类型断言（生成物比对否则 CI 失败）。
+- 从 Postgres 重放的事件（jsonb）键序与实时事件不同，JSON 内容相同；比对事件流要按对象比较而不是按文本行比较。
