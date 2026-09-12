@@ -6,9 +6,9 @@
 ## 阶段
 1. 票 01 Compose 骨架与 /health 聚合 — complete（Docker 实测通过：五容器 healthy，停机 3–4 s 可见，down/up 数据保留）
 2. 票 02 前端空壳与健康灯 — complete（Codex 完成；14 项前端测试、构建与本机同源访问通过；镜像内前端构建与容器同源访问随票 01 Docker 实测通过。独立记录见 ../2026-09-12_smart-service-frontend-shell/）
-3. 票 03 contracts 包 — in_progress（Claude Code A 收尾中：contracts/tests、`make contracts` 导出 schema/、`make contracts-check`）
+3. 票 03 contracts 包 — complete（A 收尾：62 项测试、`make contracts` 导出稳定、`make contracts-check` 漂移检测验证可用）
 4. 票 04 TS 类型生成与 CI 比对 — in_progress（Codex 认领；负责前端生成/校验、独立 CI、fixtures 骨架；不修改票 03 的 Python 契约，Claude Code 请跳过票 04）
-5. 票 05 会话创建与 SSE 基础流 — pending（Claude Code A，票 03 后）
+5. 票 05 会话创建与 SSE 基础流 — pending（Claude Code A，下一票）
 6. 票 06 前端 reducer 与 SSE 解析 — pending（前端票，建议 Codex 在票 04 后认领）
 7. 票 07 快照接口与投影表 — pending（Claude Code A）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A：收尾票 03 后进入票 05；B：票 09 模型配置与路由；Codex：票 04。
+A：票 03 已完成，进入票 05；B：票 09 模型配置与路由；Codex：票 04。
