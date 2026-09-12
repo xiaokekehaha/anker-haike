@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A 线（接手会话）：票 22、23 后端、24、25 后端、29 收尾、30、39 后端、40 后端已完成。下一候选：票 41 订单与渠道核对 L1–L6 与 A3 完成（依赖 40，需要 orders_mock / dealers 数据表与 seed）。前端项（06、ReceiptCard、SummaryCard 等）待 Codex；真实视觉 / OCR 样本待票 42。
+A：46 / 47 / 49 完成，38 后端全 done。剩余无 Owner 且不依赖前端的候选：42 bake-off（需多厂商 key，只有 DeepSeek 时只能做脚本与 DeepSeek 单家实测）、44 可观测（碰 B 的 ModelRouter，需协调）、50 告警与运行手册（依赖 44）。前端堆积：06 → 08/16/21/23/28/38 前端部分（Codex）。

@@ -99,3 +99,9 @@
 - 上传凭证那条消息在 intake 提前返回，不做抽取，所以文本模型脚本只被前两轮消耗；但 synthesize / reply 的降级路径会吞掉异常，脚本放 RuntimeError 即可让它们快速降级。
 - 确认阶段跳过与收集阶段跳过语义不同：前者凭证图已在库里，状态用 needs_manual_check（人工可看图），后者才是 not_collected。
 - app/diagnose/vision.py 被另一会话在几分钟内重写又还原；跨票的辅助函数不要从别人的实现模块导入，宁可在自己的模块里保留 10 行重复。
+
+## 票 46 / 49 容器实测
+- `settings.REPO_ROOT = parents[2]` 在容器内是 `/`：任何用它拼默认路径的配置项，容器里都必须有显式环境变量（Dockerfile 已补 CATALOG / PLANS / FAULT_CARDS / RULES）。新增配置文件时同步加一行，否则只有容器会崩。
+- 多文件 compose 的相对路径全部以第一个文件的目录为基准，不是各自文件目录。
+- zsh 里把命令存进字符串变量不会按空格拆分，脚本用函数包装 compose 组合命令。
+- 分支保护不是仓库文件能表达的，CI 的「阻止合并」要在 GitHub 设置或用 gh api 开一次。

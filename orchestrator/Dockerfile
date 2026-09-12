@@ -23,11 +23,20 @@ ENV UV_INDEX_URL=$UV_INDEX_URL
 RUN uv sync --frozen --no-dev --no-install-project
 
 COPY orchestrator/app ./app
+# 票 47：启动期迁移校验需要 alembic.ini 与 migrations/
+COPY orchestrator/alembic.ini ./alembic.ini
+COPY orchestrator/migrations ./migrations
 COPY config ./config
 # 票 02：镜像内构建前端，不依赖宿主机事先生成 dist
 COPY --from=frontend-build /frontend/dist ./static/
 
-ENV PATH="/srv/.venv/bin:$PATH" MODELS_CONFIG_PATH=/srv/config/models.yaml STATIC_DIR=/srv/static
+# 容器内 REPO_ROOT 解析为 /，settings 里所有 config 默认路径都要显式指到 /srv/config（票 19/31/15 的配置在容器里首次启用）
+ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
+    MODELS_CONFIG_PATH=/srv/config/models.yaml \
+    CATALOG_CONFIG_PATH=/srv/config/products.yaml \
+    PLANS_CONFIG_PATH=/srv/config/plans.yaml \
+    FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
+    RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=3 \
   CMD curl -fsS http://localhost:8000/health/live || exit 1

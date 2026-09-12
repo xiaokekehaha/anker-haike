@@ -14,9 +14,9 @@ services:
       - "${PROXY_HTTP_PORT:-80}:80"
       - "${PROXY_HTTPS_PORT:-443}:443"
     volumes:
-      - ../proxy/templates:/etc/nginx/templates:ro
-      - ../proxy/certs:/etc/nginx/certs:ro         # scripts/proxy-cert.sh 生成自签，或放真实证书 fullchain.pem / privkey.pem
-      - ../proxy/.htpasswd:/etc/nginx/.htpasswd:ro  # scripts/proxy-passwd.sh 生成
+      - ./deploy/proxy/templates:/etc/nginx/templates:ro
+      - ./deploy/proxy/certs:/etc/nginx/certs:ro         # scripts/proxy-cert.sh 生成自签，或放真实证书 fullchain.pem / privkey.pem
+      - ./deploy/proxy/.htpasswd:/etc/nginx/.htpasswd:ro  # scripts/proxy-passwd.sh 生成
     depends_on:
       orchestrator:
         condition: service_healthy

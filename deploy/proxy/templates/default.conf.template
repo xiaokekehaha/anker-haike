@@ -25,7 +25,9 @@ server {
 
     # 探针无需认证；聚合健康仍需认证（含组件与模型配置信息）
     location = /health/live {
-        auth_basic off;
+        auth_basic off;                       # 探针免认证，但同样限速
+        limit_req  zone=perip burst=${PROXY_BURST} nodelay;
+        limit_req_status 429;
         proxy_pass $upstream;
     }
 
