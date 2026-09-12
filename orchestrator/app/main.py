@@ -14,6 +14,7 @@ from app.health.router import router as health_router
 from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
 from app.models.runtime import set_model_router
+from app.observability.alerts import build_from_settings, health_watch_loop, set_alert_manager
 from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
 from app.plans import PlanLibrary
 from app.replay.runtime import get_replay_package
@@ -69,6 +70,16 @@ async def _lifespan(app: FastAPI):
         else None
     )
     handler = configure_logging(settings.observability_log_path)
+    # 票 50：最简告警——规则挂在 record() 上；/health 连续失败由后台探测
+    from app.health.router import aggregator as health_aggregator
+
+    app.state.alerts = build_from_settings(settings)
+    set_alert_manager(app.state.alerts)
+    app.state.health_watch_task = asyncio.create_task(
+        health_watch_loop(health_aggregator, app.state.alerts, settings.alert_health_interval_s),
+        name="health-watch",
+    )
+    log.info("alerts sinks=%s thresholds=%s", [x.name for x in app.state.alerts.sinks], app.state.alerts.t)
     exporter = None
     if settings.langfuse_enabled:
         if settings.langfuse_public_key and settings.langfuse_secret_key:
@@ -89,6 +100,11 @@ async def _lifespan(app: FastAPI):
             await exporter.close()
         logging.getLogger().removeHandler(handler)
         handler.close()
+        if getattr(app.state, "health_watch_task", None) is not None:
+            app.state.health_watch_task.cancel()
+        if getattr(app.state, "alerts", None) is not None:
+            await app.state.alerts.drain()
+            set_alert_manager(None)
         if getattr(app.state, "retention_task", None) is not None:
             app.state.retention_task.cancel()
         await close_image_store(app)

@@ -10,6 +10,8 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Any
 
+from app.observability.runtime import record
+
 log = logging.getLogger("models.queue")
 
 
@@ -62,6 +64,7 @@ class BoundedGate:
                 self.rejected_total,
                 extra={"event": "model_queue_full", "task": task, **self.snapshot()},
             )
+            record("model_queue_full", task=task, **self.snapshot())  # 票 50：拒绝率告警的观测点
             raise CapacityExceeded(task, self.in_flight, self.limit)
         self.in_flight += 1
         self.admitted_total += 1

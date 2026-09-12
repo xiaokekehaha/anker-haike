@@ -7,6 +7,7 @@ from typing import Any
 from fastapi import APIRouter, Query, Response
 
 from app.health.checks import check_db, check_models, check_redis, check_weknora
+from app.observability.alerts import get_alert_manager
 from app.replay import runtime as replay_runtime
 from app.settings import settings
 
@@ -68,6 +69,9 @@ class HealthAggregator:
         replay = replay_runtime.describe()
         if replay is not None:
             body["replay"] = replay
+        manager = get_alert_manager()  # 票 50：活动告警与计数器
+        if manager is not None:
+            body["alerts"] = manager.snapshot()
         return body
 
 

@@ -75,6 +75,21 @@ class Settings(BaseSettings):
     retention_trace_days: float = Field(default=7.0, alias="RETENTION_TRACE_DAYS")
     retention_interval_s: float = Field(default=600.0, alias="RETENTION_INTERVAL_S")
     admin_token: str = Field(default="", alias="ADMIN_TOKEN")
+    # 票 50：最简告警。webhook（飞书 / 钉钉 / 企业微信 / Slack 兼容 JSON）与邮件二选一或都配；阈值见 alerts.Thresholds
+    alert_webhook_url: str = Field(default="", alias="ALERT_WEBHOOK_URL")
+    alert_email_to: str = Field(default="", alias="ALERT_EMAIL_TO")
+    alert_smtp_host: str = Field(default="", alias="ALERT_SMTP_HOST")
+    alert_smtp_port: int = Field(default=587, alias="ALERT_SMTP_PORT")
+    alert_smtp_user: str = Field(default="", alias="ALERT_SMTP_USER")
+    alert_smtp_password: str = Field(default="", alias="ALERT_SMTP_PASSWORD")
+    alert_smtp_from: str = Field(default="", alias="ALERT_SMTP_FROM")
+    alert_smtp_tls: bool = Field(default=True, alias="ALERT_SMTP_TLS")
+    alert_cooldown_s: float = Field(default=300.0, alias="ALERT_COOLDOWN_S")
+    alert_model_fail_streak: int = Field(default=3, alias="ALERT_MODEL_FAIL_STREAK")
+    alert_retrieval_empty_rate: float = Field(default=0.5, alias="ALERT_RETRIEVAL_EMPTY_RATE")
+    alert_queue_reject_rate: float = Field(default=0.2, alias="ALERT_QUEUE_REJECT_RATE")
+    alert_health_fail_streak: int = Field(default=3, alias="ALERT_HEALTH_FAIL_STREAK")
+    alert_health_interval_s: float = Field(default=60.0, alias="ALERT_HEALTH_INTERVAL_S")
     db_pool_max: int = Field(default=10, alias="DB_POOL_MAX")
     static_dir: str = Field(default=str(REPO_ROOT / "frontend" / "dist"), alias="STATIC_DIR")
 
@@ -87,6 +102,9 @@ class Settings(BaseSettings):
             "weknora_base_url": self.weknora_base_url,
             "weknora_api_key": "set" if self.weknora_api_key else "missing",
             "admin_token": "set" if self.admin_token else "missing",
+            "alerts": ",".join(
+                x for x, on in (("webhook", self.alert_webhook_url), ("email", self.alert_email_to)) if on
+            ) or "log-only",
             "retention": f"sessions={self.retention_session_hours}h traces={self.retention_trace_days}d",
             "model_lane": self.model_lane,
             "replay_case_id": self.replay_case_id or "-",

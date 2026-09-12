@@ -56,3 +56,5 @@
 
 - 票 48（接手会话，2026-09-13）：新增 `app/retention.py`（分类 TTL 清理：会话 24 h 整体删除含 checkpoint 三表、孤儿事件、JSONL 备份 7 d；`delete_session_data`；后台循环 + CLI `haike-retention`），store / image store 增按会话删除，router 增 `DELETE /sessions/{id}`（X-Admin-Token），privacy 增地址脱敏。真实 Postgres：purge 只删过期且无 active run 的会话；uvicorn 实测 DELETE 后七张表全 0、快照 404，`logs/events.jsonl` 正则扫描无手机 / 订单 / 地址明文。后端 413 项通过。
 
+- 票 50（接手会话，2026-09-13）：新增 `app/observability/alerts.py`（AlertManager 四规则 + 冷却 / 恢复 + WebhookSink / EmailSink；`record()` 钩子观察 model_call / knowledge_search / model_queue_full；lifespan 起 health-watch 循环；`/health` 增 alerts 块）。实测无效模型 key：3 次链耗尽 → webhook 4 s 收到 model_chain_failed，冷却抑制后续 9 次。运行手册 docs/runbook/operations.md 覆盖 04 §1 全部风险行 + 密钥轮换 + 速查 + 回滚自测清单。后端 422 项通过。
+
