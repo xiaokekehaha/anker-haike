@@ -141,8 +141,9 @@ async def test_skip_receipt_wrong_reason_or_kind_rejected(mem_runtime):
     )
 
 
-async def test_upload_receipt_while_awaiting_goes_to_extract_then_summary(mem_runtime):
-    """等待凭证时以 purpose=receipt 上传 → receipt.image_ids 记录 → extract（票 40 前占位）→ 摘要 needs_manual_check。"""
+async def test_upload_receipt_while_awaiting_goes_to_extract_then_confirm_card(mem_runtime):
+    """等待凭证时以 purpose=receipt 上传 → receipt.image_ids 记录 → extract（票 40 OCR，此处无模型 → 空字段）
+    → receipt_card + awaiting_input(confirm_receipt)；不再直接摘要。"""
     store = InMemoryImageStore()
     set_image_store(store)
     app.state.image_store = store
@@ -155,22 +156,19 @@ async def test_upload_receipt_while_awaiting_goes_to_extract_then_summary(mem_ru
     finally:
         set_image_store(None)
         app.state.image_store = None
-    assert _progress(events) == [
-        ("intake", None),
-        ("escalate", "extract"),
-        ("escalate", "summarize"),
-    ]
+    assert _progress(events) == [("intake", None), ("escalate", "extract")]
     assert events[0]["resumed"] is False  # 新消息 run，不是 Command(resume)
-    summary = _summary(events)
-    assert summary["receipt"]["status"] == "needs_manual_check"
-    assert summary["receipt"]["next_step"] == "凭证已收到，待人工核实"
+    types = [e["type"] for e in events]
+    assert "receipt_card" in types and "escalation_summary" not in types
+    pending = next(e for e in events if e["type"] == "awaiting_input")
+    assert pending["kind"] == "confirm_receipt" and events[-1]["reason"] == "awaiting_input"
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
-    assert len(st["receipt"]["image_ids"]) == 1 and st["pending_card"] is None
+    assert len(st["receipt"]["image_ids"]) == 1 and st["pending_card"]["kind"] == "confirm_receipt"
     ref = next(r for r in st["image_refs"] if r["image_id"] == st["receipt"]["image_ids"][0])
     assert ref["purpose"] == "receipt"
-    # 凭证图不进入读图（vision 只看 fault）：没有 diagnose.vision tool_call
-    assert not [e for e in events if e["type"] == "tool_call"]
-    assert snap.pending_input is None
+    # 凭证图不进入读图（vision 只看 fault）：没有 diagnose.vision tool_call，只有 receipt_ocr
+    assert [e["name"] for e in events if e["type"] == "tool_call"] == ["warranty.receipt_ocr"] * 2
+    assert snap.pending_input is not None and snap.pending_input.kind == "confirm_receipt"
     um = [i for i in snap.timeline if i.kind == "user_message"][-1]
     assert um.images[0].purpose == "receipt"
 

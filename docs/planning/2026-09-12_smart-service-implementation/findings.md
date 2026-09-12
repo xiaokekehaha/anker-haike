@@ -93,3 +93,9 @@
 - escalate 入口节点只分流不发摘要，原摘要逻辑成为 summarize 节点。所有进入 escalate 的边不必改，包括票 33 的 retrieve → escalate(R5)。
 - 直接摘要集合扩到 R5 / R7 / R8：R5「无可用知识」时凭证与处理无关，且票 33 会话的 R5 用例期望立即出摘要；R7 / R8 没有可核对的受支持产品。09 §5.1 需回填这条决定。
 - receipt 是 checkpoint 内部状态，摘要的 ReceiptOutcome 只取 status / verified_facts / conflicts / next_step，不输出资格结论（D16）；票 40 / 41 只需替换 receipt_extract 占位并填 fields / confidence / edited。
+
+## 票 40 凭证识别
+- 单队列的 FakeChatModel 在整图链路里不够用：同一 run 内 intake / synthesize / reply.stream 都会消耗脚本，OCR 拿到的可能是别的任务的输出。测试改为按 alias 分发两个假模型（vl_* → OCR 脚本，其余 → 文本脚本），以后含多任务的图级测试沿用。
+- 上传凭证那条消息在 intake 提前返回，不做抽取，所以文本模型脚本只被前两轮消耗；但 synthesize / reply 的降级路径会吞掉异常，脚本放 RuntimeError 即可让它们快速降级。
+- 确认阶段跳过与收集阶段跳过语义不同：前者凭证图已在库里，状态用 needs_manual_check（人工可看图），后者才是 not_collected。
+- app/diagnose/vision.py 被另一会话在几分钟内重写又还原；跨票的辅助函数不要从别人的实现模块导入，宁可在自己的模块里保留 10 行重复。

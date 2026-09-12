@@ -9,11 +9,11 @@
 3. 票 03 contracts 包 — complete（A 收尾：62 项测试、`make contracts` 导出稳定、`make contracts-check` 漂移检测验证可用）
 4. 票 04 TS 类型生成与 CI 比对 — complete（Codex；50 项前端测试 + 6 项生成器回归、双端 fixtures、类型检查与构建通过；CI 已接入，未触发远端运行）
 5. 票 05 会话创建与 SSE 基础流 — complete（A：orchestrator/app/sessions，11 项测试 + 真实 Postgres 链路实测）
-6. 票 06 前端 reducer 与 SSE 解析 — pending（前端票，建议 Codex 在票 04 后认领）
+6. 票 06 前端 reducer 与 SSE 解析 — complete（Claude Code B，含前端集成）
 7. 票 07 快照接口与投影表 — complete（A：GET /sessions/{id}、timeline 折叠、sessions-rebuild CLI，真实 Postgres 删行重建一致）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
 9. 票 09–14 模型层（M2） — complete（Claude Code B：09–12 complete；13 / 14 后端 complete，前端 AssistantBubble / 替换标注待 Codex）
-10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、18、19、26、27、29、31 已由 Claude Code B 完成，32 核心完成；16、28 后端完成。Codex 已停：SummaryCard / EvidenceDrawer / App 对话接线待另排）
+10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、16、17、18、19、26、27、28、29、31、33 已由 Claude Code B 完成，32 核心完成；前端集成完成）
 
 ## 并行分工（2026-09-12 起，三方同一工作树）
 - **Claude Code A（会话骨架线）**：票 03 收尾 → 05 → 07 → 08；目录 `contracts/`、`orchestrator/app/sessions/`（含事件日志、快照）。
@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A 线（接手会话）：票 22、23 后端、24、25 后端、29 收尾、30、39 后端已完成。下一候选：票 40 凭证识别 ReceiptCard（依赖 39，需要视觉模型 key 做真实 OCR，假 router 可先做通路）、票 34（依赖 33，另一会话进行中）。前端项（06、21/23/25/29/39 接线）待 Codex。
+A 线（接手会话）：票 22、23 后端、24、25 后端、29 收尾、30、39 后端、40 后端已完成。下一候选：票 41 订单与渠道核对 L1–L6 与 A3 完成（依赖 40，需要 orders_mock / dealers 数据表与 seed）。前端项（06、ReceiptCard、SummaryCard 等）待 Codex；真实视觉 / OCR 样本待票 42。

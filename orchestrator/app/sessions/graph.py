@@ -488,6 +488,16 @@ async def await_input(state: SessionState) -> SessionState:
                 "candidates": pc["payload"]["candidates"],
             }
         )
+    elif pc["kind"] == "confirm_receipt":
+        # 票 40：字段确认卡；confidence < 0.7 前端标黄，unreadable 为空字段可手输
+        writer(
+            {
+                "type": "receipt_card",
+                "card_id": pc["card_id"],
+                "version": current_version(),
+                **pc["payload"],
+            }
+        )
     # interrupt 载荷即 awaiting_input 事件的业务字段。version 用节点内 langgraph_step：它等于本次中断
     # 后 checkpoint 推导出的 version（与 done.version 一致）；不能在运行器里查 checkpoint——
     # AsyncPostgresSaver 的写入相对 updates 流是异步的，查早了会拿到旧值（票 20 实测）
@@ -512,12 +522,24 @@ async def apply_action(state: SessionState) -> SessionState:
         # 票 25：awaiting_input 中点「请求人工」——卡片作废、不记结果，按 R3 升级
         update.update(_human_request_update(state, action))
     elif action.get("kind") == "skip_receipt":
-        # 票 39：跳过凭证 → receipt.status=not_collected（记 skipped_reason）→ summarize
+        # 票 39：跳过凭证 → receipt.status=not_collected（记 skipped_reason）→ summarize；
+        # 票 40：字段确认阶段跳过 → 凭证图已在，needs_manual_check
         reason = (action.get("payload") or {}).get("reason", "none")
         results[pc.get("card_id", "")] = {"skipped_reason": reason}
-        update.update(
-            {"card_results": results, "receipt": receipt_mod.skipped_receipt(dict(state), reason)}
+        receipt = (
+            receipt_mod.skipped_after_upload(dict(state), reason)
+            if pc.get("kind") == "confirm_receipt"
+            else receipt_mod.skipped_receipt(dict(state), reason)
         )
+        update.update({"card_results": results, "receipt": receipt})
+    elif action.get("kind") == "confirm_receipt":
+        # 票 40：用户确认 / 修改字段（edited[] 记录）→ lookup（票 41）；本票占位 status
+        payload = action.get("payload") or {}
+        fields = dict(payload.get("fields") or {})
+        edited = list(payload.get("edited") or [])
+        receipt = receipt_mod.confirmed_receipt(dict(state), fields, edited)
+        results[pc.get("card_id", "")] = {"confirmed_fields": receipt["fields"], "edited": edited}
+        update.update({"card_results": results, "receipt": receipt})
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -965,13 +987,63 @@ async def prepare_receipt(state: SessionState) -> SessionState:
 
 
 async def receipt_extract(state: SessionState) -> SessionState:
-    """票 40 之前的占位：凭证已收到，不做 OCR，标 needs_manual_check 交摘要（票 40 接 warranty.receipt_ocr）。"""
+    """票 40：warranty.receipt_ocr（internal，视觉）→ fields / confidence / unreadable → 写 pending_card(confirm_receipt)。
+
+    识别失败或无视觉模型：字段为空、全部 unreadable，卡片仍发出供手输或跳过。tool_call(warranty.receipt_ocr) 记录过程。
+    """
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "escalate", "substage": "extract"})
+    session_id, run_id = state.get("session_id", ""), state.get("run_id", "")
+    receipt = dict(state.get("receipt") or {})
+    image_ids = list(receipt.get("image_ids") or [])
+    tool_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:warranty.receipt_ocr").hex
+    writer(
+        {
+            "type": "tool_call",
+            "tool_id": tool_id,
+            "name": "warranty.receipt_ocr",
+            "status": "started",
+            "summary": f"识别 {len(image_ids)} 张购买凭证",
+        }
+    )
+    ocr = await receipt_mod.extract_receipt(
+        get_model_router(),
+        current_image_store(),
+        session_id=session_id,
+        image_ids=image_ids,
+        refs=list(state.get("image_refs") or []),
+        lane=_lane(),
+        summary=_state_summary(state),
+    )
+    readable = [k for k in receipt_mod.FIELDS if ocr.fields.get(k)]
+    writer(
+        {
+            "type": "tool_call",
+            "tool_id": tool_id,
+            "name": "warranty.receipt_ocr",
+            "status": "finished" if ocr.status == "ok" else "failed",
+            "summary": (
+                f"识别出 {len(readable)} 个字段"
+                + (f"，{len(ocr.unreadable)} 个看不清" if ocr.unreadable else "")
+                if ocr.status == "ok"
+                else "凭证识别不可用，请手动填写或跳过"
+            ),
+        }
+    )
+    new_receipt = receipt_mod.extracted_receipt(dict(state), ocr)
     return {
         "stage": "escalate",
-        "substage": "extract",
-        "receipt": receipt_mod.extracted_placeholder(dict(state)),
+        "substage": "confirm_fields",
+        "receipt": new_receipt,
+        "model_trace": [
+            *state.get("model_trace", []),
+            *([ocr.model_trace] if ocr.model_trace else []),
+        ],
+        "pending_card": {
+            "card_id": receipt_mod.confirm_card_id(session_id, image_ids),
+            "kind": "confirm_receipt",
+            "payload": receipt_mod.card_payload(new_receipt),
+        },
     }
 
 
@@ -1080,7 +1152,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         },
     )
     g.add_edge("prepare_receipt", "await_input")
-    g.add_edge("receipt_extract", "summarize")
+    g.add_edge("receipt_extract", "await_input")  # 票 40：确认字段卡片
     g.add_edge("summarize", END)
     g.add_node("disambiguate", disambiguate)
     g.add_node("prepare_card", prepare_card)
