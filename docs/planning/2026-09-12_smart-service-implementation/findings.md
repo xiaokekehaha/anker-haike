@@ -71,3 +71,8 @@
 - 取消 active run 必须放在取会话锁之前：动作 run 持锁到结束，先取锁会等到 30 s 超时。cancel 等待 ≤ 5 s 收尾后再进正常流程，所以 run_active 409 对 request_human 实际不会出现。
 - 范围外品类只有品类词、没有型号时，摘要的 product 由 out_of_scope 节点写成「{品类名}（型号未确认）」的 product_confirmed（02 §5 sku 可选），避免改 B 的 build_summary。
 - 工作树并发：票 29、32、47 的会话同时在改 sessions/router.py、graph.py、runtime.py。手测前主库表 owner 被迁移过程短暂改动导致 setup 失败，稍后恢复；手测脚本改为固定端口 + 结束时 pkill，避免残留进程占端口造成误判。
+
+## 票 29 图片
+- 票 47 之后任何新表都要同时出现在 migrations/ 与 store 的 DDL：store.setup() 用 IF NOT EXISTS 保证旧环境可用，迁移用同样语句「收编」。test_db_migrations 现在按各 store 的 DDL 逐表核对，漏加迁移会直接失败。
+- 图片上传走同一个 POST /messages 多部分表单，拒绝发生在 run 开始之前，所以事件日志、version、快照都不留痕；前端要靶向 413 / 415 的 code 内联提示，而不是当成 SSE 错误事件。
+- 前端 Composer / UserBubble 已按票面完成但 App 仍 CHAT_OFFLINE，onSend(text, files, purpose) 需要票 06 的 reducer 接线；手测时用 curl -F 多部分表单，Python 端用 png_bytes() 构造任意体积的合法 PNG。

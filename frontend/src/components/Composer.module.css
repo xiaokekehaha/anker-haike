@@ -19,3 +19,10 @@
   .tools { gap: 8px; padding: 8px; }
   .human { padding: 7px 10px; }
 }
+
+.attachments { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; padding: 0; }
+.attachments li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.attachments img, .thumbFallback { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid var(--color-border, #d6dbe3); display: grid; place-items: center; font-size: 0.8rem; color: var(--color-text-muted, #666); }
+.attachments button { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; border: none; background: var(--color-text, #222); color: #fff; line-height: 1; cursor: pointer; }
+.fileMeta { font-size: 0.72rem; color: var(--color-text-muted, #666); }
+.imageError { margin: 0.4rem 0 0; color: var(--color-danger, #b3261e); font-size: 0.85rem; }
