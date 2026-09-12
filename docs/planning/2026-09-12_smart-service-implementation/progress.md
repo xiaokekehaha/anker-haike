@@ -60,3 +60,5 @@
 
 - 票 45（接手会话，2026-09-13）：新增 `app/inspection/`（Harness 进程内运行时 + TaskFake 按 task 分脚本假模型（含流式）+ ScriptedAdapter + run_metric 捕获；29 个 stub 场景分 boundary / routing / rewrite / concurrency 四组，可选 live 组；报告 JSON / Markdown 到 reports/inspection/，findings.md 固定块回填冻结判定），`make inspect` / `haike-inspect`。开发中两处返工：TaskFake 的流式调用不经 `_next`，需同样按 task 选队列；步骤卡 card_id 只由 (session, plan, step) 决定，纠正型号后若仍同计划则「旧卡 = 新卡」，过期按钮场景改为让第二轮换计划。全组 29/29 通过；`--live` 对本机 DeepSeek + WeKnora 跑 A1：first_visible 4.3 s、card_ready 5.8 s、首卡滚刷缠发。后端 432 项通过。
 
+- 收尾盘点（接手会话，2026-09-13）：票 32 复核为 done-with-gap（[~] 项分别由票 30 / 38 / 45 覆盖并注明差异；仅剩人工标注对照报告）；票 40 / 42 的缺口均为外部 key。README 增「完成状态」节。本轮共提交票 36、37（含 23 联动）、48、50、45 五张票；后端 432 项、前端 123 项、ruff / tsc / build 通过；巡检 29/29（+ live A1）通过，findings.md 判定「可冻结」。
+
