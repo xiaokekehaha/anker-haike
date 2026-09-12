@@ -4,11 +4,13 @@
 
 **Blocked by:** 08（事件续接与前端恢复态）
 
-**Status:** in-progress（2026-09-12 后端 done；前端「取消按钮 + abort」待 Codex 随票 06/08 前端部分接）
+**Owner:** Claude Code A（后端；第三项「真实模型流被中止」随票 13 后端完成后由 A 补验证）
+
+**Status:** in-progress（2026-09-12 后端三项全部 done；前端「取消按钮 + abort」待 Codex 随票 06/08 前端部分接）
 
 - [x] 取消后快照含 cancelled_run，pending_input 与取消前一致（fold_timeline 已按 08 §7 保留取消前 pending；测试含构造的 awaiting_input 上一轮）
 - [x] 前端仅断开连接时 run 继续跑到完成，快照可读到结果（票 08 RunManager 保证；uvicorn 实测 1 s 断开后 run 跑到 done(completed)）
-- [ ] 取消中的模型调用被中止不再计费重试（机制已就位：取消即 cancel 图任务，节点内 await 收到 CancelledError，占位节点 sleep 实测 0.03 s 中止；真实模型调用的中止待票 13/14 接入 ModelRouter 后验证，ModelRouter 需把 CancelledError 视为终止而非可重试错误）
+- [x] 取消中的模型调用被中止不再计费重试（tests/test_sessions_cancel_stream.py：慢流假模型收到 CancelledError 且未跑完、主模型只调 1 次、备用模型 0 次、无 error 事件、无 completed 的 message_end、done(cancelled)；ModelRouter.stream 只捕获 Exception，CancelledError 直达）
 
 **设计依据：** 08 §7；05 §6
 

@@ -89,3 +89,11 @@ db-restore: ## 恢复：make db-restore FILE=haike_20260912T120000Z.dump（停�
 kb-snapshot-export: ## 导出 WeKnora 知识库快照
 	cd orchestrator && uv run --env-file ../.env haike-kb snapshot export
 kb-ingest: kb-snapshot-export
+
+## ---- 发布 / 回滚 / CI（票 49）----
+release: ## 生成 RELEASE.md 并快照 config/ 到 releases/<id>/：make release [REL=20260912-abc1234]
+	scripts/release.sh $(REL)
+rollback: ## 切回某版 config/ 并重启编排服务，等健康检查：make rollback REL=<release_id>
+	scripts/rollback.sh $(REL)
+ci-local: ## 本机复现 CI 全部检查（ruff / db-check / pytest / contracts / 前端）
+	scripts/ci-local.sh

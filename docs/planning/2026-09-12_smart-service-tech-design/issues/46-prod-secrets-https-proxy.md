@@ -4,7 +4,9 @@
 
 **Blocked by:** 01（Compose 骨架与 /health 聚合）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+**Owner:** Claude Code A（2026-09-12 认领；`deploy/proxy/`（Caddy 或 nginx HTTPS 反代）、compose profile、访问控制与密钥管理文档；不改业务代码）
 
 - [ ] 镜像与仓库中扫描不到任何真实密钥
 - [ ] 通过 HTTPS 访问且 SSE 首事件不被代理缓冲

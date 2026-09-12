@@ -13,7 +13,7 @@
 7. 票 07 快照接口与投影表 — complete（A：GET /sessions/{id}、timeline 折叠、sessions-rebuild CLI，真实 Postgres 删行重建一致）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
 9. 票 09–14 模型层（M2） — complete（Claude Code B：09–12 complete；13 / 14 后端 complete，前端 AssistantBubble / 替换标注待 Codex）
-10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、18、19、26、27、31 已由 Claude Code B 完成；16、28 后端完成，SummaryCard / EvidenceDrawer 待 Codex）
+10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、18、19、26、27、29、31 已由 Claude Code B 完成，32 核心完成；16、28 后端完成。Codex 已停：SummaryCard / EvidenceDrawer / App 对话接线待另排）
 
 ## 并行分工（2026-09-12 起，三方同一工作树）
 - **Claude Code A（会话骨架线）**：票 03 收尾 → 05 → 07 → 08；目录 `contracts/`、`orchestrator/app/sessions/`（含事件日志、快照）。

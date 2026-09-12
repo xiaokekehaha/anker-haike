@@ -1,0 +1,54 @@
+# 路由唯一来源（model-selection.md §3.7）。别名 → 真实模型 ID 联调前核对后填写（票 42 冻结）；id 为 TBD 的别名启动不报错，
+# 但探测 / 调用时按「未配置」跳过。providers.lane 标注厂商通道，domestic 链尾接 overseas 别名即跨通道降级。
+# 已填 id：deepseek-chat（默认测试厂商，票 09 实测）、claude-sonnet-5 / claude-haiku-4-5-20251001（Anthropic 当前公开 ID）。
+version: 2026-09-12.1
+default_lane: domestic
+
+providers:
+  anthropic: {sdk: anthropic, api_key_env: ANTHROPIC_API_KEY, lane: overseas}
+  google:    {sdk: google_genai, api_key_env: GOOGLE_API_KEY, lane: overseas}
+  dashscope: {sdk: openai, base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1", api_key_env: DASHSCOPE_API_KEY}
+  deepseek:  {sdk: openai, base_url: "https://api.deepseek.com/v1", api_key_env: DEEPSEEK_API_KEY}
+  zhipu:     {sdk: openai, base_url: "https://open.bigmodel.cn/api/paas/v4", api_key_env: ZHIPU_API_KEY}
+
+models:
+  sonnet:       {provider: anthropic, id: claude-sonnet-5, vision: true,  structured: native,      max_images: 20, timeout_s: 20}
+  haiku:        {provider: anthropic, id: claude-haiku-4-5-20251001, vision: true,  structured: native,      max_images: 20, timeout_s: 15}
+  gemini-flash: {provider: google,    id: TBD, vision: true,  structured: native,      max_images: 16, timeout_s: 20}
+  qwen-flash:   {provider: dashscope, id: TBD, vision: false, structured: json_object, timeout_s: 15}
+  qwen-plus:    {provider: dashscope, id: TBD, vision: false, structured: native,      timeout_s: 20}
+  qwen-max:     {provider: dashscope, id: TBD, vision: false, structured: native,      timeout_s: 20}
+  qwen-vl:      {provider: dashscope, id: TBD, vision: true,  structured: json_object, max_images: 10, timeout_s: 30}
+  deepseek:     {provider: deepseek,  id: deepseek-chat, vision: false, structured: json_object, timeout_s: 20}
+  glm:          {provider: zhipu,     id: TBD, vision: false, structured: native,      timeout_s: 20}
+  glm-flash:    {provider: zhipu,     id: TBD, vision: false, structured: native,      timeout_s: 15}
+  glm-v:        {provider: zhipu,     id: TBD, vision: true,  structured: native,      max_images: 10, timeout_s: 30}
+  embed-primary:  {provider: dashscope, id: text-embedding-v4, kind: embedding, dim: 1024}
+  rerank-primary: {provider: dashscope, id: gte-rerank-v2, kind: rerank}
+
+lanes:
+  domestic:
+    intake:                {chain: [qwen-flash, deepseek, haiku],   effort: low,    max_tokens: 512}
+    disambiguate.clarify:  {chain: [qwen-flash, glm-flash],         effort: low,    max_tokens: 256}
+    diagnose.vision:       {chain: [qwen-vl, glm-v, sonnet],        effort: medium, needs_vision: true}
+    diagnose.synthesize:   {chain: [qwen-max, deepseek, sonnet],    effort: high}  # deepseek 为当前唯一可用位
+    guide.step:            {chain: [qwen-max, glm, sonnet],         effort: medium}
+    reply.stream:          {chain: [qwen-plus, glm-flash, deepseek], effort: low,    stream: true}  # deepseek 为当前唯一可用的降级位（票 42 冻结前）
+    escalate.summary:      {chain: [deepseek, qwen-flash],          effort: low}
+    warranty.receipt_ocr:  {chain: [qwen-vl, glm-v, sonnet],        effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [qwen-flash, deepseek],           effort: low,    max_tokens: 128}  # 票 32：无命中一次改写，默认关闭（config/retrieval.yaml）
+  overseas:
+    intake:                {chain: [haiku, sonnet],                 effort: low,    max_tokens: 512}
+    disambiguate.clarify:  {chain: [haiku, sonnet],                 effort: low}
+    diagnose.vision:       {chain: [sonnet, gemini-flash],          effort: medium, needs_vision: true}
+    diagnose.synthesize:   {chain: [sonnet, gemini-flash],          effort: high}
+    guide.step:            {chain: [sonnet, haiku],                 effort: medium}
+    reply.stream:          {chain: [sonnet, haiku],                 effort: low,    stream: true}
+    escalate.summary:      {chain: [haiku, sonnet],                 effort: low}
+    warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],          effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [haiku, sonnet],                 effort: low,    max_tokens: 128}
+
+# same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
+retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}
+# 全局同时进行的模型调用上限，满则立即返回 error(recoverable=true)（07 §13）
+concurrency: {max_in_flight: 50}

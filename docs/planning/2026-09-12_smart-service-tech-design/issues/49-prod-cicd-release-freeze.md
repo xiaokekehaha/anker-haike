@@ -4,7 +4,9 @@
 
 **Blocked by:** 04（前端 TS 类型生成、CI 比对与 fixtures 骨架）、42（bake-off 评测与模型 ID 冻结）
 
-**Status:** ready-for-agent
+**Status:** claimed
+
+**Owner:** Claude Code A（2026-09-12 认领；`.github/workflows/`（后端 / contracts / 前端 / db-check 四条 CI）、RELEASE.md 骨架；模型 ID 冻结项等票 42）
 
 - [ ] 每次提交触发 CI，失败阻止合并
 - [ ] 镜像 tag 与 RELEASE.md 版本一一对应

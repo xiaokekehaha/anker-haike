@@ -19,6 +19,9 @@ services:
       MODEL_LANE: ${MODEL_LANE:-domestic}
     ports:
       - "${ORCHESTRATOR_PORT:-8000}:8000"
+    volumes:
+      # 票 49：config/ 以只读卷覆盖镜像内拷贝，回滚 = 换目录 + 重启，不重建镜像
+      - ./config:/srv/config:ro
     depends_on:
       postgres:
         condition: service_healthy

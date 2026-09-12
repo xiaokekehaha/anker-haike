@@ -76,3 +76,9 @@
 - 票 47 之后任何新表都要同时出现在 migrations/ 与 store 的 DDL：store.setup() 用 IF NOT EXISTS 保证旧环境可用，迁移用同样语句「收编」。test_db_migrations 现在按各 store 的 DDL 逐表核对，漏加迁移会直接失败。
 - 图片上传走同一个 POST /messages 多部分表单，拒绝发生在 run 开始之前，所以事件日志、version、快照都不留痕；前端要靶向 413 / 415 的 code 内联提示，而不是当成 SSE 错误事件。
 - 前端 Composer / UserBubble 已按票面完成但 App 仍 CHAT_OFFLINE，onSend(text, files, purpose) 需要票 06 的 reducer 接线；手测时用 curl -F 多部分表单，Python 端用 png_bytes() 构造任意体积的合法 PNG。
+
+## 票 49 发布与回滚
+- 把宿主机 config/ 挂进容器后，镜像与配置就必须成对：旧镜像 + 新 models.yaml（多出字段）直接被 `extra=forbid` 拒绝并重启循环。RELEASE.md 同时记录镜像 tag 与 config 快照，回滚必须两者同版。
+- 共享工作树上跑回滚会覆盖别人未提交的 config 修改；脚本会把回滚前的 config 留在 releases/_pre-rollback/，演练时不要急着删。
+- 「失败阻止合并」是 GitHub 分支保护设置，仓库文件里做不到；命令写在 runbook/release.md §2，需要仓库管理员执行。
+- colima 里 `docker build` 拉 PyPI 包很慢（psycopg-binary 6.5 MB 卡了十几分钟），镜像重建要放后台并在 CI 里用 GHA 缓存；本机验证优先用 uvicorn 直连。
