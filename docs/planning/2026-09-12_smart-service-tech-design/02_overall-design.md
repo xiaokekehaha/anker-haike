@@ -42,8 +42,9 @@
 | done | 结束，记录结果 | | |
 
 补充边：
-- guide / verify 阶段用户发送自由文本或图片 → `rediagnose` 动作 → 过 CP-in → 回到 diagnose，保留 steps_executed。
+- guide / verify 阶段用户发送自由文本或图片 → `rediagnose` 动作 → 过 CP-in → 复用 intake 更新有效症状 → diagnose，保留 steps_executed 与 counters；明确纠正产品时先回 disambiguate 确认范围（03 §1.4.1）。
 - `request_human` 在任何状态可用，取消 active run 后进入 escalate。
+- 路由允许继续 / 澄清 / 升级三种结果；缺失或冲突先用现有文字消息澄清，连续两次澄清答复后仍不明触发 R7（09 §1.1），不强行生成排障步骤。
 - 情绪识别在每个用户消息进入时运行，结果写入状态并注入系统提示，不单独占状态。
 - 等待用户输入的节点一律拆成 prepare_card → await_input → apply_action 三段，见 08_session-execution-contract.md §3。
 
@@ -51,9 +52,9 @@
 
 ### 4.1 主链路（A1 排障成功）
 1. 前端上传文本与图片（purpose=fault）→ 编排服务保存图片到 PostgreSQL bytea 并在状态中存引用，发出 run_started 与 progress(intake)。
-2. intake 节点：CP-in 规则检查（安全词、请求人工）→ LLM 结构化抽取 {产品线索, 症状, 情绪}（internal 调用，不进聊天流）→ reply.stream 生成安抚句（user_visible）。
+2. intake 节点：CP-in 规则检查（安全词、请求人工）→ 一次 LLM 结构化抽取 {产品线索, 症状, 情绪, wants_human}（internal 调用，不进聊天流）→ reply.stream 生成安抚句（user_visible）。意图处理复用规则、动作 kind 与当前状态，不另设分类服务。
 3. disambiguate 节点：规则服务按线索查产品目录；单命中直接确认，发 progress(diagnose)。
-4. diagnose 节点：文本 query 先发检索；同时多模态 LLM 读图输出观察（过 CP-in）；观察有新增信息时补一次检索。检索受 KnowledgeScope 约束（09 §2.3）。LLM 汇总为 plans_ranked [{plan_id, confidence, evidence_ids}]，无对应计划的假设丢弃。
+4. diagnose 节点：现有 retrieval_query 按已确认产品 / 品类与有效症状规范化文本 query，再调用 KnowledgeAdapter 召回；同时多模态 LLM 读图输出观察（过 CP-in）。图片新增信息与可选无命中改写共享一次补检索名额：改写默认关闭，开启后只在真实 no_match 时通过 ModelRouter 返回一个 query，在同一 KnowledgeScope 内重查，unavailable 不触发。检索 / 重排复用知识层；细则见 03 §1.4.1–§1.4.2、09 §4.1。LLM 汇总为 plans_ranked [{plan_id, confidence, evidence_ids}]，无对应计划的假设丢弃。
 5. guide：prepare_card 持久化 pending_card（card_id 稳定）→ CP-pre-step → await_input 发 step_card + awaiting_input → interrupt → done(awaiting_input)。
 6. 用户点「已解决」→ POST actions（action_id, expected_version）→ apply_action 去重校验 → verify 标记 solved → done(completed)。
 
@@ -68,6 +69,8 @@
 - 进入上下文：最近 K 轮对话、当前状态摘要（产品、假设、已执行步骤）、检索 top-k 片段、图片观察结果。
 - 不进入上下文：完整历史、原始图片二进制（仅首次读图时传）、用户手机号等标识。
 
+2026-09-12 实现核查：上述为目标设计，当前 Prompt 尚未接入最近对话窗口，不能以 checkpoint 持久化代表多轮语义上下文已经实现。ContextBuilder、追问分类、事实增量合并、摘要预算与用户长期记忆扩展见 [连续追问与记忆设计补充](../2026-09-12_conversation-memory-design/architecture-requirements.md)。其中 M1–M3 补齐原会话内需求，M4–M5 为原范围以外的跨会话扩展方案。
+
 ## 5. 会话状态模型
 
 | 字段 | 类型 | 写入者 | 消费者 |
@@ -75,6 +78,7 @@
 | session_id / version | string / int | 编排 | 全部；version 每次 checkpoint 提交 +1 |
 | stage / substage | enum | 状态机 | 进度条 |
 | emotion | {level, strategy} | intake / 每轮 | 系统提示 |
+| clarification | {reason: product / symptom / conflict, attempts} | intake / disambiguate | 澄清、R7；内部状态，计数规则见 09 §1.1 |
 | safety_flags | list[{rule_id, source, ts}] | CP-in / CP-pre-step | 规则、摘要 |
 | product_state | confirmed_sku / category_only / unknown | disambiguate | 检索范围、guide 校验 |
 | product_candidates | list[{sku, name, category, in_scope}] | disambiguate | 产品卡片 |
@@ -91,6 +95,7 @@
 | receipt | {status, fields, confidence, edited, verified_facts, conflicts, next_step} | escalate 子流程 | 凭证卡、摘要 |
 | escalation | {triggered, rule_id, reason} | escalate | 摘要 |
 | retrieval_trace | list[{query, scope, status, hit_ids, scores}] | diagnose | 来源展示、日志 |
+| retrieval_control | {run_id, rounds_used, rewrite_attempted} | diagnose | 每 run 的补救次数与恢复控制；沿用 checkpoint，不增加前端字段 |
 | model_trace | list[{task, model_used, lane, attempts}] | ModelRouter | 摘要、Langfuse |
 
 ## 6. 部署视图

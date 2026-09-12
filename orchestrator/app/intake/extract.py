@@ -150,6 +150,6 @@ async def extract_intake(
             "task": "intake",
             "model_used": res.model_used,
             "lane": res.lane,
-            "attempts": len(res.attempts),
+            "attempts": max(1, sum(1 for a in res.attempts if a.outcome != "skipped")),
         },
     )

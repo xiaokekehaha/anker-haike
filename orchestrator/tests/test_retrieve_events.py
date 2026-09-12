@@ -62,17 +62,12 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     for e in events:
         parse_event(e)
     types = [e["type"] for e in events]
-    assert types == [
-        "run_started",
-        "progress",
-        "progress",
-        "progress",
-        "tool_call",
-        "tool_call",
-        "evidence",
-        "progress",
-        "done",
-    ]
+    # 票 33 起：有假设 → reply 后进入 guide（多一个 progress(guide)）
+    assert types[:4] == ["run_started", "progress", "progress", "progress"]
+    assert types[4:7] == ["tool_call", "tool_call", "evidence"] and types[-1] == "done"
+    # 票 34：guide 发 step_card + awaiting_input 后中断
+    assert types[-3:] == ["step_card", "awaiting_input", "done"]
+    assert set(types[7:-3]) == {"progress"}
     tools = [e for e in events if e["type"] == "tool_call"]
     assert [t["status"] for t in tools] == ["started", "finished"] and tools[0]["tool_id"] == tools[
         1
@@ -132,9 +127,12 @@ async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
         "summary"
     ]
     assert "evidence" not in [e["type"] for e in events]
-    assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
-    assert [e["stage"] for e in events if e["type"] == "progress"][-1] == "diagnose"
-    assert state.values["knowledge_status"] == "unavailable" and snap["stage"] == "diagnose"
+    assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
+    assert "diagnose" in [e["stage"] for e in events if e["type"] == "progress"]
+    assert state.values["knowledge_status"] == "unavailable" and snap["stage"] in (
+        "diagnose",
+        "guide",
+    )
 
 
 async def test_no_match_has_text_marker(mem_runtime):
@@ -158,7 +156,7 @@ async def test_adapter_disabled_is_failed_tool_call(mem_runtime):
     finally:
         set_rules_service(None)
     assert [e["status"] for e in events if e["type"] == "tool_call"] == ["started", "failed"]
-    assert events[-1]["reason"] == "completed"
+    assert events[-1]["reason"] == "awaiting_input"  # 标准流程步骤卡
 
 
 async def test_unknown_product_does_not_retrieve(mem_runtime):

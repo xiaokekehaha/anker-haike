@@ -8,9 +8,10 @@
 | --- | --- |
 | 模型 API 超时、限流或拒答 | ModelRouter 是唯一重试层（厂商 SDK max_retries=0）。每个 task 的预算 = min(task 默认超时, run 剩余 − 2 s)；同模型重试 1 次，链上最多 3 家，总耗时不超过预算；整条链失败发 error 并走模块业务降级。run 级 deadline：文本轮 25 s、含图轮 40 s、凭证轮 30 s（08 §8） |
 | LLM 输出不符合 Schema | 校验失败重试 1 次并附错误提示；再失败走模块降级路径 |
-| WeKnora 不可用 / 无命中 | ToolResult 四态 ok / no_match / unavailable / replay。unavailable 与 no_match 一律：有 applies_to 匹配的预写计划则按计划默认顺序执行并标注「按标准排障流程」，否则 escalate(R5)。不用 LLM 常识补假设，不用回放数据冒充实时结果（09 §4） |
+| WeKnora 不可用 / 无命中 | ToolResult 四态 ok / no_match / unavailable / replay。仅真实 no_match 可在开关开启时尝试一次同范围查询改写，unavailable / 空范围不触发；未补救或补救失败后，有适用预写计划则标注来源并执行，否则 R5。不用 LLM 常识或回放数据补实时依据（09 §4.1） |
 | 图片过大或格式异常 | 前端压缩到 1600px 内；后端拒绝 > 5 MB 并提示 |
 | 状态机死循环 | 有限计划：plan_cursor 按 next_on 推进；R1 executed ≥ 4、R1b skipped ≥ 3、R1c 合计 ≥ 6、R2 计划耗尽（09 §3.4）。cannot_do 有独立上限 |
+| 路由不确定 / 澄清循环 | 必要信息缺失或冲突先澄清，连续两次答复仍不明走 R7；次数跨 run 保留，与排障 counters 分开（09 §1.1） |
 | 重复推进 / 重复卡片 | 动作带 action_id + expected_version + card_id，服务端去重与 409；prepare_card 与 interrupt 分节点，card_id 稳定（08 §3–4） |
 | 内部输出串入聊天 | 只有 tag=user_visible 的调用进入 message 事件；结构化调用全部 internal（08 §5） |
 | 429 / 限流 | 指数退避 1/2/4 s + 抖动，最多 3 次；全局有界队列 50，满则返回可重试 error（07 §13） |
@@ -30,7 +31,7 @@
 - Token 与调用量：均值 25k token / 会话、8 次调用 / 会话；演示 50 会话/天约 125 万 token；推算见 07 §2。
 - 手段：
   - 情绪识别与线索抽取合并为一次 LLM 调用，减少串行。
-  - 文本 query 检索与图片理解并行；观察结果有新增信息时才补第二次检索（第二次为可选 task，预算不足时跳过）。
+  - 文本 query 检索与图片理解并行；图片新增信息与可选无命中改写共享一次补检索名额。改写默认关闭，开启时按 08 §8 预留 3 s 模型 + 3 s 检索 + 2 s 收尾，预算不足跳过；不延长 run deadline。
   - 上下文裁剪：仅保留最近 6 轮 + 状态摘要，单轮输入控制在 8k token 内。
   - 流式输出，前端先渲染安抚句。
   - WeKnora top_k 5，Rerank 只对 20 条候选。
@@ -40,6 +41,7 @@
 
 - 追踪：Langfuse 记录每次 LLM 调用的输入、输出、延迟、token、实际命中模型与降级次数（ModelRouter attempts），按 session_id 与 task 串联；可按模型汇总成本。
 - 结构化日志：每次状态迁移记录 `{session_id, from, to, rule_id?, latency_ms}`；每次检索记录 query、命中 id 与分数。
+- 补救评估：记录改写触发 / 跳过原因、每库状态、前后 query、额外耗时与模型 attempts；按开关状态分别统计适用证据命中、错误命中、人工评估的语义漂移与 card_ready_ms。澄清记录 reason / attempts，不能把「多搜到文本」直接当作正确性提升。
 - 健康检查：/health 聚合 llm、weknora、postgres 状态，前端顶部显示组件状态灯。
 - 演示前巡检脚本：跑 A1–A3 及故障场景集（重复动作、连续 cannot_do、首句 / 中途 / 图片风险升级、错产品凭证、刷新断流、WeKnora 断开、全模型不可用、回放未命中），输出通过 / 失败与 first_visible_ms、card_ready_ms。
 - 告警：演示环境不接告警系统，用巡检脚本 + 健康灯代替；若接入则对「模型连续失败 3 次」「检索为空率 > 50%」告警。

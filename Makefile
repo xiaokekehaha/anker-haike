@@ -33,6 +33,8 @@ route-table: ## 从 config/models.yaml 生成路由展示表（LANE=domestic|ove
 	cd orchestrator && uv run --env-file ../.env haike-route-table $(if $(LANE),--lane $(LANE),)
 model-probe: ## 对 task 发一次最简调用：make model-probe TASK=intake [ALIAS=deepseek]
 	cd orchestrator && uv run --env-file ../.env haike-model-probe $(or $(TASK),intake) $(if $(ALIAS),--alias $(ALIAS),)
+bakeoff: ## bake-off 评测（票 42）：make bakeoff [TASK=intake] [ALIAS=deepseek] [EXTRA=deepseek-pro] [REPEATS=3]；报告在 reports/bakeoff/
+	cd orchestrator && uv run --env-file ../.env haike-bakeoff $(if $(TASK),--task $(TASK),) $(if $(ALIAS),--alias $(ALIAS),) $(if $(REPEATS),--repeats $(REPEATS),) $(if $(EXTRA),--extra $(EXTRA),)
 	cd contracts && uv run --group dev ruff check .
 
 .PHONY: contracts contracts-check contracts-test

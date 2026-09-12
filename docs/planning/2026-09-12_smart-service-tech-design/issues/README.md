@@ -40,7 +40,7 @@
 | 34 | [步骤卡下发 guide.step 与 CP-pre-step](34-guide-step-card.md) | 33 |
 | 35 | [反馈推进、计数器与计划切换](35-verify-feedback-cursor.md) | 34 |
 | 36 | [出口规则 R1 / R1b / R1c / R2 与 A1 完成](36-exit-rules-a1-complete.md) | 35 |
-| 37 | [rediagnose 中途补充与纠正](37-rediagnose.md) | 36 |
+| 37 | [rediagnose 中途补充与纠正](37-rediagnose.md) | 36, 23 |
 | 38 | [取消 run](38-cancel-run.md) | 08 |
 | 39 | [凭证收集 collect_receipt](39-collect-receipt.md) | 25, 29 |
 | 40 | [凭证识别与 ReceiptCard 字段确认](40-receipt-ocr-confirm-card.md) | 39 |
@@ -109,6 +109,7 @@ graph LR
   T34 --> T35
   T35 --> T36
   T36 --> T37
+  T23 --> T37
   T08 --> T38
   T25 --> T39
   T29 --> T39

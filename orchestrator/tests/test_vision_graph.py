@@ -95,7 +95,7 @@ async def test_brush_hair_photo_yields_observation_and_continues(mem_runtime, im
     vcall = next(c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision")
     assert "internal" in vcall["tags"]
     assert any(p.get("type") == "image_url" for p in vcall["messages"][-1].content)
-    assert events[-1]["reason"] == "completed"
+    assert events[-1]["reason"] == "awaiting_input"  # 票 34：读图 → 检索 → 步骤卡
 
 
 async def test_smoke_in_photo_triggers_r4_escalation(mem_runtime, img_store, tmp_path):
@@ -141,7 +141,7 @@ async def test_vision_chain_failure_does_not_break_run(mem_runtime, img_store, t
     calls = _tool(events, "diagnose.vision")
     assert [c["status"] for c in calls] == ["started", "failed"]
     assert calls[0]["summary"] == "识别 2 张故障照片" and "失败" in calls[1]["summary"]
-    assert events[-1]["reason"] == "completed"  # 流程不中断
+    assert events[-1]["reason"] == "awaiting_input"  # 票 34：读图 → 检索 → 步骤卡  # 流程不中断
     st = await _state(sid)
     assert st["vision_status"] == "failed" and st["image_observations"] == []
     assert st.get("escalate_reason") is None and "retrieve" in [

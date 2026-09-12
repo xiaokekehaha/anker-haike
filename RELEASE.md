@@ -1,21 +1,21 @@
-# RELEASE 20260912-cf824bb
+# RELEASE drill-b
 
-生成时间：2026-09-12T14:02:52Z　Git：cf824bb（feat/smart-service-impl）
+生成时间：2026-09-12T14:44:28Z　Git：d13c7fa（feat/smart-service-impl）
 
 ## 冻结版本（04 §4）
 
 | 项 | 值 |
 | --- | --- |
-| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:20260912-cf824bb`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
+| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:drill-b`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
 | prompt_ver | system 2026-09-12.1 / reply 2026-09-12.1 |
-| models.yaml | 2026-09-12.1（TBD / TODO 计数：9，须为 0 才能冻结，票 42） |
+| models.yaml | 2026-09-12.2-bad（TBD / TODO 计数：9，须为 0 才能冻结，票 42） |
 | rules_ver | 2026-09-12.1 |
 | products / plans | 2026-09-12.1 / 2026-09-12.1 |
 | kb_ver | 2026-09-12.1+stub-embedding-1024 |
 | WeKnora 镜像 tag | v0.8.0 |
 | 回放包清单 | -（票 43 未录制） |
 | 业务表迁移 head | 0002 |
-| config 快照 | `releases/20260912-cf824bb/config/`（回滚用：`make rollback REL=<上一版>`） |
+| config 快照 | `releases/drill-b/config/`（回滚用：`make rollback REL=<上一版>`） |
 
 ## 灰度验证顺序（04 §4）
 

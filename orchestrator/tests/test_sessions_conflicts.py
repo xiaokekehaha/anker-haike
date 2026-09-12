@@ -77,7 +77,7 @@ async def test_three_conflict_codes_each_with_snapshot(mem_runtime):
         assert [i.kind for i in snap.timeline if i.kind == "product_card"] == ["product_card"]
         # 三次 409 都没有改变状态：正确动作仍然通过
         ok = await client.post(f"/sessions/{sid}/actions", json=_action(pending))
-        assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "completed"
+        assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "awaiting_input"
 
 
 async def test_failed_action_run_is_retryable_with_same_action_id(mem_runtime, monkeypatch):
@@ -134,11 +134,13 @@ async def test_failed_action_run_is_retryable_with_same_action_id(mem_runtime, m
         assert r2.status_code == 200 and r2.headers["x-action-replayed"] == "false"
         assert r2.headers["x-run-id"] != r1.headers["x-run-id"]
         ev2 = sse.parse(r2.text)
-        assert ev2[0]["resumed"] is True and "awaiting_input" not in [e["type"] for e in ev2]
-        assert ev2[-1]["reason"] == "completed"
+        # 不再重发产品卡的 awaiting_input；随后 guide 出步骤卡（票 34）另有一次 awaiting_input(step_feedback)
+        awaiting = [e for e in ev2 if e["type"] == "awaiting_input"]
+        assert ev2[0]["resumed"] is True and [a["kind"] for a in awaiting] == ["step_feedback"]
+        assert ev2[-1]["reason"] == "awaiting_input"
         final = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
     assert calls["n"] == 2
-    assert final.pending_input is None
+    assert final.pending_input.kind == "step_feedback"  # 票 34：产品确认后停在步骤卡
     cards = [i for i in final.timeline if i.kind == "product_card"]
     assert len(cards) == 1 and cards[0].selected_sku == "EUFY-S1-PRO"
     rec = await mem_runtime.get_action(sid, body["action_id"])
@@ -186,10 +188,10 @@ async def test_cancelled_action_run_releases_action_id(mem_runtime, monkeypatch)
         # 同一 action_id 重试：锁与占位都已释放，从 apply_action 继续并完成
         r2 = await client.post(f"/sessions/{sid}/actions", json=body)
         assert r2.status_code == 200 and r2.headers["x-action-replayed"] == "false"
-        assert sse.parse(r2.text)[-1]["reason"] == "completed"
+        assert sse.parse(r2.text)[-1]["reason"] == "awaiting_input"
         final = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
     assert calls["n"] == 2
-    assert final.pending_input is None
+    assert final.pending_input.kind == "step_feedback"  # 票 34：产品确认后进入步骤卡
     assert next(i for i in final.timeline if i.kind == "product_card").selected_sku == "EUFY-S1-PRO"
 
 
@@ -202,6 +204,8 @@ async def test_stale_version_when_pending_consumed_and_snapshot_shows_result(mem
         c = _conflict(await client.post(f"/sessions/{sid}/actions", json=_action(pending)))
     assert c.code == "stale_version"
     snap = SessionSnapshot.model_validate(c.snapshot)
-    assert snap.pending_input is None and snap.version == sse.parse(first.text)[-1]["version"]
+    # 产品卡已消费；当前 pending 是随后 guide 发出的步骤卡（票 34）
+    assert snap.pending_input.kind == "step_feedback" and snap.pending_input.card_id != pending["card_id"]
+    assert snap.version == sse.parse(first.text)[-1]["version"]
     card = next(i for i in snap.timeline if i.kind == "product_card")
     assert card.selected_sku == "EUFY-S1-PRO"

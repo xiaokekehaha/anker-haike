@@ -290,3 +290,16 @@ def test_classify_exception_table():
         == "error"
     )
     assert classify_exception(ValueError("x")) == "error"
+
+
+def test_langchain_openai_connection_error_wrapper_is_retryable():
+    """票 42 实测：langchain-openai 1.6 把连接失败包成 OpenAIConnectionError，名字不含 APIConnectionError。"""
+
+    class OpenAIConnectionError(Exception):
+        pass
+
+    assert classify_exception(OpenAIConnectionError("Connection error.")) == "server_error"
+    assert (
+        classify_exception(openai.APIConnectionError(request=httpx.Request("GET", "http://x")))
+        == "server_error"
+    )

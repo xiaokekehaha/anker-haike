@@ -33,10 +33,13 @@ haike-seed = "app.seed_cli:seed"
 haike-plans-schema = "app.seed_cli:plans_schema"
 haike-kb = "app.knowledge.cli:main"
 haike-replay = "app.replay.cli:main"
+haike-bakeoff = "app.bakeoff.cli:main"
+haike-metrics = "app.observability.metrics:main"
 
 [dependency-groups]
 dev = [
     "jsonschema>=4.23",
+    "pillow>=11",
     "pytest>=8.4",
     "pytest-asyncio>=1.2",
     "ruff>=0.14",

@@ -42,7 +42,7 @@ describe('Composer image attachments (票 29)', () => {
     expect(files).toHaveLength(1);
     expect(files[0]?.name).toBe('brush.jpg');
     expect(purpose).toBe('fault');
-    expect(onChange).toHaveBeenCalledWith('');
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(''));
   });
 
   it('caps the number of images per message', async () => {
@@ -69,5 +69,61 @@ describe('checkImage', () => {
     expect(checkImage({ size: MAX_IMAGE_BYTES + 1, type: 'image/png' })).toMatchObject({ ok: false, code: 'too_large' });
     expect(checkImage({ size: 10, type: 'text/plain' })).toMatchObject({ ok: false, code: 'unsupported_type' });
     expect(checkImage({ size: 10, type: 'image/webp' })).toEqual({ ok: true });
+  });
+});
+
+describe('pending input modes', () => {
+  it.each(['select_product', 'step_feedback', 'confirm_receipt'] as const)('restricts %s to card actions while keeping human request available', (pendingKind) => {
+    const onSend = vi.fn();
+    const onRequestHuman = vi.fn();
+    render(<Composer value="旧草稿" onChange={vi.fn()} onSend={onSend} onRequestHuman={onRequestHuman} pendingKind={pendingKind} />);
+    expect(screen.getByLabelText('描述你的问题')).toBeDisabled();
+    expect(screen.getByRole('button', { name: '发送' })).toBeDisabled();
+    expect(screen.getByTestId('image-input')).toBeDisabled();
+    fireEvent.submit(screen.getByRole('form', { name: '发送消息' }));
+    expect(onSend).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '请求人工' }));
+    expect(onRequestHuman).toHaveBeenCalledOnce();
+  });
+
+  it('requires an image for receipt upload and sets purpose=receipt', async () => {
+    const onSend = vi.fn().mockResolvedValue(true);
+    render(<Composer value="购买备注" onChange={vi.fn()} onSend={onSend} pendingKind="upload_receipt" />);
+    expect(screen.getByRole('button', { name: '上传凭证' })).toBeDisabled();
+    fireEvent.change(screen.getByTestId('image-input'), { target: { files: [fileOf(100, 'receipt.png')] } });
+    await waitFor(() => expect(screen.getByRole('button', { name: '上传凭证' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: '上传凭证' }));
+    await waitFor(() => expect(onSend).toHaveBeenCalledWith('购买备注', [expect.any(File)], 'receipt'));
+    await waitFor(() => expect(screen.queryByLabelText('待发送图片')).not.toBeInTheDocument());
+  });
+
+  it.each([['没有凭证，跳过', 'none'], ['看不清，跳过', 'unreadable'], ['稍后再提供', 'later']] as const)('passes the reason for %s', async (label, reason) => {
+    const onSkipReceipt = vi.fn();
+    render(<Composer value="" onChange={vi.fn()} pendingKind="upload_receipt" onSkipReceipt={onSkipReceipt} />);
+    fireEvent.click(screen.getByRole('button', { name: label }));
+    await waitFor(() => expect(onSkipReceipt).toHaveBeenCalledWith(reason));
+  });
+
+  it('preserves attachments and draft when the server rejects the upload', async () => {
+    const onSend = vi.fn().mockResolvedValue(false);
+    const onChange = vi.fn();
+    render(<Composer value="购买备注" onChange={onChange} onSend={onSend} pendingKind="upload_receipt" />);
+    fireEvent.change(screen.getByTestId('image-input'), { target: { files: [fileOf(100)] } });
+    await waitFor(() => expect(screen.getByRole('button', { name: '上传凭证' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: '上传凭证' }));
+    await waitFor(() => expect(onSend).toHaveBeenCalledOnce());
+    await waitFor(() => expect(screen.getByRole('button', { name: '上传凭证' })).toBeEnabled());
+    expect(screen.getByLabelText('待发送图片')).toBeVisible();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('removes fault attachments on entering receipt upload instead of changing their purpose', async () => {
+    const props = { value: '', onChange: vi.fn(), onSend: vi.fn() };
+    const { rerender } = render(<Composer {...props} />);
+    fireEvent.change(screen.getByTestId('image-input'), { target: { files: [fileOf(100, 'fault.png')] } });
+    await screen.findByLabelText('待发送图片');
+    rerender(<Composer {...props} pendingKind="upload_receipt" purpose="receipt" />);
+    expect(screen.queryByLabelText('待发送图片')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '上传凭证' })).toBeDisabled();
   });
 });

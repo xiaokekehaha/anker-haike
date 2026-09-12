@@ -1,0 +1,82 @@
+import React from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import type { StepCardItem, EvidenceItem } from '../types/snapshot';
+import { EvidenceDrawer } from './EvidenceDrawer';
+import { StepCard } from './StepCard';
+
+const step = (over: Partial<StepCardItem['step']> = {}): StepCardItem['step'] => ({
+  step_id: 's1', plan_id: 'rv_suction_hair_wrap', plan_version: 1, step_no: 1, title: '检查并清理滚刷',
+  instruction: '把主机翻过来，取出滚刷，割断毛发后装回。', expected_result: '滚刷无缠绕物，转动顺畅', caution: null, evidence_ids: ['c12'], ...over,
+});
+const item = (over: Partial<StepCardItem> = {}): StepCardItem => ({ kind: 'step_card', card_id: 'k1', version: 3, step: step(), feedback: null, note: null, ...over });
+const EVIDENCE: EvidenceItem[] = [
+  { evidence_id: 'c12', source: 'kb_manual', doc_id: 'manual_rv_v1', doc_version: '1', chunk_id: 'c12', snippet: '翻转主机取出滚刷', score: 0.4, status: 'ok' },
+  { evidence_id: 'c15', source: 'kb_manual', doc_id: 'manual_rv_v1', doc_version: '1', chunk_id: 'c15', snippet: '取出滤网清洗', score: 0.2, status: 'ok' },
+];
+
+describe('StepCard（票 34）', () => {
+  it('shows title, instruction, expected result, caution and source badge; posts feedback with note', () => {
+    const onFeedback = vi.fn();
+    render(<StepCard item={item({ step: step({ caution: '拆装前请先关机', evidence_ids: ['c12', 'c15'] }) })} active onFeedback={onFeedback} />);
+    expect(screen.getByText('步骤 1：检查并清理滚刷')).toBeVisible();
+    expect(screen.getByText('把主机翻过来，取出滚刷，割断毛发后装回。')).toBeVisible();
+    expect(screen.getByText('滚刷无缠绕物，转动顺畅')).toBeVisible();
+    expect(screen.getByRole('note')).toHaveTextContent('拆装前请先关机');
+    expect(screen.getByText('来源 2')).toBeVisible();
+    fireEvent.change(screen.getByLabelText('补充说明'), { target: { value: ' 还是没吸力 ' } });
+    fireEvent.click(screen.getByRole('button', { name: '还没解决' }));
+    expect(onFeedback).toHaveBeenCalledWith('not_solved', '还是没吸力');
+    fireEvent.click(screen.getByRole('button', { name: '解决了' }));
+    expect(onFeedback).toHaveBeenLastCalledWith('solved', '还是没吸力');
+  });
+
+  it('only the active card is interactive; answered old cards collapse to one line', () => {
+    const onFeedback = vi.fn();
+    const { container } = render(
+      <>
+        <StepCard item={item({ card_id: 'old', feedback: 'not_solved', note: '仍有异响' })} active={false} onFeedback={onFeedback} />
+        <StepCard item={item({ card_id: 'cur', step: step({ step_id: 's2', step_no: 2, title: '取出并清洁滤网' }) })} active onFeedback={onFeedback} />
+      </>,
+    );
+    const collapsed = container.querySelectorAll('[data-kind="step_card"]');
+    expect(collapsed).toHaveLength(2);
+    const first = collapsed[0]!;
+    expect(first).toHaveTextContent('步骤 1：检查并清理滚刷');
+    expect(first).toHaveTextContent('还没解决');
+    expect(first.querySelectorAll('button')).toHaveLength(0);
+    expect(screen.getAllByRole('button', { name: '解决了' })).toHaveLength(1);
+    // 待反馈卡 disabled（动作进行中）时按钮不可点
+    render(<StepCard item={item({ card_id: 'busy' })} active disabled onFeedback={onFeedback} />);
+    const buttons = screen.getAllByRole('button', { name: '解决了' });
+    expect(buttons[buttons.length - 1]).toBeDisabled();
+  });
+
+  it('answered active card shows the recorded feedback instead of buttons', () => {
+    render(<StepCard item={item({ feedback: 'cannot_do', note: '没有工具' })} active onFeedback={vi.fn()} />);
+    expect(screen.getByText('您的反馈：做不到 / 跳过（没有工具）')).toBeVisible();
+    expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('hovering a step card highlights its evidence_ids in the drawer', () => {
+    function Harness() {
+      const [hover, setHover] = React.useState<string[]>([]);
+      return (
+        <>
+          <EvidenceDrawer items={EVIDENCE} highlight={hover} />
+          <StepCard item={item()} active onFeedback={vi.fn()} onHover={setHover} />
+        </>
+      );
+    }
+    const { container } = render(<Harness />);
+    const card = container.querySelector('section[data-kind="step_card"]')!;
+    expect(container.querySelectorAll('li[data-highlight]')).toHaveLength(0);
+    fireEvent.mouseEnter(card);
+    const lit = container.querySelectorAll('li[data-highlight]');
+    expect(lit).toHaveLength(1);
+    expect(lit[0]).toHaveTextContent('翻转主机取出滚刷');
+    expect(screen.getByText('（当前步骤引用 1 条）')).toBeInTheDocument();
+    fireEvent.mouseLeave(card);
+    expect(container.querySelectorAll('li[data-highlight]')).toHaveLength(0);
+  });
+});

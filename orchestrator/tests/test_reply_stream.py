@@ -178,7 +178,7 @@ async def test_mid_stream_abort_replaced_by_fallback_with_tier(mem_runtime, tmp_
     )
     assert SIMPLIFIED_LAYER in fakes["backup"].calls[0]["messages"][0].content
     assert SIMPLIFIED_LAYER not in fakes["main"].calls[0]["messages"][0].content
-    assert events[-1]["reason"] == "completed"
+    assert events[-1]["reason"] == "awaiting_input"  # 票 34：回复后进入 guide 出步骤卡
 
 
 async def test_reply_chain_exhausted_flow_still_completes(mem_runtime, tmp_path):
@@ -191,7 +191,9 @@ async def test_reply_chain_exhausted_flow_still_completes(mem_runtime, tmp_path)
     events, _snap = await run_text(router, "eufy X9 Pro 不吸了")
     ends = [e for e in events if e["type"] == "message_end"]
     assert ends and ends[-1]["status"] == "aborted"
-    assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
+    # 回复链耗尽不影响后续：guide 仍出步骤卡（改写模型同样不可用 → 原文）
+    assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
+    assert "step_card" in [e["type"] for e in events]
 
 
 def test_prompt_templates_are_versioned_and_wrap_injection():

@@ -40,9 +40,24 @@ class Settings(BaseSettings):
     plans_config_path: str = Field(
         default=str(REPO_ROOT / "config" / "plans.yaml"), alias="PLANS_CONFIG_PATH"
     )
+    receipt_reference_config_path: str = Field(
+        default=str(REPO_ROOT / "config" / "receipt_reference.yaml"),
+        alias="RECEIPT_REFERENCE_CONFIG_PATH",
+    )
+    fault_cards_config_path: str = Field(
+        default=str(REPO_ROOT / "config" / "fault_cards.yaml"), alias="FAULT_CARDS_CONFIG_PATH"
+    )
     rules_config_path: str = Field(
         default=str(REPO_ROOT / "config" / "rules" / "safety_terms.yaml"), alias="RULES_CONFIG_PATH"
     )
+
+    observability_log_path: str = Field(
+        default=str(REPO_ROOT / "logs" / "events.jsonl"), alias="OBSERVABILITY_LOG_PATH"
+    )
+    langfuse_enabled: bool = Field(default=False, alias="LANGFUSE_ENABLED")
+    langfuse_base_url: str = Field(default="http://localhost:3000", alias="LANGFUSE_BASE_URL")
+    langfuse_public_key: str = Field(default="", alias="LANGFUSE_PUBLIC_KEY")
+    langfuse_secret_key: str = Field(default="", alias="LANGFUSE_SECRET_KEY")
 
     # 票 43：回放模式。REPLAY_CASE_ID 非空即启用：ReplayRouter / ReplayKnowledgeAdapter 只按 replay/<case_id>/ 录制包命中；
     # 清单 {prompt_ver, models_ver, kb_ver, rules_ver} 与当前不符时启动报 replay_incompatible。

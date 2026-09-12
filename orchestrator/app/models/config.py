@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
@@ -66,6 +66,8 @@ class ModelSpec(_Strict):
     max_images: int | None = Field(default=None, ge=1)
     timeout_s: float = Field(default=20, gt=0)
     dim: int | None = Field(default=None, ge=1)
+    params: dict[str, Any] = Field(default_factory=dict)
+    """厂商专属请求参数（票 42，如 DeepSeek `thinking: {type: disabled}`）：openai 协议进 extra_body，其他 SDK 原样传构造函数。"""
 
     @property
     def id_pending(self) -> bool:

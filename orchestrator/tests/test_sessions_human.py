@@ -162,7 +162,22 @@ async def test_request_human_when_idle_starts_from_entry(mem_runtime):
     """idle 状态（无 interrupt、无 active run）点「请求人工」：从 START 直达 human_request → escalate。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        await _send(client, sid, "扫地机 X10 不吸了")  # 完整一轮，回到 idle
+        first = await _send(client, sid, "扫地机 X10 不吸了")  # 票 34：一轮后停在步骤卡
+        pending = next(e for e in first if e["type"] == "awaiting_input")
+        assert pending["kind"] == "step_feedback"
+        # 点「解决了」→ verify 结束本 run，回到 idle（票 35）
+        solved = await client.post(
+            f"/sessions/{sid}/actions",
+            json={
+                "action_id": uuid.uuid4().hex,
+                "interrupt_id": pending["interrupt_id"],
+                "card_id": pending["card_id"],
+                "expected_version": pending["version"],
+                "kind": "step_feedback",
+                "payload": {"feedback": "solved"},
+            },
+        )
+        assert solved.status_code == 200 and sse.parse(solved.text)[-1]["reason"] == "completed"
         before = await _snap(client, sid)
         assert before.pending_input is None and before.active_run is None
         resp = await client.post(f"/sessions/{sid}/actions", json=_human(expected_version=999))

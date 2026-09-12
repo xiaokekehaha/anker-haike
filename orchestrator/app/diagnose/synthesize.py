@@ -183,12 +183,13 @@ async def synthesize(
         ),
         ("human", human),
     ]
-    schema = _schema_with_enum(list(allowed_by_id))
+    # 宽松解析再按枚举过滤：单个越界 plan_id 只丢弃该假设，不让整批作废（枚举写在提示里；
+    # _schema_with_enum 供原生 json_schema 模型或票 33 严格模式选用）
     try:
         res = await router.invoke(
             "diagnose.synthesize",
             messages,
-            schema,
+            PlansRanked,
             budget_ms=budget_ms,
             session_id=session_id,
             lane=lane,
@@ -200,13 +201,17 @@ async def synthesize(
             "task": "diagnose.synthesize",
             "model_used": res.model_used,
             "lane": res.lane,
-            "attempts": len(res.attempts),
+            "attempts": max(1, sum(1 for a in res.attempts if a.outcome != "skipped")),
         }
     except (ModelInvokeError, CapacityExceeded, ValidationError) as exc:
-        log.warning("synthesize degraded session=%s: %s", session_id, str(exc)[:200])
+        attempts = [f"{a.alias}:{a.outcome}:{a.error}" for a in getattr(exc, "attempts", [])]
+        log.warning(
+            "synthesize degraded session=%s: %s attempts=%s", session_id, str(exc)[:200], attempts
+        )
         return {
             "plans_ranked": default_plans_ranked(allowed),
             "dropped": [],
+            "attempts": attempts,
             "model_trace": {
                 "task": "diagnose.synthesize",
                 "model_used": "skipped",

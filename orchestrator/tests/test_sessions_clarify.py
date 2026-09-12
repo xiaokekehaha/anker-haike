@@ -102,7 +102,7 @@ async def test_category_word_without_model_goes_category_only(mem_runtime):
     state = await _state(sid)
     assert state["product_state"] == "category_only" and state["category"] == "robot_vacuum"
     assert state["product_confirmed"] is None and state["clarification"] is None
-    assert events[-1]["reason"] == "completed"
+    assert events[-1]["reason"] == "awaiting_input"  # 票 34：品类通用计划的步骤卡
 
 
 async def test_three_product_states_written_and_in_summary(mem_runtime):

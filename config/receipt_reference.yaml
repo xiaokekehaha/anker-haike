@@ -1,0 +1,20 @@
+# 仅供海科演示与自动验收；虚构订单/经销商，不代表真实授权关系或质保资格。
+version: "2026-09-12.1"
+orders:
+  - order_no: "DEMO-X10-001"
+    sku: EUFY-X10-PRO-OMNI
+    channel: 海科演示授权经销商
+    purchase_date: "2026-03-15"
+  - order_no: "DEMO-S1-002"
+    sku: EUFY-S1-PRO
+    channel: 海科演示线上店
+    purchase_date: "2026-04-20"
+dealers:
+  - name: 海科演示授权经销商
+    region: 演示地区
+    authorized: true
+    warranty_note: 仅用于名录核对演示
+  - name: 海科演示未授权经销商
+    region: 演示地区
+    authorized: false
+    warranty_note: 仅用于未授权名录记录演示

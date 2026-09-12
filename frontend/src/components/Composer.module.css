@@ -26,3 +26,9 @@
 .attachments button { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; border: none; background: var(--color-text, #222); color: #fff; line-height: 1; cursor: pointer; }
 .fileMeta { font-size: 0.72rem; color: var(--color-text-muted, #666); }
 .imageError { margin: 0.4rem 0 0; color: var(--color-danger, #b3261e); font-size: 0.85rem; }
+
+.skipOptions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.skipOptions button { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; background: var(--surface); color: var(--text); font: inherit; }
+.skipOptions button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.input:disabled { color: var(--muted); background: var(--subtle); }
+@media (max-width: 420px) { .tools { flex-wrap: wrap; } .tool { flex: 1 1 auto; } }

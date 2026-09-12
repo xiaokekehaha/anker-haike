@@ -4,11 +4,19 @@
 
 **Blocked by:** 22（动作幂等与会话锁）
 
-**Status:** backend-done（2026-09-12；前端三项依赖票 06 reducer，留给 Codex 在 06 之后接入）
+**Status:** in-progress（2026-09-12；原始前后端验收已完成，追加的票 37 纠错联动验收仍待完成）
 
 - [x] 三种 409 各有错误码 stale_version / stale_card / not_allowed_now，响应体含快照（校验顺序按 08 §4：run_active → 全局 kind 分流 → version → pending 存在 → card/interrupt → kind 允许时机；契约 ActionConflict.code 由 version_mismatch 改为 stale_version 并重生成 Schema / TS）
-- [ ] 前端收到 409 后 UI 与快照一致，不出现重复卡片（后端侧：409 体内快照按 card_id 折叠、卡片带 selected_sku，有测试；前端 reducer 待票 06）
-- [ ] interrupt 重跑导致的重复 step_card 在前端只显示一张（后端侧：重发同 card_id，快照折叠成一张，票 20 已验证；前端 reducer 待票 06）
-- [ ] recoverable + retry_with_same_action 时前端自动复用 action_id 重试一次（后端侧已就位：动作 run 的 node_failed / deadline_exceeded 带 recoverable=true、retry_with_same_action=true，占位撤销；原样重发同一 action_id 时服务端识别「动作已接收、apply_action 未成功」并从该节点继续，不校 version；取消的动作 run 同理。前端自动重试待票 06）
+- [x] 前端收到 409 后 UI 与快照一致，不出现重复卡片（后端侧：409 体内快照按 card_id 折叠、卡片带 selected_sku，有测试；前端 reducer/useSession 回归通过）
+- [x] interrupt 重跑导致的重复 step_card 在前端只显示一张（后端侧：重发同 card_id，快照折叠成一张，票 20 已验证；前端 reducer/useSession 回归通过）
+- [x] recoverable + retry_with_same_action 时前端自动复用 action_id 重试一次（后端侧已就位：动作 run 的 node_failed / deadline_exceeded 带 recoverable=true、retry_with_same_action=true，占位撤销；原样重发同一 action_id 时服务端识别「动作已接收、apply_action 未成功」并从该节点继续，不校 version；取消的动作 run 同理。前端已实现同一请求体与 action_id 最多重试一次，成功/失败/不允许重试均有测试）
 
-**设计依据：** 08 §4 步骤 3；05 §2
+**追加验收（2026-09-12，待联动验证，不改变上述已完成项）：**
+
+- [ ] 未知 kind / 非法 payload 返回 422，阶段不允许 / 过期卡片返回相应 409 与快照；没有任何模型调用、游标推进或业务计数增加
+- [ ] 路由表测试验证合法 step_feedback(not_solved) → verify、request_human → escalate；端到端验证实际结果，不能仅测试枚举名称
+- [ ] 纠正产品后的旧卡点击与刷新恢复同样遵守版本 / 卡片校验，前端不自动把旧动作改发给新卡（联动票 37）
+
+**设计依据：** 08 §4 步骤 3 与动作失败边界；09 §1.1；05 §2
+
+**前端接续（Codex，2026-09-12）：** 409 使用随响应返回的权威快照，存在 active_run 时立即续接；旧 action 不改发到新卡。事件按 seq 去重，重发卡片保留用户结果；动作快速连点仅提交一次。自动重试要求当前动作收到 recoverable=true、retry_with_same_action=true 和 done(error)，不依据普通网络异常猜测重试。完成动作后重读快照展示 selected_sku 等结果。追加的实际 verify / rediagnose 联动仍保留未勾选。

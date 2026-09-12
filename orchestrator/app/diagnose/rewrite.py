@@ -141,17 +141,28 @@ def validate_rewrite(
     for word in FORBIDDEN_NEW:
         if word in cand and word not in src:
             return f"new_cause_or_action:{word}"
-    # 新出现的中文词需是原文词、原文词的子串 / 超串，或已审核同义
-    src_words = set(_CJK_WORD.findall(src))
-    for w in _CJK_WORD.findall(cand):
-        if w in src_words or any(w in s or s in w for s in src_words):
-            continue
-        base = _synonym_base(w, cfg.synonyms)
-        alts = {base, *cfg.synonyms.get(base, [])}
-        if any(a in src for a in alts):
-            continue
-        return f"unsupported_term:{w}"
+    # 新出现的中文片段必须能完全分解为：原文中的连续片段，或已审核同义词（其原词 / 任一同义在原文出现）
+    approved = {base for base, alts in cfg.synonyms.items() if any(a in src for a in (base, *alts))}
+    for run in _CJK_WORD.findall(cand):
+        if not _segmentable(run, src, approved):
+            return f"unsupported_term:{run}"
     return None
+
+
+def _segmentable(run: str, src: str, approved: set[str]) -> bool:
+    """贪心最长匹配：每一段要么是原文子串（≥1 字），要么是已审核同义词。"""
+    i, n = 0, len(run)
+    while i < n:
+        matched = 0
+        for j in range(n, i, -1):
+            seg = run[i:j]
+            if seg in approved or (seg in src and (len(seg) >= 2 or j - i == 1)):
+                matched = j
+                break
+        if not matched:
+            return False
+        i = matched
+    return True
 
 
 INSTRUCTION = (

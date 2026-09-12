@@ -4,11 +4,13 @@
 
 **Blocked by:** 20（三段式等待节点与 /actions 基本通路）
 
-**Status:** ready-for-agent
+**Status:** done（2026-09-12；Codex 补齐等待态输入限制与前后端验证）
 
-- [ ] A2 话术：安抚句 → product_card → 选扫地机 → progress(diagnose)
-- [ ] 单命中路径不出现 product_card 事件
-- [ ] 卡片点选后置为 disabled 并显示所选项
-- [ ] 前端 awaiting_input 态下 Composer 只允许对应 kind 输入
+- [x] A2 话术：安抚句 → product_card → 选扫地机 → progress(diagnose)
+- [x] 单命中路径不出现 product_card 事件
+- [x] 卡片点选后置为 disabled 并显示所选项
+- [x] 前端 awaiting_input 态下 Composer 只允许对应 kind 输入
 
 **设计依据：** 02 §4.2；05 §3、§6
+
+**前端收尾（Codex，2026-09-12）：** App/Composer 按 pending_input.kind 限制输入；产品、步骤、凭证字段确认等待态禁用普通文本/图片发送，保留对应卡片及请求人工操作。ProductCard 点击后 pendingActionId 禁用连点，完成后按快照显示 selected_sku。A2 安抚先于产品卡由 test_reply_stream 验证，多/单命中与选择后 diagnose 由 test_sessions_actions 验证；前端 App.test 与 Composer.test 覆盖按钮和请求体。本轮相关后端 33 项、前端全量 117 项通过。

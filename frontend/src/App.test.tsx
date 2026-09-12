@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
 
@@ -6,27 +6,102 @@ vi.mock('./state/useHealth', () => ({
   useHealth: () => ({ snapshot: null, error: null, refreshing: false, checkedAt: null, refresh: vi.fn() }),
 }));
 
-describe('customer-service shell', () => {
-  beforeEach(() => render(<App />));
+function sse(events: object[]): Response {
+  const body = events.map((e, i) => `id: ${i + 1}\nevent: ${(e as { type: string }).type}\ndata: ${JSON.stringify(e)}\n\n`).join('');
+  return new Response(body, { status: 200, headers: { 'content-type': 'text/event-stream' } });
+}
 
-  it('is not tied to a single product category', () => {
-    expect(screen.queryByText(/扫地机器人 · 售后支持/)).not.toBeInTheDocument();
-    for (const label of ['扫地机器人', '吸奶器', '耳机与音箱', '充电与移动电源']) {
-      expect(screen.getByRole('button', { name: new RegExp(label) })).toBeVisible();
-    }
+describe('chat shell wired to the session API (票 06 集成)', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
   });
 
-  it('shows the five-stage progress bar in idle state', () => {
-    const steps = screen.getAllByRole('listitem', { name: '' }).filter((li) => li.closest('[aria-label="处理进度"]'));
+  it('shows the five-stage progress bar and starters in idle state', () => {
+    render(<App />);
+    const steps = screen.getAllByRole('listitem').filter((li) => li.closest('[aria-label="处理进度"]'));
     expect(steps).toHaveLength(5);
-    expect(screen.getByText('确认产品')).toBeVisible();
+    for (const label of ['扫地机器人', '吸奶器']) expect(screen.getByRole('button', { name: new RegExp(label) })).toBeVisible();
+    expect(screen.getByRole('button', { name: '发送' })).toBeDisabled();
   });
 
-  it('fills the composer from a starter prompt but keeps sending disabled until the backend is wired', () => {
-    fireEvent.click(screen.getByText('不知道怎么说？看看示例'));
-    fireEvent.click(screen.getByRole('button', { name: /S1 Pro 不吸了/ }));
-    expect(screen.getByLabelText('描述你的问题')).toHaveValue('我的 S1 Pro 不吸了，明天家里要来客人，急！');
-    expect(screen.getByLabelText('描述你的问题')).toHaveFocus();
-    expect(screen.getByRole('button', { name: '发送' })).toBeDisabled();
+  it('sends a message: creates a session, streams events, shows the bubble and returns to idle', async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url === '/sessions' && init?.method === 'POST') return new Response(JSON.stringify({ session_id: 'sid1', version: 0 }), { status: 201 });
+      if (url.endsWith('/messages')) {
+        expect(init?.body).toBeInstanceOf(FormData);
+        expect((init!.body as FormData).get('text')).toBe('eufy X9 Pro 不吸了');
+        return sse([
+          { type: 'run_started', seq: 1, run_id: 'r1', resumed: false, deadline_ms: 25000 },
+          { type: 'progress', seq: 2, run_id: 'r1', stage: 'intake' },
+          { type: 'progress', seq: 3, run_id: 'r1', stage: 'diagnose' },
+          { type: 'tool_call', seq: 4, run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'started' },
+          { type: 'tool_call', seq: 5, run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'finished', summary: '命中 2 条来源' },
+          { type: 'message_start', seq: 6, run_id: 'r1', message_id: 'm1' },
+          { type: 'message', seq: 7, run_id: 'r1', message_id: 'm1', delta: '请先清理滚刷。' },
+          { type: 'message_end', seq: 8, run_id: 'r1', message_id: 'm1', status: 'completed', model_tier: 'primary' },
+          { type: 'done', seq: 9, run_id: 'r1', reason: 'completed', version: 4 },
+        ]);
+      }
+      throw new Error(`unexpected fetch ${url}`);
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('描述你的问题'), { target: { value: 'eufy X9 Pro 不吸了' } });
+    fireEvent.click(screen.getByRole('button', { name: '发送' }));
+    await waitFor(() => expect(screen.getByTestId('assistant-bubble')).toHaveTextContent('请先清理滚刷。'));
+    expect(screen.getByText('eufy X9 Pro 不吸了')).toBeVisible(); // 用户气泡
+    expect(screen.getByText('命中 2 条来源')).toBeVisible(); // 工具行
+    const diagnose = screen.getByText('定位故障').closest('li');
+    expect(diagnose).toHaveAttribute('data-state', 'active');
+    await waitFor(() => expect(document.querySelector('[data-ui]')).toHaveAttribute('data-ui', 'idle'));
+    expect(sessionStorage.getItem('haike.session_id')).toBe('sid1');
+    expect(screen.queryByText('不知道怎么说？看看示例')).not.toBeInTheDocument(); // 有历史后收起示例
+  });
+
+  it('renders a product card on awaiting_input and posts select_product with expected_version', async () => {
+    const posted: unknown[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url === '/sessions' && init?.method === 'POST') return new Response(JSON.stringify({ session_id: 'sid2', version: 0 }), { status: 201 });
+      if (url.endsWith('/messages')) {
+        return sse([
+          { type: 'run_started', seq: 1, run_id: 'r1', resumed: false, deadline_ms: 25000 },
+          { type: 'product_card', seq: 2, run_id: 'r1', card_id: 'c1', version: 3, candidates: [
+            { sku: 'RV', name: 'eufy S1 Pro 扫地机器人', category: 'robot_vacuum', image: null, in_scope: true },
+            { sku: 'BP', name: 'eufy S1 Pro 吸奶器', category: 'breast_pump', image: null, in_scope: false },
+          ] },
+          { type: 'awaiting_input', seq: 3, run_id: 'r1', kind: 'select_product', interrupt_id: 'c1', card_id: 'c1', version: 3 },
+          { type: 'done', seq: 4, run_id: 'r1', reason: 'awaiting_input', version: 3 },
+        ]);
+      }
+      if (url === '/sessions/sid2' && !init?.method) return new Response(JSON.stringify({
+        session_id: 'sid2', version: 5, stage: 'diagnose', substage: null,
+        timeline: [{ kind: 'product_card', card_id: 'c1', version: 3, candidates: [
+          { sku: 'RV', name: 'eufy S1 Pro 扫地机器人', category: 'robot_vacuum', image: null, in_scope: true },
+        ], selected_sku: 'RV' }], pending_input: null, active_run: null, last_error: null, cancelled_run: null,
+      }));
+      if (url.endsWith('/actions')) {
+        posted.push(JSON.parse(String(init?.body)));
+        return sse([
+          { type: 'run_started', seq: 5, run_id: 'r1', resumed: true, deadline_ms: 25000 },
+          { type: 'progress', seq: 6, run_id: 'r1', stage: 'diagnose' },
+          { type: 'done', seq: 7, run_id: 'r1', reason: 'completed', version: 5 },
+        ]);
+      }
+      throw new Error(`unexpected fetch ${url}`);
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('描述你的问题'), { target: { value: 'S1 Pro 不吸了' } });
+    fireEvent.click(screen.getByRole('button', { name: '发送' }));
+    // 用完整候选名，避免命中欢迎区的「扫地机器人」品类按钮（发送前仍显示）
+    const choice = await screen.findByRole('button', { name: /eufy S1 Pro 扫地机器人/ });
+    expect(screen.getByText('本期不支持')).toBeVisible();
+    await waitFor(() => expect(choice).toBeEnabled());
+    fireEvent.click(choice);
+    await waitFor(() => expect(posted).toHaveLength(1), { timeout: 3000 });
+    expect(posted[0]).toMatchObject({ kind: 'select_product', expected_version: 3, interrupt_id: 'c1', card_id: 'c1', payload: { sku: 'RV' } });
+    await waitFor(() => expect(document.querySelector('[data-ui]')).toHaveAttribute('data-ui', 'idle'));
   });
 });

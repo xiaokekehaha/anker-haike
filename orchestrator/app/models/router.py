@@ -36,6 +36,7 @@ from pydantic import BaseModel, ValidationError
 from app.models.config import Structured, TaskRoute
 from app.models.queue import BoundedGate
 from app.models.registry import ModelRegistry, ResolvedModel
+from app.observability.runtime import record
 
 T = TypeVar("T", bound=BaseModel)
 Method = Literal["json_schema", "json_object", "tools"]
@@ -138,7 +139,8 @@ def classify_exception(exc: BaseException) -> Outcome:
         or name in {"InternalServerError", "ServiceUnavailable"}
     ):
         return "server_error"
-    if "APIConnectionError" in name:
+    if "ConnectionError" in name or "RemoteProtocolError" in name:
+        # openai.APIConnectionError 及 langchain-openai 1.6 的 OpenAIConnectionError 包装（票 42 实测）
         return "server_error"
     if isinstance(exc, RefusalError) or any(
         k in text for k in ("content_filter", "data_inspection_failed", "refusal", "safety")
@@ -260,15 +262,44 @@ class ModelRouter:
         method: Method | None = None,
     ) -> ModelResult[T]:
         """结构化调用；全局门满时立即抛 CapacityExceeded（映射为 recoverable error）。"""
-        async with self.gate.slot(task):
-            return await self._invoke(
-                task,
-                messages,
-                schema,
-                budget_ms=budget_ms,
+        started = time.monotonic()
+        result = None
+        error = None
+        try:
+            async with self.gate.slot(task):
+                result = await self._invoke(
+                    task,
+                    messages,
+                    schema,
+                    budget_ms=budget_ms,
+                    session_id=session_id,
+                    lane=lane,
+                    method=method,
+                )
+                return result
+        except BaseException as exc:
+            error = exc
+            raise
+        finally:
+            attempts = result.attempts if result else getattr(error, "attempts", [])
+            last_model = next(
+                (a.model_used for a in reversed(attempts) if a.outcome != "skipped"), None
+            )
+            record(
+                "model_call",
+                task=task,
                 session_id=session_id,
-                lane=lane,
-                method=method,
+                lane=lane or self.registry.cfg.default_lane,
+                stream=False,
+                input=messages,
+                output=result.parsed if result else None,
+                model_used=result.model_used if result else last_model,
+                usage=result.usage if result else {},
+                attempts=attempts,
+                latency_ms=int((time.monotonic() - started) * 1000),
+                status="ok"
+                if result
+                else ("cancelled" if isinstance(error, asyncio.CancelledError) else "error"),
             )
 
     async def _invoke(
@@ -371,6 +402,67 @@ class ModelRouter:
     # ---- 用户可见文本流（票 13 / 14）----
     async def stream(
         self,
+        task,
+        messages,
+        *,
+        budget_ms,
+        message_id,
+        session_id=None,
+        lane=None,
+        fallback_messages=None,
+    ) -> AsyncIterator[StreamEvent]:
+        started = time.monotonic()
+        trace = {"attempts": [], "usage": {}}
+        output = ""
+        model_used = None
+        status = "cancelled"
+        truncated = False
+        source = self._stream(
+            task,
+            messages,
+            budget_ms=budget_ms,
+            message_id=message_id,
+            session_id=session_id,
+            lane=lane,
+            fallback_messages=fallback_messages,
+            trace=trace,
+        )
+        try:
+            async for event in source:
+                if event.kind == "start":
+                    model_used = event.model_used
+                    output = ""
+                elif event.kind == "delta":
+                    truncated |= len(output) + len(event.text) > 16000
+                    output = (output + event.text)[:16000]
+                elif event.kind == "end":
+                    status = "ok"
+                yield event
+        except BaseException as exc:
+            status = (
+                "cancelled" if isinstance(exc, (asyncio.CancelledError, GeneratorExit)) else "error"
+            )
+            raise
+        finally:
+            await source.aclose()
+            record(
+                "model_call",
+                task=task,
+                session_id=session_id,
+                lane=lane or self.registry.cfg.default_lane,
+                stream=True,
+                input=trace.get("input", messages),
+                output=output,
+                model_used=model_used or trace.get("model_used"),
+                usage=trace["usage"],
+                attempts=trace["attempts"],
+                output_truncated=truncated,
+                latency_ms=int((time.monotonic() - started) * 1000),
+                status=status,
+            )
+
+    async def _stream(
+        self,
         task: str,
         messages: Sequence[BaseMessage | tuple[str, str] | dict[str, Any]],
         *,
@@ -379,6 +471,7 @@ class ModelRouter:
         session_id: str | None = None,
         lane: str | None = None,
         fallback_messages: Sequence[BaseMessage | tuple[str, str] | dict[str, Any]] | None = None,
+        trace: dict[str, Any],
     ) -> AsyncIterator[StreamEvent]:
         """tag=user_visible 的文本流。主模型中途失败 → aborted，降级模型用 fallback_messages（简化模式变体）
         从头生成并以新 message_id + replaces 开始；链上第一家为 primary，其余为 fallback。
@@ -388,7 +481,7 @@ class ModelRouter:
         lane = lane or self.registry.cfg.default_lane
         base = convert_to_messages(list(messages))
         fb = convert_to_messages(list(fallback_messages)) if fallback_messages is not None else base
-        attempts: list[Attempt] = []
+        attempts: list[Attempt] = trace["attempts"]
         deadline = self._clock() + budget_ms / 1000
         current_id = message_id
         async with self.gate.slot(task):
@@ -412,6 +505,8 @@ class ModelRouter:
                 tier: Literal["primary", "fallback"] = "primary" if tried == 0 else "fallback"
                 tried += 1
                 msgs = base if tier == "primary" else fb
+                trace["input"] = msgs
+                trace["model_used"] = resolved.model_used
                 model = self._factory(resolved, route)
                 config = {
                     "tags": ["user_visible"],
@@ -439,6 +534,12 @@ class ModelRouter:
                                 agen.__anext__(),
                                 min(resolved.spec.timeout_s, deadline - self._clock()),
                             )
+                            usage = getattr(chunk, "usage_metadata", None) or {}
+                            for key in ("input_tokens", "output_tokens", "total_tokens"):
+                                if key in usage:
+                                    trace["usage"][key] = trace["usage"].get(key, 0) + int(
+                                        usage[key]
+                                    )
                             delta = (
                                 chunk.content
                                 if isinstance(chunk.content, str)

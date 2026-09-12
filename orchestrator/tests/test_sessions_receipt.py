@@ -90,7 +90,8 @@ async def test_regular_escalation_enters_collect_receipt_and_awaits_upload(mem_r
     # 快照：pending_input 指向凭证上传；没有卡片事件（Composer 据 kind 切换为凭证上传态）
     assert snap.pending_input is not None and snap.pending_input.kind == "upload_receipt"
     assert snap.stage == "escalate" and snap.substage == "collect_receipt"
-    assert not [i for i in snap.timeline if i.kind.endswith("_card")]
+    # 凭证收集位置无卡片事件（首轮的步骤卡是票 34 的历史卡片，不算）
+    assert not [i for i in snap.timeline if i.kind in ("product_card", "receipt_card")]
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert st["pending_card"]["kind"] == "upload_receipt" and st["receipt"]["status"] is None
 
@@ -189,7 +190,7 @@ async def test_receipt_image_outside_upload_receipt_is_not_a_receipt(mem_runtime
         app.state.image_store = None
     stages = [s for s, _ in _progress(events)]
     assert "escalate" not in stages and "diagnose" in stages
-    assert events[-1]["reason"] == "completed"
+    assert events[-1]["reason"] == "awaiting_input"  # 普通排障轮：步骤卡（票 34）
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert st.get("receipt") is None and st["image_refs"][0]["purpose"] == "receipt"
     assert not [e for e in events if e["type"] == "tool_call" and e["name"] == "diagnose.vision"]

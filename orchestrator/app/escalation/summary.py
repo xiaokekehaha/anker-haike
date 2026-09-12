@@ -1,6 +1,6 @@
 """escalate.summarize：从图状态直接渲染 EscalationSummary（08 §5、09 §4、03 §1.7）。
 
-- 不调模型即可生成；模型可用时的字段润色（escalate.summary）在后续票接入，本票 model_trace 标 summary_polish=skipped。
+- 不调模型即可生成；图节点可选调用 polish_summary（escalate.summary）整理问题字段；默认 model_trace 标 summary_polish=skipped。
 - receipt 默认 not_collected（安全升级 / request_human 路径先摘要、凭证可选补充，09 §5.1）。
 - card_id 稳定：uuid5(session_id, "escalation_summary", reason)，重跑得到同一卡片。
 """
@@ -115,6 +115,23 @@ def build_summary(
     )
 
 
+def _receipt_facts_text(facts: dict[str, str]) -> str:
+    labels = {
+        "channel": "订单渠道",
+        "purchase_date": "购买日期",
+        "dealer.name": "经销商",
+        "authorized": "名录授权状态",
+    }
+    return (
+        "；".join(
+            f"{labels.get(k, k)}："
+            + ({"true": "已授权", "false": "未授权"}.get(v, v) if k == "authorized" else v)
+            for k, v in facts.items()
+        )
+        or "无"
+    )
+
+
 def summary_to_text(s: EscalationSummary) -> str:
     """可读文本（前端 SummaryCard 一键复制同款格式；五要素：产品、问题、观察 / 假设、步骤、原因）。"""
     lines = [
@@ -127,6 +144,8 @@ def summary_to_text(s: EscalationSummary) -> str:
         f"【情绪】{s.emotion.level} / {s.emotion.strategy}",
         f"【凭证】{s.receipt.status}"
         + (f"，下一步：{s.receipt.next_step}" if s.receipt.next_step else ""),
+        "【凭证核实事实】" + _receipt_facts_text(s.receipt.verified_facts),
+        "【凭证待核实差异】" + ("；".join(s.receipt.conflicts) or "无"),
     ]
     return "\n".join(lines)
 

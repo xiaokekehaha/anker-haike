@@ -39,10 +39,16 @@ class RuleSpec(BaseModel):
     action_kinds: list[str] = Field(default_factory=list)
 
 
+class PreStepSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    high_risk_actions: list[str] = Field(default_factory=list)
+
+
 class RulesConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
     version: str
     rules: dict[str, RuleSpec]
+    pre_step: PreStepSpec = Field(default_factory=PreStepSpec)
 
 
 @dataclass(frozen=True)
@@ -56,6 +62,13 @@ class RuleHit:
     def as_flag(self) -> dict[str, Any]:
         """写入会话状态 safety_flags 的形状。"""
         return {"rule_id": self.rule_id, "source": self.source, "term": self.term, "ts": self.ts}
+
+
+@dataclass(frozen=True)
+class PreStepResult:
+    action: Literal["ok", "drop", "escalate"]
+    rule_id: str | None
+    term: str | None
 
 
 @dataclass
@@ -109,6 +122,7 @@ class RulesService:
         cfg = load_rules_config(self._path)
         self._mtime = os.stat(self._path).st_mtime
         self.version = cfg.version
+        self.pre_step = cfg.pre_step
         self.rules = dict(sorted(cfg.rules.items(), key=lambda kv: kv[1].priority))
         self._text_index = [
             (rid, term, _norm(term)) for rid, r in self.rules.items() for term in r.text_terms
@@ -192,6 +206,30 @@ class RulesService:
                 },
             )
         return result
+
+    # ---- CP-pre-step（09 §1；票 34）----
+    def check_pre_step(
+        self, *, instruction: str, title: str = "", caution: str | None, session_id: str | None = None
+    ) -> PreStepResult:
+        """待下发步骤复查：文字含 R4 安全词 → escalate；含高危动作且来源无 caution → drop。"""
+        if self._hot:
+            self.reload_if_changed()
+        blob = f"{title} {instruction}"
+        cp = self.check_in(text=blob, session_id=session_id)
+        r4 = [h for h in cp.hits if h.rule_id == "R4"]
+        if r4:
+            return PreStepResult("escalate", "R4", r4[0].term)
+        norm = _norm(blob)
+        risky = [w for w in self.pre_step.high_risk_actions if _norm(w) in norm]
+        if risky and not (caution or "").strip():
+            log.info(
+                "rule_hit checkpoint=cp_pre_step rule_id=HR source=step term=%s action=drop session=%s",
+                risky[0],
+                session_id,
+                extra={"event": "rule_hit", "checkpoint": "cp_pre_step", "rule_id": "HR", "source": "step", "term": risky[0], "action": "drop", "session_id": session_id},
+            )
+            return PreStepResult("drop", "HR", risky[0])
+        return PreStepResult("ok", None, None)
 
     def _match_text(self, text: str, source: Source, ts: str) -> list[RuleHit]:
         norm = _norm(text)

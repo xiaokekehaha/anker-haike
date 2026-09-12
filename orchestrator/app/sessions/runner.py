@@ -19,6 +19,7 @@ from haike_contracts.events import parse_event
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command
 
+from app.observability.runtime import record, run_id_context
 from app.sessions.store import SessionStore
 
 log = logging.getLogger("sessions.runner")
@@ -38,6 +39,10 @@ class RunEmitter:
         self.session_id = session_id
         self.run_id = run_id
         self.last_seq = 0
+        self.started = time.monotonic()
+        self.metrics: set[str] = set()
+        self.stage = None
+        self.stage_started_ms = 0
 
     async def emit(self, payload: dict[str, Any]) -> dict[str, Any]:
         # seq 由存储层分配；先用占位值过一遍校验，落库后回填真实 seq 再校验一次
@@ -55,6 +60,38 @@ class RunEmitter:
                 seq,
             )
         self.last_seq = seq
+        elapsed = int((time.monotonic() - self.started) * 1000)
+        kind = draft["type"]
+        if kind == "progress":
+            record(
+                "state_transition",
+                session_id=self.session_id,
+                run_id=self.run_id,
+                from_stage=self.stage,
+                to_stage=draft["stage"],
+                substage=draft.get("substage"),
+                latency_ms=elapsed - self.stage_started_ms,
+                run_elapsed_ms=elapsed,
+            )
+            self.stage = draft["stage"]
+            self.stage_started_ms = elapsed
+        elif kind in {"tool_call", "evidence", "escalation_summary", "error", "done"}:
+            record("session_event", session_id=self.session_id, run_id=self.run_id, payload=draft)
+        metric = None
+        if kind == "message" and draft.get("delta", "").strip():
+            metric = "first_visible_ms"
+        elif kind in {"step_card", "product_card", "receipt_card"}:
+            metric = "card_ready_ms"
+        if metric and metric not in self.metrics:
+            self.metrics.add(metric)
+            record(
+                "run_metric",
+                session_id=self.session_id,
+                run_id=self.run_id,
+                metric=metric,
+                value_ms=elapsed,
+                card_kind=kind if kind.endswith("_card") else None,
+            )
         return draft
 
 
@@ -92,6 +129,7 @@ async def run_message(
     is_action = resume is not None or continue_run or entry_action is not None
 
     async def pump() -> None:
+        context_token = run_id_context.set(run_id)
         try:
             config = {"configurable": {"thread_id": session_id}}
             payload: Any
@@ -124,6 +162,8 @@ async def run_message(
             await queue.put(_GRAPH_DONE)
         except Exception as exc:  # noqa: BLE001 - 任何节点异常都要转为 error 事件
             await queue.put(exc)
+        finally:
+            run_id_context.reset(context_token)
 
     async def watch_cancel() -> None:
         assert cancel_event is not None

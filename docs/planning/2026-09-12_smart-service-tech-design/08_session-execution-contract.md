@@ -68,6 +68,8 @@ prepare_card ──▶ await_input ──▶ apply_action ──▶ (下一业�
 4. `request_human` 例外：忽略 version 与 pending 校验，若有 active run 先取消再执行。
 5. 写 `session_actions` 占位 → 执行 `Command(resume=...)` → 开 SSE 流 → 完成后回填结果。
 
+动作失败边界：未知 kind / 不合法 payload 在 Schema 校验层返回 422，不调用模型猜动作；已知动作但阶段不允许、版本过期、卡片过期返回对应 409 与最新快照。拒绝请求不得推进游标、增加业务计数或启动错误分支。合法 `step_feedback(not_solved)` 必须进入 verify，`request_human` 必须进入 escalate；用路由表与端到端测试覆盖，模型不参与按钮路由。自由文本的不确定、澄清和纠正按 09 §1.1；不能把语义不明伪装成动作成功。
+
 ## 5. 事件协议（唯一定义）
 
 所有事件 JSON 带 `type`、`seq`（会话内单调递增）、`run_id`。
@@ -137,7 +139,13 @@ prepare_card ──▶ await_input ──▶ apply_action ──▶ (下一业�
 | task 预算 | `min(task 默认超时, run 剩余时间 − 2 s)`；剩余不足 3 s 时跳过可选 task（如第二次检索、摘要润色） |
 | 唯一重试层 | ModelRouter。厂商 SDK `max_retries=0`；节点不重试；HTTP 层不重试 |
 | ModelRouter 重试预算 | 同模型最多 1 次，链上最多 3 家，且总耗时不超过 task 预算 |
+| 可选查询改写 | 默认关闭；触发条件见 09 §4.1。仅剩余 ≥ 8 s 时启动：rewrite invoke 总预算 ≤ 3 s（含 Router 内重试 / 降级），补检索整轮共享 ≤ 3 s，至少保留 2 s 收尾；两步也受原 run deadline 约束，不延长 deadline |
+| 检索补救次数 | 每 run 初次 + 至多一轮补检索，图片新增信息与查询改写共享名额；至多一次 rewrite invoke。重跑 / 恢复沿用 checkpoint 中已占用名额，禁止重置后重复补救 |
 | 前端 | 无事件 15 s 提示「仍在处理」；超过 deadline + 5 s 视为断流，走第 6 节恢复 |
+
+补救步骤开始前及 await 返回后检查剩余时间、取消与当前状态；deadline 已到或 run 已取消时，不发新的请求、不应用晚到改写结果、不继续生成卡片。可选改写失败记录原因并回到原知识降级路径，不单独以 error 终止主流程。补检索完成后 synthesize / guide 同样使用剩余 task 预算；不足时用既有预写计划 / 原文 / 升级降级。正常延迟目标保持不变，启用补救的端到端延迟须单独实测。
+
+`retrieval_control` 按 run_id 隔离，检索轮次与 rewrite 名额先提交 checkpoint，再发起对应外部操作（复用既有 prepare / execute 拆分方式）。恢复发现名额已占用但没有完成结果，按失败 / 不确定降级，不重新发起同一补救；新用户输入的新 run 才重新分配名额。仅在节点局部变量加计数不足以满足恢复后的次数约束。
 
 ## 9. Schema 生成与校验
 

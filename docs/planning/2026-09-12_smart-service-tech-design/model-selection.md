@@ -193,6 +193,14 @@ retry: {same_model_max: 1, chain_max: 3, sdk_max_retries: 0}
 - 每个 task 链在 domestic 与 overseas 两条通道各自完整；跨通道降级通过在 domestic 链尾放 overseas 别名实现（sonnet / haiku），不再另设「允许跨通道」开关。
 - 3.4 的展示表已废弃，以第 4 节由本文件生成的表为准。
 
+#### 3.7.1 可选 query.rewrite 路由（待票 32 实现）
+
+无命中改写复用 ModelRouter 的结构化 invoke，新增的仅是任务名 `query.rewrite`，不是独立服务。实现时在实际 `config/models.yaml` 的 domestic / overseas 下注册该任务，初始复用各通道 intake 的已配置模型别名链，`effort: low`、`max_tokens: 128`、无需视觉；不在业务节点硬编码厂商。实际配置仍是唯一路由来源，更新后从它生成路由展示表；本节为待实现要求，不表示当前配置已有该任务。
+
+启用开关放编排配置 `config/retrieval.yaml: query_rewrite.enabled=false`，不混入现有严格校验的 ModelsConfig。开启前校验两通道路由齐全、所选通道有可调用模型；缺配置则保持补救关闭并记录配置问题，不阻断基本排障。输入 / 输出和保守校验见 03 §1.4.2，触发规则见 09 §4.1，invoke 的 3 s 预算包含现有 Router 内重试与降级；不新增重试层。单次 invoke 不等于必然只有一次厂商请求，实际 attempts 仍须记录。
+
+启用评测使用人工标注的口语 → 允许同义表达 → 应命中依据样例，加入否定、错误码、新增故障原因、错型号和原查询相同等反例。比较默认查询与一次改写后的适用证据命中、错误命中、语义漂移、额外成本及端到端延迟；未经验证保持默认关闭。
+
 ### 3.8 选型验证方式（bake-off）
 
 样本：每个 task 20–30 条金标样本，由三个演示案例扩展并人工标注；diagnose.vision 与 warranty.receipt_ocr 各 15 张图（指示灯、屏幕报错、滤网状态；发票、订单截图、收据）。脚本对链上每个候选模型各跑 3 遍取中位数。
@@ -229,20 +237,23 @@ retry: {same_model_max: 1, chain_max: 3, sdk_max_retries: 0}
 | bake-off 门槛 | 四项综合评测 | 见 3.8，Schema 通过率、字段准确率、延迟、成本四项都设门槛 |
 | 本轮交付 | 只完善设计文档，不写业务代码 | 实现阶段另开 planning 任务 |
 
-第一版默认路由（由 `make route-table` 从 models.yaml 生成，别名见 3.7；下表为当前配置的生成结果）：
+第一版默认路由（由 `make route-table` 从 models.yaml 生成，别名见 3.7；2026-09-13 票 42 冻结后的生成结果，真实 ID 见 config/models.yaml）：
 
 | task | 主 | 降级 1 | 降级 2 | 需视觉 |
 | --- | --- | --- | --- | --- |
 | intake | qwen-flash | deepseek | haiku（overseas） | 否 |
-| disambiguate.clarify | qwen-flash | glm-flash | — | 否 |
-| diagnose.vision | qwen-vl | glm-v | sonnet（overseas） | 是 |
+| disambiguate.clarify | qwen-flash | deepseek | glm-flash | 否 |
+| diagnose.vision | qwen-vl | deepseek | sonnet（overseas） | 是 |
 | diagnose.synthesize | qwen-max | deepseek | sonnet（overseas） | 否 |
-| guide.step | qwen-max | glm | sonnet（overseas） | 否 |
-| reply.stream | qwen-plus | glm-flash | — | 否 |
+| guide.step | qwen-max | deepseek | sonnet（overseas） | 否 |
+| reply.stream | qwen-plus | deepseek | glm-flash | 否 |
 | escalate.summary | deepseek | qwen-flash | — | 否 |
-| warranty.receipt_ocr | qwen-vl | glm-v | sonnet（overseas） | 是 |
+| warranty.receipt_ocr | qwen-vl | deepseek | sonnet（overseas） | 是 |
+| query.rewrite | qwen-flash | deepseek | — | 否 |
 | embedding | embed-primary（百炼） | — | — | — |
 | rerank | rerank-primary（百炼） | LKEAP | 不 rerank | — |
+
+冻结说明（票 42，2026-09-13）：每条链第二位固定为 `deepseek`（deepseek-flash，V4.1-Flash，实测可读图、json_object 可用、关思考后 ≈ 0.9 s），保证只有 DeepSeek key 的环境任何 task 都不会整链 skipped；qwen / glm / claude / gemini 的 ID 按厂商官方文档核对填入，其真实通过率与延迟待 key 到位后 `make bakeoff` 补跑并据结果调整主备顺序。评测结果与裁决见 ../2026-09-12_smart-service-bakeoff/findings.md。
 
 ## 附录：本机部署可行性（已搁置）
 

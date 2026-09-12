@@ -43,6 +43,7 @@ def reply_messages(
     summary: dict[str, Any] | None,
     evidence: list[dict[str, Any]],
     knowledge_status: str | None,
+    fault_card: str | None = None,
 ):
     snippets = "\n\n".join(
         f"[{e.get('evidence_id', '')[:8]}] {e.get('snippet', '')}" for e in evidence[:6]
@@ -52,10 +53,12 @@ def reply_messages(
         "unavailable": "（知识库暂不可用，按标准排障流程说明，不要臆造步骤）",
     }.get(knowledge_status or "", "")
     step_rule = "每个步骤不超过两句。" if strategy == "reassure_and_shorten" else ""
+    card_block = ("\n" + wrap_data(fault_card, kind="fault_card")) if fault_card else ""
     human = (
         f"{REPLY_INSTRUCTION}{step_rule}{status_note}\n"
         f"{wrap_data(text)}\n"
         f"{wrap_data(snippets or '（无）', kind='retrieved_snippets')}"
+        f"{card_block}"
     )
     return _msgs(strategy, summary, human, simplified=False), _msgs(
         strategy, summary, human, simplified=True

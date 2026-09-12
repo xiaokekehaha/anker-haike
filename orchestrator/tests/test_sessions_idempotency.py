@@ -91,10 +91,10 @@ async def test_two_different_actions_are_serialized_not_rejected(mem_runtime, mo
         await asyncio.sleep(0.05)
         t2 = asyncio.create_task(client.post(f"/sessions/{sid}/actions", json=a2))
         r1, r2 = await asyncio.gather(t1, t2)
-    assert r1.status_code == 200 and sse.parse(r1.text)[-1]["reason"] == "completed"
+    assert r1.status_code == 200 and sse.parse(r1.text)[-1]["reason"] == "awaiting_input"
     assert r2.status_code == 409
     assert r2.json()["code"] == "stale_version"  # 串行后 version 已前进（08 §4 先校 version）
-    assert r2.json()["snapshot"]["pending_input"] is None
+    assert r2.json()["snapshot"]["pending_input"]["kind"] == "step_feedback"  # 票 34：步骤卡
     state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
     assert state.values["product_confirmed"]["sku"] == "EUFY-S1-PRO"
 

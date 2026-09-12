@@ -97,3 +97,17 @@ def test_probe_alias_defaults_to_deepseek_when_no_other_keys():
 def test_probe_alias_prefers_first_available_in_chain(cfg):
     reg = ModelRegistry(cfg, env={"T_AN": SECRET})
     assert pick_probe_alias(reg, "intake", None) == "sonnet"
+
+
+def test_model_params_go_to_extra_body_for_openai_protocol(tmp_path):
+    """票 42：models.yaml 的 params（如 DeepSeek 关思考）经 extra_body 进请求体，其他字段不受影响。"""
+    text = MINIMAL.replace(
+        "id: deepseek-chat, structured: json_object}",
+        "id: deepseek-flash, structured: json_object, params: {thinking: {type: disabled}}}",
+    )
+    p = tmp_path / "models.yaml"
+    p.write_text(text, encoding="utf-8")
+    reg = ModelRegistry(load_models_config(p), env={"T_DS": SECRET})
+    m = reg.build_for_task("intake", "deepseek")
+    assert m.extra_body == {"thinking": {"type": "disabled"}}
+    assert m.model_name == "deepseek-flash" and m.max_retries == 0

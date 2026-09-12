@@ -22,11 +22,14 @@ services:
       WEKNORA_BASE_URL: http://weknora-app:8080
       MODEL_LANE: ${MODEL_LANE:-domestic}
       REPLAY_CASE_ID: ${REPLAY_CASE_ID:-}   # 票 43：非空即回放模式，录制包已随镜像打包
+      OBSERVABILITY_LOG_PATH: /srv/logs/events.jsonl
+      LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:-http://langfuse-web:3000}
     ports:
       - "${ORCHESTRATOR_PORT:-8000}:8000"
     volumes:
       # 票 49：config/ 以只读卷覆盖镜像内拷贝，回滚 = 换目录 + 重启，不重建镜像
       - ./config:/srv/config:ro
+      - ./logs:/srv/logs
     depends_on:
       postgres:
         condition: service_healthy

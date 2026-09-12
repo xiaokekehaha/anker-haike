@@ -111,23 +111,30 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
     # 恢复 run：resumed=true（验收项 3）；await_input 重跑重发同一 card_id（验收项 1）；不再有 awaiting_input
     assert resumed[0]["type"] == "run_started" and resumed[0]["resumed"] is True
     # 票 28：确认产品后先检索，多出 tool_call 事件与 retrieve 子阶段；这里只看主干顺序
-    core = [t for t in types if t != "tool_call"]
-    assert core == ["run_started", "product_card", "progress", "progress", "done"]
+    core = [t for t in types if t not in ("tool_call", "evidence")]
+    # 票 28 / 33 / 34：确认产品后 retrieve → reply → guide 出步骤卡，progress 数量随之增加；只看主干顺序
+    assert (
+        core[:2] == ["run_started", "product_card"]
+        and core[-3:] == ["step_card", "awaiting_input", "done"]
+        and set(core[2:-3]) == {"progress"}
+    )
     assert resumed[1]["card_id"] == pending["card_id"]
     assert resumed[2]["stage"] == "diagnose"
-    assert resumed[-1]["reason"] == "completed" and resumed[-1]["version"] > pending["version"]
+    assert resumed[-1]["reason"] == "awaiting_input" and resumed[-1]["version"] > pending["version"]
     # seq 接续上一 run
     assert resumed[0]["seq"] == events[-1]["seq"] + 1
 
     state = await app.state.session_graph.aget_state(_cfg(sid))
     assert state.values["prepare_card_calls"] == 1  # prepare_card 只执行一次（验收项 1）
-    assert state.values["pending_card"] is None and state.values["last_action"] is None
+    # 产品卡已消费；pending_card 现在是 guide 写入的步骤卡（票 34）
+    assert state.values["pending_card"]["kind"] == "step_feedback"
+    assert state.values["last_action"] is None
     assert state.values["product_confirmed"]["sku"] == "EUFY-S1-PRO"
     assert state.values["product_state"] == "confirmed_sku"
     assert state.values["card_results"][pending["card_id"]] == {"selected_sku": "EUFY-S1-PRO"}
-    assert state.next == ()
+    assert state.next == ("await_input",)  # 票 34：停在步骤卡等待反馈
 
-    assert snap.pending_input is None and snap.stage == "diagnose"
+    assert snap.pending_input.kind == "step_feedback" and snap.stage == "guide"
     cards = [i for i in snap.timeline if i.kind == "product_card"]
     assert len(cards) == 1 and cards[0].selected_sku == "EUFY-S1-PRO"  # 重发的卡片按 card_id 折叠
     assert snap.version == resumed[-1]["version"]
@@ -159,7 +166,7 @@ async def test_single_hit_and_zero_hit_skip_card(mem_runtime):
         sid2 = (await client.post("/sessions")).json()["session_id"]
         zero = await _send(client, sid2, "机器不吸了")
     assert "product_card" not in [e["type"] for e in single]
-    assert single[-1]["reason"] == "completed"
+    assert single[-1]["reason"] == "awaiting_input"  # 单命中直达 guide 步骤卡
     st = await app.state.session_graph.aget_state(_cfg(sid))
     assert (
         st.values["product_confirmed"]["sku"] == "EUFY-X9-PRO"
@@ -219,7 +226,7 @@ async def test_action_conflicts_and_validation(mem_runtime):
         ).status_code == 404
         # 冲突不改变状态：正确动作仍可通过
         ok = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
-        assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "completed"
+        assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "awaiting_input"
         # 已消费的 pending 再发（新 action_id）：version 已前进 → stale_version（08 §4 先校 version）
         again = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
         assert again.status_code == 409 and again.json()["code"] == "stale_version"

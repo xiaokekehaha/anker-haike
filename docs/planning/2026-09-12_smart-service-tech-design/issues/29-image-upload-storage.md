@@ -16,3 +16,7 @@
 **设计依据：** 03 §3.1；04 §1；07 §9；05 §6
 
 **收尾说明（A 线接手会话）：** 票 47 之后业务表以 migrations/ 为准，补 `0002_session_images`（IF NOT EXISTS 收编 store.setup 建好的表），test_db_migrations 的 head 改为 0002 并加迁移与 ImageStore DDL 一致性测试。前端 Composer 的 onSend / UserBubble 尚未接到 App（聊天仍 offline），随票 06 reducer 接入；接口形状已定：onSend(text, files, purpose)。
+
+**实现记录（2026-09-12，Claude Code B）：** 后端 `orchestrator/app/images/`（store.py：校验 / 嗅探 mime / PostgresImageStore / InMemoryImageStore；runtime.py：进程级 store 与清理循环）、router.py post_message 追加 images / purpose、graph.py intake 解析引用、snapshot.py 折叠 images；`tests/test_images.py` 7 项（含真实 Postgres 表）。前端 `frontend/src/lib/image.ts`（checkImage / compressImage 长边 1600 canvas / prepareImage）、`Composer.tsx`（隐藏 file input、附件预览、移除、内联错误、onSend(text, files, purpose)）、`UserBubble.tsx`（缩略图）；`Composer.test.tsx` 7 项，typecheck / build 通过。
+
+**说明：** 前端 App 仍是票 02 的只读壳（`CHAT_OFFLINE = true`），票 06 的 reducer / SSE 客户端未接入 App；Composer 的 onSend 与 UserBubble 已按 /messages 多部分接口就位，接线属票 06 / 21 前端集成范围（Codex 已停，待另行安排）。

@@ -36,3 +36,11 @@ releases/_pre-rollback/
 # 票 46：代理证书与口令文件只在部署机
 deploy/proxy/certs/
 deploy/proxy/.htpasswd
+
+# 会话追踪和脱敏日志（本地产物）
+logs/
+
+# 票 42：bake-off 明细报告（bakeoff.md 结论抄进 findings，JSON 不入库）
+reports/bakeoff/*.json
+# 真实评测照片只在本机
+data/bakeoff-images/

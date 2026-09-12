@@ -1,0 +1,125 @@
+# Adapted from https://github.com/langfuse/langfuse/blob/main/docker-compose.yml
+# Langfuse v4.35.0; isolated project-owned dependencies, opt-in profile only.
+x-env: &env
+  DATABASE_URL: postgresql://langfuse:${OBS_DB_PASSWORD:-local-only}@obs-postgres:5432/langfuse
+  NEXTAUTH_URL: http://localhost:${LANGFUSE_PORT:-3000}
+  NEXTAUTH_SECRET: ${OBS_AUTH_SECRET:-local-only}
+  SALT: ${OBS_SALT:-local-only}
+  ENCRYPTION_KEY: ${OBS_ENCRYPTION_KEY:-0000000000000000000000000000000000000000000000000000000000000000}
+  TELEMETRY_ENABLED: 'false'
+  CLICKHOUSE_MIGRATION_URL: clickhouse://obs-clickhouse:9000
+  CLICKHOUSE_URL: http://obs-clickhouse:8123
+  CLICKHOUSE_USER: langfuse
+  CLICKHOUSE_PASSWORD: ${OBS_DB_PASSWORD:-local-only}
+  CLICKHOUSE_CLUSTER_ENABLED: 'false'
+  REDIS_HOST: obs-redis
+  REDIS_PORT: '6379'
+  REDIS_AUTH: ${OBS_DB_PASSWORD:-local-only}
+  LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+  LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+  LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: langfuse
+  LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${OBS_STORAGE_SECRET:-local-only-password}
+  LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://obs-minio:9000
+  LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: 'true'
+  LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+  LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+  LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+  LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: langfuse
+  LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${OBS_STORAGE_SECRET:-local-only-password}
+  LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://obs-minio:9000
+  LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: 'true'
+  LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+x-depends: &depends
+  obs-postgres: {condition: service_healthy}
+  obs-redis: {condition: service_healthy}
+  obs-clickhouse: {condition: service_healthy}
+  obs-minio: {condition: service_healthy}
+services:
+  langfuse-web:
+    image: docker.langfuse.com/langfuse/langfuse:4.35.0
+    profiles: [observability]
+    depends_on: *depends
+    ports: ['127.0.0.1:${LANGFUSE_PORT:-3000}:3000']
+    environment:
+      <<: *env
+      HOSTNAME: '0.0.0.0'
+      LANGFUSE_INIT_ORG_ID: haike
+      LANGFUSE_INIT_ORG_NAME: Haike
+      LANGFUSE_INIT_PROJECT_ID: haike-service
+      LANGFUSE_INIT_PROJECT_NAME: Haike service
+      LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_INIT_PROJECT_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_INIT_USER_EMAIL: ${OBS_USER_EMAIL:-admin@haike.local}
+      LANGFUSE_INIT_USER_PASSWORD: ${OBS_USER_PASSWORD:-}
+    healthcheck:
+      test: ['CMD', 'node', '-e', 'fetch("http://localhost:3000/api/public/health").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+  langfuse-worker:
+    image: docker.langfuse.com/langfuse/langfuse-worker:4.35.0
+    profiles: [observability]
+    depends_on: *depends
+    environment: *env
+    restart: unless-stopped
+  obs-postgres:
+    image: postgres:17.6-alpine
+    profiles: [observability]
+    environment:
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: ${OBS_DB_PASSWORD:-local-only}
+      POSTGRES_DB: langfuse
+    volumes: [obs-postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'langfuse']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  obs-redis:
+    image: redis:7.4.5-alpine
+    profiles: [observability]
+    environment: {REDIS_PASSWORD: '${OBS_DB_PASSWORD:-local-only}'}
+    command: ['sh', '-c', 'exec redis-server --requirepass "$${REDIS_PASSWORD}" --maxmemory-policy noeviction']
+    volumes: [obs-redis-data:/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'redis-cli -a "$${REDIS_PASSWORD}" ping | grep -q PONG']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  obs-clickhouse:
+    image: clickhouse/clickhouse-server:25.12
+    profiles: [observability]
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: langfuse
+      CLICKHOUSE_PASSWORD: ${OBS_DB_PASSWORD:-local-only}
+    volumes: [obs-clickhouse-data:/var/lib/clickhouse]
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:8123/ping']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  obs-minio:
+    image: cgr.dev/chainguard/minio@sha256:039800e64ec7247d2fde7cff3697e964f6fe20b6d7d2c46aa7d82cc63355d512
+    profiles: [observability]
+    entrypoint: sh
+    command: ['-c', 'mkdir -p /data/langfuse && minio server --address ":9000" /data']
+    environment:
+      MINIO_ROOT_USER: langfuse
+      MINIO_ROOT_PASSWORD: ${OBS_STORAGE_SECRET:-local-only-password}
+    volumes: [obs-minio-data:/data]
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+volumes:
+  obs-postgres-data:
+  obs-redis-data:
+  obs-clickhouse-data:
+  obs-minio-data:

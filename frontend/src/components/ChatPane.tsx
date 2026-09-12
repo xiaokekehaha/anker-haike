@@ -17,20 +17,23 @@ export const STARTER_PROMPTS = [
   { text: '我在经销商那里买的，订单查不到，还能保修吗', tag: '订单与售后' },
 ] as const;
 
-type Props = { onPick: (text: string) => void; disabled?: boolean; children?: ReactNode };
+type Props = { onPick: (text: string) => void; disabled?: boolean; children?: ReactNode; showStarters?: boolean };
 
-export function ChatPane({ onPick, disabled, children }: Props) {
+export function ChatPane({ onPick, disabled, children, showStarters = true }: Props) {
   return (
     <div className={styles.pane}>
-      <div className={styles.assistant}>
-        <span className={styles.avatar} aria-hidden="true">✦</span>
-        <div className={styles.bubble}>
-          <p>你好，我是 Anker 智能售后助手。说说你的设备遇到了什么问题，我会陪你一步步排查。</p>
+      {showStarters && (
+        <div className={styles.assistant}>
+          <span className={styles.avatar} aria-hidden="true">✦</span>
+          <div className={styles.bubble}>
+            <p>你好，我是 Anker 智能售后助手。说说你的设备遇到了什么问题，我会陪你一步步排查。</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {children}
 
+      {showStarters && (<>
       <section className={styles.block} aria-labelledby="cat-title">
         <h3 id="cat-title">也可以先选产品<span>选填</span></h3>
         <ul className={styles.categories}>
@@ -57,6 +60,7 @@ export function ChatPane({ onPick, disabled, children }: Props) {
           ))}
         </ul>
       </details>
+      </>)}
     </div>
   );
 }

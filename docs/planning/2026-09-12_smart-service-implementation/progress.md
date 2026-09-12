@@ -40,5 +40,14 @@
 - B 与 A 在票 30 撞车一次（B 误覆盖 vision.py，已回退，A 的实现保留）。前端集成后浏览器端到端通过。
 - 票 49 / 46 收尾（A）：镜像换国内源后构建成功；容器首次跑新代码暴露三处容器专属问题（config 路径、alembic 文件、旧镜像配新配置）并修复。回滚演练 2 s；代理验证：401 / 200 / 301、SSE 首字节 11 ms、限速 60 并发 39×429、prod 组合只有 proxy 发布端口、镜像扫描无密钥。两票标 done；分支保护需管理员在 GitHub 开。
 
+- Codex 接续：完成前端票 08 / 38 及票 23 原始验收。统一请求取消与迟到结果隔离、seq 去重、快照恢复并续接、服务端明确允许的同 ID 重试一次、取消失败可见、重连有界与手动恢复。新增 25 项前端测试，当前 96 项通过；6 项生成器测试、类型检查、构建与契约检查通过。本轮未运行真实数据库/模型联调；保留全部既有改动。用户授权本项目数据库增删改查，已同步 AGENTS.md / CLAUDE.md。
+
+- 票 41（Codex 接续）：订单/渠道 L1–L6、参考数据/seed、迁移 0003、确认字段后规则核对、摘要受限润色及前端事实/冲突展示完成。50 项后端相关、前端全量 97 项和最终摘要 5 项、构建/契约通过。全量回归仍受 guide.step 四模型链 > chain_max=3 阻塞（9 失败），本票未改该路由。盘点与详情见 ../2026-09-12_receipt-lookup-continuation/。
+
+- Codex 前端凭证闭环：票 21/39 收尾；票 40 前端已完成，真实 OCR 待票 42。App 按 pending kind 限制输入，购买凭证专用上传/三种跳过、纯图片非空文本、失败保留附件备注、字段确认与 authoritative confirmed_fields 显示、图片快照同步。前端 117 项、相关后端 72 项、构建/契约/6 生成器测试通过，浏览器临时模拟 API 核对上传入口和跳过结果。未调用真实模型或数据库；详情见 ../2026-09-12_frontend-receipt-flow/。
+
+- 票 34 / 35（A 线接手会话，2026-09-13）：在 A 的 `app/guide/`（steps / verify / prompts）与前端 StepCard 基础上完成 graph.py 集成——`guide` 节点替换 guide_entry 占位（去重 → 证据越界丢弃 → CP-pre-step → guide.step 改写 / 原文 → pending_card(step_feedback) → await_input 发 step_card），apply_action 增 step_feedback 分支（备注 CP-in、计数器、next_on、计划切换 / R2、R1 系列）与 guide / end 路由；verify.py 抽出 `exhaust_plan` 供两处共用；steps.py 增剩余预算与 plans_ranked 证据校验；改写忠实性改为动作词干集合相等。状态新增 steps_executed / counters / exhausted_plans / card_ready_ms / guide_trace。新增 tests/test_guide.py 17 项；14 个既有测试文件的「一轮 → done(completed)」改为「→ step_card + done(awaiting_input)」。后端 368 项、前端 121 项（新增 StepCard.test 4 项）、ruff / tsc 通过。真实 DeepSeek + WeKnora（uvicorn :8010）：首卡 6.9 s；not_solved → s2；cannot_do → 耗尽切第二计划并跳过重复步骤；solved → done(completed)。与票 43（b4）、44（fc）会话已互通范围，未撞车。
+
 - 票 43（Claude Code B，2026-09-13）：新增 `orchestrator/app/replay/`（录制包 / ReplayRouter / ReplayKnowledgeAdapter / runtime 开关 / A1–A3 脚本 / `haike-replay` CLI）；models / knowledge runtime 在 REPLAY_CASE_ID 设置时切换实现；main 启动核对清单，不符抛 ReplayIncompatible；/health 增 replay 块，HeaderBar 增「演示回放」徽标；`Hit.status` 让回放证据标 replay。用真实 DeepSeek + WeKnora 录制 A1 / A2 / A3 三包（模型 4 / 4 / 8 条，检索各 2 条），`haike-replay verify` 断网重放三案例零 miss、evidence 全 replay；进程级实测回放启动与 prompt_ver 不符启动失败。后端 380 项（含新增 7）、前端 123 项、tsc / build 通过。与 34/35（1a）会话互通范围，未改 graph.py。
 
+- 票 36（接手会话，2026-09-13）：盘点 50 票——01–35、38–41、43、44、46、47、49 done；23 / 32 / 40 余尾项（37 联动、人工对照报告、真实 OCR 需视觉 key）；37 / 45 / 48 / 50 待做。票 36 的 R1/R1b/R1c/R2 已随 35 落地，本票补 graph.py `close` 节点：solved / next_on=DONE → 固定模板结束语（带起效步骤与产品名）流式 → progress(done) → done(completed)；不调模型，A1 回放包零 miss。route_after_apply 的 end 出口改为 close。test_solved_ends_run_completed 扩展断言；后端 392 项、前端 123 项、ruff 通过。票 25 前端「请求人工」按钮核对已在 Composer 常驻，标 done。

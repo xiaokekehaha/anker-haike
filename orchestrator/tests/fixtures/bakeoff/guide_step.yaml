@@ -1,0 +1,14 @@
+# guide.step：把 plans.yaml 的 instruction_src 原文改写成 ≤ 60 字的一句话；动作词不增不删（rewrite_is_faithful 在生产函数里兜底）。
+cases:
+  - {id: hair_s1,        input: {plan_id: rv_suction_hair_wrap,   step_id: s1, product: eufy X10 Pro Omni}, expect: {must_contain: [滚刷], max_chars: 60}}
+  - {id: hair_s2,        input: {plan_id: rv_suction_hair_wrap,   step_id: s2, product: eufy X10 Pro Omni}, expect: {must_contain: [滤网], max_chars: 60}}
+  - {id: hair_s3,        input: {plan_id: rv_suction_hair_wrap,   step_id: s3, product: eufy X10 Pro Omni}, expect: {must_contain: [吸口], max_chars: 60}}
+  - {id: filter_s1,      input: {plan_id: rv_suction_filter_clog, step_id: s1, product: eufy L60 Hybrid},   expect: {must_contain: [滤网], max_chars: 60}}
+  - {id: filter_s2,      input: {plan_id: rv_suction_filter_clog, step_id: s2, product: eufy L60 Hybrid},   expect: {must_contain: [滤网], max_chars: 60}}
+  - {id: dustbin_s1,     input: {plan_id: rv_suction_dustbin_full, step_id: s1, product: eufy X9 Pro},      expect: {must_contain: [尘盒], max_chars: 60}}
+  - {id: dustbin_s2,     input: {plan_id: rv_suction_dustbin_full, step_id: s2, product: eufy X9 Pro},      expect: {must_contain: [尘盒], max_chars: 60}}
+  - {id: side_s1,        input: {plan_id: rv_suction_side_brush,  step_id: s1, product: eufy G30 Verge},    expect: {must_contain: [边刷], max_chars: 60}}
+  - {id: side_s2,        input: {plan_id: rv_suction_side_brush,  step_id: s2, product: eufy G30 Verge},    expect: {must_contain: [边刷], max_chars: 60}}
+  - {id: hair_s1_short,  input: {plan_id: rv_suction_hair_wrap,   step_id: s1, product: eufy X10 Pro Omni, strategy: reassure_and_shorten}, expect: {must_contain: [滚刷], max_chars: 50}}
+  - {id: filter_s1_short,input: {plan_id: rv_suction_filter_clog, step_id: s1, product: eufy L60 Hybrid, strategy: reassure_and_shorten},   expect: {must_contain: [滤网], max_chars: 50}}
+  - {id: dustbin_s1_cat, input: {plan_id: rv_suction_dustbin_full, step_id: s1, product: 扫地机器人},        expect: {must_contain: [尘盒], max_chars: 60}}

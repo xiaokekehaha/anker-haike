@@ -9,3 +9,16 @@
 - v0.8.0 知识库创建字段没有 rerank_model_id：rerank 绑定在问答会话层，`knowledge-search` 不经 rerank，因此「rerank 不可用检索仍有结果」在检索接口上天然成立；票 27 的适配器仍要记录 rerank 状态供 evidence.status。
 - 百炼 gte-rerank（v1）已于 2026-05-30 下线；gte-rerank-v2 仍是 aliyun 嵌套协议可直连，qwen3-rerank 用 /compatible-api/v1/reranks 与 WeKnora generic provider 固定拼的 /rerank 不兼容，切换需上游适配或反向代理改写路径。
 - 手册的证据引用（plans.yaml evidence 段 doc_id#chunk_id）与 WeKnora 实际 chunk id 无法预先对应；票 27 需要在入库后按 `knowledge_title + chunk_index` 或内容锚点（手册里保留了 c12 / c15 等锚点字样）建立映射。
+- **IV-1（票 27）**：WeKnora v0.8.0 `/knowledge-search` 忽略 `knowledge_ids`（传不存在 id 仍返回全部命中）；`/knowledge-bases/{id}/hybrid-search` 遵守，但空列表视为不过滤。适配器只用 hybrid-search，允许集合为空时本地 no_match，并按 knowledge_id 后过滤兜底。命中携带 `knowledge_custom_metadata`（YAML 文本）、`parent_chunk_id`、`match_type`。
+- WeKnora v0.8.0 实测细节：注册 / 登录响应无 `data` 包装，tenant 在 `active_tenant`，api_key 需另建（受限 key 必带 capabilities，全权限 key `full_access=true`）；`custom_metadata` 值只能是标量；manual 知识 `status` ∈ {draft, publish}；远程模型 base_url 受 SSRF 白名单限制（`SSRF_WHITELIST_EXTRA`）；`BUILTIN_MODELS_CONFIG` 挂载在没有 key 时 upsert 0 条。
+- 桩 embedding 的检索分数极低（≈0.01–0.02），只能验证链路与过滤，不能用于评估召回质量；bake-off（票 42）前必须换百炼 text-embedding-v4 并重建索引（kb_ver 随之变化）。
+- 图节点需要进程级依赖（Router / 适配器 / 目录 / 规则）时统一用「模块级 getter + setter」模式（A 的 cards.get_catalog 同款）；单测默认通过 `tests/__init__.py` 设 HAIKE_LLM=off / HAIKE_KNOWLEDGE=off 走降级路径，避免碰网络与跨事件循环的 httpx 客户端（曾出现 Event loop is closed）。
+- 新增会发事件的节点会改变 A 的精确事件列表 / version 断言：unknown 产品路径不加节点保住了票 05 的 version=4；确认产品路径的 resume 测试改为忽略 tool_call 比对主干。后续新增节点前先 grep 对方测试里的 `types ==` / `version ==`。
+- 桩 embedding 下 hybrid-search 分数 ≈ 0.01–0.02，10 条命中里有 4 条 X9 Pro 工单与症状无关（找不到基站、拖布异味）；换百炼 embedding 前不要据此评估召回，票 32 的 synthesize 应对工单命中再按症状词后过滤。
+- LangChain 1.x `BaseChatModel.astream` 不把 run_manager 传给 `_astream`，假模型只能在 `astream` 入口从 config 读 tags / metadata；真实模型的 tags 由 callback 体系带到 Langfuse（票 44）。
+- models.yaml 里 domestic 的 reply.stream 原链 [qwen-plus, glm-flash] 在只有 DeepSeek key 时整链 skipped，用户看不到任何文字且无 error 事件（只有 warning 日志）。规则：任何 task 的链上至少一家是当前环境可用的模型；票 42 冻结时逐 task 核对，并考虑在 /health 的 models 项按 task 报告「可用链长」。
+- 路由前被跳过（未配置 / 无能力）的模型不能让第一家实际调用的模型标成 fallback，否则演示环境里所有回复都会显示「简化回复」。
+- synthesize 若用 Literal 枚举 schema 校验，模型给出一个越界 plan_id 就会让整批假设作废并触发重试；改为宽松 schema 解析后按允许集合过滤，符合票 32「越界丢弃并记录」。
+- 票 24 的澄清规则以症状词表判断「有故障描述」，口语句（它跑完了，地上还是一堆渣）若 intake 未抽出症状会先被追问，永远到不了改写补救；两条规则要在票 37 / 42 前对齐词表或让澄清也看 intake 的 symptoms。
+- WeKnora custom_metadata 只收标量、hybrid-search 忽略空 knowledge_ids、LangChain astream 不传 run_manager 等「文档没写」的行为，都只在真实链路上才暴露；每张票保留一次真实端到端已成为必要环节。
+- 票 42 补记：`deepseek-chat` 已是旧别名，服务端映射到 `deepseek-flash` 且**默认开思考**（reasoning_tokens 17–47），intake 一类短输出成本 / 延迟翻倍且 `max_tokens` 会被思维链吃掉；models.yaml 新增 `params: {thinking: {type: disabled}}` 经 extra_body 关闭。langchain-openai 1.6 把连接失败包成 `OpenAIConnectionError`，Router 的 `classify_exception` 之前只认 `APIConnectionError` 字面量 → 归 error 不重试；已改为 `ConnectionError` 模糊匹配。

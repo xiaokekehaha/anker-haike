@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncIterator
+from typing import ClassVar
 
 from haike_contracts.snapshot import SessionSnapshot
 from httpx import ASGITransport, AsyncClient
@@ -20,7 +21,7 @@ from tests.test_reply_stream import INTAKE_CALM_X9, RULES, make_router
 class SlowStreamModel(BaseChatModel):
     """每 0.25 s 吐一个 delta 的假模型；记录调用次数与是否被取消。"""
 
-    deltas: list[str] = ["根据", "说明书", "，请", "先清理", "滚刷", "。"]
+    deltas: ClassVar[list[str]] = ["根据", "说明书", "，请", "先清理", "滚刷", "。"]
     calls: int = 0
     cancelled: bool = False
     finished: bool = False

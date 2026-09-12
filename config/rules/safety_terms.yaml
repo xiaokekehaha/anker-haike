@@ -20,3 +20,7 @@ rules:
     action: flag
     priority: 3
     text_terms: [退货, 换货, 退款, 保修, 质保, 三包, 换新, 退换]
+
+# CP-pre-step（09 §1）：步骤文字含高危动作而知识来源无 caution → 丢弃该步骤取下一步；含 R4 安全词 → 升级
+pre_step:
+  high_risk_actions: [拆解, 拆开, 拆机, 拆下电池, 电池仓, 电源线, 带电, 主板, 焊, 通电, 短接]

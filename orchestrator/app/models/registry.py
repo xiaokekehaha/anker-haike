@@ -118,6 +118,12 @@ class ModelRegistry:
         if max_tokens is not None:
             kwargs["max_tokens"] = max_tokens
         kwargs.update(provider_params(r.provider.sdk, effort))
+        if r.spec.params:
+            # 票 42：厂商专属参数。openai 兼容协议只能经 extra_body 进请求体（如 DeepSeek 关思考）
+            if r.provider.sdk == "openai":
+                kwargs["extra_body"] = dict(r.spec.params)
+            else:
+                kwargs.update(r.spec.params)
         return init_chat_model(r.spec.id, **kwargs)
 
     def build_for_task(self, task: str, alias: str, lane: str | None = None) -> BaseChatModel:

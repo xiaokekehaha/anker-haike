@@ -21,7 +21,7 @@ def _baseline_module():
     return _revision_module("0001_baseline.py")
 
 
-HEAD = "0002"  # 0001 基线 + 0002 session_images（票 29）
+HEAD = "0003"  # 基线 + 图片 + 凭证参考表（票 41）
 
 
 def _tables_in(ddl: str) -> set[str]:
@@ -94,3 +94,11 @@ async def test_real_db_current_equals_head_after_upgrade():
     assert m.current_revision() == HEAD
     out = await m.ensure_schema(app_env="prod")
     assert out["upgraded"] is False and out["after"] == HEAD
+
+
+def test_receipt_reference_migration_covers_store_ddl():
+    from app.warranty import store
+
+    rev = _revision_module("0003_receipt_reference.py")
+    assert rev.down_revision == "0002"
+    assert _tables_in("\n".join(rev.STATEMENTS)) == _tables_in(store.DDL) == {"orders_mock", "dealers"}

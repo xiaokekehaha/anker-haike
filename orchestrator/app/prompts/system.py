@@ -45,6 +45,7 @@ def state_layer(summary: dict[str, Any]) -> str:
         ("symptoms", "症状"),
         ("steps_done", "已执行步骤数"),
         ("knowledge_status", "知识检索状态"),
+        ("flow_note", "排障依据"),
     ):
         if summary.get(key) not in (None, "", [], {}):
             val = summary[key]

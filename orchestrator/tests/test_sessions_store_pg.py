@@ -146,7 +146,9 @@ async def test_pg_saver_awaiting_input_version_matches_done(pg_store):
         "payload": {"sku": "EUFY-S1-PRO"},
     }
     resumed = [e async for e in runner.run_message(pg_store, graph, sid, resume=action)]
-    assert resumed[0]["resumed"] is True and resumed[-1]["reason"] == "completed"
+    # 票 34：确认产品后 guide 出步骤卡再次中断；步骤卡 version 同样须与 done 一致
+    assert resumed[0]["resumed"] is True and resumed[-1]["reason"] == "awaiting_input"
+    assert resumed[-3]["type"] == "step_card" and resumed[-3]["version"] == resumed[-1]["version"]
     state = await graph.aget_state({"configurable": {"thread_id": sid}})
     assert (
         state.values["prepare_card_calls"] == 1 and state.values["product_state"] == "confirmed_sku"

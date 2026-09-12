@@ -2,6 +2,7 @@
 
 from app.rules.service import (
     CheckpointResult,
+    PreStepResult,
     RuleHit,
     RulesError,
     RulesService,
@@ -11,6 +12,7 @@ from app.rules.service import (
 
 __all__ = [
     "CheckpointResult",
+    "PreStepResult",
     "RuleHit",
     "RulesError",
     "RulesService",

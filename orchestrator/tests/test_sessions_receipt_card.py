@@ -162,7 +162,7 @@ async def test_a3_sample_recognizes_order_and_channel_with_low_confidence_flag(
 
 
 async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runtime, tmp_path):
-    """用户修改一个字段后 edited[] 含该字段名（验收项 2）；确认后进入摘要（lookup 占位）。"""
+    """用户修改一个字段后 edited[] 含该字段名（验收项 2）；确认后完成 lookup 并进入摘要。"""
     with _Env(tmp_path, CONFIG, [A3_OCR]):
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
@@ -188,7 +188,7 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
     assert (
         st["receipt"]["edited"] == ["channel"] and st["receipt"]["fields"]["channel"] == "京东自营"
     )
-    assert st["receipt"]["status"] == "needs_manual_check"  # lookup 在票 41
+    assert st["receipt"]["status"] == "channel_unknown"  # 票 41：演示名录未命中
     assert st["card_results"][pending["card_id"]] == {
         "confirmed_fields": st["receipt"]["fields"],
         "edited": ["channel"],
@@ -196,8 +196,8 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
     item = next(i for i in snap.timeline if i.kind == "receipt_card")
     assert item.confirmed_fields.channel == "京东自营" and item.skipped_reason is None
     summary = next(e for e in resumed if e["type"] == "escalation_summary")["summary"]
-    assert summary["receipt"]["status"] == "needs_manual_check"
-    assert summary["receipt"]["next_step"] == "凭证已收到，待人工核实"
+    assert summary["receipt"]["status"] == "channel_unknown"
+    assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
     # 重复确认（旧 version）→ 409
     again = await _client().__aenter__()
     r = await again.post(f"/sessions/{sid}/actions", json=_confirm(pending, fields, []))

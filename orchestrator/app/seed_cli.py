@@ -1,4 +1,4 @@
-"""参考数据 seed（票 19 / 31）：haike-seed [products|plans|all] [--config-dir DIR]，可重复执行。
+"""参考数据 seed（票 19 / 31）：haike-seed [products|plans|fault_cards|receipts|all] [--config-dir DIR]，可重复执行。
 
 另：haike-plans-schema 输出计划模型 JSON Schema（可 --out 写文件）。
 """
@@ -16,9 +16,13 @@ from psycopg_pool import AsyncConnectionPool
 
 from app.catalog import CatalogError, ProductCatalog
 from app.catalog import store as catalog_store
+from app.faultcards import FaultCardLibrary, FaultCardsError
+from app.faultcards import store as faultcard_store
 from app.plans import PlanLibrary, PlansError, plan_json_schema
 from app.plans import store as plans_store
 from app.settings import REPO_ROOT, settings
+from app.warranty.service import ReferenceData
+from app.warranty.store import seed_reference
 
 CONFIG_DIR = REPO_ROOT / "config"
 
@@ -27,7 +31,14 @@ async def _run(what: str, config_dir: Path) -> int:
     try:
         catalog = ProductCatalog.from_yaml(config_dir / "products.yaml")
         library = PlanLibrary.from_yaml(config_dir / "plans.yaml")
-    except (CatalogError, PlansError) as exc:
+        cards = FaultCardLibrary.from_yaml(
+            config_dir / "fault_cards.yaml", plan_ids=set(library.plan_ids)
+        )
+        reference = (
+            ReferenceData.from_yaml(config_dir / "receipt_reference.yaml")
+            if what in ("receipts", "all") else None
+        )
+    except (CatalogError, PlansError, FaultCardsError, ValueError, OSError) as exc:
         print(exc, file=sys.stderr)
         return 2
     pool = AsyncConnectionPool(
@@ -43,14 +54,20 @@ async def _run(what: str, config_dir: Path) -> int:
             print("products", await catalog_store.seed_products(pool, catalog))
         if what in ("plans", "all"):
             print("plans", await plans_store.seed_plans(pool, library))
+        if what in ("fault_cards", "all"):
+            print("fault_cards", await faultcard_store.seed_fault_cards(pool, cards))
+        if reference is not None:
+            print("receipts", await seed_reference(pool, reference))
     finally:
         await pool.close()
     return 0
 
 
 def seed(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="写入 products / plans 参考数据（幂等）")
-    p.add_argument("what", nargs="?", default="all", choices=["products", "plans", "all"])
+    p = argparse.ArgumentParser(description="写入产品 / 计划 / 故障卡 / 凭证参考数据（幂等）")
+    p.add_argument(
+        "what", nargs="?", default="all", choices=["products", "plans", "fault_cards", "receipts", "all"]
+    )
     p.add_argument("--config-dir", default=str(CONFIG_DIR))
     args = p.parse_args(argv)
     return asyncio.run(_run(args.what, Path(args.config_dir)))

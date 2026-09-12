@@ -8,7 +8,7 @@ escalate 子流程入口按升级原因分流：
 - 跳过 → receipt.status=not_collected（skipped_reason 记录）→ summarize。
 - 上传 → extract（票 40：warranty.receipt_ocr 视觉任务，internal，输出 fields / 逐字段 confidence / unreadable）
   → confirm_fields：receipt_card + awaiting_input(confirm_receipt)，用户确认 / 修改（edited[]）或 skip
-  → lookup（票 41 L1–L6；本票占位：无 order_no 且无 channel → insufficient，否则 needs_manual_check）→ summarize。
+  → lookup（票 41 L1–L6：订单与 SKU / 低置信 / 经销商名录核对）→ summarize。
   识别失败 / 无视觉模型：卡片字段为空、全部 unreadable，允许手输或跳过。
 - 在非 upload_receipt 位置上传的 purpose=receipt 图片不进入凭证流（走普通消息 / rediagnose，票 37）。
 
@@ -31,6 +31,7 @@ from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
 from app.prompts import compose_system_prompt, wrap_data
 from app.sessions.cards import derive_card_id
+from app.warranty.runtime import get_receipt_lookup
 
 log = logging.getLogger("sessions.receipt")
 
@@ -271,23 +272,25 @@ def card_payload(receipt: dict[str, Any]) -> dict[str, Any]:
 def confirmed_receipt(
     state: dict[str, Any], fields: dict[str, Any], edited: list[str]
 ) -> dict[str, Any]:
-    """用户确认 / 修改后的字段；status 由 lookup 决定（票 41），本票占位：L1 insufficient，否则 needs_manual_check。"""
+    """用户确认后按 L1–L6 核对。低置信字段只有实际修改才解除 L4 降级。"""
     r = {**empty_receipt(), **(state.get("receipt") or {})}
     clean = {
         k: ((fields.get(k) or None) if k in fields else r.get("fields", {}).get(k)) for k in FIELDS
     }
     clean = {k: (v.strip() or None) if isinstance(v, str) else v for k, v in clean.items()}
-    status = (
-        "insufficient" if not clean["order_no"] and not clean["channel"] else "needs_manual_check"
-    )
+    previous = r.get("fields") or {}
+    actual_edits = [
+        e for e in dict.fromkeys(edited)
+        if e in FIELDS and clean[e] != (previous.get(e) or None)
+    ]
     r.update(
         {
             "fields": clean,
-            "edited": [e for e in edited if e in FIELDS],
-            "status": status,
-            "next_step": NEXT_STEP[status],
+            "edited": actual_edits,
         }
     )
+    outcome = get_receipt_lookup().lookup(r, state.get("product_confirmed"))
+    r.update(outcome.model_dump(mode="json"))
     return r
 
 

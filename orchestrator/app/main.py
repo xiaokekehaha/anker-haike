@@ -8,15 +8,18 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.catalog import ProductCatalog
+from app.faultcards.runtime import get_fault_card_library
 from app.health.router import router as health_router
 from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
 from app.models.runtime import set_model_router
+from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
 from app.plans import PlanLibrary
 from app.replay.runtime import get_replay_package
 from app.sessions.router import router as sessions_router
 from app.sessions.runtime import close_session_runtime, open_session_runtime
 from app.settings import settings
+from app.warranty.runtime import get_receipt_lookup
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 log = logging.getLogger("orchestrator")
@@ -43,6 +46,10 @@ async def _lifespan(app: FastAPI):
     # 票 19 / 31：产品目录与排障计划进 L4 内存缓存；计划 next_on / 证据引用不合法时启动失败
     app.state.catalog = ProductCatalog.from_yaml(settings.catalog_config_path)
     app.state.plans = PlanLibrary.from_yaml(settings.plans_config_path)
+    app.state.receipt_lookup = get_receipt_lookup()
+    app.state.fault_cards = (
+        get_fault_card_library()
+    )  # 票 33：故障卡 ≤ 800 token、plan_id 合法，否则启动失败
     log.info(
         "catalog v%s products=%d; plans v%s ids=%s",
         app.state.catalog.version,
@@ -53,9 +60,27 @@ async def _lifespan(app: FastAPI):
     # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
     await open_session_runtime(app)
     await open_image_store(app)  # 票 29：复用会话连接池
+    handler = configure_logging(settings.observability_log_path)
+    exporter = None
+    if settings.langfuse_enabled:
+        if settings.langfuse_public_key and settings.langfuse_secret_key:
+            exporter = LangfuseExporter(
+                settings.langfuse_base_url,
+                settings.langfuse_public_key,
+                settings.langfuse_secret_key,
+            )
+            exporter.start()
+            set_exporter(exporter)
+        else:
+            log.warning("Langfuse enabled but credentials missing; using JSONL only")
     try:
         yield
     finally:
+        set_exporter(None)
+        if exporter:
+            await exporter.close()
+        logging.getLogger().removeHandler(handler)
+        handler.close()
         await close_image_store(app)
         await close_session_runtime(app)
 

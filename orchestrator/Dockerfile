@@ -37,6 +37,7 @@ ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
     MODELS_CONFIG_PATH=/srv/config/models.yaml \
     CATALOG_CONFIG_PATH=/srv/config/products.yaml \
     PLANS_CONFIG_PATH=/srv/config/plans.yaml \
+    RECEIPT_REFERENCE_CONFIG_PATH=/srv/config/receipt_reference.yaml \
     FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
     RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
     REPLAY_DIR=/srv/replay KB_MANIFEST_PATH=/srv/replay/kb_manifest.json
