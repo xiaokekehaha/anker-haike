@@ -113,6 +113,7 @@ class SessionStore(Protocol):
     async def get_action(self, session_id: str, action_id: str) -> dict | None: ...
     async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None: ...
     async def delete_action(self, session_id: str, action_id: str) -> None: ...
+    async def delete_session_data(self, session_id: str) -> dict[str, int]: ...
 
 
 def new_session_id() -> str:
@@ -302,6 +303,15 @@ class PostgresSessionStore:
                 (session_id, action_id),
             )
 
+    async def delete_session_data(self, session_id: str) -> dict[str, int]:
+        """票 48：本 store 三张表按会话删除；checkpoint 与图片由 app.retention.delete_session_data 统一处理。"""
+        counts: dict[str, int] = {}
+        async with self._pool.connection() as conn:
+            for table in ("session_actions", "session_events", "sessions"):
+                cur = await conn.execute(f"delete from {table} where session_id = %s", (session_id,))
+                counts[table] = cur.rowcount or 0
+        return counts
+
 
 def _row(r: dict) -> SessionRow:
     return SessionRow(
@@ -431,6 +441,18 @@ class InMemorySessionStore:
 
     async def delete_action(self, session_id: str, action_id: str) -> None:
         self._actions.pop((session_id, action_id), None)
+
+    async def delete_session_data(self, session_id: str) -> dict[str, int]:
+        async with self._lock:
+            mem = self._sessions.pop(session_id, None)
+            actions = [k for k in self._actions if k[0] == session_id]
+            for k in actions:
+                self._actions.pop(k, None)
+        return {
+            "sessions": 1 if mem and mem.row else 0,
+            "session_events": len(mem.events) if mem else 0,
+            "session_actions": len(actions),
+        }
 
     def _get(self, session_id: str) -> _MemSession:
         try:

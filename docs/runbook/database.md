@@ -65,3 +65,17 @@ make db-revision MSG="add session_images"
 | `make db-restore` 报 `database is being accessed by other users` | 还有连接未断：`docker compose stop orchestrator weknora-app` 后重试 |
 | 备份日志 `FAIL db=...` | 多为口令 / 网络；`docker compose exec pg-backup pg_isready`；检查 `.env` 的 DB_PASSWORD |
 | 需要回到某个知识库版本 | `make kb-snapshot DIR=data/knowledge/snapshots/<ts>` |
+
+## 6. 数据保留与按会话删除（票 48）
+
+分类 TTL（07 §12）：图片 1 小时（`session_images`，images.runtime 每 5 分钟清）；会话状态 24 小时（`sessions` 投影 + `session_events` + `session_actions` + `session_images` + LangGraph `checkpoints` / `checkpoint_blobs` / `checkpoint_writes`，以 `sessions.updated_at` 判定，有 active run 的不删，无投影行的孤儿事件按最后事件时间清）；检索追踪 7 天（随 checkpoint 过期；`logs/events.jsonl.N` 轮转备份超 7 天删除）。清理循环在编排服务进程内（默认每 10 分钟），每轮写结构化日志 `event=retention_purge`，带各表删除行数。
+
+| 操作 | 命令 | 说明 |
+| --- | --- | --- |
+| 看当前 TTL | `cd orchestrator && uv run --env-file ../.env haike-retention ttl` | 由 `RETENTION_SESSION_HOURS` / `RETENTION_TRACE_DAYS` 覆盖 |
+| 手动清理一轮 | `make retention-purge [HOURS=24]` | 打印 `{sessions, orphan_sessions, deleted, log_backups_removed}` |
+| 删除某会话全部数据 | `make session-delete SID=<session_id>` | 退出码 1 表示本来就没有数据 |
+| HTTP 删除（人工处理删除请求） | `curl -X DELETE -H "X-Admin-Token: $ADMIN_TOKEN" https://<host>/sessions/<id>` | `ADMIN_TOKEN` 未配置时 403 `admin_disabled`；有 active run 先取消；成功返回各表行数，之后快照 / 图片 / 事件续接均 404 |
+
+排查：日志里搜 `retention_purge` 看每轮统计；`retention purge failed` 为异常（下一轮继续）；删除后想确认无残留可跑 `select count(*) from session_events where session_id = '<id>'` 等（表清单见 `orchestrator/app/retention.py: SESSION_TABLES`）。脱敏：JSONL 与 Langfuse 共用 `app/observability/privacy.py`，手机号 / 订单号 / 地址 / 长数字串在写出前替换为 `[REDACTED]`；核对方法见 `tests/test_retention.py::test_jsonl_has_no_plaintext_phone_order_or_address`。
+

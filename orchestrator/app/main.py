@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -16,6 +17,7 @@ from app.models.runtime import set_model_router
 from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
 from app.plans import PlanLibrary
 from app.replay.runtime import get_replay_package
+from app.retention import retention_loop
 from app.sessions.router import router as sessions_router
 from app.sessions.runtime import close_session_runtime, open_session_runtime
 from app.settings import settings
@@ -60,6 +62,12 @@ async def _lifespan(app: FastAPI):
     # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
     await open_session_runtime(app)
     await open_image_store(app)  # 票 29：复用会话连接池
+    # 票 48：分类 TTL 清理循环（会话 24 h / 追踪 7 d；图片 1 h 由 images.runtime 负责）
+    app.state.retention_task = (
+        asyncio.create_task(retention_loop(app.state.session_pool), name="retention")
+        if getattr(app.state, "session_pool", None) is not None
+        else None
+    )
     handler = configure_logging(settings.observability_log_path)
     exporter = None
     if settings.langfuse_enabled:
@@ -81,6 +89,8 @@ async def _lifespan(app: FastAPI):
             await exporter.close()
         logging.getLogger().removeHandler(handler)
         handler.close()
+        if getattr(app.state, "retention_task", None) is not None:
+            app.state.retention_task.cancel()
         await close_image_store(app)
         await close_session_runtime(app)
 

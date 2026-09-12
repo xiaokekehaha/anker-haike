@@ -87,6 +87,12 @@ db-check: ## 版本不一致时非零退出（CI / 上线前）
 	cd orchestrator && uv run --env-file ../.env haike-db check
 db-revision: ## 新建一条空迁移：make db-revision MSG="add session_images"
 	cd orchestrator && uv run alembic -c alembic.ini revision -m "$(MSG)"
+retention-purge: ## 按分类 TTL 清理一轮（会话 24 h / 追踪 7 d）并打印统计：make retention-purge [HOURS=24]
+	cd orchestrator && uv run --env-file ../.env haike-retention purge $(if $(HOURS),--session-hours $(HOURS),)
+
+session-delete: ## 删除某会话全部数据（投影 / 事件 / 动作 / 图片 / checkpoint）：make session-delete SID=<session_id>
+	cd orchestrator && uv run --env-file ../.env haike-retention delete $(SID)
+
 db-backup: ## 立即备份 haike + WeKnora 两库到 pg-backups 卷
 	$(COMPOSE) exec pg-backup /opt/backup/backup.sh once
 db-backup-status: ## 最近一次成功备份时间、文件列表与日志尾部

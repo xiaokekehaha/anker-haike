@@ -8,6 +8,8 @@ from typing import Any
 
 MASK = "[REDACTED]"
 SENSITIVE = {
+    "address",
+    "shipping_address",
     "order_no",
     "order_number",
     "phone",
@@ -28,6 +30,10 @@ LONG_NUMBER = re.compile(
     r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d[- ]?\d{4}[- ]?\d{4}(?!\d)|(?<!\d)\d{8,}(?!\d)"
 )
 DATA_URI = re.compile(r'data:image/[^\s"\']+')
+# 票 48：地址脱敏——「地址 / 收货地址 / 住址 / 寄到」标签后的整段（到句读为止）
+ADDRESS = re.compile(
+    r"((?:收货地址|寄送地址|送货地址|住址|地址|寄到|送到)\s*[：:=]?\s*)[^，。；！？\n,;!?]{4,80}"
+)
 
 
 def sanitize(value: Any, *, key: str = "") -> Any:
@@ -49,6 +55,7 @@ def sanitize(value: Any, *, key: str = "") -> Any:
     if isinstance(value, str):
         value = DATA_URI.sub("[IMAGE OMITTED]", value)
         value = LABELLED.sub(lambda m: m[1] + MASK, value)
+        value = ADDRESS.sub(lambda m: m[1] + MASK, value)
         # IDs originate in the runtime, retain them for trace joins; other text is masked conservatively.
         if normalized not in {"session_id", "run_id", "trace_id", "id", "card_id", "message_id"}:
             value = LONG_NUMBER.sub(MASK, value)

@@ -70,6 +70,11 @@ class Settings(BaseSettings):
     kb_ver: str = Field(default="", alias="KB_VER")
 
     health_timeout_s: float = Field(default=2.0, alias="HEALTH_TIMEOUT_S")
+    # 票 48：数据保留（07 §12 记忆分类 TTL）与人工删除接口的口令；ADMIN_TOKEN 为空则 DELETE /sessions/{id} 关闭
+    retention_session_hours: float = Field(default=24.0, alias="RETENTION_SESSION_HOURS")
+    retention_trace_days: float = Field(default=7.0, alias="RETENTION_TRACE_DAYS")
+    retention_interval_s: float = Field(default=600.0, alias="RETENTION_INTERVAL_S")
+    admin_token: str = Field(default="", alias="ADMIN_TOKEN")
     db_pool_max: int = Field(default=10, alias="DB_POOL_MAX")
     static_dir: str = Field(default=str(REPO_ROOT / "frontend" / "dist"), alias="STATIC_DIR")
 
@@ -81,6 +86,8 @@ class Settings(BaseSettings):
             "redis_url": _redact_url(self.redis_url),
             "weknora_base_url": self.weknora_base_url,
             "weknora_api_key": "set" if self.weknora_api_key else "missing",
+            "admin_token": "set" if self.admin_token else "missing",
+            "retention": f"sessions={self.retention_session_hours}h traces={self.retention_trace_days}d",
             "model_lane": self.model_lane,
             "replay_case_id": self.replay_case_id or "-",
         }

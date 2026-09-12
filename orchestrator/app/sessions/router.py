@@ -21,7 +21,8 @@ from app.sessions.graph import in_guide
 from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
 from app.sessions.snapshot import action_pending_apply, build_snapshot
-from app.sessions.store import ActiveRunConflict
+from app.sessions.store import ActiveRunConflict, SessionNotFound
+from app.settings import settings as app_settings
 
 log = logging.getLogger("sessions.router")
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -386,6 +387,50 @@ def _sse(events, extra_headers: dict[str, str] | None = None) -> StreamingRespon
 
     headers = {**sse.SSE_HEADERS, **(extra_headers or {})}
     return StreamingResponse(body(), media_type="text/event-stream", headers=headers)
+
+
+@router.delete("/{session_id}")
+async def delete_session(
+    session_id: str,
+    request: Request,
+    x_admin_token: Annotated[str | None, Header()] = None,
+):
+    """票 48：按 session_id 删除全部数据（投影、事件、动作、图片、checkpoint），供人工处理删除请求。
+
+    需 X-Admin-Token 与 ADMIN_TOKEN 一致；未配置 ADMIN_TOKEN 时接口关闭（403）。有 active run 先取消。
+    """
+    if not app_settings.admin_token:
+        raise HTTPException(
+            403, detail={"code": "admin_disabled", "message": "ADMIN_TOKEN not configured"}
+        )
+    if x_admin_token != app_settings.admin_token:
+        raise HTTPException(403, detail={"code": "forbidden", "message": "bad admin token"})
+    store, graph, manager = _runtime(request)
+    try:
+        row = await store.get_session(session_id)
+    except SessionNotFound:
+        row = None
+    if row is not None and row.active_run_id:
+        try:
+            await manager.cancel(session_id, row.active_run_id)
+        except RunNotActive:
+            pass
+    pool = getattr(request.app.state, "session_pool", None)
+    if pool is not None:
+        from app.retention import delete_session_data
+
+        counts = await delete_session_data(pool, session_id)
+    else:
+        counts = await store.delete_session_data(session_id)
+        img_store = get_image_store(request.app)
+        if img_store is not None:
+            counts["session_images"] = await img_store.delete_session(session_id)
+        checkpointer = getattr(graph, "checkpointer", None)
+        if checkpointer is not None and hasattr(checkpointer, "adelete_thread"):
+            await checkpointer.adelete_thread(session_id)
+    if sum(counts.values()) == 0:
+        raise HTTPException(404, detail={"code": "session_not_found", "message": session_id})
+    return {"session_id": session_id, "deleted": counts}
 
 
 @router.get("/{session_id}", response_model=SessionSnapshot)

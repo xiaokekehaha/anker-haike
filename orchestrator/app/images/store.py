@@ -97,6 +97,7 @@ class ImageStore(Protocol):
     async def get(self, session_id: str, image_id: str) -> tuple[ImageRef, bytes] | None: ...
     async def refs(self, session_id: str, image_ids: list[str]) -> list[ImageRef]: ...
     async def cleanup(self, older_than: timedelta = RETENTION) -> int: ...
+    async def delete_session(self, session_id: str) -> int: ...
 
 
 def _ref(row: dict[str, Any]) -> ImageRef:
@@ -170,6 +171,11 @@ class PostgresImageStore:
         by_id = {r["image_id"]: _ref(r) for r in rows}
         return [by_id[i] for i in image_ids if i in by_id]
 
+    async def delete_session(self, session_id: str) -> int:
+        async with self._pool.connection() as conn:
+            cur = await conn.execute("delete from session_images where session_id = %s", (session_id,))
+            return cur.rowcount or 0
+
     async def cleanup(self, older_than: timedelta = RETENTION) -> int:
         cutoff = datetime.now(UTC) - older_than
         async with self._pool.connection() as conn:
@@ -229,6 +235,13 @@ class InMemoryImageStore:
             if row and row[0].session_id == session_id:
                 out.append(row[0])
         return out
+
+    async def delete_session(self, session_id: str) -> int:
+        async with self._lock:
+            ids = [k for k, (ref, _, _) in self._rows.items() if ref.session_id == session_id]
+            for k in ids:
+                self._rows.pop(k, None)
+        return len(ids)
 
     async def cleanup(self, older_than: timedelta = RETENTION) -> int:
         cutoff = datetime.now(UTC) - older_than
