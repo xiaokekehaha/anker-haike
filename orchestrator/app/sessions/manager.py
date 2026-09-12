@@ -23,6 +23,13 @@ log = logging.getLogger("sessions.manager")
 _END = object()
 
 
+class RunNotActive(LookupError):
+    def __init__(self, session_id: str, run_id: str) -> None:
+        super().__init__(f"run {run_id} is not active for session {session_id}")
+        self.session_id = session_id
+        self.run_id = run_id
+
+
 @dataclass
 class RunHandle:
     session_id: str
@@ -30,6 +37,7 @@ class RunHandle:
     task: asyncio.Task | None = None
     subscribers: set[asyncio.Queue] = field(default_factory=set)
     finished: bool = False
+    cancel_event: asyncio.Event = field(default_factory=asyncio.Event)
 
 
 class RunManager:
@@ -41,9 +49,12 @@ class RunManager:
     # ---- 启动 ----
     async def start(self, session_id: str, text: str, **kw: Any) -> RunHandle:
         """占用 active run 并落库 run_started 后返回；ActiveRunConflict 在此同步抛出。"""
-        gen = runner.run_message(self._store, self._graph, session_id, text, **kw)
+        cancel_event = asyncio.Event()
+        gen = runner.run_message(
+            self._store, self._graph, session_id, text, cancel_event=cancel_event, **kw
+        )
         first = await anext(gen)  # try_start_run + run_started；冲突在这里抛
-        handle = RunHandle(session_id=session_id, run_id=first["run_id"])
+        handle = RunHandle(session_id=session_id, run_id=first["run_id"], cancel_event=cancel_event)
         self._live[handle.run_id] = handle
         handle.task = asyncio.create_task(
             self._drain(handle, gen, first), name=f"run-{handle.run_id}"
@@ -100,6 +111,21 @@ class RunManager:
         finally:
             if handle is not None:
                 handle.subscribers.discard(queue)
+
+    # ---- 取消（票 38，08 §7）----
+    async def cancel(self, session_id: str, run_id: str, *, wait_s: float = 5.0) -> str:
+        """设置取消标志并等待 run 收尾。返回 'cancelled'（已写 done）或 'cancelling'（超过 wait_s 仍在收尾）。
+        run 不在本进程运行或不属于该会话时抛 RunNotActive。"""
+        handle = self._live.get(run_id)
+        if handle is None or handle.finished or handle.session_id != session_id:
+            raise RunNotActive(session_id, run_id)
+        handle.cancel_event.set()
+        if handle.task is not None:
+            try:
+                await asyncio.wait_for(asyncio.shield(handle.task), timeout=wait_s)
+            except TimeoutError:
+                return "cancelling"
+        return "cancelled"
 
     # ---- 重启后的孤儿 run ----
     async def reconcile_orphans(self) -> list[tuple[str, str]]:

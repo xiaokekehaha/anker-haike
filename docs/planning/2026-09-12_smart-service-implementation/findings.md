@@ -24,3 +24,8 @@
 - 票 05 把 run 写成请求内的生成器，客户端断开会触发 finally 取消图任务，违反 08 §7；票 08 改为 RunManager 后台执行。规则：任何长任务不得与 HTTP 响应生命周期绑定。
 - httpx ASGITransport 会把 SSE 响应整体收完再返回，不能模拟「收到首帧即断开」；断连 / 中途续接语义要直接驱动 RunManager 或在真实 uvicorn 上用 curl --max-time 验证。
 - 实时广播在进程内存，orchestrator 目前单副本；多副本部署前需改 Redis pub/sub 或粘性路由，已在票 08 记录，票 46 / 49 评估。
+
+## 票 38 取消
+- LangGraph 没有「节点边界取消」原语；取消 asyncio 任务会中断当前节点，状态停在上一个 checkpoint。这与 08 §7 的意图一致（部分工作丢弃、可继续），但意味着 apply_action 这类有副作用的节点必须以 action_id 幂等（08 §3 已要求），否则取消恰好落在副作用之后、checkpoint 之前会重放副作用。
+- 票 13/14 接 ModelRouter 时：CancelledError 必须直接向上抛，不能进入重试链，否则「取消不再计费重试」不成立。
+- 手测脚本里 `wait` 不带参数会等 nohup 的服务进程，导致误判卡死；后续脚本记录后台 curl 的 pid 单独 wait。

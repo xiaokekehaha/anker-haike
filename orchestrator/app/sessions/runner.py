@@ -1,4 +1,5 @@
-"""一次 run 的事件流：run_started → (progress | ping)* → done；异常路径 error → done(error)。
+"""一次 run 的事件流：run_started → (progress | ping)* → done；异常路径 error → done(error)；
+取消路径（票 38，08 §7）：cancel_event 置位 → 取消图任务 → done(cancelled)，状态回到上一个 checkpoint。
 
 每条事件先 append 到 session_events 拿到 seq，再交给调用方发送（08 §2、§5）。
 """
@@ -6,6 +7,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import logging
 import time
 import uuid
@@ -24,6 +26,7 @@ DEFAULT_DEADLINE_MS = 25_000  # 文本轮（08 §8）
 PING_INTERVAL_S = 5.0
 
 _GRAPH_DONE = object()
+_CANCELLED = object()
 
 
 class RunEmitter:
@@ -63,6 +66,7 @@ async def run_message(
     image_ids: list[str] | None = None,
     deadline_ms: int = DEFAULT_DEADLINE_MS,
     ping_interval_s: float | None = None,
+    cancel_event: asyncio.Event | None = None,
 ) -> AsyncIterator[dict[str, Any]]:
     """占用 active run，产出契约事件字典。调用前 store.try_start_run 已成功。"""
     run_id = uuid.uuid4().hex
@@ -77,7 +81,7 @@ async def run_message(
     queue: asyncio.Queue[Any] = asyncio.Queue()
     started = time.monotonic()
     stage: str | None = None
-    failed = False
+    reason = "completed"
 
     async def pump() -> None:
         try:
@@ -97,14 +101,20 @@ async def run_message(
         except Exception as exc:  # noqa: BLE001 - 任何节点异常都要转为 error 事件
             await queue.put(exc)
 
+    async def watch_cancel() -> None:
+        assert cancel_event is not None
+        await cancel_event.wait()
+        await queue.put(_CANCELLED)
+
     task = asyncio.create_task(pump())
+    watcher = asyncio.create_task(watch_cancel()) if cancel_event is not None else None
     try:
         yield await em.emit({"type": "run_started", "resumed": False, "deadline_ms": deadline_ms})
         while True:
             remaining = deadline_ms / 1000 - (time.monotonic() - started)
             if remaining <= 0:
                 task.cancel()
-                failed = True
+                reason = "error"
                 yield await em.emit(
                     _error("deadline_exceeded", "run exceeded deadline", recoverable=True)
                 )
@@ -116,8 +126,14 @@ async def run_message(
                 continue
             if item is _GRAPH_DONE:
                 break
+            if item is _CANCELLED:
+                # 取消：中止当前节点（其中的模型调用随之中止），状态停在上一个 checkpoint
+                task.cancel()
+                reason = "cancelled"
+                log.info("run cancelled session=%s run=%s", session_id, run_id)
+                break
             if isinstance(item, Exception):
-                failed = True
+                reason = "error"
                 log.exception("graph failed session=%s run=%s", session_id, run_id, exc_info=item)
                 yield await em.emit(_error("node_failed", f"{type(item).__name__}: {item}"[:300]))
                 break
@@ -141,15 +157,19 @@ async def run_message(
     finally:
         if not task.done():
             task.cancel()
+        if watcher is not None and not watcher.done():
+            watcher.cancel()
+        # 等图任务真正退出，保证 done 落库时 checkpoint 已定稿
+        if task.cancelling() or task.cancelled():
+            with contextlib.suppress(asyncio.CancelledError, Exception):
+                await task
         version = await checkpoint_version(graph, session_id, fallback=row.version)
         try:
             await store.finish_run(session_id, run_id, version=version, stage=stage)
         except Exception:
             log.exception("finish_run failed session=%s run=%s", session_id, run_id)
         # 必以 done 结束；若消费者已断开，done 仍要落库（票 08 续接读取）
-        done = await em.emit(
-            {"type": "done", "reason": "error" if failed else "completed", "version": version}
-        )
+        done = await em.emit({"type": "done", "reason": reason, "version": version})
         yield done
 
 

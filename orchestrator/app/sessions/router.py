@@ -1,10 +1,10 @@
 """会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
-GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）。"""
+GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel。"""
 
 from __future__ import annotations
 
 import logging
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Form, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -12,6 +12,7 @@ from haike_contracts.snapshot import SessionSnapshot
 from pydantic import BaseModel
 
 from app.sessions import sse
+from app.sessions.manager import RunNotActive
 from app.sessions.snapshot import build_snapshot
 from app.sessions.store import ActiveRunConflict
 
@@ -22,6 +23,15 @@ router = APIRouter(prefix="/sessions", tags=["sessions"])
 class SessionCreated(BaseModel):
     session_id: str
     version: int
+
+
+class CancelRequest(BaseModel):
+    run_id: str
+
+
+class CancelResult(BaseModel):
+    run_id: str
+    status: Literal["cancelled", "cancelling"]
 
 
 def _runtime(request: Request):
@@ -85,6 +95,27 @@ async def resume_events(
     if not manager.is_live(run_id) and not await store.list_events(session_id, run_id=run_id):
         raise HTTPException(404, detail={"code": "run_not_found", "message": run_id})
     return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
+
+
+@router.post("/{session_id}/cancel", response_model=CancelResult)
+async def cancel_run(session_id: str, body: CancelRequest, request: Request) -> CancelResult:
+    """取消 active run（08 §7）：图在当前节点中止、状态停在上一个 checkpoint，写 done(cancelled)；
+    pending_input 保持取消前的值。仅 abort fetch 不等于取消。"""
+    store, graph, manager = _runtime(request)
+    await _ensure_exists(store, session_id)
+    try:
+        status = await manager.cancel(session_id, body.run_id)
+    except RunNotActive:
+        snap = await build_snapshot(store, graph, session_id)
+        return JSONResponse(  # type: ignore[return-value]
+            status_code=409,
+            content={
+                "code": "run_not_active",
+                "message": f"run {body.run_id} is not the active run of this session",
+                "snapshot": snap.model_dump(mode="json"),
+            },
+        )
+    return CancelResult(run_id=body.run_id, status=status)
 
 
 def _sse(events) -> StreamingResponse:
