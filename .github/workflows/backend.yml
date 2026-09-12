@@ -55,6 +55,8 @@ jobs:
             -c "create role haike login password 'haike';" \
             -c "create database haike owner haike;"
           psql -h localhost -U postgres -d haike -c "create extension if not exists vector;"
+      - name: Secret scan (票 46)
+        run: scripts/scan-secrets.sh
       - name: Install locked dependencies
         run: uv sync --project orchestrator --frozen
       - name: Lint

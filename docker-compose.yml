@@ -9,6 +9,10 @@ services:
     build:
       context: .
       dockerfile: orchestrator/Dockerfile
+      args:
+        # 构建机拉 PyPI / npm 慢时在 .env 里指到国内镜像（票 47/49 实测 colima 内下载卡死）
+        UV_INDEX_URL: ${UV_INDEX_URL:-https://pypi.org/simple}
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org/}
     image: haike/orchestrator:dev
     env_file: .env
     environment:

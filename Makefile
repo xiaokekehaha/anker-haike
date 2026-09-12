@@ -97,3 +97,17 @@ rollback: ## 切回某版 config/ 并重启编排服务，等健康检查：make
 	scripts/rollback.sh $(REL)
 ci-local: ## 本机复现 CI 全部检查（ruff / db-check / pytest / contracts / 前端）
 	scripts/ci-local.sh
+
+## ---- 线上 / 对外演示（票 46）----
+HAIKE_ENV_FILE ?= /etc/haike/haike.env
+COMPOSE_PROD = $(COMPOSE) --env-file $(HAIKE_ENV_FILE) -f docker-compose.yml -f deploy/prod/docker-compose.prod.yml
+proxy-cert: ## 自签证书：make proxy-cert HOST=demo.example.com
+	scripts/proxy-cert.sh $(HOST)
+proxy-passwd: ## 基础认证账号：make proxy-passwd USER=judge [PASS=...]
+	scripts/proxy-passwd.sh $(USER) $(PASS)
+prod-up: ## 以仓库外密钥文件 + HTTPS 代理拉起（只暴露 80/443）
+	$(COMPOSE_PROD) up -d --build
+prod-down: ## 停止线上编排
+	$(COMPOSE_PROD) down
+scan-secrets: ## 扫描仓库与镜像中的密钥：make scan-secrets [IMAGE=haike/orchestrator:dev]
+	scripts/scan-secrets.sh $(IMAGE)

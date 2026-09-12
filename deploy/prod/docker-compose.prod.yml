@@ -1,0 +1,32 @@
+# 票 46：线上 / 对外演示覆盖文件。用法（密钥文件放仓库外）：
+#   docker compose --env-file /etc/haike/haike.env -f docker-compose.yml -f deploy/prod/docker-compose.prod.yml up -d
+# 效果：只有 proxy 对外发布 80/443；orchestrator / postgres / weknora 不再暴露宿主机端口；
+#       orchestrator 的 env_file 换成仓库外的密钥文件，.env 不参与。
+services:
+  proxy:
+    image: nginx:1.27-alpine
+    environment:
+      PROXY_SERVER_NAME: ${PROXY_SERVER_NAME:-_}
+      PROXY_RATE: ${PROXY_RATE:-10r/s}
+      PROXY_BURST: ${PROXY_BURST:-20}
+      PROXY_UPSTREAM: http://orchestrator:8000
+    ports:
+      - "${PROXY_HTTP_PORT:-80}:80"
+      - "${PROXY_HTTPS_PORT:-443}:443"
+    volumes:
+      - ../proxy/templates:/etc/nginx/templates:ro
+      - ../proxy/certs:/etc/nginx/certs:ro         # scripts/proxy-cert.sh 生成自签，或放真实证书 fullchain.pem / privkey.pem
+      - ../proxy/.htpasswd:/etc/nginx/.htpasswd:ro  # scripts/proxy-passwd.sh 生成
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+    restart: unless-stopped
+
+  orchestrator:
+    env_file: !override
+      - ${HAIKE_ENV_FILE:-/etc/haike/haike.env}
+    ports: !reset []
+  postgres:
+    ports: !reset []
+  weknora-app:
+    ports: !reset []

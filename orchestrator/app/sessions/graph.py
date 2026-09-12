@@ -10,6 +10,7 @@ prepare_card → await_input(interrupt) → apply_action（08 §3）。awaiting_
 用户对产品卡片不选而发自由文本 → intake 清掉失效 pending_card 并计一次澄清。
 票 25：选中 / 提到范围外产品 → out_of_scope 节点（说明本期仅支持扫地机）→ escalate(R8)；request_human 全局动作：
 有 interrupt 时经 apply_action、否则从 START 经 route_entry 直达 human_request，都以 R3 升级。
+票 30：本 run 带故障图时 vision 节点先读图（tool_call diagnose.vision，观察项过 CP-in，R4 直接升级）再检索。
 后续票在此图上替换 / 扩展节点（37 rediagnose……）。
 节点通过 get_stream_writer() 发自定义事件，运行器映射为契约事件。
 """
@@ -37,6 +38,7 @@ from app.diagnose import (
     synthesize,
 )
 from app.diagnose.query import product_term
+from app.diagnose.vision import observe_images
 from app.escalation.summary import build_summary, reassurance_text, summary_card_id
 from app.images.runtime import current_image_store
 from app.intake import extract_intake
@@ -103,6 +105,9 @@ class SessionState(TypedDict, total=False):
     # plans_ranked [{plan_id, version, confidence, evidence_ids, source}]；rewrite_used 为本 run 是否已用掉补检索名额
     retrieval_trace: Annotated[list[dict[str, Any]], operator.add]
     image_observations: Annotated[list[str], operator.add]
+    # 票 30：读图结果。visible_parts 累积；vision_status 为最近一次读图状态（ok / skipped / no_vision / failed）
+    visible_parts: list[str]
+    vision_status: str | None
     plans_ranked: list[dict[str, Any]]
     retrieval_rounds: int
     rewrite_used: bool
@@ -331,10 +336,114 @@ async def clarify(state: SessionState) -> SessionState:
 
 
 def _after_product(state: SessionState) -> str:
-    """产品已确认或品类已知 → 先检索（票 28）；unknown 只允许追问（票 24），不检索。"""
-    return (
-        "retrieve" if state.get("product_state") in ("confirmed_sku", "category_only") else "reply"
+    """产品已确认或品类已知 → 本 run 带故障图先读图（票 30）→ 检索（票 28）；unknown 只允许追问（票 24），不检索。"""
+    if state.get("product_state") not in ("confirmed_sku", "category_only"):
+        return "reply"
+    return "vision" if _new_fault_images(state) else "retrieve"
+
+
+def _new_fault_images(state: SessionState) -> list[dict[str, Any]]:
+    run_id = state.get("run_id", "")
+    return [
+        r
+        for r in state.get("image_refs") or []
+        if r.get("run_id") == run_id and r.get("purpose", "fault") == "fault"
+    ]
+
+
+async def vision(state: SessionState) -> SessionState:
+    """读图观察（票 30，03 §1.4 步骤 1）：diagnose.vision（internal）→ observations 过 CP-in（R4 直接升级）→
+    tool_call(diagnose.vision) started / finished / failed；视觉链不可用或失败时流程不中断，observations 为空。"""
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "diagnose", "substage": "vision"})
+    session_id, run_id = state.get("session_id", ""), state.get("run_id", "")
+    refs = _new_fault_images(state)
+    tool_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:diagnose.vision").hex
+    writer(
+        {
+            "type": "tool_call",
+            "tool_id": tool_id,
+            "name": "diagnose.vision",
+            "status": "started",
+            "summary": f"识别 {len(refs)} 张故障照片",
+        }
     )
+    out = await observe_images(
+        get_model_router(),
+        current_image_store(),
+        session_id=session_id,
+        refs=refs,
+        text=state.get("text", ""),
+        lane=_lane(),
+        strategy=(state.get("emotion") or {}).get("strategy", "normal"),
+        summary=_state_summary(state),
+    )
+    update: SessionState = {
+        "stage": "diagnose",
+        "substage": "vision",
+        "vision_status": out.status,
+        "image_observations": list(out.observations),
+        "visible_parts": [*state.get("visible_parts", []), *out.visible_parts],
+        "model_trace": [
+            *state.get("model_trace", []),
+            *([out.model_trace] if out.model_trace else []),
+        ],
+    }
+    if out.status == "ok":
+        summary = "；".join(out.observations) or "未识别出明显异常"
+        if out.dropped_image_ids:
+            summary += f"（仅识别最新 {len(out.used_image_ids)} 张）"
+        writer(
+            {
+                "type": "tool_call",
+                "tool_id": tool_id,
+                "name": "diagnose.vision",
+                "status": "finished",
+                "summary": summary[:200],
+            }
+        )
+        # 观察项再过一次 CP-in（09 §1）：smoke / deformed battery 等触发 R4，不再发起任何模型调用
+        cp = get_rules_service().check_in(observations=out.observations, session_id=session_id)
+        update["safety_flags"] = [*state.get("safety_flags", []), *cp.flags]
+        update["observations"] = [
+            *(state.get("observations") or []),
+            *(f"图片：{o}" for o in out.observations),
+        ]
+        if cp.escalate:
+            update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
+        return update
+    writer(
+        {
+            "type": "tool_call",
+            "tool_id": tool_id,
+            "name": "diagnose.vision",
+            "status": "failed",
+            "summary": {
+                "no_vision": "当前无可用的图片识别模型，按文字描述继续",
+                "skipped": "图片识别未启用，按文字描述继续",
+            }.get(out.status, "图片识别失败，按文字描述继续"),
+        }
+    )
+    if out.user_hint:
+        # 07 §6：备用模型不支持图片 → 请用户文字描述（固定文案）
+        message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:vision_hint").hex
+        writer({"type": "message_start", "message_id": message_id})
+        writer({"type": "message", "message_id": message_id, "delta": out.user_hint})
+        writer({"type": "message_end", "message_id": message_id, "status": "completed"})
+        update["visible_messages"] = [
+            *(state.get("visible_messages") or []),
+            {
+                "message_id": message_id,
+                "kind": "vision_hint",
+                "text": out.user_hint,
+                "model_tier": None,
+            },
+        ]
+    return update
+
+
+def route_after_vision(state: SessionState) -> str:
+    return "escalate" if state.get("escalate_reason") else "retrieve"
 
 
 async def prepare_card(state: SessionState) -> SessionState:
@@ -905,6 +1014,10 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("await_input", await_input)
     g.add_node("apply_action", apply_action)
     g.add_node("retrieve", retrieve)
+    g.add_node("vision", vision)
+    g.add_conditional_edges(
+        "vision", route_after_vision, {"retrieve": "retrieve", "escalate": "escalate"}
+    )
     g.add_node("reassure", reassure)
     g.add_node("clarify", clarify)
     g.add_node("out_of_scope", out_of_scope)
@@ -927,6 +1040,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "prepare_card": "prepare_card",
             "reply": "reply",
             "retrieve": "retrieve",
+            "vision": "vision",
             "escalate": "escalate",
             "clarify": "clarify",
             "out_of_scope": "out_of_scope",
@@ -941,6 +1055,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         {
             "reply": "reply",
             "retrieve": "retrieve",
+            "vision": "vision",
             "escalate": "escalate",
             "out_of_scope": "out_of_scope",
         },

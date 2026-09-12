@@ -1,7 +1,8 @@
 FROM node:24-alpine AS frontend-build
+ARG NPM_REGISTRY=https://registry.npmjs.org/
 WORKDIR /frontend
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+RUN npm ci --registry=$NPM_REGISTRY
 COPY frontend/index.html frontend/tsconfig.json frontend/vite.config.ts ./
 COPY frontend/src ./src
 COPY frontend/public ./public
@@ -16,6 +17,9 @@ WORKDIR /srv
 # 依赖层单独缓存；uv.lock 保证版本锁定。haike-contracts 是 ../contracts 的本地 editable 包（票 05）
 COPY contracts /contracts
 COPY orchestrator/pyproject.toml orchestrator/uv.lock ./
+# 构建机网络受限时用镜像源：docker compose build --build-arg UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ARG UV_INDEX_URL=https://pypi.org/simple
+ENV UV_INDEX_URL=$UV_INDEX_URL
 RUN uv sync --frozen --no-dev --no-install-project
 
 COPY orchestrator/app ./app

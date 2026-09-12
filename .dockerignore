@@ -1,0 +1,16 @@
+# 票 46：密钥与本地产物不进镜像构建上下文
+.env
+.env.*
+!.env.example
+releases/
+data/
+docs/
+deploy/proxy/certs/
+deploy/proxy/.htpasswd
+**/node_modules/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+frontend/dist/
+.git/
