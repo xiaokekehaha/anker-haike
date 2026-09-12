@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A 线（接手会话）：票 22、23 后端、24 已完成。下一候选：票 25 范围外 R8 与 request_human（依赖 16、21；R8 的 out_of_scope 分流已在 24 铺好）、票 29 图片上传（依赖 21）。票 21 / 23 的前端项待 Codex 在 06 之后接入。B 继续 13/14/16/17/18；另有会话在做票 47（migrations），只碰 runtime.py 的 schema 校验。
+A（本会话）：票 47 完成。候选：票 46（密钥管理 / HTTPS 反代 / 访问控制，deploy 领地）、票 49（CI/CD 与版本冻结，.github 与 RELEASE.md）、票 29 后端（图片上传，需碰 app/sessions router，先确认接手会话已停）。接手会话：22/23 已提交后无活动。B：13/14/18 进行中。Codex：06 未开始，08/23/38 前端部分堆积。

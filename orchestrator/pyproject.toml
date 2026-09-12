@@ -21,12 +21,14 @@ dependencies = [
     "langgraph-checkpoint-postgres>=3.0",
     "haike-contracts",
     "python-multipart>=0.0.20",
+    "alembic>=1.16",
 ]
 
 [project.scripts]
 haike-route-table = "app.models.cli:route_table"
 haike-model-probe = "app.models.cli:probe"
 haike-sessions-rebuild = "app.sessions.cli:rebuild"
+haike-db = "app.db.cli:main"
 haike-seed = "app.seed_cli:seed"
 haike-plans-schema = "app.seed_cli:plans_schema"
 haike-kb = "app.knowledge.cli:main"

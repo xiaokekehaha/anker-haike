@@ -140,6 +140,25 @@ services:
       start_period: 60s
     restart: unless-stopped
 
+  # 票 47：每日逻辑备份 haike + WeKnora 两库到 pg-backups 卷，保留 7 天；make db-backup 立即备份，make db-restore 恢复
+  pg-backup:
+    image: paradedb/paradedb:v0.22.2-pg17   # 与 postgres 同镜像，保证 pg_dump / pg_restore 版本一致
+    entrypoint: ["/opt/backup/backup.sh", "loop"]
+    environment:
+      PGHOST: postgres
+      PGUSER: ${DB_USER:-postgres}
+      PGPASSWORD: ${DB_PASSWORD:-postgres123}
+      BACKUP_DBS: "${HAIKE_DB_NAME:-haike} ${DB_NAME:-WeKnora}"
+      BACKUP_INTERVAL_S: ${BACKUP_INTERVAL_S:-86400}
+      RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+    volumes:
+      - pg-backups:/backups
+      - ./deploy/backup:/opt/backup:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   # 仅用于在 WeKnora 网页里建 tenant、拿 API key（票 26）；默认不起：docker compose --profile ui up -d
   weknora-ui:
     image: wechatopenai/weknora-ui:${WEKNORA_VERSION:-v0.8.0}
@@ -158,6 +177,7 @@ services:
 
 volumes:
   postgres-data:
+  pg-backups:
   redis-data:
   docreader-tmp:
   weknora-files:

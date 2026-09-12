@@ -49,3 +49,7 @@ make test                   # 后端单元测试
 | PostgreSQL 镜像 | paradedb/paradedb:v0.22.2-pg17（含 pgvector） |
 | Redis | 7.0-alpine |
 | Python | 3.12，依赖锁定在 orchestrator/uv.lock |
+
+## 数据库运维
+
+迁移（Alembic）、每日备份、一键恢复与单点风险说明见 [docs/runbook/database.md](docs/runbook/database.md)。常用：`make db-upgrade`、`make db-backup`、`make db-backup-status`、`make db-restore FILE=…`。

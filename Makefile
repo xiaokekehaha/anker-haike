@@ -65,3 +65,27 @@ contracts-test: ## 契约单测（样例校验、导出稳定性）
 ## ---- 会话（票 07）----
 sessions-rebuild: ## 从事件日志 + checkpoint 重建 sessions 投影表：make sessions-rebuild ARGS="--all"
 	cd orchestrator && uv run --env-file ../.env haike-sessions-rebuild $(ARGS)
+
+## ---- 数据库运维（票 47）----
+db-upgrade: ## 业务表迁移到最新版本（空库一条命令建齐；LangGraph checkpoint 表由服务启动时自建）
+	cd orchestrator && uv run --env-file ../.env haike-db upgrade
+db-current: ## 打印库内迁移版本与代码 head
+	cd orchestrator && uv run --env-file ../.env haike-db current
+db-check: ## 版本不一致时非零退出（CI / 上线前）
+	cd orchestrator && uv run --env-file ../.env haike-db check
+db-revision: ## 新建一条空迁移：make db-revision MSG="add session_images"
+	cd orchestrator && uv run alembic -c alembic.ini revision -m "$(MSG)"
+db-backup: ## 立即备份 haike + WeKnora 两库到 pg-backups 卷
+	$(COMPOSE) exec pg-backup /opt/backup/backup.sh once
+db-backup-status: ## 最近一次成功备份时间、文件列表与日志尾部
+	@$(COMPOSE) exec pg-backup sh -c 'echo "last_success:"; cat /backups/last_success 2>/dev/null || echo "(none)"; echo; ls -lh /backups/*.dump 2>/dev/null; echo; tail -n 5 /backups/backup.log 2>/dev/null'
+db-restore: ## 恢复：make db-restore FILE=haike_20260912T120000Z.dump（停编排服务 → 断开连接 → pg_restore → 起服务）
+	@test -n "$(FILE)" || (echo "FILE= 必填，见 make db-backup-status" && exit 2)
+	$(COMPOSE) stop orchestrator
+	$(COMPOSE) exec pg-backup /opt/backup/restore.sh $(FILE)
+	$(COMPOSE) start orchestrator
+
+## 知识库变更前自动导出快照（票 47；04 §4 回滚前提）
+kb-snapshot-export: ## 导出 WeKnora 知识库快照
+	cd orchestrator && uv run --env-file ../.env haike-kb snapshot export
+kb-ingest: kb-snapshot-export

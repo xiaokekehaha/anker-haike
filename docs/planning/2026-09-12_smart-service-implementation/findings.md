@@ -58,3 +58,10 @@
 - 旧的会话骨架测试用的占位文本（"a"、"第一句"、"充不上电"）在真实语义下都是「品类未定」，票 24 后走 clarify（intake / disambiguate / clarify 仍是三节点，version 不变，stage 停在 disambiguate）。
 - 手测脚本用 curl `-d "text=中文"` 会把原始 UTF-8 字节直接放进 urlencoded 体，服务端按 latin-1 解出乱码；要用 `--data-urlencode`。浏览器 fetch 不受影响。
 - uvicorn 里 HAIKE_LLM=off 不生效：main.py lifespan（票 17）无条件 set_model_router，本机手测会真实调用模型；单测靠 tests/__init__ 的环境变量 + 不跑 lifespan 才关掉。建议 B 在 lifespan 里同样尊重该开关。
+
+## 票 47 迁移与备份
+- `pg_dump --no-owner` + 超级用户 `pg_restore` 会把对象属主变成超级用户，应用账号立刻失去访问权；恢复脚本必须显式把属主改回目标库属主（用 `--role` 在旧对象属主已乱时会因 `must be owner` 失败，改成恢复后统一 ALTER OWNER 更稳）。
+- 恢复 / 主库重启后，psycopg_pool 默认不会检查借出的连接，第一个请求会撞到 `terminating connection due to administrator command`；池要开 `check=AsyncConnectionPool.check_connection`。
+- pg_restore 对「扩展属主」等无害告警返回非零，脚本不能用其退出码判成败，用恢复后的健康检查兜底。
+- macOS 没有 `timeout` 命令，手测脚本用 `curl --max-time`。
+- 基线迁移用 IF NOT EXISTS 是为了收编已存在的库；从第二条迁移起应写常规 DDL，并在 CI 用 `make db-check` 卡版本。

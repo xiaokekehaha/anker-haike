@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg_pool import AsyncConnectionPool
 
+from app.db.migrations import SchemaOutOfDate, ensure_schema
 from app.sessions.graph import build_graph
 from app.sessions.locks import PostgresSessionLock
 from app.sessions.manager import RunManager
@@ -33,10 +34,20 @@ async def open_session_runtime(app: FastAPI) -> None:
             open=False,
             kwargs={"autocommit": True, "prepare_threshold": 0, "row_factory": _dict_row()},
             timeout=settings.health_timeout_s * 2,
+            # 票 47：数据库恢复 / 重启会杀掉已建连接，借出前检查，坏连接直接丢弃重建
+            check=AsyncConnectionPool.check_connection,
         )
         await pool.open(wait=True, timeout=settings.health_timeout_s * 2)
+        # 票 47：业务表版本校验；dev 自动 upgrade，其他环境落后即让 sessions 接口 503
+        try:
+            schema = await ensure_schema()
+            log.info("schema %s%s", schema["after"], " (upgraded)" if schema["upgraded"] else "")
+        except SchemaOutOfDate as exc:
+            log.error("%s — run `make db-upgrade`", exc)
+            await pool.close()
+            return
         store = PostgresSessionStore(pool)
-        await store.setup()
+        await store.setup()  # 幂等；结构以 migrations/ 为准
         saver = AsyncPostgresSaver(pool)  # type: ignore[arg-type]
         await saver.setup()
         app.state.session_pool = pool
