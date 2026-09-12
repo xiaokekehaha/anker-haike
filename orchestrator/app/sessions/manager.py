@@ -70,6 +70,11 @@ class RunManager:
         )
         return handle
 
+    async def wait_finished(self, handle: RunHandle) -> None:
+        """等待 run 收尾（done 已落库）。"""
+        if handle.task is not None:
+            await asyncio.shield(handle.task)
+
     async def _drain(self, handle: RunHandle, gen: AsyncIterator[dict], first: dict) -> None:
         try:
             self._broadcast(handle, first)

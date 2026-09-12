@@ -39,6 +39,13 @@ create table if not exists session_events (
 );
 create index if not exists session_events_run_idx on session_events(session_id, run_id, seq);
 alter table session_events drop constraint if exists session_events_session_id_fkey;
+create table if not exists session_actions (
+    session_id  text not null,
+    action_id   text not null,
+    result_json jsonb,
+    created_at  timestamptz not null default now(),
+    primary key (session_id, action_id)
+);
 """
 # 注：session_events 不外键到 sessions——投影表可整行删除后由事件日志 + checkpoint 重建（08 §2，票 07）。
 
@@ -99,6 +106,12 @@ class SessionStore(Protocol):
         pending_input: dict | None,
     ) -> None: ...
     async def delete_projection(self, session_id: str) -> None: ...
+    # 动作幂等（08 §4 步骤 2、5；票 22）：占位 → 执行 → 回填
+    async def try_insert_action(
+        self, session_id: str, action_id: str, placeholder: dict
+    ) -> bool: ...
+    async def get_action(self, session_id: str, action_id: str) -> dict | None: ...
+    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None: ...
 
 
 def new_session_id() -> str:
@@ -255,6 +268,31 @@ class PostgresSessionStore:
         async with self._pool.connection() as conn:
             await conn.execute("delete from sessions where session_id = %s", (session_id,))
 
+    async def try_insert_action(self, session_id: str, action_id: str, placeholder: dict) -> bool:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                """insert into session_actions(session_id, action_id, result_json)
+                   values (%s, %s, %s) on conflict do nothing returning action_id""",
+                (session_id, action_id, Jsonb(placeholder)),
+            )
+            return (await cur.fetchone()) is not None
+
+    async def get_action(self, session_id: str, action_id: str) -> dict | None:
+        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                "select result_json from session_actions where session_id = %s and action_id = %s",
+                (session_id, action_id),
+            )
+            row = await cur.fetchone()
+        return None if row is None else row["result_json"]
+
+    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None:
+        async with self._pool.connection() as conn:
+            await conn.execute(
+                "update session_actions set result_json = %s where session_id = %s and action_id = %s",
+                (Jsonb(result), session_id, action_id),
+            )
+
 
 def _row(r: dict) -> SessionRow:
     return SessionRow(
@@ -279,6 +317,7 @@ class InMemorySessionStore:
     def __init__(self) -> None:
         self._sessions: dict[str, _MemSession] = {}
         self._lock = asyncio.Lock()
+        self._actions: dict[tuple[str, str], dict | None] = {}
 
     async def create_session(self) -> SessionRow:
         sid = new_session_id()
@@ -367,6 +406,19 @@ class InMemorySessionStore:
             s.row = None
             if not s.events:
                 del self._sessions[session_id]
+
+    async def try_insert_action(self, session_id: str, action_id: str, placeholder: dict) -> bool:
+        async with self._lock:
+            if (session_id, action_id) in self._actions:
+                return False
+            self._actions[(session_id, action_id)] = json.loads(json.dumps(placeholder))
+            return True
+
+    async def get_action(self, session_id: str, action_id: str) -> dict | None:
+        return self._actions.get((session_id, action_id))
+
+    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None:
+        self._actions[(session_id, action_id)] = json.loads(json.dumps(result))
 
     def _get(self, session_id: str) -> _MemSession:
         try:

@@ -9,6 +9,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from psycopg_pool import AsyncConnectionPool
 
 from app.sessions.graph import build_graph
+from app.sessions.locks import PostgresSessionLock
 from app.sessions.manager import RunManager
 from app.sessions.store import PostgresSessionStore
 from app.settings import settings
@@ -20,6 +21,7 @@ async def open_session_runtime(app: FastAPI) -> None:
     app.state.session_store = None
     app.state.session_graph = None
     app.state.run_manager = None
+    app.state.session_lock = None
     app.state.session_pool = None
     app.state.session_checkpointer_cm = None
     try:
@@ -42,6 +44,7 @@ async def open_session_runtime(app: FastAPI) -> None:
         app.state.session_graph = build_graph(saver)
         manager = RunManager(store, app.state.session_graph)
         app.state.run_manager = manager
+        app.state.session_lock = PostgresSessionLock(pool)
         # 票 08：上次进程留下的 active run 以 error → done(error) 收尾，快照恢复到可继续状态
         fixed = await manager.reconcile_orphans()
         log.info("session runtime ready (orphan runs finalized: %d)", len(fixed))

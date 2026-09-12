@@ -1,9 +1,10 @@
 """会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
 GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel、
-POST /sessions/{id}/actions（票 20 基本通路；幂等 / 会话锁在票 22，完整 409 语义在票 23）。"""
+POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁；完整 409 语义在票 23）。"""
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Annotated, Literal
 
@@ -14,6 +15,7 @@ from haike_contracts.snapshot import SessionSnapshot
 from pydantic import BaseModel, ValidationError
 
 from app.sessions import sse
+from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
 from app.sessions.snapshot import build_snapshot
 from app.sessions.store import ActiveRunConflict
@@ -34,6 +36,9 @@ class CancelRequest(BaseModel):
 class CancelResult(BaseModel):
     run_id: str
     status: Literal["cancelled", "cancelling"]
+
+
+LOCK_TIMEOUT_S = DEFAULT_LOCK_TIMEOUT_S  # 08 §4：30 s；测试可覆写
 
 
 def _runtime(request: Request):
@@ -104,8 +109,9 @@ _CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_recei
 
 @router.post("/{session_id}/actions")
 async def post_action(session_id: str, request: Request):
-    """动作协议（08 §4）：校验后以 Command(resume=action) 恢复图并开新 SSE 流。"""
+    """动作协议（08 §4）：会话锁串行 → action_id 去重（重放）→ 校验 → 占位 → Command(resume) → 回填。"""
     store, graph, manager = _runtime(request)
+    lock = request.app.state.session_lock
     await _ensure_exists(store, session_id)
     try:
         action = parse_action(await request.json())
@@ -114,34 +120,123 @@ async def post_action(session_id: str, request: Request):
             422, detail={"code": "invalid_action", "message": str(exc)[:500]}
         ) from None
 
-    snap = await build_snapshot(store, graph, session_id)
-
-    def conflict(code: str, message: str) -> JSONResponse:
-        return JSONResponse(
-            status_code=409,
-            content={"code": code, "message": message, "snapshot": snap.model_dump(mode="json")},
-        )
-
-    if snap.active_run is not None:
-        return conflict("run_active", f"session has active run {snap.active_run.run_id}")
-    if action.kind not in _CARD_KINDS:
-        # request_human（票 25）、rediagnose（票 37）在各自票接入
-        return conflict("not_allowed_now", f"{action.kind} is not supported yet")
-    pending = snap.pending_input
-    if pending is None or pending.kind != action.kind:
-        return conflict("not_allowed_now", f"no pending input of kind {action.kind}")
-    if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
-        return conflict("stale_card", "card_id / interrupt_id do not match pending input")
-    if action.expected_version != snap.version:
-        return conflict(
-            "version_mismatch", f"expected {action.expected_version}, current {snap.version}"
-        )
-
+    # 1. 会话级锁：同会话动作串行；锁一直持有到本动作的 run 结束（见 _finish_action）
+    hold = lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S)
     try:
-        handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
-    except ActiveRunConflict as exc:
-        return conflict("run_active", f"session has active run {exc.active_run_id}")
-    return _sse(manager.subscribe(session_id, handle.run_id, after_seq=0))
+        await hold.__aenter__()
+    except LockTimeout:
+        return JSONResponse(
+            status_code=503,
+            headers={"Retry-After": "2"},
+            content={
+                "code": "lock_timeout",
+                "message": "会话正忙，请稍后重试同一动作",
+                "recoverable": True,
+                "retry_with_same_action": True,
+            },
+        )
+    release = hold.__aexit__
+    handoff = False  # True = 锁交给后台回填任务释放
+    try:
+        # 2. 去重：同一 action_id 已记录 → 直接重放对应事件流（200，replayed=true）
+        recorded = await store.get_action(session_id, action.action_id)
+        if recorded is not None:
+            return _sse(
+                manager.subscribe(session_id, recorded["run_id"], after_seq=0),
+                extra_headers={
+                    "X-Action-Id": action.action_id,
+                    "X-Run-Id": recorded["run_id"],
+                    "X-Action-Replayed": "true",
+                },
+            )
+
+        # 3. 校验（票 23 完整化）
+        snap = await build_snapshot(store, graph, session_id)
+
+        def conflict(code: str, message: str) -> JSONResponse:
+            return JSONResponse(
+                status_code=409,
+                content={
+                    "code": code,
+                    "message": message,
+                    "snapshot": snap.model_dump(mode="json"),
+                },
+            )
+
+        if snap.active_run is not None:
+            return conflict("run_active", f"session has active run {snap.active_run.run_id}")
+        if action.kind not in _CARD_KINDS:
+            return conflict("not_allowed_now", f"{action.kind} is not supported yet")
+        pending = snap.pending_input
+        if pending is None or pending.kind != action.kind:
+            return conflict("not_allowed_now", f"no pending input of kind {action.kind}")
+        if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
+            return conflict("stale_card", "card_id / interrupt_id do not match pending input")
+        if action.expected_version != snap.version:
+            return conflict(
+                "version_mismatch", f"expected {action.expected_version}, current {snap.version}"
+            )
+
+        # 4. 启动 run 并写占位（占位带 run_id：进程中途挂掉时，重放仍能定位到该 run 的事件）
+        try:
+            handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
+        except ActiveRunConflict as exc:
+            return conflict("run_active", f"session has active run {exc.active_run_id}")
+        inserted = await store.try_insert_action(
+            session_id,
+            action.action_id,
+            {
+                "action_id": action.action_id,
+                "run_id": handle.run_id,
+                "replayed": False,
+                "version_after": None,
+                "status": "pending",
+            },
+        )
+        if not inserted:  # 理论上不可能（锁内），防御性记录
+            log.error(
+                "action placeholder already present session=%s action=%s",
+                session_id,
+                action.action_id,
+            )
+        handoff = True
+    finally:
+        # 重放 / 409 / 异常：在此释放；只有成功启动 run 时锁交给 _finish_action 在 run 结束后释放
+        if not handoff:
+            await release(None, None, None)
+
+    # 5. 后台：run 结束后回填结果并释放锁；HTTP 响应只是订阅者
+    asyncio.create_task(_finish_action(store, manager, handle, action.action_id, release))
+    return _sse(
+        manager.subscribe(session_id, handle.run_id, after_seq=0),
+        extra_headers={
+            "X-Action-Id": action.action_id,
+            "X-Run-Id": handle.run_id,
+            "X-Action-Replayed": "false",
+        },
+    )
+
+
+async def _finish_action(store, manager, handle, action_id: str, release) -> None:
+    try:
+        await manager.wait_finished(handle)
+        events = await store.list_events(handle.session_id, run_id=handle.run_id)
+        done = next((e for e in reversed(events) if e["type"] == "done"), None)
+        await store.set_action_result(
+            handle.session_id,
+            action_id,
+            {
+                "action_id": action_id,
+                "run_id": handle.run_id,
+                "replayed": False,
+                "version_after": done["version"] if done else None,
+                "status": "done",
+            },
+        )
+    except Exception:
+        log.exception("action backfill failed session=%s action=%s", handle.session_id, action_id)
+    finally:
+        await release(None, None, None)
 
 
 @router.post("/{session_id}/cancel", response_model=CancelResult)
@@ -165,12 +260,13 @@ async def cancel_run(session_id: str, body: CancelRequest, request: Request) -> 
     return CancelResult(run_id=body.run_id, status=status)
 
 
-def _sse(events) -> StreamingResponse:
+def _sse(events, extra_headers: dict[str, str] | None = None) -> StreamingResponse:
     async def body():
         async for ev in events:
             yield sse.encode(ev)
 
-    return StreamingResponse(body(), media_type="text/event-stream", headers=sse.SSE_HEADERS)
+    headers = {**sse.SSE_HEADERS, **(extra_headers or {})}
+    return StreamingResponse(body(), media_type="text/event-stream", headers=headers)
 
 
 @router.get("/{session_id}", response_model=SessionSnapshot)

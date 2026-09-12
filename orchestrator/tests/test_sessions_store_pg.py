@@ -151,3 +151,31 @@ async def test_pg_saver_awaiting_input_version_matches_done(pg_store):
     assert (
         state.values["prepare_card_calls"] == 1 and state.values["product_state"] == "confirmed_sku"
     )
+
+
+async def test_pg_actions_table_and_advisory_lock(pg_store):
+    from app.sessions.locks import LockTimeout, PostgresSessionLock
+
+    sid = (await pg_store.create_session()).session_id
+    assert await pg_store.get_action(sid, "a1") is None
+    assert (
+        await pg_store.try_insert_action(sid, "a1", {"run_id": "r1", "status": "pending"}) is True
+    )
+    assert (
+        await pg_store.try_insert_action(sid, "a1", {"run_id": "r2", "status": "pending"}) is False
+    )
+    assert (await pg_store.get_action(sid, "a1"))["run_id"] == "r1"
+    await pg_store.set_action_result(
+        sid, "a1", {"run_id": "r1", "status": "done", "version_after": 4}
+    )
+    assert (await pg_store.get_action(sid, "a1"))["version_after"] == 4
+
+    lock = PostgresSessionLock(pg_store._pool)
+    async with lock.hold(sid, timeout_s=2):
+        with pytest.raises(LockTimeout):
+            async with lock.hold(sid, timeout_s=0.2):
+                pass
+        async with lock.hold(sid + "-other", timeout_s=0.5):
+            pass
+    async with lock.hold(sid, timeout_s=0.5):
+        pass

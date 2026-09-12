@@ -13,7 +13,7 @@
 7. 票 07 快照接口与投影表 — complete（A：GET /sessions/{id}、timeline 折叠、sessions-rebuild CLI，真实 Postgres 删行重建一致）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
 9. 票 09–14 模型层（M2） — in_progress（Claude Code B：09–12 complete；13–14 依赖票 05，待 A 完成后协调）
-10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、19、26、27、31 已由 Claude Code B 完成；16 后端完成、SummaryCard 待 Codex）
+10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、19、26、27、31 已由 Claude Code B 完成；16、28 后端完成，SummaryCard / EvidenceDrawer 待 Codex）
 
 ## 并行分工（2026-09-12 起，三方同一工作树）
 - **Claude Code A（会话骨架线）**：票 03 收尾 → 05 → 07 → 08；目录 `contracts/`、`orchestrator/app/sessions/`（含事件日志、快照）。
@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A：票 20 已完成，下一票 22 动作幂等与会话锁（依赖 07、20 均满足），之后 23 版本冲突 409；
+A 线（接手会话）：票 22 已完成；下一票 23 版本冲突 409（stale_version / stale_card / not_allowed_now + 快照、retry_with_same_action 语义），前端部分留给票 06 之后的 Codex。B 继续 13/14、16/17/18。
