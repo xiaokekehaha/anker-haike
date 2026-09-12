@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     )
 
     health_timeout_s: float = Field(default=2.0, alias="HEALTH_TIMEOUT_S")
+    db_pool_max: int = Field(default=10, alias="DB_POOL_MAX")
     static_dir: str = Field(default=str(REPO_ROOT / "frontend" / "dist"), alias="STATIC_DIR")
 
     def redacted(self) -> dict[str, str]:

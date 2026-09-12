@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf 
 COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
 WORKDIR /srv
 
-# 依赖层单独缓存；uv.lock 保证版本锁定
+# 依赖层单独缓存；uv.lock 保证版本锁定。haike-contracts 是 ../contracts 的本地 editable 包（票 05）
+COPY contracts /contracts
 COPY orchestrator/pyproject.toml orchestrator/uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 

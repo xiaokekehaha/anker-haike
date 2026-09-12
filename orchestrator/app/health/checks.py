@@ -55,9 +55,12 @@ def _short(exc: Exception) -> str:
 
 async def check_db(database_url: str, timeout_s: float) -> ComponentHealth:
     async def _ping() -> None:
-        async with await psycopg.AsyncConnection.connect(
-            database_url, connect_timeout=int(max(1, timeout_s))
-        ) as conn, conn.cursor() as cur:
+        async with (
+            await psycopg.AsyncConnection.connect(
+                database_url, connect_timeout=int(max(1, timeout_s))
+            ) as conn,
+            conn.cursor() as cur,
+        ):
             await cur.execute("SELECT 1")
             await cur.fetchone()
 
@@ -67,7 +70,9 @@ async def check_db(database_url: str, timeout_s: float) -> ComponentHealth:
 
 async def check_redis(redis_url: str, timeout_s: float) -> ComponentHealth:
     async def _ping() -> None:
-        client = aioredis.from_url(redis_url, socket_connect_timeout=timeout_s, socket_timeout=timeout_s)
+        client = aioredis.from_url(
+            redis_url, socket_connect_timeout=timeout_s, socket_timeout=timeout_s
+        )
         try:
             await client.ping()
         finally:
@@ -93,7 +98,9 @@ def check_models(models_config_path: str, default_lane: str) -> dict[str, Compon
         with open(models_config_path, encoding="utf-8") as fh:
             cfg = yaml.safe_load(fh) or {}
     except FileNotFoundError:
-        return {default_lane: ComponentHealth("unconfigured", detail=f"{models_config_path} not found")}
+        return {
+            default_lane: ComponentHealth("unconfigured", detail=f"{models_config_path} not found")
+        }
     except yaml.YAMLError as exc:
         return {default_lane: ComponentHealth("down", detail=f"invalid yaml: {_short(exc)}")}
 
@@ -109,10 +116,14 @@ def check_models(models_config_path: str, default_lane: str) -> dict[str, Compon
                 if provider:
                     needed_providers.add(provider)
         missing = sorted(
-            p for p in needed_providers if not os.environ.get((providers.get(p) or {}).get("api_key_env", ""))
+            p
+            for p in needed_providers
+            if not os.environ.get((providers.get(p) or {}).get("api_key_env", ""))
         )
         configured = sorted(needed_providers - set(missing))
-        status: Status = "ok" if needed_providers and not missing else ("unconfigured" if missing else "down")
+        status: Status = (
+            "ok" if needed_providers and not missing else ("unconfigured" if missing else "down")
+        )
         result[lane_name] = ComponentHealth(
             status,
             detail=None if not missing else f"missing api key for: {', '.join(missing)}",

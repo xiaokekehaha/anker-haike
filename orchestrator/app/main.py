@@ -8,6 +8,9 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.health.router import router as health_router
+from app.models import ModelRegistry, load_models_config
+from app.sessions.router import router as sessions_router
+from app.sessions.runtime import close_session_runtime, open_session_runtime
 from app.settings import settings
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -15,14 +18,24 @@ log = logging.getLogger("orchestrator")
 
 
 @asynccontextmanager
-async def _lifespan(_: FastAPI):
+async def _lifespan(app: FastAPI):
     log.info("config %s", settings.redacted())
-    yield
+    # 票 09：模型配置缺失或不一致时启动失败（ConfigError 列出具体项）
+    models_cfg = load_models_config(settings.models_config_path, lane_override=settings.model_lane)
+    app.state.model_registry = ModelRegistry(models_cfg)
+    log.info("models %s", app.state.model_registry.describe())
+    # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
+    await open_session_runtime(app)
+    try:
+        yield
+    finally:
+        await close_session_runtime(app)
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title="智能服务编排", version="0.1.0", lifespan=_lifespan)
     app.include_router(health_router)
+    app.include_router(sessions_router)
 
     static_dir = Path(settings.static_dir)
     if static_dir.is_dir():
