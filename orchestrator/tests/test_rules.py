@@ -146,8 +146,12 @@ async def test_normal_message_still_goes_to_reply(mem_runtime):
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            resp = await client.post(f"/sessions/{sid}/messages", data={"text": "吸力变小了"})
+            resp = await client.post(
+                f"/sessions/{sid}/messages", data={"text": "扫地机 X10 吸力变小了"}
+            )
     finally:
         set_rules_service(None)
-    stages = [e["stage"] for e in sse.parse(resp.text) if e["type"] == "progress"]
-    assert stages == ["intake", "disambiguate", "diagnose"]
+    events = sse.parse(resp.text)
+    stages = [e["stage"] for e in events if e["type"] == "progress"]
+    assert stages[:2] == ["intake", "disambiguate"] and "diagnose" in stages
+    assert "escalate" not in stages and all(e["type"] != "escalation_summary" for e in events)

@@ -54,17 +54,17 @@ async def test_cancel_between_nodes_keeps_completed_checkpoint(mem_runtime, monk
     monkeypatch.delenv("PLACEHOLDER_NODE_DELAY_S", raising=False)
     from app.sessions import graph as graph_mod
 
-    real_reply = graph_mod.reply
+    real_clarify = graph_mod.clarify  # 票 24：品类未定的文本走 clarify；这里让它慢下来
 
-    async def slow_reply(state):
+    async def slow_clarify(state):
         await asyncio.sleep(2)
-        return await real_reply(state)
+        return await real_clarify(state)
 
     from langgraph.checkpoint.memory import InMemorySaver
 
     from app.sessions.manager import RunManager
 
-    monkeypatch.setattr(graph_mod, "reply", slow_reply)
+    monkeypatch.setattr(graph_mod, "clarify", slow_clarify)
     app.state.session_graph = graph_mod.build_graph(InMemorySaver())
     app.state.run_manager = manager = RunManager(mem_runtime, app.state.session_graph)
 
@@ -78,10 +78,10 @@ async def test_cancel_between_nodes_keeps_completed_checkpoint(mem_runtime, monk
         snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
     assert snap.cancelled_run is not None and snap.cancelled_run.run_id == handle.run_id
     assert snap.active_run is None and snap.pending_input is None
-    assert snap.stage == "disambiguate"  # intake / disambiguate 的 checkpoint 保留，reply 未提交
+    assert snap.stage == "disambiguate"  # intake / disambiguate 的 checkpoint 保留，clarify 未提交
     assert [i.kind for i in snap.timeline] == ["user_message"]  # intake 写入的用户消息保留
     state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
-    assert state.values["stage"] == "disambiguate" and state.next == ("reply",)
+    assert state.values["stage"] == "disambiguate" and state.next == ("clarify",)
 
 
 async def test_cancel_keeps_pending_input_from_before(mem_runtime, monkeypatch):

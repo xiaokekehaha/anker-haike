@@ -12,8 +12,8 @@
 6. 票 06 前端 reducer 与 SSE 解析 — pending（前端票，建议 Codex 在票 04 后认领）
 7. 票 07 快照接口与投影表 — complete（A：GET /sessions/{id}、timeline 折叠、sessions-rebuild CLI，真实 Postgres 删行重建一致）
 8. 票 08 事件续接与恢复态 — pending（M1 会话骨架完成）
-9. 票 09–14 模型层（M2） — in_progress（Claude Code B：09–12 complete；13–14 依赖票 05，待 A 完成后协调）
-10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、19、26、27、31 已由 Claude Code B 完成；16、28 后端完成，SummaryCard / EvidenceDrawer 待 Codex）
+9. 票 09–14 模型层（M2） — complete（Claude Code B：09–12 complete；13 / 14 后端 complete，前端 AssistantBubble / 替换标注待 Codex）
+10. 票 15–25（M3）、26–36（M4）、37–41（M5）、42–45（M6）、46–50（M7） — pending（其中 15、17、18、19、26、27、31 已由 Claude Code B 完成；16、28 后端完成，SummaryCard / EvidenceDrawer 待 Codex）
 
 ## 并行分工（2026-09-12 起，三方同一工作树）
 - **Claude Code A（会话骨架线）**：票 03 收尾 → 05 → 07 → 08；目录 `contracts/`、`orchestrator/app/sessions/`（含事件日志、快照）。
@@ -27,4 +27,4 @@
 - 每票完成：勾选票内验收项、票 Status 改为 done、progress.md 追加记录、不合期望处写 findings.md。
 
 ## Next Step
-A 线（接手会话）：票 22、23 后端已完成并提交；08 §4 动作协议剩余步骤 4（request_human 全局动作）归票 25、rediagnose 归票 37。A 线下一候选：票 21 前端待 Codex、票 24 product_state 三分与 R7（依赖 21）；或票 29 图片上传（依赖 21）。B 继续 13/14、16/17/18。
+A 线（接手会话）：票 22、23 后端、24 已完成。下一候选：票 25 范围外 R8 与 request_human（依赖 16、21；R8 的 out_of_scope 分流已在 24 铺好）、票 29 图片上传（依赖 21）。票 21 / 23 的前端项待 Codex 在 06 之后接入。B 继续 13/14/16/17/18；另有会话在做票 47（migrations），只碰 runtime.py 的 schema 校验。

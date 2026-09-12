@@ -36,17 +36,14 @@ async def test_create_session_returns_id_and_version_0(mem_runtime):
 async def test_message_stream_order_and_event_log(mem_runtime):
     async with _client() as client:
         sid = await _create(client)
-        events, raw = await _send(client, sid, "充电器不亮灯")
+        events, raw = await _send(client, sid, "机器不亮了")
 
     types = [e["type"] for e in events]
     assert types[0] == "run_started" and types[-1] == "done"
-    assert types[1:-1] == ["progress"] * 3
-    assert [e["stage"] for e in events if e["type"] == "progress"] == [
-        "intake",
-        "disambiguate",
-        "diagnose",
-    ]
-    # version = checkpoint step + 1：一轮 intake / disambiguate / reply 三节点 → 4
+    # 票 24：品类未定 → intake / disambiguate / clarify（一句追问）；run 以 done(completed) 结束
+    assert types[1:-1] == ["progress", "progress", "message_start", "message", "message_end"]
+    assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "disambiguate"]
+    # version = checkpoint step + 1：一轮 intake / disambiguate / clarify 三节点 → 4
     assert events[-1]["reason"] == "completed" and events[-1]["version"] == 4
     assert events[0]["resumed"] is False and events[0]["deadline_ms"] == runner.DEFAULT_DEADLINE_MS
     for e in events:
@@ -61,7 +58,7 @@ async def test_message_stream_order_and_event_log(mem_runtime):
     assert len({e["run_id"] for e in logged}) == 1
 
     row = await mem_runtime.get_session(sid)
-    assert row.version == 4 and row.active_run_id is None and row.stage == "diagnose"
+    assert row.version == 4 and row.active_run_id is None and row.stage == "disambiguate"
 
 
 async def test_second_turn_continues_seq_and_version(mem_runtime):

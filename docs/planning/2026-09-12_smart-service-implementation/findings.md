@@ -49,3 +49,12 @@
 - 校验顺序里把全局动作（request_human / rediagnose）放在 version 检查之前分流：08 §4 步骤 4 规定它们不校 version 与 pending，票 25 / 37 接入前统一返回 not_allowed_now。
 - 契约错误码 version_mismatch 改名 stale_version（票 23 票面用词）：`make contracts` 重生成 Schema 与前端类型，同时更新了 Codex 线的 frontend/src/api/events.test.ts 里的类型断言（生成物比对否则 CI 失败）。
 - 从 Postgres 重放的事件（jsonb）键序与实时事件不同，JSON 内容相同；比对事件流要按对象比较而不是按文本行比较。
+
+## 票 24 澄清与 R7
+- LangGraph 在中断态收到新输入：丢弃挂起的 interrupt、从 START 重跑，状态里的 pending_card 不会自动清掉。规则：intake 是唯一入口节点，负责把失效 pending_card 置 None 并交 disambiguate 记录；快照 pending_input 以 checkpoint 中断为准所以自然为空。
+- 产品卡片本身算一次「请确认产品」的澄清（prepare_card 计数）：用户不选而改发文本 → 文字追问一次 → 再不明就 R7，与 09 §2.1「两次未选中」一致；点选卡片后计数清零。
+- 抽取降级（HAIKE_LLM=off 或模型失败）时 symptoms 为空，症状判定回退到原文：去掉产品 / 品类词后只剩指代或空 → 视为没有故障描述（03 §1.4.1 规则 3）；产品已确认或品类已定时承接更早轮次的故障描述，避免「这个又不行了」被反复追问。
+- 「品类明确但本期不支持」的零命中（充电器、吸奶器等）现在直接 out_of_scope + escalate_reason=R8，不再走 unknown → 追问；REASON_TEXT 有 R8，但摘要 product 文案对非扫地机品类仍写「扫地机器人（型号未确认）」，属票 25 范围。
+- 旧的会话骨架测试用的占位文本（"a"、"第一句"、"充不上电"）在真实语义下都是「品类未定」，票 24 后走 clarify（intake / disambiguate / clarify 仍是三节点，version 不变，stage 停在 disambiguate）。
+- 手测脚本用 curl `-d "text=中文"` 会把原始 UTF-8 字节直接放进 urlencoded 体，服务端按 latin-1 解出乱码；要用 `--data-urlencode`。浏览器 fetch 不受影响。
+- uvicorn 里 HAIKE_LLM=off 不生效：main.py lifespan（票 17）无条件 set_model_router，本机手测会真实调用模型；单测靠 tests/__init__ 的环境变量 + 不跑 lifespan 才关掉。建议 B 在 lifespan 里同样尊重该开关。

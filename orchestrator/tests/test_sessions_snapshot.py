@@ -248,9 +248,9 @@ async def test_get_snapshot_idle_after_turn(mem_runtime):
         await client.post(f"/sessions/{sid}/messages", data={"text": "充不上电"})
         resp = await client.get(f"/sessions/{sid}")
     snap = SessionSnapshot.model_validate(resp.json())
-    assert snap.version == 4 and snap.stage == "diagnose"
+    assert snap.version == 4 and snap.stage == "disambiguate"  # 票 24：品类未定 → 追问
     assert snap.active_run is None and snap.pending_input is None and snap.last_error is None
-    assert [i.kind for i in snap.timeline] == ["user_message"]
+    assert [i.kind for i in snap.timeline] == ["user_message", "assistant_message"]
     assert snap.timeline[0].text == "充不上电"
     # 投影行与快照一致（业务逻辑不读投影，但两者必须相等）
     row = await mem_runtime.get_session(sid)
@@ -322,7 +322,9 @@ async def test_delete_projection_then_rebuild_matches(mem_runtime):
     )
     assert row.version == 9 and [i["kind"] for i in after["timeline"]] == [
         "user_message",
+        "assistant_message",  # 票 24：两轮都是品类追问
         "user_message",
+        "assistant_message",
     ]
 
 

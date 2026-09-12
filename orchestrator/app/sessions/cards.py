@@ -8,9 +8,11 @@ import uuid
 from langgraph.config import get_config
 
 from app.catalog import ProductCatalog
+from app.plans import PlanLibrary
 
 _NS = uuid.UUID("6f4c1e2a-3b7d-4a55-9c1e-20260912a0c1")
 _catalog: ProductCatalog | None = None
+_plans: PlanLibrary | None = None
 
 
 def derive_card_id(session_id: str, stage: str, key: str) -> str:
@@ -40,3 +42,18 @@ def set_catalog(catalog: ProductCatalog | None) -> None:
     """测试 / 运行时注入。"""
     global _catalog
     _catalog = catalog
+
+
+def get_plans() -> PlanLibrary:
+    """预写计划库（票 24：category_only 需要该品类存在 category_generic 计划才允许继续）。"""
+    global _plans
+    if _plans is None:
+        from app.settings import settings
+
+        _plans = PlanLibrary.from_yaml(settings.plans_config_path)
+    return _plans
+
+
+def set_plans(plans: PlanLibrary | None) -> None:
+    global _plans
+    _plans = plans

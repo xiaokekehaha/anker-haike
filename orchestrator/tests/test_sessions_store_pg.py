@@ -97,9 +97,9 @@ async def test_pg_projection_delete_and_rebuild(pg_store):
 
     await pg_store.delete_projection(sid)
     assert await pg_store.session_exists(sid)  # 事件日志未受影响
-    assert (
-        len(await pg_store.list_event_records(sid)) == len(before.timeline) + 4
-    )  # run_started + 3 progress + done（票 20 起含 disambiguate）
+    # run_started + 2 progress + message_start/message/message_end + done；timeline 折叠为用户消息 + 追问（票 24）
+    assert len(before.timeline) == 2
+    assert len(await pg_store.list_event_records(sid)) == 7
     with pytest.raises(SessionNotFound):
         await pg_store.get_session(sid)
 

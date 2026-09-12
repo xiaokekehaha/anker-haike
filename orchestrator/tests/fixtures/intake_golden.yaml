@@ -1,0 +1,19 @@
+# 票 17 金标：A1 / A2 / A3 演示话术的 intake 抽取预期。
+# 单测用假 router 按 model_output 回放并校验映射；真实模型测试（有 key 时）只比对 expect 中的强约束字段。
+cases:
+  - id: A1
+    text: 扫地机不吸了，滚刷那儿好像缠了好多头发
+    model_output: {emotion_level: calm, product_hints: [扫地机], symptoms: [不吸了, 滚刷缠头发], wants_human: false}
+    expect: {level: calm, strategy: normal, wants_human: false, hints_include_any: [扫地机, 扫地机器人], symptoms_min: 1}
+  - id: A2
+    text: 我的 S1 Pro 不吸了，急死了，明天就要用！
+    model_output: {emotion_level: anxious, product_hints: [S1 Pro], symptoms: [不吸了], wants_human: false}
+    expect: {level_in: [anxious, angry], strategy_in: [reassure_first, reassure_and_shorten], wants_human: false, hints_include_any: [S1 Pro, s1 pro, S1Pro], symptoms_min: 1}
+  - id: A3
+    text: 修了半天还是不行，我要退货，给我转人工！
+    model_output: {emotion_level: angry, product_hints: [], symptoms: [修了半天还是不行], wants_human: true}
+    expect: {level_in: [angry, anxious], wants_human: true}
+  - id: calm_no_product
+    text: 你们的售后几点上班
+    model_output: {emotion_level: calm, product_hints: [], symptoms: [], wants_human: false}
+    expect: {level: calm, wants_human: false, hints_empty: true}

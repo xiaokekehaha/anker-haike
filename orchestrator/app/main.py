@@ -9,7 +9,8 @@ from fastapi.staticfiles import StaticFiles
 
 from app.catalog import ProductCatalog
 from app.health.router import router as health_router
-from app.models import ModelRegistry, load_models_config
+from app.models import ModelRegistry, ModelRouter, load_models_config
+from app.models.runtime import set_model_router
 from app.plans import PlanLibrary
 from app.sessions.router import router as sessions_router
 from app.sessions.runtime import close_session_runtime, open_session_runtime
@@ -25,6 +26,8 @@ async def _lifespan(app: FastAPI):
     # 票 09：模型配置缺失或不一致时启动失败（ConfigError 列出具体项）
     models_cfg = load_models_config(settings.models_config_path, lane_override=settings.model_lane)
     app.state.model_registry = ModelRegistry(models_cfg)
+    app.state.model_router = ModelRouter(app.state.model_registry)
+    set_model_router(app.state.model_router)  # 票 17：图节点取用同一 Router（含全局有界门）
     log.info("models %s", app.state.model_registry.describe())
     # 票 19 / 31：产品目录与排障计划进 L4 内存缓存；计划 next_on / 证据引用不合法时启动失败
     app.state.catalog = ProductCatalog.from_yaml(settings.catalog_config_path)

@@ -110,7 +110,9 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
     types = [e["type"] for e in resumed]
     # 恢复 run：resumed=true（验收项 3）；await_input 重跑重发同一 card_id（验收项 1）；不再有 awaiting_input
     assert resumed[0]["type"] == "run_started" and resumed[0]["resumed"] is True
-    assert types == ["run_started", "product_card", "progress", "done"]
+    # 票 28：确认产品后先检索，多出 tool_call 事件与 retrieve 子阶段；这里只看主干顺序
+    core = [t for t in types if t != "tool_call"]
+    assert core == ["run_started", "product_card", "progress", "progress", "done"]
     assert resumed[1]["card_id"] == pending["card_id"]
     assert resumed[2]["stage"] == "diagnose"
     assert resumed[-1]["reason"] == "completed" and resumed[-1]["version"] > pending["version"]

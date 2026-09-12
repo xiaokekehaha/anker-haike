@@ -5,6 +5,7 @@ script 里每一项对应一次调用：
 - dict           → 一次工具调用的参数（tools 策略）/ native 策略的结构化结果
 - AIMessage      → 原样返回（可带 response_metadata 模拟拒答）
 - Exception 实例 → 该次调用抛出（超时、429、5xx……）
+- list           → 流式：元素为 str token 依次产出，元素为 Exception 则在该处中断（票 14 断流注入）
 """
 
 from __future__ import annotations
@@ -14,10 +15,10 @@ from typing import Any
 
 from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.messages import AIMessage, AIMessageChunk, BaseMessage
+from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
 from langchain_core.runnables import RunnableLambda
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, PrivateAttr, ValidationError
 
 
 class ScriptExhausted(RuntimeError):
@@ -52,6 +53,9 @@ class FakeChatModel(BaseChatModel):
         item = self.script.pop(0)
         if isinstance(item, BaseException):
             raise item
+        if isinstance(item, list):  # 非流式调用拿到流脚本：拼成整段
+            msg = AIMessage(content="".join(x for x in item if isinstance(x, str)))
+            return ChatResult(generations=[ChatGeneration(message=msg)])
         if isinstance(item, AIMessage):
             return ChatResult(generations=[ChatGeneration(message=item)])
         if isinstance(item, dict):
@@ -84,6 +88,36 @@ class FakeChatModel(BaseChatModel):
         **kwargs: Any,
     ) -> ChatResult:
         return self._next(messages, run_manager, kwargs)
+
+    _stream_config: dict | None = PrivateAttr(default=None)
+
+    async def astream(self, input, config=None, **kwargs):  # type: ignore[override]
+        # BaseChatModel.astream 不把 run_manager 传给 _astream，这里从 config 记录 tags / metadata
+        self._stream_config = dict(config or {})
+        async for chunk in super().astream(input, config=config, **kwargs):
+            yield chunk
+
+    async def _astream(self, messages, stop=None, run_manager=None, **kwargs):
+        cfg = self._stream_config or {}
+        self.calls.append(
+            {
+                "messages": list(messages),
+                "kwargs": dict(kwargs),
+                "stream": True,
+                "tags": list(cfg.get("tags") or []),
+                "metadata": dict(cfg.get("metadata") or {}),
+            }
+        )
+        if not self.script:
+            raise ScriptExhausted(f"{self.name_for_trace}: no scripted response left")
+        item = self.script.pop(0)
+        if isinstance(item, BaseException):
+            raise item
+        tokens = item if isinstance(item, list) else [str(item)]
+        for tok in tokens:
+            if isinstance(tok, BaseException):
+                raise tok
+            yield ChatGenerationChunk(message=AIMessageChunk(content=tok))
 
     # ---- 三种策略的入口 ----
     def bind_tools(self, tools, *, tool_choice=None, **kwargs):  # type: ignore[override]

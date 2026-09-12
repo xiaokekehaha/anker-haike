@@ -1,0 +1,293 @@
+"""票 24：product_state 三分、澄清（product / symptom / conflict）与追问上限 R7。
+
+默认 HAIKE_LLM=off：intake 抽取降级（symptoms 为空 → 回退原文判断），追问用固定文案；
+需要模型输出的用例用 tests.test_intake.fake_router 注入假 ModelRouter。
+"""
+
+from __future__ import annotations
+
+import json
+
+from haike_contracts.snapshot import SessionSnapshot
+from httpx import ASGITransport, AsyncClient
+
+from app.main import app
+from app.models.fake import FakeChatModel
+from app.models.runtime import set_model_router
+from app.sessions import sse
+from app.sessions.clarify import (
+    FIXED_QUESTIONS,
+    MAX_CLARIFICATIONS,
+    fixed_question,
+    make_question,
+)
+from tests.test_intake import fake_router
+
+
+def _client():
+    return AsyncClient(transport=ASGITransport(app=app), base_url="http://t")
+
+
+async def _send(client, sid: str, text: str) -> list[dict]:
+    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text})
+    assert resp.status_code == 200, resp.text
+    return sse.parse(resp.text)
+
+
+def _stages(events):
+    return [e["stage"] for e in events if e["type"] == "progress"]
+
+
+def _message_text(events) -> str:
+    return "".join(e["delta"] for e in events if e["type"] == "message")
+
+
+async def _state(sid: str) -> dict:
+    return (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
+
+
+async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
+    """「机器不吸了」→ 追问 → 回答仍不明 → 第二次追问 → 第二次回答仍不明 → R7 升级摘要（验收项 1、6）。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        ev1 = await _send(client, sid, "机器不吸了")
+        assert _stages(ev1) == ["intake", "disambiguate"]  # 不进入 diagnose、不检索、不发卡
+        assert [e["type"] for e in ev1 if e["type"] not in ("progress",)] == [
+            "run_started",
+            "message_start",
+            "message",
+            "message_end",
+            "done",
+        ]
+        assert _message_text(ev1) == FIXED_QUESTIONS["product"]
+        assert ev1[-1]["reason"] == "completed"  # 只结束本 run，会话未 solved
+        s1 = await _state(sid)
+        assert s1["product_state"] == "unknown" and s1["pending_card"] is None
+        assert s1["clarification"] == {
+            "reason": "product",
+            "attempts": 1,
+            "asked_run_id": ev1[0]["run_id"],
+        }
+        # 仅等待用户，不升级：快照 idle、无 pending
+        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+        assert snap.active_run is None and snap.pending_input is None
+        assert [i.kind for i in snap.timeline] == ["user_message", "assistant_message"]
+
+        ev2 = await _send(client, sid, "就是那个机器啊")  # 第一次回答仍不明 → 第二次追问
+        assert _message_text(ev2) == FIXED_QUESTIONS["product"]
+        s2 = await _state(sid)
+        assert s2["clarification"]["attempts"] == 2  # 跨 run 保留并累加
+        assert "escalation_summary" not in [e["type"] for e in ev2]
+
+        ev3 = await _send(client, sid, "不知道啊")  # 第二次回答仍不明 → R7
+        types = [e["type"] for e in ev3]
+        assert "escalation_summary" in types and _stages(ev3)[-1] == "escalate"
+        summary = next(e for e in ev3 if e["type"] == "escalation_summary")["summary"]
+    assert summary["reason"]["rule_id"] == "R7"
+    assert summary["product"] == "未确认"  # product_state=unknown 出现在摘要
+    assert any("R7" in o and "2 次澄清" in o for o in summary["observations"])
+    s3 = await _state(sid)
+    assert s3["escalate_reason"] == "R7" and s3["product_state"] == "unknown"
+    assert s3["clarification"]["attempts"] == MAX_CLARIFICATIONS
+
+
+async def test_category_word_without_model_goes_category_only(mem_runtime):
+    """「扫地机不吸了，不知道型号」→ category_only → 进入 diagnose（验收项 2、7）。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "扫地机不吸了，不知道型号")
+    types = [e["type"] for e in events]
+    assert "product_card" not in types and "message_start" not in types  # 不追问、不出卡
+    assert _stages(events)[:3] == ["intake", "disambiguate", "diagnose"]
+    state = await _state(sid)
+    assert state["product_state"] == "category_only" and state["category"] == "robot_vacuum"
+    assert state["product_confirmed"] is None and state["clarification"] is None
+    assert events[-1]["reason"] == "completed"
+
+
+async def test_three_product_states_written_and_in_summary(mem_runtime):
+    async with _client() as client:
+        # confirmed_sku：单命中直接确认
+        a = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, a, "扫地机 X10 不吸了")
+        sa = await _state(a)
+        assert sa["product_state"] == "confirmed_sku" and sa["product_confirmed"]["sku"] == (
+            "EUFY-X10-PRO-OMNI"
+        )
+        # category_only
+        b = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, b, "扫地机器人不回充")
+        assert (await _state(b))["product_state"] == "category_only"
+        # unknown → 两次追问后 R7，摘要 product 带线索为空 → 「未确认」
+        c = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, c, "它坏了")
+        await _send(client, c, "就是坏了")
+        ev = await _send(client, c, "不清楚")
+        summary = next(e for e in ev if e["type"] == "escalation_summary")["summary"]
+    assert (await _state(c))["product_state"] == "unknown"
+    assert summary["product"] == "未确认" and summary["reason"]["rule_id"] == "R7"
+
+
+async def test_clarify_text_from_model_task_and_fixed_fallback(mem_runtime, tmp_path):
+    """追问文案由 disambiguate.clarify 生成；失败用固定文案（验收项 4）。"""
+    intake_out = {
+        "emotion_level": "calm",
+        "product_hints": [],
+        "symptoms": ["不吸了"],
+        "wants_human": False,
+    }
+    router, fake = fake_router(tmp_path, [intake_out, {"question": "请问是哪一款设备不吸了？"}])
+    set_model_router(router)
+    try:
+        async with _client() as client:
+            sid = (await client.post("/sessions")).json()["session_id"]
+            events = await _send(client, sid, "机器不吸了")
+        assert _message_text(events) == "请问是哪一款设备不吸了？"
+        call = fake.calls[-1]
+        assert call["metadata"]["task"] == "disambiguate.clarify" and "internal" in call["tags"]
+        assert '<data kind="user_message">' in call["messages"][-1].content
+        state = await _state(sid)
+        assert any(t["task"] == "disambiguate.clarify" for t in state["model_trace"])
+    finally:
+        set_model_router(None)
+
+    # 模型失败 → 固定文案
+    router2, _ = fake_router(tmp_path, [RuntimeError("boom")] * 6)
+    out = await make_question(
+        router2,
+        "symptom",
+        "这个又不行了",
+        strategy="normal",
+        summary=None,
+        detail={},
+        session_id="s",
+        lane="domestic",
+    )
+    assert out.text == FIXED_QUESTIONS["symptom"] and out.model_used == "fixed"
+    assert fixed_question("conflict", {"confirmed": "A", "mentioned": "B"}) == (
+        "您之前确认的是 A，这次提到的是 B，请问需要排查的是哪一台？"
+    )
+
+
+async def test_deictic_without_context_asks_but_with_context_continues(mem_runtime):
+    """「这个又不行了」无上下文 → 问一个具体问题；明确上文（已确认产品与故障）→ 承接，不再追问（验收项 5）。"""
+    async with _client() as client:
+        a = (await client.post("/sessions")).json()["session_id"]
+        ev = await _send(client, a, "这个又不行了")
+        assert _message_text(ev) == FIXED_QUESTIONS["product"]
+        assert (await _state(a))["clarification"]["reason"] == "product"
+
+        b = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, b, "扫地机 X9 吸力变小了")
+        ev2 = await _send(client, b, "这个又不行了")
+    assert "message_start" not in [e["type"] for e in ev2] or _message_text(ev2) not in (
+        FIXED_QUESTIONS.values()
+    )
+    assert "diagnose" in _stages(ev2)
+    sb = await _state(b)
+    assert sb["product_confirmed"]["sku"] == "EUFY-X9-PRO" and sb["clarification"] is None
+
+
+async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runtime, tmp_path):
+    """品类 / 产品已知但症状不明 → symptom 澄清；补充症状后继续并清零（验收项 7、6）。"""
+    router, _ = fake_router(
+        tmp_path,
+        [
+            {
+                "emotion_level": "calm",
+                "product_hints": ["X10"],
+                "symptoms": [],
+                "wants_human": False,
+            },
+            {"question": "请问 X10 是吸力变弱、无法启动，还是有异响？"},
+        ],
+    )
+    set_model_router(router)
+    try:
+        async with _client() as client:
+            sid = (await client.post("/sessions")).json()["session_id"]
+            ev1 = await _send(client, sid, "X10 这个又不行了")
+            assert _message_text(ev1) == "请问 X10 是吸力变弱、无法启动，还是有异响？"
+            s1 = await _state(sid)
+            assert s1["product_state"] == "confirmed_sku"  # 产品已定，只问症状
+            assert s1["clarification"] == {
+                "reason": "symptom",
+                "attempts": 1,
+                "asked_run_id": ev1[0]["run_id"],
+            }
+            set_model_router(None)  # 第二轮不再需要模型
+            ev2 = await _send(client, sid, "吸力变弱了")
+        assert "diagnose" in _stages(ev2)
+        s2 = await _state(sid)
+        assert s2["clarification"] is None and s2["product_confirmed"]["sku"] == "EUFY-X10-PRO-OMNI"
+    finally:
+        set_model_router(None)
+
+
+async def test_abandoned_product_card_counts_and_clears_pending(mem_runtime):
+    """多命中出卡后用户不选而发文本：失效卡片从权威状态清除、计一次澄清；再次不明 → R7；
+    含品类词则 category_only（09 §2.1「两次未选中」）。验收项 6、8。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        ev1 = await _send(client, sid, "我的 S1 Pro 不吸了")
+        assert "product_card" in [e["type"] for e in ev1] and ev1[-1]["reason"] == "awaiting_input"
+        assert (await _state(sid))["clarification"]["attempts"] == 1  # 出卡计一次
+        pending = next(e for e in ev1 if e["type"] == "awaiting_input")
+
+        ev2 = await _send(client, sid, "不知道是哪个")  # 未选中，改发文本
+        assert _message_text(ev2) == FIXED_QUESTIONS["product"]
+        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+        assert snap.pending_input is None  # 失效卡片已从权威状态清除
+        s2 = await _state(sid)
+        assert s2["pending_card"] is None and s2["clarification"]["attempts"] == 2
+        assert "用户未在产品确认卡片中选择" in s2["observations"][-1]
+        # 旧卡片的动作现在被拒绝（不计入澄清次数）
+        stale = await client.post(
+            f"/sessions/{sid}/actions",
+            json={
+                "action_id": "a1",
+                "interrupt_id": pending["interrupt_id"],
+                "card_id": pending["card_id"],
+                "expected_version": snap.version,
+                "kind": "select_product",
+                "payload": {"sku": "EUFY-S1-PRO"},
+            },
+        )
+        assert stale.status_code == 409 and stale.json()["code"] == "not_allowed_now"
+        assert (await _state(sid))["clarification"]["attempts"] == 2
+
+        ev3 = await _send(client, sid, "还是不知道")  # 第二次回答仍不明 → R7
+        assert "escalation_summary" in [e["type"] for e in ev3]
+
+        # 另一会话：不选卡片但提到品类词 → category_only 继续
+        other = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, other, "我的 S1 Pro 不吸了")
+        ev = await _send(client, other, "是扫地机那个")
+    assert "diagnose" in _stages(ev) and "product_card" not in [e["type"] for e in ev]
+    so = await _state(other)
+    assert so["product_state"] == "category_only" and so["clarification"] is None
+
+
+async def test_product_correction_and_category_conflict(mem_runtime):
+    """已确认 X10 后：单命中的另一型号 → 型号纠正（旧证据失效）；只提到另一品类 → conflict 澄清。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, sid, "扫地机 X10 不吸了")
+        ev = await _send(client, sid, "说错了，是 X9 不吸")
+        s = await _state(sid)
+        assert s["product_confirmed"]["sku"] == "EUFY-X9-PRO" and s["evidence"] == {}
+        assert "diagnose" in _stages(ev)
+
+        ev2 = await _send(client, sid, "吸奶器也坏了")
+    assert _message_text(ev2) == (
+        "您之前确认的是 eufy X9 Pro，这次提到的是 吸奶器，请问需要排查的是哪一台？"
+    )
+    s2 = await _state(sid)
+    assert s2["clarification"]["reason"] == "conflict" and s2["product_confirmed"]["sku"] == (
+        "EUFY-X9-PRO"
+    )
+
+
+def test_fake_router_helper_shape():
+    fake = FakeChatModel(script=[json.dumps({"question": "q"})])
+    assert fake.script and fake.calls == []

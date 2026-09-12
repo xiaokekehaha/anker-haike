@@ -227,7 +227,9 @@ class WeKnoraClient:
     async def faq_import_progress(self, task_id: str) -> dict:
         return await self._req("GET", f"/faq/import/progress/{task_id}")
 
-    async def faq_search(self, kb_id: str, query: str, *, match_count: int = 10, **opts: Any) -> list[dict]:
+    async def faq_search(
+        self, kb_id: str, query: str, *, match_count: int = 10, **opts: Any
+    ) -> list[dict]:
         return (
             await self._req(
                 "POST",

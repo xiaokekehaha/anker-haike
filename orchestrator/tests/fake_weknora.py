@@ -17,6 +17,7 @@ class FakeWeKnora:
         self.faq: dict[str, list[dict]] = {}
         self.calls: list[tuple[str, str]] = []
         self.registered: dict[str, dict] = {}
+        self.down = False  # True → 模拟 WeKnora 不可达
 
     def transport(self) -> httpx.MockTransport:
         return httpx.MockTransport(self.handle)
@@ -31,6 +32,8 @@ class FakeWeKnora:
         return httpx.Response(status, json={"success": False, "error": msg})
 
     def handle(self, request: httpx.Request) -> httpx.Response:
+        if self.down:
+            raise httpx.ConnectError("connection refused", request=request)
         path = request.url.path.removeprefix("/api/v1")
         method = request.method
         self.calls.append((method, path))
@@ -91,7 +94,31 @@ class FakeWeKnora:
                     self.faq.setdefault(kb_id, []).extend(body["entries"])
                 return self._ok({"task_id": uuid.uuid4().hex})
             if rest == ["hybrid-search"]:
-                return self._ok([])
+                ids = set(body.get("knowledge_ids") or [])
+                hits = []
+                for k in self.knowledge.values():
+                    if k["knowledge_base_id"] != kb_id or (ids and k["id"] not in ids):
+                        continue
+                    if body["query_text"] not in k["content"]:
+                        continue
+                    meta = k.get("custom_metadata") or {}
+                    hits.append(
+                        {
+                            "id": f"chunk-{k['id'][:8]}",
+                            "knowledge_id": k["id"],
+                            "knowledge_title": k["title"],
+                            "content": k["content"],
+                            "score": 0.5,
+                            "chunk_type": "text",
+                            "parent_chunk_id": "",
+                            "match_type": 0,
+                            # 真实服务里是 YAML 文本
+                            "knowledge_custom_metadata": "\n".join(
+                                f"{a}: {b}" for a, b in meta.items()
+                            ),
+                        }
+                    )
+                return self._ok(hits[: int(body.get("match_count", 10))])
         if parts[0] == "knowledge" and len(parts) == 2:
             k = self.knowledge.get(parts[1])
             if k is None:

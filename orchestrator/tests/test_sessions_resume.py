@@ -47,7 +47,9 @@ async def test_disconnect_does_not_cancel_run(mem_runtime, monkeypatch):
         "run_started",
         "progress",
         "progress",
-        "progress",
+        "message_start",  # 票 24：品类未定 → 追问
+        "message",
+        "message_end",
         "done",
     ]
     assert events[-1]["reason"] == "completed"

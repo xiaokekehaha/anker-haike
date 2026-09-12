@@ -24,7 +24,7 @@ import json
 import random
 import re
 import time
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypeVar
 
@@ -85,6 +85,25 @@ class ModelResult[T: BaseModel]:
     latency_ms: int
     usage: dict[str, int] = field(default_factory=dict)
     attempts: list[Attempt] = field(default_factory=list)
+
+
+@dataclass
+class StreamEvent:
+    """stream() 产出（model-selection §3.5）：start / delta / aborted / switched / end。
+
+    API 层映射：start → message_start(message_id, replaces?)；delta → message；
+    aborted → message_end(status=aborted)；end → message_end(status=completed, model_tier)。
+    switched 紧随 aborted 之后、下一 start 之前，携带新 tier，供日志与 attempts。
+    """
+
+    kind: Literal["start", "delta", "aborted", "switched", "end"]
+    message_id: str
+    text: str = ""
+    model_tier: Literal["primary", "fallback"] = "primary"
+    alias: str | None = None
+    model_used: str | None = None
+    replaces: str | None = None
+    reason: str | None = None
 
 
 class ModelInvokeError(RuntimeError):
@@ -188,6 +207,13 @@ def _validation_text(exc: ValidationError) -> str:
 def _usage(msg: BaseMessage | None) -> dict[str, int]:
     meta = getattr(msg, "usage_metadata", None) or {}
     return {k: int(v) for k, v in meta.items() if isinstance(v, int | float)}
+
+
+def uuid_for_replacement(message_id: str, n: int) -> str:
+    """替换消息的 message_id：由原 id 与序号派生，重跑稳定。"""
+    import uuid
+
+    return uuid.uuid5(uuid.NAMESPACE_URL, f"{message_id}:replace:{n}").hex
 
 
 def _short(exc: BaseException) -> str:
@@ -340,6 +366,177 @@ class ModelRouter:
                         raise ModelInvokeError(task, attempts, "budget exhausted")
                     await self._sleep(wait)
                 retry_no += 1
+        raise ModelInvokeError(task, attempts)
+
+    # ---- 用户可见文本流（票 13 / 14）----
+    async def stream(
+        self,
+        task: str,
+        messages: Sequence[BaseMessage | tuple[str, str] | dict[str, Any]],
+        *,
+        budget_ms: int,
+        message_id: str,
+        session_id: str | None = None,
+        lane: str | None = None,
+        fallback_messages: Sequence[BaseMessage | tuple[str, str] | dict[str, Any]] | None = None,
+    ) -> AsyncIterator[StreamEvent]:
+        """tag=user_visible 的文本流。主模型中途失败 → aborted，降级模型用 fallback_messages（简化模式变体）
+        从头生成并以新 message_id + replaces 开始；链上第一家为 primary，其余为 fallback。
+        未产出任何 delta 时的失败按 invoke 同款规则同模型退避重试一次；链耗尽抛 ModelInvokeError。
+        """
+        route = self.registry.cfg.route(task, lane)
+        lane = lane or self.registry.cfg.default_lane
+        base = convert_to_messages(list(messages))
+        fb = convert_to_messages(list(fallback_messages)) if fallback_messages is not None else base
+        attempts: list[Attempt] = []
+        deadline = self._clock() + budget_ms / 1000
+        current_id = message_id
+        async with self.gate.slot(task):
+            chain = self.registry.chain(task, lane)[: self.chain_max]
+            tried = 0  # 路由前跳过（未配置 / 无能力）的模型不算主模型；第一家真正发请求的为 primary（07 §6）
+            for idx, resolved in enumerate(chain):
+                skip = self._skip_reason(resolved, route.needs_vision)
+                if skip:
+                    attempts.append(
+                        Attempt(
+                            resolved.alias,
+                            resolved.model_used,
+                            resolved.lane,
+                            None,
+                            "skipped",
+                            0,
+                            skip,
+                        )
+                    )
+                    continue
+                tier: Literal["primary", "fallback"] = "primary" if tried == 0 else "fallback"
+                tried += 1
+                msgs = base if tier == "primary" else fb
+                model = self._factory(resolved, route)
+                config = {
+                    "tags": ["user_visible"],
+                    "metadata": {
+                        "task": task,
+                        "session_id": session_id,
+                        "lane": lane,
+                        "alias": resolved.alias,
+                        "tier": tier,
+                    },
+                }
+                retry_no = 0
+                while True:
+                    remaining = deadline - self._clock()
+                    if remaining <= 0:
+                        raise ModelInvokeError(task, attempts, "budget exhausted")
+                    start = self._clock()
+                    emitted = False
+                    outcome: Outcome = "ok"
+                    error: str | None = None
+                    try:
+                        agen = model.astream(msgs, config=config)
+                        while True:
+                            chunk = await asyncio.wait_for(
+                                agen.__anext__(),
+                                min(resolved.spec.timeout_s, deadline - self._clock()),
+                            )
+                            delta = (
+                                chunk.content
+                                if isinstance(chunk.content, str)
+                                else "".join(
+                                    p.get("text", "") for p in chunk.content if isinstance(p, dict)
+                                )
+                            )
+                            if not delta:
+                                continue
+                            if not emitted:
+                                emitted = True
+                                yield StreamEvent(
+                                    "start",
+                                    current_id,
+                                    model_tier=tier,
+                                    alias=resolved.alias,
+                                    model_used=resolved.model_used,
+                                    replaces=None if current_id == message_id else message_id,
+                                )
+                            yield StreamEvent(
+                                "delta",
+                                current_id,
+                                text=delta,
+                                model_tier=tier,
+                                alias=resolved.alias,
+                            )
+                    except StopAsyncIteration:
+                        pass
+                    except Exception as exc:  # noqa: BLE001
+                        outcome = classify_exception(exc)
+                        error = _short(exc)
+                    ms = int((self._clock() - start) * 1000)
+                    if outcome == "ok":
+                        if not emitted:  # 模型返回空串：视为一次错误
+                            outcome, error = "error", "empty stream"
+                        else:
+                            attempts.append(
+                                Attempt(
+                                    resolved.alias,
+                                    resolved.model_used,
+                                    resolved.lane,
+                                    None,
+                                    "ok",
+                                    ms,
+                                )
+                            )
+                            yield StreamEvent(
+                                "end",
+                                current_id,
+                                model_tier=tier,
+                                alias=resolved.alias,
+                                model_used=resolved.model_used,
+                            )
+                            return
+                    attempts.append(
+                        Attempt(
+                            resolved.alias,
+                            resolved.model_used,
+                            resolved.lane,
+                            None,
+                            outcome,
+                            ms,
+                            error,
+                        )
+                    )
+                    if emitted:
+                        # 已有可见文本：中断，换下一家从头生成并替换（07 §6）
+                        yield StreamEvent(
+                            "aborted",
+                            current_id,
+                            model_tier=tier,
+                            alias=resolved.alias,
+                            reason=error,
+                        )
+                        current_id = uuid_for_replacement(message_id, len(attempts))
+                        if idx + 1 < len(chain):
+                            yield StreamEvent(
+                                "switched",
+                                current_id,
+                                model_tier="fallback",
+                                replaces=message_id,
+                                reason=error,
+                            )
+                        break
+                    max_retries = (
+                        self.rate_limit_max if outcome == "rate_limited" else self.same_model_max
+                    )
+                    if (
+                        outcome not in RETRYABLE
+                        or outcome == "schema_error"
+                        or retry_no >= max_retries
+                    ):
+                        break
+                    wait = backoff_seconds(outcome, retry_no, self._rng)
+                    if wait + 1.0 > deadline - self._clock():
+                        raise ModelInvokeError(task, attempts, "budget exhausted")
+                    await self._sleep(wait)
+                    retry_no += 1
         raise ModelInvokeError(task, attempts)
 
     # ---- 单次调用 ----
