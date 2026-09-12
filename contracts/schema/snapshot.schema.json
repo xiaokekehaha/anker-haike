@@ -322,6 +322,46 @@
       "title": "ExecutedStep",
       "type": "object"
     },
+    "ImageRefItem": {
+      "additionalProperties": false,
+      "description": "会话期图片引用（票 29）：只有引用与摘要，字节在 session_images，1 小时后清理。",
+      "properties": {
+        "image_id": {
+          "title": "Image Id",
+          "type": "string"
+        },
+        "mime": {
+          "title": "Mime",
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            "fault",
+            "receipt"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "image_id",
+        "purpose",
+        "sha256",
+        "mime",
+        "size"
+      ],
+      "title": "ImageRefItem",
+      "type": "object"
+    },
     "LastError": {
       "additionalProperties": false,
       "properties": {
@@ -885,6 +925,13 @@
             "type": "string"
           },
           "title": "Image Ids",
+          "type": "array"
+        },
+        "images": {
+          "items": {
+            "$ref": "#/$defs/ImageRefItem"
+          },
+          "title": "Images",
           "type": "array"
         },
         "kind": {

@@ -95,6 +95,7 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                         "id": f"u-{r.run_id}",
                         "text": um.get("text", ""),
                         "image_ids": list(um.get("image_ids") or []),
+                        "images": list(um.get("images") or []),  # 票 29：purpose / sha256 随快照
                         "at": um.get("at") or _iso(r.created_at),
                     },
                 )

@@ -36,11 +36,22 @@ class CancelledRun(Strict):
     at: str
 
 
+class ImageRefItem(Strict):
+    """会话期图片引用（票 29）：只有引用与摘要，字节在 session_images，1 小时后清理。"""
+
+    image_id: str
+    purpose: Literal["fault", "receipt"]
+    sha256: str
+    mime: str
+    size: int = Field(ge=0)
+
+
 class UserMessageItem(Strict):
     kind: Literal["user_message"]
     id: str
     text: str
     image_ids: list[str] = Field(default_factory=list)
+    images: list[ImageRefItem] = Field(default_factory=list)
     at: str
 
 

@@ -186,14 +186,9 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                 and category in catalog.categories
                 and not catalog.categories[category].in_scope
             ):
-                # 品类明确但本期不支持（吸奶器 / 充电宝……）→ 范围外子流程；摘要文案在票 25（R8）
+                # 品类明确但本期不支持（吸奶器 / 充电宝……）→ 范围外子流程 out_of_scope → escalate(R8)（票 25）
                 update.update(
-                    {
-                        "product_state": "category_only",
-                        "category": category,
-                        "out_of_scope": True,
-                        "escalate_reason": "R8",
-                    }
+                    {"product_state": "category_only", "category": category, "out_of_scope": True}
                 )
             else:
                 update["product_state"] = "unknown"

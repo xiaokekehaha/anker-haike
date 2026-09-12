@@ -8,12 +8,14 @@ import asyncio
 import logging
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Form, Header, HTTPException, Query, Request
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import APIRouter, File, Form, Header, HTTPException, Query, Request, UploadFile
+from fastapi.responses import JSONResponse, Response, StreamingResponse
 from haike_contracts.actions import parse_action
 from haike_contracts.snapshot import SessionSnapshot
 from pydantic import BaseModel, ValidationError
 
+from app.images import ImageRejected
+from app.images.runtime import get_image_store
 from app.sessions import sse
 from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
@@ -65,11 +67,31 @@ async def post_message(
     session_id: str,
     request: Request,
     text: Annotated[str, Form(min_length=1, max_length=4000)],
+    images: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI 表单默认
+    purpose: Annotated[str, Form(pattern="^(fault|receipt)$")] = "fault",
 ):
     store, graph, manager = _runtime(request)
     await _ensure_exists(store, session_id)
+    # 票 29：图片先入 session_images（>5 MB / 非图片 → 4xx，不进入对话流），状态只存引用
+    image_ids: list[str] = []
+    if images:
+        img_store = get_image_store(request.app)
+        if img_store is None:
+            return JSONResponse(
+                status_code=503, content={"code": "images_unavailable", "message": "图片存储未就绪"}
+            )
+        for up in images:
+            data = await up.read()
+            try:
+                ref = await img_store.put(session_id, purpose, data, up.content_type)
+            except ImageRejected as exc:
+                status = 413 if exc.code == "too_large" else 415
+                return JSONResponse(
+                    status_code=status, content={"code": exc.code, "message": str(exc)}
+                )
+            image_ids.append(ref.image_id)
     try:
-        handle = await manager.start(session_id, text)
+        handle = await manager.start(session_id, text, image_ids=image_ids)
     except ActiveRunConflict as exc:
         # 409 附最新权威快照供前端重建（08 §4 第 3 步）
         snap = await build_snapshot(store, graph, session_id)
@@ -83,6 +105,27 @@ async def post_message(
         )
     # run 已在后台执行；本响应只是从 seq 0 起的订阅者，断开不影响 run（08 §7）
     return _sse(manager.subscribe(session_id, handle.run_id, after_seq=0))
+
+
+@router.get("/{session_id}/images/{image_id}")
+async def get_image(session_id: str, image_id: str, request: Request):
+    """会话内图片原图 / 缩略图来源（票 29）；只按 session 取，越会话访问 404。"""
+    img_store = get_image_store(request.app)
+    if img_store is None:
+        return JSONResponse(
+            status_code=503, content={"code": "images_unavailable", "message": "图片存储未就绪"}
+        )
+    found = await img_store.get(session_id, image_id)
+    if found is None:
+        return JSONResponse(
+            status_code=404, content={"code": "not_found", "message": "image not found"}
+        )
+    ref, data = found
+    return Response(
+        content=data,
+        media_type=ref.mime,
+        headers={"Cache-Control": "private, max-age=3600", "X-Image-Sha256": ref.sha256},
+    )
 
 
 @router.get("/{session_id}/runs/{run_id}/events")
@@ -119,6 +162,15 @@ async def post_action(session_id: str, request: Request):
         raise HTTPException(
             422, detail={"code": "invalid_action", "message": str(exc)[:500]}
         ) from None
+
+    # 0. request_human（08 §4 步骤 4，票 25）：任何时刻可用；有 active run 先取消（取消会让持锁的动作 run 收尾）
+    if action.kind == "request_human":
+        pre = await build_snapshot(store, graph, session_id)
+        if pre.active_run is not None:
+            try:
+                await manager.cancel(session_id, pre.active_run.run_id)
+            except RunNotActive:
+                pass  # 已结束或不在本进程：孤儿 run 由 reconcile 收尾
 
     # 1. 会话级锁：同会话动作串行；锁一直持有到本动作的 run 结束（见 _finish_action）
     hold = lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S)
@@ -169,9 +221,11 @@ async def post_action(session_id: str, request: Request):
         # 08 §4 步骤 3 的顺序：version → card → kind（票 23）。快照随 409 返回供前端重建
         if snap.active_run is not None:
             return conflict("run_active", f"session has active run {snap.active_run.run_id}")
-        if not continue_run:
+        if action.kind == "request_human":
+            pass  # 忽略 version 与 pending 校验（08 §4 步骤 4）
+        elif not continue_run:
             if action.kind not in _CARD_KINDS:
-                # 全局动作不校 version / pending（08 §4 步骤 4）：request_human（票 25）、rediagnose（票 37）接入前先拒绝
+                # rediagnose（票 37）接入前先拒绝
                 return conflict("not_allowed_now", f"{action.kind} is not supported yet")
             if action.expected_version != snap.version:
                 return conflict(
@@ -190,10 +244,14 @@ async def post_action(session_id: str, request: Request):
 
         # 4. 启动 run 并写占位（占位带 run_id：进程中途挂掉时，重放仍能定位到该 run 的事件）
         try:
+            dumped = action.model_dump(mode="json")
             if continue_run:
                 handle = await manager.start(session_id, continue_run=True)
+            elif action.kind == "request_human" and not _has_interrupt(state):
+                # 没有挂起的 interrupt：从 START 进图直达 human_request（不能 Command(resume)）
+                handle = await manager.start(session_id, entry_action=dumped)
             else:
-                handle = await manager.start(session_id, resume=action.model_dump(mode="json"))
+                handle = await manager.start(session_id, resume=dumped)
         except ActiveRunConflict as exc:
             return conflict("run_active", f"session has active run {exc.active_run_id}")
         inserted = await store.try_insert_action(
@@ -229,6 +287,10 @@ async def post_action(session_id: str, request: Request):
             "X-Action-Replayed": "false",
         },
     )
+
+
+def _has_interrupt(state) -> bool:
+    return any(getattr(t, "interrupts", None) for t in getattr(state, "tasks", ()) or ())
 
 
 def _kind_allowed(kind: str, pending_kind: str) -> bool:

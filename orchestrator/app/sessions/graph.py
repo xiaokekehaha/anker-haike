@@ -8,16 +8,20 @@ prepare_card → await_input(interrupt) → apply_action（08 §3）。awaiting_
 票 24：disambiguate 按「继续 / 澄清 / 升级」三种结果判定（app/sessions/clarify.py）：product_state 三分、
 澄清追问节点 clarify（run 以 done(completed) 结束，不发步骤、不检索）、两次澄清后仍不明 → escalate(R7)；
 用户对产品卡片不选而发自由文本 → intake 清掉失效 pending_card 并计一次澄清。
-后续票在此图上替换 / 扩展节点（25 范围外 R8、37 rediagnose……）。
+票 25：选中 / 提到范围外产品 → out_of_scope 节点（说明本期仅支持扫地机）→ escalate(R8)；request_human 全局动作：
+有 interrupt 时经 apply_action、否则从 START 经 route_entry 直达 human_request，都以 R3 升级。
+后续票在此图上替换 / 扩展节点（37 rediagnose……）。
 节点通过 get_stream_writer() 发自定义事件，运行器映射为契约事件。
 """
 
 from __future__ import annotations
 
 import asyncio
+import operator
 import os
 import uuid
-from typing import Any, TypedDict
+from datetime import UTC, datetime
+from typing import Annotated, Any, TypedDict
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.config import get_stream_writer
@@ -25,15 +29,25 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import interrupt
 
+from app.diagnose import (
+    build_query,
+    get_retrieval_config,
+    rewrite_query,
+    should_rewrite,
+    synthesize,
+)
+from app.diagnose.query import product_term
 from app.escalation.summary import build_summary, reassurance_text, summary_card_id
+from app.images.runtime import current_image_store
 from app.intake import extract_intake
 from app.knowledge.adapter import KnowledgeScope
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.models.runtime import get_model_router
+from app.plans.runtime import get_plan_library
 from app.prompts import reassurance_messages, reply_messages
 from app.rules import get_rules_service
 from app.sessions import clarify as clarify_mod
-from app.sessions.cards import candidates_key, current_version, derive_card_id
+from app.sessions.cards import candidates_key, current_version, derive_card_id, get_catalog
 from app.sessions.streaming import stream_to_writer
 
 
@@ -68,6 +82,9 @@ class SessionState(TypedDict, total=False):
     abandoned_card: dict[str, Any] | None
     observations: list[str]  # 摘要用观察记录（R7 澄清经过等）
     _decision: dict[str, Any] | None  # disambiguate → 路由 / clarify 的本 run 判定结果（瞬态）
+    entry: (
+        str | None
+    )  # 本 run 的入口：message（用户文本）/ action（无 interrupt 时的全局动作，票 25）
     escalation_summary: dict[str, Any] | None  # 票 16：{card_id, reason, summary}
     # 票 17：intake 抽取结果；emotion.strategy 注入系统提示第二层；model_trace 累积各 task 命中模型
     emotion: dict[str, str]
@@ -80,6 +97,16 @@ class SessionState(TypedDict, total=False):
     # 票 13 / 18：本 run 已发出的可见消息 {message_id, kind: reassurance|reply, text, model_tier}
     visible_messages: list[dict[str, Any]]
     first_visible_ms: int | None
+    # 票 29：图片引用 {image_id, purpose, sha256, mime, size, created_at, run_id}，跨 run 累积；字节只在 session_images
+    image_refs: list[dict[str, Any]]
+    # 票 32：诊断。retrieval_trace / image_observations 用 reducer 追加，读图（票 30）与检索并行写不同字段不覆盖；
+    # plans_ranked [{plan_id, version, confidence, evidence_ids, source}]；rewrite_used 为本 run 是否已用掉补检索名额
+    retrieval_trace: Annotated[list[dict[str, Any]], operator.add]
+    image_observations: Annotated[list[str], operator.add]
+    plans_ranked: list[dict[str, Any]]
+    retrieval_rounds: int
+    rewrite_used: bool
+    query: str | None
 
 
 def _delay() -> float:
@@ -93,10 +120,25 @@ async def intake(state: SessionState) -> SessionState:
     if state.get("text") == "__raise__":  # 测试钩子：异常路径
         raise RuntimeError("placeholder node failure")
     await asyncio.sleep(_delay())
+    image_ids = list(state.get("image_ids") or [])
+    new_refs: list[dict[str, Any]] = []
+    if image_ids and (img_store := current_image_store()) is not None:
+        for ref in await img_store.refs(state.get("session_id", ""), image_ids):
+            new_refs.append({**ref.public(), "run_id": state.get("run_id", "")})
     user_msg = {
         "role": "user",
         "text": state.get("text", ""),
-        "image_ids": list(state.get("image_ids") or []),
+        "image_ids": image_ids,
+        "images": [
+            {
+                "image_id": r["image_id"],
+                "purpose": r["purpose"],
+                "sha256": r["sha256"],
+                "mime": r["mime"],
+                "size": r["size"],
+            }
+            for r in new_refs
+        ],
         "run_id": state.get("run_id", ""),
         "at": state.get("at", ""),
     }
@@ -106,6 +148,7 @@ async def intake(state: SessionState) -> SessionState:
         "stage": "intake",
         "messages": [*state.get("messages", []), user_msg],
         "safety_flags": [*state.get("safety_flags", []), *cp.flags],
+        "image_refs": [*state.get("image_refs", []), *new_refs],
     }
     # 票 24：新消息到达时若仍有待选产品卡片，说明用户未选中而改为自由文本；LangGraph 已丢弃该 interrupt，
     # 这里把失效 pending_card 从权威状态清除，交 disambiguate 计一次澄清（09 §1.1）
@@ -241,7 +284,7 @@ def route_after_disambiguate(state: SessionState) -> str:
     if decision.get("outcome") == "clarify":
         return "clarify"
     if state.get("out_of_scope"):
-        return "escalate"
+        return "out_of_scope"
     if len(state.get("product_candidates") or []) > 1 and not state.get("product_confirmed"):
         return "prepare_card"
     return _after_product(state)
@@ -347,7 +390,10 @@ async def apply_action(state: SessionState) -> SessionState:
     pc = state.get("pending_card") or {}
     results = dict(state.get("card_results") or {})
     update: SessionState = {"pending_card": None, "last_action": None}
-    if action.get("kind") == "select_product":
+    if action.get("kind") == "request_human":
+        # 票 25：awaiting_input 中点「请求人工」——卡片作废、不记结果，按 R3 升级
+        update.update(_human_request_update(state, action))
+    elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
         results[pc["card_id"]] = {"selected_sku": sku}
@@ -366,7 +412,86 @@ async def apply_action(state: SessionState) -> SessionState:
 
 
 def route_after_apply(state: SessionState) -> str:
-    return "escalate" if state.get("out_of_scope") else _after_product(state)
+    if state.get("escalate_reason"):
+        return "escalate"
+    if state.get("out_of_scope"):
+        return "out_of_scope"
+    return _after_product(state)
+
+
+# ---------------- 票 25：范围外 R8 与 request_human ----------------
+
+
+def route_entry(state: SessionState) -> str:
+    """START 分流：无 interrupt 时到达的全局动作直达 human_request，其余走 intake。"""
+    if state.get("entry") == "action" and (state.get("last_action") or {}).get("kind") == (
+        "request_human"
+    ):
+        return "human_request"
+    return "intake"
+
+
+def _human_request_update(state: SessionState, action: dict[str, Any]) -> SessionState:
+    return {
+        "escalate_reason": "R3",
+        "safety_flags": [
+            *state.get("safety_flags", []),
+            {
+                "rule_id": "R3",
+                "source": "action",
+                "term": "request_human",
+                "ts": state.get("at", ""),
+                "action_id": action.get("action_id"),
+            },
+        ],
+        "pending_card": None,
+        "last_action": None,
+    }
+
+
+async def human_request(state: SessionState) -> SessionState:
+    """request_human 全局动作（08 §4 步骤 4）：忽略 version / pending，直接以 R3 升级。"""
+    return _human_request_update(state, state.get("last_action") or {})
+
+
+OUT_OF_SCOPE_TEXT = (
+    "本期智能排障仅支持 eufy 扫地机器人。您咨询的「{name}」属于{category}，不在当前支持范围内；"
+    "我已把情况整理好转给人工客服，稍后会有专人协助您。"
+)
+
+
+async def out_of_scope(state: SessionState) -> SessionState:
+    """范围外产品子流程（02 §3、09 §2.1）：说明本期仅支持扫地机，随后 escalate(R8)。"""
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "out_of_scope"})
+    catalog = get_catalog()
+    product = dict(state.get("product_confirmed") or {})
+    category = product.get("category") or state.get("category") or ""
+    spec = catalog.categories.get(category)
+    category_name = spec.name if spec else (category or "其他品类")
+    update: SessionState = {"stage": "out_of_scope", "escalate_reason": "R8"}
+    if not product:
+        # 只提到范围外品类、没有具体型号：摘要里的产品写品类（02 §5 product_confirmed.sku 可选）
+        product = {
+            "name": f"{category_name}（型号未确认）",
+            "category": category,
+            "in_scope": False,
+        }
+        update["product_confirmed"] = product
+    text = OUT_OF_SCOPE_TEXT.format(
+        name=product.get("name") or product.get("sku"), category=category_name
+    )
+    message_id = uuid.uuid5(
+        uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:out_of_scope"
+    ).hex
+    writer({"type": "message_start", "message_id": message_id})
+    writer({"type": "message", "message_id": message_id, "delta": text})
+    writer({"type": "message_end", "message_id": message_id, "status": "completed"})
+    update["visible_messages"] = [
+        *(state.get("visible_messages") or []),
+        {"message_id": message_id, "kind": "out_of_scope", "text": text, "model_tier": None},
+    ]
+    return update
 
 
 # ---------------- 票 28：检索 → tool_call / evidence 事件 ----------------
@@ -380,33 +505,104 @@ def knowledge_scope_of(state: SessionState) -> KnowledgeScope:
 
 
 def retrieval_query(state: SessionState) -> str:
-    symptoms = state.get("symptoms") or []
-    return "；".join(symptoms) if symptoms else state.get("text", "")
+    """规范化查询（03 §1.4.1）：已确认产品 / 品类 + 有效症状；症状为空退回原文；unknown 返回空串。"""
+    return build_query(dict(state))
+
+
+def _remaining_ms(state: SessionState) -> int:
+    """run 剩余预算：消息到达时间 + 文本轮 deadline（08 §8）。"""
+    from app.sessions.runner import DEFAULT_DEADLINE_MS
+
+    at = state.get("at")
+    try:
+        started = datetime.fromisoformat(at) if at else datetime.now(UTC)
+    except ValueError:
+        started = datetime.now(UTC)
+    if started.tzinfo is None:
+        started = started.replace(tzinfo=UTC)
+    elapsed = (datetime.now(UTC) - started).total_seconds() * 1000
+    return int(DEFAULT_DEADLINE_MS - elapsed)
+
+
+async def _search_round(
+    adapter,
+    query: str,
+    scope: KnowledgeScope,
+    top_k: int,
+    *,
+    round_no: int,
+    session_id: str,
+    run_id: str,
+):
+    """一轮：对两个库各一次请求（允许集合为空时适配器本地 no_match，不发请求）。返回 (results, trace_entries)。"""
+    results = {}
+    traces = []
+    for kb in ("kb_manual", "kb_tickets"):
+        r = await adapter.hybrid_search(kb, query, top_k, scope)
+        results[kb] = r
+        traces.append(
+            {
+                "round": round_no,
+                "kb": kb,
+                "query": query,
+                "scope": {
+                    "product_state": scope.product_state,
+                    "category": scope.category,
+                    "sku": scope.sku,
+                },
+                "status": r.status,
+                "allowed_count": r.allowed_count,
+                "hit_ids": [h.evidence_id for h in r.hits],
+                "scores": [round(h.score, 4) for h in r.hits],
+                "truncated": r.truncated,
+                "latency_ms": r.latency_ms,
+                "session_id": session_id,
+                "run_id": run_id,
+            }
+        )
+    return results, traces
 
 
 async def retrieve(state: SessionState) -> SessionState:
-    """文本 query 检索 kb_manual + kb_tickets：tool_call(started→finished/failed) + evidence（票 28）。
-
-    unavailable → tool_call failed，流程继续（09 §4：按标准排障流程，不用常识补假设）。
-    evidence_id 取自 WeKnora chunk id，同会话内稳定，累积进状态供 step.evidence_ids 引用。
+    """diagnose 流水线（票 28 / 32）：规范化 query → 首轮检索（两库）→ 可选一次补检索（图片新增或无命中改写，共享名额）
+    → synthesize 假设汇总。事件：tool_call started/finished/failed + evidence；query 只进 retrieval_trace（内部）。
     """
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "diagnose", "substage": "retrieve"})
     session_id, run_id = state.get("session_id", ""), state.get("run_id", "")
-    tool_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:knowledge.search").hex
-    query = retrieval_query(state)
+    lane = _lane()
+    rcfg = get_retrieval_config()
     scope = knowledge_scope_of(state)
+    query = retrieval_query(state)
+    evidence = dict(state.get("evidence") or {})
+    tool_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:knowledge.search").hex
+    if not query:
+        # 无可查内容（unknown 或既无症状也无原文）：不检索、不凭空生成；澄清由 disambiguate/clarify 负责
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "no_query",
+            "query": None,
+            "retrieval_trace": [
+                {
+                    "round": 0,
+                    "status": "no_query",
+                    "reason": "empty query",
+                    "session_id": session_id,
+                    "run_id": run_id,
+                }
+            ],
+        }
     writer(
         {
             "type": "tool_call",
             "tool_id": tool_id,
             "name": "knowledge.search",
             "status": "started",
-            "summary": f"检索知识库：{query[:40]}",
+            "summary": "检索知识库",
         }
     )
     adapter = get_knowledge_adapter()
-    evidence = dict(state.get("evidence") or {})
     if adapter is None:
         writer(
             {
@@ -417,13 +613,114 @@ async def retrieve(state: SessionState) -> SessionState:
                 "summary": "知识库暂不可用，按标准排障流程",
             }
         )
-        return {"stage": "diagnose", "substage": "retrieve", "knowledge_status": "unavailable"}
+        plans = await _synthesize_step(state, evidence, lane, rcfg)
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "unavailable",
+            "query": query,
+            "retrieval_trace": [
+                {
+                    "round": 1,
+                    "status": "unavailable",
+                    "reason": "adapter disabled",
+                    "query": query,
+                    "session_id": session_id,
+                    "run_id": run_id,
+                }
+            ],
+            **plans,
+        }
     await ensure_index(adapter)
-    results = [
-        await adapter.hybrid_search(kb, query, 5, scope) for kb in ("kb_manual", "kb_tickets")
-    ]
-    statuses = [r.status for r in results]
-    hits = [h for r in results for h in r.hits]
+    top_k = rcfg.retrieval.top_k
+    results, trace = await _search_round(
+        adapter, query, scope, top_k, round_no=1, session_id=session_id, run_id=run_id
+    )
+    rounds = 1
+    rewrite_used = bool(state.get("rewrite_used"))
+    hits = [h for r in results.values() for h in r.hits]
+    per_kb_status = {kb: r.status for kb, r in results.items()}
+    allowed_counts = {kb: r.allowed_count for kb, r in results.items()}
+    # ---- 至多一次补检索：图片新增观察优先（票 30 接入），否则无命中改写（默认关闭）----
+    remaining = _remaining_ms(state)
+    router = get_model_router()
+    decision = should_rewrite(
+        cfg=rcfg.query_rewrite,
+        per_kb_status=per_kb_status,
+        allowed_counts=allowed_counts,
+        has_hits=bool(hits),
+        remaining_ms=remaining,
+        quota_used=rewrite_used,
+        product_state=state.get("product_state"),
+        router_available=router is not None,
+        in_clarify=bool(state.get("clarification")),
+    )
+    trace.append(
+        {
+            "round": 1,
+            "kb": "*",
+            "event": "rewrite_decision",
+            "triggered": decision.triggered,
+            "reason": decision.reason,
+            "remaining_ms": remaining,
+            "session_id": session_id,
+            "run_id": run_id,
+        }
+    )
+    if decision.triggered and router is not None:
+        rewrite_used = True
+        rw = await rewrite_query(
+            router,
+            original=query,
+            user_text=state.get("text", ""),
+            product=product_term(dict(state)),
+            symptoms=[str(s) for s in state.get("symptoms") or []],
+            cfg=rcfg.query_rewrite,
+            session_id=session_id,
+            lane=lane,
+            budget_ms=min(
+                rcfg.query_rewrite.budget_ms,
+                max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),
+            ),
+        )
+        trace.append(
+            {
+                "round": 2,
+                "kb": "*",
+                "event": "rewrite_result",
+                "accepted": rw.query is not None,
+                "rejected_reason": rw.rejected_reason,
+                "query_before": query,
+                "query_after": rw.query,
+                "model_used": rw.model_used,
+                "latency_ms": rw.latency_ms,
+                "session_id": session_id,
+                "run_id": run_id,
+            }
+        )
+        remaining = _remaining_ms(state)
+        if rw.query and remaining >= rcfg.retrieval.min_remaining_for_second_round_ms:
+            results2, trace2 = await _search_round(
+                adapter, rw.query, scope, top_k, round_no=2, session_id=session_id, run_id=run_id
+            )
+            rounds = 2
+            trace += trace2
+            hits2 = [h for r in results2.values() for h in r.hits]
+            if hits2:
+                hits, results = hits2, results2
+                per_kb_status = {kb: r.status for kb, r in results.items()}
+        elif rw.query:
+            trace.append(
+                {
+                    "round": 2,
+                    "kb": "*",
+                    "event": "second_round_skipped",
+                    "reason": f"budget:{remaining}ms",
+                    "session_id": session_id,
+                    "run_id": run_id,
+                }
+            )
+    statuses = list(per_kb_status.values())
     if all(s == "unavailable" for s in statuses):
         status = "unavailable"
     elif hits:
@@ -444,12 +741,14 @@ async def retrieve(state: SessionState) -> SessionState:
         items = [h.as_evidence_item() for h in hits]
         for it in items:
             evidence[it["evidence_id"]] = it
-        summary = (
-            f"命中 {len(items)} 条来源"
-            + ("（部分截断）" if any(r.truncated for r in results) else "")
-            if items
-            else "未找到匹配知识，按标准排障流程"
-        )
+        if items:
+            summary = (
+                f"命中 {len(items)} 条来源"
+                + ("（部分截断）" if any(r.truncated for r in results.values()) else "")
+                + ("（已补检索）" if rounds == 2 else "")
+            )
+        else:
+            summary = "未找到匹配知识，按标准排障流程"
         writer(
             {
                 "type": "tool_call",
@@ -461,12 +760,52 @@ async def retrieve(state: SessionState) -> SessionState:
         )
         if items:
             writer({"type": "evidence", "items": items})
+    plans = await _synthesize_step(
+        state, {h.evidence_id: h.as_evidence_item() for h in hits} if hits else {}, lane, rcfg
+    )
     return {
         "stage": "diagnose",
         "substage": "retrieve",
         "knowledge_status": status,
         "evidence": evidence,
+        "query": query,
+        "retrieval_trace": trace,
+        "retrieval_rounds": rounds,
+        "rewrite_used": rewrite_used,
+        **plans,
     }
+
+
+async def _synthesize_step(
+    state: SessionState, round_evidence: dict[str, dict[str, Any]], lane: str, rcfg
+) -> dict[str, Any]:
+    scope = knowledge_scope_of(state)
+    allowed = get_plan_library().allowed_for(category=scope.category, sku=scope.sku)
+    out = await synthesize(
+        get_model_router(),
+        state=dict(state),
+        allowed=allowed,
+        evidence=list(round_evidence.values()),
+        observations=list(state.get("image_observations") or []),
+        budget_ms=min(rcfg.synthesize.budget_ms, max(1000, _remaining_ms(state) - 2000)),
+        max_hypotheses=rcfg.synthesize.max_hypotheses,
+        session_id=state.get("session_id"),
+        lane=lane,
+    )
+    update: dict[str, Any] = {"plans_ranked": out["plans_ranked"]}
+    if out["model_trace"]:
+        update["model_trace"] = [*state.get("model_trace", []), out["model_trace"]]
+    if out["dropped"] or out["degraded"]:
+        update["retrieval_trace"] = [
+            {
+                "event": "synthesize",
+                "dropped": out["dropped"],
+                "degraded": out["degraded"],
+                "session_id": state.get("session_id"),
+                "run_id": state.get("run_id"),
+            }
+        ]
+    return update
 
 
 async def escalate(state: SessionState) -> SessionState:
@@ -568,7 +907,13 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("retrieve", retrieve)
     g.add_node("reassure", reassure)
     g.add_node("clarify", clarify)
-    g.add_edge(START, "intake")
+    g.add_node("out_of_scope", out_of_scope)
+    g.add_node("human_request", human_request)
+    g.add_conditional_edges(
+        START, route_entry, {"intake": "intake", "human_request": "human_request"}
+    )
+    g.add_edge("human_request", "escalate")
+    g.add_edge("out_of_scope", "escalate")
     g.add_conditional_edges(
         "intake",
         route_after_intake,
@@ -584,6 +929,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "retrieve": "retrieve",
             "escalate": "escalate",
             "clarify": "clarify",
+            "out_of_scope": "out_of_scope",
         },
     )
     g.add_edge("clarify", END)
@@ -592,7 +938,12 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges(
         "apply_action",
         route_after_apply,
-        {"reply": "reply", "retrieve": "retrieve", "escalate": "escalate"},
+        {
+            "reply": "reply",
+            "retrieve": "retrieve",
+            "escalate": "escalate",
+            "out_of_scope": "out_of_scope",
+        },
     )
     g.add_edge("retrieve", "reply")
     g.add_edge("reply", END)

@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.catalog import ProductCatalog
 from app.health.router import router as health_router
+from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
 from app.models.runtime import set_model_router
 from app.plans import PlanLibrary
@@ -41,9 +42,11 @@ async def _lifespan(app: FastAPI):
     )
     # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
     await open_session_runtime(app)
+    await open_image_store(app)  # 票 29：复用会话连接池
     try:
         yield
     finally:
+        await close_image_store(app)
         await close_session_runtime(app)
 
 

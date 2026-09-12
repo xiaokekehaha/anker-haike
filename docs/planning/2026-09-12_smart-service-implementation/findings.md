@@ -65,3 +65,9 @@
 - pg_restore 对「扩展属主」等无害告警返回非零，脚本不能用其退出码判成败，用恢复后的健康检查兜底。
 - macOS 没有 `timeout` 命令，手测脚本用 `curl --max-time`。
 - 基线迁移用 IF NOT EXISTS 是为了收编已存在的库；从第二条迁移起应写常规 DDL，并在 CI 用 `make db-check` 卡版本。
+
+## 票 25 request_human 与 R8
+- request_human 有两条进图路径：图停在 interrupt 时必须走 Command(resume)（新输入会丢弃 interrupt 但 pending_card 仍要作废）；没有 interrupt 时 Command(resume) 会报错，改为带 entry=action 的输入从 START 经条件边直达 human_request。router 用 checkpoint 的 tasks.interrupts 判断，不看事件日志。
+- 取消 active run 必须放在取会话锁之前：动作 run 持锁到结束，先取锁会等到 30 s 超时。cancel 等待 ≤ 5 s 收尾后再进正常流程，所以 run_active 409 对 request_human 实际不会出现。
+- 范围外品类只有品类词、没有型号时，摘要的 product 由 out_of_scope 节点写成「{品类名}（型号未确认）」的 product_confirmed（02 §5 sku 可选），避免改 B 的 build_summary。
+- 工作树并发：票 29、32、47 的会话同时在改 sessions/router.py、graph.py、runtime.py。手测前主库表 owner 被迁移过程短暂改动导致 setup 失败，稍后恢复；手测脚本改为固定端口 + 结束时 pkill，避免残留进程占端口造成误判。

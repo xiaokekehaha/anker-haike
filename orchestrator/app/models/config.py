@@ -29,6 +29,8 @@ KNOWN_TASKS: tuple[str, ...] = (
     "escalate.summary",
     "warranty.receipt_ocr",
 )
+# 可选增强任务：配置里可以缺链（缺时对应功能按不可用处理），不参与「默认通道必须覆盖」校验
+OPTIONAL_TASKS: tuple[str, ...] = ("query.rewrite",)
 
 UNSET_MODEL_ID = "TBD"
 
@@ -146,7 +148,7 @@ class ModelsConfig(_Strict):
         all_tasks = set(KNOWN_TASKS)
         for tasks in self.lanes.values():
             all_tasks.update(tasks)
-        for task in sorted(all_tasks - set(default_tasks)):
+        for task in sorted(all_tasks - set(default_tasks) - set(OPTIONAL_TASKS)):
             problems.append(f"lanes.{self.default_lane}: task {task!r} has no chain")
         for kind in ("embedding", "rerank"):
             if not self.aliases_of_kind(kind):  # type: ignore[arg-type]

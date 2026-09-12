@@ -66,6 +66,7 @@ async def run_message(
     *,
     resume: dict[str, Any] | None = None,
     continue_run: bool = False,
+    entry_action: dict[str, Any] | None = None,
     image_ids: list[str] | None = None,
     deadline_ms: int = DEFAULT_DEADLINE_MS,
     ping_interval_s: float | None = None,
@@ -88,7 +89,7 @@ async def run_message(
     stage: str | None = None
     reason = "completed"
     interrupted = False
-    is_action = resume is not None or continue_run
+    is_action = resume is not None or continue_run or entry_action is not None
 
     async def pump() -> None:
         try:
@@ -98,11 +99,21 @@ async def run_message(
                 payload = Command(resume=resume)
             elif continue_run:
                 payload = None
+            elif entry_action is not None:
+                # 全局动作（request_human，票 25）在没有 interrupt 时从 START 进图：route_entry 直达 human_request
+                payload = {
+                    "session_id": session_id,
+                    "run_id": run_id,
+                    "at": datetime.now(UTC).isoformat(),
+                    "entry": "action",
+                    "last_action": entry_action,
+                }
             else:
                 payload = {
                     "session_id": session_id,
                     "run_id": run_id,
                     "at": datetime.now(UTC).isoformat(),
+                    "entry": "message",
                     "text": text or "",
                     "image_ids": image_ids or [],
                 }
@@ -123,7 +134,11 @@ async def run_message(
     watcher = asyncio.create_task(watch_cancel()) if cancel_event is not None else None
     try:
         yield await em.emit(
-            {"type": "run_started", "resumed": is_action, "deadline_ms": deadline_ms}
+            {
+                "type": "run_started",
+                "resumed": resume is not None or continue_run,
+                "deadline_ms": deadline_ms,
+            }
         )
         while True:
             remaining = deadline_ms / 1000 - (time.monotonic() - started)

@@ -31,11 +31,12 @@ lanes:
     intake:                {chain: [qwen-flash, deepseek, haiku],   effort: low,    max_tokens: 512}
     disambiguate.clarify:  {chain: [qwen-flash, glm-flash],         effort: low,    max_tokens: 256}
     diagnose.vision:       {chain: [qwen-vl, glm-v, sonnet],        effort: medium, needs_vision: true}
-    diagnose.synthesize:   {chain: [qwen-max, deepseek, sonnet],    effort: high}
+    diagnose.synthesize:   {chain: [qwen-max, deepseek, sonnet],    effort: high}  # deepseek 为当前唯一可用位
     guide.step:            {chain: [qwen-max, glm, sonnet],         effort: medium}
-    reply.stream:          {chain: [qwen-plus, glm-flash],          effort: low,    stream: true}
+    reply.stream:          {chain: [qwen-plus, glm-flash, deepseek], effort: low,    stream: true}  # deepseek 为当前唯一可用的降级位（票 42 冻结前）
     escalate.summary:      {chain: [deepseek, qwen-flash],          effort: low}
     warranty.receipt_ocr:  {chain: [qwen-vl, glm-v, sonnet],        effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [qwen-flash, deepseek],           effort: low,    max_tokens: 128}  # 票 32：无命中一次改写，默认关闭（config/retrieval.yaml）
   overseas:
     intake:                {chain: [haiku, sonnet],                 effort: low,    max_tokens: 512}
     disambiguate.clarify:  {chain: [haiku, sonnet],                 effort: low}
@@ -45,6 +46,7 @@ lanes:
     reply.stream:          {chain: [sonnet, haiku],                 effort: low,    stream: true}
     escalate.summary:      {chain: [haiku, sonnet],                 effort: low}
     warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],          effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [haiku, sonnet],                 effort: low,    max_tokens: 128}
 
 # same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
 retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}

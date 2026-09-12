@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: 56a70111a027ceb717b14b94a4f15ea6560a2924c0ad42035ea5e9a63d064ff3
+// SHA-256: b6195b183d33c4cd6606384186c79aef825163bd288d9dc83ab7342860e79003
 
 export type DeadlineAt = string;
 export type RunId = string;
@@ -27,6 +27,12 @@ export type Substage = string | null;
 export type At2 = string;
 export type Id = string;
 export type ImageIds = string[];
+export type ImageId = string;
+export type Mime = string;
+export type Purpose = 'fault' | 'receipt';
+export type Sha256 = string;
+export type Size = number;
+export type Images = ImageRefItem[];
 export type Kind1 = 'user_message';
 export type Text = string;
 export type Kind2 = 'assistant_message';
@@ -190,8 +196,22 @@ export interface UserMessageItem {
   at: At2;
   id: Id;
   image_ids?: ImageIds;
+  images?: Images;
   kind: Kind1;
   text: Text;
+}
+/**
+ * 会话期图片引用（票 29）：只有引用与摘要，字节在 session_images，1 小时后清理。
+ *
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "ImageRefItem".
+ */
+export interface ImageRefItem {
+  image_id: ImageId;
+  mime: Mime;
+  purpose: Purpose;
+  sha256: Sha256;
+  size: Size;
 }
 /**
  * message_start / message / message_end 折叠后的完整文本。

@@ -145,9 +145,11 @@ async def test_select_out_of_scope_candidate_routes_to_escalate(mem_runtime):
             ).text
         )
     stages = [e["stage"] for e in resumed if e["type"] == "progress"]
-    assert stages == ["escalate"] and resumed[-1]["reason"] == "completed"
+    # 票 25：out_of_scope 子流程（说明文本）→ escalate(R8)
+    assert stages == ["out_of_scope", "escalate"] and resumed[-1]["reason"] == "completed"
     state = await app.state.session_graph.aget_state(_cfg(sid))
     assert state.values["out_of_scope"] is True and state.values["stage"] == "escalate"
+    assert state.values["escalate_reason"] == "R8"
 
 
 async def test_single_hit_and_zero_hit_skip_card(mem_runtime):
@@ -198,10 +200,10 @@ async def test_action_conflicts_and_validation(mem_runtime):
         }
         r = await client.post(f"/sessions/{sid}/actions", json=bad_kind)
         assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
-        # 全局动作暂未接入
+        # rediagnose（票 37）暂未接入；request_human 已在票 25 接入（见 test_sessions_human）
         r = await client.post(
             f"/sessions/{sid}/actions",
-            json={"action_id": "a", "expected_version": 0, "kind": "request_human", "payload": {}},
+            json={"action_id": "a", "expected_version": 0, "kind": "rediagnose", "payload": {}},
         )
         assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
         # 契约校验失败 → 422
