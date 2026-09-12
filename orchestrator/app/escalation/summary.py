@@ -19,6 +19,8 @@ from haike_contracts.common import (
     ReceiptOutcome,
 )
 
+from app.sessions.receipt import receipt_outcome
+
 REASON_TEXT = {
     "R1": "排障步骤已达上限（executed ≥ 4）",
     "R1b": "用户连续无法操作（skipped ≥ 3）",
@@ -107,12 +109,8 @@ def build_summary(
         emotion=Emotion(
             level=emotion.get("level", "calm"), strategy=emotion.get("strategy", "normal")
         ),
-        receipt=ReceiptOutcome(
-            status="not_collected",
-            next_step="请准备购买凭证，人工协助核实"
-            if reason in ("R6",)
-            else "已转人工，如需质保核实请补充购买凭证",
-        ),
+        # 票 39：凭证子流程结果从 state.receipt 派生；未进入 / 未收集时为 not_collected
+        receipt=ReceiptOutcome(**receipt_outcome(state, reason)),
         model_trace=trace,
     )
 

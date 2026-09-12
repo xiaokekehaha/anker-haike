@@ -87,3 +87,9 @@
 - models.yaml 校验禁止 needs_vision 链里出现 vision:false 的模型，所以 07 §6「备用模型不支持图片」在运行时表现为：视觉模型全部不可用（缺 key / 未配置）→ Router 把整条链都 skipped → ModelInvokeError.attempts 全为 skipped。vision 模块据此判 no_vision 并给用户固定提示，而不是看 error 文案。
 - 读图放在检索之前而非并行：CP-in 要求观察项在任何后续模型调用之前检查（09 §1），顺序执行让 R4 命中时 retrieve / synthesize 一次都不跑；代价是含图轮多一次串行调用，预算 12 s 在 40 s 的含图 run deadline 内。
 - 多会话同改 graph.py 时，用 `git show HEAD:file` + 本票 patch 重建 blob 后 `git update-index --cacheinfo` 只暂存自己的 hunk，再用 `git write-tree` + `git archive` 导出暂存树跑测试，可以在不等对方收尾的情况下提交可导入、可测试的版本。
+
+## 票 39 凭证收集
+- 「上传凭证」不是动作协议里的 kind，而是等待 upload_receipt 时的一条带 purpose=receipt 图片的普通消息：LangGraph 收到新输入会丢弃 interrupt 并从 START 重跑，所以凭证识别放在 intake（看 stale pending_card.kind + 本 run 的 receipt 图），随后靠 route_after_intake 的 escalate_reason 回到 escalate 子流程；这条消息不做抽取 / 消歧。
+- escalate 入口节点只分流不发摘要，原摘要逻辑成为 summarize 节点。所有进入 escalate 的边不必改，包括票 33 的 retrieve → escalate(R5)。
+- 直接摘要集合扩到 R5 / R7 / R8：R5「无可用知识」时凭证与处理无关，且票 33 会话的 R5 用例期望立即出摘要；R7 / R8 没有可核对的受支持产品。09 §5.1 需回填这条决定。
+- receipt 是 checkpoint 内部状态，摘要的 ReceiptOutcome 只取 status / verified_facts / conflicts / next_step，不输出资格结论（D16）；票 40 / 41 只需替换 receipt_extract 占位并填 fields / confidence / edited。

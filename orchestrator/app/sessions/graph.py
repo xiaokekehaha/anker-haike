@@ -49,6 +49,7 @@ from app.plans.runtime import get_plan_library
 from app.prompts import reassurance_messages, reply_messages
 from app.rules import get_rules_service
 from app.sessions import clarify as clarify_mod
+from app.sessions import receipt as receipt_mod
 from app.sessions.cards import candidates_key, current_version, derive_card_id, get_catalog
 from app.sessions.streaming import stream_to_writer
 
@@ -88,6 +89,8 @@ class SessionState(TypedDict, total=False):
         str | None
     )  # 本 run 的入口：message（用户文本）/ action（无 interrupt 时的全局动作，票 25）
     escalation_summary: dict[str, Any] | None  # 票 16：{card_id, reason, summary}
+    # 票 39：凭证子流程状态 {status, image_ids, skipped_reason?, fields, confidence, edited, verified_facts, conflicts, next_step}
+    receipt: dict[str, Any] | None
     # 票 17：intake 抽取结果；emotion.strategy 注入系统提示第二层；model_trace 累积各 task 命中模型
     emotion: dict[str, str]
     product_hints: list[str]
@@ -160,6 +163,12 @@ async def intake(state: SessionState) -> SessionState:
     stale = state.get("pending_card")
     update["pending_card"] = None
     update["abandoned_card"] = stale if stale and stale.get("kind") == "select_product" else None
+    # 票 39：等待凭证时收到 purpose=receipt 图片 → 记入 receipt，交 escalate 子流程 extract；
+    # 其他位置上传的凭证图不进入凭证流（普通消息 / rediagnose）
+    receipt_ids = [r["image_id"] for r in new_refs if r.get("purpose") == "receipt"]
+    if receipt_ids and stale and stale.get("kind") == "upload_receipt":
+        update["receipt"] = receipt_mod.uploaded_receipt(dict(state), receipt_ids)
+        return update  # 不再抽取 / 消歧：直接回到 escalate 子流程
     if cp.escalate:
         update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
         return update  # R3 / R4 命中：不再发起任何模型调用
@@ -502,6 +511,13 @@ async def apply_action(state: SessionState) -> SessionState:
     if action.get("kind") == "request_human":
         # 票 25：awaiting_input 中点「请求人工」——卡片作废、不记结果，按 R3 升级
         update.update(_human_request_update(state, action))
+    elif action.get("kind") == "skip_receipt":
+        # 票 39：跳过凭证 → receipt.status=not_collected（记 skipped_reason）→ summarize
+        reason = (action.get("payload") or {}).get("reason", "none")
+        results[pc.get("card_id", "")] = {"skipped_reason": reason}
+        update.update(
+            {"card_results": results, "receipt": receipt_mod.skipped_receipt(dict(state), reason)}
+        )
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -918,6 +934,48 @@ async def _synthesize_step(
 
 
 async def escalate(state: SessionState) -> SessionState:
+    """escalate 子流程入口（09 §5.1，票 39）：安全 / 人工 / R7 / R8 直接摘要；常规升级先收凭证。
+
+    本节点只做分流与阶段推进；发凭证请求在 prepare_receipt → await_input，摘要在 summarize。
+    """
+    writer = get_stream_writer()
+    update: SessionState = {"stage": "escalate"}
+    if receipt_mod.needs_collection(dict(state)) and not receipt_mod.has_uploaded(dict(state)):
+        writer({"type": "progress", "stage": "escalate", "substage": "collect_receipt"})
+        update["substage"] = "collect_receipt"
+        update["receipt"] = state.get("receipt") or receipt_mod.empty_receipt()
+    return update
+
+
+def route_escalate(state: SessionState) -> str:
+    s = dict(state)
+    if receipt_mod.has_uploaded(s):
+        return "receipt_extract"
+    if receipt_mod.needs_collection(s):
+        return "prepare_receipt"
+    return "summarize"
+
+
+async def prepare_receipt(state: SessionState) -> SessionState:
+    """凭证收集位置的 pending_card（kind=upload_receipt，无卡片事件）；不含 interrupt，只执行一次。"""
+    card_id = receipt_mod.receipt_card_id(
+        state.get("session_id", ""), state.get("escalate_reason") or "R3"
+    )
+    return {"pending_card": {"card_id": card_id, "kind": "upload_receipt", "payload": {}}}
+
+
+async def receipt_extract(state: SessionState) -> SessionState:
+    """票 40 之前的占位：凭证已收到，不做 OCR，标 needs_manual_check 交摘要（票 40 接 warranty.receipt_ocr）。"""
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "escalate", "substage": "extract"})
+    return {
+        "stage": "escalate",
+        "substage": "extract",
+        "receipt": receipt_mod.extracted_placeholder(dict(state)),
+    }
+
+
+async def summarize(state: SessionState) -> SessionState:
     """安全 / 人工升级：安抚句（固定文案，不调模型）→ 结构化摘要 escalation_summary（票 16）。
 
     摘要由图状态直接渲染，模型不可用也能生成；字段润色在后续票接入 ModelRouter。
@@ -1009,6 +1067,21 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("intake", intake)
     g.add_node("reply", reply)
     g.add_node("escalate", escalate)
+    g.add_node("summarize", summarize)
+    g.add_node("prepare_receipt", prepare_receipt)
+    g.add_node("receipt_extract", receipt_extract)
+    g.add_conditional_edges(
+        "escalate",
+        route_escalate,
+        {
+            "summarize": "summarize",
+            "prepare_receipt": "prepare_receipt",
+            "receipt_extract": "receipt_extract",
+        },
+    )
+    g.add_edge("prepare_receipt", "await_input")
+    g.add_edge("receipt_extract", "summarize")
+    g.add_edge("summarize", END)
     g.add_node("disambiguate", disambiguate)
     g.add_node("prepare_card", prepare_card)
     g.add_node("await_input", await_input)
@@ -1062,5 +1135,4 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     )
     g.add_edge("retrieve", "reply")
     g.add_edge("reply", END)
-    g.add_edge("escalate", END)
     return g.compile(checkpointer=checkpointer)
