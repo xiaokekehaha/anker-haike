@@ -1,3 +1,8 @@
+# 环境与密钥
+.env
+.env.*
+!.env.example
+
 # Python
 __pycache__/
 *.py[cod]
@@ -12,11 +17,6 @@ node_modules/
 dist/
 .vite/
 *.tsbuildinfo
-
-# 环境与密钥
-.env
-.env.*
-!.env.example
 
 # 本地数据与产物
 *.log

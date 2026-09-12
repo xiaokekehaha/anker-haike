@@ -16,6 +16,7 @@
 6d. Agent 系统设计清单对照与补齐 — complete
 7. 用户评审与修订 — complete（2026-09-12 全部决策确认）
 8. 采纳设计评审 R1–R11 并修订全部文档 — complete
+9. to-tickets 拆票：issues/ 下 50 张票 + README 依赖图（46–50 为线上就绪追加） — complete
 
 ## 文件清单
 - 00_decisions.md — 前置决策
@@ -31,6 +32,7 @@
 - tech-stack-survey.md — 主流技术调研
 - model-selection.md — 难点分析与模型选型
 - findings.md / progress.md — 过程记录
+- issues/ — 实现票据（50 张，README.md 为索引与依赖图）
 
 ## Next Step
 所有前置决策已定（D1–D17），本轮只做设计文档。评审 11 项已全部落入 08 / 09 与各文档修订。剩余集成验证项：IV-1 WeKnora knowledge_ids 过滤参数在锁定镜像后核对。进入实现前：核对各厂商当前模型 ID 写入 models.yaml；准备 bake-off 金标样本并按 model-selection.md 3.8 门槛跑评测；实现阶段另开 planning 任务。

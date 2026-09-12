@@ -17,3 +17,5 @@
 - 用户确认 D1（扫地机吸力异常）、D4（WeKnora）、D5（LangGraph）。所有决策已定；06_architecture-final.md 模型层改为 ModelRouter 远程多厂商，去除 Ollama。
 - 用户确认：模型 ID 先用抽象别名、结构化输出统一由 ModelRouter 适配、bake-off 四项门槛、本轮只完善设计文档。model-selection.md 3.8 补充门槛表与裁决规则，第 4 节记录全部确认项。
 - 基于 2026-09-12_smart-service-design-review 的 11 项意见完善设计：新增 08（执行契约）与 09（计划 / 规则 / 知识 / 凭证），修订 00–07 与 model-selection（YAML 冒号修正、Embedding / Rerank 改远程、路由表单一来源、ModelRouter invoke / stream 分离）。未访问数据库，未修改评审目录。
+- 用户要求按 to-tickets 技能拆票并明确「线上使用版本」：在 issues/ 下产出 50 张 tracer-bullet 票（一票一文件，含阻塞边）与 README 索引 / 依赖图；46–50 为生产就绪追加票，超出设计文档的演示假设，待回填 00_decisions。
+- 用户提供 DeepSeek 测试 key：写入仓库根 .env（gitignore），新增 .env.example；票 09 / 10 与 README 标注 DeepSeek 为默认测试厂商。key 原文不进文档。
