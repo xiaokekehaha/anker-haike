@@ -34,3 +34,9 @@
 - LangGraph 中断语义（实测）：prepare 节点只执行一次；含 interrupt 的节点在恢复时从头重跑并重发自定义事件；`interrupt()` 所在节点的 checkpoint 不提交，中断后 metadata.step 停在上一节点；节点内 `get_config()["metadata"]["langgraph_step"]` 等于中断后推导出的 version。
 - AsyncPostgresSaver 的 checkpoint 写入相对 astream 的 updates 流是异步的：在收到 `__interrupt__` 那一刻 `aget_state` 可能还是上一个 checkpoint。凡是「事件里的 version 必须等于 run 结束的 version」的场景，version 要在节点内确定并随载荷带出，不能在运行器中途查库。内存 saver 测不出这类竞态，数据库相关票必须带真实 saver 的测试。
 - 图结构一变（加节点），依赖 progress 序列 / version 数值的测试全部要改，包括其他会话的测试（B 的 test_rules）。约定：改 graph.py 的人负责同步跑全量后端测试并修期望；后续测试尽量断言相对关系而非绝对 version。
+
+## 票 22 幂等与锁
+- 重放的事件流来自 session_events 的 jsonb，键序与首次实时发送不同；比较必须按语义（解析后相等），前端也不得依赖字段顺序。
+- 会话锁持有到 run 结束是 08 §4 的要求，但意味着第二个动作可能等到接近 run deadline；若演示中体验不佳，可改为「锁只覆盖校验 + 启动，run 期间由 active_run 守卫返回 run_active」——这是产品决策，记入票 23 讨论。
+- 用 `async with` 风格的锁在「响应返回后仍需持有」的场景要手动 `__aenter__/__aexit__`，并用 handoff 标记决定由谁释放；本票第一版漏了 409 分支释放，靶向测试（短超时 + 409 后再动作）才抓出来。
+- 再次出现并行会话改同一文件（store.py）。约定升级：动手前在票面写 Owner 与目录边界；看到目录已有 Owner 的会话不得写入。

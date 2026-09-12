@@ -12,3 +12,9 @@
 - [x] 锁超时返回可重试 error（503 + Retry-After，体 {code: lock_timeout, recoverable: true, retry_with_same_action: true}；Postgres advisory lock 跨连接超时实测）
 
 **设计依据：** 08 §4 步骤 1–2、5；07 §5
+
+**实现记录（2026-09-12，Claude Code A）：** `app/sessions/locks.py`（PostgresSessionLock：独占一条池连接 pg_try_advisory_lock(hashtext(session_id)) 轮询到超时；InMemorySessionLock 供测试）；store 新增 session_actions 表与 try_insert_action / get_action / set_action_result；router /actions 顺序：锁 → 去重重放 → 校验 → manager.start → 占位 → 后台 `_finish_action` 等 run 结束回填并释放锁；重放 / 409 / 异常路径在 finally 释放。测试 tests/test_sessions_idempotency.py 8 项 + pg 表与 advisory lock 1 项。
+
+**给前端（票 23 / Codex）：** 重放响应仍是 SSE（同一 run 的全部事件），用响应头 `X-Action-Replayed` 判断是否重放；`X-Action-Id` / `X-Run-Id` 一并返回。503 lock_timeout 时按 body 的 retry_with_same_action 复用 action_id 重试。
+
+**与设计的差异：** 08 §4 写「锁超时 30 s」，实现为可配置常量（默认 30 s）。锁在 run 期间一直持有（同会话动作串行到 run 结束），因此第二个动作的等待时间上限 = 前一 run 的 deadline（25–40 s）≈ 锁超时，需在票 23 / 45 巡检里确认前端体验；POST /messages 未加锁，仍由 active_run 守卫直接 409。
