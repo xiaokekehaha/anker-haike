@@ -159,6 +159,29 @@ async def test_unknown_session_404_and_empty_text_422(mem_runtime):
         ).status_code == 422
 
 
+async def test_probe_reports_only_live_sessions(mem_runtime):
+    """前端最近会话列表靠这条路由剔除已回收的本地引用（spec_session_recent_verify）。"""
+    async with _client() as client:
+        sid = await _create(client)
+        resp = await client.post("/sessions/_exists", json={"session_ids": [sid, "gone", sid]})
+        assert resp.status_code == 200
+        assert resp.json() == {"alive": [sid]}  # 去重后只回存在的
+
+        assert (await client.post("/sessions/_exists", json={"session_ids": []})).json() == {"alive": []}
+        over = await client.post("/sessions/_exists", json={"session_ids": [f"s{i}" for i in range(51)]})
+        assert over.status_code == 422 and over.json()["detail"]["code"] == "too_many_ids"
+
+
+async def test_probe_503_when_store_unavailable():
+    """存储不可用必须是 503 而不是「都不存在」，否则前端会把整份列表判死。"""
+    app.state.session_store = None
+    app.state.session_graph = None
+    app.state.run_manager = None
+    async with _client() as client:
+        resp = await client.post("/sessions/_exists", json={"session_ids": ["a"]})
+    assert resp.status_code == 503 and resp.json()["detail"]["code"] == "sessions_unavailable"
+
+
 async def test_sessions_503_when_store_unavailable():
     app.state.session_store = None
     app.state.session_graph = None

@@ -1,8 +1,9 @@
 /** 会话生命周期：同一时刻只保留一个请求，恢复以快照为准，动作仅在服务端明确允许时重试。 */
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { ApiError, cancelRun, createSession, getSnapshot, newId, postAction, resumeEvents, sendMessage } from '../api/client';
+import { ApiError, cancelRun, createSession, getSnapshot, isMissingSession, newId, postAction, resumeEvents, sendMessage } from '../api/client';
 import { readSSE } from '../api/sse';
-import { makeTitle, removeRecent, touchRecent, useRecentSessions } from './recentSessions';
+import { makeTitle, markMissing, touchRecent, useRecentSessions } from './recentSessions';
+import { verifyRecent } from './verifyRecent';
 import type { ActionRequest } from '../types/actions';
 import type { SessionSnapshot } from '../types/snapshot';
 import { reducer } from './reducer';
@@ -115,17 +116,17 @@ export function useSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  /** 打开一个已存在的会话：写入本页引用并恢复；确定不存在（404）才移除本地引用与最近记录。 */
+  /** 打开一个已存在的会话：写入本页引用并恢复；只有后端明确说会话不存在才收起本地引用。 */
   function open(id: string) {
     const controller = begin();
     try { sessionStorage.setItem(STORAGE_KEY, id); } catch { /* storage unavailable */ }
     dispatch({ type: 'session_created', id, version: 0 });
     return restore(id, controller).catch((error: unknown) => {
       if (!current(controller)) return;
-      // 网络错误保留会话，只有确定不存在才移除本地引用。
-      if (error instanceof ApiError && error.status === 404) {
+      // 网络错误、5xx、路由级 404 一律保留会话；只有 session_not_found 才算确定不存在。
+      if (isMissingSession(error)) {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* storage unavailable */ }
-        removeRecent(id);
+        markMissing([id]);
         dispatch({ type: 'reset' });
         dispatch({ type: 'notice', message: '该会话已过期或已删除，请开始新会话' });
       } else fail(error, controller);
@@ -137,7 +138,10 @@ export function useSession() {
     let saved: string | null = null;
     try { saved = sessionStorage.getItem(STORAGE_KEY); } catch { /* storage unavailable */ }
     if (saved) void open(saved);
-    return () => { mounted.current = false; operation.current?.abort(); operation.current = null; };
+    // 独立于 operation：校验只读本地列表，既不该被会话请求打断，也不该打断会话请求。
+    const probe = new AbortController();
+    void verifyRecent(probe.signal, saved).catch(() => { /* 探测失败即整轮跳过，列表保持原样 */ });
+    return () => { mounted.current = false; probe.abort(); operation.current?.abort(); operation.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 

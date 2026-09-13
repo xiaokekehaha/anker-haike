@@ -27,7 +27,7 @@ function openStream(items: object[]) {
   return { response, cancel };
 }
 
-beforeEach(() => { sessionStorage.clear(); });
+beforeEach(() => { sessionStorage.clear(); localStorage.clear(); });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('session recovery lifecycle', () => {
@@ -62,9 +62,10 @@ describe('session recovery lifecycle', () => {
     expect(stream.cancel).toHaveBeenCalledOnce(); // done 即结束，不等连接关闭
   });
 
-  it('keeps the saved session on network failure, but removes a confirmed 404', async () => {
+  it('keeps the saved session on network failure, but drops a confirmed session_not_found', async () => {
     sessionStorage.setItem('haike.session_id', 's');
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce(json({}, 404)));
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(json({ code: 'session_not_found' }, 404)));
     const first = renderHook(useSession);
     await waitFor(() => expect(first.result.current.state.ui).toBe('failed'));
     expect(sessionStorage.getItem('haike.session_id')).toBe('s');
@@ -72,6 +73,16 @@ describe('session recovery lifecycle', () => {
     const second = renderHook(useSession);
     await waitFor(() => expect(second.result.current.state.id).toBeNull());
     expect(sessionStorage.getItem('haike.session_id')).toBeNull();
+  });
+
+  it('keeps the saved session on a route-level 404 (deploy error, not an expired session)', async () => {
+    sessionStorage.setItem('haike.session_id', 's');
+    // FastAPI 找不到路由时的默认体：没有 code，fail() 会 fallback 成 http_404。
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(() => json({ detail: 'Not Found' }, 404)));
+    const { result } = renderHook(useSession);
+    await waitFor(() => expect(result.current.state.ui).toBe('failed'));
+    expect(result.current.state.id).toBe('s');
+    expect(sessionStorage.getItem('haike.session_id')).toBe('s');
   });
 
   it('ignores delayed snapshot results after reset', async () => {
@@ -330,7 +341,7 @@ describe('session switching (spec_session_switch)', () => {
   });
 
   it('switchTo an expired session drops it from the list and resets with a notice', async () => {
-    const fetch = vi.fn().mockResolvedValue(json({ code: 'session_not_found' }, 404));
+    const fetch = vi.fn().mockImplementation(() => json({ code: 'session_not_found' }, 404));
     vi.stubGlobal('fetch', fetch);
     localStorage.setItem('haike.recent_sessions', JSON.stringify([{ id: 'gone', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), title: null, stage: null }]));
     const { result } = renderHook(useSession);

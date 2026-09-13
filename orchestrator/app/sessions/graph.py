@@ -775,14 +775,11 @@ async def understand(state: SessionState) -> SessionState:
         update["escalate_reason"] = (update.get("receipt") or {}).get("collection_reason", "R6")
     update["recall_entry_ids"] = []
     if meaning.history_request:
-        from app.conversation.reader import select_history
+        from app.conversation.reader import read_history_for_turn
 
-        selection = select_history(
-            state.get("history", []),
-            meaning.history_request.model_dump(),
-            before_seq=state["input_seq"],
-        )
+        selection = read_history_for_turn(dict(state), meaning.history_request.model_dump())
         update["recall_entry_ids"] = selection["source_entry_ids"]
+        update["turn_decision"]["history_selection"] = selection
         if selection.get("error"):
             update["turn_decision"].update(reply_mode="clarify", clarification=selection["error"])
     from app.conversation.commands import resolve_command

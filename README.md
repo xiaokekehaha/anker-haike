@@ -31,6 +31,8 @@ make health                 # 查看聚合健康
 
 停止：`make down`（保留数据）。重置全部数据：`make reset`。首次拉起 WeKnora 镜像与 docreader 约需数分钟。
 
+本机闲置时暂停项目、关闭 Colima，以及下次恢复 PostgreSQL / Redis / 前后端的完整步骤，见 [本机服务暂停与恢复](docs/claude/spec_local_services_lifecycle.md)。只停止本项目；其他项目使用同一 Docker 实例时保留该实例运行。
+
 ## 本机开发（不用 Docker）
 
 ```bash

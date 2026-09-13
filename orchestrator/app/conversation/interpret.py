@@ -59,7 +59,7 @@ class PendingAnswer(BaseModel):
 
 class HistoryRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    mode: Literal["recent", "first", "reference", "time_range"] = "recent"
+    mode: Literal["recent", "first", "reference", "time_range", "follow_up"] = "recent"
     source_entry_ids: list[str] = Field(default_factory=list)
     from_time: str | None = None
     to_time: str | None = None
@@ -102,6 +102,8 @@ facts 仅列当前用户新报告，quote 必须是本条原文。corrections �
 明确要求真人才 request_human，问“转过去了吗”是 handoff_status。只有确实要求更换话题才 new_issue。
 用户明确要求简短/详细说明时，设置 detail_level 和当前原话 preference_quote；无此要求保持为空，不从故障现象猜测偏好。
 询问最初的问题或回答用 history_request.mode=first；指定原话用 reference 并给已有 entry ID；明确日期范围用 time_range 给出带时区的 ISO 时间，不知道范围则澄清。之后服务端会回查原文，不要凭空复述摘要。
+“我刚问了什么”查询的是最近那条用户问题，能定位时用 reference 引用该问题 ID；recent 用于泛指最近一段对话的回顾。不要将最近一段对话当成唯一问题目标。
+历史 reference 只能引用当前输入之前的 entry ID，绝不能把当前追问自身当作查询目标。紧接历史回顾追问“你怎么回答呢/当时怎么说的”，仍指上一轮回顾对象时用 follow_up，不填 source_entry_ids；明确改问另一条记录时用 reference/first/time_range。服务端会验证上一轮目标是否唯一，不能确定时澄清。
 """
 
 

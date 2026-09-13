@@ -1,6 +1,7 @@
 """会话接口（03 §2.1）：POST /sessions、POST /sessions/{id}/messages（SSE）、GET /sessions/{id}、
 GET /sessions/{id}/runs/{run_id}/events?after_seq=（续接）、POST /sessions/{id}/cancel、
-POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁 + 票 23 三种 409 与重试语义）。"""
+POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁 + 票 23 三种 409 与重试语义）、
+POST /sessions/_exists（批量存活探测）。"""
 
 from __future__ import annotations
 
@@ -42,6 +43,17 @@ class CancelResult(BaseModel):
     status: Literal["cancelled", "cancelling"]
 
 
+MAX_PROBE_IDS = 50
+
+
+class ExistsRequest(BaseModel):
+    session_ids: list[str]
+
+
+class ExistsResult(BaseModel):
+    alive: list[str]
+
+
 LOCK_TIMEOUT_S = DEFAULT_LOCK_TIMEOUT_S  # 08 §4：30 s；测试可覆写
 
 
@@ -62,6 +74,24 @@ async def create_session(request: Request) -> SessionCreated:
     store, _, _ = _runtime(request)
     row = await store.create_session()
     return SessionCreated(session_id=row.session_id, version=row.version)
+
+
+@router.post("/_exists", response_model=ExistsResult)
+async def probe_sessions(body: ExistsRequest, request: Request) -> ExistsResult:
+    """批量存活探测：前端最近会话列表用来剔除已过期的本地引用。
+
+    刻意不走 GET /{session_id} —— 那条路要会话锁 + reconcile + 派生快照，首屏并发探测吃不消。
+    这里只查存在性；存储不可用时由 _runtime 抛 503，调用方据此整轮跳过而不是当成「不存在」。
+    """
+    store, _, _ = _runtime(request)
+    ids = list(dict.fromkeys(body.session_ids))
+    if len(ids) > MAX_PROBE_IDS:
+        raise HTTPException(
+            422,
+            detail={"code": "too_many_ids", "message": f"最多 {MAX_PROBE_IDS} 个会话"},
+        )
+    alive = [sid for sid in ids if await store.session_exists(sid)]
+    return ExistsResult(alive=alive)
 
 
 @router.post("/{session_id}/messages")

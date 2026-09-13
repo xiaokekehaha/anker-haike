@@ -3,6 +3,60 @@
 from datetime import datetime
 
 
+def read_history_for_turn(state: dict, request: dict) -> dict:
+    """Resolve a follow-up against the immediately preceding successful recall.
+
+    A model's self-reference is a target-resolution error, not missing storage.
+    Only a single prior exchange can repair it; never relax the sequence cutoff.
+    """
+    entries = state.get("history", [])
+    before_seq = state["input_seq"]
+    mode = request.get("mode", "recent")
+    ids = request.get("source_entry_ids") or []
+    self_reference = mode == "reference" and set(ids) == {state["input_id"]}
+    unresolved = {
+        "source_entry_ids": [],
+        "error": "您想回顾哪条问题的回答？请指出那条问题或时间范围。",
+        "error_code": "history_target_unresolved",
+    }
+    if mode == "follow_up" and ids:
+        return unresolved
+    effective_request = request
+    if mode == "follow_up" or self_reference:
+        previous = state.get("turn_decision") or {}
+        prior_inputs = [
+            e
+            for e in entries
+            if e["first_seq"] < before_seq
+            and e["role"] == "user"
+            and e["kind"] in {"message", "action"}
+        ]
+        last_input = max(prior_inputs, key=lambda e: e["first_seq"], default=None)
+        if (
+            not last_input
+            or previous.get("input_id") != last_input["entry_id"]
+            or previous.get("primary_intent") != "history_query"
+            or previous.get("clarification")
+            or not state.get("recall_entry_ids")
+        ):
+            return unresolved
+        effective_request = {"mode": "reference", "source_entry_ids": state["recall_entry_ids"]}
+        prior = select_history(entries, effective_request, before_seq=last_input["first_seq"])
+        runs = {e["run_id"] for e in entries if e["entry_id"] in prior["source_entry_ids"]}
+        if prior["error"] or len(runs) != 1:
+            return unresolved
+    selection = select_history(entries, effective_request, before_seq=before_seq)
+    if effective_request.get("mode") == "reference" and (
+        selection.get("missing_ids") or not effective_request.get("source_entry_ids")
+    ):
+        return unresolved
+    return {
+        **selection,
+        "resolved_request": effective_request,
+        "resolution": "previous_recall" if mode == "follow_up" or self_reference else "explicit",
+    }
+
+
 def select_history(
     entries: list[dict], request: dict, *, before_seq: int, max_entries: int = 48
 ) -> dict:
