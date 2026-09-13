@@ -35,9 +35,9 @@ prices:
   qwen-plus:    {input: 2,    output: 8,    note: qwen3.7-plus ≤256K 档}
   qwen-max:     {input: 12,   output: 36,   note: qwen3.8-max}
   qwen-vl:      {input: 2,    output: 8,    note: qwen3-vl-plus 按 plus 档估}
-  glm:          {input: 2,    output: 8,    note: glm-4.7 ≤32K 短输出档}
-  glm-flash:    {input: 0,    output: 0,    note: glm-4.7-flash 免费}
-  glm-v:        {input: 1,    output: 3,    note: glm-4.6v ≤32K 档}
+  glm:          {input: 2,    output: 8,    note: glm-4.7 ≤32K 短输出档（2026-09-13 本机实测可用）}
+  glm-flash:    {input: 0,    output: 0,    note: glm-4.5-flash 免费（glm-4.7-flash 不存在，2026-09-13 实测 500）}
+  glm-v:        {input: 1,    output: 3,    note: glm-4.6v ≤32K 档（2026-09-13 本机实测可用，视觉）}
   sonnet:       {input: 2,    output: 10,   currency: USD}
   haiku:        {input: 1,    output: 5,    currency: USD}
   gemini-flash: {input: 0.30, output: 2.50, currency: USD, note: gemini-2.5-flash 图文同价}

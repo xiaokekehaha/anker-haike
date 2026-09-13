@@ -170,4 +170,17 @@ def test_route_table_from_repo_config_lists_every_task():
     table = render_route_table(load_models_config(REAL_CONFIG))
     for task in KNOWN_TASKS:
         assert f"| {task} |" in table
-    assert "haiku（overseas）" in table
+    # 票 42（2026-09-13.2）：domestic 链尾改为本机实测达标的智谱位，跨通道降级只留在 overseas 通道本身；
+    # 跨通道标注的渲染由下面的合成配置断言，不再绑定仓库配置里某一条链
+    overseas = render_route_table(load_models_config(REAL_CONFIG, lane_override="overseas"))
+    assert "| intake | haiku |" in overseas
+
+
+def test_route_table_marks_cross_lane_fallback():
+    cfg = load_models_config(REAL_CONFIG)
+    domestic = cfg.lanes["domestic"]["intake"]
+    cross = cfg.model_copy(deep=True)
+    cross.lanes["domestic"]["intake"] = domestic.model_copy(
+        update={"chain": [domestic.chain[0], domestic.chain[1], "haiku"]}
+    )
+    assert "haiku（overseas）" in render_route_table(cross)

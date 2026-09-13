@@ -62,3 +62,5 @@
 
 - 收尾盘点（接手会话，2026-09-13）：票 32 复核为 done-with-gap（[~] 项分别由票 30 / 38 / 45 覆盖并注明差异；仅剩人工标注对照报告）；票 40 / 42 的缺口均为外部 key。README 增「完成状态」节。本轮共提交票 36、37（含 23 联动）、48、50、45 五张票；后端 432 项、前端 123 项、ruff / tsc / build 通过；巡检 29/29（+ live A1）通过，findings.md 判定「可冻结」。
 
+- 票 42 收尾 + 票 40 收尾（接手会话，2026-09-13，用户提供 ZHIPU_API_KEY 后）：智谱三款实测暴露四个真实缺陷并修正——`glm-4.7-flash` 不存在（500）换 `glm-4.5-flash`；智谱静默忽略 `json_schema`，`structured: native` 下校验 3/3 失败，改 `json_object`；默认开思考模式需 `thinking: disabled`；guide.step 原选 glm-4.7 实测稳定 89% < 90% 换 glm-4.5-flash。两家 bake-off（repeats=3，边界候选补 repeats=5）：9 个 task 中 7 个两家均达主模型门槛，diagnose.vision 的 glm-4.6v 只达备用位门槛，query.rewrite 两家都 0%（票 32 词表问题）。models.yaml 升 2026-09-13.2，每个 task 第三位换成实测达标的智谱位——代价是挤掉了不可达的 overseas 跨通道兜底（chain_max=3），已在票面标注待决策。**失效切换实测**：无效 DeepSeek key 下整条 A3 切到智谱完成，凭证 OCR 由 glm-4.6v 四字段全对，据此关闭票 40 的真实 OCR 验收项。回放三包因 models_ver 变化已重录并零未命中；后端 452 项、ruff 通过。期间发现另一会话在同一工作树做「模型连通性 / ModelDialog」，其 registry.py 改动为可选参数（不影响本轮测量），本次只提交 config / 回放包 / bake-off 报告 / 票面。
+

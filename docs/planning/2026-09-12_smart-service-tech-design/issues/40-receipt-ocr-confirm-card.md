@@ -4,9 +4,9 @@
 
 **Blocked by:** 39（凭证收集 collect_receipt）
 
-**Status:** in-progress（2026-09-12；前后端功能与模拟 A3 流程完成；真实订单截图 OCR 验收仍待票 42 视觉模型配置）
+**Status:** done（2026-09-13；票 42 拿到智谱 key 后补跑真实视觉 OCR：合成订单图 15 张 × 3 遍两家均 100%/100%，并跑通真实服务端到端 A3）
 
-- [ ] A3 样本订单截图识别出订单号与渠道，低置信字段标黄（后端：warranty.receipt_ocr internal 视觉调用输出 fields / 逐字段 confidence / unreadable，receipt_card 带 confidence，< 0.7 由前端标黄；假 router 回放的 A3 样本验证通过，真实截图待票 42；前端 ReceiptCard 已完成低置信标记、手输、edited[]、确认/跳过与快照恢复测试）
+- [x] A3 样本订单截图识别出订单号与渠道，低置信字段标黄（2026-09-13 真实视觉模型验收：bake-off 的 15 张合成订单图（含模糊 / 缺字段 / 英文 / 注入标题）× 3 遍，deepseek-flash 与 zhipu/glm-4.6v 均 Schema 100% / 字段 100%；真实服务端到端 A3：上传订单截图 → OCR 1.3 s → receipt_card 四字段全对、逐字段置信度 0.97–0.98 → 确认后 L1–L6 判 order_verified。失效切换下由 glm-4.6v 服务，四字段同样全对（置信度 1.0）。前端 < 0.7 标黄逻辑与手输在票 40 前端部分已有测试覆盖）
 - [x] 用户修改一个字段后 edited[] 含该字段名（confirm_receipt{fields, edited} → apply_action 写 receipt.fields / edited，card_results 记 confirmed_fields + edited，快照 receipt_card 项带 confirmed_fields；确认后进入摘要，status 由票 41 lookup 决定，本票占位 insufficient / needs_manual_check）
 - [x] 全字段 unreadable 时卡片为空可手输（OCR 全 unreadable、识别失败或无视觉模型：字段 None、confidence 0、unreadable 全字段，卡片仍发出；用户手输后 confirm_receipt 正常写入；也可 skip_receipt → needs_manual_check（凭证图已在））
 - [x] receipt_card 不含任何质保结论字段（事件只有 card_id / version / fields / confidence / unreadable，契约 extra=forbid；OCR schema 也只抄录四字段与置信度，提示词禁止判断在保 / 退换）

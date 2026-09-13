@@ -6,6 +6,7 @@
 - 智谱：`glm-4.7`（2 / 8 ¥ 起）、`glm-4.7-flashx`（0.5 / 3）、`glm-4.7-flash`（免费）、`glm-5.3`（8 / 28）、`glm-5.3-flash`（0.8 / 2.8，多模态）、`glm-4.6v`（1 / 3）、`glm-4.6v-flash`（免费）。
 - Anthropic：Sonnet 5 $2 / $10（引入价转正式），Haiku 4.5 $1 / $5。Google：`gemini-2.5-flash` $0.30 / $2.50（图文同价），`gemini-3-flash-preview` $0.50 / $3.00。
 - 本机只有 DEEPSEEK_API_KEY：qwen / glm / claude / gemini 只能填「文档核对过的 ID」，真实通过率待 key 到位后 `make bakeoff` 补跑。
+- **2026-09-13 补：拿到 ZHIPU_API_KEY 后实测，上面「文档核对」的智谱 ID 有一个是错的**——`glm-4.7-flash` 调用返回 `500 操作失败`（模型不存在 / 该账号不可用），实测可用的轻量档是 `glm-4.5-flash`；`glm-4.7`、`glm-4.6v` 可用。另两点文档没写、只有实测才暴露：①智谱**默认开思考模式**，16 token 的 max_tokens 会被 reasoning 吃光返回空 content，必须 `thinking: {type: disabled}`（与 DeepSeek 同）；②智谱**不支持 `response_format: json_schema`**，会静默忽略并返回散文——用我们的 `structured: native` 策略时 Pydantic 校验 100% 失败（3/3），必须改 `json_object`（3/3 通过）。`bind_tools` + 字符串 tool_choice 经 LangChain 也拿不到 tool_call（「model returned no tool call」），只有直接传 `tool_choice: {type: function, ...}` 的原始请求可用，因此没选工具策略。
 
 ## bake-off 结果（2026-09-13，DeepSeek 单家；models.yaml 2026-09-13.1，bakeoff.yaml 2026-09-12.1，repeats=3）
 
@@ -40,3 +41,67 @@
 - 延迟 = Router attempts 的 latency 之和（含同模型重试）；reply.stream 用首个可见 delta（08 §8）。
 - 成本 = usage 的 input/output token × bakeoff.yaml 价目；流式没有 usage 时按输出字数 / 1.5 估 token，input 记 0（偏低）。
 - 第一次真实跑 3/22 intake 样本因 `OpenAIConnectionError` 直接失败：Router 只认 `APIConnectionError` 字面量，连接抖动被归为 error 不重试；已改模糊匹配并加回归测试（影响生产，不只评测）。
+
+
+## bake-off 结果（2026-09-13，DeepSeek + 智谱两家；models.yaml 2026-09-13.2，repeats=3，并发 2）
+
+完整表见 reports/bakeoff/bakeoff.md。dashscope / anthropic / google 仍无 key，表里是「未跑：missing api key」。
+
+| task | deepseek-flash | 智谱候选 | 结论 |
+| --- | --- | --- | --- |
+| intake | 100% / 100% / 968 ms | glm-4.7 100% / 99% / 1951 ms | 两家均达标 |
+| disambiguate.clarify | 100% / 100% / 892 ms | glm-4.5-flash 100% / 100%（repeats=5） | 两家均达标 |
+| diagnose.synthesize | 100% / 100% / 1163 ms | glm-4.6v 100% / 92% / 2742 ms | 两家均达标 |
+| guide.step | 100% / 97% / 957 ms | glm-4.5-flash 100% / 94%；glm-4.7 **89%** | 选 glm-4.5-flash |
+| reply.stream | 100% / 100% / 1032 ms | glm-4.5-flash 100% / 98% / 724 ms | 两家均达标 |
+| escalate.summary | 100% / 100% / 960 ms | glm-4.6v 100% / 100% / 939 ms | 两家均达标 |
+| warranty.receipt_ocr | 100% / 100% / 1167 ms | glm-4.6v 100% / 100% / 2749 ms | 两家均达标 |
+| diagnose.vision | 100% / 83–90% | glm-4.6v 100% / **77%** | 智谱只达备用位门槛 |
+| query.rewrite | 100% / **0%** | glm-4.7 100% / **0%** | 两家都 0%，见下 |
+
+一次 A1 对话成本 **¥0.0076**（门槛 ¥0.5）。
+
+### 跑了三轮才敢下结论：门槛线附近的抖动
+repeats=3 的两轮对同一模型给出了不同裁决，**挑任何一轮单独下结论都是错的**：
+
+| task / 候选 | 第一轮 | 第二轮 | repeats=5 | 采信 |
+| --- | --- | --- | --- | --- |
+| disambiguate.clarify / glm-4.5-flash | schema 100% | schema **92%** | 100% | 达标（92% 是抖动） |
+| guide.step / glm-4.7 | acc 92% | acc **89%** | acc **89%** | **未达标**（稳定低于 90%） |
+| diagnose.vision / glm-4.6v | acc 80% | acc **77%** | acc **77%** | **未达主模型门槛**，但满足备用位（与主差 6 点 ≤ 10，延迟比 1.27 ≤ 1.5） |
+
+结论：guide.step 原本选的 glm-4.7 是错的，已换成 glm-4.5-flash（94%）。**repeats=3 不足以判定门槛线附近的候选**，冻结前对边界候选应跑 repeats=5。
+
+### 裁决与链的冻结（models.yaml 2026-09-13.2）
+`chain_max=3`，所以每个 task 第三位只能二选一：一个没有 key 的 overseas 兜底，或一个实测达标的智谱位。改成后者：
+
+| task | 链（domestic） | 第三位依据 |
+| --- | --- | --- |
+| intake | qwen-flash → deepseek → **glm** | 100% / 99% |
+| disambiguate.clarify | qwen-flash → deepseek → **glm-flash** | 100% / 100%（repeats=5） |
+| diagnose.vision | qwen-vl → deepseek → **glm-v** | 唯一有视觉的智谱模型；77% 只达备用位门槛 |
+| diagnose.synthesize | qwen-max → deepseek → **glm-v** | 100% / 92%（glm 92%、glm-flash 67% 未达标） |
+| guide.step | qwen-max → deepseek → **glm-flash** | 100% / 94%（glm 89% 未达标） |
+| reply.stream | qwen-plus → deepseek → **glm-flash** | 100% / 98%，首字节 724 ms |
+| escalate.summary | deepseek → **glm-v** → qwen-flash | 100% / 100%（glm 10%、glm-flash 0% 未达标） |
+| warranty.receipt_ocr | qwen-vl → deepseek → **glm-v** | 100% / 100% |
+| query.rewrite | qwen-flash → deepseek → **glm** | 两家都 0%，开关默认关闭，不作为启用依据 |
+
+**代价（需要决策者知道）**：domestic 链尾原本接 overseas 别名（haiku / sonnet）作跨通道兜底，现在被智谱位挤掉了——`chain_max` 是 3，不能既留 overseas 又加智谱。取舍理由：当前环境 dashscope 与 anthropic 都没有 key，那个兜底位是**不可达的**，等于每个 task 只有 deepseek 一个能跑的模型；换成智谱后每个 task 有两个真能跑的模型。若后续补齐 overseas key 且要恢复跨通道兜底，需要把 `retry.chain_max` 提到 4 或重排链序。
+
+### 失效切换实测（这才是「主备两家」的证据）
+把 `DEEPSEEK_API_KEY` 换成无效值起服务，跑完整 A3（排障 → 凭证 → 核对）：整条产品链切到智谱并正常完成。
+
+| task | 降级后命中 | 结果 |
+| --- | --- | --- |
+| warranty.receipt_ocr | zhipu/glm-4.6v | 订单号 / 渠道 / 日期 / 金额四个字段全对，逐字段置信度 1.0 |
+| diagnose.synthesize | zhipu/glm-4.6v | ok 2389 ms |
+| guide.step | zhipu/glm-4.7 | ok（×2） |
+| escalate.summary | zhipu/glm-4.6v | ok 1084 ms |
+| reply.stream | zhipu/glm-4.5-flash | ok |
+| intake | zhipu/glm-4.7 | **error**：intake 预算 6 s 被 deepseek 的重试耗尽，轮到智谱时已无预算 → 按设计降级为 calm / 空，不阻断流程 |
+
+首卡从 6.7 s 涨到 21 s（每个 task 都要先走完 qwen 跳过 + deepseek 失败重试），属主模型全挂时的预期表现。`/health` 的 `models.domestic.providers_ready` 现在是 `[deepseek, zhipu]`。
+
+### query.rewrite 两家都 0%：仍是票 32 的词表问题，不是模型问题
+DeepSeek 与智谱四个候选全部 0%，与上一轮 DeepSeek 单家结论一致：`validate_rewrite` 的 `unsupported_term` 把模型给出的合理说明书用语全拒了。两家同时 0% 反而是证据——问题在校验词表，不在某家模型。处置不变：不为通过评测放松校验，留待票 32 / 37 的人工标注样例决定同义表扩充。
