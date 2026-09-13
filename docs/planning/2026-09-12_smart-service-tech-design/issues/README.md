@@ -143,10 +143,11 @@ graph LR
 
 ## 完成状态（2026-09-13 盘点）
 
-- **done**：01–31、33–39、41、43–50（含 36 结束语、37 rediagnose、45 巡检、48 数据保留、50 告警）。
-- **done-with-gap**：32（缺人工标注的改写开关对照报告，开关保持 false）、42（缺第二家厂商 key，主备两家未实测）。
-- **in-progress**：40（真实订单截图 OCR 需视觉模型 key；假 router 路径与前后端已完成）。
-- 三处缺口都依赖外部输入（其他厂商 / 视觉模型 key、人工标注样例），代码侧无阻塞项；演示前冻结判定见 `../../2026-09-12_smart-service-implementation/findings.md` 的巡检块（`make inspect`）。
+- **done**：01–31、33–50（2026-09-13 用户提供 ZHIPU_API_KEY 后，票 42 完成两家厂商对比与链冻结、失效切换实测，票 40 完成真实视觉 OCR 验收）。
+- **done-with-gap**：32（缺人工标注的改写开关对照报告，开关保持 false）。
+- 唯一剩余缺口依赖人工标注样例，代码侧无阻塞项。模型层仍缺 dashscope / anthropic / google key，链首的 qwen 与 overseas 位未实测，bake-off 表内标「未跑」。
+- 待决策者确认一项：`retry.chain_max=3` 下每个 task 第三位只能二选一，本次选了实测达标的智谱位，挤掉了当前不可达的 overseas 跨通道兜底（见票 42）。
+- 演示前冻结判定见 `../../2026-09-12_smart-service-implementation/findings.md` 的巡检块（`make inspect`）。
 
 ## 里程碑
 
