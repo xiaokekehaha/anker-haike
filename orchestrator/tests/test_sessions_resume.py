@@ -134,6 +134,35 @@ async def test_two_subscribers_see_same_live_events(mem_runtime, monkeypatch):
     )
 
 
+async def test_reconcile_orphans_tolerates_events_missing_seq(mem_runtime):
+    """历史事件的 event_json 缺 seq（早期写入 / 测试残留）不能让整轮孤儿收尾崩掉。"""
+    from app.sessions.manager import RunManager
+
+    store = mem_runtime
+    bad = (await store.create_session()).session_id
+    await store.try_start_run(bad, "bad-run")
+    # 故意不带 seq / run_id：以前这里会让 reconcile_orphans 抛 KeyError('seq')
+    await store.append_event(bad, "bad-run", {"type": "run_started", "resumed": False, "deadline_ms": 1})
+
+    good = (await store.create_session()).session_id
+    await store.try_start_run(good, "good-run")
+    await store.append_event(
+        good,
+        "good-run",
+        {"type": "run_started", "seq": 1, "run_id": "good-run", "resumed": False, "deadline_ms": 25000},
+    )
+
+    fixed = await RunManager(store, app.state.session_graph).reconcile_orphans()
+    assert sorted(fixed) == sorted([(bad, "bad-run"), (good, "good-run")])
+    for sid, rid in ((bad, "bad-run"), (good, "good-run")):
+        events = await store.list_events(sid, run_id=rid)
+        assert [e["type"] for e in events] == ["run_started", "error", "done"]
+        assert events[1]["code"] == "server_restarted"
+        # seq 取自事件表列，续写不会和已有行撞号
+        assert [r.seq for r in await store.list_event_records(sid)] == [1, 2, 3]
+        assert (await store.get_session(sid)).active_run_id is None
+
+
 async def test_reconcile_orphans_after_restart(mem_runtime):
     """服务重启：投影里 active 但内存无 live run → error(server_restarted) + done(error)，快照可恢复。"""
     from app.sessions.manager import RunManager

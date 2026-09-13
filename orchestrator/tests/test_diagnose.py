@@ -152,7 +152,8 @@ def test_rewrite_decision_table():
         ("扫地机器人 清扫后残留碎屑 电机损坏", "new_cause_or_action:电机"),
         ("扫地机器人 清扫后不残留碎屑", "negation_changed"),
         ("扫地机器人 清扫后残留碎屑 3 次", "new_number"),
-        ("扫地机器人 清扫后残留碎屑 轮子打滑", "unsupported_term:轮子打滑"),
+        ("扫地机器人 清扫后残留碎屑 轮子打滑", "new_part:轮子"),  # 部件未经输入支持
+        ("扫地机器人 清扫路线混乱", "lost_original_symptom"),  # 整体漂移到别的故障
     ],
 )
 def test_rewrite_validation_rejects(candidate, reason):
@@ -161,6 +162,39 @@ def test_rewrite_validation_rejects(candidate, reason):
         original, candidate, inputs="eufy X9 Pro 它跑完了，地上还是一堆渣", cfg=CFG_RW
     )
     assert got == reason or (got or "").startswith(reason.split(":")[0]), (candidate, got)
+
+
+def test_rewrite_validation_accepts_natural_paraphrase_within_intent():
+    """阶段 6：03 §1.4.2 只禁「新增部件 / 原因 / 操作」；自然连接词与同义表达应放行。"""
+    original = "eufy L60 Hybrid 吸不起来东西"
+    inputs = original + " 吸不起来 感觉吸不起来东西了"
+    assert (
+        validate_rewrite(original, "eufy L60 Hybrid 吸力不足无法吸尘", inputs=inputs, cfg=CFG_RW)
+        is None
+    )
+    # 「不是 X，是 Y」纠正句式：丢掉被纠正的否定不算改变原意
+    corr = "不是吸力小，是有异响"
+    assert validate_rewrite(corr, "扫地机器人 异响", inputs=corr + " 异响", cfg=CFG_RW) is None
+    # 但普通否定丢失仍然拒绝（滚刷「没」缠头发 → 缠头发是事实翻转）
+    neg = "滚刷没缠头发，但还是不吸"
+    assert validate_rewrite(neg, "滚刷缠头发", inputs=neg, cfg=CFG_RW) == "negation_changed"
+    # anchors 不含产品词：只剩产品词的改写算漂移
+    assert (
+        validate_rewrite(
+            "eufy X9 Pro 不吸",
+            "eufy X9 Pro 基站不亮",
+            inputs="eufy X9 Pro 不吸",
+            cfg=CFG_RW,
+            anchors="不吸",
+        )
+        == "new_part:基站"
+    )
+    # strict_terms=true 时回到早期严格模式
+    strict = CFG_RW.model_copy(update={"strict_terms": True})
+    assert (
+        validate_rewrite(original, "eufy L60 Hybrid 吸力不足无法吸尘", inputs=inputs, cfg=strict)
+        or ""
+    ).startswith("unsupported_term")
 
 
 def test_rewrite_validation_accepts_synonym_mapping():
@@ -287,7 +321,8 @@ def make_router(tmp_path, *, fast: list, main: list):
     p.write_text(
         REPLY_CONFIG.replace(
             "    escalate.summary:     {chain: [fast]}\n",
-            "    escalate.summary:     {chain: [fast]}\n    query.rewrite:        {chain: [fast]}\n",
+            "    escalate.summary:     {chain: [fast]}\n    query.rewrite:        {chain: [fast]}\n"
+            "    retrieve.grade:       {chain: [fast]}\n",
         ),
         encoding="utf-8",
     )

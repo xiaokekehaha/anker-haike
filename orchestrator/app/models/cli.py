@@ -9,16 +9,17 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import sys
 import time
 
 from app.models.config import ConfigError, load_models_config
+from app.models.probe import invoke_probe
 from app.models.registry import ModelNotConfigured, ModelRegistry
 from app.models.route_table import render_route_table
 from app.settings import settings
 
 DEFAULT_PROBE_ALIAS = "deepseek"
-PROBE_PROMPT = "只回复两个字：收到"
 
 
 def _load(args):
@@ -71,14 +72,14 @@ def probe(argv: list[str] | None = None) -> int:
     r = registry.resolve(alias)
     chain = " → ".join(x.alias for x in registry.chain(args.task))
     print(f"task={args.task} lane={cfg.default_lane} chain=[{chain}] probing alias={alias}")
+    start = time.perf_counter()
     try:
-        model = registry.build(alias, effort=route.effort, max_tokens=16)
+        resp = asyncio.run(
+            invoke_probe(registry, alias, min(20, r.spec.timeout_s), effort=route.effort)
+        )
     except ModelNotConfigured as exc:
         print(f"skip: {exc}", file=sys.stderr)
         return 3
-    start = time.perf_counter()
-    try:
-        resp = model.invoke(PROBE_PROMPT)
     except Exception as exc:  # noqa: BLE001 - 探测脚本：任何厂商错误都要打印类型
         ms = int((time.perf_counter() - start) * 1000)
         print(f"FAIL model_used={r.model_used} latency_ms={ms} error={type(exc).__name__}: {exc}")

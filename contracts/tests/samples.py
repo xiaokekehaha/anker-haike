@@ -301,7 +301,12 @@ SNAPSHOT_FULL = {
         {"kind": "evidence", "items": []},
         {"kind": "escalation_summary", "card_id": "c9", "summary": SUMMARY},
     ],
-    "last_error": {"code": "model_unavailable", "at": "2026-09-12T09:59:30Z"},
+    "last_error": {
+        "code": "model_unavailable",
+        "message": "模型暂时不可用，请稍后重试",
+        "recoverable": True,
+        "at": "2026-09-12T09:59:30Z",
+    },
     "cancelled_run": {"run_id": "run-0", "at": "2026-09-12T09:58:00Z"},
 }
 

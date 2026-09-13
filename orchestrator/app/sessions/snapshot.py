@@ -79,7 +79,9 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
     for r in records:
         e = r.event
         t = e["type"]
-        run = runs.setdefault(r.run_id, {"started_at": None, "deadline_ms": None, "done": None})
+        run = runs.setdefault(
+            r.run_id, {"started_at": None, "deadline_ms": None, "done": None, "error": None}
+        )
         if t == "run_started":
             if r.run_id not in run_order:
                 run_order.append(r.run_id)
@@ -200,7 +202,13 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                 "version": e["version"],
             }
         elif t == "error":
-            last_error = {"code": e["code"], "at": _iso(r.created_at)}
+            # 错误挂在所属 run 上，不再直接写全局 last_error（否则历史错误会一直随快照复活）
+            run["error"] = {
+                "code": e["code"],
+                "message": e.get("message", ""),
+                "recoverable": bool(e.get("recoverable", True)),
+                "at": _iso(r.created_at),
+            }
         elif t == "done":
             run["done"] = e["reason"]
             if e["reason"] == "cancelled":
@@ -223,6 +231,8 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
         elif last["done"] in ("awaiting_input", "cancelled") and last.get("awaiting"):
             # 取消后 pending_input 保持取消前的值（08 §7）
             pending_input = last["awaiting"]
+        # last_error 只代表最近一次运行：更早 run 的错误留在事件表供审计，不再当成当前错误
+        last_error = last["error"]
         if last["done"] == "cancelled" and not last.get("awaiting"):
             # 被取消的 run 没有发过 awaiting_input：沿用更早 run 的 pending（若有）
             for rid in reversed(run_order[:-1]):

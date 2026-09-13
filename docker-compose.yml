@@ -20,15 +20,22 @@ services:
       DATABASE_URL: postgresql://${HAIKE_DB_USER:-haike}:${HAIKE_DB_PASSWORD:-haike}@postgres:5432/${HAIKE_DB_NAME:-haike}
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis123}@redis:6379/0
       WEKNORA_BASE_URL: http://weknora-app:8080
+      # 实时检索需要包含知识库 ID 的入库清单；镜像内 replay 清单只有版本号。
+      KB_MANIFEST_PATH: /srv/data/knowledge/manifest.json
       MODEL_LANE: ${MODEL_LANE:-domestic}
       REPLAY_CASE_ID: ${REPLAY_CASE_ID:-}   # 票 43：非空即回放模式，录制包已随镜像打包
       OBSERVABILITY_LOG_PATH: /srv/logs/events.jsonl
+      # 演示期保留 7 天：观测台的会话详情靠原始快照回看完整时间线（analytics 事实本身不受此 TTL 影响）
+      RETENTION_SESSION_HOURS: ${RETENTION_SESSION_HOURS:-168}
       LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:-http://langfuse-web:3000}
     ports:
       - "${ORCHESTRATOR_PORT:-8000}:8000"
     volumes:
       # 票 49：config/ 以只读卷覆盖镜像内拷贝，回滚 = 换目录 + 重启，不重建镜像
       - ./config:/srv/config:ro
+      - ./data/knowledge/manifest.json:/srv/data/knowledge/manifest.json:ro
+      # 阶段 3：本地 FAQ 索引源文件（WeKnora FAQ 检索接口在 v0.8.0 返回空，适配器侧匹配）
+      - ./data/knowledge/kb_manual/faq_rv.yaml:/srv/data/knowledge/kb_manual/faq_rv.yaml:ro
       - ./logs:/srv/logs
     depends_on:
       postgres:

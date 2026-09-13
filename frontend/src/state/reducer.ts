@@ -153,7 +153,10 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
         pendingInput: s.pending_input ?? null,
         activeRun: active ? { run_id: active.run_id, deadline_at: active.deadline_at, deadline_ms: Math.max(0, new Date(active.deadline_at).getTime() - now) } : null,
         ui: active ? 'streaming' : s.pending_input ? 'awaiting_input' : 'idle',
-        error: s.last_error ? { code: s.last_error.code, message: '', recoverable: true } : null,
+        // 快照里的 last_error 只来自最近一次运行；message / recoverable 与实时 error 事件同源
+        error: s.last_error
+          ? { code: s.last_error.code, message: s.last_error.message ?? '', recoverable: s.last_error.recoverable ?? true }
+          : null,
         stalled: false,
         pendingActionId: null,
         lastEventAt: now,
@@ -167,6 +170,8 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
       return { ...state, ui: 'recovering' };
     case 'clear_error':
       return { ...state, error: null };
+    case 'notice':
+      return { ...state, error: { code: 'notice', message: action.message, recoverable: false } };
     case 'reset':
       return initialState;
     default:

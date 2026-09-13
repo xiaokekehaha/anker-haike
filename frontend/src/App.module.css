@@ -13,14 +13,6 @@
 .workspace { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
 .workspaceHeading { border-bottom: 1px solid var(--border); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .workspaceHeading h2 { font-size: 14px; font-weight: 600; margin: 0; }
-.statusChip { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); background: var(--subtle); border: 1px solid var(--border); border-radius: 999px; padding: 4px 6px 4px 12px; }
-.statusChip[data-status="degraded"], .statusChip[data-status="error"] { background: var(--danger-soft); }
-.statusChip button { background: none; color: var(--accent); border: 0; padding: 3px 8px; font-size: 11px; border-radius: 999px; }
-.statusChip button:hover:not(:disabled) { background: var(--accent-soft); }
-.statusDot { width: 7px; height: 7px; background: var(--warning); border-radius: 50%; flex-shrink: 0; }
-.statusChip[data-status="ok"] .statusDot { background: var(--ok); }
-.statusChip[data-status="error"] .statusDot { background: var(--danger); }
-.degradedNote { margin: 0; padding: 12px 22px; font-size: 12px; color: var(--danger); background: var(--danger-soft); border-top: 1px solid var(--border); }
 .footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 23px; font-size: 10px; color: var(--muted); letter-spacing: .8px; }
 .footer > span:last-child { font-size: 9px; letter-spacing: 1.5px; }
 @media (max-width: 660px) {

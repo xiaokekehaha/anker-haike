@@ -4,6 +4,8 @@ WORKDIR /frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --registry=$NPM_REGISTRY
 COPY frontend/index.html frontend/tsconfig.json frontend/vite.config.ts ./
+# 第二入口：管理员观测台 /admin/（多页构建，产物在 dist/admin/index.html）
+COPY frontend/admin ./admin
 COPY frontend/src ./src
 COPY frontend/public ./public
 RUN npm run build
@@ -40,6 +42,7 @@ ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
     RECEIPT_REFERENCE_CONFIG_PATH=/srv/config/receipt_reference.yaml \
     FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
     RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
+    RETRIEVAL_CONFIG_PATH=/srv/config/retrieval.yaml \
     REPLAY_DIR=/srv/replay KB_MANIFEST_PATH=/srv/replay/kb_manifest.json
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=3 \

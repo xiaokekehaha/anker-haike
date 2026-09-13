@@ -1,0 +1,302 @@
+[
+  {
+    "case": "a1",
+    "passed": true,
+    "detail": {
+      "final_stage": "done",
+      "evidence_status": [
+        "ok"
+      ],
+      "idempotent_replay": true
+    },
+    "session_id": "99a4a0b913164078a245e0cdd5a750d6",
+    "elapsed_ms": 9128
+  },
+  {
+    "case": "a2",
+    "passed": true,
+    "detail": {
+      "final_stage": "done"
+    },
+    "session_id": "439795d8f94748779c1ccb9d926b29d8",
+    "elapsed_ms": 6541
+  },
+  {
+    "case": "a3",
+    "passed": true,
+    "detail": {
+      "receipt_card": {
+        "type": "receipt_card",
+        "card_id": "a0b7d48216b75a3d9f6d3fa7133e8adf",
+        "version": 21,
+        "fields": {
+          "order_no": null,
+          "channel": null,
+          "purchase_date": null,
+          "amount": null
+        },
+        "confidence": {
+          "order_no": 0.0,
+          "channel": 0.0,
+          "purchase_date": 0.0,
+          "amount": 0.0
+        },
+        "unreadable": [
+          "amount",
+          "channel",
+          "order_no",
+          "purchase_date"
+        ],
+        "run_id": "972fccaf911b4a4d87d6d840013512b1",
+        "seq": 150
+      },
+      "summary": {
+        "product": "eufy X10 Pro Omni",
+        "problem": "eufy X10 Pro 扫地机不吸了，滚刷缠了很多头发",
+        "observations": [
+          "用户补充：验收用不可读凭证图"
+        ],
+        "hypotheses": [
+          "rv_suction_hair_wrap",
+          "rv_suction_filter_clog",
+          "rv_suction_dustbin_full"
+        ],
+        "steps": [
+          {
+            "step_id": "s1",
+            "title": "检查并清理滚刷",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s2",
+            "title": "取出并清洁滤网",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s3",
+            "title": "检查吸口是否有异物",
+            "feedback": "not_solved"
+          }
+        ],
+        "reason": {
+          "rule_id": "R2",
+          "text": "预写排障计划已耗尽"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "channel_in_directory",
+          "verified_facts": {
+            "dealer.name": "海科演示授权经销商",
+            "authorized": "true"
+          },
+          "conflicts": [],
+          "next_step": "经销商在名录内，人工确认购买凭证后办理"
+        },
+        "model_trace": [
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "warranty.receipt_ocr",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 2
+          },
+          {
+            "task": "escalate.summary",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      },
+      "scope": "blank image + manual confirmation, not real screenshot OCR accuracy"
+    },
+    "session_id": "75b3e77299df4ae1b0720d37423ad038",
+    "elapsed_ms": 9492
+  },
+  {
+    "case": "rediagnose",
+    "passed": true,
+    "detail": {
+      "stale_code": "stale_version",
+      "safety_summary": {
+        "product": "eufy X10 Pro Omni",
+        "problem": "eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发",
+        "observations": [
+          "用户补充：其实还有异响",
+          "用户补充：不是吸力小，是有异响",
+          "用户补充：说错了，我的是 X10",
+          "用户补充：闻到烧焦味了"
+        ],
+        "hypotheses": [
+          "rv_suction_hair_wrap",
+          "rv_suction_motor_fault"
+        ],
+        "steps": [
+          {
+            "step_id": "s1",
+            "title": "检查并清理滚刷",
+            "feedback": "not_solved"
+          }
+        ],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：烧焦"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    "session_id": "d8bb586421e04a3b8339099fd04f7245",
+    "elapsed_ms": 24425
+  },
+  {
+    "case": "cancel",
+    "passed": true,
+    "detail": {
+      "cancel": {
+        "run_id": "e9bff1faaac7423cae4daab8b0a8880c",
+        "status": "cancelled"
+      },
+      "continued_with_human": true
+    },
+    "session_id": "7e2b090e41474e08af05cd86bc789da3",
+    "elapsed_ms": 70
+  },
+  {
+    "case": "resume",
+    "passed": true,
+    "detail": {
+      "resume_after_seq": 1,
+      "received": 118,
+      "final_stage": "done"
+    },
+    "session_id": "0ffa5044a9b74539928f958d2696f8a0",
+    "elapsed_ms": 6126
+  }
+]

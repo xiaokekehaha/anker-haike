@@ -50,6 +50,14 @@ GOOD = {
     "reply.stream": ["别担心，", "我马上帮您处理。"],
     "escalate.summary": {"problem": "机器不吸了，滚刷缠了很多头发。已经试过清理滤网。"},
     "query.rewrite": {"query": "扫地机器人 地上还是一堆渣 碎屑残留"},
+    "retrieve.grade": {
+        "items": [
+            {"evidence_id": "c12", "verdict": "relevant"},
+            {"evidence_id": "c21", "verdict": "irrelevant"},
+            {"evidence_id": "water", "verdict": "irrelevant"},
+        ],
+        "coverage": "sufficient",
+    },
     "diagnose.vision": {"observations": ["滚刷缠绕大量毛发"], "visible_parts": ["滚刷"]},
     "warranty.receipt_ocr": {
         "order_no": "2026091200123456",

@@ -46,7 +46,11 @@ def chunking_config() -> dict[str, Any]:
 
 
 def kb_payload(
-    name: str, kb_type: str, embedding_model_id: str | None, description: str
+    name: str,
+    kb_type: str,
+    embedding_model_id: str | None,
+    description: str,
+    rerank_model_id: str | None = None,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "name": name,
@@ -57,6 +61,10 @@ def kb_payload(
     }
     if embedding_model_id:
         payload["embedding_model_id"] = embedding_model_id
+    if rerank_model_id:
+        # WeKnora v0.8.0 实测：知识库对象没有 rerank_model_id 字段，创建 / 更新都静默忽略；hybrid-search 只做
+        # BM25 + 向量的 RRF 融合（分值 ≈ 1/(60+rank)），重排属于其 chat 会话管线。保留字段以备升级后生效。
+        payload["rerank_model_id"] = rerank_model_id
     return payload
 
 
@@ -172,6 +180,8 @@ class IngestReport:
     deleted: int = 0
     faq_entries: int = 0
     embedding: dict[str, Any] = field(default_factory=dict)
+    recreated_kbs: list[str] = field(default_factory=list)
+    rerank: dict[str, Any] = field(default_factory=dict)
     docs: dict[str, str] = field(default_factory=dict)  # doc_id -> doc_version
     errors: list[str] = field(default_factory=list)
 
@@ -180,20 +190,61 @@ class IngestReport:
 
 
 class Ingestor:
-    def __init__(self, client: WeKnoraClient, *, embedding_model_id: str | None = None):
+    def __init__(
+        self,
+        client: WeKnoraClient,
+        *,
+        embedding_model_id: str | None = None,
+        recreate_on_embedding_change: bool = False,
+    ):
         self.client = client
         self.embedding_model_id = embedding_model_id
+        self.rerank_model_id: str | None = None
+        self.recreate_on_embedding_change = recreate_on_embedding_change
         self.report = IngestReport()
 
     async def ensure_kb(self, name: str, kb_type: str, description: str) -> dict:
+        """按名称复用；embedding 模型与目标不同且允许重建时删旧建新（知识库 embedding 在创建时绑定，不能改）。"""
         for kb in await self.client.list_knowledge_bases():
-            if kb.get("name") == name:
-                return kb
+            if kb.get("name") != name:
+                continue
+            bound = kb.get("embedding_model_id")
+            if (
+                self.recreate_on_embedding_change
+                and self.embedding_model_id
+                and bound
+                and bound != self.embedding_model_id
+            ):
+                log.warning(
+                    "kb %s bound to embedding %s != %s: recreating",
+                    name,
+                    bound,
+                    self.embedding_model_id,
+                )
+                await self.client.delete_knowledge_base(kb["id"])
+                self.report.recreated_kbs.append(name)
+                break
+            return kb
         kb = await self.client.create_knowledge_base(
-            kb_payload(name, kb_type, self.embedding_model_id, description)
+            kb_payload(name, kb_type, self.embedding_model_id, description, self.rerank_model_id)
         )
-        log.info("created kb %s id=%s", name, kb.get("id"))
+        log.info("created kb %s id=%s rerank=%s", name, kb.get("id"), self.rerank_model_id)
         return kb
+
+    async def ensure_rerank_model(self, spec: dict[str, Any] | None) -> str | None:
+        """按名称复用已登记的 Rerank 模型；spec 为 None 时不绑定（WeKnora 走默认或不重排）。"""
+        if spec is None:
+            return None
+        models = await self.client.list_models()
+        chosen = next(
+            (m for m in models if m.get("type") == "Rerank" and m.get("name") == spec["name"]), None
+        )
+        if chosen is None:
+            chosen = await self.client.create_model(spec)
+            log.info("created rerank model %s", spec["name"])
+        self.rerank_model_id = chosen.get("id")
+        self.report.rerank = {"id": chosen.get("id"), "name": chosen.get("name")}
+        return self.rerank_model_id
 
     async def ensure_embedding_model(self, spec: dict[str, Any] | None) -> str | None:
         """按名称复用已登记的 Embedding 模型；spec 为 None 时不管模型（沿用 builtin_models）。"""
@@ -241,9 +292,21 @@ class Ingestor:
             await self.client.delete_knowledge(k["id"])
             self.report.replaced += 1
         created = await self.client.create_manual_knowledge(kb_id, title=title, content=content)
-        await self.client.update_knowledge(created["id"], custom_metadata=metadata)
+        await self._set_metadata(created["id"], title, metadata)
         self.report.created += 1 if not same_title else 0
         return created["id"]
+
+    async def _set_metadata(self, knowledge_id: str, title: str, metadata: dict[str, Any]) -> None:
+        """写 custom_metadata 并回读校验，缺失重试一次。2026-09-13 实测：批量导入后立即 list 有 1/200 条元数据
+        读到空（列表视图滞后，稍后再读已存在）；回读用 get 单条，避免把滞后误判成丢失。"""
+        for attempt in (1, 2):
+            await self.client.update_knowledge(knowledge_id, custom_metadata=metadata)
+            full = await self.client.get_knowledge(knowledge_id)
+            meta = full.get("custom_metadata") or full.get("metadata") or {}
+            if meta.get("scope"):
+                return
+            log.warning("custom_metadata missing after update title=%s attempt=%d", title, attempt)
+        self.report.errors.append(f"metadata not persisted: {title}")
 
     async def ingest_all(self, root: Path, *, prune: bool = False) -> IngestReport:
         r = self.report
@@ -300,6 +363,7 @@ def write_manifest(path: Path, report: IngestReport, *, source_root: Path) -> di
             "graph": False,
         },
         "embedding": {**report.embedding, "expected_dimension": EMBEDDING_DIM},
+        "rerank": report.rerank,
         "knowledge_bases": report.kb_ids,
         "docs": report.docs,
         "counts": {

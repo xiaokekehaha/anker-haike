@@ -206,7 +206,12 @@ class WeKnoraClient:
                 raise WeKnoraError(resp.status_code, resp.text, "faq/entries")
             body = resp.json()
             data = body.get("data")
-            items = data.get("entries", data) if isinstance(data, dict) else (data or [])
+            # v0.8.0 实测响应形状：{"data": {"total", "page", "page_size", "data": [...]}}
+            items = (
+                (data.get("data") or data.get("entries") or [])
+                if isinstance(data, dict)
+                else (data or [])
+            )
             out.extend(items)
             total = (
                 body.get("total")
@@ -238,6 +243,27 @@ class WeKnoraClient:
             )
             or []
         )
+
+    async def list_chunks(self, knowledge_id: str, *, page_size: int = 100) -> list[dict]:
+        """v0.8.0：GET /chunks/{knowledge_id} 只列子块（含 parent_chunk_id / chunk_index / pre|next_chunk_id），
+        父块本身没有读取接口（/chunks/{parent_id} → Knowledge not found，2026-09-13 实测）。"""
+        out: list[dict] = []
+        page = 1
+        while True:
+            resp = await self._client.get(
+                f"/chunks/{knowledge_id}",
+                params={"page": page, "page_size": page_size},
+                headers=self._headers(),
+            )
+            if resp.status_code >= 400:
+                raise WeKnoraError(resp.status_code, resp.text, f"/chunks/{knowledge_id}")
+            body = resp.json()
+            items = body.get("data") or []
+            out.extend(items)
+            total = body.get("total") or len(out)
+            if not items or len(out) >= total:
+                return out
+            page += 1
 
     # ---- 检索 ----
     async def knowledge_search(

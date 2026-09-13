@@ -288,3 +288,78 @@ it('coalesces rapid repeated action clicks while the request is pending', async 
   await act(async () => { response.resolve(events([started(), done()])); await first; });
   expect(result.current.state.pendingActionId).toBeNull();
 });
+
+describe('session switching (spec_session_switch)', () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it('records the created session and its first message title in the recent list', async () => {
+    const fetch = vi.fn()
+      .mockResolvedValueOnce(json({ session_id: 'n1', version: 0 }, 201))
+      .mockResolvedValueOnce(events([started(), done()]))
+      .mockResolvedValue(json(snapshot({ session_id: 'n1' })));
+    vi.stubGlobal('fetch', fetch);
+    const { result } = renderHook(useSession);
+    await act(async () => { await result.current.send('扫地机不吸尘了'); });
+    await waitFor(() => expect(result.current.state.ui).toBe('idle'));
+    expect(result.current.recent[0]).toMatchObject({ id: 'n1', title: '扫地机不吸尘了' });
+    expect(sessionStorage.getItem('haike.session_id')).toBe('n1');
+  });
+
+  it('switchTo restores another session and keeps the old one in the recent list', async () => {
+    sessionStorage.setItem('haike.session_id', 'a');
+    const fetch = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith('/sessions/a')) return json(snapshot({ session_id: 'a', stage: 'guide', timeline: [{ kind: 'user_message', id: 'u', text: '会话 A', image_ids: [], images: [], at: new Date().toISOString() }] }));
+      if (url.endsWith('/sessions/b')) return json(snapshot({ session_id: 'b', stage: 'diagnose' }));
+      throw new Error(`unexpected ${url}`);
+    });
+    vi.stubGlobal('fetch', fetch);
+    const { result } = renderHook(useSession);
+    await waitFor(() => expect(result.current.state.stage).toBe('guide'));
+    expect(result.current.recent.map(s => s.id)).toEqual(['a']);
+    expect(result.current.recent[0]!.title).toBe('会话 A');
+
+    await act(async () => { await result.current.switchTo('b'); });
+    expect(result.current.state.id).toBe('b');
+    expect(result.current.state.stage).toBe('diagnose');
+    expect(sessionStorage.getItem('haike.session_id')).toBe('b');
+    expect(result.current.recent.map(s => s.id)).toEqual(['b', 'a']);
+
+    await act(async () => { await result.current.switchTo('b'); });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('switchTo an expired session drops it from the list and resets with a notice', async () => {
+    const fetch = vi.fn().mockResolvedValue(json({ code: 'session_not_found' }, 404));
+    vi.stubGlobal('fetch', fetch);
+    localStorage.setItem('haike.recent_sessions', JSON.stringify([{ id: 'gone', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), title: null, stage: null }]));
+    const { result } = renderHook(useSession);
+    expect(result.current.recent).toHaveLength(1);
+    await act(async () => { await result.current.switchTo('gone'); });
+    expect(result.current.state.id).toBeNull();
+    expect(result.current.state.error?.code).toBe('notice');
+    expect(result.current.recent).toEqual([]);
+    expect(sessionStorage.getItem('haike.session_id')).toBeNull();
+  });
+
+  it('startNew cancels an active run before clearing the tab reference', async () => {
+    sessionStorage.setItem('haike.session_id', 'a');
+    const running = active();
+    const stream = deferred<Response>();
+    const fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith('/sessions/a')) return json(snapshot({ session_id: 'a', active_run: running }));
+      if (url.includes('/events')) return stream.promise;
+      if (url.endsWith('/cancel') && init?.method === 'POST') return json({ cancelled: true });
+      throw new Error(`unexpected ${url}`);
+    });
+    vi.stubGlobal('fetch', fetch);
+    const { result } = renderHook(useSession);
+    await waitFor(() => expect(result.current.state.activeRun?.run_id).toBe('r'));
+    await act(async () => { await result.current.startNew(); });
+    expect(fetch.mock.calls.some(([u, i]) => String(u).endsWith('/sessions/a/cancel') && (i as RequestInit)?.method === 'POST')).toBe(true);
+    expect(result.current.state.id).toBeNull();
+    expect(sessionStorage.getItem('haike.session_id')).toBeNull();
+    expect(result.current.recent.map(s => s.id)).toEqual(['a']);
+  });
+});

@@ -3,6 +3,7 @@
 # providers.lane 标注厂商通道，domestic 链尾接 overseas 别名即跨通道降级。
 # 规则：每个 task 的链上至少一家是当前环境可用的模型（只有 DEEPSEEK_API_KEY 时链不能整条 skipped，模型层 findings）。
 # params 为厂商专属请求参数（openai 协议进 extra_body）：DeepSeek V4 与智谱 GLM 默认开思考模式，关掉以免 reasoning token 计费与延迟翻倍。
+# 2026-09-13 实测：百炼 qwen3.7-flash / qwen3.8-max 默认也开思考（enable_thinking），结构化调用返回空 content、synthesize 8 s 超时，需显式关闭。
 # 2026-09-13.2（票 42 两家实测）：domestic 每个 task 的链尾换成本机实测达标的智谱位，使「主备至少两家厂商」在只有
 # DeepSeek + 智谱 key 的环境里也成立；未达标的候选不上链（glm 在 escalate.summary 10%、guide.step 89%，glm-flash 在
 # synthesize 67%）。diagnose.vision 的 glm-v 只达备用位门槛（77% < 主 80%），但它是唯一有视觉能力的智谱模型。
@@ -20,9 +21,9 @@ models:
   sonnet:       {provider: anthropic, id: claude-sonnet-5,             vision: true,  structured: native,      max_images: 20, timeout_s: 20}
   haiku:        {provider: anthropic, id: claude-haiku-4-5-20251001,   vision: true,  structured: native,      max_images: 20, timeout_s: 15}
   gemini-flash: {provider: google,    id: gemini-2.5-flash,            vision: true,  structured: native,      max_images: 16, timeout_s: 20}
-  qwen-flash:   {provider: dashscope, id: qwen3.7-flash,               vision: false, structured: json_object, timeout_s: 15}
-  qwen-plus:    {provider: dashscope, id: qwen3.7-plus,                vision: false, structured: native,      timeout_s: 20}
-  qwen-max:     {provider: dashscope, id: qwen3.8-max,                 vision: false, structured: native,      timeout_s: 20}
+  qwen-flash:   {provider: dashscope, id: qwen3.7-flash,               vision: false, structured: json_object, timeout_s: 15, params: {enable_thinking: false}}
+  qwen-plus:    {provider: dashscope, id: qwen3.7-plus,                vision: false, structured: native,      timeout_s: 20, params: {enable_thinking: false}}
+  qwen-max:     {provider: dashscope, id: qwen3.8-max,                 vision: false, structured: native,      timeout_s: 20, params: {enable_thinking: false}}
   qwen-vl:      {provider: dashscope, id: qwen3-vl-plus,               vision: true,  structured: json_object, max_images: 10, timeout_s: 30}
   # deepseek-flash（V4.1-Flash）实测：json_object 可用、能读图（max_images 按 4 张保守）、关思考后 intake ≈ 0.9 s
   deepseek:     {provider: deepseek,  id: deepseek-flash,              vision: true,  structured: json_object, max_images: 4,  timeout_s: 20, params: {thinking: {type: disabled}}}
@@ -47,6 +48,7 @@ lanes:
     escalate.summary:      {chain: [deepseek, glm-v, qwen-flash],              effort: low}
     warranty.receipt_ocr:  {chain: [qwen-vl, deepseek, glm-v],         effort: low,    needs_vision: true}
     query.rewrite:         {chain: [qwen-flash, deepseek, glm],              effort: low,    max_tokens: 128}  # 票 32：无命中一次改写，默认关闭（config/retrieval.yaml）
+    retrieve.grade:        {chain: [qwen-flash, deepseek, glm-flash],        effort: low,    max_tokens: 256}  # 有界 RAG 阶段 5：命中相关性评分，默认关闭（retrieval.yaml grade.enabled）。bake-off 2026-09-13：qwen-flash 98% 主、deepseek 100% 备、glm-flash 受账户限流未达标
   overseas:
     intake:                {chain: [haiku, sonnet],                     effort: low,    max_tokens: 512}
     disambiguate.clarify:  {chain: [haiku, sonnet],                     effort: low}
@@ -57,6 +59,7 @@ lanes:
     escalate.summary:      {chain: [haiku, sonnet],                     effort: low}
     warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],              effort: low,    needs_vision: true}
     query.rewrite:         {chain: [haiku, sonnet],                     effort: low,    max_tokens: 128}
+    retrieve.grade:        {chain: [haiku, sonnet],                     effort: low,    max_tokens: 256}
 
 # same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
 retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}

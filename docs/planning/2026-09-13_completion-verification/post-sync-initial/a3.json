@@ -1,0 +1,1772 @@
+{
+  "session_id": "34bdf6d96b7146ef9e3f82d6ddac498e",
+  "runs": [
+    {
+      "types": [
+        "run_started",
+        "progress",
+        "tool_call",
+        "evidence",
+        "message_start",
+        "message",
+        "message_end",
+        "step_card",
+        "awaiting_input",
+        "done"
+      ],
+      "first_visible_ms": 3948,
+      "card_ready_ms": 5807,
+      "elapsed_ms": 5823,
+      "headers": {}
+    },
+    {
+      "types": [
+        "run_started",
+        "step_card",
+        "progress",
+        "awaiting_input",
+        "done"
+      ],
+      "first_visible_ms": null,
+      "card_ready_ms": 28,
+      "elapsed_ms": 1026,
+      "headers": {
+        "x-run-id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+        "x-action-replayed": "false"
+      }
+    },
+    {
+      "types": [
+        "run_started",
+        "step_card",
+        "progress",
+        "awaiting_input",
+        "done"
+      ],
+      "first_visible_ms": null,
+      "card_ready_ms": 50,
+      "elapsed_ms": 2536,
+      "headers": {
+        "x-run-id": "a7783c48195e433fa45b4d12d21009e7",
+        "x-action-replayed": "false"
+      }
+    },
+    {
+      "types": [
+        "run_started",
+        "step_card",
+        "progress",
+        "awaiting_input",
+        "done"
+      ],
+      "first_visible_ms": null,
+      "card_ready_ms": 92,
+      "elapsed_ms": 612,
+      "headers": {
+        "x-run-id": "77639fc55bb04782b9f04f838bd31fac",
+        "x-action-replayed": "false"
+      }
+    },
+    {
+      "types": [
+        "run_started",
+        "progress",
+        "tool_call",
+        "receipt_card",
+        "awaiting_input",
+        "done"
+      ],
+      "first_visible_ms": null,
+      "card_ready_ms": 2325,
+      "elapsed_ms": 2355,
+      "headers": {}
+    },
+    {
+      "types": [
+        "run_started",
+        "receipt_card",
+        "progress",
+        "message_start",
+        "message",
+        "message_end",
+        "escalation_summary",
+        "done"
+      ],
+      "first_visible_ms": 375,
+      "card_ready_ms": 55,
+      "elapsed_ms": 1420,
+      "headers": {
+        "x-run-id": "45627c902f854c0d896bf1d62e5c534f",
+        "x-action-replayed": "false"
+      }
+    }
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "type": "run_started",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "resumed": false,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "progress",
+      "stage": "intake",
+      "substage": null,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 2
+    },
+    {
+      "type": "progress",
+      "stage": "disambiguate",
+      "substage": null,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 3
+    },
+    {
+      "type": "progress",
+      "stage": "diagnose",
+      "substage": "retrieve",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 4
+    },
+    {
+      "type": "tool_call",
+      "tool_id": "07517bd9b66b592f9c86a3c9d1bf95dc",
+      "name": "knowledge.search",
+      "status": "started",
+      "summary": "检索知识库",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 5
+    },
+    {
+      "type": "tool_call",
+      "tool_id": "07517bd9b66b592f9c86a3c9d1bf95dc",
+      "name": "knowledge.search",
+      "status": "finished",
+      "summary": "命中 10 条来源",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 6
+    },
+    {
+      "type": "evidence",
+      "items": [
+        {
+          "evidence_id": "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "source": "kb_manual",
+          "doc_id": "manual_rv_v1",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "snippet": "| 现象 | 含义 | 处理 |\n| --- | --- | --- |\n| 「请检查滚刷」 | 滚刷被缠绕或卡住 | 见 1.1 |",
+          "score": 0.01631411951348493,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "source": "kb_manual",
+          "doc_id": "manual_rv_v1",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）\n\n## 第 1 章 日常维护\n\n### 1.1 清理滚刷（c12）\n翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。建议每周检查一次，长发或宠物家庭建议每 3 天检查一次。装回时听到「咔哒」声表示到位。滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。",
+          "score": 0.016208355367530406,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "4dda2917-6e83-4776-8170-13980b2303c7",
+          "source": "kb_manual",
+          "doc_id": "manual_rv_v1",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "4dda2917-6e83-4776-8170-13980b2303c7",
+          "snippet": "### 1.4 边刷维护（c21）\n边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发时会出现边刷不转或转动缓慢，墙边、角落清扫不干净。\n\n## 第 2 章 安全须知\n\n### 2.1 异常情况处理（c30）\n若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。切勿自行拆解电池仓。电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。",
+          "score": 0.01579861111111111,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "source": "kb_manual",
+          "doc_id": "manual_rv_v1",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "snippet": "| 现象 | 含义 | 处理 |\n| --- | --- | --- |\n| 「请检查尘盒」 | 尘盒未装到位或已满 | 见 1.3 |",
+          "score": 0.015552884615384614,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "source": "kb_manual",
+          "doc_id": "manual_rv_v1",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。\n\n### 1.2 清洁滤网（c15）\n打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。滤网潮湿时装回会导致电机进水损坏，且会产生异味。建议每两周清洁一次，每 3 至 6 个月更换一次。滤网破损或变形时请直接更换，不要继续使用。",
+          "score": 0.01553113553113553,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "source": "kb_tickets",
+          "doc_id": "T0151",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI\n现象：吸力变小，扫不干净\n原因：滚刷毛发缠绕\n处理步骤：取出滚刷清理缠绕毛发；装回后试运行\n结果：solved",
+          "score": 0.016393442622950817,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "5a28bfb3-9a33-4560-90c0-e6c73284ee1f",
+          "source": "kb_tickets",
+          "doc_id": "T0048",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "5a28bfb3-9a33-4560-90c0-e6c73284ee1f",
+          "snippet": "工单 T0048｜产品 EUFY-X10-PRO-OMNI\n现象：找不到基站\n原因：基站位置遮挡\n处理步骤：调整基站到靠墙开阔位置\n结果：solved",
+          "score": 0.015293560606060606,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "267b9869-68ee-4cb5-8f57-0fca9b39da24",
+          "source": "kb_tickets",
+          "doc_id": "T0138",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "267b9869-68ee-4cb5-8f57-0fca9b39da24",
+          "snippet": "工单 T0138｜产品 EUFY-X10-PRO-OMNI\n现象：找不到基站\n原因：基站位置遮挡\n处理步骤：调整基站到靠墙开阔位置\n结果：solved",
+          "score": 0.015246842709529276,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "d7badee2-702d-48c0-a7ff-94b349d1a9e4",
+          "source": "kb_tickets",
+          "doc_id": "T0187",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "d7badee2-702d-48c0-a7ff-94b349d1a9e4",
+          "snippet": "工单 T0187｜产品 EUFY-X10-PRO-OMNI\n现象：不充电\n原因：基站触点脏污\n处理步骤：擦拭触点后手动放回基站\n结果：solved",
+          "score": 0.01520966595593461,
+          "status": "ok"
+        },
+        {
+          "evidence_id": "a36209b3-63df-4286-9083-f206dc6a07b0",
+          "source": "kb_tickets",
+          "doc_id": "T0137",
+          "doc_version": "2026-09-12.1",
+          "chunk_id": "a36209b3-63df-4286-9083-f206dc6a07b0",
+          "snippet": "工单 T0137｜产品 EUFY-X10-PRO-OMNI\n现象：不充电\n原因：基站触点脏污\n处理步骤：擦拭触点后手动放回基站\n结果：solved",
+          "score": 0.015132827324478178,
+          "status": "ok"
+        }
+      ],
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 7
+    },
+    {
+      "type": "progress",
+      "stage": "diagnose",
+      "substage": null,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 8
+    },
+    {
+      "type": "message_start",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 9
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "理解",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 10
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "：",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 11
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "你的",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 12
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " e",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 13
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "uf",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 14
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "y",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 15
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " X",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 16
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "10",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 17
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " Pro",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 18
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " Om",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 19
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "ni",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 20
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " ",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 21
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "不",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 22
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "吸",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 23
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "了",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 24
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 25
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滚",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 26
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刷",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 27
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "缠",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 28
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "了很多",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 29
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "头发",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 30
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "。\n\n",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 31
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "最",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 32
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "可能",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 33
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "的原因是",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 34
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滚",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 35
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刷",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 36
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "被",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 37
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "毛发",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 38
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "缠绕",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 39
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "卡",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 40
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "住",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 41
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 42
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "导致",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 43
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "转动",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 44
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "阻力",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 45
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "增大",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 46
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "、",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 47
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "吸",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 48
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "力",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 49
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "下降",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 50
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "。",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 51
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "请",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 52
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "先",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 53
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "做",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 54
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "这一步",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 55
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "：\n\n",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 56
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "-",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 57
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": " ",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 58
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "翻转",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 59
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "主机",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 60
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 61
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "按下",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 62
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滚",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 63
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刷",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 64
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "盖",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 65
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "两侧",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 66
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "卡",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 67
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "扣",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 68
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "取出",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 69
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滚",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 70
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刷",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 71
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 72
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "用",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 73
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "附带",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 74
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "清洁",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 75
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刀具",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 76
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "割",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 77
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "断",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 78
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "缠绕",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 79
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "的",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 80
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "毛发",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 81
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 82
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "并",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 83
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "清理",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 84
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滚",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 85
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "刷",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 86
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "两端",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 87
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "轴承",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 88
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "处的",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 89
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "毛发",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 90
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 91
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "然后",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 92
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "装",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 93
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "回",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 94
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "（",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 95
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "听到",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 96
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "「",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 97
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "咔",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 98
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "哒",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 99
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "」",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 100
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "声",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 101
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "表示",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 102
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "到位",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 103
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "）。\n\n",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 104
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "装",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 105
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "回",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 106
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "后",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 107
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "试",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 108
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "运行",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 109
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "一次",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 110
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "。",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 111
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "如果",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 112
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "仍",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 113
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "不",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 114
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "吸",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 115
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "，",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 116
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "我再",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 117
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "按",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 118
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "标准",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 119
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "排",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 120
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "障",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 121
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "流程",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 122
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "继续",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 123
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "排查",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 124
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "滤",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 125
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "网",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 126
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "、",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 127
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "尘",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 128
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "盒",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 129
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "等",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 130
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "环节",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 131
+    },
+    {
+      "type": "message",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "delta": "。",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 132
+    },
+    {
+      "type": "message_end",
+      "message_id": "a99a43ba5c6f569d926768ff75183b25",
+      "status": "completed",
+      "model_tier": "primary",
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 133
+    },
+    {
+      "type": "progress",
+      "stage": "guide",
+      "substage": null,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 134
+    },
+    {
+      "type": "step_card",
+      "card_id": "670451a1ff89542d82b81e53335b5792",
+      "version": 6,
+      "step": {
+        "step_id": "s1",
+        "plan_id": "rv_suction_hair_wrap",
+        "plan_version": 1,
+        "step_no": 1,
+        "title": "检查并清理滚刷",
+        "instruction": "翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。",
+        "expected_result": "滚刷无缠绕物，转动顺畅",
+        "caution": null,
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "4dda2917-6e83-4776-8170-13980b2303c7",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ]
+      },
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 135
+    },
+    {
+      "type": "awaiting_input",
+      "kind": "step_feedback",
+      "interrupt_id": "670451a1ff89542d82b81e53335b5792",
+      "card_id": "670451a1ff89542d82b81e53335b5792",
+      "version": 6,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 136
+    },
+    {
+      "type": "done",
+      "reason": "awaiting_input",
+      "version": 6,
+      "run_id": "1cf60f0a75af4068baef100ca79af02a",
+      "seq": 137
+    },
+    {
+      "seq": 138,
+      "type": "run_started",
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "resumed": true,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "step_card",
+      "card_id": "670451a1ff89542d82b81e53335b5792",
+      "version": 6,
+      "step": {
+        "step_id": "s1",
+        "plan_id": "rv_suction_hair_wrap",
+        "plan_version": 1,
+        "step_no": 1,
+        "title": "检查并清理滚刷",
+        "instruction": "翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。",
+        "expected_result": "滚刷无缠绕物，转动顺畅",
+        "caution": null,
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "4dda2917-6e83-4776-8170-13980b2303c7",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ]
+      },
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "seq": 139
+    },
+    {
+      "type": "progress",
+      "stage": "guide",
+      "substage": null,
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "seq": 140
+    },
+    {
+      "type": "step_card",
+      "card_id": "d565268b5566591682232b7afcf24141",
+      "version": 9,
+      "step": {
+        "step_id": "s2",
+        "plan_id": "rv_suction_hair_wrap",
+        "plan_version": 1,
+        "step_no": 2,
+        "title": "取出并清洁滤网",
+        "instruction": "打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干24小时后装回。",
+        "expected_result": "滤网无堵塞",
+        "caution": null,
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "4dda2917-6e83-4776-8170-13980b2303c7",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ]
+      },
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "seq": 141
+    },
+    {
+      "type": "awaiting_input",
+      "kind": "step_feedback",
+      "interrupt_id": "d565268b5566591682232b7afcf24141",
+      "card_id": "d565268b5566591682232b7afcf24141",
+      "version": 9,
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "seq": 142
+    },
+    {
+      "type": "done",
+      "reason": "awaiting_input",
+      "version": 9,
+      "run_id": "ce4fd76ccbf94d949e5bc8bb00c8177c",
+      "seq": 143
+    },
+    {
+      "seq": 144,
+      "type": "run_started",
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "resumed": true,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "step_card",
+      "card_id": "d565268b5566591682232b7afcf24141",
+      "version": 9,
+      "step": {
+        "step_id": "s2",
+        "plan_id": "rv_suction_hair_wrap",
+        "plan_version": 1,
+        "step_no": 2,
+        "title": "取出并清洁滤网",
+        "instruction": "打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干24小时后装回。",
+        "expected_result": "滤网无堵塞",
+        "caution": null,
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "4dda2917-6e83-4776-8170-13980b2303c7",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "92f14de3-cd5d-40b6-808a-edbb29e88e66",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ]
+      },
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "seq": 145
+    },
+    {
+      "type": "progress",
+      "stage": "guide",
+      "substage": null,
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "seq": 146
+    },
+    {
+      "type": "step_card",
+      "card_id": "ca5cc01d67955b9f9f30cc3a2f2f664b",
+      "version": 12,
+      "step": {
+        "step_id": "s3",
+        "plan_id": "rv_suction_hair_wrap",
+        "plan_version": 1,
+        "step_no": 3,
+        "title": "检查吸口是否有异物",
+        "instruction": "检查吸口并取出异物。",
+        "expected_result": "吸口通畅，噪音恢复正常",
+        "caution": null,
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ]
+      },
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "seq": 147
+    },
+    {
+      "type": "awaiting_input",
+      "kind": "step_feedback",
+      "interrupt_id": "ca5cc01d67955b9f9f30cc3a2f2f664b",
+      "card_id": "ca5cc01d67955b9f9f30cc3a2f2f664b",
+      "version": 12,
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "seq": 148
+    },
+    {
+      "type": "done",
+      "reason": "awaiting_input",
+      "version": 12,
+      "run_id": "a7783c48195e433fa45b4d12d21009e7",
+      "seq": 149
+    },
+    {
+      "seq": 150,
+      "type": "run_started",
+      "run_id": "77639fc55bb04782b9f04f838bd31fac",
+      "resumed": true,
+      "deadline_ms": 25000
+    },
+    {
+      "seq": 151,
+      "step": {
+        "title": "检查吸口是否有异物",
+        "caution": null,
+        "plan_id": "rv_suction_hair_wrap",
+        "step_id": "s3",
+        "step_no": 3,
+        "instruction": "检查吸口并取出异物。",
+        "evidence_ids": [
+          "3bd14008-fb74-4717-99ae-28d50948eeeb",
+          "7c9c48ee-2a02-4862-9efa-4dca37a97a75",
+          "c5e8f953-ed44-4b90-bd23-9edf0cf7993f",
+          "cc93b418-3f39-4354-96cf-3eda6f55d83e",
+          "fc:EUFY-X10-PRO-OMNI:2026-09-12.1:rv_suction_hair_wrap"
+        ],
+        "plan_version": 1,
+        "expected_result": "吸口通畅，噪音恢复正常"
+      },
+      "type": "step_card",
+      "run_id": "77639fc55bb04782b9f04f838bd31fac",
+      "card_id": "ca5cc01d67955b9f9f30cc3a2f2f664b",
+      "version": 12
+    },
+    {
+      "type": "progress",
+      "stage": "escalate",
+      "substage": "collect_receipt",
+      "run_id": "77639fc55bb04782b9f04f838bd31fac",
+      "seq": 152
+    },
+    {
+      "type": "awaiting_input",
+      "kind": "upload_receipt",
+      "interrupt_id": "8d001a7bcba65bf986dc2a9bacd07964",
+      "card_id": "8d001a7bcba65bf986dc2a9bacd07964",
+      "version": 16,
+      "run_id": "77639fc55bb04782b9f04f838bd31fac",
+      "seq": 153
+    },
+    {
+      "type": "done",
+      "reason": "awaiting_input",
+      "version": 16,
+      "run_id": "77639fc55bb04782b9f04f838bd31fac",
+      "seq": 154
+    },
+    {
+      "seq": 155,
+      "type": "run_started",
+      "run_id": "38669ca913244994a86681451f365856",
+      "resumed": false,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "progress",
+      "stage": "intake",
+      "substage": null,
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 156
+    },
+    {
+      "type": "progress",
+      "stage": "escalate",
+      "substage": "extract",
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 157
+    },
+    {
+      "type": "tool_call",
+      "tool_id": "c7241d0cd60e5a17828ea69382220ab4",
+      "name": "warranty.receipt_ocr",
+      "status": "started",
+      "summary": "识别 1 张购买凭证",
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 158
+    },
+    {
+      "type": "tool_call",
+      "tool_id": "c7241d0cd60e5a17828ea69382220ab4",
+      "name": "warranty.receipt_ocr",
+      "status": "finished",
+      "summary": "识别出 0 个字段，4 个看不清",
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 159
+    },
+    {
+      "type": "receipt_card",
+      "card_id": "ee484309f14a5c45a3c96d4426b7c250",
+      "version": 21,
+      "fields": {
+        "order_no": null,
+        "channel": null,
+        "purchase_date": null,
+        "amount": null
+      },
+      "confidence": {
+        "order_no": 0.0,
+        "channel": 0.0,
+        "purchase_date": 0.0,
+        "amount": 0.0
+      },
+      "unreadable": [
+        "amount",
+        "channel",
+        "order_no",
+        "purchase_date"
+      ],
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 160
+    },
+    {
+      "type": "awaiting_input",
+      "kind": "confirm_receipt",
+      "interrupt_id": "ee484309f14a5c45a3c96d4426b7c250",
+      "card_id": "ee484309f14a5c45a3c96d4426b7c250",
+      "version": 21,
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 161
+    },
+    {
+      "type": "done",
+      "reason": "awaiting_input",
+      "version": 21,
+      "run_id": "38669ca913244994a86681451f365856",
+      "seq": 162
+    },
+    {
+      "seq": 163,
+      "type": "run_started",
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "resumed": true,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "receipt_card",
+      "card_id": "ee484309f14a5c45a3c96d4426b7c250",
+      "version": 21,
+      "fields": {
+        "order_no": null,
+        "channel": null,
+        "purchase_date": null,
+        "amount": null
+      },
+      "confidence": {
+        "order_no": 0.0,
+        "channel": 0.0,
+        "purchase_date": 0.0,
+        "amount": 0.0
+      },
+      "unreadable": [
+        "amount",
+        "channel",
+        "order_no",
+        "purchase_date"
+      ],
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 164
+    },
+    {
+      "type": "progress",
+      "stage": "escalate",
+      "substage": "summarize",
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 165
+    },
+    {
+      "type": "message_start",
+      "message_id": "46eea5652b5552d8b7e6760e4e1b99b9",
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 166
+    },
+    {
+      "type": "message",
+      "message_id": "46eea5652b5552d8b7e6760e4e1b99b9",
+      "delta": "我已把目前的情况整理好并转给人工客服，稍后会有专人联系您。",
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 167
+    },
+    {
+      "type": "message_end",
+      "message_id": "46eea5652b5552d8b7e6760e4e1b99b9",
+      "status": "completed",
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 168
+    },
+    {
+      "type": "escalation_summary",
+      "card_id": "a5f1722338cb5d1d8396806d015b1ec0",
+      "summary": {
+        "product": "eufy X10 Pro Omni",
+        "problem": "eufy X10 Pro 扫地机不吸了，滚刷缠了很多头发",
+        "observations": [
+          "用户补充：验收用不可读凭证图"
+        ],
+        "hypotheses": [
+          "rv_suction_hair_wrap",
+          "rv_suction_filter_clog",
+          "rv_suction_dustbin_full"
+        ],
+        "steps": [
+          {
+            "step_id": "s1",
+            "title": "检查并清理滚刷",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s2",
+            "title": "取出并清洁滤网",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s3",
+            "title": "检查吸口是否有异物",
+            "feedback": "not_solved"
+          }
+        ],
+        "reason": {
+          "rule_id": "R2",
+          "text": "预写排障计划已耗尽"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "channel_in_directory",
+          "verified_facts": {
+            "dealer.name": "海科演示授权经销商",
+            "authorized": "true"
+          },
+          "conflicts": [],
+          "next_step": "经销商在名录内，人工确认购买凭证后办理"
+        },
+        "model_trace": [
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "warranty.receipt_ocr",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 2
+          },
+          {
+            "task": "escalate.summary",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      },
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 169
+    },
+    {
+      "type": "done",
+      "reason": "completed",
+      "version": 25,
+      "run_id": "45627c902f854c0d896bf1d62e5c534f",
+      "seq": 170
+    }
+  ],
+  "result": {
+    "case": "a3",
+    "passed": true,
+    "detail": {
+      "receipt_card": {
+        "type": "receipt_card",
+        "card_id": "ee484309f14a5c45a3c96d4426b7c250",
+        "version": 21,
+        "fields": {
+          "order_no": null,
+          "channel": null,
+          "purchase_date": null,
+          "amount": null
+        },
+        "confidence": {
+          "order_no": 0.0,
+          "channel": 0.0,
+          "purchase_date": 0.0,
+          "amount": 0.0
+        },
+        "unreadable": [
+          "amount",
+          "channel",
+          "order_no",
+          "purchase_date"
+        ],
+        "run_id": "38669ca913244994a86681451f365856",
+        "seq": 160
+      },
+      "summary": {
+        "product": "eufy X10 Pro Omni",
+        "problem": "eufy X10 Pro 扫地机不吸了，滚刷缠了很多头发",
+        "observations": [
+          "用户补充：验收用不可读凭证图"
+        ],
+        "hypotheses": [
+          "rv_suction_hair_wrap",
+          "rv_suction_filter_clog",
+          "rv_suction_dustbin_full"
+        ],
+        "steps": [
+          {
+            "step_id": "s1",
+            "title": "检查并清理滚刷",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s2",
+            "title": "取出并清洁滤网",
+            "feedback": "not_solved"
+          },
+          {
+            "step_id": "s3",
+            "title": "检查吸口是否有异物",
+            "feedback": "not_solved"
+          }
+        ],
+        "reason": {
+          "rule_id": "R2",
+          "text": "预写排障计划已耗尽"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "channel_in_directory",
+          "verified_facts": {
+            "dealer.name": "海科演示授权经销商",
+            "authorized": "true"
+          },
+          "conflicts": [],
+          "next_step": "经销商在名录内，人工确认购买凭证后办理"
+        },
+        "model_trace": [
+          {
+            "task": "intake",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "guide.step",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "warranty.receipt_ocr",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 2
+          },
+          {
+            "task": "escalate.summary",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      },
+      "scope": "blank image + manual confirmation, not real screenshot OCR accuracy"
+    },
+    "session_id": "34bdf6d96b7146ef9e3f82d6ddac498e",
+    "elapsed_ms": 14344
+  }
+}

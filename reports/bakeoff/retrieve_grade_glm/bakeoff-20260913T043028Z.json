@@ -1,0 +1,174 @@
+[
+ {
+  "task": "retrieve.grade",
+  "lane": "domestic",
+  "samples": 8,
+  "candidates": [
+   {
+    "task": "retrieve.grade",
+    "alias": "glm-flash",
+    "model_used": "zhipu/glm-4.5-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 10991,
+      "usage": {
+       "input_tokens": 763,
+       "output_tokens": 89,
+       "total_tokens": 852
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.5-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 9007,
+      "usage": {
+       "input_tokens": 751,
+       "output_tokens": 90,
+       "total_tokens": 841
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.5-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 5477,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 706,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 468,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15219,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15228,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 488,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 0.25,
+    "accuracy": 0.25,
+    "latency_p50_ms": 7242,
+    "cost_cny_per_call": 0.0,
+    "verdict": "below",
+    "reasons": [
+     "schema_pass 25% < 95%",
+     "accuracy 25% < 90%"
+    ]
+   }
+  ],
+  "primary": null,
+  "fallback": null,
+  "note": "无候选达到主模型门槛（见各候选 reasons）；按 §3.8 需降低门槛并记录原因"
+ }
+]

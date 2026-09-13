@@ -14,6 +14,7 @@ from typing import Any
 
 import httpx
 
+from app.analytics import hooks as analytics_hooks
 from app.observability import alerts
 from app.observability.privacy import sanitize
 
@@ -192,6 +193,7 @@ def record(event: str, **data: Any):
         if event == "model_call" and _exporter is not None:
             _exporter.submit(data)
         alerts.observe(event, data)  # 票 50：告警规则只看事件名与状态字段
+        analytics_hooks.observe(event, data)  # 管理员观测台：模型 / 检索事实旁路落库
     except Exception:  # noqa: BLE001, S110 - observability must not fail business operations
         # 不能递归记录日志；业务路径保持可用。
         pass

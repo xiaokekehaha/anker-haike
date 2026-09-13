@@ -1,0 +1,975 @@
+[
+ {
+  "task": "retrieve.grade",
+  "lane": "domestic",
+  "samples": 8,
+  "candidates": [
+   {
+    "task": "retrieve.grade",
+    "alias": "qwen-flash",
+    "model_used": "dashscope/qwen3.7-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 4193,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 4502,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3989,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3751,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 2849,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3218,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3255,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3148,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3160,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3215,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 2835,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3183,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 2940,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3192,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 3025,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 2989,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 0.0,
+    "accuracy": 0.0,
+    "latency_p50_ms": 3126,
+    "cost_cny_per_call": 0.0,
+    "verdict": "below",
+    "reasons": [
+     "schema_pass 0% < 95%",
+     "accuracy 0% < 90%"
+    ]
+   },
+   {
+    "task": "retrieve.grade",
+    "alias": "deepseek",
+    "model_used": "deepseek/deepseek-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1240,
+      "usage": {
+       "input_tokens": 724,
+       "output_tokens": 47,
+       "total_tokens": 771
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1101,
+      "usage": {
+       "input_tokens": 724,
+       "output_tokens": 47,
+       "total_tokens": 771
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1138,
+      "usage": {
+       "input_tokens": 709,
+       "output_tokens": 48,
+       "total_tokens": 757
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1352,
+      "usage": {
+       "input_tokens": 709,
+       "output_tokens": 48,
+       "total_tokens": 757
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1086,
+      "usage": {
+       "input_tokens": 695,
+       "output_tokens": 45,
+       "total_tokens": 740
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "B": "relevant",
+        "E": "irrelevant",
+        "header": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 512,
+      "usage": {
+       "input_tokens": 695,
+       "output_tokens": 45,
+       "total_tokens": 740
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "B": "relevant",
+        "E": "irrelevant",
+        "header": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 930,
+      "usage": {
+       "input_tokens": 641,
+       "output_tokens": 36,
+       "total_tokens": 677
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 932,
+      "usage": {
+       "input_tokens": 641,
+       "output_tokens": 36,
+       "total_tokens": 677
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1051,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 50,
+       "total_tokens": 732
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 979,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 50,
+       "total_tokens": 732
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 889,
+      "usage": {
+       "input_tokens": 645,
+       "output_tokens": 35,
+       "total_tokens": 680
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 716,
+      "usage": {
+       "input_tokens": 645,
+       "output_tokens": 35,
+       "total_tokens": 680
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 838,
+      "usage": {
+       "input_tokens": 695,
+       "output_tokens": 49,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 984,
+      "usage": {
+       "input_tokens": 695,
+       "output_tokens": 49,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 742,
+      "usage": {
+       "input_tokens": 650,
+       "output_tokens": 33,
+       "total_tokens": 683
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 658,
+      "usage": {
+       "input_tokens": 650,
+       "output_tokens": 33,
+       "total_tokens": 683
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "deepseek/deepseek-flash",
+       "reason": null
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 1.0,
+    "latency_p50_ms": 921,
+    "cost_cny_per_call": 0.00184,
+    "verdict": "primary_ok",
+    "reasons": []
+   },
+   {
+    "task": "retrieve.grade",
+    "alias": "glm-flash",
+    "model_used": "zhipu/glm-4.5-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15800,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1759,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15532,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1318,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1053,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 996,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1104,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 999,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1165,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1293,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 1.0,
+      "latency_ms": 10796,
+      "usage": {
+       "input_tokens": 687,
+       "output_tokens": 67,
+       "total_tokens": 754
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.5-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1215,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 1.0,
+      "latency_ms": 12327,
+      "usage": {
+       "input_tokens": 740,
+       "output_tokens": 92,
+       "total_tokens": 832
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.5-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1235,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 1.0,
+      "latency_ms": 11094,
+      "usage": {
+       "input_tokens": 691,
+       "output_tokens": 64,
+       "total_tokens": 755
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "relevant"
+       },
+       "model_used": "zhipu/glm-4.5-flash",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1006,
+      "usage": {},
+      "info": {
+       "status": "ungraded",
+       "coverage": null,
+       "verdicts": {},
+       "model_used": null,
+       "reason": "model:ModelInvokeError"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 0.0,
+    "accuracy": 0.1875,
+    "latency_p50_ms": 6027,
+    "cost_cny_per_call": 0.0,
+    "verdict": "below",
+    "reasons": [
+     "schema_pass 0% < 95%",
+     "accuracy 19% < 90%"
+    ]
+   }
+  ],
+  "primary": "deepseek",
+  "fallback": null,
+  "note": "无来自另一家厂商的达标备用位（§3.8 要求主备至少两家）"
+ }
+]

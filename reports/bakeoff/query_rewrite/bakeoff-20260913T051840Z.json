@@ -1,0 +1,1357 @@
+[
+ {
+  "task": "query.rewrite",
+  "lane": "domestic",
+  "samples": 8,
+  "candidates": [
+   {
+    "task": "query.rewrite",
+    "alias": "qwen-flash",
+    "model_used": "dashscope/qwen3.7-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "debris",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1278,
+      "usage": {
+       "input_tokens": 373,
+       "output_tokens": 13,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "扫地机器人清扫完成后地面仍有残留垃圾",
+       "rejected": null,
+       "candidate": "扫地机器人清扫完成后地面仍有残留垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1013,
+      "usage": {
+       "input_tokens": 373,
+       "output_tokens": 13,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "扫地机器人清扫完成后地面仍有残留垃圾",
+       "rejected": null,
+       "candidate": "扫地机器人清扫完成后地面仍有残留垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 770,
+      "usage": {
+       "input_tokens": 373,
+       "output_tokens": 13,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "扫地机器人清扫完成后地面仍有残留垃圾",
+       "rejected": null,
+       "candidate": "扫地机器人清扫完成后地面仍有残留垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1773,
+      "usage": {
+       "input_tokens": 365,
+       "output_tokens": 21,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 扫地机器人吸力不足或无法吸尘",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 扫地机器人吸力不足或无法吸尘"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 735,
+      "usage": {
+       "input_tokens": 365,
+       "output_tokens": 16,
+       "total_tokens": 381
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 吸力不足",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 吸力不足"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 658,
+      "usage": {
+       "input_tokens": 365,
+       "output_tokens": 19,
+       "total_tokens": 384
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 吸力不足或无法吸尘",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 吸力不足或无法吸尘"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 705,
+      "usage": {
+       "input_tokens": 366,
+       "output_tokens": 15,
+       "total_tokens": 381
+      },
+      "info": {
+       "query": "底部刷子上全是头发",
+       "rejected": null,
+       "candidate": "底部刷子上全是头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 649,
+      "usage": {
+       "input_tokens": 366,
+       "output_tokens": 15,
+       "total_tokens": 381
+      },
+      "info": {
+       "query": "底部刷子上全是头发",
+       "rejected": null,
+       "candidate": "底部刷子上全是头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 530,
+      "usage": {
+       "input_tokens": 366,
+       "output_tokens": 16,
+       "total_tokens": 382
+      },
+      "info": {
+       "query": "eufy X9 Pro 底部刷子缠绕头发",
+       "rejected": null,
+       "candidate": "eufy X9 Pro 底部刷子缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 739,
+      "usage": {
+       "input_tokens": 371,
+       "output_tokens": 18,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "eufy G30 Verge 侧刷不转",
+       "rejected": null,
+       "candidate": "eufy G30 Verge 侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 684,
+      "usage": {
+       "input_tokens": 371,
+       "output_tokens": 18,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "eufy G30 Verge 侧刷不转",
+       "rejected": null,
+       "candidate": "eufy G30 Verge 侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 950,
+      "usage": {
+       "input_tokens": 371,
+       "output_tokens": 23,
+       "total_tokens": 394
+      },
+      "info": {
+       "query": "eufy G30 Verge 侧刷不转",
+       "rejected": null,
+       "candidate": "eufy G30 Verge 侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 506,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 16,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy X9 Pro 垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "eufy X9 Pro 垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 542,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 16,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy X9 Pro 垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "eufy X9 Pro 垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 492,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 16,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy X9 Pro 垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "eufy X9 Pro 垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 521,
+      "usage": {
+       "input_tokens": 370,
+       "output_tokens": 9,
+       "total_tokens": 379
+      },
+      "info": {
+       "query": "扫地机器人有异响",
+       "rejected": null,
+       "candidate": "扫地机器人有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 774,
+      "usage": {
+       "input_tokens": 370,
+       "output_tokens": 9,
+       "total_tokens": 379
+      },
+      "info": {
+       "query": "扫地机器人有异响",
+       "rejected": null,
+       "candidate": "扫地机器人有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 678,
+      "usage": {
+       "input_tokens": 370,
+       "output_tokens": 14,
+       "total_tokens": 384
+      },
+      "info": {
+       "query": "扫地机器人有异响",
+       "rejected": null,
+       "candidate": "扫地机器人有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 871,
+      "usage": {
+       "input_tokens": 367,
+       "output_tokens": 18,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy L50 SES 扫地机器人清洁效果不佳",
+       "rejected": null,
+       "candidate": "eufy L50 SES 扫地机器人清洁效果不佳"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 620,
+      "usage": {
+       "input_tokens": 367,
+       "output_tokens": 23,
+       "total_tokens": 390
+      },
+      "info": {
+       "query": "eufy L50 SES 扫地机器人清洁效果不佳",
+       "rejected": null,
+       "candidate": "eufy L50 SES 扫地机器人清洁效果不佳"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 798,
+      "usage": {
+       "input_tokens": 367,
+       "output_tokens": 18,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy L50 SES 扫地机器人清洁效果不佳",
+       "rejected": null,
+       "candidate": "eufy L50 SES 扫地机器人清洁效果不佳"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 675,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 16,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 过滤网脏",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 过滤网脏"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 664,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 16,
+       "total_tokens": 385
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 过滤网脏",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 过滤网脏"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 667,
+      "usage": {
+       "input_tokens": 369,
+       "output_tokens": 21,
+       "total_tokens": 390
+      },
+      "info": {
+       "query": "eufy L60 Hybrid 过滤网脏",
+       "rejected": null,
+       "candidate": "eufy L60 Hybrid 过滤网脏"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 1.0,
+    "latency_p50_ms": 706,
+    "cost_cny_per_call": 8.6e-05,
+    "verdict": "primary_ok",
+    "reasons": []
+   },
+   {
+    "task": "query.rewrite",
+    "alias": "deepseek",
+    "model_used": "deepseek/deepseek-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "debris",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 877,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 12,
+       "total_tokens": 395
+      },
+      "info": {
+       "query": "扫地机器人清扫后地面仍有残渣",
+       "rejected": null,
+       "candidate": "扫地机器人清扫后地面仍有残渣"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 915,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 13,
+       "total_tokens": 396
+      },
+      "info": {
+       "query": "扫地机器人清扫后地面仍有残渣",
+       "rejected": null,
+       "candidate": "扫地机器人清扫后地面仍有残渣"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1295,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 13,
+       "total_tokens": 396
+      },
+      "info": {
+       "query": "扫地机器人清扫后地面仍有残留碎屑",
+       "rejected": null,
+       "candidate": "扫地机器人清扫后地面仍有残留碎屑"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1112,
+      "usage": {
+       "input_tokens": 374,
+       "output_tokens": 12,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "吸力不足 无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足 无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 948,
+      "usage": {
+       "input_tokens": 374,
+       "output_tokens": 12,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "吸力不足 无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足 无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1265,
+      "usage": {
+       "input_tokens": 374,
+       "output_tokens": 12,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "吸力不足 无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足 无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 810,
+      "usage": {
+       "input_tokens": 377,
+       "output_tokens": 9,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "滚刷缠绕头发",
+       "rejected": null,
+       "candidate": "滚刷缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 957,
+      "usage": {
+       "input_tokens": 377,
+       "output_tokens": 9,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "滚刷缠绕头发",
+       "rejected": null,
+       "candidate": "滚刷缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 542,
+      "usage": {
+       "input_tokens": 377,
+       "output_tokens": 9,
+       "total_tokens": 386
+      },
+      "info": {
+       "query": "滚刷缠绕大量毛发",
+       "rejected": null,
+       "candidate": "滚刷缠绕大量毛发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 986,
+      "usage": {
+       "input_tokens": 380,
+       "output_tokens": 8,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 836,
+      "usage": {
+       "input_tokens": 380,
+       "output_tokens": 8,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 515,
+      "usage": {
+       "input_tokens": 380,
+       "output_tokens": 8,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1163,
+      "usage": {
+       "input_tokens": 379,
+       "output_tokens": 10,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "垃圾盒无法安装到位",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装到位"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 890,
+      "usage": {
+       "input_tokens": 379,
+       "output_tokens": 10,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "垃圾盒无法安装到位",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装到位"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 858,
+      "usage": {
+       "input_tokens": 379,
+       "output_tokens": 10,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "垃圾盒无法安装到位",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装到位"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 685,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 15,
+       "total_tokens": 398
+      },
+      "info": {
+       "query": "扫地机器人 异响 非吸力小",
+       "rejected": null,
+       "candidate": "扫地机器人 异响 非吸力小"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 746,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 16,
+       "total_tokens": 399
+      },
+      "info": {
+       "query": "扫地机器人运行时有异响，不是吸力小",
+       "rejected": null,
+       "candidate": "扫地机器人运行时有异响，不是吸力小"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1268,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 15,
+       "total_tokens": 398
+      },
+      "info": {
+       "query": "扫地机器人 异响 非吸力小",
+       "rejected": null,
+       "candidate": "扫地机器人 异响 非吸力小"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 793,
+      "usage": {
+       "input_tokens": 376,
+       "output_tokens": 13,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "扫地机器人清扫效果差 扫不干净",
+       "rejected": null,
+       "candidate": "扫地机器人清扫效果差 扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 804,
+      "usage": {
+       "input_tokens": 376,
+       "output_tokens": 13,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "扫地机器人清扫效果差 扫不干净",
+       "rejected": null,
+       "candidate": "扫地机器人清扫效果差 扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 892,
+      "usage": {
+       "input_tokens": 376,
+       "output_tokens": 13,
+       "total_tokens": 389
+      },
+      "info": {
+       "query": "扫地机器人清扫效果差 扫不干净",
+       "rejected": null,
+       "candidate": "扫地机器人清扫效果差 扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 441,
+      "usage": {
+       "input_tokens": 378,
+       "output_tokens": 10,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": "过滤网脏污",
+       "rejected": null,
+       "candidate": "过滤网脏污"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 846,
+      "usage": {
+       "input_tokens": 378,
+       "output_tokens": 10,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": "过滤网脏污",
+       "rejected": null,
+       "candidate": "过滤网脏污"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 853,
+      "usage": {
+       "input_tokens": 378,
+       "output_tokens": 10,
+       "total_tokens": 388
+      },
+      "info": {
+       "query": "过滤网脏污",
+       "rejected": null,
+       "candidate": "过滤网脏污"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 0.875,
+    "latency_p50_ms": 841,
+    "cost_cny_per_call": 0.000915,
+    "verdict": "below",
+    "reasons": [
+     "accuracy 88% < 90%"
+    ]
+   },
+   {
+    "task": "query.rewrite",
+    "alias": "glm",
+    "model_used": "zhipu/glm-4.7",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "debris",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 972,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 11,
+       "total_tokens": 422
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫完地上还是一堆渣"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 972,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 11,
+       "total_tokens": 422
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫完地上还是一堆渣"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "debris",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 979,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 11,
+       "total_tokens": 422
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫完地上还是一堆渣"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 961,
+      "usage": {
+       "input_tokens": 403,
+       "output_tokens": 12,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "吸力不足无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 811,
+      "usage": {
+       "input_tokens": 403,
+       "output_tokens": 12,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "吸力不足无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "weak",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 744,
+      "usage": {
+       "input_tokens": 403,
+       "output_tokens": 12,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "吸力不足无法吸起垃圾",
+       "rejected": null,
+       "candidate": "吸力不足无法吸起垃圾"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1374,
+      "usage": {
+       "input_tokens": 406,
+       "output_tokens": 9,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "主刷缠绕头发",
+       "rejected": null,
+       "candidate": "主刷缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 672,
+      "usage": {
+       "input_tokens": 406,
+       "output_tokens": 9,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "主刷缠绕头发",
+       "rejected": null,
+       "candidate": "主刷缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "brush",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2556,
+      "usage": {
+       "input_tokens": 406,
+       "output_tokens": 9,
+       "total_tokens": 415
+      },
+      "info": {
+       "query": "主刷缠绕头发",
+       "rejected": null,
+       "candidate": "主刷缠绕头发"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 671,
+      "usage": {
+       "input_tokens": 410,
+       "output_tokens": 9,
+       "total_tokens": 419
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 1393,
+      "usage": {
+       "input_tokens": 410,
+       "output_tokens": 9,
+       "total_tokens": 419
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 781,
+      "usage": {
+       "input_tokens": 410,
+       "output_tokens": 9,
+       "total_tokens": 419
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "侧刷不转"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 557,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 9,
+       "total_tokens": 417
+      },
+      "info": {
+       "query": "垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 755,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 9,
+       "total_tokens": 417
+      },
+      "info": {
+       "query": "垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "bin",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 720,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 9,
+       "total_tokens": 417
+      },
+      "info": {
+       "query": "垃圾盒无法安装",
+       "rejected": null,
+       "candidate": "垃圾盒无法安装"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 822,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 12,
+       "total_tokens": 423
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "不是吸力小是有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 825,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 12,
+       "total_tokens": 423
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "不是吸力小是有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 824,
+      "usage": {
+       "input_tokens": 411,
+       "output_tokens": 12,
+       "total_tokens": 423
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "不是吸力小是有异响"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 578,
+      "usage": {
+       "input_tokens": 405,
+       "output_tokens": 8,
+       "total_tokens": 413
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 672,
+      "usage": {
+       "input_tokens": 405,
+       "output_tokens": 8,
+       "total_tokens": 413
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "english",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 806,
+      "usage": {
+       "input_tokens": 405,
+       "output_tokens": 12,
+       "total_tokens": 417
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "扫不干净"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 529,
+      "usage": {
+       "input_tokens": 407,
+       "output_tokens": 9,
+       "total_tokens": 416
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "过滤网很脏"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 1621,
+      "usage": {
+       "input_tokens": 407,
+       "output_tokens": 9,
+       "total_tokens": 416
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "过滤网很脏"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "filter",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.0,
+      "latency_ms": 546,
+      "usage": {
+       "input_tokens": 407,
+       "output_tokens": 9,
+       "total_tokens": 416
+      },
+      "info": {
+       "query": null,
+       "rejected": "same_as_original",
+       "candidate": "过滤网很脏"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 0.375,
+    "latency_p50_ms": 796,
+    "cost_cny_per_call": 0.000894,
+    "verdict": "below",
+    "reasons": [
+     "accuracy 38% < 90%"
+    ]
+   }
+  ],
+  "primary": "qwen-flash",
+  "fallback": null,
+  "note": "无来自另一家厂商的达标备用位（§3.8 要求主备至少两家）"
+ }
+]

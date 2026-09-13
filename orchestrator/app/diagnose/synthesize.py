@@ -111,8 +111,22 @@ INSTRUCTION = (
     "根据 <data> 段中的用户描述、图片观察与检索片段，从「允许的排障计划」里选出最可能的假设，最多 {n} 个：\n"
     "- plan_id 只能取允许列表中的值；每个假设至少引用一条支撑它的 evidence_id（只能用给出的 id）；\n"
     "- confidence 为 0–1；rationale 不超过 40 字；不要编造检索片段里没有的现象或原因；\n"
+    "- 标为「未解决工单」的片段只说明该次服务未确认解决，不能作为方案依据，只可用作反证；\n"
     "- 没有任何计划能解释时输出空列表。只输出 JSON。"
 )
+
+OUTCOME_LABELS = {"solved": "，已解决工单", "unsolved": "，未解决工单", "unknown": "，结果未知工单"}
+
+
+def _evidence_text(e: dict[str, Any]) -> str:
+    """阶段 4：有父块正文用父块（≤ 800 字），否则子块 snippet（≤ 300 字）。"""
+    full = e.get("full_text")
+    return str(full)[:800] if full else str(e.get("snippet", ""))[:300]
+
+
+def _outcome_label(e: dict[str, Any]) -> str:
+    """P0-4：工单结果标签；手册 / FAQ（n/a）与旧形状（无字段）不加。"""
+    return OUTCOME_LABELS.get(str(e.get("case_outcome") or ""), "")
 
 
 async def synthesize(
@@ -151,7 +165,7 @@ async def synthesize(
         }
     plans_text = "\n".join(f"- {p.plan_id}：{p.fault}（首步：{p.steps[0].title}）" for p in allowed)
     ev_text = "\n".join(
-        f"[{e['evidence_id']}] ({e.get('source')}) {e.get('snippet', '')[:300]}"
+        f"[{e['evidence_id']}] ({e.get('source')}{_outcome_label(e)}) {_evidence_text(e)}"
         for e in evidence[:12]
     )
     obs_text = "\n".join(observations) if observations else "（无图片观察）"

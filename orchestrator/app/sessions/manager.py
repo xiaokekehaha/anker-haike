@@ -143,31 +143,49 @@ class RunManager:
 
     # ---- 重启后的孤儿 run ----
     async def reconcile_orphans(self) -> list[tuple[str, str]]:
-        """把投影表里仍标 active 但本进程没有在跑的 run 以 error → done(error) 收尾（服务重启）。"""
+        """把投影表里仍标 active 但本进程没有在跑的 run 以 error → done(error) 收尾（服务重启）。
+        单个会话收尾失败只跳过该会话：一条坏数据不能让整轮收尾（以及启动流程）中断。"""
         fixed: list[tuple[str, str]] = []
         for session_id, run_id in await self._store.list_active_runs():
             if self.is_live(run_id):
                 continue
-            em = runner.RunEmitter(self._store, session_id, run_id)
-            prior = await self._store.list_events(session_id)
-            em.last_seq = max((e["seq"] for e in prior), default=0)
-            already_done = any(e["run_id"] == run_id and e["type"] == "done" for e in prior)
-            version = await runner.checkpoint_version(self._graph, session_id)
-            if not already_done:
-                await em.emit(
-                    {
-                        "type": "error",
-                        "code": "server_restarted",
-                        "message": "编排服务重启，本轮处理中断，请重新发送",
-                        "recoverable": True,
-                        "retry_with_same_action": False,
-                    }
+            try:
+                await self._finalize_orphan(session_id, run_id)
+            except Exception as exc:  # noqa: BLE001 - 坏会话跳过，其余仍要收尾
+                log.error(
+                    "orphan run reconcile failed session=%s run=%s: %s: %s",
+                    session_id,
+                    run_id,
+                    type(exc).__name__,
+                    str(exc)[:200],
                 )
-                await em.emit({"type": "done", "reason": "error", "version": version})
-            await self._store.finish_run(session_id, run_id, version=version)
+                continue
             fixed.append((session_id, run_id))
             log.warning("orphan run finalized session=%s run=%s", session_id, run_id)
         return fixed
+
+    async def _finalize_orphan(self, session_id: str, run_id: str) -> None:
+        em = runner.RunEmitter(self._store, session_id, run_id)
+        # seq / run_id / type 取自事件表的列，不读 event_json：历史行的 JSON 可能缺字段，
+        # 且 last_seq 必须是库里真实的最大 seq，否则续写会撞唯一约束。
+        prior = await self._store.list_event_records(session_id)
+        em.last_seq = max((r.seq for r in prior), default=0)
+        already_done = any(
+            r.run_id == run_id and r.event.get("type") == "done" for r in prior
+        )
+        version = await runner.checkpoint_version(self._graph, session_id)
+        if not already_done:
+            await em.emit(
+                {
+                    "type": "error",
+                    "code": "server_restarted",
+                    "message": "编排服务重启，本轮处理中断，请重新发送",
+                    "recoverable": True,
+                    "retry_with_same_action": False,
+                }
+            )
+            await em.emit({"type": "done", "reason": "error", "version": version})
+        await self._store.finish_run(session_id, run_id, version=version)
 
     async def shutdown(self) -> None:
         for h in list(self._live.values()):

@@ -94,6 +94,16 @@ describe('session reducer (票 06)', () => {
     });
     expect(restored).toMatchObject({ id: 'sid', version: 7, stage: 'guide', ui: 'awaiting_input' });
     expect(restored.timeline).toHaveLength(1);
+    // 快照没带 last_error：成功推进后不该再挂着上一轮的错误
+    expect(restored.error).toBeNull();
+    const withError = reducer(s, {
+      type: 'restore',
+      now: 1_000,
+      snapshot: { session_id: 'sid', version: 7, stage: 'guide', timeline: [], pending_input: null, active_run: null, cancelled_run: null, substage: null,
+        last_error: { code: 'node_failed', message: '规则服务不可用', recoverable: false, at: 't' } },
+    });
+    // 快照带错误时，文案与 recoverable 跟实时 error 事件一致，不再退回空 message
+    expect(withError.error).toEqual({ code: 'node_failed', message: '规则服务不可用', recoverable: false });
     const streaming = reducer(s, { type: 'restore', now: 1_000, snapshot: { session_id: 'sid', version: 7, stage: 'diagnose', timeline: [], pending_input: null, active_run: { run_id: 'r2', started_at: 't', deadline_at: new Date(30_000).toISOString() }, last_error: null, cancelled_run: null, substage: null } });
     expect(streaming.ui).toBe('streaming');
     expect(streaming.activeRun?.run_id).toBe('r2');

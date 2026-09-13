@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { ApiError, cancelRun, createSession, getSnapshot, newId, postAction, resumeEvents, sendMessage } from '../api/client';
 import { readSSE } from '../api/sse';
+import { makeTitle, removeRecent, touchRecent, useRecentSessions } from './recentSessions';
 import type { ActionRequest } from '../types/actions';
 import type { SessionSnapshot } from '../types/snapshot';
 import { reducer } from './reducer';
@@ -14,8 +15,14 @@ const GRACE_MS = 5_000;
 const MAX_RECONNECTS = 2;
 export type SendOptions = { files?: File[]; purpose?: 'fault' | 'receipt' };
 
+function noteSnapshot(id: string, snapshot: SessionSnapshot) {
+  const first = snapshot.timeline?.find((item) => item.kind === 'user_message');
+  touchRecent(id, { stage: snapshot.stage, title: first && 'text' in first ? makeTitle(first.text) : null });
+}
+
 export function useSession() {
   const [state, reactDispatch] = useReducer(reducer, initialState);
+  const recent = useRecentSessions();
   // 同步投影保证同一批 SSE 的 done 在 React 下一次 render 前就可见。
   const stateRef = useRef(initialState);
   const operation = useRef<AbortController | null>(null);
@@ -55,7 +62,12 @@ export function useSession() {
         retry = event.reason === 'error' && retryAllowed;
       }
       dispatch({ type: 'server_event', event });
-      if (event.type === 'done') return false;
+      if (event.type === 'done') {
+        // 本轮结束即把阶段写进最近列表，不用等下次恢复
+        const s = stateRef.current;
+        if (s.id) touchRecent(s.id, { stage: s.stage });
+        return false;
+      }
     }, controller.signal);
     return { terminal, retry };
   }
@@ -68,6 +80,7 @@ export function useSession() {
       supplied = undefined;
       if (!current(controller)) return;
       dispatch({ type: 'restore', snapshot });
+      noteSnapshot(id, snapshot);
       const active = snapshot.active_run;
       if (!active || new Date(active.deadline_at).getTime() + GRACE_MS <= Date.now()) return;
       try {
@@ -78,7 +91,7 @@ export function useSession() {
         if (result.terminal) {
           // 完成后重取权威卡片结果、用户消息 ID、pending 与取消状态。
           const finalSnapshot = await getSnapshot(id, controller.signal);
-          if (current(controller)) dispatch({ type: 'restore', snapshot: finalSnapshot });
+          if (current(controller)) { dispatch({ type: 'restore', snapshot: finalSnapshot }); noteSnapshot(id, finalSnapshot); }
           return;
         }
       } catch (error) {
@@ -100,23 +113,28 @@ export function useSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+  /** 打开一个已存在的会话：写入本页引用并恢复；确定不存在（404）才移除本地引用与最近记录。 */
+  function open(id: string) {
+    const controller = begin();
+    try { sessionStorage.setItem(STORAGE_KEY, id); } catch { /* storage unavailable */ }
+    dispatch({ type: 'session_created', id, version: 0 });
+    return restore(id, controller).catch((error: unknown) => {
+      if (!current(controller)) return;
+      // 网络错误保留会话，只有确定不存在才移除本地引用。
+      if (error instanceof ApiError && error.status === 404) {
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* storage unavailable */ }
+        removeRecent(id);
+        dispatch({ type: 'reset' });
+        dispatch({ type: 'notice', message: '该会话已过期或已删除，请开始新会话' });
+      } else fail(error, controller);
+    }).finally(() => finish(controller));
+  }
+
   useEffect(() => {
     mounted.current = true;
     let saved: string | null = null;
     try { saved = sessionStorage.getItem(STORAGE_KEY); } catch { /* storage unavailable */ }
-    if (saved) {
-      const id = saved;
-      const controller = begin();
-      dispatch({ type: 'session_created', id, version: 0 });
-      void restore(id, controller).catch((error: unknown) => {
-        if (!current(controller)) return;
-        // 网络错误保留会话，只有确定不存在才移除本地引用。
-        if (error instanceof ApiError && error.status === 404) {
-          try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* storage unavailable */ }
-          dispatch({ type: 'reset' });
-        } else fail(error, controller);
-      }).finally(() => finish(controller));
-    }
+    if (saved) void open(saved);
     return () => { mounted.current = false; operation.current?.abort(); operation.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
@@ -153,6 +171,7 @@ export function useSession() {
         try { sessionStorage.setItem(STORAGE_KEY, id); } catch { /* storage unavailable */ }
       }
       dispatch({ type: 'user_send', id: `local-${newId()}`, text, at: new Date().toISOString() });
+      touchRecent(id, { title: makeTitle(text) });
       let recovering = false;
       try {
         const response = await sendMessage(id, text, opts.files ?? [], opts.purpose ?? 'fault', controller.signal);
@@ -241,5 +260,23 @@ export function useSession() {
     dispatch({ type: 'reset' });
   }, [dispatch]);
 
-  return { state, send, act, cancel, requestHuman, recover, reset, clearError: () => dispatch({ type: 'clear_error' }) };
+  /** 新建会话：有 active run 先取消（尽力而为），再清空本页引用；旧会话留在最近列表里可切回。 */
+  const startNew = useCallback(async () => {
+    const s = stateRef.current;
+    if (s.id && s.activeRun) {
+      const controller = begin();
+      try { await cancelRun(s.id, s.activeRun.run_id, controller.signal); } catch { /* 服务端会按 deadline 自行结束 */ }
+    }
+    reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reset]);
+
+  /** 切换到最近列表里的会话：不取消服务端 run，仅中止本页请求后按快照恢复。 */
+  const switchTo = useCallback(async (id: string) => {
+    if (!id || id === stateRef.current.id) return;
+    await open(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  return { state, recent, send, act, cancel, requestHuman, recover, reset, startNew, switchTo, clearError: () => dispatch({ type: 'clear_error' }) };
 }

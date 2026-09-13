@@ -1,0 +1,16 @@
+# 进度
+- 2026-09-13：读取项目约定、实现主计划及近期提交；建立独立验收目录。
+- 完成：后端 432、前端 123、契约 62、生成器 6；lint/typecheck/build/contracts-check/db-check 通过；stub 29/29，A1/A2/A3 离线回放通过。
+- 真实环境：A1 0/1，node_failed；容器旧 RulesConfig 不支持 pre_step；缺步骤引导/保留/告警/巡检模块。
+- 产出：ticket-inventory.md、report.md、inspection/、live/ 与回放日志。
+- 工具执行问题：几次猜测的文件路径不存在，改用实际路径；清单脚本在系统 Python 3.9 中不支持 f-string 内正则反斜线，拆为局部变量后成功；首次 A2/A3 case 名不正确退出 2，按 replay-list 的实际名称重跑均通过。未当作产品缺陷。
+- 用户授权“同步，然后继续验收”。开始接续，工作树已有 config/models.yaml 与 config/bakeoff.yaml 未提交修改；保留并核对，部署当前工作区。
+- 镜像构建完成（d474b516ad86）。同步前备份 haike 679075 bytes / WeKnora 491550 bytes，20260913T004743Z。
+- 同步时修正 docker-compose.yml：真实 KB 清单只读挂载 /srv/data/knowledge/manifest.json，并设置 KB_MANIFEST_PATH；replay/kb_manifest.json 仅含版本号，不能用于实时检索。
+- 新增独立 HTTP 验收脚本 live_acceptance.py，覆盖 A1/A2/A3（不可读图手工确认）、中途纠正、SSE 断连续接与取消。
+- 最终镜像 sha256:3ea2c82bf8b3d3b6fa583329fd132d1e018b8ec50e463bed70c6c82f55af0500 已部署并标记本地验收版本。
+- 修复容器 retrieval 配置路径并新增两条回归：红 1/2 → 相关 26/26 → 全量 434/434；最终容器 retrieval_version=2026-09-12.1。
+- 最终真实 HTTP 六组 6/6；额外真实 5 并发 5/5（步骤卡 5.601–6.298 s）；浏览器完成 A1、刷新恢复、390 px 无溢出，error 日志为空。
+- 容器内智谱 glm-4.7 最小请求成功（3.684 s）；不可视为完整双厂商各 task 验收。
+- 更新 RELEASE.md 与 releases/20260913-4abcd4e-sync-085548/config/，修复 release.sh 中文标点附近变量误解析问题；本地镜像未推送，工作区未提交。
+- post-sync-report.md 已记录修复、通过项、演示边界及剩余缺口；原 report.md 添加最新报告入口。

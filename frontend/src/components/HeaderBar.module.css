@@ -5,8 +5,10 @@
 .brand strong { font-size: 18px; font-weight: 650; letter-spacing: 1px; }
 .brandCaption { display: block; font-size: 9px; letter-spacing: 1.5px; color: var(--muted); margin-top: 4px; }
 .health { display: flex; align-items: center; gap: 24px; }
+.modelsButton { flex-shrink: 0; text-align: left; background: var(--subtle); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 12px; }
+.modelsButton:hover { border-color: var(--accent); }
 .services { list-style: none; display: flex; gap: 26px; padding: 0; margin: 0; }
-.service { display: flex; align-items: center; gap: 9px; font-size: 12px; line-height: 1.4; }
+.service { display: flex; align-items: center; gap: 9px; font-size: 12px; line-height: 1.4; white-space: nowrap; }
 .serviceStatus { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warning); flex-shrink: 0; }
 .dot[data-status="ok"] { background: var(--ok); }
@@ -16,9 +18,11 @@
 @media (max-width: 660px) {
   .inner { padding: 20px; flex-wrap: wrap; gap: 20px; }
   .brand strong { font-size: 17px; }
-  .health { width: 100%; justify-content: space-between; gap: 12px; }
+  .health { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .modelsButton { padding: 8px 10px; }
   .services { flex: 1; justify-content: space-between; gap: 12px; }
-  .refresh { margin-left: 10px; }
+  .refresh { flex-shrink: 0; }
+  .replay { order: 1; }
 }
 
 /* 票 43：回放模式徽标 —— 全程录制数据，须一眼可辨 */

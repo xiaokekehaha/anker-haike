@@ -252,6 +252,45 @@ async def run_rewrite(router: ModelRouter, s: Sample, lane: str) -> tuple[float,
     }
 
 
+async def run_grade(router: ModelRouter, s: Sample, lane: str) -> tuple[float, dict[str, Any]]:
+    """retrieve.grade：样本给命中片段与期望 verdict；评「逐条判定正确率 + coverage 合法且在期望集合内」。"""
+    from app.diagnose.config import get_retrieval_config
+    from app.diagnose.grade import grade_hits
+    from app.knowledge.adapter import Hit
+
+    hits = [
+        Hit(
+            evidence_id=h["id"],
+            knowledge_id="k",
+            chunk_id=h["id"],
+            doc_id=h.get("doc_id", "manual_rv_v1"),
+            doc_version="bakeoff",
+            source=h.get("source", "kb_manual"),
+            snippet=h["snippet"],
+            score=float(h.get("score", 0.5)),
+        )
+        for h in s.input["hits"]
+    ]
+    out = await grade_hits(
+        router,
+        hits=hits,
+        user_text=s.input["text"],
+        symptoms=s.input.get("symptoms") or [],
+        product=s.input.get("product"),
+        cfg=get_retrieval_config().grade,
+        budget_ms=20_000,
+        session_id=f"bakeoff-{s.id}",
+        lane=lane,
+    )
+    return scoring.score_grade(out, s.expect), {
+        "status": out.status,
+        "coverage": out.coverage,
+        "verdicts": out.verdicts,
+        "model_used": out.model_used,
+        "reason": out.reason,
+    }
+
+
 async def _put_images(sample: Sample, purpose: str):
     from app.images.store import InMemoryImageStore
 
@@ -318,6 +357,7 @@ ADAPTORS: dict[str, Adaptor] = {
     "reply.stream": run_stream,
     "escalate.summary": run_summary,
     "query.rewrite": run_rewrite,
+    "retrieve.grade": run_grade,
     "diagnose.vision": run_vision,
     "warranty.receipt_ocr": run_receipt,
 }

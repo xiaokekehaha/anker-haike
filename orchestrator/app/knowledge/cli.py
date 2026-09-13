@@ -1,7 +1,11 @@
 """haike-kb：WeKnora 知识库运维。
 
 haike-kb bootstrap            注册项目独立 tenant（本地自助注册）并打印 tenant id；key 写入 .env 的 WEKNORA_API_KEY
-haike-kb ingest [--prune]     幂等导入 kb_manual / faq / kb_tickets，写 data/knowledge/manifest.json
+haike-kb ingest [--prune] [--recreate-kb]
+                              幂等导入 kb_manual / faq / kb_tickets，写 data/knowledge/manifest.json；
+                              --recreate-kb：知识库绑定的 embedding 模型与目标不同时删库重建（换 embedding 时用）
+haike-kb eval [--arm A] [--config data/eval/retrieval/configs/B.yaml] [--cases …] [--top-k 5]
+                              用评测集直接打 KnowledgeAdapter，输出 hit@k / precision@k / 泄漏 / 延迟到 reports/retrieval/
 haike-kb verify               打印各知识库解析状态与 custom_metadata
 haike-kb search "query"       用 knowledge-search 试检索（验证 rerank 不可用时仍有结果）
 haike-kb snapshot export|import [DIR]
@@ -59,6 +63,25 @@ def _embedding_spec() -> dict | None:
     }
 
 
+def _rerank_spec() -> dict | None:
+    """有 DASHSCOPE_API_KEY 时登记百炼 gte-rerank-v2（models.yaml rerank-primary，D17）并绑到知识库。"""
+    key = os.environ.get("RERANK_API_KEY") or os.environ.get("DASHSCOPE_API_KEY")
+    if not key:
+        return None
+    return {
+        "name": os.environ.get("RERANK_MODEL_NAME") or "gte-rerank-v2",
+        "type": "Rerank",
+        "source": "remote",
+        "description": "百炼 gte-rerank-v2（D17）",
+        "parameters": {
+            "provider": "aliyun",
+            "base_url": os.environ.get("RERANK_BASE_URL")
+            or "https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank",
+            "api_key": key,
+        },
+    }
+
+
 async def _bootstrap(password: str) -> int:
     """注册（已存在则登录）→ active_tenant → 建全权限 API key → 写 .env。v0.8.0 实测：登录响应无 data 包装，
     tenant 在 `active_tenant`，注册不返回 api_key，需 `POST /tenants/{id}/api-keys`（受限 key 要 capabilities，
@@ -107,10 +130,11 @@ def _write_env(name: str, value: str) -> None:
     env.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-async def _ingest(prune: bool, wait: bool) -> int:
+async def _ingest(prune: bool, wait: bool, recreate_kb: bool = False) -> int:
     async with _client() as c:
-        ing = Ingestor(c)
+        ing = Ingestor(c, recreate_on_embedding_change=recreate_kb)
         ing.embedding_model_id = await ing.ensure_embedding_model(_embedding_spec())
+        await ing.ensure_rerank_model(_rerank_spec())
         report = await ing.ingest_all(DATA_ROOT, prune=prune)
         if wait:
             for name, kb_id in report.kb_ids.items():
@@ -119,7 +143,10 @@ async def _ingest(prune: bool, wait: bool) -> int:
         manifest = write_manifest(MANIFEST, report, source_root=DATA_ROOT)
     print(
         json.dumps(
-            {k: manifest[k] for k in ("kb_ver", "knowledge_bases", "counts", "errors")},
+            {
+                **{k: manifest[k] for k in ("kb_ver", "knowledge_bases", "counts", "errors")},
+                "recreated_kbs": report.recreated_kbs,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -192,6 +219,22 @@ def main(argv: list[str] | None = None) -> int:
     i = sub.add_parser("ingest")
     i.add_argument("--prune", action="store_true")
     i.add_argument("--no-wait", action="store_true")
+    i.add_argument("--recreate-kb", action="store_true")
+    ev = sub.add_parser("eval")
+    ev.add_argument("--arm", default="A")
+    ev.add_argument(
+        "--cases", default=str(REPO_ROOT / "data" / "eval" / "retrieval" / "cases.yaml")
+    )
+    ev.add_argument("--top-k", type=int, default=5)
+    ev.add_argument("--out-dir", default=str(REPO_ROOT / "reports" / "retrieval"))
+    ev.add_argument(
+        "--config", default=None, help="覆盖 config/retrieval.yaml（各对照组的开关文件）"
+    )
+    ev.add_argument(
+        "--with-synthesize",
+        action="store_true",
+        help="再用真实模型跑 grade（若开）+ synthesize，比较 expected_plan / expected_outcome（需厂商 key）",
+    )
     sub.add_parser("verify")
     s = sub.add_parser("search")
     s.add_argument("query")
@@ -203,7 +246,21 @@ def main(argv: list[str] | None = None) -> int:
         if args.cmd == "bootstrap":
             return asyncio.run(_bootstrap(args.password))
         if args.cmd == "ingest":
-            return asyncio.run(_ingest(args.prune, not args.no_wait))
+            return asyncio.run(_ingest(args.prune, not args.no_wait, args.recreate_kb))
+        if args.cmd == "eval":
+            from app.knowledge.eval import run_eval
+
+            return asyncio.run(
+                run_eval(
+                    _client(),
+                    Path(args.cases),
+                    arm=args.arm,
+                    top_k=args.top_k,
+                    out_dir=Path(args.out_dir),
+                    config_path=Path(args.config) if args.config else None,
+                    with_synthesize=args.with_synthesize,
+                )
+            )
         if args.cmd == "verify":
             return asyncio.run(_verify())
         if args.cmd == "search":

@@ -2,17 +2,23 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.admin.router import router as admin_router
+from app.analytics.runtime import close_analytics, open_analytics
 from app.catalog import ProductCatalog
 from app.faultcards.runtime import get_fault_card_library
 from app.health.router import router as health_router
 from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
+from app.models.api import router as models_router
+from app.models.probe import ModelProbes
 from app.models.runtime import set_model_router
 from app.observability.alerts import build_from_settings, health_watch_loop, set_alert_manager
 from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
@@ -37,6 +43,12 @@ async def _lifespan(app: FastAPI):
     # 票 43：REPLAY_CASE_ID 设置时加载录制包并核对 {prompt_ver, models_ver, kb_ver, rules_ver}；
     # 不符抛 ReplayIncompatible → 进程启动失败（不静默降级到真实模型）
     app.state.replay = get_replay_package()
+    probe_disabled = None
+    if app.state.replay is not None:
+        probe_disabled = "演示回放模式不发起真实模型检测"
+    elif os.environ.get("HAIKE_LLM", "on").lower() in ("off", "0", "false"):
+        probe_disabled = "当前环境已关闭真实模型调用"
+    app.state.model_probes = ModelProbes(app.state.model_registry, disabled_reason=probe_disabled)
     if app.state.replay is not None:
         from app.replay.router import ReplayRouter
 
@@ -63,6 +75,7 @@ async def _lifespan(app: FastAPI):
     # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
     await open_session_runtime(app)
     await open_image_store(app)  # 票 29：复用会话连接池
+    await open_analytics(app)  # 管理员观测台：事实采集 sink（复用会话连接池）
     # 票 48：分类 TTL 清理循环（会话 24 h / 追踪 7 d；图片 1 h 由 images.runtime 负责）
     app.state.retention_task = (
         asyncio.create_task(retention_loop(app.state.session_pool), name="retention")
@@ -95,6 +108,7 @@ async def _lifespan(app: FastAPI):
     try:
         yield
     finally:
+        await app.state.model_probes.close()
         set_exporter(None)
         if exporter:
             await exporter.close()
@@ -107,6 +121,7 @@ async def _lifespan(app: FastAPI):
             set_alert_manager(None)
         if getattr(app.state, "retention_task", None) is not None:
             app.state.retention_task.cancel()
+        await close_analytics(app)
         await close_image_store(app)
         await close_session_runtime(app)
 
@@ -114,9 +129,20 @@ async def _lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(title="智能服务编排", version="0.1.0", lifespan=_lifespan)
     app.include_router(health_router)
+    app.include_router(models_router)
     app.include_router(sessions_router)
+    app.include_router(admin_router)  # 管理员观测台 /admin/api/*（黑客松范围无鉴权）
 
     static_dir = Path(settings.static_dir)
+    admin_index = static_dir / "admin" / "index.html"
+    if admin_index.is_file():
+        # 观测台是单页应用：/admin 下的深链（/admin/sessions/<id>）都回同一个 index.html，
+        # 由前端路由接管。注册在静态挂载之前、API 之后，不会遮住 /admin/api/*。
+        @app.get("/admin", include_in_schema=False)
+        @app.get("/admin/{path:path}", include_in_schema=False)
+        async def admin_spa(path: str = "") -> FileResponse:
+            return FileResponse(admin_index)
+
     if static_dir.is_dir():
         # 前端构建产物同源托管（票 02）；放在最后以免遮住 API 路由
         app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")

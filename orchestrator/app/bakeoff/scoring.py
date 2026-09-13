@@ -183,3 +183,17 @@ def score_receipt(out: Any, expect: dict[str, Any]) -> float:
     for k in unreadable:
         checks.append(out.fields.get(k) is None)
     return _checks(checks)
+
+
+def score_grade(out: Any, expect: dict[str, Any]) -> float:
+    """逐条 verdict 命中期望（relevant / irrelevant 两个列表）+ coverage 在期望集合内；未评分（模型失败）记 0。"""
+    if out.status != "graded":
+        return 0.0
+    checks: list[bool] = []
+    for eid in expect.get("relevant") or []:
+        checks.append(out.verdicts.get(eid) == "relevant")
+    for eid in expect.get("irrelevant") or []:
+        checks.append(out.verdicts.get(eid) == "irrelevant")
+    if "coverage_in" in expect:
+        checks.append(out.coverage in expect["coverage_in"])
+    return _checks(checks)

@@ -1,0 +1,52 @@
+{
+  "summary": {
+    "generated_at": "2026-09-13T00:36:49.735164+00:00",
+    "git": "4abcd4e",
+    "python": "3.14.7",
+    "mode": "stub+live",
+    "live_url": "http://127.0.0.1:8000",
+    "groups": [
+      "live"
+    ],
+    "total": 1,
+    "passed": 0,
+    "failed": [
+      "live_a1_real_model"
+    ],
+    "by_group": {
+      "live": {
+        "passed": 0,
+        "failed": 1
+      }
+    },
+    "latency": {
+      "first_visible_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "card_ready_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      }
+    },
+    "concurrency": null,
+    "rewrite": [],
+    "live": []
+  },
+  "results": [
+    {
+      "name": "live_a1_real_model",
+      "group": "live",
+      "title": "真实服务 A1 语义样例（--live）：首个可见 delta、步骤卡就绪；不用于替代 stub 路由测试",
+      "passed": false,
+      "elapsed_ms": 319,
+      "detail": {},
+      "error": "AssertionError: 真实 A1 未出步骤卡：['run_started', 'progress', 'error', 'done']",
+      "metrics": {}
+    }
+  ]
+}

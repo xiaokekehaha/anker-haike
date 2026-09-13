@@ -47,8 +47,11 @@ plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
 ## ---- 知识库（票 26）----
 kb-bootstrap: ## 在本机 WeKnora 自助注册项目独立 tenant，并把 API key 写入 .env
 	cd orchestrator && uv run --env-file ../.env haike-kb bootstrap
-kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=1 清理多余条目）
-	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(PRUNE),--prune,)
+kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=1 清理多余条目；RECREATE_KB=1 换 embedding 时删库重建）
+	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(PRUNE),--prune,) $(if $(RECREATE_KB),--recreate-kb,)
+
+kb-eval: ## 检索评测（ARM=A|B|C，默认 A）：data/eval/retrieval/cases.yaml → reports/retrieval/
+	cd orchestrator && uv run --env-file ../.env haike-kb eval --arm $(or $(ARM),A)
 kb-verify: ## 打印各知识库解析状态与 custom_metadata
 	cd orchestrator && uv run --env-file ../.env haike-kb verify
 kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）
@@ -89,6 +92,12 @@ db-revision: ## 新建一条空迁移：make db-revision MSG="add session_images
 	cd orchestrator && uv run alembic -c alembic.ini revision -m "$(MSG)"
 inspect: ## 故障与边界场景巡检（票 45）：stub 模型一条命令跑完并回填 findings.md；make inspect LIVE=http://127.0.0.1:8000 追加真实 A1 样例
 	cd orchestrator && uv run --env-file ../.env haike-inspect $(if $(LIVE),--live $(LIVE),) $(if $(GROUP),--group $(GROUP),)
+
+## ---- 管理员观测台（docs/planning/2026-09-13_admin-observability-console）----
+analytics-backfill: ## 把历史会话补成观测台事实（幂等，可反复跑）：make analytics-backfill [SINCE=2026-09-01] [DRY=1]
+	cd orchestrator && uv run --env-file ../.env haike-analytics backfill $(if $(SINCE),--since $(SINCE),) $(if $(DRY),--dry-run,)
+analytics-stats: ## 打印各事实表行数与结果分布
+	cd orchestrator && uv run --env-file ../.env haike-analytics stats
 
 retention-purge: ## 按分类 TTL 清理一轮（会话 24 h / 追踪 7 d）并打印统计：make retention-purge [HOURS=24]
 	cd orchestrator && uv run --env-file ../.env haike-retention purge $(if $(HOURS),--session-hours $(HOURS),)

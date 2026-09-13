@@ -69,6 +69,15 @@ class Settings(BaseSettings):
     )
     kb_ver: str = Field(default="", alias="KB_VER")
 
+    # 管理员观测台（docs/planning/2026-09-13_admin-observability-console）：旁路采集，关掉只是没有面板数据
+    analytics_enabled: bool = Field(default=True, alias="ANALYTICS_ENABLED")
+    analytics_queue_capacity: int = Field(default=2000, alias="ANALYTICS_QUEUE_CAPACITY")
+    analytics_flush_ms: int = Field(default=1000, alias="ANALYTICS_FLUSH_MS")
+    # 会话首问是否入库（脱敏后截断）；关掉则列表页只显示结构化字段
+    analytics_store_text: bool = Field(default=True, alias="ANALYTICS_STORE_TEXT")
+    # 未终结会话多久算「放弃」（查询时现算，不改库）
+    analytics_abandon_after_h: float = Field(default=6.0, alias="ANALYTICS_ABANDON_AFTER_H")
+
     health_timeout_s: float = Field(default=2.0, alias="HEALTH_TIMEOUT_S")
     # 票 48：数据保留（07 §12 记忆分类 TTL）与人工删除接口的口令；ADMIN_TOKEN 为空则 DELETE /sessions/{id} 关闭
     retention_session_hours: float = Field(default=24.0, alias="RETENTION_SESSION_HOURS")

@@ -1,0 +1,223 @@
+# 检索评测集（有界 Agentic RAG，docs/planning/2026-09-13_bounded-agentic-rag/design.md §9）。
+#
+# 状态：draft。首批 56 条由 Claude 依据 data/knowledge 语料起草（2026-09-13），尚未人工标注；
+# 每条 `annotated: false`，人工核对后改 true 并在 annotator 写名字。未标注的样例只能用于回归对比，不能作为开启开关的依据。
+#
+# 字段：
+#   id                 唯一编号
+#   product_state      confirmed_sku | category_only
+#   sku / category     confirmed_sku 给 sku；category_only 只给 category
+#   text               用户原话（口语）
+#   symptoms           intake 抽取后的有效症状（若为空，query 退回原文）
+#   expected_doc_ids   金标文档：manual_rv_v1 / manual_rv_v2 / troubleshooting_rv / faq_rv / T0001 等；任一进 top5 记 hit
+#   expected_chunk_hint 人可读的段落提示（c12 为手册标记，A–E 为排障手册章节，1–5 为 v2 手册章节，q7 为 FAQ 条目）
+#   expected_plan      期望 synthesize 排第一的 plan_id；null 表示无适用计划
+#   expected_outcome   evidence（有证据选计划）| standard_flow（无证据按预写计划）| escalate（R4/R5/R8）| no_query
+#   irrelevant_hint    若首轮容易召回但不相关的内容，写在这里供错配统计
+#   tags               口语 | 错别字 | 多症状 | 否定 | 精确词 | 反证工单 | 无知识 | faq_only | 品类级 | 安全 | 无计划 | A1 | A2
+#   annotated / annotator / note
+#
+# 范围提醒：manual_rv_v1 只对 X10 / X9 / X8 可见；manual_rv_v2 只对 L60 / L50 / G 系列可见；troubleshooting_rv 品类通用；
+# 工单按 SKU 隔离；FAQ 目前不在运行时检索范围（design.md §14）。
+
+version: 2026-09-13.draft1
+annotated_count: 0
+cases:
+
+  # ---- A1 主线：X10 滚刷缠绕（口语变体） ----
+  - {id: a1-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 扫地机不吸了, symptoms: [不吸],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c12 / A", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A1, 口语], annotated: false, annotator: null, note: 演示案例 A1 原话}
+  - {id: a1-02, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 它跑完了地上还是一堆渣, symptoms: [清扫后残留碎屑],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c12 / A", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A1, 口语], annotated: false, annotator: null, note: 03 §1.4.2 的改写示例}
+  - {id: a1-03, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 感觉吸力比刚买的时候小很多，头发都吸不起来, symptoms: [吸力下降, 头发吸不起来],
+     expected_doc_ids: [manual_rv_v1, T0002], expected_chunk_hint: "c12 / c15", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A1, 口语], annotated: false, annotator: null}
+  - {id: a1-04, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 滚刷上缠了好多头发，是不是这个原因不吸, symptoms: [滚刷缠头发, 不吸],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c12, expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A1], annotated: false, annotator: null}
+  - {id: a1-05, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 机器扫完跟没扫一样, symptoms: [扫不干净],
+     expected_doc_ids: [troubleshooting_rv, manual_rv_v1], expected_chunk_hint: "A / c12", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A1, 口语], annotated: false, annotator: null}
+
+  # ---- A2：S1 Pro 消歧后进入检索（该 SKU 无专属手册） ----
+  - {id: a2-01, product_state: confirmed_sku, sku: EUFY-S1-PRO, text: S1 Pro 不吸了，急死了, symptoms: [不吸],
+     expected_doc_ids: [troubleshooting_rv, T0001], expected_chunk_hint: A, expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [A2, 口语], annotated: false, annotator: null, note: manual_rv_v1/v2 均不含该 SKU，只能靠品类通用手册与 S1-PRO 工单；工单 id 以实际 CSV 为准}
+  - {id: a2-02, product_state: confirmed_sku, sku: EUFY-S1-PRO, text: 尘盒老是很快就满了，吸力也弱, symptoms: [尘盒很快满, 吸力弱],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: A, expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [A2], annotated: false, annotator: null}
+  - {id: a2-03, product_state: confirmed_sku, sku: EUFY-S1-PRO, text: 回基站以后不充电, symptoms: [不充电],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
+     tags: [A2, 无计划], annotated: false, annotator: null, note: plans.yaml 无充电计划，synthesize 无可选计划时的行为需要在标注时确认}
+
+  # ---- 滤网堵塞 ----
+  - {id: flt-01, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 灰特别多，扫一次滤网就黑了, symptoms: [滤网脏, 灰多],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c15, expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null}
+  - {id: flt-02, product_state: confirmed_sku, sku: EUFY-X8-PRO-SES, text: 吸力下降，尘盒很快满, symptoms: [吸力下降, 尘盒很快满],
+     expected_doc_ids: [manual_rv_v1, T0002], expected_chunk_hint: c15, expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [], annotated: false, annotator: null, note: 与工单 T0002 症状同句}
+  - {id: flt-03, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 滤网洗了还是湿的能直接装回去吗，现在有点味道, symptoms: [滤网潮湿, 异味],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c15, expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, irrelevant_hint: 拖布异味（manual_rv_v2 §4 对 X10 不可见，FAQ q17 不在检索范围）}
+  - {id: flt-04, product_state: confirmed_sku, sku: EUFY-G50-HYBRID, text: 过滤网多久换一次，感觉吸不动了, symptoms: [吸力下降, 滤网更换周期],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "1 / 3", expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null}
+  - {id: flt-05, product_state: confirmed_sku, sku: EUFY-30C-MAX, text: 吸力小了, symptoms: [吸力小],
+     expected_doc_ids: [troubleshooting_rv, T0004], expected_chunk_hint: A, expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, note: 30C 无专属手册；工单里该 SKU 滤网堵塞 3 例，看工单能否把 filter_clog 排到前面}
+
+  # ---- 尘盒 ----
+  - {id: bin-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 一直语音说请检查尘盒，我明明装上去了, symptoms: [提示请检查尘盒],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c18 / 第3章表 / C", expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [精确词], annotated: false, annotator: null}
+  - {id: bin-02, product_state: confirmed_sku, sku: EUFY-25C, text: 提示请检查尘盒, symptoms: [提示请检查尘盒],
+     expected_doc_ids: [troubleshooting_rv, T0003], expected_chunk_hint: C, expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [精确词], annotated: false, annotator: null}
+  - {id: bin-03, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 垃圾盒卡不进去，推不到底, symptoms: [尘盒装不上],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c18, expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, note: 「垃圾盒」需同义词表映射到尘盒}
+  - {id: bin-04, product_state: confirmed_sku, sku: EUFY-G40-HYBRID, text: 机器后面一路漏灰, symptoms: [漏灰],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "3", expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null}
+
+  # ---- 边刷 ----
+  - {id: sb-01, product_state: confirmed_sku, sku: EUFY-30C-MAX, text: 边刷不转, symptoms: [边刷不转],
+     expected_doc_ids: [troubleshooting_rv, T0004], expected_chunk_hint: B, expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [], annotated: false, annotator: null}
+  - {id: sb-02, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 侧面那个小刷子不动了, symptoms: [侧刷不动],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c21 / B", expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, note: 「侧刷」「小刷子」→ 边刷}
+  - {id: sb-03, product_state: confirmed_sku, sku: EUFY-X8-PRO-SES, text: 墙边和角落总是扫不到, symptoms: [墙边角落扫不干净],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c21, expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, irrelevant_hint: 「扫不干净」易召回 c12 / A 节而非 c21}
+  - {id: sb-04, product_state: confirmed_sku, sku: EUFY-11S-MAX, text: 边刷转得特别慢还咯吱响, symptoms: [边刷转动缓慢, 异响],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: "B / D", expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [多症状], annotated: false, annotator: null, note: 「咯吱响」是否触发 R4 安全规则由 rules 决定，标注时确认}
+
+  # ---- 安全（R4 在检索前升级；此处金标用于验证即便检索也命中安全段） ----
+  - {id: safe-01, product_state: confirmed_sku, sku: EUFY-G40-HYBRID, text: 跑着跑着有股烧焦的味道, symptoms: [焦味],
+     expected_doc_ids: [manual_rv_v2, troubleshooting_rv, T0006], expected_chunk_hint: "5 / D", expected_plan: rv_suction_motor_fault, expected_outcome: escalate,
+     tags: [安全], annotated: false, annotator: null}
+  - {id: safe-02, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 机身烫得不敢碰, symptoms: [机身过热],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c30 / D", expected_plan: rv_suction_motor_fault, expected_outcome: escalate,
+     tags: [安全, 口语], annotated: false, annotator: null}
+  - {id: safe-03, product_state: category_only, category: robot_vacuum, text: 冒烟了！, symptoms: [冒烟],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: D, expected_plan: rv_suction_motor_fault, expected_outcome: escalate,
+     tags: [安全, 品类级], annotated: false, annotator: null}
+  - {id: safe-04, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 电池那块鼓起来了, symptoms: [电池鼓包],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: c30, expected_plan: rv_suction_motor_fault, expected_outcome: escalate,
+     tags: [安全], annotated: false, annotator: null}
+
+  # ---- 充电 / 基站（有知识、无预写计划） ----
+  - {id: chg-01, product_state: confirmed_sku, sku: EUFY-25C, text: 放回去不充电，灯也不亮, symptoms: [不充电, 基站灯不亮],
+     expected_doc_ids: [troubleshooting_rv, T0027], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划, 反证工单], annotated: false, annotator: null, note: T0027 是 unsolved 工单，只能作反证}
+  - {id: chg-02, product_state: confirmed_sku, sku: EUFY-11S-MAX, text: 充电触点是不是脏了，老充不进, symptoms: [不充电, 触点脏],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划], annotated: false, annotator: null, note: 11S 工单基站触点脏污 solved 5 例，应排前}
+  - {id: chg-03, product_state: confirmed_sku, sku: EUFY-G20-HYBRID, text: 找不到回家的路，每次都停在半路, symptoms: [找不到基站],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划, 口语], annotated: false, annotator: null, irrelevant_hint: 排障手册没有「找不到基站」，工单「基站位置遮挡」是主要来源；FAQ q14 不在检索范围}
+
+  # ---- L60 / G 系列专属（manual_rv_v2） ----
+  - {id: v2-01, product_state: confirmed_sku, sku: EUFY-L60-HYBRID, text: 滚刷怎么拆，需要工具吗, symptoms: [滚刷拆卸],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "2", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [], annotated: false, annotator: null, irrelevant_hint: manual_rv_v1 c12 对 L60 不可见，若出现即为范围泄漏}
+  - {id: v2-02, product_state: confirmed_sku, sku: EUFY-L60-HYBRID, text: 拖布一股臭味, symptoms: [拖布异味],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "4", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划], annotated: false, annotator: null, note: 有证据但无拖布计划}
+  - {id: v2-03, product_state: confirmed_sku, sku: EUFY-G50-HYBRID, text: 水箱底下一直渗水, symptoms: [水箱漏水],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "4", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划], annotated: false, annotator: null}
+  - {id: v2-04, product_state: confirmed_sku, sku: EUFY-G30-VERGE, text: 尘盒盖好像没扣紧，吸力也不行, symptoms: [尘盒盖未扣紧, 吸力下降],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "3 / 1", expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [多症状], annotated: false, annotator: null}
+  - {id: v2-05, product_state: confirmed_sku, sku: EUFY-L50-SES, text: 吸不起来东西, symptoms: [吸力下降],
+     expected_doc_ids: [manual_rv_v2, troubleshooting_rv], expected_chunk_hint: "1 / A", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null}
+
+  # ---- 品类级（型号未知，只能查 category_generic） ----
+  - {id: cat-01, product_state: category_only, category: robot_vacuum, text: 扫地机不吸, symptoms: [不吸],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: A, expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [品类级], annotated: false, annotator: null, irrelevant_hint: manual_rv_v1 / v2 与任何工单都不应出现}
+  - {id: cat-02, product_state: category_only, category: robot_vacuum, text: 边刷不转了, symptoms: [边刷不转],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: B, expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [品类级], annotated: false, annotator: null}
+  - {id: cat-03, product_state: category_only, category: robot_vacuum, text: 提示请检查尘盒, symptoms: [提示请检查尘盒],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: C, expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [品类级, 精确词], annotated: false, annotator: null}
+  - {id: cat-04, product_state: category_only, category: robot_vacuum, text: 扫地机器人不充电, symptoms: [不充电],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
+     tags: [品类级, 无计划], annotated: false, annotator: null}
+  - {id: cat-05, product_state: category_only, category: robot_vacuum, text: 扫地机滤网怎么洗, symptoms: [滤网清洗],
+     expected_doc_ids: [], expected_chunk_hint: "faq q3 / q37（不在检索范围）", expected_plan: rv_suction_filter_clog, expected_outcome: standard_flow,
+     tags: [品类级, faq_only], annotated: false, annotator: null, note: 排障手册 A 节只提「滤网是否洗过」，是否算命中由标注决定}
+
+  # ---- 多症状 ----
+  - {id: multi-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 扫完还有渣，滚刷刚清过，回基站也不集尘, symptoms: [清扫后残留碎屑, 滚刷已清理, 基站不集尘],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: "c15 / c18", expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [多症状, 否定], annotated: false, annotator: null, irrelevant_hint: c12（滚刷）已被用户排除，仍排第一即为错配；基站集尘语料缺失（FAQ q30 不在范围）}
+  - {id: multi-02, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 吸力弱，而且声音比以前大很多, symptoms: [吸力弱, 噪音变大],
+     expected_doc_ids: [manual_rv_v1, T0015], expected_chunk_hint: "c12 / c15 / 工单 吸口卡异物", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [多症状, 反证工单], annotated: false, annotator: null, note: T0015 为 unsolved 反证；噪音大是否触发 R4 由 rules 决定}
+  - {id: multi-03, product_state: confirmed_sku, sku: EUFY-G50-HYBRID, text: 边刷不转，机器还老在地毯边打转, symptoms: [边刷不转, 地毯边打转],
+     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: B, expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [多症状], annotated: false, annotator: null, irrelevant_hint: 「地毯打转」无语料（FAQ q47 不在范围），不应牵出无关段落}
+
+  # ---- 否定 / 纠正 ----
+  - {id: neg-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 不是吸力小，是有异响, symptoms: [异响],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c30 / D", expected_plan: rv_suction_motor_fault, expected_outcome: escalate,
+     tags: [否定, 安全], annotated: false, annotator: null, irrelevant_hint: 「吸力」相关段落 c12 / c15 不应进入}
+  - {id: neg-02, product_state: confirmed_sku, sku: EUFY-X8-PRO-SES, text: 滚刷没缠头发，很干净，但还是不吸, symptoms: [滚刷干净, 不吸],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: "c15 / c18", expected_plan: rv_suction_filter_clog, expected_outcome: evidence,
+     tags: [否定], annotated: false, annotator: null, irrelevant_hint: c12 排第一即错配}
+  - {id: neg-03, product_state: confirmed_sku, sku: EUFY-L60-HYBRID, text: 尘盒倒过了也装好了，吸力还是上不来, symptoms: [尘盒已清理, 吸力下降],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "1 / 2", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [否定], annotated: false, annotator: null, irrelevant_hint: §3 尘盒段不应排第一}
+
+  # ---- 错别字 / 极口语 ----
+  - {id: typo-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 吸利变小了, symptoms: [吸力变小],
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c12 / A", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [错别字], annotated: false, annotator: null, note: 看 intake 是否已纠错；若 symptoms 仍带错字则考验 BM25}
+  - {id: typo-02, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 扫地机跟没吸一样，白跑, symptoms: [],
+     expected_doc_ids: [troubleshooting_rv, manual_rv_v1], expected_chunk_hint: "A / c12", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null, note: symptoms 为空时 query 退回原文}
+  - {id: typo-03, product_state: confirmed_sku, sku: EUFY-G40-HYBRID, text: 机器人一跑一地毛, symptoms: [清扫后残留毛发],
+     expected_doc_ids: [manual_rv_v2], expected_chunk_hint: "1 / 2", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [口语], annotated: false, annotator: null}
+
+  # ---- 反证工单：unsolved / escalated 不能当方案 ----
+  - {id: ctr-01, product_state: confirmed_sku, sku: EUFY-E20, text: 吸力变小，扫不干净, symptoms: [吸力变小, 扫不干净],
+     expected_doc_ids: [troubleshooting_rv, T0021], expected_chunk_hint: A, expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [反证工单], annotated: false, annotator: null, note: T0021 同症状但 escalated；synthesize 不应把它当成功依据，grade 后 case_outcome 需可见}
+  - {id: ctr-02, product_state: confirmed_sku, sku: EUFY-G40-HYBRID, text: 边刷不转, symptoms: [边刷不转],
+     expected_doc_ids: [troubleshooting_rv, T0024], expected_chunk_hint: B, expected_plan: rv_suction_side_brush, expected_outcome: evidence,
+     tags: [反证工单], annotated: false, annotator: null, note: T0024 unsolved}
+  - {id: ctr-03, product_state: confirmed_sku, sku: EUFY-15C-MAX, text: 路线乱七八糟，扫过的地方又扫, symptoms: [清扫路线混乱],
+     expected_doc_ids: [T0030], expected_chunk_hint: "工单 雷达窗口脏污（unsolved）", expected_plan: null, expected_outcome: standard_flow,
+     tags: [反证工单, 无计划], annotated: false, annotator: null, irrelevant_hint: 排障手册无此项；只有反证工单时应视为无可用证据}
+
+  # ---- 无知识：语料里没有，期望干净的 no_match 而不是牵强命中 ----
+  - {id: none-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: App 连不上机器, symptoms: [App 无法连接],
+     expected_doc_ids: [], expected_chunk_hint: "faq q35（不在范围）", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无知识, faq_only], annotated: false, annotator: null, irrelevant_hint: 任何手册段落进入 top5 都算错配}
+  - {id: none-02, product_state: confirmed_sku, sku: EUFY-X9-PRO, text: 语音是英文的，怎么改中文, symptoms: [语音语言设置],
+     expected_doc_ids: [], expected_chunk_hint: 无, expected_plan: null, expected_outcome: standard_flow,
+     tags: [无知识], annotated: false, annotator: null, irrelevant_hint: 第 3 章「语音提示」表格易被字面召回}
+  - {id: none-03, product_state: confirmed_sku, sku: EUFY-G50-HYBRID, text: 机器从楼梯上掉下来了，还能用吗, symptoms: [跌落],
+     expected_doc_ids: [], expected_chunk_hint: "faq q27（不在范围）", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无知识, faq_only], annotated: false, annotator: null, irrelevant_hint: §5 安全须知不应因「楼梯」「掉」被牵出}
+  - {id: none-04, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 保修多久，能换新吗, symptoms: [保修咨询],
+     expected_doc_ids: [], expected_chunk_hint: "faq q42 / q43（不在范围）", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无知识, faq_only], annotated: false, annotator: null, note: 应由意图路由到凭证 / 升级子流程而非诊断；若进入检索，期望 no_match}
+
+  # ---- 精确提示语 ----
+  - {id: exact-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 它一直说请检查滚刷, symptoms: [提示请检查滚刷],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: "第3章表 / c12", expected_plan: rv_suction_hair_wrap, expected_outcome: evidence,
+     tags: [精确词], annotated: false, annotator: null}
+  - {id: exact-02, product_state: confirmed_sku, sku: EUFY-X8-PRO-SES, text: 红灯一直亮着不动, symptoms: [红灯常亮],
+     expected_doc_ids: [manual_rv_v1], expected_chunk_hint: 第3章表, expected_plan: null, expected_outcome: standard_flow,
+     tags: [精确词, 无计划], annotated: false, annotator: null, irrelevant_hint: 「红灯闪烁（电量低）」与「红灯常亮」相邻，看重排能否分开}

@@ -28,6 +28,35 @@ _MODEL_TOKEN = re.compile(
 _ERROR_CODE = re.compile(r"\b(?:E|ERR|err|错误)\s?-?\d{1,4}\b|错误码\s?\d+")
 _NUMBER = re.compile(r"\d+(?:\.\d+)?")
 _CJK_WORD = re.compile(r"[一-鿿]{2,}")
+# 产品部件名：改写不得引入原文没有的部件（03 §1.4.2「不猜部件」）
+PARTS = (
+    "滚刷",
+    "主刷",
+    "边刷",
+    "侧刷",
+    "滤网",
+    "滤芯",
+    "过滤网",
+    "尘盒",
+    "垃圾盒",
+    "集尘盒",
+    "集尘袋",
+    "水箱",
+    "拖布",
+    "基站",
+    "轮子",
+    "万向轮",
+    "传感器",
+    "雷达",
+    "摄像头",
+    "吸口",
+    "进风口",
+    "触点",
+    "密封圈",
+    "轴承",
+)
+# 「不是 X，是 Y」纠正句式：X 上的否定词属于被纠正掉的旧事实，计否定时先剥掉
+_CORRECTION = re.compile(r"不是[^，,。！？；;]{0,30}?[，,]?\s*(?:而)?是")
 # 与原因 / 维修动作相关、不允许无中生有的词
 FORBIDDEN_NEW = (
     "电机",
@@ -113,10 +142,39 @@ def _synonym_base(word: str, synonyms: dict[str, list[str]]) -> str:
     return word
 
 
+def strip_corrected_clause(text: str) -> str:
+    """「不是吸力小，是有异响」→「是有异响」：纠正句式里被否定掉的旧事实不参与否定词比较。"""
+    return _CORRECTION.sub("", text)  # src 里原话可能重复出现，全部剥掉
+
+
+def shares_anchor(candidate: str, anchors: str, synonyms: dict[str, list[str]]) -> bool:
+    """改写必须保留原症状的至少一个锚点，防止整体漂移到别的故障。锚点 = 与原症状共有的 2 字词，
+    或一个已审核同义词的规范词（其口语说法出现在原症状里）——改写的本职就是把口语换成说明书用语，
+    字面重叠可能为零，所以同义映射必须算锚点。单字同义词（扫 / 跑）区分度不够，不作锚点依据。"""
+    if not anchors.strip():
+        return True
+    if any(candidate[i : i + 2] in anchors for i in range(len(candidate) - 1)):
+        return True
+    return any(
+        any(w in candidate for w in (base, *alts) if len(w) >= 2)
+        for base, alts in synonyms.items()
+        if any(len(a) >= 2 and a in anchors for a in (base, *alts))
+    )
+
+
 def validate_rewrite(
-    original: str, candidate: str, *, inputs: str, cfg: QueryRewriteConfig
+    original: str,
+    candidate: str,
+    *,
+    inputs: str,
+    cfg: QueryRewriteConfig,
+    anchors: str | None = None,
 ) -> str | None:
-    """返回拒绝原因；None 表示放行。inputs = 用户原话 + 产品 + 症状拼接（改写只能使用其中的信息）。"""
+    """返回拒绝原因；None 表示放行。inputs = 用户原话 + 产品 + 症状拼接（改写只能使用其中的信息）；
+    anchors = 不含产品词的症状 / 原话（用于「保留至少一个原症状词」检查），默认退回 inputs。
+
+    03 §1.4.2 的意图是「拒绝新增未经输入支持的部件、原因或操作」。cfg.strict_terms=true 时额外启用早期的
+    整句可切分规则（任何新词都拒），实测会拒掉几乎所有自然改写（阶段 6 findings），默认关闭。"""
     cand = " ".join(candidate.split())
     if not cand:
         return "empty"
@@ -134,18 +192,27 @@ def validate_rewrite(
         return "new_model_token"
     if _tokens(_NUMBER, cand) - _tokens(_NUMBER, src):
         return "new_number"
-    neg_src = sum(src.count(n) for n in NEGATIONS)
+    # 否定分两个方向：凭空「加」否定会翻转语义，必须拒；「丢」否定只在被否定的是真事实时才拒
+    # （「不是吸力小，是有异响」里的否定属于被纠正掉的旧事实，剥掉后不算丢失）
     neg_cand = sum(cand.count(n) for n in NEGATIONS)
-    if (neg_src == 0) != (neg_cand == 0):
+    if neg_cand and not sum(src.count(n) for n in NEGATIONS):
+        return "negation_changed"
+    if not neg_cand and sum(strip_corrected_clause(src).count(n) for n in NEGATIONS):
         return "negation_changed"
     for word in FORBIDDEN_NEW:
         if word in cand and word not in src:
             return f"new_cause_or_action:{word}"
-    # 新出现的中文片段必须能完全分解为：原文中的连续片段，或已审核同义词（其原词 / 任一同义在原文出现）
     approved = {base for base, alts in cfg.synonyms.items() if any(a in src for a in (base, *alts))}
-    for run in _CJK_WORD.findall(cand):
-        if not _segmentable(run, src, approved):
-            return f"unsupported_term:{run}"
+    for part in PARTS:
+        if part in cand and part not in src and _synonym_base(part, cfg.synonyms) not in approved:
+            return f"new_part:{part}"
+    if not shares_anchor(cand, anchors if anchors is not None else inputs, cfg.synonyms):
+        return "lost_original_symptom"
+    if cfg.strict_terms:
+        # 早期严格模式：新出现的中文片段必须能完全分解为原文片段或已审核同义词
+        for run in _CJK_WORD.findall(cand):
+            if not _segmentable(run, src, approved):
+                return f"unsupported_term:{run}"
     return None
 
 
@@ -187,6 +254,7 @@ async def rewrite_query(
     budget_ms: int | None = None,
 ) -> RewriteDecision:
     inputs = " ".join([product, category_label or "", *symptoms, user_text])
+    anchors = " ".join([*symptoms, user_text])  # 不含产品词：产品词不能充当「保留了原症状」的凭据
     messages = [
         (
             "system",
@@ -209,7 +277,7 @@ async def rewrite_query(
         log.warning("query.rewrite failed session=%s: %s", session_id, str(exc)[:200])
         return RewriteDecision(True, "eligible", rejected_reason=f"model:{type(exc).__name__}")
     cand = res.parsed.query
-    reason = validate_rewrite(original, cand, inputs=inputs, cfg=cfg)
+    reason = validate_rewrite(original, cand, inputs=inputs, cfg=cfg, anchors=anchors)
     decision = RewriteDecision(
         True,
         "eligible",

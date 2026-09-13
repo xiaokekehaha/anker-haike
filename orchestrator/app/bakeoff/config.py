@@ -19,6 +19,7 @@ TEXT_TASKS = (
     "reply.stream",
     "escalate.summary",
     "query.rewrite",
+    "retrieve.grade",
 )
 VISION_TASKS = ("diagnose.vision", "warranty.receipt_ocr")
 ALL_TASKS = (*TEXT_TASKS, *VISION_TASKS)

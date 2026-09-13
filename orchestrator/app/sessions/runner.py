@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
+import os
 import time
 import uuid
 from collections.abc import AsyncIterator
@@ -19,6 +20,7 @@ from haike_contracts.events import parse_event
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command
 
+from app.analytics.trace import RunTrace
 from app.observability.runtime import record, run_id_context
 from app.sessions.store import SessionStore
 
@@ -43,6 +45,11 @@ class RunEmitter:
         self.metrics: set[str] = set()
         self.stage = None
         self.stage_started_ms = 0
+        # 管理员观测台：run 事实要用的两个延迟与错误码（与 run_metric 同一口径，不另算）
+        self.metric_values: dict[str, int] = {}
+        self.card_kind: str | None = None
+        self.first_stage: str | None = None
+        self.last_error_code: str | None = None
 
     async def emit(self, payload: dict[str, Any]) -> dict[str, Any]:
         # seq 由存储层分配；先用占位值过一遍校验，落库后回填真实 seq 再校验一次
@@ -62,7 +69,11 @@ class RunEmitter:
         self.last_seq = seq
         elapsed = int((time.monotonic() - self.started) * 1000)
         kind = draft["type"]
+        if kind == "error":
+            self.last_error_code = draft.get("code")
         if kind == "progress":
+            if self.first_stage is None:
+                self.first_stage = self.stage
             record(
                 "state_transition",
                 session_id=self.session_id,
@@ -84,6 +95,9 @@ class RunEmitter:
             metric = "card_ready_ms"
         if metric and metric not in self.metrics:
             self.metrics.add(metric)
+            self.metric_values[metric] = elapsed
+            if metric == "card_ready_ms":
+                self.card_kind = kind
             record(
                 "run_metric",
                 session_id=self.session_id,
@@ -120,6 +134,12 @@ async def run_message(
     # 存储层可能已有历史事件（多轮对话），seq 需接着排
     prior = await store.list_events(session_id)
     em.last_seq = max((e["seq"] for e in prior), default=0)
+    trace = RunTrace(
+        session_id,
+        run_id,
+        entry=_entry_label(text, resume, continue_run, entry_action),
+        seq_no=len({e["run_id"] for e in prior}) + 1,
+    )
 
     queue: asyncio.Queue[Any] = asyncio.Queue()
     started = time.monotonic()
@@ -232,6 +252,7 @@ async def run_message(
                 # 后续票的卡片 / tool_call 等事件在此透传，契约校验兜底
                 yield await em.emit(chunk)
             elif mode == "updates" and isinstance(chunk, dict) and "__interrupt__" in chunk:
+                trace.on_updates(chunk)
                 # 图在 await_input 中断：awaiting_input 的 version 由节点随中断载荷带出（langgraph_step），
                 # 不在此查 checkpoint——PostgresSaver 写入异步，此刻可能尚未落地
                 interrupted = True
@@ -242,6 +263,7 @@ async def run_message(
                     yield await em.emit({"type": "awaiting_input", **value})
             # updates 模式：状态迁移日志，票 07 用于 version 递增；此处仅记录
             elif mode == "updates":
+                trace.on_updates(chunk)
                 log.debug(
                     "update session=%s run=%s %s",
                     session_id,
@@ -257,13 +279,27 @@ async def run_message(
         if task.cancelling() or task.cancelled():
             with contextlib.suppress(asyncio.CancelledError, Exception):
                 await task
-        version = await checkpoint_version(graph, session_id, fallback=row.version)
+        final_state = await checkpoint_state(graph, session_id)
+        version = version_of(final_state, fallback=row.version)
         try:
             await store.finish_run(session_id, run_id, version=version, stage=stage)
         except Exception:
             log.exception("finish_run failed session=%s run=%s", session_id, run_id)
         # 必以 done 结束；若消费者已断开，done 仍要落库（票 08 续接读取）
         done = await em.emit({"type": "done", "reason": reason, "version": version})
+        trace.finish(
+            final_state,
+            done_reason=reason,
+            error_code=em.last_error_code,
+            stage_from=em.first_stage,
+            stage_to=stage,
+            first_visible_ms=em.metric_values.get("first_visible_ms"),
+            card_ready_ms=em.metric_values.get("card_ready_ms"),
+            card_kind=em.card_kind,
+            lane=os.environ.get("MODEL_LANE") or None,
+            raw_ttl_hours=_retention_hours(),
+            store_text=_store_text(),
+        )
         yield done
 
 
@@ -279,15 +315,52 @@ def _error(
     }
 
 
-async def checkpoint_version(
-    graph: CompiledStateGraph, session_id: str, *, fallback: int = 0
-) -> int:
-    """version = 最新 checkpoint 的 step + 1（step 跨 run 单调递增，无 checkpoint 时为 0）。"""
+async def checkpoint_state(graph: CompiledStateGraph, session_id: str):
+    """读一次 checkpoint 状态；失败返回 None（调用方用 fallback）。"""
     try:
-        state = await graph.aget_state({"configurable": {"thread_id": session_id}})
+        return await graph.aget_state({"configurable": {"thread_id": session_id}})
     except Exception:
         log.exception("aget_state failed session=%s", session_id)
+        return None
+
+
+def version_of(state, *, fallback: int = 0) -> int:
+    """version = 最新 checkpoint 的 step + 1（step 跨 run 单调递增，无 checkpoint 时为 0）。"""
+    if state is None:
         return fallback
     if not state.metadata:
         return 0
     return int(state.metadata.get("step", -1)) + 1
+
+
+async def checkpoint_version(
+    graph: CompiledStateGraph, session_id: str, *, fallback: int = 0
+) -> int:
+    return version_of(await checkpoint_state(graph, session_id), fallback=fallback)
+
+
+def _entry_label(
+    text: str | None,
+    resume: dict[str, Any] | None,
+    continue_run: bool,
+    entry_action: dict[str, Any] | None,
+) -> str:
+    """run 的入口，供观测台按来源分组。"""
+    action = resume or entry_action
+    if action is not None:
+        return f"action:{action.get('kind', 'unknown')}"
+    if continue_run:
+        return "action:retry"
+    return "message" if text is not None else "unknown"
+
+
+def _retention_hours() -> float:
+    from app.settings import settings
+
+    return settings.retention_session_hours
+
+
+def _store_text() -> bool:
+    from app.settings import settings
+
+    return settings.analytics_store_text

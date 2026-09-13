@@ -27,7 +27,11 @@ class ActiveRun(Strict):
 
 
 class LastError(Strict):
+    """最近一次运行留下的错误；更早 run 的错误不进快照（只在事件表里供审计）。"""
+
     code: str
+    message: str = ""
+    recoverable: bool = True
     at: str
 
 

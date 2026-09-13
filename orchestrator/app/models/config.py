@@ -30,7 +30,7 @@ KNOWN_TASKS: tuple[str, ...] = (
     "warranty.receipt_ocr",
 )
 # 可选增强任务：配置里可以缺链（缺时对应功能按不可用处理），不参与「默认通道必须覆盖」校验
-OPTIONAL_TASKS: tuple[str, ...] = ("query.rewrite",)
+OPTIONAL_TASKS: tuple[str, ...] = ("query.rewrite", "retrieve.grade")
 
 UNSET_MODEL_ID = "TBD"
 

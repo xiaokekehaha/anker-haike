@@ -133,6 +133,12 @@ async def test_counter_evidence_for_unsolved_tickets(adapter):
         h.counter_evidence for h in res.hits
     )  # 反证排后
     assert res.for_model()["hits"][-1].get("counter_evidence") is True
+    # P0-4：case_outcome 与 counter_evidence 一致，并通过 as_internal_item 传给 synthesize
+    outcomes = {h.doc_id: h.case_outcome for h in res.hits}
+    assert outcomes["T0024"] == "unsolved"
+    assert all((o == "unsolved") == flags[d] for d, o in outcomes.items())
+    assert res.hits[-1].as_internal_item()["case_outcome"] == "unsolved"
+    assert "case_outcome" not in res.hits[-1].as_evidence_item()
 
 
 async def test_truncation_marks_result(adapter):

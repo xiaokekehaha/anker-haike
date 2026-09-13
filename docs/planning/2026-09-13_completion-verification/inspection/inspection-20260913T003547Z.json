@@ -1,0 +1,857 @@
+{
+  "summary": {
+    "generated_at": "2026-09-13T00:35:47.611354+00:00",
+    "git": "4abcd4e",
+    "python": "3.14.7",
+    "mode": "stub",
+    "live_url": null,
+    "groups": null,
+    "total": 29,
+    "passed": 29,
+    "failed": [],
+    "by_group": {
+      "boundary": {
+        "passed": 12,
+        "failed": 0
+      },
+      "routing": {
+        "passed": 6,
+        "failed": 0
+      },
+      "rewrite": {
+        "passed": 10,
+        "failed": 0
+      },
+      "concurrency": {
+        "passed": 1,
+        "failed": 0
+      }
+    },
+    "latency": {
+      "first_visible_ms": {
+        "n": 15,
+        "p50": 10,
+        "p95": 24,
+        "max": 24
+      },
+      "card_ready_ms": {
+        "n": 18,
+        "p50": 14,
+        "p95": 32,
+        "max": 78
+      }
+    },
+    "concurrency": {
+      "n": 5,
+      "pass_rate": 1.0,
+      "wall_ms": 36,
+      "card_ready_ms": [
+        32,
+        31,
+        31,
+        31,
+        31
+      ]
+    },
+    "rewrite": [
+      {
+        "scenario": "rewrite_off_no_call",
+        "rewrite_enabled": false,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "second_round_latency_ms": 0,
+        "fallback": "standard_flow",
+        "knowledge_status": "no_match",
+        "decision": "disabled"
+      },
+      {
+        "scenario": "rewrite_on_no_match_rescued",
+        "rewrite_enabled": true,
+        "invokes": 5,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 2,
+        "second_round_latency_ms": 0,
+        "fallback": "evidence",
+        "knowledge_status": "ok",
+        "decision": "eligible"
+      },
+      {
+        "scenario": "rewrite_on_empty_scope",
+        "rewrite_enabled": true,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "second_round_latency_ms": 0,
+        "fallback": "standard_flow",
+        "knowledge_status": "no_match",
+        "decision": "empty_scope"
+      },
+      {
+        "scenario": "rewrite_on_partial_unavailable",
+        "rewrite_enabled": true,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "second_round_latency_ms": 0,
+        "fallback": "standard_flow",
+        "knowledge_status": "no_match",
+        "decision": "unavailable"
+      },
+      {
+        "scenario": "rewrite_on_invalid_candidate",
+        "rewrite_enabled": true,
+        "invokes": 4,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 1,
+        "second_round_latency_ms": 0,
+        "fallback": "standard_flow",
+        "knowledge_status": "no_match",
+        "decision": "eligible"
+      },
+      {
+        "scenario": "rewrite_on_second_round_empty",
+        "rewrite_enabled": true,
+        "invokes": 4,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 2,
+        "second_round_latency_ms": 0,
+        "fallback": "standard_flow",
+        "knowledge_status": "no_match",
+        "decision": "eligible"
+      },
+      {
+        "scenario": "rewrite_on_image_contention",
+        "rewrite_enabled": true,
+        "invokes": 5,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 2,
+        "second_round_latency_ms": 0,
+        "fallback": "evidence",
+        "knowledge_status": "ok",
+        "decision": "has_hits"
+      }
+    ],
+    "live": []
+  },
+  "results": [
+    {
+      "name": "duplicate_action",
+      "group": "boundary",
+      "title": "重复提交同一动作：一次执行一次重放，状态只推进一次",
+      "passed": true,
+      "elapsed_ms": 99,
+      "detail": {
+        "runs": 2,
+        "replayed": true,
+        "version": 9,
+        "card_ready_ms": [
+          31,
+          1
+        ],
+        "first_visible_ms": [
+          8
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          31,
+          1
+        ]
+      }
+    },
+    {
+      "name": "cannot_do_x3",
+      "group": "boundary",
+      "title": "连续三次「无法操作」→ R1b 升级并进入凭证收集",
+      "passed": true,
+      "elapsed_ms": 74,
+      "detail": {
+        "counters": {
+          "executed": 0,
+          "advanced": 0,
+          "skipped": 3,
+          "plans_exhausted": 1
+        },
+        "escalate_reason": "R1b",
+        "steps_executed": 3
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "safety_first_sentence",
+      "group": "boundary",
+      "title": "首句安全词 → R4 直接升级，零模型调用、零检索",
+      "passed": true,
+      "elapsed_ms": 42,
+      "detail": {
+        "rule": "R4",
+        "model_calls": 0,
+        "elapsed_ms": 4,
+        "first_visible_ms": [
+          3
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          3
+        ]
+      }
+    },
+    {
+      "name": "safety_mid_text",
+      "group": "boundary",
+      "title": "排障中途文本出现安全词 → rediagnose 路径 R4，不检索",
+      "passed": true,
+      "elapsed_ms": 56,
+      "detail": {
+        "rule": "R4",
+        "steps_in_summary": 1
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "safety_image_observation",
+      "group": "boundary",
+      "title": "图片观察含冒烟 → CP-in R4，不再检索 / 汇总",
+      "passed": true,
+      "elapsed_ms": 46,
+      "detail": {
+        "rule": "R4",
+        "source": "observation",
+        "model_calls": [
+          "intake",
+          "diagnose.vision"
+        ]
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "wrong_device_receipt",
+      "group": "boundary",
+      "title": "上传另一台设备的订单凭证 → order_product_mismatch，只列事实不下结论",
+      "passed": true,
+      "elapsed_ms": 72,
+      "detail": {
+        "receipt_status": "order_product_mismatch",
+        "conflicts": [
+          "订单商品 EUFY-S1-PRO 与当前设备 EUFY-X9-PRO 不一致"
+        ]
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "low_confidence_order_hit",
+      "group": "boundary",
+      "title": "OCR 低置信订单号恰好命中他人订单 → 未经确认修改不得核实，needs_manual_check",
+      "passed": true,
+      "elapsed_ms": 71,
+      "detail": {
+        "receipt_status": "needs_manual_check",
+        "confidence": 0.5
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "disconnect_refresh_after_feedback",
+      "group": "boundary",
+      "title": "反馈已提交后断网刷新：run 继续、快照可恢复、续接不漏不重、同 action_id 重放",
+      "passed": true,
+      "elapsed_ms": 54,
+      "detail": {
+        "resumed_events": 5,
+        "counters": {
+          "executed": 1,
+          "advanced": 1,
+          "skipped": 0,
+          "plans_exhausted": 0
+        },
+        "card_ready_ms": [
+          0
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "card_ready_ms": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "restart_recovery",
+      "group": "boundary",
+      "title": "服务重启：孤儿 run 收尾为 error(server_restarted)，快照可继续对话",
+      "passed": true,
+      "elapsed_ms": 71,
+      "detail": {
+        "orphans_fixed": 1,
+        "last_error": "server_restarted",
+        "continued": true
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "weknora_down",
+      "group": "boundary",
+      "title": "WeKnora 断开：tool_call failed，按预写计划继续出卡",
+      "passed": true,
+      "elapsed_ms": 61,
+      "detail": {
+        "knowledge_status": "unavailable",
+        "mode": "standard_flow",
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          12
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          12
+        ]
+      }
+    },
+    {
+      "name": "all_models_down",
+      "group": "boundary",
+      "title": "全部模型不可用：流程降级完成、不崩溃，告警 model_chain_failed 触发",
+      "passed": true,
+      "elapsed_ms": 144,
+      "detail": {
+        "model_calls_attempted": 5,
+        "alert_fired": 2,
+        "done": "awaiting_input",
+        "card_ready_ms": [
+          78
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "card_ready_ms": [
+          78
+        ]
+      }
+    },
+    {
+      "name": "replay_mismatch",
+      "group": "boundary",
+      "title": "回放包版本不符 → replay_incompatible，不静默回落到真实模型",
+      "passed": true,
+      "elapsed_ms": 8,
+      "detail": {
+        "case": "a1_hair_wrap",
+        "problems_on_tamper": [
+          "prompt_ver: recorded='2026-09-12.1' current='tampered'"
+        ],
+        "recorded_versions": {
+          "prompt_ver": "2026-09-12.1",
+          "models_ver": "2026-09-13.1",
+          "kb_ver": "2026-09-12.1+stub-embedding-1024",
+          "rules_ver": "2026-09-12.1"
+        }
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "vague_input",
+      "group": "routing",
+      "title": "模糊输入「这个又不行了」无上下文 → 追问品类 / 型号，不检索",
+      "passed": true,
+      "elapsed_ms": 49,
+      "detail": {
+        "clarification": {
+          "reason": "product",
+          "attempts": 1,
+          "asked_run_id": "c22d99f142df4ae681dba3ef4279c094"
+        },
+        "question": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1 Pro 吸奶器」。"
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "product_ambiguity",
+      "group": "routing",
+      "title": "「S1 Pro 不吸了」→ 产品确认卡两候选（含范围外标记）",
+      "passed": true,
+      "elapsed_ms": 43,
+      "detail": {
+        "candidates": [
+          "EUFY-S1-PRO",
+          "EUFY-BP-S1-PRO"
+        ],
+        "card_ready_ms": [
+          3
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "card_ready_ms": [
+          3
+        ]
+      }
+    },
+    {
+      "name": "user_correction_and_stale_button",
+      "group": "routing",
+      "title": "用户纠正型号 → 消歧重新确认；旧卡按序 409（stale_version / stale_card），计数不变",
+      "passed": true,
+      "elapsed_ms": 69,
+      "detail": {
+        "new_sku": "EUFY-X10-PRO-OMNI",
+        "codes": [
+          "stale_version",
+          "stale_card"
+        ]
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "request_human_anytime",
+      "group": "routing",
+      "title": "等待步骤卡时点「请求人工」→ 忽略版本 / 卡片校验，R3 摘要",
+      "passed": true,
+      "elapsed_ms": 54,
+      "detail": {
+        "rule": "R3",
+        "elapsed_ms": 4
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "two_clarifications_then_r7",
+      "group": "routing",
+      "title": "品类不明连续两次追问仍不明 → R7 升级；摘要记录澄清经过",
+      "passed": true,
+      "elapsed_ms": 51,
+      "detail": {
+        "attempts": 2,
+        "rule": "R7"
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "rejected_actions_do_not_advance",
+      "group": "routing",
+      "title": "422 / 409 的动作不调模型、不推进游标、不改计数",
+      "passed": true,
+      "elapsed_ms": 52,
+      "detail": {
+        "codes": [
+          422,
+          422,
+          "stale_version",
+          "not_allowed_now"
+        ],
+        "version": 6
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "rewrite_decision_table",
+      "group": "rewrite",
+      "title": "改写决策表（09 §4.1）：九种上下文的触发 / 跳过原因",
+      "passed": true,
+      "elapsed_ms": 0,
+      "detail": {
+        "normal_no_match": "triggered",
+        "disabled": "disabled",
+        "has_hits": "has_hits",
+        "partial_unavailable": "unavailable",
+        "empty_scope": "empty_scope",
+        "unknown_product": "product_state",
+        "quota_used": "quota_used",
+        "budget_insufficient": "budget:7999ms",
+        "router_unavailable": "router_unavailable"
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "rewrite_off_no_call",
+      "group": "rewrite",
+      "title": "开关关闭：真实无命中不调 query.rewrite，回退标准流程",
+      "passed": true,
+      "elapsed_ms": 53,
+      "detail": {
+        "rewrite_enabled": false,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "rewrite_used": false,
+        "decision": {
+          "triggered": false,
+          "reason": "disabled"
+        },
+        "rewrite_result": null,
+        "second_round_latency_ms": 0,
+        "knowledge_status": "no_match",
+        "fallback": "standard_flow",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 12,
+        "first_visible_ms": [
+          7
+        ],
+        "card_ready_ms": [
+          10
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          7
+        ],
+        "card_ready_ms": [
+          10
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_no_match_rescued",
+      "group": "rewrite",
+      "title": "开关开启：真实无命中 → 一次改写 → 同 scope 第二轮命中 → 计划来自证据",
+      "passed": true,
+      "elapsed_ms": 59,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 5,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 2,
+        "rewrite_used": true,
+        "decision": {
+          "triggered": true,
+          "reason": "eligible"
+        },
+        "rewrite_result": {
+          "accepted": true,
+          "reason": null,
+          "query_before": "eufy X9 Pro 跑完了地上还是一堆渣",
+          "query_after": "扫地机器人 清扫后残留碎屑 清洁效果差"
+        },
+        "second_round_latency_ms": 0,
+        "knowledge_status": "ok",
+        "fallback": "evidence",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 16,
+        "first_visible_ms": [
+          11
+        ],
+        "card_ready_ms": [
+          14
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          11
+        ],
+        "card_ready_ms": [
+          14
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_empty_scope",
+      "group": "rewrite",
+      "title": "开关开启但允许集合为空 → 不改写，一轮即回退",
+      "passed": true,
+      "elapsed_ms": 62,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "rewrite_used": false,
+        "decision": {
+          "triggered": false,
+          "reason": "empty_scope"
+        },
+        "rewrite_result": null,
+        "second_round_latency_ms": 0,
+        "knowledge_status": "no_match",
+        "fallback": "standard_flow",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 14,
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          12
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          12
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_partial_unavailable",
+      "group": "rewrite",
+      "title": "开关开启，一库 no_match 一库 unavailable → 不改写（部分故障不算正常无命中）",
+      "passed": true,
+      "elapsed_ms": 66,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 3,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 1,
+        "rewrite_used": false,
+        "decision": {
+          "triggered": false,
+          "reason": "unavailable"
+        },
+        "rewrite_result": null,
+        "second_round_latency_ms": 0,
+        "knowledge_status": "no_match",
+        "fallback": "standard_flow",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 15,
+        "first_visible_ms": [
+          10
+        ],
+        "card_ready_ms": [
+          14
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          10
+        ],
+        "card_ready_ms": [
+          14
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_invalid_candidate",
+      "group": "rewrite",
+      "title": "开关开启，改写新增原因词被拒 → 不进行第二轮，不递归改写",
+      "passed": true,
+      "elapsed_ms": 66,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 4,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 1,
+        "rewrite_used": true,
+        "decision": {
+          "triggered": true,
+          "reason": "eligible"
+        },
+        "rewrite_result": {
+          "accepted": false,
+          "reason": null,
+          "query_before": "eufy X9 Pro 跑完了地上还是一堆渣",
+          "query_after": null
+        },
+        "second_round_latency_ms": 0,
+        "knowledge_status": "no_match",
+        "fallback": "standard_flow",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 15,
+        "first_visible_ms": [
+          9
+        ],
+        "card_ready_ms": [
+          13
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          9
+        ],
+        "card_ready_ms": [
+          13
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_second_round_empty",
+      "group": "rewrite",
+      "title": "开关开启，改写接受但第二轮仍无结果 → 明确出口（预写计划 / R5），不再改写",
+      "passed": true,
+      "elapsed_ms": 61,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 4,
+        "rewrite_invokes": 1,
+        "retrieval_rounds": 2,
+        "rewrite_used": true,
+        "decision": {
+          "triggered": true,
+          "reason": "eligible"
+        },
+        "rewrite_result": {
+          "accepted": true,
+          "reason": null,
+          "query_before": "eufy X9 Pro 跑完了地上还是一堆渣",
+          "query_after": "扫地机器人 清扫后残留碎屑 清洁效果差"
+        },
+        "second_round_latency_ms": 0,
+        "knowledge_status": "no_match",
+        "fallback": "standard_flow",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 12,
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          11
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          8
+        ],
+        "card_ready_ms": [
+          11
+        ]
+      }
+    },
+    {
+      "name": "rewrite_on_budget_insufficient",
+      "group": "rewrite",
+      "title": "剩余预算不足 → 跳过改写（决策表 budget）",
+      "passed": true,
+      "elapsed_ms": 0,
+      "detail": {
+        "reason": "budget:7999ms",
+        "min_remaining_ms": 8000
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "rewrite_on_image_contention",
+      "group": "rewrite",
+      "title": "图片补检索与改写共享名额：含图 run 至多两轮检索，不叠加成三轮",
+      "passed": true,
+      "elapsed_ms": 65,
+      "detail": {
+        "rewrite_enabled": true,
+        "invokes": 5,
+        "rewrite_invokes": 0,
+        "retrieval_rounds": 2,
+        "rewrite_used": true,
+        "decision": {
+          "triggered": false,
+          "reason": "has_hits"
+        },
+        "rewrite_result": null,
+        "second_round_latency_ms": 0,
+        "knowledge_status": "ok",
+        "fallback": "evidence",
+        "plan": "rv_suction_hair_wrap",
+        "run_elapsed_ms": 18,
+        "first_visible_ms": [
+          12
+        ],
+        "card_ready_ms": [
+          16
+        ],
+        "image_observations": [
+          "滚刷上缠绕大量毛发"
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          12
+        ],
+        "card_ready_ms": [
+          16
+        ]
+      }
+    },
+    {
+      "name": "late_result_after_cancel",
+      "group": "rewrite",
+      "title": "取消后晚到的结果不进入状态：取消立即返回 done(cancelled)，下一条消息正常",
+      "passed": true,
+      "elapsed_ms": 1573,
+      "detail": {
+        "cancel_ms": 5,
+        "events_after_cancel": [
+          "run_started",
+          "progress",
+          "done"
+        ],
+        "continued": true
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "five_concurrent_a1",
+      "group": "concurrency",
+      "title": "5 并发 A1（stub 模型）：通过率、card_ready_ms / first_visible_ms 分布",
+      "passed": true,
+      "elapsed_ms": 71,
+      "detail": {
+        "n": 5,
+        "pass_rate": 1.0,
+        "wall_ms": 36,
+        "card_ready_ms": [
+          32,
+          31,
+          31,
+          31,
+          31
+        ],
+        "first_visible_ms": [
+          24,
+          23,
+          22,
+          23,
+          24
+        ]
+      },
+      "error": null,
+      "metrics": {
+        "first_visible_ms": [
+          24,
+          23,
+          22,
+          23,
+          24
+        ],
+        "card_ready_ms": [
+          32,
+          31,
+          31,
+          31,
+          31
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,6554 @@
+{
+ "arm": "C_nograde_synth",
+ "summary": {
+  "cases": 56,
+  "scored": 51,
+  "hit@5": "96%",
+  "precision@5": "47%",
+  "chunk_hit@5": "98%",
+  "chunk_scored": 50,
+  "no_match": 0,
+  "unavailable": 0,
+  "leak": "5/5",
+  "latency_p50_ms": 282,
+  "latency_p95_ms": 517,
+  "plan_match": "41/43",
+  "outcome_match": "50/51",
+  "synth_degraded": 14,
+  "synth_p50_ms": 3291,
+  "by_tag": {
+   "口语": {
+    "n": 18,
+    "hit@5": "94%"
+   },
+   "无计划": {
+    "n": 9,
+    "hit@5": "78%"
+   },
+   "A1": {
+    "n": 5,
+    "hit@5": "100%"
+   },
+   "精确词": {
+    "n": 5,
+    "hit@5": "100%"
+   },
+   "多症状": {
+    "n": 5,
+    "hit@5": "100%"
+   },
+   "安全": {
+    "n": 5,
+    "hit@5": "100%"
+   },
+   "品类级": {
+    "n": 5,
+    "hit@5": "100%"
+   },
+   "反证工单": {
+    "n": 5,
+    "hit@5": "80%"
+   },
+   "否定": {
+    "n": 4,
+    "hit@5": "100%"
+   },
+   "A2": {
+    "n": 3,
+    "hit@5": "100%"
+   },
+   "(untagged)": {
+    "n": 3,
+    "hit@5": "100%"
+   },
+   "错别字": {
+    "n": 1,
+    "hit@5": "100%"
+   }
+  },
+  "kb_ver": "2026-09-12.1+text-embedding-v4",
+  "flags": {
+   "multi_query": true,
+   "faq": true,
+   "rerank": false,
+   "parent_expand": true,
+   "grade": false,
+   "with_synthesize": true,
+   "config": "../data/eval/retrieval/configs/C_nograde.yaml"
+  }
+ },
+ "rows": [
+  {
+   "id": "a1-01",
+   "tags": [
+    "A1",
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 不吸",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 517,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 不吸",
+    "EUFY-X10-PRO-OMNI 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 478
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 417
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0162",
+    "manual_rv_v1",
+    "T0137",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 6850,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0137",
+     "chunk_id": "587c24db-dd94-4ba0-af4a-2d6e43045a51",
+     "source": "kb_tickets",
+     "score": 0.032,
+     "case_outcome": "solved",
+     "snippet": "工单 T0137｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0315,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a1-02",
+   "tags": [
+    "A1",
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 清扫后残留碎屑",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 439,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 清扫后残留碎屑"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 404
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 437
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0162",
+    "manual_rv_v1",
+    "T0002",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 7094,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0158,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.016,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0002",
+     "chunk_id": "2f18192a-f26b-4a81-9af5-6c1be402ee32",
+     "source": "kb_tickets",
+     "score": 0.0157,
+     "case_outcome": "solved",
+     "snippet": "工单 T0002｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0158,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a1-03",
+   "tags": [
+    "A1",
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 吸力下降 头发吸不起来",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 247,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 吸力下降 头发吸不起来"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 246
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 210
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0162",
+    "manual_rv_v1",
+    "T0002"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5186,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.91,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0002",
+     "chunk_id": "2f18192a-f26b-4a81-9af5-6c1be402ee32",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0002｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a1-04",
+   "tags": [
+    "A1"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 滚刷缠头发 不吸",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 819,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 滚刷缠头发 不吸",
+    "EUFY-X10-PRO-OMNI 滚刷缠头发 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 636
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 817
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0151",
+    "manual_rv_v1",
+    "T0137",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 3291,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0151",
+     "chunk_id": "d2916561-f9c2-41d5-bcc5-8d3b207e9621",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0137",
+     "chunk_id": "587c24db-dd94-4ba0-af4a-2d6e43045a51",
+     "source": "kb_tickets",
+     "score": 0.0318,
+     "case_outcome": "solved",
+     "snippet": "工单 T0137｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5a479bec-8950-438e-a970-74659e89b011",
+     "source": "kb_manual",
+     "score": 0.0317,
+     "case_outcome": "n/a",
+     "snippet": "| 现象 | 含义 | 处理 | | --- | --- | --- | | 「请检查滚刷」 | 滚刷被缠绕或卡住 | ",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a1-05",
+   "tags": [
+    "A1",
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 扫不干净",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 518,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 扫不干净",
+    "EUFY-X10-PRO-OMNI 残留",
+    "EUFY-X10-PRO-OMNI 清洁效果差"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 516
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 495
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0162",
+    "manual_rv_v1",
+    "T0002"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 6126,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0489,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0489,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0484,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0002",
+     "chunk_id": "2f18192a-f26b-4a81-9af5-6c1be402ee32",
+     "source": "kb_tickets",
+     "score": 0.0479,
+     "case_outcome": "solved",
+     "snippet": "工单 T0002｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a2-01",
+   "tags": [
+    "A2",
+    "口语"
+   ],
+   "query": "EUFY-S1-PRO 不吸",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-S1-PRO"
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 423,
+   "queries": [
+    "EUFY-S1-PRO 不吸",
+    "EUFY-S1-PRO 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 390
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 421
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "T0182",
+    "troubleshooting_rv",
+    "T0122",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 7057,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "T0182",
+     "chunk_id": "c11c1a91-b5dd-4311-9eab-2133bf939c8b",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0182｜产品 EUFY-S1-PRO 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗晾干 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0122",
+     "chunk_id": "fd388315-53c1-4e6f-94da-f067759e463e",
+     "source": "kb_tickets",
+     "score": 0.0315,
+     "case_outcome": "solved",
+     "snippet": "工单 T0122｜产品 EUFY-S1-PRO 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗晾干 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0317,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a2-02",
+   "tags": [
+    "A2"
+   ],
+   "query": "EUFY-S1-PRO 尘盒很快满 吸力弱",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-S1-PRO"
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 361,
+   "queries": [
+    "EUFY-S1-PRO 尘盒很快满 吸力弱",
+    "EUFY-S1-PRO 尘盒很快满 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 320
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 359
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "T0182",
+    "troubleshooting_rv",
+    "T0122",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5407,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "T0182",
+     "chunk_id": "c11c1a91-b5dd-4311-9eab-2133bf939c8b",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0182｜产品 EUFY-S1-PRO 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗晾干 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0122",
+     "chunk_id": "fd388315-53c1-4e6f-94da-f067759e463e",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0122｜产品 EUFY-S1-PRO 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗晾干 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0317,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "a2-03",
+   "tags": [
+    "A2",
+    "无计划"
+   ],
+   "query": "EUFY-S1-PRO 不充电",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-S1-PRO"
+   },
+   "expanded": [
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 257,
+   "queries": [
+    "EUFY-S1-PRO 不充电"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 244
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 255
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0017",
+    "troubleshooting_rv",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 726,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q13",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：机器不充电怎么办 答：确认基站电源灯亮、触点无灰尘，手动放回基站观察 5 分钟；仍不充电请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0017",
+     "chunk_id": "08f0b466-8c36-4654-bd3c-8282d260bc7a",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0017｜产品 EUFY-S1-PRO 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放回基站 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q14",
+     "source": "kb_faq",
+     "score": 0.94,
+     "case_outcome": "n/a",
+     "snippet": "问：机器找不到基站 答：请把基站放在靠墙、前方 1.5 米无障碍的位置，避免阳光直射红外接收窗。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "flt-01",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X9-PRO 滤网脏 灰多",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "54910429-8d4f-4db5-b2f1-bfbfe4c906c1"
+   ],
+   "latency_ms": 245,
+   "queries": [
+    "EUFY-X9-PRO 滤网脏 灰多"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 210
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 242
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0125",
+    "manual_rv_v1",
+    "T0199"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 3652,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q3",
+     "source": "kb_faq",
+     "score": 0.3333,
+     "case_outcome": "n/a",
+     "snippet": "问：滤网可以水洗吗 答：可水洗机型的滤网可用清水冲洗，需完全晾干 24 小时后再装回，切勿潮湿装回。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0125",
+     "chunk_id": "6fb0d9ed-2d46-45a1-811f-1574d3edef82",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0125｜产品 EUFY-X9-PRO 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "1ab1b495-3a7a-4d44-8f4c-1053dea24444",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滤网破损或变形时请直接更换，不要继续使用。  ### 1.3 清理尘盒（c18） 按下尘盒释放键抽出尘盒，倒空并检查进风",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0199",
+     "chunk_id": "1714a5cd-cebf-4547-8a7e-18d60efeaf13",
+     "source": "kb_tickets",
+     "score": 0.0154,
+     "case_outcome": "solved",
+     "snippet": "工单 T0199｜产品 EUFY-X9-PRO 现象：拖布异味 原因：拖布未及时清洗 处理步骤：取下拖布清洗晾干 结果：",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "flt-02",
+   "tags": [],
+   "query": "EUFY-X8-PRO-SES 吸力下降 尘盒很快满",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X8-PRO-SES"
+   },
+   "expanded": [
+    "1ab1b495-3a7a-4d44-8f4c-1053dea24444"
+   ],
+   "latency_ms": 269,
+   "queries": [
+    "EUFY-X8-PRO-SES 吸力下降 尘盒很快满"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 247
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 12,
+     "hits": 5,
+     "ms": 265
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0172",
+    "manual_rv_v1",
+    "T0092"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_hair_wrap",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5829,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "1ab1b495-3a7a-4d44-8f4c-1053dea24444",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滤网破损或变形时请直接更换，不要继续使用。  ### 1.3 清理尘盒（c18） 按下尘盒释放键抽出尘盒，倒空并检查进风",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.9167,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0172",
+     "chunk_id": "c48788ee-a041-4291-96a4-fb0ab6f090e0",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0172｜产品 EUFY-X8-PRO-SES 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0092",
+     "chunk_id": "a3815958-fbd8-4a8c-a7ba-0e0faffe398d",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0092｜产品 EUFY-X8-PRO-SES 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "flt-03",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 滤网潮湿 异味",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "54910429-8d4f-4db5-b2f1-bfbfe4c906c1"
+   ],
+   "latency_ms": 380,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 滤网潮湿 异味"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 378
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 226
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0002",
+    "manual_rv_v1",
+    "T0162",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2246,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0002",
+     "chunk_id": "2f18192a-f26b-4a81-9af5-6c1be402ee32",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0002｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "1ab1b495-3a7a-4d44-8f4c-1053dea24444",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "滤网破损或变形时请直接更换，不要继续使用。  ### 1.3 清理尘盒（c18） 按下尘盒释放键抽出尘盒，倒空并检查进风",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "flt-04",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-G50-HYBRID 吸力下降 滤网更换周期",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G50-HYBRID"
+   },
+   "expanded": [
+    "21417791-88cc-4188-afc9-996cac137a49",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 349,
+   "queries": [
+    "EUFY-G50-HYBRID 吸力下降 滤网更换周期"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 342
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 347
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0032",
+    "manual_rv_v2",
+    "T0171"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_hair_wrap",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5970,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.91,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0032",
+     "chunk_id": "6d0f7e4d-f1ae-43ee-8564-cec3ea6881ff",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0032｜产品 EUFY-G50-HYBRID 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0171",
+     "chunk_id": "0e216f28-2e0d-4c48-bea2-d12672afdb94",
+     "source": "kb_tickets",
+     "score": 0.0159,
+     "case_outcome": "solved",
+     "snippet": "工单 T0171｜产品 EUFY-G50-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "flt-05",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-30C-MAX 吸力小",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-30C-MAX"
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 341,
+   "queries": [
+    "EUFY-30C-MAX 吸力小",
+    "EUFY-30C-MAX 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 340
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 21,
+     "hits": 5,
+     "ms": 336
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0062",
+    "troubleshooting_rv",
+    "T0145"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5416,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.4,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0062",
+     "chunk_id": "714d3127-b14b-4379-8409-6dc67aeb10e5",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0062｜产品 EUFY-30C-MAX 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗晾干",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0145",
+     "chunk_id": "258322a9-aab3-4aaf-9cf2-16ff7a078fa9",
+     "source": "kb_tickets",
+     "score": 0.032,
+     "case_outcome": "solved",
+     "snippet": "工单 T0145｜产品 EUFY-30C-MAX 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "bin-01",
+   "tags": [
+    "精确词"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 提示请检查尘盒",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "1ab1b495-3a7a-4d44-8f4c-1053dea24444"
+   ],
+   "latency_ms": 259,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 提示请检查尘盒"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 258
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 251
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0063",
+    "manual_rv_v1",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2794,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "1ab1b495-3a7a-4d44-8f4c-1053dea24444",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滤网破损或变形时请直接更换，不要继续使用。  ### 1.3 清理尘盒（c18） 按下尘盒释放键抽出尘盒，倒空并检查进风",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q5",
+     "source": "kb_faq",
+     "score": 0.9812,
+     "case_outcome": "n/a",
+     "snippet": "问：提示请检查尘盒是什么意思 答：表示尘盒未装到位或已满。请倒空尘盒并重新安装，听到咔哒声即到位。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0063",
+     "chunk_id": "69669626-ec90-4463-8d32-2805745dabf7",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0063｜产品 EUFY-X10-PRO-OMNI 现象：提示请检查尘盒 原因：尘盒未装到位 处理步骤：重新安装",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "063b1846-896e-4697-8300-39adf9c9cc9e",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "| 现象 | 含义 | 处理 | | --- | --- | --- | | 「请检查尘盒」 | 尘盒未装到位或已满 |",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q33",
+     "source": "kb_faq",
+     "score": 0.5714,
+     "case_outcome": "n/a",
+     "snippet": "问：语音提示请检查滚刷 答：表示滚刷被缠绕或卡住，请取出滚刷清理后装回。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "bin-02",
+   "tags": [
+    "精确词"
+   ],
+   "query": "EUFY-25C 提示请检查尘盒",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-25C"
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 200,
+   "queries": [
+    "EUFY-25C 提示请检查尘盒"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 199
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 194
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0143",
+    "troubleshooting_rv",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2648,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q5",
+     "source": "kb_faq",
+     "score": 0.9812,
+     "case_outcome": "n/a",
+     "snippet": "问：提示请检查尘盒是什么意思 答：表示尘盒未装到位或已满。请倒空尘盒并重新安装，听到咔哒声即到位。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0143",
+     "chunk_id": "42d1c6c8-8875-496f-8437-f73b1f5dd73b",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0143｜产品 EUFY-25C 现象：提示请检查尘盒 原因：尘盒未装到位 处理步骤：重新安装尘盒直到咔哒声 结",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q33",
+     "source": "kb_faq",
+     "score": 0.5714,
+     "case_outcome": "n/a",
+     "snippet": "问：语音提示请检查滚刷 答：表示滚刷被缠绕或卡住，请取出滚刷清理后装回。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "bin-03",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X9-PRO 尘盒装不上",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "1ab1b495-3a7a-4d44-8f4c-1053dea24444"
+   ],
+   "latency_ms": 341,
+   "queries": [
+    "EUFY-X9-PRO 尘盒装不上"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 242
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 337
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0133",
+    "manual_rv_v1",
+    "T0051"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 3127,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "1ab1b495-3a7a-4d44-8f4c-1053dea24444",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滤网破损或变形时请直接更换，不要继续使用。  ### 1.3 清理尘盒（c18） 按下尘盒释放键抽出尘盒，倒空并检查进风",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q12",
+     "source": "kb_faq",
+     "score": 0.975,
+     "case_outcome": "n/a",
+     "snippet": "问：尘盒装不上去 答：请检查尘盒内是否有异物顶住，对准滑轨完全推入直到听到咔哒声；未装到位会触发提示。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0133",
+     "chunk_id": "6c34ed7e-0e91-472d-b74e-c1105f9c86e3",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0133｜产品 EUFY-X9-PRO 现象：提示请检查尘盒 原因：尘盒未装到位 处理步骤：重新安装尘盒直到咔哒",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "063b1846-896e-4697-8300-39adf9c9cc9e",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "| 现象 | 含义 | 处理 | | --- | --- | --- | | 「请检查尘盒」 | 尘盒未装到位或已满 |",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0051",
+     "chunk_id": "fcf1f753-d311-4edb-9591-466d929868bd",
+     "source": "kb_tickets",
+     "score": 0.0153,
+     "case_outcome": "solved",
+     "snippet": "工单 T0051｜产品 EUFY-X9-PRO 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷清理缠绕",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "bin-04",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-G40-HYBRID 漏灰",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G40-HYBRID"
+   },
+   "expanded": [
+    "21417791-88cc-4188-afc9-996cac137a49",
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 330,
+   "queries": [
+    "EUFY-G40-HYBRID 漏灰"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 329
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 259
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "T0075",
+    "manual_rv_v2",
+    "T0064",
+    "manual_rv_v2"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full",
+     "rv_suction_filter_clog",
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4612,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": 425
+    },
+    {
+     "doc_id": "T0075",
+     "chunk_id": "95a12bbb-5c35-4652-9a95-9b96d7779dd9",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0075｜产品 EUFY-G40-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0064",
+     "chunk_id": "ba8fbc32-54a0-4c5c-8553-f96ac4c19347",
+     "source": "kb_tickets",
+     "score": 0.0151,
+     "case_outcome": "solved",
+     "snippet": "工单 T0064｜产品 EUFY-G40-HYBRID 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "sb-01",
+   "tags": [],
+   "query": "EUFY-30C-MAX 边刷不转",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-30C-MAX"
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 300,
+   "queries": [
+    "EUFY-30C-MAX 边刷不转"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 299
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 21,
+     "hits": 5,
+     "ms": 257
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0124",
+    "troubleshooting_rv",
+    "T0004"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 3519,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q4",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：边刷不转怎么办 答：先关机拆下边刷清理缠绕物，检查边刷轴是否有异物或进水；清理后仍不转请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0124",
+     "chunk_id": "606468b6-b9e9-4e26-a7fb-33bd3fc6cffe",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0124｜产品 EUFY-30C-MAX 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠绕物 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0004",
+     "chunk_id": "3756db64-e01a-4579-a689-9073b9f7faf6",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0004｜产品 EUFY-30C-MAX 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠绕物 ",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "sb-02",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 侧刷不动",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 365,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 侧刷不动",
+    "EUFY-X10-PRO-OMNI 边刷不动"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 354
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 362
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0151",
+    "manual_rv_v1",
+    "T0162"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 3144,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0325,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q4",
+     "source": "kb_faq",
+     "score": 0.6667,
+     "case_outcome": "n/a",
+     "snippet": "问：边刷不转怎么办 答：先关机拆下边刷清理缠绕物，检查边刷轴是否有异物或进水；清理后仍不转请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0151",
+     "chunk_id": "d2916561-f9c2-41d5-bcc5-8d3b207e9621",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0325,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.032,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "sb-03",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X8-PRO-SES 墙边角落扫不干净",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X8-PRO-SES"
+   },
+   "expanded": [
+    "db5b8874-6d00-4816-bed7-528385c12259"
+   ],
+   "latency_ms": 380,
+   "queries": [
+    "EUFY-X8-PRO-SES 墙边角落扫不干净",
+    "EUFY-X8-PRO-SES 墙边角落残留",
+    "EUFY-X8-PRO-SES 墙边角落清洁效果差"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 379
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 12,
+     "hits": 5,
+     "ms": 347
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0172",
+    "manual_rv_v1",
+    "T0081"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush",
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4148,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0492,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.925,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0172",
+     "chunk_id": "c48788ee-a041-4291-96a4-fb0ab6f090e0",
+     "source": "kb_tickets",
+     "score": 0.0481,
+     "case_outcome": "solved",
+     "snippet": "工单 T0172｜产品 EUFY-X8-PRO-SES 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0481,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0081",
+     "chunk_id": "1eccbac6-fe46-4bd0-b972-74652bce7e93",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0081｜产品 EUFY-X8-PRO-SES 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "sb-04",
+   "tags": [
+    "多症状"
+   ],
+   "query": "EUFY-11S-MAX 边刷转动缓慢 异响",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-11S-MAX"
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 300,
+   "queries": [
+    "EUFY-11S-MAX 边刷转动缓慢 异响"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 299
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 16,
+     "hits": 5,
+     "ms": 292
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "T0114",
+    "troubleshooting_rv",
+    "T0084",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4991,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "T0114",
+     "chunk_id": "119498bc-e015-4f4b-a4ec-0e641458c8a5",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0114｜产品 EUFY-11S-MAX 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠绕物 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0084",
+     "chunk_id": "652314bc-efe4-40e0-bfd4-c136794ccd1e",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0084｜产品 EUFY-11S-MAX 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠绕物 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "safe-01",
+   "tags": [
+    "安全"
+   ],
+   "query": "EUFY-G40-HYBRID 焦味",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G40-HYBRID"
+   },
+   "expanded": [
+    "21417791-88cc-4188-afc9-996cac137a49",
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 232,
+   "queries": [
+    "EUFY-G40-HYBRID 焦味"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 231
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 218
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0075",
+    "manual_rv_v2",
+    "T0064"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_motor_fault",
+    "ranked": [
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2311,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": null
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q6",
+     "source": "kb_faq",
+     "score": 0.95,
+     "case_outcome": "n/a",
+     "snippet": "问：机器有焦味怎么办 答：请立即关机停止使用并联系售后，不要继续排查或充电。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0075",
+     "chunk_id": "95a12bbb-5c35-4652-9a95-9b96d7779dd9",
+     "source": "kb_tickets",
+     "score": 0.0152,
+     "case_outcome": "solved",
+     "snippet": "工单 T0075｜产品 EUFY-G40-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.016,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0064",
+     "chunk_id": "ba8fbc32-54a0-4c5c-8553-f96ac4c19347",
+     "source": "kb_tickets",
+     "score": 0.0148,
+     "case_outcome": "solved",
+     "snippet": "工单 T0064｜产品 EUFY-G40-HYBRID 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "safe-02",
+   "tags": [
+    "安全",
+    "口语"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 机身过热",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "db5b8874-6d00-4816-bed7-528385c12259"
+   ],
+   "latency_ms": 191,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 机身过热"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 177
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 190
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0137",
+    "manual_rv_v1",
+    "T0187"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_motor_fault",
+    "ranked": [
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2738,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": null
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q21",
+     "source": "kb_faq",
+     "score": 0.3333,
+     "case_outcome": "n/a",
+     "snippet": "问：机器发烫正常吗 答：轻微温热正常；若明显烫手、有焦味或冒烟，请立即断电停用并联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0137",
+     "chunk_id": "587c24db-dd94-4ba0-af4a-2d6e43045a51",
+     "source": "kb_tickets",
+     "score": 0.0158,
+     "case_outcome": "solved",
+     "snippet": "工单 T0137｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0158,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0187",
+     "chunk_id": "d459d526-e845-4fd8-b334-e4b8dfa27208",
+     "source": "kb_tickets",
+     "score": 0.0155,
+     "case_outcome": "solved",
+     "snippet": "工单 T0187｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "safe-03",
+   "tags": [
+    "安全",
+    "品类级"
+   ],
+   "query": "扫地机器人 冒烟",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 282,
+   "queries": [
+    "扫地机器人 冒烟"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 281
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 4,
+   "hit": true,
+   "precision": 0.75,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_motor_fault",
+    "ranked": [
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2417,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": null
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q50",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：机器冒烟了 答：请立即断电停用并远离，联系售后处理，不要继续使用。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "safe-04",
+   "tags": [
+    "安全"
+   ],
+   "query": "EUFY-X9-PRO 电池鼓包",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7"
+   ],
+   "latency_ms": 332,
+   "queries": [
+    "EUFY-X9-PRO 电池鼓包"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 325
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 330
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0125",
+    "manual_rv_v1",
+    "T0018"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 755,
+    "outcome": "standard_flow",
+    "plan_match": false,
+    "outcome_match": null
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q22",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：电池鼓包了怎么办 答：请立即停止使用与充电，远离火源，联系售后回收处理，切勿自行拆解。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0125",
+     "chunk_id": "6fb0d9ed-2d46-45a1-811f-1574d3edef82",
+     "source": "kb_tickets",
+     "score": 0.016,
+     "case_outcome": "solved",
+     "snippet": "工单 T0125｜产品 EUFY-X9-PRO 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0018",
+     "chunk_id": "e4938bbc-8ea1-41db-8efe-e66547e5ba6e",
+     "source": "kb_tickets",
+     "score": 0.0149,
+     "case_outcome": "solved",
+     "snippet": "工单 T0018｜产品 EUFY-X9-PRO 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠墙开阔位置 ",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "chg-01",
+   "tags": [
+    "无计划",
+    "反证工单"
+   ],
+   "query": "EUFY-25C 不充电 基站灯不亮",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-25C"
+   },
+   "expanded": [
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 223,
+   "queries": [
+    "EUFY-25C 不充电 基站灯不亮"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 212
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 221
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0007",
+    "troubleshooting_rv",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1040,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q13",
+     "source": "kb_faq",
+     "score": 0.9062,
+     "case_outcome": "n/a",
+     "snippet": "问：机器不充电怎么办 答：确认基站电源灯亮、触点无灰尘，手动放回基站观察 5 分钟；仍不充电请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0007",
+     "chunk_id": "8dd2f080-39a8-4bff-8ca1-c66ed49e59bc",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0007｜产品 EUFY-25C 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放回基站 结果：so",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q14",
+     "source": "kb_faq",
+     "score": 0.3636,
+     "case_outcome": "n/a",
+     "snippet": "问：机器找不到基站 答：请把基站放在靠墙、前方 1.5 米无障碍的位置，避免阳光直射红外接收窗。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "chg-02",
+   "tags": [
+    "无计划"
+   ],
+   "query": "EUFY-11S-MAX 不充电 触点脏",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-11S-MAX"
+   },
+   "expanded": [
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 506,
+   "queries": [
+    "EUFY-11S-MAX 不充电 触点脏"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 180
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 16,
+     "hits": 5,
+     "ms": 505
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0147",
+    "troubleshooting_rv",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1037,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q13",
+     "source": "kb_faq",
+     "score": 0.925,
+     "case_outcome": "n/a",
+     "snippet": "问：机器不充电怎么办 答：确认基站电源灯亮、触点无灰尘，手动放回基站观察 5 分钟；仍不充电请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0147",
+     "chunk_id": "7a39115e-5f79-4db4-986c-9f0db5d73a61",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0147｜产品 EUFY-11S-MAX 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放回基站 结",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q14",
+     "source": "kb_faq",
+     "score": 0.4444,
+     "case_outcome": "n/a",
+     "snippet": "问：机器找不到基站 答：请把基站放在靠墙、前方 1.5 米无障碍的位置，避免阳光直射红外接收窗。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "chg-03",
+   "tags": [
+    "无计划",
+    "口语"
+   ],
+   "query": "EUFY-G20-HYBRID 找不到基站",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G20-HYBRID"
+   },
+   "expanded": [
+    "b4d34e61-485f-4e35-8804-b2496ec22746",
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 198,
+   "queries": [
+    "EUFY-G20-HYBRID 找不到基站"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 178
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 11,
+     "hits": 5,
+     "ms": 196
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0178",
+    "manual_rv_v2",
+    "T0168"
+   ],
+   "n_hits": 5,
+   "hit": false,
+   "precision": 0.0,
+   "first_rank": null,
+   "chunk_hit": false,
+   "chunk_rank": null,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1549,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q14",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：机器找不到基站 答：请把基站放在靠墙、前方 1.5 米无障碍的位置，避免阳光直射红外接收窗。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0178",
+     "chunk_id": "3a76599e-b41a-4f0a-9d07-c57e7a2866d9",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0178｜产品 EUFY-G20-HYBRID 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠墙开",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0168",
+     "chunk_id": "843bb70d-0f10-4f98-90c5-f6de97527c4f",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0168｜产品 EUFY-G20-HYBRID 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠墙开",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "v2-01",
+   "tags": [],
+   "query": "EUFY-L60-HYBRID 滚刷拆卸",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-L60-HYBRID"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 285,
+   "queries": [
+    "EUFY-L60-HYBRID 滚刷拆卸"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 284
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 218
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "T0164",
+    "manual_rv_v2",
+    "T0091",
+    "manual_rv_v2"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2399,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "T0164",
+     "chunk_id": "714859cb-03aa-4af9-8206-08414e5a845a",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0164｜产品 EUFY-L60-HYBRID 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0091",
+     "chunk_id": "8c291c5d-5fe4-4146-8107-8c94e597af92",
+     "source": "kb_tickets",
+     "score": 0.0157,
+     "case_outcome": "solved",
+     "snippet": "工单 T0091｜产品 EUFY-L60-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "v2-02",
+   "tags": [
+    "无计划"
+   ],
+   "query": "EUFY-L60-HYBRID 拖布异味",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-L60-HYBRID"
+   },
+   "expanded": [
+    "21417791-88cc-4188-afc9-996cac137a49",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 747,
+   "queries": [
+    "EUFY-L60-HYBRID 拖布异味"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 746
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 361
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0155",
+    "manual_rv_v2",
+    "T0141"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1103,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q17",
+     "source": "kb_faq",
+     "score": 0.5714,
+     "case_outcome": "n/a",
+     "snippet": "问：拖布有异味 答：请每次使用后取下拖布清洗并晾干；长期潮湿会产生异味。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0155",
+     "chunk_id": "7599390d-dc2f-4ccb-85f0-437f309a4338",
+     "source": "kb_tickets",
+     "score": 0.0155,
+     "case_outcome": "solved",
+     "snippet": "工单 T0155｜产品 EUFY-L60-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0141",
+     "chunk_id": "52990c98-2e8c-42c4-98a3-14bddfc9e162",
+     "source": "kb_tickets",
+     "score": 0.0154,
+     "case_outcome": "solved",
+     "snippet": "工单 T0141｜产品 EUFY-L60-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "v2-03",
+   "tags": [
+    "无计划"
+   ],
+   "query": "EUFY-G50-HYBRID 水箱漏水",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G50-HYBRID"
+   },
+   "expanded": [
+    "b4d34e61-485f-4e35-8804-b2496ec22746",
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 258,
+   "queries": [
+    "EUFY-G50-HYBRID 水箱漏水"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 202
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 257
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0175",
+    "manual_rv_v2",
+    "T0055"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 922,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q18",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：水箱漏水 答：请检查水箱密封圈是否移位或老化，重新安装到位。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0175",
+     "chunk_id": "3ade1b5a-8efe-491d-b48d-64457935ae0c",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0175｜产品 EUFY-G50-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0055",
+     "chunk_id": "194c35a8-c6b6-4a27-b1bb-4ef0131e5e17",
+     "source": "kb_tickets",
+     "score": 0.0157,
+     "case_outcome": "solved",
+     "snippet": "工单 T0055｜产品 EUFY-G50-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "v2-04",
+   "tags": [
+    "多症状"
+   ],
+   "query": "EUFY-G30-VERGE 尘盒盖未扣紧 吸力下降",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G30-VERGE"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 236,
+   "queries": [
+    "EUFY-G30-VERGE 尘盒盖未扣紧 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 236
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 11,
+     "hits": 5,
+     "ms": 206
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0012",
+    "manual_rv_v2",
+    "T0023"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full",
+     "rv_suction_filter_clog",
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 6326,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.91,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0012",
+     "chunk_id": "9c4c581f-1f6b-4d78-a1e8-ac470abdd0c2",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0012｜产品 EUFY-G30-VERGE 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0023",
+     "chunk_id": "73399471-4a34-4b9b-b583-f49805279109",
+     "source": "kb_tickets",
+     "score": 0.016,
+     "case_outcome": "solved",
+     "snippet": "工单 T0023｜产品 EUFY-G30-VERGE 现象：提示请检查尘盒 原因：尘盒未装到位 处理步骤：重新安装尘盒直",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "v2-05",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-L50-SES 吸力下降",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-L50-SES"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 210,
+   "queries": [
+    "EUFY-L50-SES 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 209
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 8,
+     "hits": 5,
+     "ms": 183
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0025",
+    "manual_rv_v2",
+    "T0161"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5915,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0025",
+     "chunk_id": "7f9d0a62-66a2-4445-9dfc-507bd3de5a2d",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0025｜产品 EUFY-L50-SES 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0161",
+     "chunk_id": "67bdcc51-92a6-4b42-8b4c-ffd05c85cdfe",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0161｜产品 EUFY-L50-SES 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷清理缠",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "cat-01",
+   "tags": [
+    "品类级"
+   ],
+   "query": "扫地机器人 不吸",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 244,
+   "queries": [
+    "扫地机器人 不吸",
+    "扫地机器人 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 243
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "troubleshooting_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 3,
+   "hit": true,
+   "precision": 1.0,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5009,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.032,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.032,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "cat-02",
+   "tags": [
+    "品类级"
+   ],
+   "query": "扫地机器人 边刷不转",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 172,
+   "queries": [
+    "扫地机器人 边刷不转"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 171
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 4,
+   "hit": true,
+   "precision": 0.75,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2302,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q4",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：边刷不转怎么办 答：先关机拆下边刷清理缠绕物，检查边刷轴是否有异物或进水；清理后仍不转请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "cat-03",
+   "tags": [
+    "品类级",
+    "精确词"
+   ],
+   "query": "扫地机器人 提示请检查尘盒",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 192,
+   "queries": [
+    "扫地机器人 提示请检查尘盒"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 191
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_dustbin_full",
+    "ranked": [
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2629,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q5",
+     "source": "kb_faq",
+     "score": 0.9812,
+     "case_outcome": "n/a",
+     "snippet": "问：提示请检查尘盒是什么意思 答：表示尘盒未装到位或已满。请倒空尘盒并重新安装，听到咔哒声即到位。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q33",
+     "source": "kb_faq",
+     "score": 0.5714,
+     "case_outcome": "n/a",
+     "snippet": "问：语音提示请检查滚刷 答：表示滚刷被缠绕或卡住，请取出滚刷清理后装回。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "cat-04",
+   "tags": [
+    "品类级",
+    "无计划"
+   ],
+   "query": "扫地机器人 不充电",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "52677bb8-25c6-4f5f-a0b3-0fed975aef26"
+   ],
+   "latency_ms": 260,
+   "queries": [
+    "扫地机器人 不充电"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 259
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 785,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q13",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：机器不充电怎么办 答：确认基站电源灯亮、触点无灰尘，手动放回基站观察 5 分钟；仍不充电请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q14",
+     "source": "kb_faq",
+     "score": 0.94,
+     "case_outcome": "n/a",
+     "snippet": "问：机器找不到基站 答：请把基站放在靠墙、前方 1.5 米无障碍的位置，避免阳光直射红外接收窗。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "cat-05",
+   "tags": [
+    "品类级",
+    "faq_only"
+   ],
+   "query": "扫地机器人 滤网清洗",
+   "scope": {
+    "product_state": "category_only",
+    "category": "robot_vacuum",
+    "sku": null
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 185,
+   "queries": [
+    "扫地机器人 滤网清洗"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 184
+    },
+    "kb_tickets": {
+     "status": "no_match",
+     "allowed": 0,
+     "hits": 0,
+     "ms": 0
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv",
+    "faq_rv",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "leak": true,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1901,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": false
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q3",
+     "source": "kb_faq",
+     "score": 0.4,
+     "case_outcome": "n/a",
+     "snippet": "问：滤网可以水洗吗 答：可水洗机型的滤网可用清水冲洗，需完全晾干 24 小时后再装回，切勿潮湿装回。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q9",
+     "source": "kb_faq",
+     "score": 0.3333,
+     "case_outcome": "n/a",
+     "snippet": "问：滤网多久更换 答：建议每两周清洁一次、每 3 至 6 个月更换一次；破损或变形时立即更换。",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "multi-01",
+   "tags": [
+    "多症状",
+    "否定"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 清扫后残留碎屑 滚刷已清理 基站不集尘",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 210,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 清扫后残留碎屑 滚刷已清理 基站不集尘"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 209
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 205
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0151",
+    "manual_rv_v1",
+    "T0162",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5296,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0151",
+     "chunk_id": "d2916561-f9c2-41d5-bcc5-8d3b207e9621",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0155,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0157,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "multi-02",
+   "tags": [
+    "多症状",
+    "反证工单"
+   ],
+   "query": "EUFY-X9-PRO 吸力弱 噪音变大",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "54910429-8d4f-4db5-b2f1-bfbfe4c906c1"
+   ],
+   "latency_ms": 477,
+   "queries": [
+    "EUFY-X9-PRO 吸力弱 噪音变大",
+    "EUFY-X9-PRO 吸力下降 噪音变大"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 476
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 233
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0125",
+    "manual_rv_v1",
+    "T0051"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_motor_fault",
+     "rv_suction_filter_clog"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5723,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0325,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q20",
+     "source": "kb_faq",
+     "score": 0.9357,
+     "case_outcome": "n/a",
+     "snippet": "问：机器运行时声音很大 答：先检查吸口和滚刷是否有异物；若伴随异响或焦味请立即关机并联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0125",
+     "chunk_id": "6fb0d9ed-2d46-45a1-811f-1574d3edef82",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0125｜产品 EUFY-X9-PRO 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0051",
+     "chunk_id": "fcf1f753-d311-4edb-9591-466d929868bd",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0051｜产品 EUFY-X9-PRO 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷清理缠绕",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "multi-03",
+   "tags": [
+    "多症状"
+   ],
+   "query": "EUFY-G50-HYBRID 边刷不转 地毯边打转",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G50-HYBRID"
+   },
+   "expanded": [
+    "b318956c-03ff-409b-910c-db9df04bf035",
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d"
+   ],
+   "latency_ms": 241,
+   "queries": [
+    "EUFY-G50-HYBRID 边刷不转 地毯边打转"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 230
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 239
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0171",
+    "manual_rv_v2",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.2,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4199,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q4",
+     "source": "kb_faq",
+     "score": 0.9167,
+     "case_outcome": "n/a",
+     "snippet": "问：边刷不转怎么办 答：先关机拆下边刷清理缠绕物，检查边刷轴是否有异物或进水；清理后仍不转请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0171",
+     "chunk_id": "0e216f28-2e0d-4c48-bea2-d12672afdb94",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0171｜产品 EUFY-G50-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q47",
+     "source": "kb_faq",
+     "score": 0.4286,
+     "case_outcome": "n/a",
+     "snippet": "问：机器在地毯边缘打转 答：请修剪地毯流苏或设置禁区。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "neg-01",
+   "tags": [
+    "否定",
+    "安全"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 异响",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 231,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 异响"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 196
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 230
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0151",
+    "manual_rv_v1",
+    "T0162"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_motor_fault",
+    "ranked": [
+     "rv_suction_motor_fault",
+     "rv_suction_hair_wrap",
+     "rv_suction_side_brush"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4013,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": null
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q39",
+     "source": "kb_faq",
+     "score": 0.95,
+     "case_outcome": "n/a",
+     "snippet": "问：机器有异响 答：先关机检查滚刷、边刷和轮子是否有异物；持续异响请停用并联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0151",
+     "chunk_id": "d2916561-f9c2-41d5-bcc5-8d3b207e9621",
+     "source": "kb_tickets",
+     "score": 0.0153,
+     "case_outcome": "solved",
+     "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0153,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "neg-02",
+   "tags": [
+    "否定"
+   ],
+   "query": "EUFY-X8-PRO-SES 滚刷干净 不吸",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X8-PRO-SES"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 358,
+   "queries": [
+    "EUFY-X8-PRO-SES 滚刷干净 不吸",
+    "EUFY-X8-PRO-SES 滚刷干净 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 340
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 12,
+     "hits": 5,
+     "ms": 355
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0081",
+    "manual_rv_v1",
+    "T0061",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_motor_fault"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4950,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0325,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0081",
+     "chunk_id": "1eccbac6-fe46-4bd0-b972-74652bce7e93",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0081｜产品 EUFY-X8-PRO-SES 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0325,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0061",
+     "chunk_id": "c6f74f8b-0a8c-4361-a9e0-f424a491526d",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0061｜产品 EUFY-X8-PRO-SES 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.0315,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "neg-03",
+   "tags": [
+    "否定"
+   ],
+   "query": "EUFY-L60-HYBRID 尘盒已清理 吸力下降",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-L60-HYBRID"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 241,
+   "queries": [
+    "EUFY-L60-HYBRID 尘盒已清理 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 227
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 240
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0141",
+    "manual_rv_v2",
+    "T0091"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 6091,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.9167,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0141",
+     "chunk_id": "52990c98-2e8c-42c4-98a3-14bddfc9e162",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0141｜产品 EUFY-L60-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0091",
+     "chunk_id": "8c291c5d-5fe4-4146-8107-8c94e597af92",
+     "source": "kb_tickets",
+     "score": 0.0159,
+     "case_outcome": "solved",
+     "snippet": "工单 T0091｜产品 EUFY-L60-HYBRID 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "typo-01",
+   "tags": [
+    "错别字"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 吸力变小",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 344,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 吸力变小",
+    "EUFY-X10-PRO-OMNI 吸力下降"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 316
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 342
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0162",
+    "manual_rv_v1",
+    "T0002"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_filter_clog",
+    "ranked": [
+     "rv_suction_filter_clog",
+     "rv_suction_hair_wrap",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5154,
+    "outcome": "evidence",
+    "plan_match": false,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0162",
+     "chunk_id": "060847a9-42b1-456e-8e6d-3d84b2ff4b6d",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0162｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0323,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0002",
+     "chunk_id": "2f18192a-f26b-4a81-9af5-6c1be402ee32",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0002｜产品 EUFY-X10-PRO-OMNI 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "typo-02",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-X9-PRO 扫地机跟没吸一样，白跑",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 450,
+   "queries": [
+    "EUFY-X9-PRO 扫地机跟没吸一样，白跑",
+    "EUFY-X9-PRO 扫地机器人跟没吸一样，白跑"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 449
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 397
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0051",
+    "manual_rv_v1",
+    "T0125",
+    "troubleshooting_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 7985,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "54910429-8d4f-4db5-b2f1-bfbfe4c906c1",
+     "source": "kb_manual",
+     "score": 0.0328,
+     "case_outcome": "n/a",
+     "snippet": "滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。  ### 1.2 清洁滤网（c15） 打开尘",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0051",
+     "chunk_id": "fcf1f753-d311-4edb-9591-466d929868bd",
+     "source": "kb_tickets",
+     "score": 0.0328,
+     "case_outcome": "solved",
+     "snippet": "工单 T0051｜产品 EUFY-X9-PRO 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出滚刷清理缠绕",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.032,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0125",
+     "chunk_id": "6fb0d9ed-2d46-45a1-811f-1574d3edef82",
+     "source": "kb_tickets",
+     "score": 0.0323,
+     "case_outcome": "solved",
+     "snippet": "工单 T0125｜产品 EUFY-X9-PRO 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0315,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    }
+   ]
+  },
+  {
+   "id": "typo-03",
+   "tags": [
+    "口语"
+   ],
+   "query": "EUFY-G40-HYBRID 清扫后残留毛发",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G40-HYBRID"
+   },
+   "expanded": [
+    "21417791-88cc-4188-afc9-996cac137a49",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 215,
+   "queries": [
+    "EUFY-G40-HYBRID 清扫后残留毛发"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 214
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 185
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "T0064",
+    "manual_rv_v2",
+    "T0075",
+    "manual_rv_v2"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.6,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 4662,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": 425
+    },
+    {
+     "doc_id": "T0064",
+     "chunk_id": "ba8fbc32-54a0-4c5c-8553-f96ac4c19347",
+     "source": "kb_tickets",
+     "score": 0.0161,
+     "case_outcome": "solved",
+     "snippet": "工单 T0064｜产品 EUFY-G40-HYBRID 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0075",
+     "chunk_id": "95a12bbb-5c35-4652-9a95-9b96d7779dd9",
+     "source": "kb_tickets",
+     "score": 0.0155,
+     "case_outcome": "solved",
+     "snippet": "工单 T0075｜产品 EUFY-G40-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "ctr-01",
+   "tags": [
+    "反证工单"
+   ],
+   "query": "EUFY-E20 吸力变小 扫不干净",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-E20"
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 419,
+   "queries": [
+    "EUFY-E20 吸力变小 扫不干净",
+    "EUFY-E20 吸力变小 残留",
+    "EUFY-E20 吸力变小 清洁效果差"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 356
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 9,
+     "hits": 5,
+     "ms": 418
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0195",
+    "troubleshooting_rv",
+    "T0014"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 5110,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0492,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q1",
+     "source": "kb_faq",
+     "score": 0.925,
+     "case_outcome": "n/a",
+     "snippet": "问：扫地机吸力变小了怎么办 答：请按顺序检查滚刷是否缠绕毛发、滤网是否堵塞、尘盒是否已满或未装到位、吸口是否有异物，每完",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0195",
+     "chunk_id": "8334a831-e0f8-4ee0-94b2-e86757ad2d30",
+     "source": "kb_tickets",
+     "score": 0.0492,
+     "case_outcome": "solved",
+     "snippet": "工单 T0195｜产品 EUFY-E20 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果：so",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0481,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0014",
+     "chunk_id": "4eeb103e-6742-4f22-baae-f3381322e95a",
+     "source": "kb_tickets",
+     "score": 0.0484,
+     "case_outcome": "solved",
+     "snippet": "工单 T0014｜产品 EUFY-E20 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠绕物 结果：s",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "ctr-02",
+   "tags": [
+    "反证工单"
+   ],
+   "query": "EUFY-G40-HYBRID 边刷不转",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G40-HYBRID"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "b318956c-03ff-409b-910c-db9df04bf035"
+   ],
+   "latency_ms": 193,
+   "queries": [
+    "EUFY-G40-HYBRID 边刷不转"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 174
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 192
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "faq_rv",
+    "T0064",
+    "troubleshooting_rv",
+    "T0075"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.2,
+   "first_rank": 4,
+   "chunk_hit": true,
+   "chunk_rank": 4,
+   "synth": {
+    "top_plan": "rv_suction_side_brush",
+    "ranked": [
+     "rv_suction_side_brush"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2956,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q4",
+     "source": "kb_faq",
+     "score": 1.0,
+     "case_outcome": "n/a",
+     "snippet": "问：边刷不转怎么办 答：先关机拆下边刷清理缠绕物，检查边刷轴是否有异物或进水；清理后仍不转请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0064",
+     "chunk_id": "ba8fbc32-54a0-4c5c-8553-f96ac4c19347",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0064｜产品 EUFY-G40-HYBRID 现象：边刷不转 原因：边刷缠绕毛发 处理步骤：关机拆下边刷清理缠",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "b318956c-03ff-409b-910c-db9df04bf035",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "3. 若四步均无效且伴随异响，转电机故障流程（见 D）。  ## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与",
+     "full_len": 447
+    },
+    {
+     "doc_id": "T0075",
+     "chunk_id": "95a12bbb-5c35-4652-9a95-9b96d7779dd9",
+     "source": "kb_tickets",
+     "score": 0.0155,
+     "case_outcome": "solved",
+     "snippet": "工单 T0075｜产品 EUFY-G40-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "ctr-03",
+   "tags": [
+    "反证工单",
+    "无计划"
+   ],
+   "query": "EUFY-15C-MAX 清扫路线混乱",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-15C-MAX"
+   },
+   "expanded": [
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 254,
+   "queries": [
+    "EUFY-15C-MAX 清扫路线混乱"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 1,
+     "hits": 3,
+     "ms": 253
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 16,
+     "hits": 5,
+     "ms": 209
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "troubleshooting_rv",
+    "faq_rv",
+    "T0130",
+    "troubleshooting_rv",
+    "T0035"
+   ],
+   "n_hits": 5,
+   "hit": false,
+   "precision": 0.0,
+   "first_rank": null,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 928,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "df4f9572-9f1a-4762-a135-e38216c79982",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# 扫地机器人排障手册（客服内部版）  ## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗",
+     "full_len": 447
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q26",
+     "source": "kb_faq",
+     "score": 0.6667,
+     "case_outcome": "n/a",
+     "snippet": "问：清扫路线乱 答：请擦拭前方激光雷达 / 摄像头窗口，并在光线充足时重新建图。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0130",
+     "chunk_id": "20138cce-3c40-4b55-a45e-35b673d3a432",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0130｜产品 EUFY-15C-MAX 现象：清扫路线混乱 原因：雷达窗口脏污 处理步骤：擦拭雷达窗口并重新建",
+     "full_len": null
+    },
+    {
+     "doc_id": "troubleshooting_rv",
+     "chunk_id": "52677bb8-25c6-4f5f-a0b3-0fed975aef26",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "2. 检查尘盒触点是否被灰尘覆盖，用干布擦拭。 3. 仍提示 → 升级人工。  ## D. 异响 / 焦味 / 过热（安",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0035",
+     "chunk_id": "259941ca-ecc8-48b4-85b6-e7ee6e253480",
+     "source": "kb_tickets",
+     "score": 0.0156,
+     "case_outcome": "solved",
+     "snippet": "工单 T0035｜产品 EUFY-15C-MAX 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "none-01",
+   "tags": [
+    "无知识",
+    "faq_only"
+   ],
+   "query": "EUFY-X10-PRO-OMNI App 无法连接",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7"
+   ],
+   "latency_ms": 346,
+   "queries": [
+    "EUFY-X10-PRO-OMNI App 无法连接"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 345
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 210
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0138",
+    "manual_rv_v1",
+    "T0048"
+   ],
+   "n_hits": 5,
+   "leak": true,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 770,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0161,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q35",
+     "source": "kb_faq",
+     "score": 0.3636,
+     "case_outcome": "n/a",
+     "snippet": "问：App 连不上机器 答：请确认手机连接 2.4G Wi-Fi，重置机器网络后重新配网。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0138",
+     "chunk_id": "66c5db56-6edd-4745-a80e-a5adf13983c4",
+     "source": "kb_tickets",
+     "score": 0.0164,
+     "case_outcome": "solved",
+     "snippet": "工单 T0138｜产品 EUFY-X10-PRO-OMNI 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.016,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0048",
+     "chunk_id": "f9171fc5-f703-4c20-ad6d-8d305a086390",
+     "source": "kb_tickets",
+     "score": 0.0158,
+     "case_outcome": "solved",
+     "snippet": "工单 T0048｜产品 EUFY-X10-PRO-OMNI 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "none-02",
+   "tags": [
+    "无知识"
+   ],
+   "query": "EUFY-X9-PRO 语音语言设置",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X9-PRO"
+   },
+   "expanded": [
+    "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7"
+   ],
+   "latency_ms": 288,
+   "queries": [
+    "EUFY-X9-PRO 语音语言设置"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 287
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 181
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0125",
+    "manual_rv_v1",
+    "T0188",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "leak": true,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 812,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0125",
+     "chunk_id": "6fb0d9ed-2d46-45a1-811f-1574d3edef82",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0125｜产品 EUFY-X9-PRO 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异物 结果",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.016,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0188",
+     "chunk_id": "8f943033-5a1c-4f2e-b2b7-880e5bf34cba",
+     "source": "kb_tickets",
+     "score": 0.0152,
+     "case_outcome": "solved",
+     "snippet": "工单 T0188｜产品 EUFY-X9-PRO 现象：找不到基站 原因：基站位置遮挡 处理步骤：调整基站到靠墙开阔位置 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "none-03",
+   "tags": [
+    "无知识",
+    "faq_only"
+   ],
+   "query": "EUFY-G50-HYBRID 跌落",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-G50-HYBRID"
+   },
+   "expanded": [
+    "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+    "df4f9572-9f1a-4762-a135-e38216c79982"
+   ],
+   "latency_ms": 435,
+   "queries": [
+    "EUFY-G50-HYBRID 跌落"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 435
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 13,
+     "hits": 5,
+     "ms": 206
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v2",
+    "T0175",
+    "manual_rv_v2",
+    "T0055",
+    "manual_rv_v2"
+   ],
+   "n_hits": 5,
+   "leak": true,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 1841,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "7b4488f0-2062-42c6-8911-4c8e7277d80d",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "# eufy L60 / G 系列 用户手册（排障节选）  ## 1 吸力下降的常见原因 吸力下降通常由四类原因造成：滚",
+     "full_len": 425
+    },
+    {
+     "doc_id": "T0175",
+     "chunk_id": "3ade1b5a-8efe-491d-b48d-64457935ae0c",
+     "source": "kb_tickets",
+     "score": 0.0163,
+     "case_outcome": "solved",
+     "snippet": "工单 T0175｜产品 EUFY-G50-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "21417791-88cc-4188-afc9-996cac137a49",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "滚刷末端轴套可拆下单独清理。  ## 3 滤网与尘盒 G 系列滤网为可水洗 HEPA 滤网，冲洗后需完全晾干。尘盒容量 ",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0055",
+     "chunk_id": "194c35a8-c6b6-4a27-b1bb-4ef0131e5e17",
+     "source": "kb_tickets",
+     "score": 0.0159,
+     "case_outcome": "solved",
+     "snippet": "工单 T0055｜产品 EUFY-G50-HYBRID 现象：噪音变大吸力弱 原因：吸口卡异物 处理步骤：检查吸口取出异",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v2",
+     "chunk_id": "b4d34e61-485f-4e35-8804-b2496ec22746",
+     "source": "kb_manual",
+     "score": 0.0159,
+     "case_outcome": "n/a",
+     "snippet": "水箱漏水时请检查密封圈是否移位。  ## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "none-04",
+   "tags": [
+    "无知识",
+    "faq_only"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 保修咨询",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 224,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 保修咨询"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 207
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 219
+    },
+    "kb_faq": {
+     "status": "no_match",
+     "allowed": 50,
+     "hits": 0,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "T0137",
+    "manual_rv_v1",
+    "T0187",
+    "manual_rv_v1"
+   ],
+   "n_hits": 5,
+   "leak": true,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 903,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "T0137",
+     "chunk_id": "587c24db-dd94-4ba0-af4a-2d6e43045a51",
+     "source": "kb_tickets",
+     "score": 0.0159,
+     "case_outcome": "solved",
+     "snippet": "工单 T0137｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "db5b8874-6d00-4816-bed7-528385c12259",
+     "source": "kb_manual",
+     "score": 0.016,
+     "case_outcome": "n/a",
+     "snippet": "### 1.4 边刷维护（c21） 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。边刷缠绕毛发",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0187",
+     "chunk_id": "d459d526-e845-4fd8-b334-e4b8dfa27208",
+     "source": "kb_tickets",
+     "score": 0.0158,
+     "case_outcome": "solved",
+     "snippet": "工单 T0187｜产品 EUFY-X10-PRO-OMNI 现象：不充电 原因：基站触点脏污 处理步骤：擦拭触点后手动放",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0157,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "exact-01",
+   "tags": [
+    "精确词"
+   ],
+   "query": "EUFY-X10-PRO-OMNI 提示请检查滚刷",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X10-PRO-OMNI"
+   },
+   "expanded": [
+    "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a"
+   ],
+   "latency_ms": 197,
+   "queries": [
+    "EUFY-X10-PRO-OMNI 提示请检查滚刷"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 196
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 14,
+     "hits": 5,
+     "ms": 175
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 2,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0151",
+    "manual_rv_v1",
+    "faq_rv"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap"
+    ],
+    "source": "synthesize",
+    "degraded": null,
+    "model": "dashscope/qwen3.8-max",
+    "ms": 2488,
+    "outcome": "evidence",
+    "plan_match": true,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0163,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q33",
+     "source": "kb_faq",
+     "score": 0.9667,
+     "case_outcome": "n/a",
+     "snippet": "问：语音提示请检查滚刷 答：表示滚刷被缠绕或卡住，请取出滚刷清理后装回。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0151",
+     "chunk_id": "d2916561-f9c2-41d5-bcc5-8d3b207e9621",
+     "source": "kb_tickets",
+     "score": 0.0162,
+     "case_outcome": "solved",
+     "snippet": "工单 T0151｜产品 EUFY-X10-PRO-OMNI 现象：吸力变小，扫不干净 原因：滚刷毛发缠绕 处理步骤：取出",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5a479bec-8950-438e-a970-74659e89b011",
+     "source": "kb_manual",
+     "score": 0.0162,
+     "case_outcome": "n/a",
+     "snippet": "| 现象 | 含义 | 处理 | | --- | --- | --- | | 「请检查滚刷」 | 滚刷被缠绕或卡住 | ",
+     "full_len": null
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q5",
+     "source": "kb_faq",
+     "score": 0.6154,
+     "case_outcome": "n/a",
+     "snippet": "问：提示请检查尘盒是什么意思 答：表示尘盒未装到位或已满。请倒空尘盒并重新安装，听到咔哒声即到位。",
+     "full_len": null
+    }
+   ]
+  },
+  {
+   "id": "exact-02",
+   "tags": [
+    "精确词",
+    "无计划"
+   ],
+   "query": "EUFY-X8-PRO-SES 红灯常亮",
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "EUFY-X8-PRO-SES"
+   },
+   "expanded": [
+    "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7"
+   ],
+   "latency_ms": 193,
+   "queries": [
+    "EUFY-X8-PRO-SES 红灯常亮"
+   ],
+   "rerank": [],
+   "per_kb": {
+    "kb_manual": {
+     "status": "ok",
+     "allowed": 2,
+     "hits": 5,
+     "ms": 159
+    },
+    "kb_tickets": {
+     "status": "ok",
+     "allowed": 12,
+     "hits": 5,
+     "ms": 192
+    },
+    "kb_faq": {
+     "status": "ok",
+     "allowed": 50,
+     "hits": 1,
+     "ms": 0
+    }
+   },
+   "status": "ok",
+   "doc_ids": [
+    "manual_rv_v1",
+    "faq_rv",
+    "T0172",
+    "manual_rv_v1",
+    "T0179"
+   ],
+   "n_hits": 5,
+   "hit": true,
+   "precision": 0.4,
+   "first_rank": 1,
+   "chunk_hit": true,
+   "chunk_rank": 1,
+   "synth": {
+    "top_plan": "rv_suction_hair_wrap",
+    "ranked": [
+     "rv_suction_hair_wrap",
+     "rv_suction_filter_clog",
+     "rv_suction_dustbin_full",
+     "rv_suction_side_brush",
+     "rv_suction_motor_fault"
+    ],
+    "source": "standard_flow",
+    "degraded": "all_dropped",
+    "model": "dashscope/qwen3.8-max",
+    "ms": 856,
+    "outcome": "standard_flow",
+    "plan_match": null,
+    "outcome_match": true
+   },
+   "hits": [
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "8fe59b20-b2cd-43b9-a4e3-eff35d57dff7",
+     "source": "kb_manual",
+     "score": 0.0164,
+     "case_outcome": "n/a",
+     "snippet": "电池出现鼓包、漏液时请远离火源并联系售后回收，不要继续充电或使用。  ## 第 3 章 指示灯与语音提示  | 现象 |",
+     "full_len": 783
+    },
+    {
+     "doc_id": "faq_rv",
+     "chunk_id": "faq_rv#q10",
+     "source": "kb_faq",
+     "score": 0.95,
+     "case_outcome": "n/a",
+     "snippet": "问：机器一直红灯常亮 答：通常是主机故障或被卡住，请把主机移到开阔处重启；仍红灯请联系售后。",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0172",
+     "chunk_id": "c48788ee-a041-4291-96a4-fb0ab6f090e0",
+     "source": "kb_tickets",
+     "score": 0.0154,
+     "case_outcome": "solved",
+     "snippet": "工单 T0172｜产品 EUFY-X8-PRO-SES 现象：吸力下降，尘盒很快满 原因：滤网堵塞 处理步骤：取出滤网清",
+     "full_len": null
+    },
+    {
+     "doc_id": "manual_rv_v1",
+     "chunk_id": "5d776462-3c5b-4a2b-ae99-d7cf9f30d23a",
+     "source": "kb_manual",
+     "score": 0.0158,
+     "case_outcome": "n/a",
+     "snippet": "# eufy X10 Pro Omni 用户手册（排障节选）  ## 第 1 章 日常维护  ### 1.1 清理滚刷（",
+     "full_len": null
+    },
+    {
+     "doc_id": "T0179",
+     "chunk_id": "12ee20c9-a215-4041-b4ef-d459aa070046",
+     "source": "kb_tickets",
+     "score": 0.0154,
+     "case_outcome": "solved",
+     "snippet": "工单 T0179｜产品 EUFY-X8-PRO-SES 现象：拖布异味 原因：拖布未及时清洗 处理步骤：取下拖布清洗晾干",
+     "full_len": null
+    }
+   ]
+  }
+ ]
+}

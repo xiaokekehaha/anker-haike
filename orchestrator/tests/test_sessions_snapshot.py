@@ -214,7 +214,12 @@ def test_fold_active_run_error_and_cancel():
     r3 = _recs("r3", [{"type": "run_started", "resumed": True, "deadline_ms": 30000}], start_seq=7)
 
     f = fold_timeline(r1 + r2, {})
-    assert f["last_error"] == {"code": "model_unavailable", "at": "2026-09-12T10:00:01Z"}
+    assert f["last_error"] == {
+        "code": "model_unavailable",
+        "message": "x",
+        "recoverable": True,
+        "at": "2026-09-12T10:00:01Z",
+    }
     assert f["cancelled_run"] == {"run_id": "r2", "at": "2026-09-12T10:00:02Z"}
     # 取消后 pending_input 保持取消前的值（08 §7）
     assert f["pending_input"]["kind"] == "select_product"
@@ -282,6 +287,49 @@ async def test_get_snapshot_during_active_run_and_409_body(mem_runtime, monkeypa
         await task
         final = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
     assert final.active_run is None and final.version == 4
+
+
+def test_last_error_only_from_latest_run():
+    """历史 run 失败、后续 run 成功推进后，快照不该再把旧错误当成当前错误（排障中途反馈误报）。"""
+    failed = _recs(
+        "r1",
+        [
+            {"type": "run_started", "resumed": False, "deadline_ms": 25000},
+            {
+                "type": "error",
+                "code": "node_failed",
+                "message": "RulesError",
+                "recoverable": True,
+                "retry_with_same_action": False,
+            },
+            {"type": "done", "reason": "error", "version": 1},
+        ],
+    )
+    assert fold_timeline(failed, {})["last_error"] == {
+        "code": "node_failed",
+        "message": "RulesError",
+        "recoverable": True,
+        "at": "2026-09-12T10:00:01Z",
+    }
+
+    ok = _recs(
+        "r2",
+        [
+            {"type": "run_started", "resumed": False, "deadline_ms": 25000},
+            {
+                "type": "awaiting_input",
+                "kind": "step_feedback",
+                "interrupt_id": "c1",
+                "card_id": "c1",
+                "version": 2,
+            },
+            {"type": "done", "reason": "awaiting_input", "version": 2},
+        ],
+        start_seq=4,
+    )
+    f = fold_timeline(failed + ok, {})
+    assert f["last_error"] is None
+    assert f["pending_input"]["kind"] == "step_feedback"
 
 
 async def test_get_snapshot_after_error_run(mem_runtime):

@@ -35,6 +35,8 @@ export type SessionAction =
   | { type: 'stall'; stalled: boolean }
   | { type: 'recovering' }
   | { type: 'clear_error' }
+  /** 不改变 ui 的提示（Toast），如切换到已过期会话 */
+  | { type: 'notice'; message: string }
   | { type: 'reset' };
 
 export const initialState: SessionState = {

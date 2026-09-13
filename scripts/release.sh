@@ -28,8 +28,8 @@ cat > RELEASE.md <<MD
 | --- | --- |
 | 镜像 tag | \`ghcr.io/$OWNER/haike-orchestrator:$REL\`（CI 构建；本机 \`make up\` 为 haike/orchestrator:dev） |
 | prompt_ver | system $(pyconst orchestrator/app/prompts/system.py PROMPT_VERSION) / reply $(pyconst orchestrator/app/prompts/reply.py REPLY_PROMPT_VERSION) |
-| models.yaml | $(ver config/models.yaml)（TBD / TODO 计数：$TBD，须为 0 才能冻结，票 42） |
-| bake-off | $BAKEOFF（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
+| models.yaml | $(ver config/models.yaml)（TBD / TODO 计数：${TBD}，须为 0 才能冻结，票 42） |
+| bake-off | ${BAKEOFF}（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | $(ver config/rules/safety_terms.yaml) |
 | products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
 | kb_ver | $KB_VER |

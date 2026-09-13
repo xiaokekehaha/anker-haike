@@ -364,6 +364,7 @@
     },
     "LastError": {
       "additionalProperties": false,
+      "description": "最近一次运行留下的错误；更早 run 的错误不进快照（只在事件表里供审计）。",
       "properties": {
         "at": {
           "title": "At",
@@ -372,6 +373,16 @@
         "code": {
           "title": "Code",
           "type": "string"
+        },
+        "message": {
+          "default": "",
+          "title": "Message",
+          "type": "string"
+        },
+        "recoverable": {
+          "default": true,
+          "title": "Recoverable",
+          "type": "boolean"
         }
       },
       "required": [

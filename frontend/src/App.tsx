@@ -5,6 +5,7 @@ import { ChatPane } from './components/ChatPane';
 import { Composer } from './components/Composer';
 import { Timeline } from './components/Timeline';
 import { Toast } from './components/Toast';
+import { SessionSwitcher } from './components/SessionSwitcher';
 import { useHealth } from './state/useHealth';
 import { useSession } from './state/useSession';
 import cardStyles from './components/Cards.module.css';
@@ -42,8 +43,6 @@ export function App() {
       if (bounds.top < 0 || bounds.bottom > window.innerHeight) input.scrollIntoView({ block: 'center', behavior: 'auto' });
     });
   }
-  const status = health.error ? 'error' : health.snapshot?.status ?? 'checking';
-  const statusText = { checking: '正在检查服务状态', ok: '基础服务已就绪', degraded: '部分服务暂不可用', error: '暂时无法连接服务' }[status];
 
   return (
     <div className={styles.app}>
@@ -66,10 +65,14 @@ export function App() {
         <section className={styles.workspace} aria-labelledby="workspace-title">
           <div className={styles.workspaceHeading}>
             <h2 id="workspace-title">智能售后对话</h2>
-            <span className={styles.statusChip} data-status={status} role="status">
-              <span className={styles.statusDot} aria-hidden="true" />{statusText}
-              <button onClick={health.refresh} disabled={health.refreshing} aria-label="重新检查服务状态">{health.refreshing ? '检查中…' : '重新检查'}</button>
-            </span>
+            <SessionSwitcher
+              currentId={state.id}
+              recent={session.recent}
+              interruptible={busy || state.pendingInput !== null || state.activeRun !== null}
+              busy={busy}
+              onNew={() => void session.startNew()}
+              onSwitch={(id) => void session.switchTo(id)}
+            />
           </div>
           <ProgressBar stage={state.stage} />
           <ChatPane onPick={pickPrompt} disabled={busy} showStarters={!hasHistory}>
@@ -92,9 +95,6 @@ export function App() {
               onCancel={state.activeRun ? () => void session.cancel() : undefined}
             />
           </ChatPane>
-          {(status === 'degraded' || status === 'error') && (
-            <p className={styles.degradedNote}>{health.error ?? '部分组件暂不可用，请查看顶部状态灯，恢复后会自动更新。'}</p>
-          )}
         </section>
         <footer className={styles.footer}><span>听懂需求 · 分清产品 · 一步一步解决</span><span>ANKER SMART CARE</span></footer>
       </main>

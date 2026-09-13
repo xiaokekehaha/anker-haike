@@ -1,0 +1,80 @@
+# retrieve.grade：命中片段（取自 data/knowledge 手册 / 工单原文）→ 逐条 relevant / irrelevant；coverage 只要求落在合理集合内。
+# 评分 = 期望列表逐条判定正确率 + coverage 命中；unsure 一律算错（评分要能起到过滤作用）。
+cases:
+  - id: hair_wrap_clear
+    input:
+      text: 扫地机不吸了，滚刷上缠了好多头发
+      symptoms: [不吸, 滚刷缠头发]
+      product: eufy X10 Pro Omni
+      hits:
+        - {id: c12, snippet: "### 1.1 清理滚刷（c12）翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。滚刷两端的轴承处如有毛发缠绕，需一并清理，否则滚刷转动阻力增大、吸力下降。"}
+        - {id: c21, snippet: "### 1.4 边刷维护（c21）边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。拆装边刷前请先关机。"}
+        - {id: water, snippet: "## 4 拖布与水箱（Hybrid 机型）水箱出水量可在 App 中三档调节。拖布长期不清洗会有异味。", doc_id: manual_rv_v2}
+    expect: {relevant: [c12], irrelevant: [water], coverage_in: [sufficient, insufficient]}
+  - id: dustbin_prompt
+    input:
+      text: 一直语音说请检查尘盒
+      symptoms: [提示请检查尘盒]
+      product: eufy X10 Pro Omni
+      hits:
+        - {id: c18, snippet: "### 1.3 清理尘盒（c18）按下尘盒释放键抽出尘盒，倒空并检查进风口是否被堵塞。尘盒装回时需完全推入，直到听到咔哒声；未装到位会触发「请检查尘盒」提示。"}
+        - {id: c15, snippet: "### 1.2 清洁滤网（c15）打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。"}
+        - {id: c30, snippet: "### 2.1 异常情况处理（c30）若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。"}
+    expect: {relevant: [c18], irrelevant: [c30], coverage_in: [sufficient, insufficient]}
+  - id: side_brush
+    input:
+      text: 侧面那个小刷子不动了
+      symptoms: [侧刷不动]
+      product: eufy X9 Pro
+      hits:
+        - {id: B, snippet: "## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与线头。2. 检查边刷轴是否有异物或进水，擦干后装回。3. 仍不转 → 边刷电机故障，升级人工。", doc_id: troubleshooting_rv}
+        - {id: E, snippet: "## E. 充电问题 1. 确认基站电源灯亮，触点无灰尘。2. 手动放回基站，观察 5 分钟内是否开始充电。", doc_id: troubleshooting_rv}
+        - {id: header, snippet: "# eufy X10 Pro Omni 用户手册（排障节选）## 第 1 章 日常维护"}
+    expect: {relevant: [B], irrelevant: [E, header], coverage_in: [sufficient, insufficient]}
+  - id: none_relevant
+    input:
+      text: App 连不上机器
+      symptoms: [App 无法连接]
+      product: eufy X10 Pro Omni
+      hits:
+        - {id: c12, snippet: "### 1.1 清理滚刷（c12）翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。"}
+        - {id: T0138, source: kb_tickets, doc_id: T0138, snippet: "症状：吸力下降，尘盒很快满。原因：滤网堵塞。处理：取出滤网清洗晾干 24 小时后装回。结果：solved"}
+    expect: {irrelevant: [c12, T0138], coverage_in: [none]}
+  - id: safety_smoke
+    input:
+      text: 跑着跑着有股烧焦的味道
+      symptoms: [焦味]
+      product: eufy G40 Hybrid+
+      hits:
+        - {id: v2s5, snippet: "## 5 安全须知 充电时请使用原装基站。若机身发烫、有焦味或冒烟，请立即断电并联系售后。", doc_id: manual_rv_v2}
+        - {id: D, snippet: "## D. 异响 / 焦味 / 过热（安全流程）出现以上任一现象，不再引导用户排查，立即告知关机停用，收集购买凭证后升级人工。", doc_id: troubleshooting_rv}
+        - {id: v2s2, snippet: "## 2 滚刷 L60 与 G 系列滚刷采用免工具拆卸设计：向外扳开滚刷盖两侧卡扣，取出滚刷。", doc_id: manual_rv_v2}
+    expect: {relevant: [v2s5, D], irrelevant: [v2s2], coverage_in: [sufficient]}
+  - id: negation_noise
+    input:
+      text: 不是吸力小，是有异响
+      symptoms: [异响]
+      product: eufy X10 Pro Omni
+      hits:
+        - {id: c30, snippet: "### 2.1 异常情况处理（c30）若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。"}
+        - {id: c15, snippet: "### 1.2 清洁滤网（c15）打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。滤网潮湿时装回会导致电机进水损坏。"}
+    expect: {relevant: [c30], irrelevant: [c15], coverage_in: [sufficient, insufficient]}
+  - id: ticket_mix
+    input:
+      text: 吸力下降，尘盒很快满
+      symptoms: [吸力下降, 尘盒很快满]
+      product: eufy X8 Pro SES
+      hits:
+        - {id: T0002, source: kb_tickets, doc_id: T0002, snippet: "症状：吸力下降，尘盒很快满。原因：滤网堵塞。处理：取出滤网清洗晾干 24 小时后装回。结果：solved"}
+        - {id: T0090, source: kb_tickets, doc_id: T0090, snippet: "症状：清扫路线混乱。原因：雷达窗口脏污。处理：擦拭激光雷达窗口并重新建图。结果：solved"}
+        - {id: c15, snippet: "### 1.2 清洁滤网（c15）打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。建议每两周清洁一次。"}
+    expect: {relevant: [T0002, c15], irrelevant: [T0090], coverage_in: [sufficient]}
+  - id: category_generic
+    input:
+      text: 扫地机不吸
+      symptoms: [不吸]
+      product: 扫地机器人
+      hits:
+        - {id: A, snippet: "## A. 吸力下降 / 扫不干净 1. 先问三件事：多久没清理滚刷、滤网是否洗过、尘盒是否倒空。2. 按「滚刷 → 滤网 → 尘盒 → 吸口」顺序引导。", doc_id: troubleshooting_rv}
+        - {id: C, snippet: "## C. 提示「请检查尘盒」1. 取出尘盒重新安装，确认听到咔哒声。2. 检查尘盒触点是否被灰尘覆盖。", doc_id: troubleshooting_rv}
+    expect: {relevant: [A], coverage_in: [sufficient, insufficient]}

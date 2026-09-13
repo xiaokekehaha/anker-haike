@@ -1,0 +1,135 @@
+{
+  "session_id": "7e2b090e41474e08af05cd86bc789da3",
+  "runs": [
+    {
+      "types": [
+        "run_started",
+        "progress",
+        "message_start",
+        "message",
+        "message_end",
+        "escalation_summary",
+        "done"
+      ],
+      "first_visible_ms": 23,
+      "card_ready_ms": null,
+      "elapsed_ms": 28,
+      "headers": {
+        "x-run-id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+        "x-action-replayed": "false"
+      }
+    }
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "type": "run_started",
+      "run_id": "e9bff1faaac7423cae4daab8b0a8880c",
+      "resumed": false,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "progress",
+      "stage": "intake",
+      "substage": null,
+      "run_id": "e9bff1faaac7423cae4daab8b0a8880c",
+      "seq": 2
+    },
+    {
+      "type": "done",
+      "reason": "cancelled",
+      "version": 1,
+      "run_id": "e9bff1faaac7423cae4daab8b0a8880c",
+      "seq": 3
+    },
+    {
+      "seq": 4,
+      "type": "run_started",
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "resumed": false,
+      "deadline_ms": 25000
+    },
+    {
+      "type": "progress",
+      "stage": "escalate",
+      "substage": "summarize",
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 5
+    },
+    {
+      "type": "message_start",
+      "message_id": "cbc4f25cc99b52659e85f845fa85076d",
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 6
+    },
+    {
+      "type": "message",
+      "message_id": "cbc4f25cc99b52659e85f845fa85076d",
+      "delta": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 7
+    },
+    {
+      "type": "message_end",
+      "message_id": "cbc4f25cc99b52659e85f845fa85076d",
+      "status": "completed",
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 8
+    },
+    {
+      "type": "escalation_summary",
+      "card_id": "61823350493c598784b43f2de8cc58fd",
+      "summary": {
+        "product": "未确认",
+        "problem": "（用户尚未描述问题）",
+        "observations": [],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R3",
+          "text": "用户明确要求人工服务；命中词：request_human"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      },
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 9
+    },
+    {
+      "type": "done",
+      "reason": "completed",
+      "version": 6,
+      "run_id": "a4bfdc56e5e74dafbcc8cb7efa9bd389",
+      "seq": 10
+    }
+  ],
+  "result": {
+    "case": "cancel",
+    "passed": true,
+    "detail": {
+      "cancel": {
+        "run_id": "e9bff1faaac7423cae4daab8b0a8880c",
+        "status": "cancelled"
+      },
+      "continued_with_human": true
+    },
+    "session_id": "7e2b090e41474e08af05cd86bc789da3",
+    "elapsed_ms": 70
+  }
+}

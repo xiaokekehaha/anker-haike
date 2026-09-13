@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: b6195b183d33c4cd6606384186c79aef825163bd288d9dc83ab7342860e79003
+// SHA-256: 1b7ba6377ddbab10c6ac56a1f69805b3df9400f4a42635f5093af33c41b39e77
 
 export type DeadlineAt = string;
 export type RunId = string;
@@ -9,6 +9,8 @@ export type At = string;
 export type RunId1 = string;
 export type At1 = string;
 export type Code = string;
+export type Message = string;
+export type Recoverable = boolean;
 export type CardId = string;
 export type InterruptId = string;
 export type Kind = 'select_product' | 'step_feedback' | 'upload_receipt' | 'confirm_receipt';
@@ -169,12 +171,16 @@ export interface CancelledRun {
   run_id: RunId1;
 }
 /**
+ * 最近一次运行留下的错误；更早 run 的错误不进快照（只在事件表里供审计）。
+ *
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "LastError".
  */
 export interface LastError {
   at: At1;
   code: Code;
+  message?: Message;
+  recoverable?: Recoverable;
 }
 /**
  * 当前唯一允许的用户输入；与 awaiting_input 事件同结构（08 §1、§6）。

@@ -1,0 +1,76 @@
+"""静态图拓扑：给管理端画 DAG 的底图。
+
+拓扑不手工维护——直接从编译后的 StateGraph 导出（当前 21 节点 / 46 边），图改了这里自动跟着改。
+节点 → 阶段的归类是展示用的分组（着色 / 泳道），取自各节点实际发出的 progress.stage。
+"""
+
+from __future__ import annotations
+
+import logging
+from functools import lru_cache
+from typing import Any
+
+log = logging.getLogger("admin.graph")
+
+# 节点 → 展示阶段。依据：graph.py 各节点 writer({"type": "progress", "stage": ...}) 的实际取值；
+# 不发 progress 的节点（await_input / apply_action / reassure / clarify）归入其所在流程段。
+NODE_STAGE: dict[str, str] = {
+    "__start__": "start",
+    "intake": "intake",
+    "rediagnose": "intake",  # progress: intake/rediagnose
+    "reassure": "intake",  # 安抚句，不发 progress
+    "disambiguate": "disambiguate",
+    "prepare_card": "disambiguate",
+    "clarify": "disambiguate",
+    "vision": "diagnose",  # progress: diagnose/vision
+    "retrieve": "diagnose",  # progress: diagnose/retrieve
+    "reply": "diagnose",  # progress: diagnose
+    "guide": "guide",
+    "await_input": "wait",  # 唯一中断点
+    "apply_action": "wait",
+    "escalate": "escalate",
+    "summarize": "escalate",  # progress: escalate/summarize
+    "prepare_receipt": "escalate",  # progress: escalate/collect_receipt
+    "receipt_extract": "escalate",  # progress: escalate/extract
+    "human_request": "escalate",
+    "out_of_scope": "out_of_scope",
+    "close": "done",  # progress: done
+    "__end__": "end",
+}
+
+# 展示顺序，前端据此排泳道
+STAGE_ORDER = [
+    "start",
+    "intake",
+    "disambiguate",
+    "diagnose",
+    "guide",
+    "wait",
+    "escalate",
+    "out_of_scope",
+    "done",
+    "end",
+]
+
+
+@lru_cache(maxsize=1)
+def topology() -> dict[str, Any]:
+    """{nodes: [{id, stage}], edges: [{source, target, conditional}], stage_order}。进程内缓存。"""
+    from app.sessions.graph import build_graph
+
+    data = build_graph(None).get_graph().to_json()
+    nodes = [
+        {"id": n["id"], "stage": NODE_STAGE.get(n["id"], "other")} for n in data.get("nodes", [])
+    ]
+    edges = [
+        {
+            "source": e["source"],
+            "target": e["target"],
+            "conditional": bool(e.get("conditional", False)),
+        }
+        for e in data.get("edges", [])
+    ]
+    unmapped = [n["id"] for n in nodes if n["stage"] == "other"]
+    if unmapped:  # 图里加了新节点但没归类：能画，但没有阶段着色
+        log.warning("nodes missing a stage mapping: %s", unmapped)
+    return {"nodes": nodes, "edges": edges, "stage_order": STAGE_ORDER}

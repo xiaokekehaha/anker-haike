@@ -37,6 +37,7 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
+from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.query import CATEGORY_LABELS, product_term
 from app.diagnose.vision import observe_images
 from app.escalation.polish import polish_summary
@@ -48,7 +49,10 @@ from app.images.runtime import current_image_store
 from app.intake import extract_intake
 from app.intake.rediagnose import extract_rediagnose
 from app.knowledge.adapter import KnowledgeScope
+from app.knowledge.faq import get_faq_index
+from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
+from app.knowledge.search import interleave_kbs, search_round
 from app.models.runtime import get_model_router
 from app.observability.runtime import record, run_id_context
 from app.plans.runtime import get_plan_library
@@ -122,6 +126,9 @@ class SessionState(TypedDict, total=False):
     plans_ranked: list[dict[str, Any]]
     retrieval_rounds: int
     rewrite_used: bool
+    evidence_quality: (
+        str | None
+    )  # 阶段 5：grade 的 coverage（sufficient / insufficient / none），未评分为 None
     query: str | None
     # 票 33：故障卡预加载 {key, doc_version, tokens, text} 与本 run 命中的 plan_id；diagnose_outcome ∈ evidence|standard_flow|escalate
     fault_card: dict[str, Any] | None
@@ -584,7 +591,8 @@ async def apply_action(state: SessionState) -> SessionState:
         edited = list(payload.get("edited") or [])
         receipt = receipt_mod.confirmed_receipt(dict(state), fields, edited)
         results[pc.get("card_id", "")] = {
-            "confirmed_fields": receipt["fields"], "edited": receipt["edited"]
+            "confirmed_fields": receipt["fields"],
+            "edited": receipt["edited"],
         }
         update.update({"card_results": results, "receipt": receipt})
     elif action.get("kind") == "step_feedback":
@@ -594,7 +602,10 @@ async def apply_action(state: SessionState) -> SessionState:
         # 文本与图片交 rediagnose 节点（同 /messages 路径），随后重新诊断
         payload = action.get("payload") or {}
         if pc.get("card_id"):
-            results[pc["card_id"]] = {"superseded": "rediagnose", "action_id": action.get("action_id")}
+            results[pc["card_id"]] = {
+                "superseded": "rediagnose",
+                "action_id": action.get("action_id"),
+            }
         update.update(
             {
                 "card_results": results,
@@ -639,7 +650,10 @@ def route_after_apply(state: SessionState) -> str:
 
 
 def _apply_step_feedback(
-    state: SessionState, action: dict[str, Any], pc: dict[str, Any], results: dict[str, dict[str, Any]]
+    state: SessionState,
+    action: dict[str, Any],
+    pc: dict[str, Any],
+    results: dict[str, dict[str, Any]],
 ) -> SessionState:
     """票 35（03 §1.6、09 §3.3–§3.4）：反馈三态写 steps_executed / counters，按 next_on 推进游标，
     EXHAUSTED 时切换计划或 R2；CP-verify R1 / R1b / R1c。备注先过 CP-in（R4 → 升级）。无 LLM。"""
@@ -650,19 +664,43 @@ def _apply_step_feedback(
     session_id = state.get("session_id", "")
     results[card_id] = {"feedback": feedback, **({"note": note} if note else {})}
     update: SessionState = {"stage": "verify", "substage": None, "card_results": results}
-    cp = get_rules_service().check_in(action_kind="step_feedback", action_note=note, session_id=session_id)
+    cp = get_rules_service().check_in(
+        action_kind="step_feedback", action_note=note, session_id=session_id
+    )
     flags = [*state.get("safety_flags", []), *cp.flags]
     if cp.escalate:
         rule = next(h.rule_id for h in cp.hits if h.action == "escalate")
-        update.update({"safety_flags": flags, "escalate_reason": rule, "_verify": {"outcome": "escalate", "rule": rule}})
+        update.update(
+            {
+                "safety_flags": flags,
+                "escalate_reason": rule,
+                "_verify": {"outcome": "escalate", "rule": rule},
+            }
+        )
         return update
-    out = apply_feedback(state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library())
+    out = apply_feedback(
+        state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library()
+    )
     log.info(
         "cp_verify session=%s card=%s feedback=%s outcome=%s rule=%s counters=%s",
-        session_id, card_id, feedback, out.outcome, out.escalate_reason or out.trace.get("rule"), out.counters,
-        extra={"event": "cp_verify", "checkpoint": "cp_verify", "session_id": session_id, "card_id": card_id,
-               "feedback": feedback, "outcome": out.outcome, "rule_id": out.escalate_reason,
-               "counters": out.counters, "switched_to": out.switched_to, **out.trace},
+        session_id,
+        card_id,
+        feedback,
+        out.outcome,
+        out.escalate_reason or out.trace.get("rule"),
+        out.counters,
+        extra={
+            "event": "cp_verify",
+            "checkpoint": "cp_verify",
+            "session_id": session_id,
+            "card_id": card_id,
+            "feedback": feedback,
+            "outcome": out.outcome,
+            "rule_id": out.escalate_reason,
+            "counters": out.counters,
+            "switched_to": out.switched_to,
+            **out.trace,
+        },
     )
     update.update(
         {
@@ -671,8 +709,14 @@ def _apply_step_feedback(
             "counters": out.counters,
             "exhausted_plans": out.exhausted_plans,
             "plan_cursor": out.plan_cursor,
-            "guide_trace": [{"event": "verify", "feedback": feedback, "outcome": out.outcome, **out.trace}],
-            "_verify": {"outcome": out.outcome, "rule": out.escalate_reason or out.trace.get("rule"), "switched_to": out.switched_to},
+            "guide_trace": [
+                {"event": "verify", "feedback": feedback, "outcome": out.outcome, **out.trace}
+            ],
+            "_verify": {
+                "outcome": out.outcome,
+                "rule": out.escalate_reason or out.trace.get("rule"),
+                "switched_to": out.switched_to,
+            },
         }
     )
     if out.outcome == "escalate":
@@ -808,35 +852,164 @@ async def _search_round(
     round_no: int,
     session_id: str,
     run_id: str,
+    remaining_ms: int | None = None,
+    allow_rerank: bool = True,
 ):
-    """一轮：对两个库各一次请求（允许集合为空时适配器本地 no_match，不发请求）。返回 (results, trace_entries)。"""
-    results = {}
-    traces = []
-    for kb in ("kb_manual", "kb_tickets"):
-        r = await adapter.hybrid_search(kb, query, top_k, scope)
-        results[kb] = r
-        traces.append(
+    """一轮：委托 app.knowledge.search.search_round（阶段 3：原 query + 可选同义变体 × 两库并发 → RRF → 可选 rerank，
+    + 可选本地 FAQ）。开关全关时 = 两库各一次并发（P0-1）。返回 (results, trace_entries)。"""
+    rcfg = get_retrieval_config()
+    if remaining_ms is not None and remaining_ms < rcfg.rerank.min_remaining_ms:
+        allow_rerank = False
+    out = await search_round(
+        adapter,
+        query,
+        scope,
+        top_k,
+        cfg=rcfg,
+        round_no=round_no,
+        session_id=session_id,
+        run_id=run_id,
+        faq_index=get_faq_index() if rcfg.faq.enabled else None,
+        reranker=_reranker(rcfg) if rcfg.rerank.enabled else None,
+        allow_rerank=allow_rerank,
+    )
+    for t in out.trace:
+        if "event" not in t:
+            record("knowledge_search", **t)
+    return out.results, out.trace
+
+
+async def _grade_second_round(
+    hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+):
+    """第二轮新增命中的评分：grade.second_round 开且预算够时再评一次（第 2 次 grade 调用），否则标 unsure。"""
+    fresh = [h for h in hits if h.grade is None]
+    if not fresh or not rcfg.grade.enabled or assessment is None or assessment.status != "graded":
+        return hits, assessment
+    router = get_model_router()
+    remaining = _remaining_ms(state)
+    if not rcfg.grade.second_round or router is None or remaining < rcfg.grade.min_remaining_ms:
+        for h in fresh:
+            h.grade = "unsure"
+        return hits, assessment
+    second = await grade_hits(
+        router,
+        hits=fresh,
+        user_text=state.get("text", ""),
+        symptoms=[str(s) for s in state.get("symptoms") or []],
+        product=product_term(dict(state)) or None,
+        cfg=rcfg.grade,
+        budget_ms=min(rcfg.grade.budget_ms, max(500, remaining - 2000)),
+        session_id=session_id,
+        lane=lane,
+    )
+    if second.status == "graded":
+        kept_fresh = apply_assessment(fresh, second, keep_min=0)
+        dropped = {h.evidence_id for h in fresh} - {h.evidence_id for h in kept_fresh}
+        graded_out.extend(h for h in hits if h.evidence_id in dropped)
+        hits = [h for h in hits if h.evidence_id not in dropped]
+        assessment.verdicts.update(second.verdicts)
+        assessment.filtered_ids += second.filtered_ids
+        if second.coverage == "sufficient" or (
+            second.coverage == "insufficient" and assessment.coverage == "none"
+        ):
+            assessment.coverage = second.coverage
+    trace.append(second.as_trace(round=2, kb="*", session_id=session_id, run_id=run_id))
+    return hits, assessment
+
+
+async def _expand_parents(adapter, hits, rcfg) -> list[str] | None:
+    """适配器支持时（真实 WeKnora 适配器或录制包装器透传）做 small-to-big；不支持返回 None。"""
+    real = getattr(adapter, "inner", adapter)
+    expand = getattr(real, "expand_parents", None)
+    if expand is None:
+        return None
+    refresh = getattr(real, "refresh_chunks", None)
+    if refresh is not None and getattr(real, "chunks_loaded_at", 0) is None:
+        await refresh()
+    return expand(
+        hits, max_items=rcfg.parent_expand.max_items, max_chars=rcfg.parent_expand.max_chars
+    )
+
+
+_reranker_cache: dict[str, DashScopeReranker] = {}
+
+
+def _reranker(rcfg) -> DashScopeReranker:
+    key = f"{rcfg.rerank.model}:{rcfg.rerank.timeout_ms}"
+    if key not in _reranker_cache:
+        _reranker_cache[key] = DashScopeReranker(
+            model=rcfg.rerank.model, timeout_s=rcfg.rerank.timeout_ms / 1000
+        )
+    return _reranker_cache[key]
+
+
+async def _second_round(
+    adapter,
+    query: str,
+    scope: KnowledgeScope,
+    top_k: int,
+    *,
+    budget_ms: int,
+    reason: str,
+    session_id: str,
+    run_id: str,
+):
+    """补检索整轮硬超时（P0-2，08 §8「补检索整轮 ≤ 3 s」）。超时返回 (None, [timeout trace])，调用方沿用首轮结果。"""
+    try:
+        results2, trace2 = await asyncio.wait_for(
+            _search_round(
+                adapter,
+                query,
+                scope,
+                top_k,
+                round_no=2,
+                session_id=session_id,
+                run_id=run_id,
+                allow_rerank=False,
+            ),
+            timeout=budget_ms / 1000,
+        )
+    except TimeoutError:
+        log.warning(
+            "second round timeout session=%s budget_ms=%d reason=%s", session_id, budget_ms, reason
+        )
+        return None, [
             {
-                "round": round_no,
-                "kb": kb,
+                "round": 2,
+                "kb": "*",
+                "event": "second_round_timeout",
+                "reason": reason,
+                "budget_ms": budget_ms,
                 "query": query,
-                "scope": {
-                    "product_state": scope.product_state,
-                    "category": scope.category,
-                    "sku": scope.sku,
-                },
-                "status": r.status,
-                "allowed_count": r.allowed_count,
-                "hit_ids": [h.evidence_id for h in r.hits],
-                "scores": [round(h.score, 4) for h in r.hits],
-                "truncated": r.truncated,
-                "latency_ms": r.latency_ms,
                 "session_id": session_id,
                 "run_id": run_id,
             }
+        ]
+    for t2 in trace2:
+        t2["reason"] = reason
+    return results2, trace2
+
+
+def _merge_rounds(hits, results, results2):
+    """P0-3：两轮命中按 evidence_id 合并去重（首轮优先，第二轮新命中追加）；每库状态取两轮中较好者。"""
+    seen = {h.evidence_id for h in hits}
+    merged = list(hits)
+    for r in results2.values():
+        for h in r.hits:
+            if h.evidence_id not in seen:
+                seen.add(h.evidence_id)
+                merged.append(h)
+    rank = {"ok": 0, "replay": 0, "no_match": 1, "unavailable": 2}
+    status = {
+        kb: min(
+            (results[kb].status, results2.get(kb, results[kb]).status),
+            key=lambda x: rank.get(x, 3),
         )
-        record("knowledge_search", **traces[-1])
-    return results, traces
+        for kb in results
+    }
+    truncated = any(r.truncated for r in (*results.values(), *results2.values()))
+    return merged, status, truncated
 
 
 async def retrieve(state: SessionState) -> SessionState:
@@ -938,7 +1111,14 @@ async def retrieve(state: SessionState) -> SessionState:
     await ensure_index(adapter)
     top_k = rcfg.retrieval.top_k
     results, trace = await _search_round(
-        adapter, query, scope, top_k, round_no=1, session_id=session_id, run_id=run_id
+        adapter,
+        query,
+        scope,
+        top_k,
+        round_no=1,
+        session_id=session_id,
+        run_id=run_id,
+        remaining_ms=_remaining_ms(state),
     )
     # 票 30 的 vision 节点已在本 run 先行读图（R4 已在其后直接升级）；这里只消费观察项
     observations = (
@@ -946,12 +1126,66 @@ async def retrieve(state: SessionState) -> SessionState:
     )
     rounds = 1
     rewrite_used = bool(state.get("rewrite_used"))
-    hits = [h for r in results.values() for h in r.hits]
+    hits = interleave_kbs(results)  # 阶段 3：跨库按库内名次交错（各库分值量纲不同）
     per_kb_status = {kb: r.status for kb, r in results.items()}
     allowed_counts = {kb: r.allowed_count for kb, r in results.items()}
-    # ---- 至多一次补检索：图片新增观察优先（票 30 接入），否则无命中改写（默认关闭）----
+    truncated_any = any(r.truncated for r in results.values())
     remaining = _remaining_ms(state)
     router = get_model_router()
+    # ---- 阶段 5 S2：一次相关性评分（评分不是证据，只剔除 irrelevant、给 coverage）----
+    assessment = None
+    graded_out: list = []
+    if (
+        rcfg.grade.enabled
+        and hits
+        and router is not None
+        and remaining >= rcfg.grade.min_remaining_ms
+    ):
+        assessment = await grade_hits(
+            router,
+            hits=hits,
+            user_text=state.get("text", ""),
+            symptoms=[str(s) for s in state.get("symptoms") or []],
+            product=product_term(dict(state)) or None,
+            cfg=rcfg.grade,
+            budget_ms=min(
+                rcfg.grade.budget_ms,
+                max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),
+            ),
+            session_id=session_id,
+            lane=lane,
+            strategy=(state.get("emotion") or {}).get("strategy", "normal"),
+        )
+        before = list(hits)
+        hits = apply_assessment(hits, assessment, keep_min=rcfg.grade.keep_min)
+        graded_out = [
+            h for h in before if h not in hits
+        ]  # 被剔除的仍作为「检索到的来源」发 evidence 事件
+        trace.append(assessment.as_trace(round=1, kb="*", session_id=session_id, run_id=run_id))
+        remaining = _remaining_ms(state)
+    elif rcfg.grade.enabled and hits:
+        trace.append(
+            {
+                "round": 1,
+                "kb": "*",
+                "event": "grade_result",
+                "status": "skipped",
+                "reason": "router_unavailable" if router is None else f"budget:{remaining}ms",
+                "session_id": session_id,
+                "run_id": run_id,
+            }
+        )
+    # graded 且没有一条 relevant → 视同无相关证据（S3：允许一次补检索），但 knowledge_status 仍按实际检索结果
+    no_relevant = (
+        assessment is not None and assessment.status == "graded" and not assessment.relevant_ids
+    )
+    has_relevant_hits = bool(hits) and not no_relevant
+    # 改写决策表（09 §4.1）看的是「实际请求的库全部 no_match」；graded 全不相关时把 ok 视作 no_match 参与决策，
+    # 只影响是否补检索，不改写给前端的 knowledge_status
+    decision_status = {
+        kb: ("no_match" if (st == "ok" and no_relevant) else st) for kb, st in per_kb_status.items()
+    }
+    # ---- 至多一次补检索：图片新增观察优先（票 30 接入），否则无命中改写（默认关闭）----
     if (
         observations
         and not rewrite_used
@@ -960,22 +1194,29 @@ async def retrieve(state: SessionState) -> SessionState:
         # 图片新增信息优先占用唯一补检索名额（03 §1.4.1 规则 4）：query + 观察项，同 scope 再检索一轮
         rewrite_used = True
         q2 = " ".join([query, *observations])
-        results2, trace2 = await _search_round(
-            adapter, q2, scope, top_k, round_no=2, session_id=session_id, run_id=run_id
+        results2, trace2 = await _second_round(
+            adapter,
+            q2,
+            scope,
+            top_k,
+            budget_ms=rcfg.retrieval.second_round_budget_ms,
+            reason="image_observations",
+            session_id=session_id,
+            run_id=run_id,
         )
-        for t2 in trace2:
-            t2["reason"] = "image_observations"
         trace += trace2
-        hits2 = [h for r in results2.values() for h in r.hits]
-        if hits2:
-            hits, results = hits2, results2
-            per_kb_status = {kb: r.status for kb, r in results.items()}
+        if results2 is not None:
+            hits, per_kb_status, truncated_any = _merge_rounds(hits, results, results2)
+            hits, assessment = await _grade_second_round(
+                hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+            )
         rounds = 2
     decision = should_rewrite(
         cfg=rcfg.query_rewrite,
-        per_kb_status=per_kb_status,
+        per_kb_status=decision_status,
         allowed_counts=allowed_counts,
-        has_hits=bool(hits) or bool(fc_evidence),  # 故障卡直接命中也不触发改写（票 33）
+        has_hits=has_relevant_hits
+        or bool(fc_evidence),  # 故障卡直接命中也不触发改写（票 33）；graded 全不相关视同无命中
         remaining_ms=remaining,
         quota_used=rewrite_used,
         product_state=state.get("product_state"),
@@ -1028,15 +1269,26 @@ async def retrieve(state: SessionState) -> SessionState:
         )
         remaining = _remaining_ms(state)
         if rw.query and remaining >= rcfg.retrieval.min_remaining_for_second_round_ms:
-            results2, trace2 = await _search_round(
-                adapter, rw.query, scope, top_k, round_no=2, session_id=session_id, run_id=run_id
+            results2, trace2 = await _second_round(
+                adapter,
+                rw.query,
+                scope,
+                top_k,
+                budget_ms=min(
+                    rcfg.retrieval.second_round_budget_ms,
+                    max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),
+                ),
+                reason="query_rewrite",
+                session_id=session_id,
+                run_id=run_id,
             )
             rounds = 2
             trace += trace2
-            hits2 = [h for r in results2.values() for h in r.hits]
-            if hits2:
-                hits, results = hits2, results2
-                per_kb_status = {kb: r.status for kb, r in results.items()}
+            if results2 is not None:
+                hits, per_kb_status, truncated_any = _merge_rounds(hits, results, results2)
+                hits, assessment = await _grade_second_round(
+                    hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+                )
         elif rw.query:
             trace.append(
                 {
@@ -1066,13 +1318,13 @@ async def retrieve(state: SessionState) -> SessionState:
             }
         )
     else:
-        items = [h.as_evidence_item() for h in hits]
+        items = [h.as_evidence_item() for h in (*hits, *graded_out)]  # 评分剔除的仍是检索到的来源
         for it in items:
             evidence[it["evidence_id"]] = it
         if items:
             summary = (
                 f"命中 {len(items)} 条来源"
-                + ("（部分截断）" if any(r.truncated for r in results.values()) else "")
+                + ("（部分截断）" if truncated_any else "")
                 + ("（已补检索）" if rounds == 2 else "")
             )
         else:
@@ -1088,7 +1340,21 @@ async def retrieve(state: SessionState) -> SessionState:
         )
         if items:
             writer({"type": "evidence", "items": items})
-    round_evidence = {h.evidence_id: h.as_evidence_item() for h in hits} if hits else {}
+    # 阶段 4：父块扩展（只改 synthesize 输入，SSE evidence 已按子块 snippet 发出）
+    if hits and rcfg.parent_expand.enabled:
+        expanded = await _expand_parents(adapter, hits, rcfg)
+        if expanded is not None:
+            trace.append(
+                {
+                    "round": rounds,
+                    "kb": "kb_manual",
+                    "event": "parent_expanded",
+                    "ids": expanded,
+                    "session_id": session_id,
+                    "run_id": run_id,
+                }
+            )
+    round_evidence = {h.evidence_id: h.as_internal_item() for h in hits} if hits else {}
     for it in fc_evidence:
         round_evidence.setdefault(it["evidence_id"], it)
         evidence.setdefault(it["evidence_id"], it)
@@ -1110,6 +1376,11 @@ async def retrieve(state: SessionState) -> SessionState:
         "retrieval_trace": trace,
         "retrieval_rounds": rounds,
         "rewrite_used": rewrite_used,
+        "evidence_quality": (
+            assessment.coverage
+            if assessment is not None and assessment.status == "graded"
+            else None
+        ),
         "fault_card": fault_card_state,
         "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
         **plans,
@@ -1225,7 +1496,12 @@ async def guide(state: SessionState) -> SessionState:
                     "escalate_reason": prep.escalate_reason,
                     "safety_flags": [
                         *state.get("safety_flags", []),
-                        {"rule_id": prep.escalate_reason, "source": "step", "term": "pre_step", "ts": state.get("at", "")},
+                        {
+                            "rule_id": prep.escalate_reason,
+                            "source": "step",
+                            "term": "pre_step",
+                            "ts": state.get("at", ""),
+                        },
                     ],
                     "guide_trace": trace,
                 }
@@ -1235,17 +1511,38 @@ async def guide(state: SessionState) -> SessionState:
             elapsed = _elapsed_ms(state)
             log.info(
                 "step_card ready session=%s card=%s plan=%s step=%s rewritten=%s card_ready_ms=%s",
-                session_id, prep.card_id, prep.step["plan_id"], prep.step["step_id"], prep.rewritten, elapsed,
-                extra={"event": "card_ready", "session_id": session_id, "card_id": prep.card_id, "card_ready_ms": elapsed},
+                session_id,
+                prep.card_id,
+                prep.step["plan_id"],
+                prep.step["step_id"],
+                prep.rewritten,
+                elapsed,
+                extra={
+                    "event": "card_ready",
+                    "session_id": session_id,
+                    "card_id": prep.card_id,
+                    "card_ready_ms": elapsed,
+                },
             )
             update.update(
                 {
-                    "pending_card": {"card_id": prep.card_id, "kind": "step_feedback", "payload": {"step": prep.step}},
+                    "pending_card": {
+                        "card_id": prep.card_id,
+                        "kind": "step_feedback",
+                        "payload": {"step": prep.step},
+                    },
                     "plan_cursor": prep.plan_cursor,
                     "card_ready_ms": elapsed,
                     "counters": work.get("counters") or {},
                     "exhausted_plans": list(work.get("exhausted_plans") or []),
-                    "guide_trace": [*trace, {"event": "step_ready", "card_id": prep.card_id, "rewritten": prep.rewritten}],
+                    "guide_trace": [
+                        *trace,
+                        {
+                            "event": "step_ready",
+                            "card_id": prep.card_id,
+                            "rewritten": prep.rewritten,
+                        },
+                    ],
                 }
             )
             if prep.model_trace:
@@ -1255,7 +1552,13 @@ async def guide(state: SessionState) -> SessionState:
         cursor = work.get("plan_cursor") or {}
         out = exhaust_plan(work, cursor.get("plan_id", ""), library=get_plan_library())
         trace.append({"event": "plan_exhausted", "plan_id": cursor.get("plan_id"), **out.trace})
-        work.update({"plan_cursor": out.plan_cursor, "counters": out.counters, "exhausted_plans": out.exhausted_plans})
+        work.update(
+            {
+                "plan_cursor": out.plan_cursor,
+                "counters": out.counters,
+                "exhausted_plans": out.exhausted_plans,
+            }
+        )
         if out.outcome == "escalate":
             update.update(
                 {
@@ -1283,7 +1586,9 @@ def _recent_steps(state: SessionState, n: int = 3) -> list[dict[str, Any]]:
     pc = state.get("pending_card") or {}
     recent = [{"title": s.get("title"), "feedback": s.get("feedback")} for s in steps[-n:]]
     if pc.get("kind") == "step_feedback":
-        recent.append({"title": (pc.get("payload") or {}).get("step", {}).get("title"), "feedback": None})
+        recent.append(
+            {"title": (pc.get("payload") or {}).get("step", {}).get("title"), "feedback": None}
+        )
     return recent
 
 
@@ -1340,8 +1645,13 @@ async def rediagnose(state: SessionState) -> SessionState:
         "plan_cursor": None,
         "diagnose_outcome": None,
         "retrieval_trace": [
-            {"event": "rediagnose", "session_id": session_id, "run_id": run_id,
-             "superseded_card": (stale or {}).get("card_id"), "images": len(new_refs)}
+            {
+                "event": "rediagnose",
+                "session_id": session_id,
+                "run_id": run_id,
+                "superseded_card": (stale or {}).get("card_id"),
+                "images": len(new_refs),
+            }
         ],
     }
     if cp.escalate:
@@ -1377,16 +1687,33 @@ async def rediagnose(state: SessionState) -> SessionState:
     )
     log.info(
         "rediagnose session=%s added=%s removed=%s hints=%s degraded=%s images=%d steps_kept=%d",
-        session_id, outcome.added, outcome.removed, outcome.product_hints, outcome.degraded,
-        len(new_refs), len(state.get("steps_executed") or []),
-        extra={"event": "rediagnose", "session_id": session_id, "run_id": run_id,
-               "added": outcome.added, "removed": outcome.removed, "product_hints": outcome.product_hints,
-               "degraded": outcome.degraded, "needs_clarification": outcome.needs_clarification},
+        session_id,
+        outcome.added,
+        outcome.removed,
+        outcome.product_hints,
+        outcome.degraded,
+        len(new_refs),
+        len(state.get("steps_executed") or []),
+        extra={
+            "event": "rediagnose",
+            "session_id": session_id,
+            "run_id": run_id,
+            "added": outcome.added,
+            "removed": outcome.removed,
+            "product_hints": outcome.product_hints,
+            "degraded": outcome.degraded,
+            "needs_clarification": outcome.needs_clarification,
+        },
     )
     if outcome.wants_human:
         update["safety_flags"] = [
             *update["safety_flags"],
-            {"rule_id": "R3", "source": "rediagnose", "term": "wants_human", "ts": state.get("at", "")},
+            {
+                "rule_id": "R3",
+                "source": "rediagnose",
+                "term": "wants_human",
+                "ts": state.get("at", ""),
+            },
         ]
         update["escalate_reason"] = "R3"
         return update
@@ -1402,7 +1729,9 @@ async def rediagnose(state: SessionState) -> SessionState:
         earlier = [  # state.messages 尚不含本轮消息
             m.get("text", "") for m in (state.get("messages") or []) if m.get("role") == "user"
         ]
-        prior = next((t for t in reversed(earlier) if clarify_mod._has_symptom_text(catalog, t)), None)
+        prior = next(
+            (t for t in reversed(earlier) if clarify_mod._has_symptom_text(catalog, t)), None
+        )
         if prior:
             symptoms = [prior.strip()]
             update["symptoms"] = symptoms
@@ -1415,7 +1744,11 @@ async def rediagnose(state: SessionState) -> SessionState:
             {"observations": list(state.get("observations") or [])},
         )
         update.update(decision.update)
-        update["_decision"] = {"outcome": decision.outcome, "reason": decision.reason, **decision.detail}
+        update["_decision"] = {
+            "outcome": decision.outcome,
+            "reason": decision.reason,
+            **decision.detail,
+        }
         if decision.outcome == "escalate":
             update["escalate_reason"] = "R7"
     return update
@@ -1426,7 +1759,9 @@ def route_after_rediagnose(state: SessionState) -> str:
         return "escalate"
     if (state.get("_decision") or {}).get("outcome") == "clarify":
         return "clarify"
-    if (state.get("emotion") or {}).get("strategy", "normal") != "normal" and get_model_router() is not None:
+    if (state.get("emotion") or {}).get(
+        "strategy", "normal"
+    ) != "normal" and get_model_router() is not None:
         return "reassure"
     return "disambiguate"
 
@@ -1469,10 +1804,18 @@ async def close(state: SessionState) -> SessionState:
     counters = state.get("counters") or {}
     log.info(
         "a1_complete session=%s rule=%s steps=%d counters=%s",
-        session_id, verify.get("rule"), len(state.get("steps_executed") or []), counters,
-        extra={"event": "a1_complete", "checkpoint": "cp_verify", "session_id": session_id,
-               "rule_id": verify.get("rule"), "counters": counters,
-               "steps_executed": len(state.get("steps_executed") or [])},
+        session_id,
+        verify.get("rule"),
+        len(state.get("steps_executed") or []),
+        counters,
+        extra={
+            "event": "a1_complete",
+            "checkpoint": "cp_verify",
+            "session_id": session_id,
+            "rule_id": verify.get("rule"),
+            "counters": counters,
+            "steps_executed": len(state.get("steps_executed") or []),
+        },
     )
     msgs = list(state.get("visible_messages") or [])
     msgs.append({"message_id": message_id, "kind": "closing", "text": text, "model_tier": None})
@@ -1603,7 +1946,9 @@ async def summarize(state: SessionState) -> SessionState:
         dict(state), reason=reason, lane=os.environ.get("MODEL_LANE", "domestic")
     )
     summary = await polish_summary(
-        summary, get_model_router(), session_id=session_id,
+        summary,
+        get_model_router(),
+        session_id=session_id,
         lane=os.environ.get("MODEL_LANE", "domestic"),
         budget_ms=max(0, _remaining_ms(state) - 2000),
     )
@@ -1722,7 +2067,12 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges(
         "rediagnose",
         route_after_rediagnose,
-        {"escalate": "escalate", "clarify": "clarify", "reassure": "reassure", "disambiguate": "disambiguate"},
+        {
+            "escalate": "escalate",
+            "clarify": "clarify",
+            "reassure": "reassure",
+            "disambiguate": "disambiguate",
+        },
     )
     g.add_conditional_edges(
         START,

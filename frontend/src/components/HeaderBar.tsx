@@ -1,21 +1,24 @@
 import type { ComponentStatus, HealthState } from '../types/health';
+import { useRef, useState } from 'react';
+import { ModelDialog } from './ModelDialog';
 import styles from './HeaderBar.module.css';
 
 type Props = HealthState & { refresh: () => void };
 
-function statusLabel(status: ComponentStatus | undefined, model: boolean, failed: boolean) {
+function statusLabel(status: ComponentStatus | undefined, failed: boolean) {
   if (failed) return '连接异常';
   if (!status) return '检查中';
-  if (status === 'ok') return model ? '已配置' : '可用';
+  if (status === 'ok') return '可用';
   if (status === 'unconfigured') return '未配置';
   return '不可用';
 }
 
 export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh }: Props) {
+  const [modelsOpen, setModelsOpen] = useState(false);
+  const modelsButton = useRef<HTMLButtonElement>(null);
   const services = [
-    { key: 'llm', label: '智能模型', model: true, status: snapshot?.components.models[snapshot.lane]?.status },
-    { key: 'weknora', label: '知识库', model: false, status: snapshot?.components.weknora.status },
-    { key: 'db', label: '数据库', model: false, status: snapshot?.components.db.status },
+    { key: 'weknora', label: '知识库', status: snapshot?.components.weknora.status },
+    { key: 'db', label: '数据库', status: snapshot?.components.db.status },
   ];
 
   return (
@@ -26,6 +29,9 @@ export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh }: P
           <span><strong>智能服务</strong><span className={styles.brandCaption}>ANKER · SMART CARE</span></span>
         </a>
         <div className={styles.health}>
+          <button ref={modelsButton} className={styles.modelsButton} onClick={() => setModelsOpen(true)} aria-haspopup="dialog">
+            <span>模型</span><span className={styles.serviceStatus}>查看连接状态 <span aria-hidden="true">↗</span></span>
+          </button>
           {snapshot?.replay && (
             <span className={styles.replay} data-status={snapshot.replay.status} role="status"
               title={snapshot.replay.status === 'ok'
@@ -35,10 +41,10 @@ export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh }: P
             </span>
           )}
           <ul className={styles.services} aria-label="组件健康状态" aria-live="polite" aria-atomic="true">
-            {services.map(({ key, label, status, model }) => (
-              <li key={key} className={styles.service} title={model ? '当前通道的模型配置状态，尚未验证实际调用' : undefined}>
+            {services.map(({ key, label, status }) => (
+              <li key={key} className={styles.service}>
                 <span className={styles.dot} data-status={error ? 'down' : status ?? 'checking'} aria-hidden="true" />
-                <span>{label}<span className={styles.serviceStatus}>{statusLabel(status, model, !!error)}</span></span>
+                <span>{label}<span className={styles.serviceStatus}>{statusLabel(status, !!error)}</span></span>
               </li>
             ))}
           </ul>
@@ -50,6 +56,7 @@ export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh }: P
           </button>
         </div>
       </div>
+      {modelsOpen && <ModelDialog onClose={() => { setModelsOpen(false); modelsButton.current?.focus(); }} />}
     </header>
   );
 }

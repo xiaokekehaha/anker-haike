@@ -98,6 +98,7 @@ class ModelRegistry:
         max_tokens: int | None = None,
         timeout_s: float | None = None,
         route: TaskRoute | None = None,
+        max_retries: int | None = None,
     ) -> BaseChatModel:
         """建 LangChain 实例。`route` 给定时 effort / max_tokens 取自它（显式参数优先）。"""
         r = self.resolve(alias)
@@ -110,7 +111,7 @@ class ModelRegistry:
         kwargs: dict[str, Any] = {
             "model_provider": r.provider.sdk,
             "api_key": self.api_key(r.provider_name),
-            "max_retries": self.cfg.retry.sdk_max_retries,
+            "max_retries": self.cfg.retry.sdk_max_retries if max_retries is None else max_retries,
             "timeout": timeout_s if timeout_s is not None else r.spec.timeout_s,
         }
         if r.provider.base_url:
