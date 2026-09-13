@@ -2,7 +2,7 @@
 
 分类 TTL（默认，均可由环境变量覆盖）：
 - 图片 1 小时：session_images，由 app.images.runtime 的清理循环负责（票 29）。
-- 会话状态 24 小时：sessions 投影 + session_events + session_actions + session_images + LangGraph checkpoint 三表，
+- 会话状态 24 小时：sessions 投影 + session_events + session_inputs + session_images + LangGraph checkpoint 三表，
   以 sessions.updated_at 为准，有 active run 的会话不删；没有投影行的孤儿事件 / checkpoint 按 created_at 同步清。
 - 检索追踪 7 天：retrieval_trace 随 checkpoint 一起过期；复盘用的 JSONL 日志轮转备份文件超过 7 天删除。
 
@@ -31,8 +31,15 @@ log = logging.getLogger("retention")
 
 # 会话数据所在的表 → 会话键列。checkpoint 三表由 LangGraph AsyncPostgresSaver 建，可能尚不存在（惰性建表）。
 SESSION_TABLES: tuple[tuple[str, str], ...] = (
+    ("cases", "session_id"),
+    ("model_calls", "session_id"),
+    ("retrieval_calls", "session_id"),
+    ("node_runs", "session_id"),
+    ("run_facts", "session_id"),
+    ("session_facts", "session_id"),
+    ("conversation_summaries", "session_id"),
+    ("session_inputs", "session_id"),
     ("session_images", "session_id"),
-    ("session_actions", "session_id"),
     ("session_events", "session_id"),
     ("checkpoint_writes", "thread_id"),
     ("checkpoint_blobs", "thread_id"),
@@ -60,10 +67,17 @@ async def _existing_tables(conn) -> set[str]:
     return {r[0] if not isinstance(r, dict) else r["table_name"] for r in await cur.fetchall()}
 
 
-async def delete_session_data(pool: AsyncConnectionPool, session_id: str) -> dict[str, int]:
+async def delete_session_data(pool: AsyncConnectionPool, session_id: str, *, expired_before: datetime | None = None) -> dict[str, int]:
     """删除一个会话在所有表里的数据，返回 {table: rows}。不存在的表跳过；总行数为 0 表示本来就没有数据。"""
     counts: dict[str, int] = {}
-    async with pool.connection() as conn:
+    async with pool.connection() as conn, conn.transaction():
+        # Same row lock as acceptance/publication/snapshot; recheck expiry after acquiring it.
+        cur = await conn.execute("select active_run_id,updated_at from sessions where session_id=%s for update", (session_id,))
+        row = await cur.fetchone()
+        if row:
+            active, updated = (row["active_run_id"], row["updated_at"]) if isinstance(row, dict) else row
+            if active or (expired_before is not None and updated >= expired_before):
+                return {}
         tables = await _existing_tables(conn)
         for table, col in SESSION_TABLES:
             if table not in tables:
@@ -110,7 +124,7 @@ async def purge_expired(
         else:
             orphans = []
     for sid in [*expired, *orphans]:
-        for table, n in (await delete_session_data(pool, sid)).items():
+        for table, n in (await delete_session_data(pool, sid, expired_before=cutoff)).items():
             stats.deleted[table] = stats.deleted.get(table, 0) + n
     stats.sessions, stats.orphan_sessions = len(expired), len(orphans)
     if log_path and trace_ttl is not None:

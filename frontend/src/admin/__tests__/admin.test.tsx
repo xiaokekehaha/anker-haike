@@ -135,7 +135,7 @@ describe('图表与口径', () => {
     expect(classes).toEqual(['role-good', 'role-warning', 'role-critical', 'role-serious']);
     const legend = container.querySelector('.stack-legend')!;
     expect(within(legend as HTMLElement).getByText('已解决')).toBeInTheDocument();
-    expect(within(legend as HTMLElement).getByText('已转人工')).toBeInTheDocument();
+    expect(within(legend as HTMLElement).getByText('需人工处理')).toBeInTheDocument();
   });
 
   test('堆叠顺序常量与渲染顺序一致', () => {
@@ -145,7 +145,7 @@ describe('图表与口径', () => {
   test('徽标同时给出颜色与文字', () => {
     const { container } = render(<Badge outcome="escalated" />);
     expect(container.querySelector('.role-warning')).toBeTruthy();
-    expect(screen.getByText('已转人工')).toBeInTheDocument();
+    expect(screen.getByText('需人工处理')).toBeInTheDocument();
   });
 
   test('两系列折线一定带图例', () => {

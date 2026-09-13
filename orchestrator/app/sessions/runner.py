@@ -18,7 +18,6 @@ from typing import Any
 
 from haike_contracts.events import parse_event
 from langgraph.graph.state import CompiledStateGraph
-from langgraph.types import Command
 
 from app.analytics.trace import RunTrace
 from app.observability.runtime import record, run_id_context
@@ -50,17 +49,62 @@ class RunEmitter:
         self.card_kind: str | None = None
         self.first_stage: str | None = None
         self.last_error_code: str | None = None
+        self.input_id: str | None = None
+        self.issue_id: str | None = None
+        self.message_aliases: dict[str, str] = {}
 
     async def emit(self, payload: dict[str, Any]) -> dict[str, Any]:
+        payload = dict(payload)
+        if payload.get("event_id"):
+            previous = next(
+                (
+                    e
+                    for e in await self._store.list_events(self.session_id)
+                    if e.get("event_id") == payload["event_id"]
+                ),
+                None,
+            )
+            if previous:
+                metadata = {"seq", "run_id", "event_id", "recorded_at"}
+                expected = {k: v for k, v in payload.items() if k not in metadata}
+                actual = {k: v for k, v in previous.items() if k not in metadata}
+                if expected != actual:
+                    raise RuntimeError("event_id_payload_conflict")
+                self.last_seq = max(self.last_seq, previous["seq"])
+                return previous
+        if payload.get("type") == "message_start":
+            old_id = payload["message_id"]
+            old = next(
+                (
+                    e
+                    for e in await self._store.list_events(self.session_id)
+                    if e.get("type") == "message_start" and e.get("message_id") == old_id
+                ),
+                None,
+            )
+            if old:
+                self.message_aliases[old_id] = uuid.uuid4().hex
+                payload["replaces"] = old_id
+        if payload.get("message_id") in self.message_aliases:
+            payload["message_id"] = self.message_aliases[payload["message_id"]]
         # seq 由存储层分配；先用占位值过一遍校验，落库后回填真实 seq 再校验一次
-        draft = {**payload, "run_id": self.run_id, "seq": self.last_seq + 1}
+        draft = {
+            **payload,
+            "run_id": self.run_id,
+            "seq": self.last_seq + 1,
+            "event_id": payload.get("event_id") or uuid.uuid4().hex,
+            "recorded_at": datetime.now(UTC).isoformat(),
+        }
+        if draft.get("type") == "message_start":
+            draft.setdefault("reply_to_input_id", self.input_id)
+            draft.setdefault("issue_id", self.issue_id)
         parse_event(draft)
         seq = await self._store.append_event(self.session_id, self.run_id, draft)
         if seq != draft["seq"]:
             draft["seq"] = seq
             parse_event(draft)
             # 存储层给出的 seq 与本地计数不一致：只可能在旧事件残留时出现，纠正后继续
-            log.warning(
+            log.debug(
                 "seq realigned session=%s expected=%s got=%s",
                 self.session_id,
                 self.last_seq + 1,
@@ -115,66 +159,109 @@ async def run_message(
     session_id: str,
     text: str | None = None,
     *,
-    resume: dict[str, Any] | None = None,
-    continue_run: bool = False,
+    receipt: dict[str, Any] | None = None,
     entry_action: dict[str, Any] | None = None,
     image_ids: list[str] | None = None,
     deadline_ms: int = DEFAULT_DEADLINE_MS,
     ping_interval_s: float | None = None,
     cancel_event: asyncio.Event | None = None,
 ) -> AsyncIterator[dict[str, Any]]:
-    """占用 active run，产出契约事件字典。text 为新消息；resume 为对 interrupt 的动作（票 20），
-    此时以 Command(resume=action) 恢复图，run_started.resumed=True。continue_run=True 为「同一 action_id 重试」
-    （票 23）：动作已被 await_input 接收但 apply_action 未成功，以 None 输入让图从待执行节点继续。"""
-    run_id = uuid.uuid4().hex
+    """每个已接收输入运行一轮；提交后恢复只交付已保存结果，不重跑业务。"""
+    if receipt is None:
+        row = await store.get_session(session_id)
+        source = entry_action or {
+            "kind": "message",
+            "text": text or "",
+            "image_ids": image_ids or [],
+        }
+        iid = source.get("action_id") or uuid.uuid4().hex
+        receipt, _ = await store.reserve_input(
+            session_id, iid, source, expected_version=row.version, deadline_ms=deadline_ms
+        )
+    run_id = receipt["run_id"]
     if ping_interval_s is None:
         ping_interval_s = PING_INTERVAL_S  # 运行时读取，便于测试覆写
-    row = await store.try_start_run(session_id, run_id)  # 失败抛 ActiveRunConflict
+    row = await store.get_session(session_id)
     em = RunEmitter(store, session_id, run_id)
     # 存储层可能已有历史事件（多轮对话），seq 需接着排
     prior = await store.list_events(session_id)
+    input_event = next(
+        e for e in prior if e["type"] == "input_received" and e["input_id"] == receipt["input_id"]
+    )
+    source = input_event["payload"]
+    em.input_id = receipt["input_id"]
+    em.issue_id = source.get("target_issue_id")
     em.last_seq = max((e["seq"] for e in prior), default=0)
     trace = RunTrace(
         session_id,
         run_id,
-        entry=_entry_label(text, resume, continue_run, entry_action),
-        seq_no=len({e["run_id"] for e in prior}) + 1,
+        entry="message" if source.get("kind") == "message" else f"action:{source.get('kind')}",
+        seq_no=len({e["run_id"] for e in prior}),
     )
 
     queue: asyncio.Queue[Any] = asyncio.Queue()
     started = time.monotonic()
     stage: str | None = None
     reason = "completed"
-    interrupted = False
-    is_action = resume is not None or continue_run or entry_action is not None
+    is_action = source.get("kind") != "message"
 
     async def pump() -> None:
         context_token = run_id_context.set(run_id)
         try:
             config = {"configurable": {"thread_id": session_id}}
             payload: Any
-            if resume is not None:
-                payload = Command(resume=resume)
-            elif continue_run:
-                payload = None
-            elif entry_action is not None:
-                # 全局动作（request_human，票 25）在没有 interrupt 时从 START 进图：route_entry 直达 human_request
+            if is_action:
+                # 明确动作与自然语言共用 START → understand 入口。
                 payload = {
                     "session_id": session_id,
                     "run_id": run_id,
-                    "at": datetime.now(UTC).isoformat(),
+                    "at": receipt["received_at"],
                     "entry": "action",
-                    "last_action": entry_action,
+                    "last_action": source,
                 }
             else:
                 payload = {
                     "session_id": session_id,
                     "run_id": run_id,
-                    "at": datetime.now(UTC).isoformat(),
+                    "at": receipt["received_at"],
                     "entry": "message",
-                    "text": text or "",
-                    "image_ids": image_ids or [],
+                    "text": source.get("text") or "",
+                    "image_ids": source.get("image_ids") or [],
                 }
+            from app.conversation.history import fold_history
+
+            payload.update(
+                input_id=receipt["input_id"],
+                input_seq=input_event["seq"],
+                base_version=receipt["base_version"],
+                pending_effects=[],
+                history=[
+                    e.as_dict()
+                    for e in fold_history(session_id, await store.list_event_records(session_id))
+                ],
+                target_issue_id=source.get("target_issue_id"),
+            )
+            checkpoint = await graph.aget_state(config)
+            already_committed = (checkpoint.values or {}).get("committed_input_id") == receipt[
+                "input_id"
+            ]
+            if already_committed:
+                await queue.put(_GRAPH_DONE)
+                return
+            if receipt.get("base_checkpoint_id"):
+                config["configurable"]["checkpoint_id"] = receipt["base_checkpoint_id"]
+                base_state = await graph.aget_state(config)
+                from app.conversation.summary_cache import read_summary
+
+                payload["history_summary"] = await read_summary(
+                    store,
+                    session_id,
+                    (base_state.values or {}).get("context_revision", 0),
+                    input_event["seq"],
+                )
+            elif checkpoint.values:
+                # No published business state exists; discard only uncommitted checkpoint candidates.
+                await graph.checkpointer.adelete_thread(session_id)
             async for mode, chunk in graph.astream(
                 payload, config, stream_mode=["custom", "updates"]
             ):
@@ -193,13 +280,8 @@ async def run_message(
     task = asyncio.create_task(pump())
     watcher = asyncio.create_task(watch_cancel()) if cancel_event is not None else None
     try:
-        yield await em.emit(
-            {
-                "type": "run_started",
-                "resumed": resume is not None or continue_run,
-                "deadline_ms": deadline_ms,
-            }
-        )
+        yield next(e for e in prior if e["run_id"] == run_id and e["type"] == "run_started")
+        yield input_event
         while True:
             remaining = deadline_ms / 1000 - (time.monotonic() - started)
             if remaining <= 0:
@@ -210,7 +292,7 @@ async def run_message(
                         "deadline_exceeded",
                         "run exceeded deadline",
                         recoverable=True,
-                        retry=is_action,
+                        retry=False,
                     )
                 )
                 break
@@ -220,8 +302,6 @@ async def run_message(
                 yield await em.emit({"type": "ping"})
                 continue
             if item is _GRAPH_DONE:
-                if interrupted:
-                    reason = "awaiting_input"
                 break
             if item is _CANCELLED:
                 # 取消：中止当前节点（其中的模型调用随之中止），状态停在上一个 checkpoint
@@ -232,13 +312,13 @@ async def run_message(
             if isinstance(item, Exception):
                 reason = "error"
                 log.exception("graph failed session=%s run=%s", session_id, run_id, exc_info=item)
-                # 动作 run 失败：状态停在中断前的 checkpoint、动作未被应用，前端可复用 action_id 重试（票 23）
+                # 本次输入保留失败回执；同 ID 只重放，继续处理使用新的输入。
                 yield await em.emit(
                     _error(
                         "node_failed",
                         f"{type(item).__name__}: {item}"[:300],
                         recoverable=is_action,
-                        retry=is_action,
+                        retry=False,
                     )
                 )
                 break
@@ -251,16 +331,6 @@ async def run_message(
             elif mode == "custom" and isinstance(chunk, dict) and "type" in chunk:
                 # 后续票的卡片 / tool_call 等事件在此透传，契约校验兜底
                 yield await em.emit(chunk)
-            elif mode == "updates" and isinstance(chunk, dict) and "__interrupt__" in chunk:
-                trace.on_updates(chunk)
-                # 图在 await_input 中断：awaiting_input 的 version 由节点随中断载荷带出（langgraph_step），
-                # 不在此查 checkpoint——PostgresSaver 写入异步，此刻可能尚未落地
-                interrupted = True
-                for intr in chunk["__interrupt__"]:
-                    value = dict(getattr(intr, "value", {}) or {})
-                    if "version" not in value:
-                        value["version"] = await checkpoint_version(graph, session_id)
-                    yield await em.emit({"type": "awaiting_input", **value})
             # updates 模式：状态迁移日志，票 07 用于 version 递增；此处仅记录
             elif mode == "updates":
                 trace.on_updates(chunk)
@@ -280,13 +350,47 @@ async def run_message(
             with contextlib.suppress(asyncio.CancelledError, Exception):
                 await task
         final_state = await checkpoint_state(graph, session_id)
-        version = version_of(final_state, fallback=row.version)
-        try:
-            await store.finish_run(session_id, run_id, version=version, stage=stage)
-        except Exception:
-            log.exception("finish_run failed session=%s run=%s", session_id, run_id)
-        # 必以 done 结束；若消费者已断开，done 仍要落库（票 08 续接读取）
-        done = await em.emit({"type": "done", "reason": reason, "version": version})
+        values = final_state.values if final_state else {}
+        if (values or {}).get("committed_input_id") == receipt["input_id"]:
+            version = await store.publish_commit(
+                receipt,
+                final_state.config["configurable"]["checkpoint_id"],
+                (values or {}).get("stage", "intake"),
+                (values or {}).get("turn_decision") or {},
+            )
+            for effect in (values or {}).get("pending_effects") or []:
+                yield await em.emit({**effect["payload"], "event_id": effect["effect_id"]})
+        else:
+            version = receipt["base_version"]
+            published = await store.get_session(session_id)
+            if published.published_checkpoint_id:
+                final_state = await graph.aget_state(
+                    {
+                        "configurable": {
+                            "thread_id": session_id,
+                            "checkpoint_id": published.published_checkpoint_id,
+                        }
+                    }
+                )
+                values = final_state.values or {}
+            else:
+                values = {}
+                final_state = None
+        pending = (values or {}).get("pending_card")
+        if reason == "completed" and pending:
+            reason = "awaiting_input"
+            yield await em.emit(
+                {
+                    "type": "awaiting_input",
+                    "kind": pending["kind"],
+                    "issue_id": (values or {}).get("active_issue_id"),
+                    "input_token": pending.get("input_token") or pending["card_id"],
+                    "card_id": pending["card_id"],
+                    "version": version,
+                }
+            )
+        done = await store.complete_input(receipt, reason)
+        record("session_event", session_id=session_id, run_id=run_id, payload=done)
         trace.finish(
             final_state,
             done_reason=reason,
@@ -322,36 +426,6 @@ async def checkpoint_state(graph: CompiledStateGraph, session_id: str):
     except Exception:
         log.exception("aget_state failed session=%s", session_id)
         return None
-
-
-def version_of(state, *, fallback: int = 0) -> int:
-    """version = 最新 checkpoint 的 step + 1（step 跨 run 单调递增，无 checkpoint 时为 0）。"""
-    if state is None:
-        return fallback
-    if not state.metadata:
-        return 0
-    return int(state.metadata.get("step", -1)) + 1
-
-
-async def checkpoint_version(
-    graph: CompiledStateGraph, session_id: str, *, fallback: int = 0
-) -> int:
-    return version_of(await checkpoint_state(graph, session_id), fallback=fallback)
-
-
-def _entry_label(
-    text: str | None,
-    resume: dict[str, Any] | None,
-    continue_run: bool,
-    entry_action: dict[str, Any] | None,
-) -> str:
-    """run 的入口，供观测台按来源分组。"""
-    action = resume or entry_action
-    if action is not None:
-        return f"action:{action.get('kind', 'unknown')}"
-    if continue_run:
-        return "action:retry"
-    return "message" if text is not None else "unknown"
 
 
 def _retention_hours() -> float:

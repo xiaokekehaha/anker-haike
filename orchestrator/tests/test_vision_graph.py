@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import io
 
 import pytest
@@ -49,7 +51,7 @@ async def _send_with_images(client, sid: str, text: str, n_images: int = 1):
         for i in range(n_images)
     ]
     resp = await client.post(
-        f"/sessions/{sid}/messages", data={"text": text, "purpose": "fault"}, files=files
+        f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text, "purpose": "fault"}), files=files
     )
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
@@ -94,7 +96,7 @@ async def test_brush_hair_photo_yields_observation_and_continues(mem_runtime, im
     # 视觉调用带图片、internal、任务名
     vcall = next(c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision")
     assert "internal" in vcall["tags"]
-    assert any(p.get("type") == "image_url" for p in vcall["messages"][-1].content)
+    assert any(p.get("type") == "image_url" for m in vcall["messages"] if isinstance(m.content, list) for p in m.content)
     assert events[-1]["reason"] == "awaiting_input"  # 票 34：读图 → 检索 → 步骤卡
 
 
@@ -174,7 +176,7 @@ async def test_no_vision_model_available_hints_user_to_describe(mem_runtime, img
 async def test_message_without_images_skips_vision_node(mem_runtime, img_store):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        resp = await client.post(f"/sessions/{sid}/messages", data={"text": "扫地机 X9 吸力变小"})
+        resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X9 吸力变小"}))
     events = sse.parse(resp.text)
     assert _tool(events, "diagnose.vision") == []
     assert "vision" not in [e.get("substage") for e in events if e["type"] == "progress"]

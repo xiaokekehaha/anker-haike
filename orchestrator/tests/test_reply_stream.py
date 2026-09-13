@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.message_form import model_task_text
+
+from tests.message_form import message_form
+
 import json
 
 from haike_contracts.events import parse_event
@@ -9,7 +13,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -84,7 +88,7 @@ async def run_text(router, text: str):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             events = sse.parse(
-                (await client.post(f"/sessions/{sid}/messages", data={"text": text})).text
+                (await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))).text
             )
             snap = (await client.get(f"/sessions/{sid}")).json()
             return events, snap
@@ -113,7 +117,7 @@ async def test_a2_reassurance_arrives_before_card_and_diagnose(mem_runtime, tmp_
     assert end["status"] == "completed" and end["model_tier"] == "primary"
     # 安抚 prompt 用了焦急策略层，且用户文本包在 <data>
     sys_prompt = fakes["main"].calls[0]["messages"][0].content
-    assert "焦急" in sys_prompt and "<data" in fakes["main"].calls[0]["messages"][-1].content
+    assert "焦急" in sys_prompt and "<data" in model_task_text(fakes["main"].calls[0])
     assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
     kinds = [i["kind"] for i in snap["timeline"]]
     assert kinds.index("assistant_message") < kinds.index("product_card")
@@ -140,7 +144,7 @@ async def test_internal_tokens_never_enter_events_and_ids_aggregate(mem_runtime,
     bubble = next(i for i in snap["timeline"] if i["kind"] == "assistant_message")
     assert bubble["text"] == "根据说明书，请先清理滚刷。" and bubble["status"] == "completed"
     # 回复 prompt 带检索状态说明与 <data kind=retrieved_snippets>
-    human = fakes["main"].calls[0]["messages"][-1].content
+    human = model_task_text(fakes["main"].calls[0])
     assert 'kind="retrieved_snippets"' in human and "知识库暂不可用" in human  # 单测默认适配器关闭
 
 
@@ -172,9 +176,9 @@ async def test_mid_stream_abort_replaced_by_fallback_with_tier(mem_runtime, tmp_
     assert starts[1]["replaces"] == starts[0]["message_id"]
     bubbles = [i for i in snap["timeline"] if i["kind"] == "assistant_message"]
     assert (
-        len(bubbles) == 1
-        and bubbles[0]["text"] == "请先清理滚刷，再试运行。"
-        and bubbles[0]["model_tier"] == "fallback"
+        len(bubbles) == 2 and bubbles[0]["status"] == "replaced"
+        and bubbles[1]["text"] == "请先清理滚刷，再试运行。"
+        and bubbles[1]["model_tier"] == "fallback"
     )
     assert SIMPLIFIED_LAYER in fakes["backup"].calls[0]["messages"][0].content
     assert SIMPLIFIED_LAYER not in fakes["main"].calls[0]["messages"][0].content
@@ -210,7 +214,7 @@ def test_prompt_templates_are_versioned_and_wrap_injection():
     human = primary[1][1]
     assert (
         "&lt;/data&gt;" in human
-        and human.count("<data kind=") == 2
+        and human.count("<data kind=") == 3
         and "每个步骤不超过两句" in human
     )
     assert fallback[0][1].endswith(SIMPLIFIED_LAYER) and primary[0][1] != fallback[0][1]

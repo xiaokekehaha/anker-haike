@@ -120,7 +120,7 @@ class RunTrace:
                     lane=lane,
                     done_reason=done_reason,
                     error_code=error_code,
-                    pending=_has_interrupt(state) or self.interrupted,
+                    pending=bool(values.get("pending_card")),
                     runs=self.seq_no,
                     created_at=self.started_wall,
                     last_run_at=datetime.now(UTC),

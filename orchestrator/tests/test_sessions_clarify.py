@@ -6,6 +6,10 @@
 
 from __future__ import annotations
 
+from tests.message_form import model_task_text
+
+from tests.message_form import action_body, message_form
+
 import json
 
 from haike_contracts.snapshot import SessionSnapshot
@@ -29,7 +33,7 @@ def _client():
 
 
 async def _send(client, sid: str, text: str) -> list[dict]:
-    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text})
+    resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
 
@@ -145,7 +149,7 @@ async def test_clarify_text_from_model_task_and_fixed_fallback(mem_runtime, tmp_
         assert _message_text(events) == "请问是哪一款设备不吸了？"
         call = fake.calls[-1]
         assert call["metadata"]["task"] == "disambiguate.clarify" and "internal" in call["tags"]
-        assert '<data kind="user_message">' in call["messages"][-1].content
+        assert '本轮原话' in model_task_text(call)
         state = await _state(sid)
         assert any(t["task"] == "disambiguate.clarify" for t in state["model_trace"])
     finally:
@@ -244,14 +248,14 @@ async def test_abandoned_product_card_counts_and_clears_pending(mem_runtime):
         # 旧卡片的动作现在被拒绝（不计入澄清次数）
         stale = await client.post(
             f"/sessions/{sid}/actions",
-            json={
+            json=await action_body(client, f"/sessions/{sid}/actions", {
                 "action_id": "a1",
-                "interrupt_id": pending["interrupt_id"],
+                "input_token": pending["input_token"],
                 "card_id": pending["card_id"],
                 "expected_version": snap.version,
                 "kind": "select_product",
                 "payload": {"sku": "EUFY-S1-PRO"},
-            },
+            }),
         )
         assert stale.status_code == 409 and stale.json()["code"] == "not_allowed_now"
         assert (await _state(sid))["clarification"]["attempts"] == 2

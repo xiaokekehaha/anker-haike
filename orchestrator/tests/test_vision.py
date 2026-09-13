@@ -15,7 +15,7 @@ from app.diagnose.vision import (
 )
 from app.images import InMemoryImageStore
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.rules import RulesService

@@ -57,7 +57,7 @@ export function App() {
             <ul className={styles.promises} aria-label="服务承诺">
               <li><span aria-hidden="true">✓</span>先安抚，再排查</li>
               <li><span aria-hidden="true">✓</span>每一步都有依据</li>
-              <li><span aria-hidden="true">✓</span>解决不了就转人工，不用重复描述</li>
+              <li><span aria-hidden="true">✓</span>整理问题记录，方便人工客服接续</li>
             </ul>
           </section>
         )}
@@ -76,7 +76,8 @@ export function App() {
           </div>
           <ProgressBar stage={state.stage} />
           <ChatPane onPick={pickPrompt} disabled={busy} showStarters={!hasHistory}>
-            <Timeline state={state} onAction={(kind, payload) => void session.act({ kind, payload })} />
+            <Timeline state={state} onAction={(kind, payload) => void session.act({ kind, payload })}
+              onIssueAction={(kind, target_issue_id) => void session.act({ kind, target_issue_id })} />
             {state.stalled && busy && <p className={cardStyles.stallNote} role="status">仍在处理，请稍候…</p>}
             <p className={styles.uiState} data-ui={state.ui} role="status">{state.ui === 'awaiting_input' ? (AWAITING_TEXT[pendingKind ?? ''] ?? UI_TEXT.awaiting_input) : UI_TEXT[state.ui]}</p>
             {state.ui === 'failed' && state.id && <button onClick={() => void session.recover()}>恢复连接</button>}

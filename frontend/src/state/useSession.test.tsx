@@ -4,15 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSession } from './useSession';
 import type { SessionSnapshot } from '../types/snapshot';
 
-const pending = { kind: 'select_product', interrupt_id: 'c', card_id: 'c', version: 4 } as const;
+const pending = { kind: 'select_product', input_token: 'c', card_id: 'c', version: 4 } as const;
 const candidate = { sku: 'RV', name: '扫地机', category: 'robot_vacuum', in_scope: true, image: null };
 function snapshot(patch: Partial<SessionSnapshot> = {}): SessionSnapshot {
   return { session_id: 's', version: 4, stage: 'diagnose', substage: null, timeline: [], pending_input: null, active_run: null, last_error: null, cancelled_run: null, ...patch };
 }
 function json(body: unknown, status = 200) { return new Response(JSON.stringify(body), { status }); }
 function events(items: object[]) { return new Response(items.map(e => `data: ${JSON.stringify(e)}\n\n`).join('')); }
-function started(seq = 1) { return { type: 'run_started', seq, run_id: 'r', resumed: false, deadline_ms: 25000 }; }
-function done(seq = 2, reason = 'completed') { return { type: 'done', seq, run_id: 'r', reason, version: 5 }; }
+function started(seq = 1) { return { type: 'run_started', seq, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', resumed: false, deadline_ms: 25000 }; }
+function done(seq = 2, reason = 'completed') { return { type: 'done', seq, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', reason, version: 5 }; }
 function active() { return { run_id: 'r', started_at: new Date().toISOString(), deadline_at: new Date(Date.now() + 25000).toISOString() }; }
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -46,10 +46,10 @@ describe('session recovery lifecycle', () => {
     const running = active();
     const final = snapshot({ version: 5, timeline: [{ kind: 'assistant_message', message_id: 'm', text: '清理滚刷', status: 'completed', model_tier: 'primary', replaces: null }] });
     const stream = openStream([
-      started(), { type: 'message_start', seq: 2, run_id: 'r', message_id: 'm' },
-      { type: 'message', seq: 3, run_id: 'r', message_id: 'm', delta: '清理' },
-      { type: 'message', seq: 3, run_id: 'r', message_id: 'm', delta: '清理' },
-      { type: 'message', seq: 4, run_id: 'r', message_id: 'm', delta: '滚刷' }, done(5),
+      started(), { type: 'message_start', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', message_id: 'm' },
+      { type: 'message', seq: 3, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', message_id: 'm', delta: '清理' },
+      { type: 'message', seq: 3, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', message_id: 'm', delta: '清理' },
+      { type: 'message', seq: 4, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', message_id: 'm', delta: '滚刷' }, done(5),
     ]);
     const fetch = vi.fn().mockResolvedValueOnce(json(snapshot({ ...final, active_run: running })))
       .mockResolvedValueOnce(stream.response).mockResolvedValueOnce(json(final));
@@ -170,7 +170,7 @@ describe('action conflicts and retry', () => {
     sessionStorage.setItem('haike.session_id', 's');
     const fetch = vi.fn().mockResolvedValueOnce(json(snapshot({ pending_input: pending })))
       .mockImplementation(async () => events([
-        started(), { type: 'error', seq: 2, run_id: 'r', code: 'node_failed', message: '失败', recoverable: true, retry_with_same_action: allowed }, done(3, 'error'),
+        started(), { type: 'error', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', code: 'node_failed', message: '失败', recoverable: true, retry_with_same_action: allowed }, done(3, 'error'),
       ]));
     vi.stubGlobal('fetch', fetch);
     const { result } = renderHook(useSession);
@@ -185,7 +185,7 @@ describe('action conflicts and retry', () => {
 
   it('uses the 409 snapshot as authority without reposting the old action to the new card', async () => {
     sessionStorage.setItem('haike.session_id', 's');
-    const latest = snapshot({ version: 9, pending_input: { ...pending, card_id: 'new', interrupt_id: 'new', version: 9 },
+    const latest = snapshot({ version: 9, pending_input: { ...pending, card_id: 'new', input_token: 'new', version: 9 },
       timeline: [{ kind: 'product_card', card_id: 'new', version: 9, candidates: [candidate], selected_sku: null }] });
     const fetch = vi.fn().mockResolvedValueOnce(json(snapshot({ pending_input: pending })))
       .mockResolvedValueOnce(json({ code: 'stale_card', snapshot: latest }, 409));
@@ -218,7 +218,7 @@ it('accepts a successful second attempt with the exact original action body', as
   sessionStorage.setItem('haike.session_id', 's');
   const selected = snapshot({ version: 8, timeline: [{ kind: 'product_card', card_id: 'c', version: 4, candidates: [candidate], selected_sku: 'RV' }] });
   const fetch = vi.fn().mockResolvedValueOnce(json(snapshot({ pending_input: pending })))
-    .mockResolvedValueOnce(events([started(), { type: 'error', seq: 2, run_id: 'r', code: 'node_failed', message: '失败', recoverable: true, retry_with_same_action: true }, done(3, 'error')]))
+    .mockResolvedValueOnce(events([started(), { type: 'error', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r', code: 'node_failed', message: '失败', recoverable: true, retry_with_same_action: true }, done(3, 'error')]))
     .mockResolvedValueOnce(events([{ ...started(4), run_id: 'retry' }, { ...done(5), run_id: 'retry' }]))
     .mockResolvedValueOnce(json(selected));
   vi.stubGlobal('fetch', fetch);
@@ -362,4 +362,21 @@ describe('session switching (spec_session_switch)', () => {
     expect(sessionStorage.getItem('haike.session_id')).toBeNull();
     expect(result.current.recent.map(s => s.id)).toEqual(['a']);
   });
+});
+
+it('reuses the immutable message input ID after an unaccepted network failure', async () => {
+  sessionStorage.setItem('haike.session_id', 's');
+  const fetch = vi.fn().mockResolvedValueOnce(json(snapshot()))
+    .mockRejectedValueOnce(new Error('network response lost'))
+    .mockResolvedValueOnce(json(snapshot()))
+    .mockResolvedValueOnce(events([started(), done()]));
+  vi.stubGlobal('fetch', fetch);
+  const { result } = renderHook(useSession);
+  await waitFor(() => expect(result.current.state.version).toBe(4));
+  await act(async () => { expect(await result.current.send('同一条消息')).toBe(false); });
+  await act(async () => { expect(await result.current.send('同一条消息')).toBe(true); });
+  const first = fetch.mock.calls[1]![1].body as FormData;
+  const retry = fetch.mock.calls[3]![1].body as FormData;
+  expect(first.get('input_id')).toBe(retry.get('input_id'));
+  expect(first.get('text')).toBe(retry.get('text'));
 });

@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import type { Ref } from 'react';
+import type { ClipboardEvent as ReactClipboardEvent, KeyboardEvent as ReactKeyboardEvent, Ref } from 'react';
+import { clipboardImages, isTouchPrimary, TOUCH_PRIMARY_QUERY } from '../lib/device';
 import { prepareImage } from '../lib/image';
 import type { ImagePurpose } from '../lib/image';
 import type { PendingInput } from '../types/snapshot';
@@ -27,13 +28,26 @@ const WAITING_HINT = {
   select_product: '请先在上方卡片选择产品。',
   confirm_receipt: '请在上方核对订单号、购买渠道等信息，确认或跳过。',
 };
-// 票 37：等待步骤反馈时仍可补充新情况 / 照片 / 纠正型号，提交即 rediagnose（后端 guide / verify 阶段的消息等价于 rediagnose）
-export const REDIAGNOSE_HINT = '补充信息将重新判断故障：可以描述新情况、上传照片或纠正型号；操作结果请仍在上方步骤卡反馈。';
+// 等待步骤时仍可正常对话，是否更新排障由本轮语义决定。
+export const REDIAGNOSE_HINT = '可以追问原因、回顾记录、补充或纠正情况；完成操作后，也可以直接描述结果。';
 let seq = 0;
 function makePreview(file: File): string | null {
   try { return typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : null; }
   catch { return null; }
 }
+/** 触屏设备上回车换行；桌面端回车发送。设备可能中途变化（外接键盘、平板切换），所以跟随媒体查询。 */
+function useTouchPrimary(): boolean {
+  const [touch, setTouch] = useState(isTouchPrimary);
+  useEffect(() => {
+    const query = typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(TOUCH_PRIMARY_QUERY) : null;
+    if (!query?.addEventListener) return;
+    const onChange = (e: MediaQueryListEvent) => setTouch(e.matches);
+    query.addEventListener('change', onChange);
+    return () => query.removeEventListener('change', onChange);
+  }, []);
+  return touch;
+}
+
 function release(items: Attachment[]) {
   for (const item of items) if (item.previewUrl && typeof URL.revokeObjectURL === 'function') URL.revokeObjectURL(item.previewUrl);
 }
@@ -47,14 +61,16 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const [processing, setProcessing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const processingRef = useRef(false);
+  const composingRef = useRef(false);
   const submittingRef = useRef(false);
   const generation = useRef(0);
+  const touchPrimary = useTouchPrimary();
   const receipt = pendingKind === 'upload_receipt';
   const rediagnose = pendingKind === 'step_feedback';
-  const cardOnly = pendingKind !== null && !receipt && !rediagnose;
+  const cardOnly = false;
   const busy = processing || submitting;
   const inputBlocked = !!offline || runBusy || cardOnly || busy;
-  const hasContent = receipt ? attachments.length > 0 : value.trim().length > 0 || attachments.length > 0;
+  const hasContent = value.trim().length > 0 || attachments.length > 0;
   const canSend = !inputBlocked && !!onSend && hasContent;
 
   useEffect(() => {
@@ -113,6 +129,25 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
     updateAttachments(attachmentsRef.current.filter(item => item.id !== id));
   }
 
+  /** 桌面端 Enter 发送、Shift+Enter 换行；Cmd/Ctrl+Enter 任何设备都发送。
+   *  中文输入法选词时的回车属于候选确认（isComposing / keyCode 229），不能当作发送。 */
+  function onKeyDown(e: ReactKeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key !== 'Enter' || e.shiftKey || e.altKey) return;
+    if (composingRef.current || e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
+    const withModifier = e.metaKey || e.ctrlKey;
+    if (!withModifier && touchPrimary) return;
+    e.preventDefault();
+    void submit();
+  }
+
+  /** 截图直接粘贴进输入框；纯文本粘贴保持浏览器默认行为。 */
+  function onPaste(e: ReactClipboardEvent<HTMLTextAreaElement>) {
+    const images = clipboardImages(e.clipboardData);
+    if (!images.length) return;
+    e.preventDefault();
+    void addFiles(images);
+  }
+
   async function submit() {
     if (!canSend || submittingRef.current) return;
     submittingRef.current = true;
@@ -147,18 +182,22 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
     : rediagnose ? REDIAGNOSE_HINT
     : receipt ? '请上传订单截图、发票或收据，可附带备注；单张 5 MB 内。也可以跳过，由人工协助核实。'
     : '支持文字与图片（单张 5 MB 内，会自动压缩），说不清楚也没关系。';
+  // 键盘用法只在能用上的设备提示；离线时发不出去，不提发送键。
+  const keyHint = offline || cardOnly || touchPrimary ? null : 'Enter 发送，Shift+Enter 换行，截图可直接粘贴到输入框。';
 
   return (
     <form className={styles.composer} onSubmit={(e) => { e.preventDefault(); void submit(); }} aria-label={receipt ? '上传购买凭证' : '发送消息'}>
       <div className={styles.heading}>
         <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : rediagnose ? '补充新情况或纠正' : '描述你的问题'}</label>
-        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : rediagnose ? '会重新判断故障，已做的步骤保留' : '直接输入，不用先选产品'}</span>
+        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : rediagnose ? '可以随时追问，已做的步骤保留' : '直接输入，不用先选产品'}</span>
       </div>
       <div className={styles.box}>
         <textarea id={inputId} ref={inputRef} className={styles.input} rows={3} maxLength={4000} value={value}
           disabled={cardOnly || runBusy || submitting} onChange={(e) => onChange(e.target.value)}
+          onKeyDown={onKeyDown} onPaste={onPaste}
+          onCompositionStart={() => { composingRef.current = true; }} onCompositionEnd={() => { composingRef.current = false; }}
           placeholder={receipt ? '可补充购买平台、店铺或其他需要说明的信息…' : rediagnose ? '例如：其实还有异响 / 说错了，我的是 X10…' : '点击这里输入，例如：我的耳机只有一边有声音，重置后还是不行…'}
-          aria-describedby={`${inputId}-hint`} />
+          aria-describedby={keyHint ? `${inputId}-hint ${inputId}-keys` : `${inputId}-hint`} />
         {attachments.length > 0 && (
           <ul className={styles.attachments} aria-label="待发送图片">
             {attachments.map((item, i) => (
@@ -192,6 +231,7 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
       )}
       {imageError && <p role="alert" className={styles.imageError}>{imageError}</p>}
       <p id={`${inputId}-hint`} className={styles.hintText}>{hint}</p>
+      {keyHint && <p id={`${inputId}-keys`} className={styles.hintText}>{keyHint}</p>}
     </form>
   );
 }

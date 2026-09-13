@@ -4,7 +4,6 @@
 """
 
 from app.sessions.store import (
-    ActiveRunConflict,
     InMemorySessionStore,
     PostgresSessionStore,
     SessionNotFound,
@@ -12,7 +11,6 @@ from app.sessions.store import (
 )
 
 __all__ = [
-    "ActiveRunConflict",
     "InMemorySessionStore",
     "PostgresSessionStore",
     "SessionNotFound",

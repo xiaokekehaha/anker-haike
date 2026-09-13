@@ -72,6 +72,39 @@ repeats=3 的两轮对同一模型给出了不同裁决，**挑任何一轮单�
 
 结论：guide.step 原本选的 glm-4.7 是错的，已换成 glm-4.5-flash（94%）。**repeats=3 不足以判定门槛线附近的候选**，冻结前对边界候选应跑 repeats=5。
 
+> **2026-09-13 补测推翻了上表 guide.step / glm-4.7 那一行的裁决**，见下一节：那个 89% 是并发限流污染，不是模型质量。
+
+### 补测（2026-09-13）：限流吃掉的是 schema，89% 的准确率是真的抖动
+起因：zhipu 通道把 glm-4.7 放到 `guide.step` 与 `retrieve.grade` 首位，而这两处只有并发跑出来的数据（retrieve.grade 更是只测过 glm-4.5-flash）。按 §3.8 补跑 repeats=5：
+
+先用 bakeoff.yaml 默认的 `concurrency: 4`，结果很难看——`guide.step` schema 92% / acc 89%（有一次 20 s 超时），`retrieve.grade` schema 25% / acc 50%（40 次里 20 次 `ModelInvokeError`）。打开 INFO 日志才看到真因：
+
+```
+429 {'error': {'code': '1302', 'message': '您的账户已达到速率限制，请您控制请求频率'}}
+retrieve.grade failed: task 'retrieve.grade' failed after 4 attempt(s): OpenAIRateLimitError
+```
+
+智谱账号在并发 4 下就被限流，`retry.rate_limit_max=3`（退避 1 / 2 / 4 s）也救不回来。把评测配置改成 `concurrency: 1` 重跑同样的 repeats=5：
+
+| task | 候选 | 并发 4 | 串行 | 串行裁决 |
+| --- | --- | --- | --- | --- |
+| guide.step | glm-4.7 | schema 92% / acc 89% / p50 1067 ms / max 20 000 ms | schema **100%** / acc **92%** / p50 1195 ms / max 1647 ms | **主**（两项过线） |
+| retrieve.grade | glm-4.7 | schema 25% / acc 50% | schema **100%** / acc **91%** / p50 2054 ms / p95 2337 ms | **主**（4 s 预算内 0 次超时） |
+
+逐样本对比也能看出污染的形状：串行只有 `dustbin_s2` 0.67、`side_s1` 0.67、`side_s2` 0.80、`filter_s2` 0.87 四条真实扣分，其余满分；并发那轮是十一条样本齐刷刷 0.93，典型的「每条样本挂掉一次重复」。`retrieve.grade` 串行只剩 `side_brush` 0.55 一条真实扣分。
+
+报告：`reports/bakeoff/guide_step_glm47/`、`reports/bakeoff/retrieve_grade_glm47/`（bakeoff.md 是串行结果，两份 JSON 明细保留了并发 / 串行两轮可对比）。
+
+**但限流本身是线上的真问题**，不是评测工具的毛病：它是账号级速率限制，并发 4 就打满。zhipu 通道在多会话并发下会真触发 429，退避三次后降级到 deepseek。切 `MODEL_LANE=zhipu` 前要么确认账号配额，要么只把它当单人演示 / 备用通道用。
+
+**评测方法补充**：跑智谱候选时必须串行（`--bakeoff-config` 指一份 `concurrency: 1` 的配置），否则测的是账号配额不是模型能力。
+
+**这一节的结论后来被自己的下一轮修正了**：同日串行跑全量（repeats=3）时，`guide.step` / glm-4.7 又回到 **schema 100% / acc 89%**。把两件事分开才对——
+- **schema 通过率**确实是限流污染：并发 4 的 92% / 25%，串行后一律 100%；
+- **准确率**不是：89%（repeats=3 并发）、89%（repeats=5 并发）、92%（repeats=5 串行）、89%（repeats=3 串行），**glm-4.7 在 guide.step 上就是 89–92% 之间抖，横跨 90% 门槛线**。
+
+所以它只配当兜底位（现在是 `guide.step` 链的第三位），不该进主备。`retrieve.grade` 的 91% 则在多轮里稳定，可以上链。
+
 ### 裁决与链的冻结（models.yaml 2026-09-13.2）
 `chain_max=3`，所以每个 task 第三位只能二选一：一个没有 key 的 overseas 兜底，或一个实测达标的智谱位。改成后者：
 
@@ -105,3 +138,55 @@ repeats=3 的两轮对同一模型给出了不同裁决，**挑任何一轮单�
 
 ### query.rewrite 两家都 0%：仍是票 32 的词表问题，不是模型问题
 DeepSeek 与智谱四个候选全部 0%，与上一轮 DeepSeek 单家结论一致：`validate_rewrite` 的 `unsupported_term` 把模型给出的合理说明书用语全拒了。两家同时 0% 反而是证据——问题在校验词表，不在某家模型。处置不变：不为通过评测放松校验，留待票 32 / 37 的人工标注样例决定同义表扩充。
+
+
+## bake-off 结果（2026-09-13，三家同时有 key；models.yaml 2026-09-13.5，repeats=3，串行）
+
+**这是当前采信、也是 RELEASE 冻结所指的一版**（`reports/bakeoff/bakeoff.md`）。前两节的裁决都是在 `DASHSCOPE_API_KEY` 缺席下做的——
+报告里 qwen 整列写着「未跑：missing env」，可 domestic 链却把 qwen 放在 8 个 task 的**主位**，等于主位从来没有被实测支撑过。
+本轮三家 key 齐了，补齐 qwen 全量、重排链，再按新链复跑一遍。
+
+| task | dashscope | deepseek | zhipu | 冻结的链 |
+| --- | --- | --- | --- | --- |
+| intake | qwen-flash 100 / 98 1051 ms **¥0.0002** | 100 / 100 953 ms ¥0.0016 | glm 100 / 97 1364 ms | qwen-flash → deepseek → glm |
+| disambiguate.clarify | qwen-flash **100 / 100 752 ms ¥0.0001** | 100 / 100 990 ms ¥0.0010 | glm 100 / 100 965 ms | qwen-flash → deepseek → **glm** |
+| diagnose.vision | qwen-vl 100 / 83 1554 ms | **100 / 83 1188 ms** | glm-v 93 / 77（未达标） | **deepseek** → qwen-vl → glm-v |
+| diagnose.synthesize | qwen-max 100 / 100 2179 ms ¥0.0094 | **100 / 100 1162 ms ¥0.0023** | glm-v 100 / 88（未达标） | **deepseek** → qwen-max → glm-v |
+| guide.step | qwen-max 100 / 94 998 ms ¥0.0047 | **100 / 97 929 ms ¥0.0011** | glm 100 / 89（未达标） | **deepseek** → qwen-max → glm |
+| reply.stream | qwen-plus 100 / 98 900 ms ¥0.0003 | 100 / 98 1084 ms ¥0.0005 | glm 100 / 98 **582 ms ¥0.0002** | qwen-plus → deepseek → **glm** |
+| escalate.summary | qwen-flash **100 / 100 648 ms ¥0.0001** | 100 / 100 899 ms ¥0.0006 | glm-v 100 / 100 723 ms | **qwen-flash** → deepseek → glm-v |
+| warranty.receipt_ocr | qwen-vl 100 / 100 3355 ms | **100 / 100 1218 ms** | glm-v 100 / 100 2958 ms | **deepseek** → qwen-vl → glm-v |
+| query.rewrite | qwen-flash 100 / **75** 535 ms | 100 / **75** 915 ms | glm 100 / **62** | 链不变，默认关闭（三家全未达标） |
+| retrieve.grade | qwen-flash 100 / 92 1193 ms **¥0.0002** | 100 / 100 1105 ms ¥0.0018 | glm 100 / 100 2135 ms | qwen-flash → deepseek → glm（默认关闭） |
+
+一次 A1 对话成本 **¥0.0068**（门槛 ¥0.5）。口径同 `runner.judge`：准确率只作门槛，达标后按 `延迟 / 上限 + 成本 × 100` 排序。
+
+### 这一轮改了什么、为什么
+- **4 个主位换成 deepseek**（`diagnose.vision` / `diagnose.synthesize` / `guide.step` / `warranty.receipt_ocr`）：准确率不低于 qwen，且更快更省。`warranty.receipt_ocr` 从 qwen-vl 3355 ms 降到 1218 ms（快 2.8×）；`diagnose.synthesize` 省 4 倍成本。
+- **`escalate.summary` 主位换 qwen-flash**：648 ms / ¥0.0001，三家里最快最省且 100%。
+- **`reply.stream` 主位保持 qwen-plus**：三家都是 98%，qwen-plus 首字 900 ms / ¥0.0003（此前一轮它测出 1188 ms，串行复测翻转过一次结论）。
+- **glm-4.5-flash 全面下链**，曾用它的位置改用 glm-4.7：免费档排队是致命的——`reply.stream` 串行实测 **P50 12.1 s、schema 67% / acc 65%**，`disambiguate.clarify` schema 92%；换成 glm-4.7 后同样两处是 100/98 582 ms 与 100/100 965 ms。
+- **一次 A1 对话成本 ¥0.0252（全 qwen 主位）→ ¥0.0068**。
+
+### 两处故意不采信工具裁决：不让智谱进主位
+工具的排序只把准确率当门槛，过线后按「延迟 + 成本」挑最便宜的，于是两次把智谱推上主位：
+
+| 轮次 | 工具裁决 | 冻结的选择 | 理由 |
+| --- | --- | --- | --- |
+| 重排前 | `diagnose.vision` 主 = glm-v（恰好 80% 卡线，成本最低） | deepseek | 视觉是 A2 / A3 的判断入口，卡线候选不做主位；本轮 glm-v 掉到 77% / schema 93%，工具自己也把它判成未达标了 |
+| 本轮 | `reply.stream` 主 = glm（582 ms / ¥0.0002，98%） | qwen-plus | 智谱账号并发 4 即 429（见上一节），首句安抚是每轮都走的路径，主位吃不起限流 |
+
+智谱位一律排第三，作「DeepSeek + 百炼同时不可用」时的兜底——这也是失效切换实测里被验证过的那条路径。
+
+### repeats=3 的抖动有多大（冻结时必须知道）
+同样串行、同样 repeats=3，两轮之间：`intake` qwen-flash 100% → 98%，`guide.step` qwen-max 97% → 94%，`diagnose.vision` deepseek 87% → 83%，`diagnose.synthesize` glm-v 92% → 88%，`retrieve.grade` qwen-flash 96% → 92%。
+**门槛线附近 ±5 点是常态**，所以：
+- 链上**主位**的选择对这个量级的抖动是稳的（主位候选都在 97–100%，离门槛远）；
+- **兜底位**的「达标 / 未达标」标签会来回翻（glm-v 在 synthesize 上 88↔92、glm 在 guide.step 上 89↔92），不必每轮改链；
+- 真要给某个边界候选下结论，按本文件前面的教训跑 **repeats=5**。
+
+### 仍然没解决的
+- **`query.rewrite` 三家全未达标，且轮间摆动极大**（qwen-flash 上一轮 100%、本轮 75%）。这与票 32 记的词表问题一致，不是选型问题；该开关默认关闭，不作为启用依据，但它的金标样本或评分口径需要单独修。
+- **形式化的「主备两家」**：`diagnose.synthesize` / `warranty.receipt_ocr` 的第二位延迟比超过 `latency_ratio_max = 1.5`，按 §3.8 严格判定算不上达标备用位——仍在链上作降级，只是不写进裁决。
+- **视觉是整条链最薄的一环**：三家 77–83%，其余 task 普遍 94–100%。后续要么补样本要么换更强的视觉模型。
+- **智谱账号限流**：并发 4 即 429（code 1302）；`MODEL_LANE=zhipu` 通道在多会话并发下会真触发。

@@ -58,6 +58,7 @@ class ProviderSpec(_Strict):
 
 
 class ModelSpec(_Strict):
+    context_window: int | None = Field(default=None, ge=1024)
     provider: str
     id: str = Field(min_length=1)
     kind: ModelKind = "chat"

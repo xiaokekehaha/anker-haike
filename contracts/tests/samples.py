@@ -5,11 +5,15 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-BASE = {"seq": 1, "run_id": "run-1"}
+BASE = {"seq": 1, "run_id": "run-1", "event_id": "event-1", "recorded_at": "2026-09-13T00:00:00Z"}
 
 
 def ev(type_: str, **payload: Any) -> dict:
-    return {**BASE, "type": type_, **payload}
+    meta = {"summary_id": "summary-1", "revision": 1, "issue_id": "issue-1", "updated_at": "2026-09-13T00:00:00Z", "source_through_seq": 1} if type_ == "escalation_summary" else {}
+    if type_ == "message_start": meta.update(reply_to_input_id=None, issue_id=None)
+    if type_ == "input_received": meta.update(issue_id=None)
+    if type_ == "escalation_summary": meta.update(previous_card_id=None, handoff_status="prepared")
+    return {**BASE, "type": type_, **meta, **payload}
 
 
 STEP = {
@@ -145,8 +149,8 @@ _reg(
     "fields 不得含质保结论等未知字段",
 )
 _reg(
-    ev("awaiting_input", kind="step_feedback", interrupt_id="c2", card_id="c2", version=4),
-    ev("awaiting_input", kind="free_text", interrupt_id="c2", card_id="c2", version=4),
+    ev("awaiting_input", kind="step_feedback", input_token="c2", card_id="c2", version=4),
+    ev("awaiting_input", kind="free_text", input_token="c2", card_id="c2", version=4),
     "kind 非法",
 )
 _reg(
@@ -172,7 +176,7 @@ _reg(
 )
 
 
-ACTION_BASE = {"action_id": "a-1", "expected_version": 17, "interrupt_id": "c1", "card_id": "c1"}
+ACTION_BASE = {"target_issue_id": "issue-1", "action_id": "a-1", "expected_version": 17, "input_token": "c1", "card_id": "c1"}
 
 
 def act(kind: str, payload: dict | None = None, **over: Any) -> dict:
@@ -213,16 +217,7 @@ ACTIONS: dict[str, tuple[dict, dict, str]] = {
         },
         "payload 必须为空对象",
     ),
-    "rediagnose": (
-        {
-            "action_id": "a-3",
-            "expected_version": 5,
-            "kind": "rediagnose",
-            "payload": {"text": "现在还冒烟", "image_ids": ["img1"]},
-        },
-        {"action_id": "a-3", "expected_version": 5, "kind": "rediagnose"},
-        "缺 payload",
-    ),
+
 }
 
 
@@ -238,7 +233,7 @@ SNAPSHOT_FULL = {
     },
     "pending_input": {
         "kind": "step_feedback",
-        "interrupt_id": "c2",
+        "input_token": "c2",
         "card_id": "c2",
         "version": 17,
     },
@@ -299,7 +294,7 @@ SNAPSHOT_FULL = {
             "skipped_reason": "later",
         },
         {"kind": "evidence", "items": []},
-        {"kind": "escalation_summary", "card_id": "c9", "summary": SUMMARY},
+        {"kind": "escalation_summary", "card_id": "c9", "summary": SUMMARY, "summary_id": "s1", "revision": 1, "updated_at": "2026-09-13T00:00:00Z", "source_through_seq": 1},
     ],
     "last_error": {
         "code": "model_unavailable",
@@ -315,3 +310,12 @@ def mutate(d: dict, **changes: Any) -> dict:
     out = deepcopy(d)
     out.update(changes)
     return out
+
+_reg(ev("input_received", input_id="i1", input_kind="message", payload={"text": "设备不工作"}), ev("input_received", input_id="i1", input_kind="invalid", payload={}), "invalid input kind")
+_reg(ev("issue_changed", active_issue_id="issue-1", issues=[], input_id="i1", resolved_issue_id="issue-1", version=1), ev("issue_changed", issues=[]), "missing active issue")
+
+ACTIONS["new_issue"] = ({"kind":"new_issue","action_id":"a-new","expected_version":0,"payload":{}}, {"kind":"new_issue","expected_version":0}, "missing action ID")
+ACTIONS["resume_issue"] = ({"kind":"resume_issue","action_id":"a-resume","expected_version":0,"target_issue_id":"issue-1","payload":{}}, {"kind":"resume_issue","action_id":"a-resume","expected_version":0}, "missing target")
+
+_reg(ev("pending_changed", issue_id="issue-1", pending_id="c1", status="suspended", reason="issue_switched", superseded_by=None, version=2), ev("pending_changed", status="unknown"), "invalid pending status")
+_reg(ev("summary_updated", issue_id="issue-1", summary_id="summary-1", revision=2, card_id="c2", previous_card_id="c1", source_through_seq=20, updated_at="2026-09-13T00:00:00Z"), ev("summary_updated", revision=0), "invalid revision")

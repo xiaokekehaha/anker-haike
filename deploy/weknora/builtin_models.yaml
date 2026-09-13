@@ -1,26 +1,45 @@
 # WeKnora 内置模型登记（票 26）。挂载到 weknora-app 的 /app/config/builtin_models.yaml 并设 BUILTIN_MODELS_CONFIG。
 # 只传 EMBEDDING_* / RERANK_* 环境变量不会自动注册模型（官方 BUILTIN_MODELS.md）；此文件引用同名变量，启动时同步。
-# Embedding：百炼 text-embedding-v4，1024 维（与 pgvector 索引一致；换模型需重建索引，kb_ver 与之绑定）。
-# Rerank：百炼 gte-rerank-v2 走 aliyun 嵌套协议；qwen3-rerank 的 /compatible-api/v1/reranks 与 WeKnora generic 的 /rerank 不兼容，
-#         待上游适配后再切换。Rerank 不可用时问答链回退召回结果继续（官方 rerank.go 回退路径）。
-models:
-  - name: ${EMBEDDING_MODEL_NAME:-text-embedding-v4}
-    type: Embedding
+#
+# 2026-09-13：顶层键由 `models:` 改为官方要求的 `builtin_models:`（旧键 WeKnora 不识别，启动日志一直是
+# `[builtin-models] applied: 0 upserted, 0 pruned`，即此文件此前完全没生效）。同时补登 WeKnora 自身
+# 「快速问答」智能体所需的对话模型（KnowledgeQA）与视觉语言模型（VLLM，为后续图片解析 / 图片检索准备）。
+# is_builtin 模型对所有 tenant 可见（app 侧 `tenant_id = ? OR is_builtin = true`），故 UI 里任一空间都能选到。
+#
+# Embedding / Rerank 不在此文件登记：它们由 `make kb-bootstrap` + `make kb-ingest` 按 tenant 注册
+# （见 orchestrator/app/knowledge/cli.py 的 _embedding_spec / _rerank_spec）。若在这里再登记一份同名模型，
+# ingest 的 ensure_embedding_model 按「名字」挑模型会挑到 id 不同的那一份，触发知识库 embedding 变更判定
+# （--recreate-kb 才能继续），故保持单一来源：向量 / 重排归 CLI，对话 / 视觉归本文件。
+#
+# 模型选择依据 config/models.yaml（票 42/2026-09-13.5 实测冻结）：
+#   对话  deepseek-flash —— domestic 链 reply.stream / guide.step 首位，1 s 级首字、成本最低
+#   视觉  qwen3-vl-plus  —— domestic 链 diagnose.vision 备位，单次可收 10 张图（deepseek 只收 4 张）
+# 注意：WeKnora 的 ${VAR} 展开不支持 `:-默认值` 写法（内部按 ${([^}]+)} 整段当变量名），默认值一律写在
+# docker-compose.yml 的 environment 里。
+# 注意：本地三家国产模型默认都开思考模式，WeKnora 的 model parameters 不支持透传 thinking/enable_thinking
+# 这类厂商专属参数，所以 UI 问答会比编排服务自己调用多花 reasoning token；编排主链路不受影响。
+
+builtin_models:
+  - id: builtin-llm-default
+    name: ${LLM_MODEL_NAME}
+    type: KnowledgeQA
     source: remote
-    description: 百炼 text-embedding-v4 · 1024 维
+    description: DeepSeek V4.1-Flash · WeKnora 内置问答（快速问答 / 智能推理）对话模型
     is_default: true
     parameters:
       provider: openai
-      base_url: ${EMBEDDING_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
-      api_key: ${EMBEDDING_API_KEY}
-      embedding_parameters:
-        dimension: 1024
-  - name: ${RERANK_MODEL_NAME:-gte-rerank-v2}
-    type: Rerank
+      base_url: ${LLM_BASE_URL}
+      api_key: ${LLM_API_KEY}
+      context_window: 128000
+
+  - id: builtin-vlm-default
+    name: ${VLM_MODEL_NAME}
+    type: VLLM
     source: remote
-    description: 百炼 gte-rerank-v2（aliyun 协议）
+    description: 百炼 qwen3-vl-plus · 视觉理解与多模态解析（图片 OCR / 图文检索）
     is_default: true
     parameters:
-      provider: aliyun
-      base_url: ${RERANK_BASE_URL:-https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank}
-      api_key: ${RERANK_API_KEY}
+      provider: openai
+      base_url: ${VLM_BASE_URL}
+      api_key: ${VLM_API_KEY}
+      supports_vision: true

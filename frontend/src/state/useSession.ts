@@ -27,6 +27,8 @@ export function useSession() {
   const stateRef = useRef(initialState);
   const operation = useRef<AbortController | null>(null);
   const mounted = useRef(true);
+  const pendingSubmission = useRef<{ sessionId: string; inputId: string; text: string; purpose: string; files: File[] } | null>(null);
+  const pendingAction = useRef<{ key: string; body: ActionRequest } | null>(null);
   const dispatch = useCallback((action: SessionAction) => {
     if (!mounted.current) return;
     stateRef.current = reducer(stateRef.current, action);
@@ -73,7 +75,7 @@ export function useSession() {
   }
 
   async function restore(id: string, controller: AbortController, supplied?: SessionSnapshot) {
-    // 每次重连先取快照。快照没有 seq，必须从当前 run 头重放，不能把局部 seq 配上全量文本。
+    // 快照固定事件水位，续接只追加水位之后的事件。
     for (let attempt = 0; attempt <= MAX_RECONNECTS && current(controller); attempt++) {
       dispatch({ type: 'recovering' });
       const snapshot = supplied ?? await getSnapshot(id, controller.signal);
@@ -84,7 +86,7 @@ export function useSession() {
       const active = snapshot.active_run;
       if (!active || new Date(active.deadline_at).getTime() + GRACE_MS <= Date.now()) return;
       try {
-        const response = await resumeEvents(id, active.run_id, 0, controller.signal);
+        const response = await resumeEvents(id, active.run_id, snapshot.last_event_seq ?? 0, controller.signal);
         if (!current(controller)) return;
         const result = await consume(response, controller);
         if (!current(controller)) return;
@@ -152,13 +154,8 @@ export function useSession() {
   const send = useCallback(async (text: string, opts: SendOptions = {}): Promise<boolean> => {
     if (operation.current || stateRef.current.activeRun) return false;
     const files = opts.files ?? [];
-    const pending = stateRef.current.pendingInput?.kind;
-    // 票 37：等待步骤反馈时的自由文本 / 图片即 rediagnose（后端按 guide / verify 阶段处理，旧步骤卡作废）
-    if (pending && pending !== 'upload_receipt' && pending !== 'step_feedback') return false;
-    if (pending === 'upload_receipt' && (opts.purpose !== 'receipt' || files.length === 0)) return false;
     if (!text.trim() && files.length === 0) return false;
-    // 后端表单要求非空文本；纯图片消息用准确的附件说明。
-    text = text.trim() || (opts.purpose === 'receipt' ? '购买凭证' : '故障照片');
+    text = text.trim();
     let accepted = false;
     const controller = begin();
     try {
@@ -170,13 +167,19 @@ export function useSession() {
         dispatch({ type: 'session_created', id, version: created.version });
         try { sessionStorage.setItem(STORAGE_KEY, id); } catch { /* storage unavailable */ }
       }
-      dispatch({ type: 'user_send', id: `local-${newId()}`, text, at: new Date().toISOString() });
+      const previous = pendingSubmission.current;
+      const purpose = opts.purpose ?? 'fault';
+      const same = previous?.sessionId === id && previous.text === text && previous.purpose === purpose && previous.files.length === files.length && previous.files.every((file, index) => file === files[index]);
+      const inputId = same ? previous.inputId : newId();
+      pendingSubmission.current = { sessionId: id, inputId, text, purpose, files: [...files] };
+      dispatch({ type: 'user_send', id: inputId, text, at: new Date().toISOString() });
       touchRecent(id, { title: makeTitle(text) });
       let recovering = false;
       try {
-        const response = await sendMessage(id, text, opts.files ?? [], opts.purpose ?? 'fault', controller.signal);
+        const response = await sendMessage(id, text, opts.files ?? [], opts.purpose ?? 'fault', inputId, stateRef.current.version, controller.signal);
         if (!current(controller)) return false;
         accepted = true;
+        pendingSubmission.current = null;
         const result = await consume(response, controller);
         if (current(controller) && !result.terminal) { recovering = true; await restore(id, controller); }
         else if (current(controller) && files.length > 0) {
@@ -187,7 +190,12 @@ export function useSession() {
         if (!current(controller)) return false;
         if (recovering) throw error;
         if (error instanceof ApiError && error.status === 409 && error.snapshot) await restore(id, controller, error.snapshot);
-        else if (!(error instanceof ApiError)) await restore(id, controller);
+        else if (!(error instanceof ApiError)) {
+          const snapshot = await getSnapshot(id, controller.signal);
+          accepted = (snapshot.timeline ?? []).some(item => item.kind === 'user_message' && item.id === inputId);
+          if (accepted) pendingSubmission.current = null;
+          await restore(id, controller, snapshot);
+        }
         else throw error;
       }
     } catch (error) { fail(error, controller); }
@@ -196,25 +204,30 @@ export function useSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  const act = useCallback(async (partial: { kind: ActionRequest['kind']; payload?: Record<string, unknown> }) => {
+  const act = useCallback(async (partial: { kind: ActionRequest['kind']; payload?: Record<string, unknown>; target_issue_id?: string }) => {
     const s = stateRef.current;
     if (!s.id || (partial.kind !== 'request_human' && (operation.current || s.activeRun))) return;
     const controller = begin();
-    const body = {
+    let body = {
       action_id: newId(), expected_version: s.version, kind: partial.kind,
-      interrupt_id: s.pendingInput?.interrupt_id ?? null, card_id: s.pendingInput?.card_id ?? null,
+      ...(partial.kind === 'new_issue' || partial.kind === 'resume_issue' ? {} : { input_token: s.pendingInput?.input_token ?? null, card_id: s.pendingInput?.card_id ?? null }),
+      ...(partial.kind === 'new_issue' ? { target_issue_id: null } : { target_issue_id: partial.target_issue_id ?? s.activeIssueId }),
       payload: partial.payload ?? {},
     } as ActionRequest;
-    dispatch({ type: 'action_sent', action_id: body.action_id, card_id: body.card_id ?? '' });
+    const actionKey = JSON.stringify({ sessionId: s.id, ...body, action_id: undefined, expected_version: undefined });
+    if (pendingAction.current?.key === actionKey) body = { ...pendingAction.current.body, expected_version: s.version };
+    pendingAction.current = { key: actionKey, body };
+    dispatch({ type: 'action_sent', action_id: body.action_id, card_id: ('card_id' in body ? body.card_id : null) ?? '' });
     let recovering = false;
     try {
       for (let attempt = 0; attempt < 2 && current(controller); attempt++) {
         const response = await postAction(s.id, body, controller.signal);
+        pendingAction.current = null;
         if (!current(controller)) return;
         const result = await consume(response, controller);
         if (!current(controller)) return;
         if (result.retry && attempt === 0) {
-          dispatch({ type: 'action_sent', action_id: body.action_id, card_id: body.card_id ?? '' });
+          dispatch({ type: 'action_sent', action_id: body.action_id, card_id: ('card_id' in body ? body.card_id : null) ?? '' });
           continue;
         }
         if (!result.terminal) { recovering = true; await restore(s.id, controller); }

@@ -55,8 +55,8 @@ export function Dashboard() {
           hint="已解决 ÷（已解决 + 系统原因转人工 + 排障中途放弃）；用户主动要人工、安全升级、范围外不计入"
           note={`已解决 ${count(totals.resolved)} 个`} />
         <Kpi label="闭环率" value={percent(data?.rates.closure)}
-          hint="已解决 ÷（已解决 + 已转人工）：有明确结局的会话里解决掉的比例"
-          note={`已转人工 ${count(totals.escalated)} 个`} />
+          hint="已解决 ÷（已解决 + 需人工处理）：有明确结局的会话里解决掉的比例"
+          note={`需人工处理 ${count(totals.escalated)} 个`} />
         <Kpi label="首次可见 P95" value={ms(latency.first_visible_p95)}
           hint="从收到消息到第一段可见文字" note={`中位 ${ms(latency.first_visible_p50)}`} />
         <Kpi label="首张卡片 P95" value={ms(latency.card_ready_p95)}

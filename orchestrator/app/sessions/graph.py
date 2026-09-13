@@ -1,17 +1,7 @@
-"""票 05 的占位图：intake → reply 两个节点，只发 progress，不调模型。
+"""会话单轮图：统一理解意图，更新问题状态，按需调用业务能力，提交结果。
 
-票 15：intake 节点末尾运行 CP-in（规则服务，任何模型调用之前）；R3 / R4 命中写 safety_flags 并
-经条件边直接进入 escalate 节点，不再经过 reply 及后续任何会调用模型的节点。
-票 20：intake 后进入 disambiguate（产品目录匹配）；多命中走三段式
-prepare_card → await_input(interrupt) → apply_action（08 §3）。awaiting_input 事件由运行器在
-真正中断时发出（version 取自 checkpoint），卡片事件由 await_input 发出、重跑重发、按 card_id 幂等。
-票 24：disambiguate 按「继续 / 澄清 / 升级」三种结果判定（app/sessions/clarify.py）：product_state 三分、
-澄清追问节点 clarify（run 以 done(completed) 结束，不发步骤、不检索）、两次澄清后仍不明 → escalate(R7)；
-用户对产品卡片不选而发自由文本 → intake 清掉失效 pending_card 并计一次澄清。
-票 25：选中 / 提到范围外产品 → out_of_scope 节点（说明本期仅支持扫地机）→ escalate(R8)；request_human 全局动作：
-有 interrupt 时经 apply_action、否则从 START 经 route_entry 直达 human_request，都以 R3 升级。
-后续票在此图上替换 / 扩展节点（37 rediagnose……）。
-节点通过 get_stream_writer() 发自定义事件，运行器映射为契约事件。
+每轮从 START 到 END；卡片等待保存在问题状态中，不依赖跨轮图中断。
+只有明确且通过校验的命令才能消费待办，解释和回顾不会推进排障。
 """
 
 from __future__ import annotations
@@ -25,11 +15,11 @@ from datetime import UTC, datetime
 from typing import Annotated, Any, TypedDict
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
-from langgraph.config import get_stream_writer
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
-from langgraph.types import interrupt
 
+from app.conversation.effects import durable_node
+from app.conversation.effects import writer as get_stream_writer
 from app.diagnose import (
     build_query,
     get_retrieval_config,
@@ -41,20 +31,18 @@ from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.query import CATEGORY_LABELS, product_term
 from app.diagnose.vision import observe_images
 from app.escalation.polish import polish_summary
-from app.escalation.summary import build_summary, reassurance_text, summary_card_id
+from app.escalation.summary import build_summary, reassurance_text
 from app.faultcards import fit_prompt_budget
 from app.faultcards.runtime import get_fault_card_library
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
 from app.images.runtime import current_image_store
-from app.intake import extract_intake
-from app.intake.rediagnose import extract_rediagnose
 from app.knowledge.adapter import KnowledgeScope
 from app.knowledge.faq import get_faq_index
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.knowledge.search import interleave_kbs, search_round
 from app.models.runtime import get_model_router
-from app.observability.runtime import record, run_id_context
+from app.observability.runtime import record
 from app.plans.runtime import get_plan_library
 from app.prompts import reassurance_messages, reply_messages
 from app.rules import get_rules_service
@@ -67,6 +55,21 @@ log = logging.getLogger("sessions.graph")
 
 
 class SessionState(TypedDict, total=False):
+    input_id: str
+    base_version: int
+    committed_input_id: str
+    committed_version: int
+    input_seq: int
+    history: list[dict[str, Any]]
+    recall_entry_ids: list[str]
+    target_issue_id: str | None
+    active_issue_id: str | None
+    issues: dict[str, Any]
+    context_revision: int
+    risk_cases: list[dict[str, Any]]
+    turn_decision: dict[str, Any]
+    applied_input_ids: list[str]
+    pending_effects: list[dict[str, Any]]
     session_id: str
     run_id: str  # 当前 run，由运行器随输入写入，用户消息据此归入 timeline 对应位置
     at: str  # 本 run 收到消息的时间（ISO），用于 timeline user_message.at
@@ -75,14 +78,16 @@ class SessionState(TypedDict, total=False):
     substage: str | None
     image_ids: list[str]
     messages: list[dict[str, Any]]  # {role, text, image_ids, run_id, at}
+    history_summary: dict | None
+    session_preferences: dict
+    current_evidence_ids: list[str]
     # card_id -> 用户对卡片的结果（selected_sku / feedback+note / confirmed_fields+skipped_reason），
     # 由后续票的 apply_action 节点写入；快照折叠 timeline 时读取（票 07）
     card_results: dict[str, dict[str, Any]]
     # 票 15：CP-in 命中记录 {rule_id, source, term, ts}，跨 run 累积；escalate_reason 为触发升级的规则编号
     safety_flags: list[dict[str, Any]]
     escalate_reason: str | None
-    # 票 20：三段式等待。pending_card 在 prepare_card 写入、apply_action 清空；
-    # last_action 为 interrupt 恢复时收到的动作（08 §4 结构）
+    # 待办跨轮持久化；last_action 只表示本轮经过校验的命令。
     pending_card: dict[str, Any] | None
     last_action: dict[str, Any] | None
     prepare_card_calls: int  # 验收：prepare_card 只执行一次
@@ -97,9 +102,7 @@ class SessionState(TypedDict, total=False):
     abandoned_card: dict[str, Any] | None
     observations: list[str]  # 摘要用观察记录（R7 澄清经过等）
     _decision: dict[str, Any] | None  # disambiguate → 路由 / clarify 的本 run 判定结果（瞬态）
-    entry: (
-        str | None
-    )  # 本 run 的入口：message（用户文本）/ action（无 interrupt 时的全局动作，票 25）
+    entry: str | None  # message / action，共用单轮入口。
     escalation_summary: dict[str, Any] | None  # 票 16：{card_id, reason, summary}
     # 票 39：凭证子流程状态 {status, image_ids, skipped_reason?, fields, confidence, edited, verified_facts, conflicts, next_step}
     receipt: dict[str, Any] | None
@@ -145,108 +148,11 @@ class SessionState(TypedDict, total=False):
     card_ready_ms: int | None
     guide_trace: Annotated[list[dict[str, Any]], operator.add]
     _verify: dict[str, Any] | None
-    # 票 37：apply_action(rediagnose) → rediagnose 节点的瞬态路由标记
-    _rediagnose: bool | None
 
 
 def _delay() -> float:
     # 演示 / 手测用：让占位节点停留一会以观察 ping；默认 0
     return float(os.environ.get("PLACEHOLDER_NODE_DELAY_S", "0") or 0)
-
-
-async def intake(state: SessionState) -> SessionState:
-    writer = get_stream_writer()
-    writer({"type": "progress", "stage": "intake"})
-    if state.get("text") == "__raise__":  # 测试钩子：异常路径
-        raise RuntimeError("placeholder node failure")
-    await asyncio.sleep(_delay())
-    image_ids = list(state.get("image_ids") or [])
-    new_refs: list[dict[str, Any]] = []
-    if image_ids and (img_store := current_image_store()) is not None:
-        for ref in await img_store.refs(state.get("session_id", ""), image_ids):
-            new_refs.append({**ref.public(), "run_id": state.get("run_id", "")})
-    user_msg = {
-        "role": "user",
-        "text": state.get("text", ""),
-        "image_ids": image_ids,
-        "images": [
-            {
-                "image_id": r["image_id"],
-                "purpose": r["purpose"],
-                "sha256": r["sha256"],
-                "mime": r["mime"],
-                "size": r["size"],
-            }
-            for r in new_refs
-        ],
-        "run_id": state.get("run_id", ""),
-        "at": state.get("at", ""),
-    }
-    # CP-in：任何模型调用之前（票 15，09 §1）
-    cp = get_rules_service().check_in(text=state.get("text"), session_id=state.get("session_id"))
-    update: SessionState = {
-        "stage": "intake",
-        "messages": [*state.get("messages", []), user_msg],
-        "safety_flags": [*state.get("safety_flags", []), *cp.flags],
-        "image_refs": [*state.get("image_refs", []), *new_refs],
-    }
-    # 票 24：新消息到达时若仍有待选产品卡片，说明用户未选中而改为自由文本；LangGraph 已丢弃该 interrupt，
-    # 这里把失效 pending_card 从权威状态清除，交 disambiguate 计一次澄清（09 §1.1）
-    stale = state.get("pending_card")
-    update["pending_card"] = None
-    update["abandoned_card"] = stale if stale and stale.get("kind") == "select_product" else None
-    # 票 39：等待凭证时收到 purpose=receipt 图片 → 记入 receipt，交 escalate 子流程 extract；
-    # 其他位置上传的凭证图不进入凭证流（普通消息 / rediagnose）
-    receipt_ids = [r["image_id"] for r in new_refs if r.get("purpose") == "receipt"]
-    if receipt_ids and stale and stale.get("kind") == "upload_receipt":
-        update["receipt"] = receipt_mod.uploaded_receipt(dict(state), receipt_ids)
-        return update  # 不再抽取 / 消歧：直接回到 escalate 子流程
-    if cp.escalate:
-        update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
-        return update  # R3 / R4 命中：不再发起任何模型调用
-    # 票 17：一次 internal 调用抽取情绪 + 产品线索 + 症状 + wants_human；失败降级为 calm / 空
-    outcome = await extract_intake(
-        get_model_router(),
-        state.get("text", ""),
-        session_id=state.get("session_id"),
-        lane=os.environ.get("MODEL_LANE", "domestic"),
-        has_image=bool(state.get("image_ids")),
-        prev_emotion=state.get("emotion"),
-        state_summary={
-            "stage": state.get("stage"),
-            "product": (state.get("product_confirmed") or {}).get("name"),
-            "product_state": state.get("product_state"),
-        },
-    )
-    update.update(
-        {
-            "emotion": outcome.emotion,
-            "product_hints": outcome.product_hints,
-            "symptoms": outcome.symptoms,
-            "model_trace": [
-                *state.get("model_trace", []),
-                *([outcome.model_trace] if outcome.model_trace else []),
-            ],
-        }
-    )
-    if outcome.wants_human:  # 等价于 R3 命中（03 §1.2）
-        update["safety_flags"] = [
-            *update["safety_flags"],
-            {"rule_id": "R3", "source": "intake", "term": "wants_human", "ts": state.get("at", "")},
-        ]
-        update["escalate_reason"] = "R3"
-    return update
-
-
-def route_after_intake(state: SessionState) -> str:
-    if state.get("escalate_reason"):
-        return "escalate"
-    # 票 18：焦急 / 愤怒 → 安抚句先于任何卡片与 diagnose 到达；平稳路径不加节点（保持票 05 的 version 断言）
-    if (state.get("emotion") or {}).get(
-        "strategy", "normal"
-    ) != "normal" and get_model_router() is not None:
-        return "reassure"
-    return "disambiguate"
 
 
 def _state_summary(state: SessionState) -> dict[str, Any]:
@@ -454,8 +360,56 @@ async def vision(state: SessionState) -> SessionState:
             *(state.get("observations") or []),
             *(f"图片：{o}" for o in out.observations),
         ]
+        import copy
+
+        from app.conversation.reduce import stable_id
+
+        issues = copy.deepcopy(state["issues"])
+        issue = issues[state["active_issue_id"]]
+        for index, observation in enumerate(out.observations):
+            issue.setdefault("facts", []).append(
+                {
+                    "fact_id": stable_id(state["input_id"], "vision", index),
+                    "kind": "observation",
+                    "value": f"图片：{observation}",
+                    "quote": observation,
+                    "issue_id": state["active_issue_id"],
+                    "device_ref_id": issue["device_ref"]["device_ref_id"],
+                    "status": "active",
+                    "revision": 1,
+                    "source_kind": "image_observation",
+                    "source_entry_ids": [state["input_id"]],
+                    "image_ids": out.used_image_ids,
+                    "recorded_at": state["at"],
+                }
+            )
+        issue["issue_revision"] += bool(out.observations)
+        update.update(
+            issues=issues,
+            context_revision=state.get("context_revision", 0) + bool(out.observations),
+        )
         if cp.escalate:
             update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
+            update["risk_cases"] = [
+                *state.get("risk_cases", []),
+                {
+                    "risk_id": stable_id(state["input_id"], "vision_risk"),
+                    "rule_id": "R4",
+                    "status": "reported",
+                    "source_input_ids": [state["input_id"]],
+                    "reported_at": state["at"],
+                    "issue_id": state["active_issue_id"],
+                    "device_ref_id": issue["device_ref"]["device_ref_id"],
+                    "restriction": "no_operations",
+                    "policy_version": "2026-09-13",
+                    "last_evidence_seq": state["input_seq"],
+                },
+            ]
+            update["turn_decision"] = {
+                **state["turn_decision"],
+                "allowed_operations": False,
+                "escalation_trigger": "R4",
+            }
         return update
     writer(
         {
@@ -512,9 +466,24 @@ async def prepare_card(state: SessionState) -> SessionState:
 
 
 async def await_input(state: SessionState) -> SessionState:
-    """只读 pending_card：发卡片事件后 interrupt。恢复时本节点重跑，卡片事件重发（前端按 card_id 幂等）。"""
-    pc = state["pending_card"]
+    """发布持久待办；图继续提交并正常结束。"""
+    from app.conversation.reduce import stable_id
+
+    pc = dict(state["pending_card"])
+    if not pc.get("input_token"):
+        pc["card_id"] = stable_id(state["input_id"], state["active_issue_id"], pc["card_id"])
+        pc["input_token"] = stable_id(pc["card_id"], "token")
     writer = get_stream_writer()
+    writer(
+        {
+            "type": "pending_changed",
+            "issue_id": state["active_issue_id"],
+            "pending_id": pc["card_id"],
+            "status": "active",
+            "reason": "presented",
+            "version": state["base_version"] + 1,
+        }
+    )
     if pc["kind"] == "select_product":
         writer(
             {
@@ -544,36 +513,41 @@ async def await_input(state: SessionState) -> SessionState:
                 **pc["payload"],
             }
         )
-    # interrupt 载荷即 awaiting_input 事件的业务字段。version 用节点内 langgraph_step：它等于本次中断
-    # 后 checkpoint 推导出的 version（与 done.version 一致）；不能在运行器里查 checkpoint——
-    # AsyncPostgresSaver 的写入相对 updates 流是异步的，查早了会拿到旧值（票 20 实测）
-    action = interrupt(
-        {
-            "kind": pc["kind"],
-            "interrupt_id": pc["card_id"],
-            "card_id": pc["card_id"],
-            "version": current_version(),
+    # Waiting is business state. Every graph invocation reaches END normally.
+    return {
+        "pending_card": {
+            **pc,
+            "issue_id": state["active_issue_id"],
+            "status": "active",
+            "created_seq": pc.get("created_seq", state["input_seq"]),
+            "input_token": pc.get("input_token") or pc["card_id"],
         }
-    )
-    return {"last_action": action}
+    }
 
 
 async def apply_action(state: SessionState) -> SessionState:
-    """校验并应用动作（本票只处理 select_product）；副作用以 action_id 幂等（票 22）。"""
+    """应用已通过目标、待办及载荷校验的业务命令。"""
     action = state.get("last_action") or {}
     pc = state.get("pending_card") or {}
+    if pc:
+        get_stream_writer()(
+            {
+                "type": "pending_changed",
+                "issue_id": state["active_issue_id"],
+                "pending_id": pc["card_id"],
+                "status": "consumed",
+                "reason": action.get("kind", "answer"),
+                "version": state["base_version"] + 1,
+            }
+        )
     results = dict(state.get("card_results") or {})
-    # 动作 run 从这里开始：刷新 at（run 预算 / card_ready_ms 的起点，08 §8）；_verify 只对本次 step_feedback 有效
+    # 接收时间由输入账本固定；_verify 只对本次 step_feedback 有效。
     update: SessionState = {
         "pending_card": None,
         "last_action": None,
         "_verify": None,
-        "at": datetime.now(UTC).isoformat(),
     }
-    if action.get("kind") == "request_human":
-        # 票 25：awaiting_input 中点「请求人工」——卡片作废、不记结果，按 R3 升级
-        update.update(_human_request_update(state, action))
-    elif action.get("kind") == "skip_receipt":
+    if action.get("kind") == "skip_receipt":
         # 票 39：跳过凭证 → receipt.status=not_collected（记 skipped_reason）→ summarize；
         # 票 40：字段确认阶段跳过 → 凭证图已在，needs_manual_check
         reason = (action.get("payload") or {}).get("reason", "none")
@@ -583,7 +557,13 @@ async def apply_action(state: SessionState) -> SessionState:
             if pc.get("kind") == "confirm_receipt"
             else receipt_mod.skipped_receipt(dict(state), reason)
         )
-        update.update({"card_results": results, "receipt": receipt})
+        update.update(
+            {
+                "card_results": results,
+                "receipt": receipt,
+                "escalate_reason": receipt.get("collection_reason") or "R6",
+            }
+        )
     elif action.get("kind") == "confirm_receipt":
         # 票 41：字段确认后按 L1–L6 核对；规则结果进入摘要。
         payload = action.get("payload") or {}
@@ -594,29 +574,15 @@ async def apply_action(state: SessionState) -> SessionState:
             "confirmed_fields": receipt["fields"],
             "edited": receipt["edited"],
         }
-        update.update({"card_results": results, "receipt": receipt})
-    elif action.get("kind") == "step_feedback":
-        update.update(_apply_step_feedback(state, action, pc, results))
-    elif action.get("kind") == "rediagnose":
-        # 票 37：等待步骤反馈时用户改为补充 / 纠正 → 旧步骤卡作废（不记反馈、不计数），
-        # 文本与图片交 rediagnose 节点（同 /messages 路径），随后重新诊断
-        payload = action.get("payload") or {}
-        if pc.get("card_id"):
-            results[pc["card_id"]] = {
-                "superseded": "rediagnose",
-                "action_id": action.get("action_id"),
-            }
         update.update(
             {
                 "card_results": results,
-                "text": payload.get("text") or "",
-                "image_ids": list(payload.get("image_ids") or []),
-                # 动作 run 的 state.run_id 仍是上一条消息 run 的（Command(resume) 不带输入）；
-                # 补充消息要归入本 run 的 timeline 位置，故取运行器上下文里的当前 run_id
-                "run_id": run_id_context.get() or state.get("run_id", ""),
-                "_rediagnose": True,
+                "receipt": receipt,
+                "escalate_reason": receipt.get("collection_reason") or "R6",
             }
         )
+    elif action.get("kind") == "step_feedback":
+        update.update(_apply_step_feedback(state, action, pc, results))
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -636,8 +602,6 @@ async def apply_action(state: SessionState) -> SessionState:
 
 
 def route_after_apply(state: SessionState) -> str:
-    if state.get("_rediagnose"):
-        return "rediagnose"
     if state.get("escalate_reason"):
         return "escalate"
     if state.get("out_of_scope"):
@@ -670,6 +634,12 @@ def _apply_step_feedback(
     flags = [*state.get("safety_flags", []), *cp.flags]
     if cp.escalate:
         rule = next(h.rule_id for h in cp.hits if h.action == "escalate")
+        if rule == "R4":
+            from app.conversation.policy import restrict_operations
+
+            update.update(
+                restrict_operations(dict(state), source_kind="feedback_note", quote=note or "")
+            )
         update.update(
             {
                 "safety_flags": flags,
@@ -727,55 +697,190 @@ def _apply_step_feedback(
 # ---------------- 票 25：范围外 R8 与 request_human ----------------
 
 
-def route_entry(state: SessionState) -> str:
-    """START 分流：无 interrupt 时到达的全局动作直达 human_request；guide / verify 阶段的新消息与
-    rediagnose 动作走 rediagnose（03 §133：该阶段 /messages 等价于 rediagnose），其余走 intake。"""
-    kind = (state.get("last_action") or {}).get("kind")
-    if state.get("entry") == "action":
-        if kind == "request_human":
-            return "human_request"
-        if kind == "rediagnose":
-            return "rediagnose"
-    if state.get("entry") == "message" and in_guide(state):
-        return "rediagnose"
-    return "intake"
+async def understand(state: SessionState) -> SessionState:
+    from app.conversation.interpret import interpret_turn
+    from app.conversation.policy import pending_risk_sources
+    from app.conversation.reduce import reduce_turn
 
-
-def in_guide(state: SessionState) -> bool:
-    """票 37：rediagnose 允许时机——stage ∈ {guide, verify}（08 §4），或正等待步骤反馈。"""
-    pc = state.get("pending_card") or {}
-    if state.get("stage") in ("guide", "verify") or pc.get("kind") == "step_feedback":
-        return True
-    # rediagnose 后停在澄清追问（stage 仍为 intake/rediagnose）：用户的回答继续按补充处理，保留步骤上下文
-    return state.get("substage") == "rediagnose" and bool(state.get("steps_executed"))
-
-
-def _human_request_update(state: SessionState, action: dict[str, Any]) -> SessionState:
-    return {
-        "escalate_reason": "R3",
-        "safety_flags": [
-            *state.get("safety_flags", []),
+    get_stream_writer()({"type": "progress", "stage": "intake"})
+    await asyncio.sleep(_delay())
+    recovered_risks = pending_risk_sources(dict(state), get_rules_service())
+    if recovered_risks:
+        state = {**state, "risk_cases": [*state.get("risk_cases", []), *recovered_risks]}
+    text = (
+        state.get("text", "")
+        if state.get("entry") == "message"
+        else ((state.get("last_action") or {}).get("payload") or {}).get("text", "")
+    )
+    cp = get_rules_service().check_in(text=text, session_id=state.get("session_id"))
+    meaning, context = await interpret_turn(
+        get_model_router(), dict(state), lane=os.environ.get("MODEL_LANE", "domestic")
+    )
+    update = reduce_turn(
+        dict(state), meaning, precheck_risk=any(h.rule_id == "R4" for h in cp.hits)
+    )
+    if context.get("source") != "validated_action":
+        update["model_trace"] = [
+            *state.get("model_trace", []),
             {
-                "rule_id": "R3",
-                "source": "action",
-                "term": "request_human",
-                "ts": state.get("at", ""),
-                "action_id": action.get("action_id"),
+                "task": "intake",
+                "model_used": context.get("model_used", "skipped"),
+                "lane": context.get("lane", _lane()),
+                "attempts": context.get("attempts", 1),
             },
-        ],
-        "pending_card": None,
-        "last_action": None,
+        ]
+    pending = update.get("pending_card") or {}
+    current_input = next(
+        (e for e in state.get("history", []) if e["entry_id"] == state["input_id"]), {}
+    )
+    source = current_input.get("payload") or {}
+    if state.get("entry") == "message":
+        update["messages"] = [
+            *state.get("messages", []),
+            {
+                "role": "user",
+                "text": state.get("text", ""),
+                "image_ids": list(source.get("image_ids", [])),
+                "images": list(source.get("images", [])),
+                "run_id": state["run_id"],
+                "at": state["at"],
+                "input_id": state["input_id"],
+            },
+        ]
+        update["image_refs"] = [
+            *state.get("image_refs", []),
+            *[dict(ref, run_id=state["run_id"]) for ref in source.get("images", [])],
+        ]
+    receipt_ids = source.get("image_ids", []) if source.get("purpose") == "receipt" else []
+    if (
+        state.get("entry") == "message"
+        and receipt_ids
+        and pending.get("kind") in {"upload_receipt", "confirm_receipt"}
+        and not update["turn_decision"].get("escalation_trigger")
+        and meaning.primary_intent not in {"new_issue", "resume_issue", "correct"}
+    ):
+        update["receipt"] = receipt_mod.uploaded_receipt({**state, **update}, receipt_ids)
+        update["turn_decision"].update(
+            receipt_upload=True, reply_mode="receipt", clarification=None
+        )
+        update["turn_decision"]["pending_changes"].append(
+            {
+                "issue_id": update["active_issue_id"],
+                "pending_id": pending["card_id"],
+                "status": "consumed",
+                "reason": "receipt_uploaded",
+            }
+        )
+        update["pending_card"] = None
+        update["escalate_reason"] = (update.get("receipt") or {}).get("collection_reason", "R6")
+    update["recall_entry_ids"] = []
+    if meaning.history_request:
+        from app.conversation.reader import select_history
+
+        selection = select_history(
+            state.get("history", []),
+            meaning.history_request.model_dump(),
+            before_seq=state["input_seq"],
+        )
+        update["recall_entry_ids"] = selection["source_entry_ids"]
+        if selection.get("error"):
+            update["turn_decision"].update(reply_mode="clarify", clarification=selection["error"])
+    from app.conversation.commands import resolve_command
+
+    command, clarification = resolve_command({**state, **update}, meaning)
+    if command:
+        update["last_action"] = command
+        update["turn_decision"]["internal_command"] = command["kind"]
+    elif clarification:
+        update["turn_decision"].update(reply_mode="clarify", clarification=clarification)
+    if cp.flags:
+        update["safety_flags"] = [*state.get("safety_flags", []), *cp.flags]
+    record(
+        "conversation_turn",
+        session_id=state.get("session_id"),
+        run_id=state.get("run_id"),
+        input_id=state.get("input_id"),
+        context={k: v for k, v in context.items() if k != "messages"},
+        semantic=meaning.model_dump(),
+        decision=update.get("turn_decision"),
+        context_revision=update.get("context_revision"),
+    )
+    for change in update["turn_decision"].get("pending_changes", []):
+        get_stream_writer()(
+            {"type": "pending_changed", "version": state["base_version"] + 1, **change}
+        )
+    get_stream_writer()(
+        {
+            "type": "issue_changed",
+            "active_issue_id": update["active_issue_id"],
+            "input_id": state["input_id"],
+            "resolved_issue_id": update["active_issue_id"],
+            "version": state["base_version"] + 1,
+            "issues": [
+                {"issue_id": k, "title": v.get("title"), "status": v.get("status")}
+                for k, v in update["issues"].items()
+            ],
+        }
+    )
+    return update
+
+
+async def dialogue(state: SessionState) -> SessionState:
+    from app.conversation.reply import reply_to_turn
+
+    result = await reply_to_turn(dict(state), get_stream_writer())
+    # Conversational detours finish at the same business stage as the saved issue.
+    get_stream_writer()({"type": "progress", "stage": state.get("stage") or "intake"})
+    if state.get("turn_decision", {}).get("resumed_pending"):
+        result.update(await await_input(state))
+    return result
+
+
+async def commit_issue(state: SessionState) -> SessionState:
+    from app.conversation.reduce import persist_issue
+
+    persisted = persist_issue(dict(state))
+    issue = persisted["issues"].get(state["active_issue_id"], {})
+    previous = issue.get("latest_summary")
+    if previous and issue.get("summary_issue_revision") != issue.get("issue_revision"):
+        refreshed = await summarize(
+            {
+                **state,
+                **persisted,
+                "summary_refresh": True,
+                "escalate_reason": previous["summary"]["reason"]["rule_id"],
+            }
+        )
+        persisted["issues"] = refreshed["issues"]
+    return {
+        **persisted,
+        "committed_input_id": state["input_id"],
+        "committed_version": state["base_version"] + 1,
     }
 
 
-async def human_request(state: SessionState) -> SessionState:
-    """request_human 全局动作（08 §4 步骤 4）：忽略 version / pending，直接以 R3 升级。"""
-    return _human_request_update(state, state.get("last_action") or {})
+def route_entry(state: SessionState) -> str:
+    decision = state.get("turn_decision") or {}
+    if decision.get("receipt_upload"):
+        return "receipt_extract"
+    if decision.get("escalation_trigger"):
+        return "escalate"
+    if decision.get("internal_command"):
+        return "apply_action"
+    if decision.get("reply_mode") in {"dialogue", "clarify"}:
+        return "dialogue"
+    if state.get("entry") == "action":
+        return "apply_action"
+    if (state.get("emotion") or {}).get(
+        "strategy", "normal"
+    ) != "normal" and get_model_router() is not None:
+        return "reassure"
+    return "disambiguate"
 
 
 OUT_OF_SCOPE_TEXT = (
     "本期智能排障仅支持 eufy 扫地机器人。您咨询的「{name}」属于{category}，不在当前支持范围内；"
-    "我已把情况整理好转给人工客服，稍后会有专人协助您。"
+    "我会整理问题记录，供您交给人工客服继续处理。"
 )
 
 
@@ -1093,6 +1198,7 @@ async def retrieve(state: SessionState) -> SessionState:
             "substage": "retrieve",
             "knowledge_status": "unavailable",
             "evidence": evidence,
+            "current_evidence_ids": [e["evidence_id"] for e in fc_evidence],
             "fault_card": fault_card_state,
             "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
             "query": query,
@@ -1372,6 +1478,7 @@ async def retrieve(state: SessionState) -> SessionState:
         "substage": "retrieve",
         "knowledge_status": status,
         "evidence": evidence,
+        "current_evidence_ids": list(round_evidence),
         "query": query,
         "retrieval_trace": trace,
         "retrieval_rounds": rounds,
@@ -1490,6 +1597,14 @@ async def guide(state: SessionState) -> SessionState:
         )
         trace += [{"event": "step_dropped", **d} for d in prep.dropped]
         if prep.outcome == "escalate":
+            if prep.escalate_reason == "R4":
+                from app.conversation.policy import restrict_operations
+
+                update.update(
+                    restrict_operations(
+                        dict(state), source_kind="step_policy", quote=str(prep.dropped)
+                    )
+                )
             # CP-pre-step：待下发步骤文字含 R4 安全词 → 丢弃并升级（09 §1）
             update.update(
                 {
@@ -1576,194 +1691,6 @@ async def guide(state: SessionState) -> SessionState:
 
 def route_after_guide(state: SessionState) -> str:
     return "escalate" if state.get("escalate_reason") else "await_input"
-
-
-# ---------------- 票 37：rediagnose 中途补充与纠正 ----------------
-
-
-def _recent_steps(state: SessionState, n: int = 3) -> list[dict[str, Any]]:
-    steps = list(state.get("steps_executed") or [])
-    pc = state.get("pending_card") or {}
-    recent = [{"title": s.get("title"), "feedback": s.get("feedback")} for s in steps[-n:]]
-    if pc.get("kind") == "step_feedback":
-        recent.append(
-            {"title": (pc.get("payload") or {}).get("step", {}).get("title"), "feedback": None}
-        )
-    return recent
-
-
-async def rediagnose(state: SessionState) -> SessionState:
-    """guide / verify 阶段的自由文本 / 图片（票 37，03 §1.2 多轮、§1.4.1 多轮更新规则）。
-
-    1. 记录用户消息与图片引用（同 intake）；旧步骤卡作废（不记反馈、不计数）。
-    2. CP-in 先于任何模型调用：R3 / R4 直接升级，不跑知识召回。
-    3. 一次 intake 任务调用做**增量**抽取（已确认产品 / 有效症状 / 最近步骤入上下文）：
-       新增合并、明确否定才删除、抽取失败不清空；原文含具体故障描述时回退为一条症状。
-    4. 产品纠正线索交 disambiguate（单命中 → 重新确认并清旧证据；多命中 → 出卡；冲突 → 澄清），
-       不由模型直接写 confirmed_sku；无增量且原文只剩指代 → 澄清（连续两次仍不明 → R7，走 clarify 既有计数）。
-    5. steps_executed / counters / exhausted_plans 原样保留；plan_cursor 清空，由 retrieve 重新给出。
-    """
-    writer = get_stream_writer()
-    writer({"type": "progress", "stage": "intake", "substage": "rediagnose"})
-    session_id = state.get("session_id", "")
-    run_id = state.get("run_id", "")
-    text = state.get("text", "") or ""
-    image_ids = list(state.get("image_ids") or [])
-    new_refs: list[dict[str, Any]] = []
-    if image_ids and (img_store := current_image_store()) is not None:
-        for ref in await img_store.refs(session_id, image_ids):
-            new_refs.append({**ref.public(), "run_id": run_id})
-    user_msg = {
-        "role": "user",
-        "text": text,
-        "image_ids": image_ids,
-        "images": [
-            {k: r[k] for k in ("image_id", "purpose", "sha256", "mime", "size")} for r in new_refs
-        ],
-        "run_id": run_id,
-        "at": state.get("at", ""),
-        "rediagnose": True,
-    }
-    results = dict(state.get("card_results") or {})
-    stale = state.get("pending_card")
-    if stale and stale.get("kind") == "step_feedback" and stale.get("card_id") not in results:
-        results[stale["card_id"]] = {"superseded": "rediagnose"}
-    cp = get_rules_service().check_in(text=text, session_id=session_id)
-    update: SessionState = {
-        "stage": "intake",
-        "substage": "rediagnose",
-        "messages": [*state.get("messages", []), user_msg],
-        "safety_flags": [*state.get("safety_flags", []), *cp.flags],
-        "image_refs": [*state.get("image_refs", []), *new_refs],
-        "card_results": results,
-        "pending_card": None,
-        "last_action": None,
-        "abandoned_card": None,
-        "_rediagnose": None,
-        "_verify": None,
-        "_decision": None,
-        "plan_cursor": None,
-        "diagnose_outcome": None,
-        "retrieval_trace": [
-            {
-                "event": "rediagnose",
-                "session_id": session_id,
-                "run_id": run_id,
-                "superseded_card": (stale or {}).get("card_id"),
-                "images": len(new_refs),
-            }
-        ],
-    }
-    if cp.escalate:
-        update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
-        return update  # R3 / R4：不再发起任何模型调用，也不检索
-    catalog = get_catalog()
-    has_symptom_text = clarify_mod._has_symptom_text(catalog, text)
-    product = state.get("product_confirmed") or {}
-    outcome = await extract_rediagnose(
-        get_model_router(),
-        text,
-        context={
-            "product": product.get("name") or product_term(dict(state)) or None,
-            "symptoms": list(state.get("symptoms") or []),
-            "recent_steps": _recent_steps(state),
-        },
-        session_id=session_id,
-        lane=_lane(),
-        has_image=bool(new_refs),
-        prev_emotion=state.get("emotion"),
-        fallback_symptom=text.strip() if has_symptom_text else None,
-    )
-    update.update(
-        {
-            "emotion": outcome.emotion,
-            "product_hints": outcome.product_hints,
-            "symptoms": outcome.symptoms,
-            "model_trace": [
-                *state.get("model_trace", []),
-                *([outcome.model_trace] if outcome.model_trace else []),
-            ],
-        }
-    )
-    log.info(
-        "rediagnose session=%s added=%s removed=%s hints=%s degraded=%s images=%d steps_kept=%d",
-        session_id,
-        outcome.added,
-        outcome.removed,
-        outcome.product_hints,
-        outcome.degraded,
-        len(new_refs),
-        len(state.get("steps_executed") or []),
-        extra={
-            "event": "rediagnose",
-            "session_id": session_id,
-            "run_id": run_id,
-            "added": outcome.added,
-            "removed": outcome.removed,
-            "product_hints": outcome.product_hints,
-            "degraded": outcome.degraded,
-            "needs_clarification": outcome.needs_clarification,
-        },
-    )
-    if outcome.wants_human:
-        update["safety_flags"] = [
-            *update["safety_flags"],
-            {
-                "rule_id": "R3",
-                "source": "rediagnose",
-                "term": "wants_human",
-                "ts": state.get("at", ""),
-            },
-        ]
-        update["escalate_reason"] = "R3"
-        return update
-    # 澄清判定（后端规则，不信模型置信度，09 §1.1）：
-    # - 「还是不吸」「这个又不行了」在已有有效症状时是承接，不追问，沿用产品 + 未解决症状重新检索；
-    # - 没有任何事实增量、没有新图片、原文只剩指代、且此前也没有有效症状 → 问一句具体的；
-    # - 模型标 needs_clarification（纠正对象不唯一）且没给出产品线索 / 新现象 → 同样澄清。
-    no_facts = not outcome.changed and not new_refs
-    symptoms = list(outcome.symptoms)
-    if not symptoms:
-        # 此前抽取也失败过（有效症状为空）：承接更早轮次里最后一句含具体故障描述的原文（03 §1.4.1 规则 3），
-        # 让 query 不是孤立的「还是」「这个」
-        earlier = [  # state.messages 尚不含本轮消息
-            m.get("text", "") for m in (state.get("messages") or []) if m.get("role") == "user"
-        ]
-        prior = next(
-            (t for t in reversed(earlier) if clarify_mod._has_symptom_text(catalog, t)), None
-        )
-        if prior:
-            symptoms = [prior.strip()]
-            update["symptoms"] = symptoms
-    if (no_facts and not has_symptom_text and not symptoms) or (
-        outcome.needs_clarification and not outcome.product_hints and not outcome.added
-    ):
-        decision = clarify_mod._clarify(
-            dict(state.get("clarification") or {}),
-            "symptom",
-            {"observations": list(state.get("observations") or [])},
-        )
-        update.update(decision.update)
-        update["_decision"] = {
-            "outcome": decision.outcome,
-            "reason": decision.reason,
-            **decision.detail,
-        }
-        if decision.outcome == "escalate":
-            update["escalate_reason"] = "R7"
-    return update
-
-
-def route_after_rediagnose(state: SessionState) -> str:
-    if state.get("escalate_reason"):
-        return "escalate"
-    if (state.get("_decision") or {}).get("outcome") == "clarify":
-        return "clarify"
-    if (state.get("emotion") or {}).get(
-        "strategy", "normal"
-    ) != "normal" and get_model_router() is not None:
-        return "reassure"
-    return "disambiguate"
 
 
 # ---------------- 票 36：A1 完成——结束语与 done(completed) ----------------
@@ -1863,7 +1790,14 @@ async def prepare_receipt(state: SessionState) -> SessionState:
     card_id = receipt_mod.receipt_card_id(
         state.get("session_id", ""), state.get("escalate_reason") or "R3"
     )
-    return {"pending_card": {"card_id": card_id, "kind": "upload_receipt", "payload": {}}}
+    receipt = {
+        **(state.get("receipt") or receipt_mod.empty_receipt()),
+        "collection_reason": state.get("escalate_reason"),
+    }
+    return {
+        "pending_card": {"card_id": card_id, "kind": "upload_receipt", "payload": {}},
+        "receipt": receipt,
+    }
 
 
 async def receipt_extract(state: SessionState) -> SessionState:
@@ -1939,9 +1873,10 @@ async def summarize(state: SessionState) -> SessionState:
     run_id = state.get("run_id", "")
     message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:reassure").hex
     text = reassurance_text(reason)
-    writer({"type": "message_start", "message_id": message_id})
-    writer({"type": "message", "message_id": message_id, "delta": text})
-    writer({"type": "message_end", "message_id": message_id, "status": "completed"})
+    if not state.get("summary_refresh"):
+        writer({"type": "message_start", "message_id": message_id})
+        writer({"type": "message", "message_id": message_id, "delta": text})
+        writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     summary = build_summary(
         dict(state), reason=reason, lane=os.environ.get("MODEL_LANE", "domestic")
     )
@@ -1952,22 +1887,60 @@ async def summarize(state: SessionState) -> SessionState:
         lane=os.environ.get("MODEL_LANE", "domestic"),
         budget_ms=max(0, _remaining_ms(state) - 2000),
     )
-    card_id = summary_card_id(session_id, reason)
+    import copy
+
+    from app.conversation.reduce import stable_id
+
+    issue_id = state["active_issue_id"]
+    issues = copy.deepcopy(state["issues"])
+    issue = issues[issue_id]
+    previous = issue.get("latest_summary") or {}
+    revision = previous.get("revision", 0) + 1
+    summary_id = stable_id(issue_id, "summary")
+    card_id = stable_id(summary_id, revision)
+    event = {
+        "type": "escalation_summary",
+        "card_id": card_id,
+        "summary": summary.model_dump(mode="json"),
+        "summary_id": summary_id,
+        "revision": revision,
+        "issue_id": issue_id,
+        "updated_at": state["at"],
+        "source_through_seq": state["input_seq"],
+        "previous_card_id": previous.get("card_id"),
+        "handoff_status": "prepared",
+    }
+    writer(event)
     writer(
         {
-            "type": "escalation_summary",
-            "card_id": card_id,
-            "summary": summary.model_dump(mode="json"),
+            "type": "summary_updated",
+            **{
+                k: event[k]
+                for k in (
+                    "issue_id",
+                    "summary_id",
+                    "revision",
+                    "card_id",
+                    "previous_card_id",
+                    "source_through_seq",
+                    "updated_at",
+                )
+            },
         }
     )
+    issue["summary_issue_revision"] = issue.get("issue_revision")
+    issue["latest_summary"] = {k: v for k, v in event.items() if k != "type"}
+    issue["handoff"] = {
+        "handoff_id": stable_id(issue_id, "handoff"),
+        "status": "prepared",
+        "prepared_at": state["at"],
+        "reason_refs": [state["input_id"]],
+    }
     return {
         "stage": "escalate",
         "substage": "summarize",
-        "escalation_summary": {
-            "card_id": card_id,
-            "reason": reason,
-            "summary": summary.model_dump(mode="json"),
-        },
+        "issues": issues,
+        "escalation_summary": dict(event, reason=reason),
     }
 
 
@@ -1984,7 +1957,11 @@ async def reply(state: SessionState) -> SessionState:
         return {"stage": "diagnose"}
     strategy = (state.get("emotion") or {}).get("strategy", "normal")
     outcome = state.get("diagnose_outcome") or {}
-    evidence_items = list((state.get("evidence") or {}).values())
+    evidence_items = [
+        (state.get("evidence") or {})[eid]
+        for eid in state.get("current_evidence_ids", [])
+        if eid in (state.get("evidence") or {})
+    ]
     # 票 33：故障卡常驻上下文；总输入 ≤ 8k token，超出先裁证据
     card_text = (state.get("fault_card") or {}).get("text")
     kept, _ = fit_prompt_budget([e.get("snippet", "") for e in evidence_items], budget=6000)
@@ -2029,12 +2006,16 @@ async def reply(state: SessionState) -> SessionState:
 
 def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g = StateGraph(SessionState)
-    g.add_node("intake", intake)
-    g.add_node("reply", reply)
-    g.add_node("escalate", escalate)
-    g.add_node("summarize", summarize)
-    g.add_node("prepare_receipt", prepare_receipt)
-    g.add_node("receipt_extract", receipt_extract)
+    g.add_node("understand", durable_node(understand))
+    g.add_node("dialogue", durable_node(dialogue))
+    g.add_node("commit_issue", durable_node(commit_issue))
+    g.add_edge(START, "understand")
+    g.add_edge("dialogue", "commit_issue")
+    g.add_node("reply", durable_node(reply))
+    g.add_node("escalate", durable_node(escalate))
+    g.add_node("summarize", durable_node(summarize))
+    g.add_node("prepare_receipt", durable_node(prepare_receipt))
+    g.add_node("receipt_extract", durable_node(receipt_extract))
     g.add_conditional_edges(
         "escalate",
         route_escalate,
@@ -2046,46 +2027,35 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     )
     g.add_edge("prepare_receipt", "await_input")
     g.add_edge("receipt_extract", "await_input")  # 票 40：确认字段卡片
-    g.add_edge("summarize", END)
-    g.add_node("disambiguate", disambiguate)
-    g.add_node("prepare_card", prepare_card)
-    g.add_node("await_input", await_input)
-    g.add_node("apply_action", apply_action)
-    g.add_node("retrieve", retrieve)
-    g.add_node("vision", vision)
+    g.add_edge("summarize", "commit_issue")
+    g.add_node("disambiguate", durable_node(disambiguate))
+    g.add_node("prepare_card", durable_node(prepare_card))
+    g.add_node("await_input", durable_node(await_input))
+    g.add_node("apply_action", durable_node(apply_action))
+    g.add_node("retrieve", durable_node(retrieve))
+    g.add_node("vision", durable_node(vision))
     g.add_conditional_edges(
         "vision", route_after_vision, {"retrieve": "retrieve", "escalate": "escalate"}
     )
-    g.add_node("reassure", reassure)
-    g.add_node("clarify", clarify)
-    g.add_node("out_of_scope", out_of_scope)
-    g.add_node("human_request", human_request)
-    g.add_node("guide", guide)
-    g.add_node("close", close)
-    g.add_edge("close", END)
-    g.add_node("rediagnose", rediagnose)
+    g.add_node("reassure", durable_node(reassure))
+    g.add_node("clarify", durable_node(clarify))
+    g.add_node("out_of_scope", durable_node(out_of_scope))
+    g.add_node("guide", durable_node(guide))
+    g.add_node("close", durable_node(close))
+    g.add_edge("close", "commit_issue")
     g.add_conditional_edges(
-        "rediagnose",
-        route_after_rediagnose,
+        "understand",
+        route_entry,
         {
-            "escalate": "escalate",
-            "clarify": "clarify",
-            "reassure": "reassure",
             "disambiguate": "disambiguate",
+            "reassure": "reassure",
+            "escalate": "escalate",
+            "apply_action": "apply_action",
+            "dialogue": "dialogue",
+            "receipt_extract": "receipt_extract",
         },
     )
-    g.add_conditional_edges(
-        START,
-        route_entry,
-        {"intake": "intake", "human_request": "human_request", "rediagnose": "rediagnose"},
-    )
-    g.add_edge("human_request", "escalate")
     g.add_edge("out_of_scope", "escalate")
-    g.add_conditional_edges(
-        "intake",
-        route_after_intake,
-        {"disambiguate": "disambiguate", "reassure": "reassure", "escalate": "escalate"},
-    )
     g.add_edge("reassure", "disambiguate")
     g.add_conditional_edges(
         "disambiguate",
@@ -2100,9 +2070,9 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "out_of_scope": "out_of_scope",
         },
     )
-    g.add_edge("clarify", END)
+    g.add_edge("clarify", "commit_issue")
     g.add_edge("prepare_card", "await_input")
-    g.add_edge("await_input", "apply_action")
+    g.add_edge("await_input", "commit_issue")
     g.add_conditional_edges(
         "apply_action",
         route_after_apply,
@@ -2114,14 +2084,14 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "out_of_scope": "out_of_scope",
             "guide": "guide",
             "close": "close",
-            "rediagnose": "rediagnose",
         },
     )
     g.add_conditional_edges(
         "retrieve", route_after_retrieve, {"reply": "reply", "escalate": "escalate"}
     )
-    g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": END})
+    g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(
         "guide", route_after_guide, {"await_input": "await_input", "escalate": "escalate"}
     )
+    g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

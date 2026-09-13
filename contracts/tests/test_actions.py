@@ -10,7 +10,8 @@ CONTRACT_KINDS = {
     "confirm_receipt",
     "skip_receipt",
     "request_human",
-    "rediagnose",
+    "new_issue",
+    "resume_issue",
 }
 
 
@@ -33,14 +34,14 @@ def test_invalid_action(kind):
 
 def test_card_actions_require_interrupt_and_card_id():
     valid = dict(ACTIONS["select_product"][0])
-    valid.pop("interrupt_id")
+    valid.pop("input_token")
     with pytest.raises(ValidationError):
         parse_action(valid)
 
 
 def test_request_human_is_global_and_payload_defaults_empty():
     a = parse_action({"action_id": "x", "expected_version": 3, "kind": "request_human"})
-    assert a.interrupt_id is None and a.payload.model_dump() == {}
+    assert a.input_token is None and a.payload.model_dump() == {}
 
 
 def test_result_and_conflict_models():

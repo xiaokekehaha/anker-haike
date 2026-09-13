@@ -1,0 +1,43 @@
+# bake-off 门槛与价目（票 42，model-selection §3.8）。价目为各厂商官网 2026-09-12 核对值，每 1M token；
+# USD 按 fx_cny_per_usd 折算。评测报告只据此估算成本，实际账单以厂商为准。
+version: 2026-09-12.1
+repeats: 3
+concurrency: 4
+fx_cny_per_usd: 7.2
+
+thresholds:
+  primary:  {schema_pass: 0.95, accuracy_text: 0.90, accuracy_vision: 0.80, accuracy_receipt: 0.85}
+  fallback: {schema_pass: 0.90, accuracy_delta_max: 0.10, latency_ratio_max: 1.5}
+  latency_p50_ms:
+    intake: 3000
+    disambiguate.clarify: 3000
+    escalate.summary: 3000
+    query.rewrite: 3000
+    reply.stream: 3000          # 口径：首个可见 delta（08 §8 first_visible）
+    guide.step: 5000
+    diagnose.vision: 8000
+    diagnose.synthesize: 8000
+    warranty.receipt_ocr: 8000
+  conversation_cost_cny_max: 0.5
+
+# 一次 A1 对话各 task 调用次数（安抚 + 抽取 + 汇总 + 三步改写 + 三次回复 + 摘要）
+conversation_profile:
+  intake: 1
+  reply.stream: 4
+  diagnose.synthesize: 1
+  guide.step: 3
+  escalate.summary: 1
+
+prices:
+  deepseek:     {input: 0.30, output: 1.20, currency: USD, note: deepseek-flash 峰时价；非峰时减半}
+  deepseek-pro: {input: 1.32, output: 3.96, currency: USD, note: deepseek-v4-pro 峰时价}
+  qwen-flash:   {input: 0.2,  output: 0.8,  note: qwen3.7-flash ≤32K 档}
+  qwen-plus:    {input: 2,    output: 8,    note: qwen3.7-plus ≤256K 档}
+  qwen-max:     {input: 12,   output: 36,   note: qwen3.8-max}
+  qwen-vl:      {input: 2,    output: 8,    note: qwen3-vl-plus 按 plus 档估}
+  glm:          {input: 2,    output: 8,    note: glm-4.7 ≤32K 短输出档（2026-09-13 本机实测可用）}
+  glm-flash:    {input: 0,    output: 0,    note: glm-4.5-flash 免费（glm-4.7-flash 不存在，2026-09-13 实测 500）}
+  glm-v:        {input: 1,    output: 3,    note: glm-4.6v ≤32K 档（2026-09-13 本机实测可用，视觉）}
+  sonnet:       {input: 2,    output: 10,   currency: USD}
+  haiku:        {input: 1,    output: 5,    currency: USD}
+  gemini-flash: {input: 0.30, output: 2.50, currency: USD, note: gemini-2.5-flash 图文同价}

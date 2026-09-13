@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import asyncio
 import io
 import logging
@@ -78,13 +80,13 @@ async def test_upload_6mb_rejected_413_and_not_in_conversation(mem_runtime, img_
         big = png_bytes(6 * 1024 * 1024)
         resp = await client.post(
             f"/sessions/{sid}/messages",
-            data={"text": "看下这张图", "purpose": "fault"},
+            data=await message_form(client, f"/sessions/{sid}/messages", {"text": "看下这张图", "purpose": "fault"}),
             files={"images": ("big.png", io.BytesIO(big), "image/png")},
         )
         assert resp.status_code == 413 and resp.json()["code"] == "too_large"
         pdf = await client.post(
             f"/sessions/{sid}/messages",
-            data={"text": "x"},
+            data=await message_form(client, f"/sessions/{sid}/messages", {"text": "x"}),
             files={"images": ("a.pdf", b"%PDF-1.4", "application/pdf")},
         )
         assert pdf.status_code == 415
@@ -102,7 +104,7 @@ async def test_image_refs_in_state_snapshot_and_served_by_session(mem_runtime, i
             data = png_bytes(2048)
             resp = await client.post(
                 f"/sessions/{sid}/messages",
-                data={"text": "eufy X9 Pro 滚刷这样正常吗", "purpose": "fault"},
+                data=await message_form(client, f"/sessions/{sid}/messages", {"text": "eufy X9 Pro 滚刷这样正常吗", "purpose": "fault"}),
                 files=[("images", ("brush.png", io.BytesIO(data), "image/png"))],
             )
             assert resp.status_code == 200

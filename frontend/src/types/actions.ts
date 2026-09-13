@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 36a49abb5761038ba8502b1910e239387ca57fc48e52164e0d0061b9cce80470
+// SHA-256: 95acfd485c4b1d25bb1cc3edf383a5f319eefd74f4bbfbb5ba01ab204c329111
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -12,69 +12,79 @@ export type ActionRequest =
   | ConfirmReceiptAction
   | SkipReceiptAction
   | RequestHumanAction
-  | RediagnoseAction;
+  | NewIssueAction
+  | ResumeIssueAction;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId = string;
 export type CardId = string;
 export type ExpectedVersion = number;
-export type InterruptId = string;
+export type InputToken = string;
 export type Kind = 'select_product';
 export type Sku = string;
+export type TargetIssueId = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId1 = string;
 export type CardId1 = string;
 export type ExpectedVersion1 = number;
-export type InterruptId1 = string;
+export type InputToken1 = string;
 export type Kind1 = 'step_feedback';
 export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
 export type Note = string | null;
+export type TargetIssueId1 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId2 = string;
 export type CardId2 = string;
 export type ExpectedVersion2 = number;
-export type InterruptId2 = string;
+export type InputToken2 = string;
 export type Kind2 = 'confirm_receipt';
 export type Edited = ('order_no' | 'channel' | 'purchase_date' | 'amount')[];
 export type Amount = string | null;
 export type Channel = string | null;
 export type OrderNo = string | null;
 export type PurchaseDate = string | null;
+export type TargetIssueId2 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId3 = string;
 export type CardId3 = string;
 export type ExpectedVersion3 = number;
-export type InterruptId3 = string;
+export type InputToken3 = string;
 export type Kind3 = 'skip_receipt';
 export type Reason = 'none' | 'unreadable' | 'later';
+export type TargetIssueId3 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId4 = string;
 export type CardId4 = string | null;
 export type ExpectedVersion4 = number;
-export type InterruptId4 = string | null;
+export type InputToken4 = string | null;
 export type Kind4 = 'request_human';
+export type TargetIssueId4 = string | null;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
 export type ActionId5 = string;
-export type CardId5 = string | null;
 export type ExpectedVersion5 = number;
-export type InterruptId5 = string | null;
-export type Kind5 = 'rediagnose';
-export type ImageIds = string[];
-export type Text = string | null;
+export type Kind5 = 'new_issue';
+export type TargetIssueId5 = null;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId6 = string;
+export type ExpectedVersion6 = number;
+export type Kind6 = 'resume_issue';
+export type TargetIssueId6 = string;
 export type Code = 'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active';
 export type Message = string;
-export type ActionId6 = string;
+export type ActionId7 = string;
 export type Replayed = boolean;
 export type RunId = string;
 export type VersionAfter = number | null;
@@ -90,9 +100,10 @@ export interface SelectProductAction {
   action_id: ActionId;
   card_id: CardId;
   expected_version: ExpectedVersion;
-  interrupt_id: InterruptId;
+  input_token: InputToken;
   kind: Kind;
   payload: SelectProductPayload;
+  target_issue_id: TargetIssueId;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -109,9 +120,10 @@ export interface StepFeedbackAction {
   action_id: ActionId1;
   card_id: CardId1;
   expected_version: ExpectedVersion1;
-  interrupt_id: InterruptId1;
+  input_token: InputToken1;
   kind: Kind1;
   payload: StepFeedbackPayload;
+  target_issue_id: TargetIssueId1;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -129,9 +141,10 @@ export interface ConfirmReceiptAction {
   action_id: ActionId2;
   card_id: CardId2;
   expected_version: ExpectedVersion2;
-  interrupt_id: InterruptId2;
+  input_token: InputToken2;
   kind: Kind2;
   payload: ConfirmReceiptPayload;
+  target_issue_id: TargetIssueId2;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -159,9 +172,10 @@ export interface SkipReceiptAction {
   action_id: ActionId3;
   card_id: CardId3;
   expected_version: ExpectedVersion3;
-  interrupt_id: InterruptId3;
+  input_token: InputToken3;
   kind: Kind3;
   payload: SkipReceiptPayload;
+  target_issue_id: TargetIssueId3;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -180,9 +194,10 @@ export interface RequestHumanAction {
   action_id: ActionId4;
   card_id?: CardId4;
   expected_version: ExpectedVersion4;
-  interrupt_id?: InterruptId4;
+  input_token?: InputToken4;
   kind: Kind4;
   payload?: RequestHumanPayload;
+  target_issue_id?: TargetIssueId4;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -190,26 +205,26 @@ export interface RequestHumanAction {
  */
 export interface RequestHumanPayload {}
 /**
- * guide / verify 阶段且无 active run；无绑定卡片。
- *
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
- * via the `definition` "RediagnoseAction".
+ * via the `definition` "NewIssueAction".
  */
-export interface RediagnoseAction {
+export interface NewIssueAction {
   action_id: ActionId5;
-  card_id?: CardId5;
   expected_version: ExpectedVersion5;
-  interrupt_id?: InterruptId5;
   kind: Kind5;
-  payload: RediagnosePayload;
+  payload?: RequestHumanPayload;
+  target_issue_id?: TargetIssueId5;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
- * via the `definition` "RediagnosePayload".
+ * via the `definition` "ResumeIssueAction".
  */
-export interface RediagnosePayload {
-  image_ids?: ImageIds;
-  text?: Text;
+export interface ResumeIssueAction {
+  action_id: ActionId6;
+  expected_version: ExpectedVersion6;
+  kind: Kind6;
+  payload?: RequestHumanPayload;
+  target_issue_id: TargetIssueId6;
 }
 /**
  * 409 响应体：附最新快照供前端重建（08 §4 第 3 步）。
@@ -235,7 +250,7 @@ export interface Snapshot {
  * via the `definition` "ActionResult".
  */
 export interface ActionResult {
-  action_id: ActionId6;
+  action_id: ActionId7;
   replayed?: Replayed;
   run_id: RunId;
   version_after?: VersionAfter;

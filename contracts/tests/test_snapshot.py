@@ -34,7 +34,7 @@ def test_pending_input_same_shape_as_awaiting_input():
     from haike_contracts.common import PendingInput
     from haike_contracts.events import AwaitingInput
 
-    ev_fields = set(AwaitingInput.model_fields) - {"type", "seq", "run_id"}
+    ev_fields = set(AwaitingInput.model_fields) - {"type", "seq", "run_id", "event_id", "recorded_at"}
     assert ev_fields == set(PendingInput.model_fields)
 
 

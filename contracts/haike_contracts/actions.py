@@ -14,7 +14,8 @@ ActionKind = Literal[
     "confirm_receipt",
     "skip_receipt",
     "request_human",
-    "rediagnose",
+    "new_issue",
+    "resume_issue",
 ]
 
 
@@ -42,20 +43,17 @@ class RequestHumanPayload(Strict):
     pass
 
 
-class RediagnosePayload(Strict):
-    text: str | None = None
-    image_ids: list[str] = Field(default_factory=list)
-
-
 class _Action(Strict):
     action_id: str = Field(description="前端生成的 uuid，重试时复用，服务端据此幂等")
     expected_version: int = Field(ge=0)
+    target_issue_id: str | None = None
 
 
 class _CardAction(_Action):
-    """针对卡片的动作：必须带 interrupt_id 与 card_id，与当前 pending_input 一致。"""
+    """针对卡片的动作：必须带 input_token 与 card_id，与当前 pending_input 一致。"""
 
-    interrupt_id: str
+    target_issue_id: str
+    input_token: str
     card_id: str
 
 
@@ -83,18 +81,21 @@ class RequestHumanAction(_Action):
     """任何时刻可用；服务端忽略 version 与 pending 校验，有 active run 先取消。"""
 
     kind: Literal["request_human"]
-    interrupt_id: str | None = None
+    input_token: str | None = None
     card_id: str | None = None
     payload: RequestHumanPayload = Field(default_factory=RequestHumanPayload)
 
 
-class RediagnoseAction(_Action):
-    """guide / verify 阶段且无 active run；无绑定卡片。"""
+class NewIssueAction(_Action):
+    target_issue_id: None = None
+    kind: Literal["new_issue"]
+    payload: RequestHumanPayload = Field(default_factory=RequestHumanPayload)
 
-    kind: Literal["rediagnose"]
-    interrupt_id: str | None = None
-    card_id: str | None = None
-    payload: RediagnosePayload
+
+class ResumeIssueAction(_Action):
+    kind: Literal["resume_issue"]
+    target_issue_id: str
+    payload: RequestHumanPayload = Field(default_factory=RequestHumanPayload)
 
 
 ActionRequest = Annotated[
@@ -103,7 +104,8 @@ ActionRequest = Annotated[
     | ConfirmReceiptAction
     | SkipReceiptAction
     | RequestHumanAction
-    | RediagnoseAction,
+    | NewIssueAction
+    | ResumeIssueAction,
     Field(discriminator="kind"),
 ]
 
@@ -125,7 +127,7 @@ class ActionConflict(Strict):
     """409 响应体：附最新快照供前端重建（08 §4 第 3 步）。"""
 
     code: Literal["stale_version", "stale_card", "not_allowed_now", "run_active"]
-    """stale_version：expected_version 不符；stale_card：interrupt_id / card_id 过期；
+    """stale_version：expected_version 不符；stale_card：input_token / card_id 过期；
     not_allowed_now：kind 不在允许时机；run_active：会话有进行中的 run（票 23，08 §4 步骤 3）。"""
     message: str
     snapshot: dict = Field(description="SessionSnapshot 序列化结果；此处用 dict 避免循环引用")

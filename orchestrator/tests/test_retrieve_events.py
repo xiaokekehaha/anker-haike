@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 from haike_contracts.events import parse_event
 from httpx import ASGITransport, AsyncClient
 
@@ -46,7 +48,7 @@ async def _run(text: str, adapter):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             events = sse.parse(
-                (await client.post(f"/sessions/{sid}/messages", data={"text": text})).text
+                (await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))).text
             )
             snap = (await client.get(f"/sessions/{sid}")).json()
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
@@ -63,11 +65,9 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
         parse_event(e)
     types = [e["type"] for e in events]
     # 票 33 起：有假设 → reply 后进入 guide（多一个 progress(guide)）
-    assert types[:4] == ["run_started", "progress", "progress", "progress"]
-    assert types[4:7] == ["tool_call", "tool_call", "evidence"] and types[-1] == "done"
-    # 票 34：guide 发 step_card + awaiting_input 后中断
+    assert types[:2] == ["run_started", "input_received"]
     assert types[-3:] == ["step_card", "awaiting_input", "done"]
-    assert set(types[7:-3]) == {"progress"}
+    assert types.index("tool_call") < types.index("evidence") < types.index("step_card")
     tools = [e for e in events if e["type"] == "tool_call"]
     assert [t["status"] for t in tools] == ["started", "finished"] and tools[0]["tool_id"] == tools[
         1
@@ -102,12 +102,12 @@ async def test_evidence_id_stable_within_session(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             e1 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data={"text": "X9 Pro 不吸了"})
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 不吸了"}))
                 ).text
             )
             e2 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data={"text": "X9 Pro 还是不吸"})
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 还是不吸"}))
                 ).text
             )
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
@@ -150,7 +150,7 @@ async def test_adapter_disabled_is_failed_tool_call(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             events = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data={"text": "X9 Pro 不吸了"})
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 不吸了"}))
                 ).text
             )
     finally:

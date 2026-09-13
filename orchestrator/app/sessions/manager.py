@@ -45,24 +45,24 @@ class RunManager:
         self._store = store
         self._graph = graph
         self._live: dict[str, RunHandle] = {}
+        from app.conversation.summary_cache import SummaryCache
+
+        self.summary_cache = SummaryCache(store, graph)
+        self._closing = False
 
     # ---- 启动 ----
-    async def start(
-        self, session_id: str, text: str | None = None, *, resume: dict | None = None, **kw: Any
-    ) -> RunHandle:
-        """占用 active run 并落库 run_started 后返回；ActiveRunConflict 在此同步抛出。
-        text 为新消息，resume 为对 interrupt 的动作（票 20）。"""
+    async def start(self, session_id: str, text: str | None = None, **kw: Any) -> RunHandle:
+        """启动已接收输入；内部调用也必须先经过统一输入账本。"""
         cancel_event = asyncio.Event()
         gen = runner.run_message(
             self._store,
             self._graph,
             session_id,
             text,
-            resume=resume,
             cancel_event=cancel_event,
             **kw,
         )
-        first = await anext(gen)  # try_start_run + run_started；冲突在这里抛
+        first = await anext(gen)
         handle = RunHandle(session_id=session_id, run_id=first["run_id"], cancel_event=cancel_event)
         self._live[handle.run_id] = handle
         handle.task = asyncio.create_task(
@@ -87,6 +87,8 @@ class RunManager:
             for q in list(handle.subscribers):
                 q.put_nowait(_END)
             self._live.pop(handle.run_id, None)
+            if not self._closing:
+                self.summary_cache.schedule(handle.session_id)
 
     def _broadcast(self, handle: RunHandle, ev: dict) -> None:
         for q in list(handle.subscribers):
@@ -95,6 +97,23 @@ class RunManager:
     # ---- 订阅 ----
     def is_live(self, run_id: str) -> bool:
         return run_id in self._live and not self._live[run_id].finished
+
+    async def reconcile_session(self, session_id: str) -> None:
+        """Caller holds the short session lock. Recovery never invokes a new model."""
+        from app.sessions.snapshot import SnapshotRecovering
+        from app.sessions.store import SessionNotFound
+
+        try:
+            row = await self._store.get_session(session_id)
+        except SessionNotFound:
+            return
+        if row.active_run_id and not self.is_live(row.active_run_id):
+            try:
+                await self._finalize_orphan(session_id, row.active_run_id)
+                if (await self._store.get_session(session_id)).active_run_id:
+                    raise SnapshotRecovering("publication did not finish")
+            except Exception as exc:
+                raise SnapshotRecovering("publication recovery pending") from exc
 
     async def subscribe(
         self, session_id: str, run_id: str, after_seq: int = 0
@@ -109,7 +128,8 @@ class RunManager:
             last = after_seq
             for ev in history:
                 last = ev["seq"]
-                yield ev
+                if ev.get("visibility") != "internal":
+                    yield ev
             if handle is None or handle.finished:
                 return
             while True:
@@ -119,7 +139,8 @@ class RunManager:
                 if item["seq"] <= last:
                     continue
                 last = item["seq"]
-                yield item
+                if item.get("visibility") != "internal":
+                    yield item
                 if item["type"] == "done":
                     return
         finally:
@@ -166,28 +187,59 @@ class RunManager:
 
     async def _finalize_orphan(self, session_id: str, run_id: str) -> None:
         em = runner.RunEmitter(self._store, session_id, run_id)
-        # seq / run_id / type 取自事件表的列，不读 event_json：历史行的 JSON 可能缺字段，
-        # 且 last_seq 必须是库里真实的最大 seq，否则续写会撞唯一约束。
         prior = await self._store.list_event_records(session_id)
         em.last_seq = max((r.seq for r in prior), default=0)
-        already_done = any(
-            r.run_id == run_id and r.event.get("type") == "done" for r in prior
+        accepted = next(
+            (
+                r.event
+                for r in prior
+                if r.run_id == run_id and r.event.get("type") == "input_received"
+            ),
+            None,
         )
-        version = await runner.checkpoint_version(self._graph, session_id)
-        if not already_done:
-            await em.emit(
-                {
-                    "type": "error",
-                    "code": "server_restarted",
-                    "message": "编排服务重启，本轮处理中断，请重新发送",
-                    "recoverable": True,
-                    "retry_with_same_action": False,
-                }
-            )
-            await em.emit({"type": "done", "reason": "error", "version": version})
-        await self._store.finish_run(session_id, run_id, version=version)
+        receipt = (
+            await self._store.get_input(session_id, accepted["input_id"]) if accepted else None
+        )
+        if receipt is None:
+            raise RuntimeError("active run has no input receipt")
+        if any(r.run_id == run_id and r.event.get("type") == "done" for r in prior):
+            raise RuntimeError("terminal input still holds active run")
+        from app.conversation.history import fold_history
+
+        for entry in fold_history(session_id, prior):
+            if (
+                entry.run_id == run_id
+                and entry.role == "assistant"
+                and entry.kind == "message"
+                and entry.status == "streaming"
+            ):
+                await em.emit(
+                    {"type": "message_end", "message_id": entry.entry_id, "status": "aborted"}
+                )
+        checkpoint = await runner.checkpoint_state(self._graph, session_id)
+        if (
+            checkpoint
+            and (checkpoint.values or {}).get("committed_input_id") == accepted["input_id"]
+        ):
+            handle = await self.start(session_id, receipt=receipt)
+            await self.wait_finished(handle)
+            return
+        await em.emit(
+            {
+                "type": "error",
+                "code": "server_restarted",
+                "message": "本轮在提交前中断，之前的记录已保留，请重新发送。",
+                "recoverable": True,
+                "retry_with_same_action": False,
+            }
+        )
+        await self._store.complete_input(receipt, "error")
 
     async def shutdown(self) -> None:
-        for h in list(self._live.values()):
-            if h.task and not h.task.done():
-                h.task.cancel()
+        self._closing = True
+        await self.summary_cache.close()
+        tasks = [h.task for h in list(self._live.values()) if h.task and not h.task.done()]
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)

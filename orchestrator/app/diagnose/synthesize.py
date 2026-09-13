@@ -174,7 +174,7 @@ async def synthesize(
         + f"\n允许的排障计划：\n{plans_text}\n"
         + wrap_data(
             " ".join(
-                [str(state.get("text") or ""), *[str(s) for s in state.get("symptoms") or []]]
+                [str(s) for s in state.get("symptoms") or []]
             ),
             kind="user_message",
         )

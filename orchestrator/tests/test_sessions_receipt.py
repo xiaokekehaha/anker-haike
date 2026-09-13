@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import action_body, message_form, escalate_on_feedback
+
 import io
 import uuid
 
@@ -38,7 +40,7 @@ async def _send(client, sid: str, text: str, receipt_images: int = 0, purpose: s
         for i in range(receipt_images)
     ]
     resp = await client.post(
-        f"/sessions/{sid}/messages", data={"text": text, "purpose": purpose}, files=files or None
+        f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text, "purpose": purpose}), files=files or None
     )
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
@@ -47,8 +49,7 @@ async def _send(client, sid: str, text: str, receipt_images: int = 0, purpose: s
 async def _regular_escalation(client, sid: str, reason: str = "R1", text: str = "还是不行"):
     """先跑一轮正常对话（产品已确认），再注入常规升级原因并发下一条消息 → 进入 escalate 子流程。"""
     await _send(client, sid, "扫地机 X10 不吸了")
-    await app.state.session_graph.aupdate_state(_cfg(sid), {"escalate_reason": reason})
-    return await _send(client, sid, text)
+    return await escalate_on_feedback(client, sid, reason)
 
 
 def _progress(events):
@@ -66,7 +67,7 @@ async def _snap(client, sid: str) -> SessionSnapshot:
 def _skip(pending: dict, reason: str = "later") -> dict:
     return {
         "action_id": uuid.uuid4().hex,
-        "interrupt_id": pending["interrupt_id"],
+        "input_token": pending["input_token"],
         "card_id": pending["card_id"],
         "expected_version": pending["version"],
         "kind": "skip_receipt",
@@ -83,7 +84,7 @@ async def test_regular_escalation_enters_collect_receipt_and_awaits_upload(mem_r
     assert ("escalate", "collect_receipt") in _progress(events)
     assert ("escalate", "summarize") not in _progress(events)  # 还没摘要
     pending = next(e for e in events if e["type"] == "awaiting_input")
-    assert pending["kind"] == "upload_receipt" and pending["card_id"] == pending["interrupt_id"]
+    assert pending["kind"] == "upload_receipt" and pending["card_id"] == pending["input_token"]
     assert pending["card_id"] == receipt_card_id(sid, "R1")
     assert events[-1]["reason"] == "awaiting_input" and events[-1]["version"] == pending["version"]
     assert "escalation_summary" not in [e["type"] for e in events]
@@ -102,11 +103,11 @@ async def test_skip_receipt_goes_to_summary_not_collected(mem_runtime):
         sid = (await client.post("/sessions")).json()["session_id"]
         events = await _regular_escalation(client, sid, "R1")
         pending = next(e for e in events if e["type"] == "awaiting_input")
-        resp = await client.post(f"/sessions/{sid}/actions", json=_skip(pending, "later"))
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _skip(pending, "later")))
         assert resp.status_code == 200, resp.text
         resumed = sse.parse(resp.text)
         snap = await _snap(client, sid)
-    assert resumed[0]["resumed"] is True
+    assert resumed[0]["resumed"] is False
     assert _progress(resumed) == [("escalate", "summarize")]  # 不再要求凭证
     summary = _summary(resumed)
     assert summary["reason"]["rule_id"] == "R1"
@@ -127,16 +128,16 @@ async def test_skip_receipt_wrong_reason_or_kind_rejected(mem_runtime):
         events = await _regular_escalation(client, sid, "R2")
         pending = next(e for e in events if e["type"] == "awaiting_input")
         bad_reason = await client.post(
-            f"/sessions/{sid}/actions", json={**_skip(pending), "payload": {"reason": "whatever"}}
+            f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", {**_skip(pending), "payload": {"reason": "whatever"}})
         )
         assert bad_reason.status_code == 422
         # 等待凭证时点产品选择：kind 不在允许时机
         wrong_kind = await client.post(
             f"/sessions/{sid}/actions",
-            json={**_skip(pending), "kind": "select_product", "payload": {"sku": "X"}},
+            json=await action_body(client, f"/sessions/{sid}/actions", {**_skip(pending), "kind": "select_product", "payload": {"sku": "X"}}),
         )
         assert wrong_kind.status_code == 409 and wrong_kind.json()["code"] == "not_allowed_now"
-        ok = await client.post(f"/sessions/{sid}/actions", json=_skip(pending, "none"))
+        ok = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _skip(pending, "none")))
     assert ok.status_code == 200 and _summary(sse.parse(ok.text))["receipt"]["status"] == (
         "not_collected"
     )
@@ -157,7 +158,7 @@ async def test_upload_receipt_while_awaiting_goes_to_extract_then_confirm_card(m
     finally:
         set_image_store(None)
         app.state.image_store = None
-    assert _progress(events) == [("intake", None), ("escalate", "extract")]
+    assert _progress(events) == [("escalate", "extract")]
     assert events[0]["resumed"] is False  # 新消息 run，不是 Command(resume)
     types = [e["type"] for e in events]
     assert "receipt_card" in types and "escalation_summary" not in types
@@ -206,12 +207,11 @@ async def test_r6_mention_enters_receipt_flow_on_regular_escalation(mem_runtime)
             assert "escalate" not in [s for s, _ in _progress(first)]  # R6 本身不升级
             st = (await app.state.session_graph.aget_state(_cfg(sid))).values
             assert any(f["rule_id"] == "R6" for f in st["safety_flags"])
-            await app.state.session_graph.aupdate_state(_cfg(sid), {"escalate_reason": "R2"})
-            events = await _send(client, sid, "试过了还是不行")
+            events = await escalate_on_feedback(client, sid, "R2")
             pending = next(e for e in events if e["type"] == "awaiting_input")
             assert pending["kind"] == "upload_receipt"
             resumed = sse.parse(
-                (await client.post(f"/sessions/{sid}/actions", json=_skip(pending, "none"))).text
+                (await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _skip(pending, "none")))).text
             )
     finally:
         set_rules_service(None)
@@ -232,11 +232,11 @@ async def test_safety_and_human_escalations_skip_receipt_collection(mem_runtime)
                 (
                     await client.post(
                         f"/sessions/{b}/actions",
-                        json={
+                        json=await action_body(client, f"/sessions/{b}/actions", {
                             "action_id": uuid.uuid4().hex,
                             "expected_version": 0,
                             "kind": "request_human",
-                        },
+                        }),
                     )
                 ).text
             )

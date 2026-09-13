@@ -9,8 +9,10 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 import json
 import uuid
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Protocol
@@ -18,6 +20,8 @@ from typing import Any, Protocol
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 from psycopg_pool import AsyncConnectionPool
+
+from app.sessions.inputs import INPUT_DDL, MemoryInputStore, PostgresInputStore
 
 DDL = """
 create table if not exists sessions (
@@ -39,28 +43,13 @@ create table if not exists session_events (
 );
 create index if not exists session_events_run_idx on session_events(session_id, run_id, seq);
 alter table session_events drop constraint if exists session_events_session_id_fkey;
-create table if not exists session_actions (
-    session_id  text not null,
-    action_id   text not null,
-    result_json jsonb,
-    created_at  timestamptz not null default now(),
-    primary key (session_id, action_id)
-);
+
 """
 # 注：session_events 不外键到 sessions——投影表可整行删除后由事件日志 + checkpoint 重建（08 §2，票 07）。
 
 
 class SessionNotFound(LookupError):
     pass
-
-
-class ActiveRunConflict(RuntimeError):
-    """同一会话已有 active run：不允许并发第二个 run（票 05 验收项 5）。"""
-
-    def __init__(self, session_id: str, active_run_id: str) -> None:
-        super().__init__(f"session {session_id} has active run {active_run_id}")
-        self.session_id = session_id
-        self.active_run_id = active_run_id
 
 
 @dataclass
@@ -71,6 +60,7 @@ class SessionRow:
     active_run_id: str | None
     pending_input: dict | None
     updated_at: datetime
+    published_checkpoint_id: str | None = None
 
 
 @dataclass
@@ -94,10 +84,6 @@ class SessionStore(Protocol):
     async def create_session(self) -> SessionRow: ...
     async def get_session(self, session_id: str) -> SessionRow: ...
     async def session_exists(self, session_id: str) -> bool: ...
-    async def try_start_run(self, session_id: str, run_id: str) -> SessionRow: ...
-    async def finish_run(
-        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
-    ) -> int: ...
     async def append_event(self, session_id: str, run_id: str, event: dict[str, Any]) -> int: ...
     async def list_events(
         self, session_id: str, *, run_id: str | None = None, after_seq: int = 0
@@ -113,15 +99,9 @@ class SessionStore(Protocol):
         stage: str,
         active_run_id: str | None,
         pending_input: dict | None,
+        published_checkpoint_id: str | None = None,
     ) -> None: ...
     async def delete_projection(self, session_id: str) -> None: ...
-    # 动作幂等（08 §4 步骤 2、5；票 22）：占位 → 执行 → 回填
-    async def try_insert_action(
-        self, session_id: str, action_id: str, placeholder: dict
-    ) -> bool: ...
-    async def get_action(self, session_id: str, action_id: str) -> dict | None: ...
-    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None: ...
-    async def delete_action(self, session_id: str, action_id: str) -> None: ...
     async def delete_session_data(self, session_id: str) -> dict[str, int]: ...
 
 
@@ -129,14 +109,14 @@ def new_session_id() -> str:
     return uuid.uuid4().hex
 
 
-class PostgresSessionStore:
+class PostgresSessionStore(PostgresInputStore):
     def __init__(self, pool: AsyncConnectionPool) -> None:
         self._pool = pool
 
     async def setup(self) -> None:
         # 池按 PostgresSaver 要求设 prepare_threshold=0，多语句不能走预处理，逐条执行
         async with self._pool.connection() as conn:
-            for stmt in (x.strip() for x in DDL.split(";")):
+            for stmt in (x.strip() for x in (DDL + INPUT_DDL).split(";")):
                 if stmt:
                     await conn.execute(stmt)
 
@@ -154,44 +134,51 @@ class PostgresSessionStore:
             raise SessionNotFound(session_id)
         return _row(row)
 
-    async def try_start_run(self, session_id: str, run_id: str) -> SessionRow:
-        """原子占用 active_run_id；已被占用则抛 ActiveRunConflict。"""
-        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-            await cur.execute(
-                """update sessions set active_run_id = %s, updated_at = now()
-                   where session_id = %s and active_run_id is null returning *""",
-                (run_id, session_id),
-            )
+    @asynccontextmanager
+    async def snapshot_view(self, session_id: str):
+        """Pin the published pointer and event watermark while its checkpoint is read."""
+        async with (
+            self._pool.connection() as conn,
+            conn.transaction(),
+            conn.cursor(row_factory=dict_row) as cur,
+        ):
+            await cur.execute("select * from sessions where session_id=%s for share", (session_id,))
             row = await cur.fetchone()
-            if row is not None:
-                return _row(row)
+            if row is None:
+                raise SessionNotFound(session_id)
             await cur.execute(
-                "select active_run_id from sessions where session_id = %s", (session_id,)
+                "select seq,run_id,event_json,created_at from session_events where session_id=%s order by seq",
+                (session_id,),
             )
-            cur_row = await cur.fetchone()
-        if cur_row is None:
-            raise SessionNotFound(session_id)
-        raise ActiveRunConflict(session_id, cur_row["active_run_id"])
-
-    async def finish_run(
-        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
-    ) -> int:
-        """释放 active run，并把 checkpoint 推导出的 version 写入投影（08 §2：每次 checkpoint 提交 +1）。"""
-        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-            await cur.execute(
-                """update sessions
-                   set active_run_id = null, version = %s,
-                       stage = coalesce(%s, stage), updated_at = now()
-                   where session_id = %s and active_run_id = %s returning version""",
-                (version, stage, session_id, run_id),
-            )
-            row = await cur.fetchone()
-        if row is None:
-            raise SessionNotFound(session_id)
-        return int(row["version"])
+            records = [
+                EventRecord(
+                    r["seq"],
+                    r["run_id"],
+                    r["created_at"],
+                    _with_identity(r["event_json"], r["seq"], r["run_id"]),
+                )
+                for r in await cur.fetchall()
+            ]
+            yield _row(row), records
 
     async def append_event(self, session_id: str, run_id: str, event: dict[str, Any]) -> int:
-        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+        async with (
+            self._pool.connection() as conn,
+            conn.transaction(),
+            conn.cursor(row_factory=dict_row) as cur,
+        ):
+            await cur.execute(
+                "select session_id from sessions where session_id=%s for update", (session_id,)
+            )
+            if event.get("event_id"):
+                await cur.execute(
+                    "select seq,event_json from session_events where session_id=%s and event_json->>'event_id'=%s",
+                    (session_id, event["event_id"]),
+                )
+                previous = await cur.fetchone()
+                if previous:
+                    _check_event_payload(previous["event_json"], event)
+                    return previous["seq"]
             await cur.execute(
                 """insert into session_events(session_id, seq, run_id, event_json)
                    select %(sid)s, coalesce(max(seq), 0) + 1, %(rid)s, %(ev)s
@@ -257,21 +244,24 @@ class PostgresSessionStore:
         stage: str,
         active_run_id: str | None,
         pending_input: dict | None,
+        published_checkpoint_id: str | None = None,
     ) -> None:
         async with self._pool.connection() as conn:
             await conn.execute(
-                """insert into sessions(session_id, version, stage, active_run_id, pending_input_json)
-                   values (%s, %s, %s, %s, %s)
+                """insert into sessions(session_id, version, stage, active_run_id, pending_input_json, published_checkpoint_id)
+                   values (%s, %s, %s, %s, %s, %s)
                    on conflict (session_id) do update set
                        version = excluded.version, stage = excluded.stage,
                        active_run_id = excluded.active_run_id,
-                       pending_input_json = excluded.pending_input_json, updated_at = now()""",
+                       pending_input_json = excluded.pending_input_json,
+                       published_checkpoint_id = coalesce(excluded.published_checkpoint_id, sessions.published_checkpoint_id), updated_at = now()""",
                 (
                     session_id,
                     version,
                     stage,
                     active_run_id,
                     Jsonb(pending_input) if pending_input is not None else None,
+                    published_checkpoint_id,
                 ),
             )
 
@@ -279,45 +269,17 @@ class PostgresSessionStore:
         async with self._pool.connection() as conn:
             await conn.execute("delete from sessions where session_id = %s", (session_id,))
 
-    async def try_insert_action(self, session_id: str, action_id: str, placeholder: dict) -> bool:
-        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-            await cur.execute(
-                """insert into session_actions(session_id, action_id, result_json)
-                   values (%s, %s, %s) on conflict do nothing returning action_id""",
-                (session_id, action_id, Jsonb(placeholder)),
-            )
-            return (await cur.fetchone()) is not None
-
-    async def get_action(self, session_id: str, action_id: str) -> dict | None:
-        async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-            await cur.execute(
-                "select result_json from session_actions where session_id = %s and action_id = %s",
-                (session_id, action_id),
-            )
-            row = await cur.fetchone()
-        return None if row is None else row["result_json"]
-
-    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None:
-        async with self._pool.connection() as conn:
-            await conn.execute(
-                "update session_actions set result_json = %s where session_id = %s and action_id = %s",
-                (Jsonb(result), session_id, action_id),
-            )
-
-    async def delete_action(self, session_id: str, action_id: str) -> None:
-        """动作未被应用（run 出错 / 取消）时撤销占位，让同一 action_id 的重试真正执行（票 23）。"""
-        async with self._pool.connection() as conn:
-            await conn.execute(
-                "delete from session_actions where session_id = %s and action_id = %s",
-                (session_id, action_id),
-            )
-
     async def delete_session_data(self, session_id: str) -> dict[str, int]:
         """票 48：本 store 三张表按会话删除；checkpoint 与图片由 app.retention.delete_session_data 统一处理。"""
         counts: dict[str, int] = {}
-        async with self._pool.connection() as conn:
-            for table in ("session_actions", "session_events", "sessions"):
-                cur = await conn.execute(f"delete from {table} where session_id = %s", (session_id,))
+        async with self._pool.connection() as conn, conn.transaction():
+            await conn.execute(
+                "select session_id from sessions where session_id=%s for update", (session_id,)
+            )
+            for table in ("conversation_summaries", "session_inputs", "session_events", "sessions"):
+                cur = await conn.execute(
+                    f"delete from {table} where session_id = %s", (session_id,)
+                )
                 counts[table] = cur.rowcount or 0
         return counts
 
@@ -330,6 +292,7 @@ def _row(r: dict) -> SessionRow:
         active_run_id=r["active_run_id"],
         pending_input=r["pending_input_json"],
         updated_at=r["updated_at"],
+        published_checkpoint_id=r.get("published_checkpoint_id"),
     )
 
 
@@ -339,13 +302,13 @@ class _MemSession:
     events: list[EventRecord] = field(default_factory=list)
 
 
-class InMemorySessionStore:
+class InMemorySessionStore(MemoryInputStore):
     """与 PostgresSessionStore 同语义的内存实现，供单元测试使用。"""
 
     def __init__(self) -> None:
         self._sessions: dict[str, _MemSession] = {}
         self._lock = asyncio.Lock()
-        self._actions: dict[tuple[str, str], dict | None] = {}
+        self._inputs: dict[tuple[str, str], dict] = {}
 
     async def create_session(self) -> SessionRow:
         sid = new_session_id()
@@ -362,32 +325,24 @@ class InMemorySessionStore:
     async def session_exists(self, session_id: str) -> bool:
         return session_id in self._sessions
 
-    async def try_start_run(self, session_id: str, run_id: str) -> SessionRow:
+    @asynccontextmanager
+    async def snapshot_view(self, session_id: str):
         async with self._lock:
-            s = self._get(session_id)
-            if s.row is None:
+            mem = self._get(session_id)
+            if mem.row is None:
                 raise SessionNotFound(session_id)
-            if s.row.active_run_id is not None:
-                raise ActiveRunConflict(session_id, s.row.active_run_id)
-            s.row.active_run_id = run_id
-            return s.row
-
-    async def finish_run(
-        self, session_id: str, run_id: str, *, version: int, stage: str | None = None
-    ) -> int:
-        async with self._lock:
-            s = self._get(session_id)
-            if s.row is None or s.row.active_run_id != run_id:
-                raise SessionNotFound(session_id)
-            s.row.active_run_id = None
-            s.row.version = version
-            if stage:
-                s.row.stage = stage
-            return s.row.version
+            yield copy.deepcopy(mem.row), copy.deepcopy(mem.events)
 
     async def append_event(self, session_id: str, run_id: str, event: dict[str, Any]) -> int:
         async with self._lock:
             s = self._get(session_id)
+            if event.get("event_id"):
+                old = next(
+                    (r for r in s.events if r.event.get("event_id") == event["event_id"]), None
+                )
+                if old:
+                    _check_event_payload(old.event, event)
+                    return old.seq
             seq = len(s.events) + 1
             # 与 Postgres 一致：存 JSON 可序列化副本
             s.events.append(
@@ -426,10 +381,17 @@ class InMemorySessionStore:
         stage: str,
         active_run_id: str | None,
         pending_input: dict | None,
+        published_checkpoint_id: str | None = None,
     ) -> None:
         s = self._sessions.setdefault(session_id, _MemSession(None))
         s.row = SessionRow(
-            session_id, version, stage, active_run_id, pending_input, datetime.now(UTC)
+            session_id,
+            version,
+            stage,
+            active_run_id,
+            pending_input,
+            datetime.now(UTC),
+            published_checkpoint_id or (s.row.published_checkpoint_id if s.row else None),
         )
 
     async def delete_projection(self, session_id: str) -> None:
@@ -439,32 +401,17 @@ class InMemorySessionStore:
             if not s.events:
                 del self._sessions[session_id]
 
-    async def try_insert_action(self, session_id: str, action_id: str, placeholder: dict) -> bool:
-        async with self._lock:
-            if (session_id, action_id) in self._actions:
-                return False
-            self._actions[(session_id, action_id)] = json.loads(json.dumps(placeholder))
-            return True
-
-    async def get_action(self, session_id: str, action_id: str) -> dict | None:
-        return self._actions.get((session_id, action_id))
-
-    async def set_action_result(self, session_id: str, action_id: str, result: dict) -> None:
-        self._actions[(session_id, action_id)] = json.loads(json.dumps(result))
-
-    async def delete_action(self, session_id: str, action_id: str) -> None:
-        self._actions.pop((session_id, action_id), None)
-
     async def delete_session_data(self, session_id: str) -> dict[str, int]:
         async with self._lock:
             mem = self._sessions.pop(session_id, None)
-            actions = [k for k in self._actions if k[0] == session_id]
-            for k in actions:
-                self._actions.pop(k, None)
+            getattr(self, "_summary_cache", {}).pop(session_id, None)
+            inputs = [k for k in self._inputs if k[0] == session_id]
+            for k in inputs:
+                self._inputs.pop(k, None)
         return {
             "sessions": 1 if mem and mem.row else 0,
             "session_events": len(mem.events) if mem else 0,
-            "session_actions": len(actions),
+            "session_inputs": len(inputs),
         }
 
     def _get(self, session_id: str) -> _MemSession:
@@ -472,3 +419,11 @@ class InMemorySessionStore:
             return self._sessions[session_id]
         except KeyError:
             raise SessionNotFound(session_id) from None
+
+
+def _check_event_payload(previous: dict, event: dict) -> None:
+    meta = {"seq", "run_id", "recorded_at"}
+    if {k: v for k, v in previous.items() if k not in meta} != {
+        k: v for k, v in event.items() if k not in meta
+    }:
+        raise RuntimeError("event_id_payload_conflict")

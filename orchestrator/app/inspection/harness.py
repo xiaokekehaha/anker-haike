@@ -70,15 +70,14 @@ lanes:
 """
 
 # ---- 常用脚本 ----
-INTAKE_X9 = {"emotion_level": "calm", "product_hints": ["X9 Pro"], "symptoms": ["不吸了", "滚刷缠头发"], "wants_human": False}
-INTAKE_X10 = {"emotion_level": "calm", "product_hints": ["X10"], "symptoms": ["不吸了"], "wants_human": False}
-INTAKE_NONE = {"emotion_level": "calm", "product_hints": [], "symptoms": ["不吸了"], "wants_human": False}
+INTAKE_X9 = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "不吸了", "quote": "$current"}, {"value": "滚刷缠头发", "quote": "$current"}]}
+INTAKE_X10 = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10"], "facts": [{"value": "不吸了", "quote": "$current"}]}
+INTAKE_NONE = {"primary_intent": "report_problem", "device_relation": "current", "facts": [{"value": "不吸了", "quote": "$current"}]}
 SYNTH_HAIR = {"hypotheses": [
     {"plan_id": "rv_suction_hair_wrap", "confidence": 0.85, "evidence_ids": ["c12"]},
     {"plan_id": "rv_suction_filter_clog", "confidence": 0.4, "evidence_ids": ["c15"]},
 ]}
-REDX = {"emotion_level": "calm", "product_hints": [], "new_symptoms": [], "negated_symptoms": [],
-        "wants_human": False, "needs_clarification": False}
+REDX = {"primary_intent": "correct", "device_relation": "current", "product_hints": [], "facts": []}
 OBS_SMOKE = {"observations": ["smoke coming out of the vent", "外壳发黑"], "visible_parts": ["机身"]}
 OBS_HAIR = {"observations": ["滚刷上缠绕大量毛发"], "visible_parts": ["滚刷"]}
 
@@ -117,6 +116,15 @@ class TaskFake(FakeChatModel):
             self.calls.append({"messages": list(messages), "kwargs": dict(kwargs), "tags": [], "metadata": meta})
             raise RuntimeError(f"{self.name_for_trace}: upstream down")
         self.script = self.by_task.setdefault(task, [])
+        if task == "intake" and self.script and isinstance(self.script[0], str):
+            data = json.loads(self.script[0])
+            current = str(messages[-1].content).split("\n", 1)[-1]
+            for fact in data.get("facts", []):
+                if fact.get("quote") == "$current":
+                    fact["quote"] = current
+            if data.get("risk_quote") == "$current":
+                data["risk_quote"] = current
+            self.script[0] = js(data)
         try:
             return super()._next(messages, run_manager, kwargs)
         except ScriptExhausted:
@@ -305,13 +313,16 @@ class Harness:
     async def send(self, sid: str, text: str, *, images: int = 0, purpose: str = "fault") -> Events:
         files = [("images", (f"p{i}.png", io.BytesIO(png_bytes(512 + i)), "image/png")) for i in range(images)]
         t0 = time.perf_counter()
-        r = await self.client.post(f"/sessions/{sid}/messages", data={"text": text, "purpose": purpose}, files=files)
+        snapshot = await self.snapshot(sid)
+        r = await self.client.post(f"/sessions/{sid}/messages", data={"input_id": uuid.uuid4().hex, "expected_version": snapshot["version"], "text": text, "purpose": purpose}, files=files)
         elapsed = int((time.perf_counter() - t0) * 1000)
         items = sse.parse(r.text) if r.status_code == 200 else []
         return Events(items, elapsed, dict(r.headers), r.status_code)
 
     async def action(self, sid: str, body: dict) -> Events:
         t0 = time.perf_counter()
+        if "target_issue_id" not in body:
+            body = {**body, "target_issue_id": (await self.snapshot(sid))["active_issue_id"]}
         r = await self.client.post(f"/sessions/{sid}/actions", json=body)
         elapsed = int((time.perf_counter() - t0) * 1000)
         items = sse.parse(r.text) if r.status_code == 200 else []
@@ -345,7 +356,8 @@ class Harness:
     def card_action(pending: dict, kind: str, payload: dict, *, action_id: str | None = None, version: int | None = None) -> dict:
         return {
             "action_id": action_id or uuid.uuid4().hex,
-            "interrupt_id": pending["interrupt_id"],
+            "input_token": pending["input_token"],
+            "target_issue_id": pending.get("issue_id"),
             "card_id": pending["card_id"],
             "expected_version": pending["version"] if version is None else version,
             "kind": kind,

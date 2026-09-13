@@ -1,0 +1,972 @@
+[
+ {
+  "task": "retrieve.grade",
+  "lane": "zhipu",
+  "samples": 8,
+  "candidates": [
+   {
+    "task": "retrieve.grade",
+    "alias": "glm",
+    "model_used": "zhipu/glm-4.7",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2337,
+      "usage": {
+       "input_tokens": 758,
+       "output_tokens": 84,
+       "total_tokens": 842
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2175,
+      "usage": {
+       "input_tokens": 758,
+       "output_tokens": 84,
+       "total_tokens": 842
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2098,
+      "usage": {
+       "input_tokens": 758,
+       "output_tokens": 84,
+       "total_tokens": 842
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2067,
+      "usage": {
+       "input_tokens": 758,
+       "output_tokens": 84,
+       "total_tokens": 842
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "hair_wrap_clear",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2097,
+      "usage": {
+       "input_tokens": 758,
+       "output_tokens": 84,
+       "total_tokens": 842
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c12": "relevant",
+        "c21": "irrelevant",
+        "water": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1924,
+      "usage": {
+       "input_tokens": 746,
+       "output_tokens": 85,
+       "total_tokens": 831
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2403,
+      "usage": {
+       "input_tokens": 746,
+       "output_tokens": 85,
+       "total_tokens": 831
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2058,
+      "usage": {
+       "input_tokens": 746,
+       "output_tokens": 85,
+       "total_tokens": 831
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2247,
+      "usage": {
+       "input_tokens": 746,
+       "output_tokens": 85,
+       "total_tokens": 831
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "dustbin_prompt",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1994,
+      "usage": {
+       "input_tokens": 746,
+       "output_tokens": 85,
+       "total_tokens": 831
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c18": "relevant",
+        "c15": "irrelevant",
+        "c30": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2076,
+      "usage": {
+       "input_tokens": 730,
+       "output_tokens": 82,
+       "total_tokens": 812
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "B": "relevant",
+        "E": "irrelevant",
+        "header": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.25,
+      "latency_ms": 1997,
+      "usage": {
+       "input_tokens": 730,
+       "output_tokens": 82,
+       "total_tokens": 812
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "B": "unsure",
+        "E": "unsure",
+        "header": "unsure"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.25,
+      "latency_ms": 2051,
+      "usage": {
+       "input_tokens": 730,
+       "output_tokens": 82,
+       "total_tokens": 812
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "B": "unsure",
+        "E": "unsure",
+        "header": "unsure"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2014,
+      "usage": {
+       "input_tokens": 730,
+       "output_tokens": 82,
+       "total_tokens": 812
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "B": "relevant",
+        "E": "irrelevant",
+        "header": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "side_brush",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 0.25,
+      "latency_ms": 2084,
+      "usage": {
+       "input_tokens": 730,
+       "output_tokens": 82,
+       "total_tokens": 812
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "B": "unsure",
+        "E": "unsure",
+        "header": "unsure"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1780,
+      "usage": {
+       "input_tokens": 675,
+       "output_tokens": 64,
+       "total_tokens": 739
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1852,
+      "usage": {
+       "input_tokens": 675,
+       "output_tokens": 64,
+       "total_tokens": 739
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1865,
+      "usage": {
+       "input_tokens": 675,
+       "output_tokens": 64,
+       "total_tokens": 739
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2022,
+      "usage": {
+       "input_tokens": 675,
+       "output_tokens": 64,
+       "total_tokens": 739
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "none_relevant",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1953,
+      "usage": {
+       "input_tokens": 675,
+       "output_tokens": 64,
+       "total_tokens": 739
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "none",
+       "verdicts": {
+        "c12": "irrelevant",
+        "T0138": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2295,
+      "usage": {
+       "input_tokens": 720,
+       "output_tokens": 87,
+       "total_tokens": 807
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2146,
+      "usage": {
+       "input_tokens": 720,
+       "output_tokens": 87,
+       "total_tokens": 807
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 3180,
+      "usage": {
+       "input_tokens": 720,
+       "output_tokens": 87,
+       "total_tokens": 807
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2123,
+      "usage": {
+       "input_tokens": 720,
+       "output_tokens": 87,
+       "total_tokens": 807
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "safety_smoke",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2181,
+      "usage": {
+       "input_tokens": 720,
+       "output_tokens": 87,
+       "total_tokens": 807
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "v2s5": "relevant",
+        "D": "relevant",
+        "v2s2": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1749,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 62,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1784,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 62,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1709,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 62,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1742,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 62,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "insufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "negation_noise",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1873,
+      "usage": {
+       "input_tokens": 682,
+       "output_tokens": 62,
+       "total_tokens": 744
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "c30": "relevant",
+        "c15": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2042,
+      "usage": {
+       "input_tokens": 735,
+       "output_tokens": 87,
+       "total_tokens": 822
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2114,
+      "usage": {
+       "input_tokens": 735,
+       "output_tokens": 87,
+       "total_tokens": 822
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1976,
+      "usage": {
+       "input_tokens": 735,
+       "output_tokens": 87,
+       "total_tokens": 822
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2244,
+      "usage": {
+       "input_tokens": 735,
+       "output_tokens": 87,
+       "total_tokens": 822
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "ticket_mix",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2224,
+      "usage": {
+       "input_tokens": 735,
+       "output_tokens": 87,
+       "total_tokens": 822
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "T0002": "relevant",
+        "T0090": "irrelevant",
+        "c15": "relevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1684,
+      "usage": {
+       "input_tokens": 686,
+       "output_tokens": 60,
+       "total_tokens": 746
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1580,
+      "usage": {
+       "input_tokens": 686,
+       "output_tokens": 60,
+       "total_tokens": 746
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1698,
+      "usage": {
+       "input_tokens": 686,
+       "output_tokens": 60,
+       "total_tokens": 746
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 3,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1759,
+      "usage": {
+       "input_tokens": 686,
+       "output_tokens": 60,
+       "total_tokens": 746
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "category_generic",
+      "repeat": 4,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1781,
+      "usage": {
+       "input_tokens": 686,
+       "output_tokens": 60,
+       "total_tokens": 746
+      },
+      "info": {
+       "status": "graded",
+       "coverage": "sufficient",
+       "verdicts": {
+        "A": "relevant",
+        "C": "irrelevant"
+       },
+       "model_used": "zhipu/glm-4.7",
+       "reason": null
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 0.9062,
+    "latency_p50_ms": 2054,
+    "cost_cny_per_call": 0.002044,
+    "verdict": "primary_ok",
+    "reasons": []
+   }
+  ],
+  "primary": "glm",
+  "fallback": null,
+  "note": "无来自另一家厂商的达标备用位（§3.8 要求主备至少两家）"
+ }
+]

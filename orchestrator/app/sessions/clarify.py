@@ -23,6 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
 from app.prompts import compose_system_prompt, wrap_data
+from app.prompts.system import state_layer
 from app.sessions.cards import get_catalog, get_plans
 
 log = logging.getLogger("sessions.clarify")
@@ -30,7 +31,7 @@ log = logging.getLogger("sessions.clarify")
 Reason = Literal["product", "symptom", "conflict"]
 MAX_CLARIFICATIONS = 2  # R7：连续澄清 2 次并收到回答后仍不明 → 升级
 CLARIFY_BUDGET_MS = 4000
-CLARIFY_PROMPT_VERSION = "2026-09-12.1"
+CLARIFY_PROMPT_VERSION = "2026-09-13.1"
 
 # 指代 / 空泛表达：文本去掉产品与品类词后若只剩这些，视为「没有具体故障描述」
 _DEICTIC = re.compile(
@@ -127,6 +128,16 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     category = catalog.category_hint(text) or next(
         (catalog.category_hint(h) for h in hints if catalog.category_hint(h)), None
     )
+    if not category:
+        # A short answer such as an unknown model must retain this issue's device.
+        # Do not scan the whole transcript: it can contain other devices/issues.
+        issue = (state.get("issues") or {}).get(state.get("active_issue_id")) or {}
+        device_category = (issue.get("device_ref") or {}).get("category")
+        for saved in (state.get("category"), device_category):
+            if saved:
+                category = saved if saved in catalog.categories else catalog.category_hint(saved)
+                if category:
+                    break
     update: dict[str, Any] = {}
     if abandoned_card:
         # 用户对产品卡片未选而改发文本：卡片已由 intake 作废；这里只留观察记录（次数已在出卡时计入）
@@ -192,7 +203,7 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                 )
             else:
                 update["product_state"] = "unknown"
-                return _clarify(clar, "product", update)
+                return _clarify(clar, "product", update, unmatched_hints=hints)
 
     if update.get("out_of_scope"):
         return Decision("continue", update)
@@ -285,6 +296,8 @@ def _has_symptom_text(catalog, text: str) -> bool:
 
 
 def fixed_question(reason: str, detail: dict[str, Any]) -> str:
+    if reason == "product" and detail.get("unmatched_hints"):
+        return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
     tpl = FIXED_QUESTIONS.get(reason, FIXED_QUESTIONS["product"])
     try:
         return tpl.format(**detail)
@@ -293,7 +306,7 @@ def fixed_question(reason: str, detail: dict[str, Any]) -> str:
 
 
 CLARIFY_INSTRUCTION = {
-    "product": "用户没有说明设备的品类或型号。请只输出一句具体的中文追问，请用户提供品类或型号；不要给排查步骤，不要猜测型号。",
+    "product": "当前信息尚未匹配到可用的产品或品类。结合历史问答，只追问仍缺少的信息；用户已提供型号但未匹配时，先说明已收到且目录未匹配，再请补充品类或机身型号标签，不要重复询问已回答的型号。不要给排查步骤，不要猜测型号。",
     "symptom": "设备已确认，但用户没有描述具体故障现象。请只输出一句具体的中文追问，给出两三个常见现象让用户选择（如吸力变弱 / 无法启动 / 异响）；不要给排查步骤。",
     "conflict": "用户之前确认的产品与这次提到的产品不一致。请只输出一句具体的中文追问，请用户确认要排查的是哪一台；不要给排查步骤。",
 }
@@ -305,11 +318,14 @@ def build_messages(
     ctx = ""
     if reason == "conflict":
         ctx = f"之前确认：{detail.get('confirmed')}；这次提到：{detail.get('mentioned')}。"
+    elif reason == "product" and detail.get("unmatched_hints"):
+        ctx = wrap_data("、".join(detail["unmatched_hints"]), kind="unmatched_product_hints")
     return [
         ("system", compose_system_prompt(strategy, summary)),
         (
             "human",
-            f'{CLARIFY_INSTRUCTION[reason]}{ctx}\n只输出 JSON：{{"question": "..."}}\n{wrap_data(text)}',
+            wrap_data(state_layer(summary or {}), kind="session_state")
+            + f'{CLARIFY_INSTRUCTION[reason]}{ctx}\n只输出 JSON：{{"question": "..."}}\n{wrap_data(text)}',
         ),
     ]
 

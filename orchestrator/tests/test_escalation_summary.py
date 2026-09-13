@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 from haike_contracts.common import EscalationSummary
 from haike_contracts.events import parse_event
 from httpx import ASGITransport, AsyncClient
@@ -21,6 +23,8 @@ def test_build_summary_without_model_and_contract_shape():
             {"role": "user", "text": "扫地机冒烟了"},
             {"role": "user", "text": "现在还有焦味"},
         ],
+        "active_issue_id": "i", "issues": {"i": {"facts": [{"kind": "symptom", "value": "扫地机冒烟了", "status": "active"}]}},
+        "observations": ["现在还有焦味"],
         "safety_flags": [{"rule_id": "R4", "source": "text", "term": "冒烟", "ts": "t"}],
         "product_state": "category_only",
     }
@@ -29,7 +33,7 @@ def test_build_summary_without_model_and_contract_shape():
     assert s.receipt.status == "not_collected"
     assert s.reason.rule_id == "R4" and "冒烟" in s.reason.text
     assert s.product.startswith("扫地机器人") and s.problem == "扫地机冒烟了"
-    assert s.observations == ["用户补充：现在还有焦味"]
+    assert s.observations == ["现在还有焦味"]
     polish = [t for t in s.model_trace if t.task == "escalate.summary_polish"]
     assert polish and polish[0].model_used == "skipped"
     text = summary_to_text(s)
@@ -68,13 +72,13 @@ async def test_safety_first_message_full_chain(mem_runtime):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             resp = await client.post(
-                f"/sessions/{sid}/messages", data={"text": "eufy X9 Pro 充电时冒烟了！"}
+                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "eufy X9 Pro 充电时冒烟了！"})
             )
             events = sse.parse(resp.text)
             snap = (await client.get(f"/sessions/{sid}")).json()
     finally:
         set_rules_service(None)
-    types = [e["type"] for e in events]
+    types = [e["type"] for e in events if e["type"] not in {"input_received", "issue_changed", "summary_updated"}]
     assert types == [
         "run_started",
         "progress",
@@ -89,11 +93,11 @@ async def test_safety_first_message_full_chain(mem_runtime):
         parse_event(e)
     assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "escalate"]
     msg = next(e for e in events if e["type"] == "message")
-    assert "关机" in msg["delta"]
+    assert "停止使用" in msg["delta"]
     summ = next(e for e in events if e["type"] == "escalation_summary")
     s = EscalationSummary.model_validate(summ["summary"])
     assert s.receipt.status == "not_collected" and s.reason.rule_id == "R4"
-    assert s.problem == "eufy X9 Pro 充电时冒烟了！"
+    assert s.problem == "（用户尚未描述问题）"  # 本测试的业务 fixture 不抽取事实；风险候选仍阻止操作
     assert any(
         t.task == "escalate.summary_polish" and t.model_used == "skipped" for t in s.model_trace
     )

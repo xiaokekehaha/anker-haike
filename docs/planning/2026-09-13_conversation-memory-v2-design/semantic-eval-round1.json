@@ -1,0 +1,2613 @@
+{
+  "cases": [
+    {
+      "id": "history-1",
+      "family": "history",
+      "text": "我之前问了什么问题",
+      "expected": {
+        "primary_intent": "history_query"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2869,
+      "context_tokens": 1739
+    },
+    {
+      "id": "history-2",
+      "family": "history",
+      "text": "最开始我问的是什么",
+      "expected": {
+        "primary_intent": "history_query"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "first",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1704,
+      "context_tokens": 1739
+    },
+    {
+      "id": "history-3",
+      "family": "history",
+      "text": "你刚才怎么回答我的",
+      "expected": {
+        "primary_intent": "history_query"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2007,
+      "context_tokens": 1739
+    },
+    {
+      "id": "history-4",
+      "family": "history",
+      "text": "请按时间回顾我们的问答",
+      "expected": {
+        "primary_intent": "history_query"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1799,
+      "context_tokens": 1741
+    },
+    {
+      "id": "history-5",
+      "family": "history",
+      "text": "帮我找第一轮的问题和你的回复",
+      "expected": {
+        "primary_intent": "history_query"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "first",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1694,
+      "context_tokens": 1742
+    },
+    {
+      "id": "explain-1",
+      "family": "explain",
+      "text": "为什么要检查滚刷",
+      "expected": {
+        "primary_intent": "explain",
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1755,
+      "context_tokens": 1739
+    },
+    {
+      "id": "explain-2",
+      "family": "explain",
+      "text": "这一步是为了判断什么",
+      "expected": {
+        "primary_intent": "explain",
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1976,
+      "context_tokens": 1740
+    },
+    {
+      "id": "explain-3",
+      "family": "explain",
+      "text": "你说的缠绕是什么意思",
+      "expected": {
+        "primary_intent": "explain",
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2324,
+      "context_tokens": 1741
+    },
+    {
+      "id": "explain-4",
+      "family": "explain",
+      "text": "先解释卡片的操作目的",
+      "expected": {
+        "primary_intent": "explain",
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1546,
+      "context_tokens": 1741
+    },
+    {
+      "id": "explain-5",
+      "family": "explain",
+      "text": "这个步骤我没理解，能解释一下吗",
+      "expected": {
+        "primary_intent": "explain",
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1746,
+      "context_tokens": 1745
+    },
+    {
+      "id": "new-1",
+      "family": "new",
+      "text": "新问题",
+      "expected": {
+        "primary_intent": "new_issue"
+      },
+      "actual": {
+        "primary_intent": "new_issue",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 556,
+      "context_tokens": 1734
+    },
+    {
+      "id": "new-2",
+      "family": "new",
+      "text": "我想问个新问题",
+      "expected": {
+        "primary_intent": "new_issue"
+      },
+      "actual": {
+        "primary_intent": "new_issue",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 562,
+      "context_tokens": 1739
+    },
+    {
+      "id": "new-3",
+      "family": "new",
+      "text": "先换个话题，我有另外的问题",
+      "expected": {
+        "primary_intent": "new_issue"
+      },
+      "actual": {
+        "primary_intent": "new_issue",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 507,
+      "context_tokens": 1742
+    },
+    {
+      "id": "new-4",
+      "family": "new",
+      "text": "现在开始另一个问题，等我描述",
+      "expected": {
+        "primary_intent": "new_issue"
+      },
+      "actual": {
+        "primary_intent": "new_issue",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请描述新的问题。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1671,
+      "context_tokens": 1742
+    },
+    {
+      "id": "new-5",
+      "family": "new",
+      "text": "这个先放着，我要提新问题",
+      "expected": {
+        "primary_intent": "new_issue"
+      },
+      "actual": {
+        "primary_intent": "new_issue",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 710,
+      "context_tokens": 1742
+    },
+    {
+      "id": "resume-1",
+      "family": "resume",
+      "text": "回到耳机没有声音的问题",
+      "expected": {
+        "primary_intent": "resume_issue",
+        "target_issue_id": "ear"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": "ear",
+        "device_relation": "other",
+        "device_category": "headphones",
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [
+            "first"
+          ],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [
+        "primary_intent: 'history_query' != 'resume_issue'"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2177,
+      "context_tokens": 1740
+    },
+    {
+      "id": "resume-2",
+      "family": "resume",
+      "text": "继续最初那个耳机问题",
+      "expected": {
+        "primary_intent": "resume_issue",
+        "target_issue_id": "ear"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "first",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [
+        "primary_intent: 'history_query' != 'resume_issue'",
+        "target_issue_id: None != 'ear'"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1655,
+      "context_tokens": 1740
+    },
+    {
+      "id": "resume-3",
+      "family": "resume",
+      "text": "机器人先放着，处理之前的耳机",
+      "expected": {
+        "primary_intent": "resume_issue",
+        "target_issue_id": "ear"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "first",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [
+        "primary_intent: 'history_query' != 'resume_issue'",
+        "target_issue_id: None != 'ear'"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2840,
+      "context_tokens": 1744
+    },
+    {
+      "id": "resume-4",
+      "family": "resume",
+      "text": "我要接着排查耳机没声音",
+      "expected": {
+        "primary_intent": "resume_issue",
+        "target_issue_id": "ear"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": "ear",
+        "device_relation": "other",
+        "device_category": "headphones",
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [
+        "primary_intent: 'history_query' != 'resume_issue'"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1436,
+      "context_tokens": 1742
+    },
+    {
+      "id": "resume-5",
+      "family": "resume",
+      "text": "请切回先前的耳机问题",
+      "expected": {
+        "primary_intent": "resume_issue",
+        "target_issue_id": "ear"
+      },
+      "actual": {
+        "primary_intent": "history_query",
+        "secondary_intents": [],
+        "target_issue_id": "ear",
+        "device_relation": "other",
+        "device_category": "headphones",
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": {
+          "mode": "recent",
+          "source_entry_ids": [],
+          "from_time": null,
+          "to_time": null
+        },
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [
+        "primary_intent: 'history_query' != 'resume_issue'"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1752,
+      "context_tokens": 1742
+    },
+    {
+      "id": "correction-1",
+      "family": "correction",
+      "text": "刚才说滚刷不转不对，其实是转得慢",
+      "expected": {
+        "primary_intent": "correct",
+        "correction_target": "robot-fact"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "刚才说滚刷不转不对，其实是转得慢"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 944,
+      "context_tokens": 1751
+    },
+    {
+      "id": "correction-2",
+      "family": "correction",
+      "text": "更正机器人现象：不是不转，是转速很慢",
+      "expected": {
+        "primary_intent": "correct",
+        "correction_target": "robot-fact"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "更正机器人现象：不是不转，是转速很慢"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1029,
+      "context_tokens": 1750
+    },
+    {
+      "id": "correction-3",
+      "family": "correction",
+      "text": "我说错了，滚刷能转，就是转得慢",
+      "expected": {
+        "primary_intent": "correct",
+        "correction_target": "robot-fact"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "我说错了，滚刷能转，就是转得慢"
+          }
+        ],
+        "clarification": "请确认：您是指滚刷现在可以转动，但是转速很慢吗？",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1279,
+      "context_tokens": 1749
+    },
+    {
+      "id": "correction-4",
+      "family": "correction",
+      "text": "把滚刷不转改为滚刷转速慢",
+      "expected": {
+        "primary_intent": "correct",
+        "correction_target": "robot-fact"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "把滚刷不转改为滚刷转速慢"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 933,
+      "context_tokens": 1747
+    },
+    {
+      "id": "correction-5",
+      "family": "correction",
+      "text": "刚才滚刷不转的描述撤回，实际转得慢",
+      "expected": {
+        "primary_intent": "correct",
+        "correction_target": "robot-fact"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": "滚刷转得慢",
+            "quote": "刚才滚刷不转的描述撤回，实际转得慢"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1269,
+      "context_tokens": 1751
+    },
+    {
+      "id": "ambiguous_correction-1",
+      "family": "ambiguous_correction",
+      "text": "刚说错了",
+      "expected": {
+        "primary_intent": "correct",
+        "clarification_required": true
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请说明具体纠正哪条信息或描述正确情况。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1771,
+      "context_tokens": 1740
+    },
+    {
+      "id": "ambiguous_correction-2",
+      "family": "ambiguous_correction",
+      "text": "不对我表达错了",
+      "expected": {
+        "primary_intent": "correct",
+        "clarification_required": true
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请说明您原本想表达的正确情况是什么。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1766,
+      "context_tokens": 1742
+    },
+    {
+      "id": "ambiguous_correction-3",
+      "family": "ambiguous_correction",
+      "text": "上面那句不准确",
+      "expected": {
+        "primary_intent": "correct",
+        "clarification_required": true
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请说明哪部分不准确，或提供正确的描述。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1792,
+      "context_tokens": 1742
+    },
+    {
+      "id": "ambiguous_correction-4",
+      "family": "ambiguous_correction",
+      "text": "刚才口误了",
+      "expected": {
+        "primary_intent": "correct",
+        "clarification_required": true
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请说明具体纠正哪条信息或事实。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1906,
+      "context_tokens": 1741
+    },
+    {
+      "id": "ambiguous_correction-5",
+      "family": "ambiguous_correction",
+      "text": "我要更正一下，等我想想",
+      "expected": {
+        "primary_intent": "correct",
+        "clarification_required": true
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请提供具体的更正内容。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1709,
+      "context_tokens": 1746
+    },
+    {
+      "id": "feedback-1",
+      "family": "feedback",
+      "text": "按卡片检查清理过了，还是不转",
+      "expected": {
+        "primary_intent": "step_feedback",
+        "feedback": "not_solved"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": "not_solved",
+        "feedback_quote": "按卡片检查清理过了，还是不转",
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 4047,
+      "context_tokens": 1746
+    },
+    {
+      "id": "feedback-2",
+      "family": "feedback",
+      "text": "做完这一步，问题还没解决",
+      "expected": {
+        "primary_intent": "step_feedback",
+        "feedback": "not_solved"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": "not_solved",
+        "feedback_quote": "做完这一步，问题还没解决",
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1680,
+      "context_tokens": 1742
+    },
+    {
+      "id": "feedback-3",
+      "family": "feedback",
+      "text": "按你说的检查了，滚刷依旧不转",
+      "expected": {
+        "primary_intent": "step_feedback",
+        "feedback": "not_solved"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": "not_solved",
+        "feedback_quote": "按你说的检查了，滚刷依旧不转",
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 4174,
+      "context_tokens": 1747
+    },
+    {
+      "id": "feedback-4",
+      "family": "feedback",
+      "text": "这一步我操作完了，没有解决问题",
+      "expected": {
+        "primary_intent": "step_feedback",
+        "feedback": "not_solved"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": "not_solved",
+        "feedback_quote": "这一步我操作完了，没有解决问题",
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1729,
+      "context_tokens": 1742
+    },
+    {
+      "id": "feedback-5",
+      "family": "feedback",
+      "text": "照卡片做了，现在仍然有原来的问题",
+      "expected": {
+        "primary_intent": "step_feedback",
+        "feedback": "not_solved"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": "not_solved",
+        "feedback_quote": "照卡片做了，现在仍然有原来的问题",
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1663,
+      "context_tokens": 1746
+    },
+    {
+      "id": "pending_answer-1",
+      "family": "pending_answer",
+      "text": "我的型号是X9 Pro，选它",
+      "expected": {
+        "primary_intent": "answer_pending",
+        "pending_kind": "select_product"
+      },
+      "actual": {
+        "primary_intent": "answer_pending",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": {
+          "kind": "select_product",
+          "payload": {
+            "sku": "T2351",
+            "name": "X9 Pro"
+          },
+          "quote": "我的型号是X9 Pro，选它"
+        },
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2207,
+      "context_tokens": 1729
+    },
+    {
+      "id": "pending_answer-2",
+      "family": "pending_answer",
+      "text": "选卡片里的X9 Pro",
+      "expected": {
+        "primary_intent": "answer_pending",
+        "pending_kind": "select_product"
+      },
+      "actual": {
+        "primary_intent": "answer_pending",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": {
+          "kind": "select_product",
+          "payload": {
+            "sku": "T2351",
+            "name": "X9 Pro"
+          },
+          "quote": "选卡片里的X9 Pro"
+        },
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2107,
+      "context_tokens": 1726
+    },
+    {
+      "id": "pending_answer-3",
+      "family": "pending_answer",
+      "text": "确认是第一个X9 Pro",
+      "expected": {
+        "primary_intent": "answer_pending",
+        "pending_kind": "select_product"
+      },
+      "actual": {
+        "primary_intent": "answer_pending",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": {
+          "kind": "select_product",
+          "payload": {
+            "sku": "T2351"
+          },
+          "quote": "确认是第一个X9 Pro"
+        },
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2223,
+      "context_tokens": 1726
+    },
+    {
+      "id": "pending_answer-4",
+      "family": "pending_answer",
+      "text": "选T2351这款",
+      "expected": {
+        "primary_intent": "answer_pending",
+        "pending_kind": "select_product"
+      },
+      "actual": {
+        "primary_intent": "answer_pending",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "T2351"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": {
+          "kind": "select_product",
+          "payload": {
+            "sku": "T2351"
+          },
+          "quote": "选T2351这款"
+        },
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3128,
+      "context_tokens": 1725
+    },
+    {
+      "id": "pending_answer-5",
+      "family": "pending_answer",
+      "text": "卡片型号我选X9 Pro",
+      "expected": {
+        "primary_intent": "answer_pending",
+        "pending_kind": "select_product"
+      },
+      "actual": {
+        "primary_intent": "answer_pending",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": {
+          "kind": "select_product",
+          "payload": {
+            "sku": "T2351",
+            "name": "X9 Pro"
+          },
+          "quote": "卡片型号我选X9 Pro"
+        },
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2284,
+      "context_tokens": 1727
+    },
+    {
+      "id": "risk_reported-1",
+      "family": "risk_reported",
+      "text": "这台机器人冒烟了",
+      "expected": {
+        "risk_assertion": "reported"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "anxious",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "reported",
+        "risk_quote": "这台机器人冒烟了"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1904,
+      "context_tokens": 1741
+    },
+    {
+      "id": "risk_reported-2",
+      "family": "risk_reported",
+      "text": "机器人现在真的在冒烟",
+      "expected": {
+        "risk_assertion": "reported"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "secondary_intents": [
+          "correct"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "anxious",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "机器人现在真的在冒烟"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "reported",
+        "risk_quote": "机器人现在真的在冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2345,
+      "context_tokens": 1741
+    },
+    {
+      "id": "risk_reported-3",
+      "family": "risk_reported",
+      "text": "刚才这台机器突然冒烟",
+      "expected": {
+        "risk_assertion": "reported"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "secondary_intents": [
+          "new_issue"
+        ],
+        "target_issue_id": null,
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "anxious",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请确认冒烟是发生在刚才检查滚刷的过程中，还是其他时间？",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "reported",
+        "risk_quote": "刚才这台机器突然冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2168,
+      "context_tokens": 1744
+    },
+    {
+      "id": "risk_reported-4",
+      "family": "risk_reported",
+      "text": "我看见X9 Pro正在冒烟",
+      "expected": {
+        "risk_assertion": "reported"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "anxious",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "reported",
+        "risk_quote": "我看见X9 Pro正在冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1843,
+      "context_tokens": 1745
+    },
+    {
+      "id": "risk_reported-5",
+      "family": "risk_reported",
+      "text": "同一台机器人出现冒烟现象",
+      "expected": {
+        "risk_assertion": "reported"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "anxious",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "冒烟",
+            "quote": "同一台机器人出现冒烟现象",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "reported",
+        "risk_quote": "同一台机器人出现冒烟现象"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2326,
+      "context_tokens": 1745
+    },
+    {
+      "id": "risk_negated-1",
+      "family": "risk_negated",
+      "text": "机器人没有冒烟",
+      "expected": {
+        "risk_assertion": "negated"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请明确您纠正的是哪条事实？当前记录的事实是“滚刷不转”。如果您是想表达“之前提到的冒烟情况不存在”，请确认是否要清除相关风险标记；如果您是想纠正“滚刷不转”这一现象，请说明正确现象。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "negated",
+        "risk_quote": "机器人没有冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2577,
+      "context_tokens": 1739
+    },
+    {
+      "id": "risk_negated-2",
+      "family": "risk_negated",
+      "text": "确认这台机器不冒烟，只是滚刷不转",
+      "expected": {
+        "risk_assertion": "negated"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "确认这台机器不冒烟，只是滚刷不转"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "negated",
+        "risk_quote": "确认这台机器不冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2197,
+      "context_tokens": 1750
+    },
+    {
+      "id": "risk_negated-3",
+      "family": "risk_negated",
+      "text": "没有冒烟这种情况",
+      "expected": {
+        "risk_assertion": "negated"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": "请确认您是指“滚刷不转”这个现象不存在，还是指之前提到的其他情况（如冒烟）？由于当前事实库中仅记录了“滚刷不转”，您的澄清需要针对具体哪条信息。",
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "negated",
+        "risk_quote": "没有冒烟这种情况"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2434,
+      "context_tokens": 1740
+    },
+    {
+      "id": "risk_negated-4",
+      "family": "risk_negated",
+      "text": "机器从来没冒烟",
+      "expected": {
+        "risk_assertion": "negated"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "negated",
+        "risk_quote": "机器从来没冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1575,
+      "context_tokens": 1741
+    },
+    {
+      "id": "risk_negated-5",
+      "family": "risk_negated",
+      "text": "我检查过了，并没有冒烟",
+      "expected": {
+        "risk_assertion": "negated"
+      },
+      "actual": {
+        "primary_intent": "correct",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [
+          {
+            "fact_id": "robot-fact",
+            "value": null,
+            "quote": "我检查过了，并没有冒烟"
+          }
+        ],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "negated",
+        "risk_quote": "我检查过了，并没有冒烟"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2117,
+      "context_tokens": 1744
+    },
+    {
+      "id": "human-1",
+      "family": "human",
+      "text": "请转人工客服",
+      "expected": {
+        "primary_intent": "request_human"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1555,
+      "context_tokens": 1736
+    },
+    {
+      "id": "human-2",
+      "family": "human",
+      "text": "我要找真人客服处理",
+      "expected": {
+        "primary_intent": "request_human"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1527,
+      "context_tokens": 1737
+    },
+    {
+      "id": "human-3",
+      "family": "human",
+      "text": "不要继续排查了，我要人工",
+      "expected": {
+        "primary_intent": "request_human"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1501,
+      "context_tokens": 1741
+    },
+    {
+      "id": "human-4",
+      "family": "human",
+      "text": "帮我联系人工客服",
+      "expected": {
+        "primary_intent": "request_human"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1904,
+      "context_tokens": 1737
+    },
+    {
+      "id": "human-5",
+      "family": "human",
+      "text": "我明确要求人工服务",
+      "expected": {
+        "primary_intent": "request_human"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1328,
+      "context_tokens": 1737
+    },
+    {
+      "id": "handoff_status-1",
+      "family": "handoff_status",
+      "text": "现在转给人工了吗",
+      "expected": {
+        "primary_intent": "handoff_status"
+      },
+      "actual": {
+        "primary_intent": "handoff_status",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1950,
+      "context_tokens": 1740
+    },
+    {
+      "id": "handoff_status-2",
+      "family": "handoff_status",
+      "text": "客服接单了吗",
+      "expected": {
+        "primary_intent": "handoff_status"
+      },
+      "actual": {
+        "primary_intent": "handoff_status",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1725,
+      "context_tokens": 1739
+    },
+    {
+      "id": "handoff_status-3",
+      "family": "handoff_status",
+      "text": "你已经帮我转人工了吗",
+      "expected": {
+        "primary_intent": "handoff_status"
+      },
+      "actual": {
+        "primary_intent": "handoff_status",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1795,
+      "context_tokens": 1742
+    },
+    {
+      "id": "handoff_status-4",
+      "family": "handoff_status",
+      "text": "人工转接现在是什么状态",
+      "expected": {
+        "primary_intent": "handoff_status"
+      },
+      "actual": {
+        "primary_intent": "handoff_status",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1566,
+      "context_tokens": 1741
+    },
+    {
+      "id": "handoff_status-5",
+      "family": "handoff_status",
+      "text": "能确认真人客服已经收到吗",
+      "expected": {
+        "primary_intent": "handoff_status"
+      },
+      "actual": {
+        "primary_intent": "handoff_status",
+        "secondary_intents": [],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1728,
+      "context_tokens": 1742
+    },
+    {
+      "id": "social-1",
+      "family": "social",
+      "text": "谢谢你",
+      "expected": {
+        "primary_intent": "social"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 833,
+      "context_tokens": 1734
+    },
+    {
+      "id": "social-2",
+      "family": "social",
+      "text": "你好",
+      "expected": {
+        "primary_intent": "social"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 630,
+      "context_tokens": 1732
+    },
+    {
+      "id": "social-3",
+      "family": "social",
+      "text": "辛苦了",
+      "expected": {
+        "primary_intent": "social"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 599,
+      "context_tokens": 1735
+    },
+    {
+      "id": "social-4",
+      "family": "social",
+      "text": "好的谢谢",
+      "expected": {
+        "primary_intent": "social"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 548,
+      "context_tokens": 1734
+    },
+    {
+      "id": "social-5",
+      "family": "social",
+      "text": "你还在吗",
+      "expected": {
+        "primary_intent": "social"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 774,
+      "context_tokens": 1736
+    },
+    {
+      "id": "preference-1",
+      "family": "preference",
+      "text": "回答请简短一点",
+      "expected": {
+        "primary_intent": "preference"
+      },
+      "actual": {
+        "primary_intent": "preference",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1761,
+      "context_tokens": 1739
+    },
+    {
+      "id": "preference-2",
+      "family": "preference",
+      "text": "以后解释详细一点",
+      "expected": {
+        "primary_intent": "preference"
+      },
+      "actual": {
+        "primary_intent": "preference",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1608,
+      "context_tokens": 1737
+    },
+    {
+      "id": "preference-3",
+      "family": "preference",
+      "text": "请少说一点，我喜欢简洁",
+      "expected": {
+        "primary_intent": "preference"
+      },
+      "actual": {
+        "primary_intent": "preference",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1526,
+      "context_tokens": 1742
+    },
+    {
+      "id": "preference-4",
+      "family": "preference",
+      "text": "后面请详细解释原因",
+      "expected": {
+        "primary_intent": "preference"
+      },
+      "actual": {
+        "primary_intent": "preference",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1594,
+      "context_tokens": 1740
+    },
+    {
+      "id": "preference-5",
+      "family": "preference",
+      "text": "请用更简短的话回复我",
+      "expected": {
+        "primary_intent": "preference"
+      },
+      "actual": {
+        "primary_intent": "preference",
+        "secondary_intents": [],
+        "target_issue_id": null,
+        "device_relation": "unknown",
+        "device_category": null,
+        "product_hints": [],
+        "emotion_level": "calm",
+        "facts": [],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1458,
+      "context_tokens": 1742
+    },
+    {
+      "id": "mixed-1",
+      "family": "mixed",
+      "text": "为什么这一步要检查滚刷？另外机器人还有异响",
+      "expected": {
+        "intent_one_of": [
+          "explain",
+          "supplement"
+        ],
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [
+          "new_issue"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "机器人有异响",
+            "quote": "另外机器人还有异响",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2660,
+      "context_tokens": 1747
+    },
+    {
+      "id": "mixed-2",
+      "family": "mixed",
+      "text": "先解释上面那一步，我补充一下机器人会异响",
+      "expected": {
+        "intent_one_of": [
+          "explain",
+          "supplement"
+        ],
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [
+          "supplement"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "机器人会异响",
+            "quote": "我补充一下机器人会异响",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2108,
+      "context_tokens": 1749
+    },
+    {
+      "id": "mixed-3",
+      "family": "mixed",
+      "text": "讲讲检查滚刷的原因，同时记录一下有异响",
+      "expected": {
+        "intent_one_of": [
+          "explain",
+          "supplement"
+        ],
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [
+          "supplement"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "有异响",
+            "quote": "记录一下有异响",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2027,
+      "context_tokens": 1747
+    },
+    {
+      "id": "mixed-4",
+      "family": "mixed",
+      "text": "这一步为什么有用？补充现象是异响",
+      "expected": {
+        "intent_one_of": [
+          "explain",
+          "supplement"
+        ],
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [
+          "supplement"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "异响",
+            "quote": "补充现象是异响",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2541,
+      "context_tokens": 1747
+    },
+    {
+      "id": "mixed-5",
+      "family": "mixed",
+      "text": "先解释这个步骤，别忘了记下机器异响",
+      "expected": {
+        "intent_one_of": [
+          "explain",
+          "supplement"
+        ],
+        "feedback": null
+      },
+      "actual": {
+        "primary_intent": "explain",
+        "secondary_intents": [
+          "supplement"
+        ],
+        "target_issue_id": "robot",
+        "device_relation": "current",
+        "device_category": "robot_vacuum",
+        "product_hints": [
+          "X9 Pro"
+        ],
+        "emotion_level": "calm",
+        "facts": [
+          {
+            "kind": "symptom",
+            "value": "机器异响",
+            "quote": "别忘了记下机器异响",
+            "occurred_at": null,
+            "time_expression": null,
+            "precision": null
+          }
+        ],
+        "corrections": [],
+        "clarification": null,
+        "feedback": null,
+        "feedback_quote": null,
+        "pending_answer": null,
+        "history_request": null,
+        "risk_assertion": "none",
+        "risk_quote": null
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2257,
+      "context_tokens": 1747
+    }
+  ],
+  "passed": 70,
+  "total": 75
+}

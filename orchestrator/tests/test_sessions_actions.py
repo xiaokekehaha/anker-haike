@@ -1,5 +1,7 @@
 """票 20：三段式等待节点与 /actions 基本通路。"""
 
+from tests.message_form import action_body, message_form
+
 import uuid
 
 from haike_contracts.events import parse_event
@@ -22,7 +24,7 @@ def _cfg(sid):
 
 
 async def _send(client, sid, text):
-    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text})
+    resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
 
@@ -30,7 +32,7 @@ async def _send(client, sid, text):
 def _action(pending, sku, **over):
     return {
         "action_id": uuid.uuid4().hex,
-        "interrupt_id": pending["interrupt_id"],
+        "input_token": pending["input_token"],
         "card_id": pending["card_id"],
         "expected_version": pending["version"],
         "kind": "select_product",
@@ -48,15 +50,18 @@ async def test_multi_hit_emits_card_then_awaiting_and_done_awaiting(mem_runtime)
     types = [e["type"] for e in events]
     assert types == [
         "run_started",
+        "input_received",
         "progress",
         "progress",
+        "issue_changed",
+        "pending_changed",
         "product_card",
         "awaiting_input",
         "done",
     ]
     for e in events:
         parse_event(e)
-    card, awaiting, done = events[3], events[4], events[5]
+    card, awaiting, done = (next(e for e in events if e["type"] == kind) for kind in ("product_card", "awaiting_input", "done"))
     assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "disambiguate"]
     assert {c["sku"] for c in card["candidates"]} == {"EUFY-S1-PRO", "EUFY-BP-S1-PRO"}
     assert [c["in_scope"] for c in card["candidates"]] == [True, False]  # in_scope 优先
@@ -64,15 +69,16 @@ async def test_multi_hit_emits_card_then_awaiting_and_done_awaiting(mem_runtime)
     assert done["reason"] == "awaiting_input"
     assert awaiting["version"] == done["version"] == card["version"]
     assert awaiting["kind"] == "select_product"
-    assert awaiting["card_id"] == awaiting["interrupt_id"] == card["card_id"]
+    assert awaiting["card_id"] == card["card_id"] and awaiting["input_token"]
     # pending_card 在图状态里，且出现在快照 pending_input（验收项 4）
     state = await app.state.session_graph.aget_state(_cfg(sid))
     assert state.values["pending_card"]["card_id"] == card["card_id"]
     assert state.values["prepare_card_calls"] == 1
-    assert state.next == ("await_input",)
+    assert state.next == ()
     assert snap.pending_input.model_dump() == {
         "kind": "select_product",
-        "interrupt_id": card["card_id"],
+        "input_token": awaiting["input_token"],
+        "issue_id": snap.active_issue_id,
         "card_id": card["card_id"],
         "version": done["version"],
     }
@@ -92,7 +98,9 @@ async def test_card_id_is_stable_for_same_business_position(mem_runtime):
     expected = derive_card_id(
         sid, "disambiguate", candidates_key(["EUFY-S1-PRO", "EUFY-BP-S1-PRO"])
     )
-    assert first["card_id"] == expected
+    from app.conversation.reduce import stable_id
+    state = (await app.state.session_graph.aget_state(_cfg(sid))).values
+    assert first["card_id"] == stable_id(state["input_id"], state["active_issue_id"], expected)
     assert len(first["card_id"]) == 32
 
 
@@ -100,8 +108,8 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         events = await _send(client, sid, MULTI)
-        pending = events[4]
-        resp = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
+        pending = next(e for e in events if e["type"] == "awaiting_input")
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO")))
         assert resp.status_code == 200, resp.text
         assert resp.headers["content-type"].startswith("text/event-stream")
         resumed = sse.parse(resp.text)
@@ -109,17 +117,11 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
 
     types = [e["type"] for e in resumed]
     # 恢复 run：resumed=true（验收项 3）；await_input 重跑重发同一 card_id（验收项 1）；不再有 awaiting_input
-    assert resumed[0]["type"] == "run_started" and resumed[0]["resumed"] is True
+    assert resumed[0]["type"] == "run_started" and resumed[0]["resumed"] is False
     # 票 28：确认产品后先检索，多出 tool_call 事件与 retrieve 子阶段；这里只看主干顺序
-    core = [t for t in types if t not in ("tool_call", "evidence")]
-    # 票 28 / 33 / 34：确认产品后 retrieve → reply → guide 出步骤卡，progress 数量随之增加；只看主干顺序
-    assert (
-        core[:2] == ["run_started", "product_card"]
-        and core[-3:] == ["step_card", "awaiting_input", "done"]
-        and set(core[2:-3]) == {"progress"}
-    )
-    assert resumed[1]["card_id"] == pending["card_id"]
-    assert resumed[2]["stage"] == "diagnose"
+    assert "product_card" not in types
+    assert types[-3:] == ["step_card", "awaiting_input", "done"]
+    assert any(e["type"] == "pending_changed" and e["pending_id"] == pending["card_id"] and e["status"] == "consumed" for e in resumed)
     assert resumed[-1]["reason"] == "awaiting_input" and resumed[-1]["version"] > pending["version"]
     # seq 接续上一 run
     assert resumed[0]["seq"] == events[-1]["seq"] + 1
@@ -132,7 +134,7 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
     assert state.values["product_confirmed"]["sku"] == "EUFY-S1-PRO"
     assert state.values["product_state"] == "confirmed_sku"
     assert state.values["card_results"][pending["card_id"]] == {"selected_sku": "EUFY-S1-PRO"}
-    assert state.next == ("await_input",)  # 票 34：停在步骤卡等待反馈
+    assert state.next == ()  # 票 34：停在步骤卡等待反馈
 
     assert snap.pending_input.kind == "step_feedback" and snap.stage == "guide"
     cards = [i for i in snap.timeline if i.kind == "product_card"]
@@ -143,11 +145,11 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
 async def test_select_out_of_scope_candidate_routes_to_escalate(mem_runtime):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        pending = (await _send(client, sid, MULTI))[4]
+        pending = next(e for e in await _send(client, sid, MULTI) if e["type"] == "awaiting_input")
         resumed = sse.parse(
             (
                 await client.post(
-                    f"/sessions/{sid}/actions", json=_action(pending, "EUFY-BP-S1-PRO")
+                    f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-BP-S1-PRO"))
                 )
             ).text
         )
@@ -181,22 +183,21 @@ async def test_action_conflicts_and_validation(mem_runtime):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         # 无 pending → not_allowed_now
-        fake = {"kind": "select_product", "interrupt_id": "x", "card_id": "x", "version": 0}
-        r = await client.post(f"/sessions/{sid}/actions", json=_action(fake, "EUFY-S1-PRO"))
-        assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
-        SessionSnapshot.model_validate(r.json()["snapshot"])
+        fake = {"kind": "select_product", "input_token": "x", "card_id": "x", "version": 0}
+        r = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(fake, "EUFY-S1-PRO")))
+        assert r.status_code == 422  # 无问题时卡片动作缺少必填目标
 
-        pending = (await _send(client, sid, MULTI))[4]
+        pending = next(e for e in await _send(client, sid, MULTI) if e["type"] == "awaiting_input")
         # 版本不对
         r = await client.post(
             f"/sessions/{sid}/actions",
-            json=_action(pending, "EUFY-S1-PRO", expected_version=pending["version"] + 5),
+            json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO", expected_version=pending["version"] + 5)),
         )
         assert r.status_code == 409 and r.json()["code"] == "stale_version"
         assert r.json()["snapshot"]["version"] == pending["version"]
         # 卡片不对
         r = await client.post(
-            f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO", card_id="stale")
+            f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO", card_id="stale"))
         )
         assert r.status_code == 409 and r.json()["code"] == "stale_card"
         # kind 与 pending 不符
@@ -205,31 +206,31 @@ async def test_action_conflicts_and_validation(mem_runtime):
             "kind": "step_feedback",
             "payload": {"feedback": "solved"},
         }
-        r = await client.post(f"/sessions/{sid}/actions", json=bad_kind)
+        r = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", bad_kind))
         assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
         # rediagnose（票 37）只在 guide / verify 阶段允许：等待产品卡时 → not_allowed_now（版本正确时）
         r = await client.post(
             f"/sessions/{sid}/actions",
-            json={"action_id": "a", "expected_version": pending["version"], "kind": "rediagnose",
-                  "payload": {"text": "还有异响"}},
+            json=await action_body(client, f"/sessions/{sid}/actions", {"action_id": "a", "expected_version": pending["version"], "kind": "rediagnose",
+                  "payload": {"text": "还有异响"}}),
         )
-        assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
+        assert r.status_code == 422  # 外部 rediagnose 已移除
         # 契约校验失败 → 422
-        r = await client.post(f"/sessions/{sid}/actions", json={"kind": "select_product"})
+        r = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", {"kind": "select_product"}))
         assert r.status_code == 422 and r.json()["detail"]["code"] == "invalid_action"
         r = await client.post(
             f"/sessions/{sid}/actions",
-            json=_action(pending, "EUFY-S1-PRO", payload={"sku": "x", "extra": 1}),
+            json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO", payload={"sku": "x", "extra": 1})),
         )
         assert r.status_code == 422
         assert (
-            await client.post("/sessions/nope/actions", json=_action(pending, "x"))
+            await client.post("/sessions/nope/actions", json=await action_body(client, "/sessions/nope/actions", _action(pending, "x", target_issue_id="missing-issue")))
         ).status_code == 404
         # 冲突不改变状态：正确动作仍可通过
-        ok = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
+        ok = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO")))
         assert ok.status_code == 200 and sse.parse(ok.text)[-1]["reason"] == "awaiting_input"
         # 已消费的 pending 再发（新 action_id）：version 已前进 → stale_version（08 §4 先校 version）
-        again = await client.post(f"/sessions/{sid}/actions", json=_action(pending, "EUFY-S1-PRO"))
+        again = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-S1-PRO")))
         assert again.status_code == 409 and again.json()["code"] == "stale_version"
 
 

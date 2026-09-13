@@ -126,7 +126,7 @@ async def scn_duplicate_action(ctx: Ctx):
         r1 = await h.action(sid, body)
         r2 = await h.action(sid, body)
         _check(r1.status_code == 200 and r2.status_code == 200, f"{r1.status_code}/{r2.status_code} {r2.headers.get('_body')}")
-        _check(r1.headers.get("x-action-replayed") == "false" and r2.headers.get("x-action-replayed") == "true", "第二次应为重放")
+        _check(r1.headers.get("x-input-replayed") == "false" and r2.headers.get("x-input-replayed") == "true", "第二次应为重放")
         _check(r1.headers.get("x-run-id") == r2.headers.get("x-run-id"), "重放应指向同一 run")
         _check(r1.items == r2.items, "重放事件流应一致")
         runs = {e["run_id"] for e in await h.store.list_events(sid)}
@@ -153,17 +153,17 @@ async def scn_cannot_do_x3(ctx: Ctx):
         return {"counters": st["counters"], "escalate_reason": st["escalate_reason"], "steps_executed": len(st["steps_executed"])}
 
 
-@scenario("safety_first_sentence", "boundary", "首句安全词 → R4 直接升级，零模型调用、零检索", "09 §1；票 15")
+@scenario("safety_first_sentence", "boundary", "首句风险报告 → 一次语义判断后 R4，零检索", "09 §1；票 15")
 async def scn_safety_first(ctx: Ctx):
-    async with Harness(ctx.dir("sf1"), scripts=A1_SCRIPTS) as h:
+    async with Harness(ctx.dir("sf1"), scripts={"intake": [{"primary_intent": "report_problem", "device_relation": "current", "risk_assertion": "reported", "risk_quote": "$current", "facts": [{"value": "冒烟、烧焦味", "quote": "$current"}]}]}) as h:
         sid = await h.new_session()
         ev = await h.send(sid, "扫地机冒烟了，有烧焦味")
         summary = ev.first("escalation_summary")
         _check(summary is not None and summary["summary"]["reason"]["rule_id"] == "R4", f"应 R4 摘要：{ev.types}")
-        _check(h.fake.tasks_called == [], f"不应调用模型：{h.fake.tasks_called}")
+        _check(h.fake.tasks_called == ["intake"], f"只应调用语义入口：{h.fake.tasks_called}")
         _check(h.adapter.calls == [], "不应检索")
         _check(ev.done["reason"] == "completed", "安全升级直接结束")
-        return {"rule": "R4", "model_calls": 0, "elapsed_ms": ev.elapsed_ms, **_metrics(h, ev.run_id)}
+        return {"rule": "R4", "model_calls": 1, "elapsed_ms": ev.elapsed_ms, **_metrics(h, ev.run_id)}
 
 
 @scenario("safety_mid_text", "boundary", "排障中途文本出现安全词 → rediagnose 路径 R4，不检索", "09 §1；票 37")
@@ -250,7 +250,7 @@ async def scn_disconnect_refresh(ctx: Ctx):
     async with Harness(ctx.dir("dc"), scripts=A1_SCRIPTS) as h:
         sid, _ev, p = await _a1_to_step_card(h)
         body = h.feedback(p, "not_solved")
-        handle = await h.manager.start(sid, resume=body)
+        handle = await h.manager.start(sid, entry_action=body)
         sub = h.manager.subscribe(sid, handle.run_id, after_seq=0)
         first = await anext(sub)
         await sub.aclose()  # 断网
@@ -267,9 +267,8 @@ async def scn_disconnect_refresh(ctx: Ctx):
         seqs = [e["seq"] for e in tail]
         _check(seqs == sorted(seqs) and seqs[0] == first["seq"] + 1 and tail[-1]["type"] == "done", f"续接序列 {seqs}")
         # 客户端没收到响应就重试同一动作 → 必须重放而不是再执行
-        await h.store.try_insert_action(sid, body["action_id"], {"action_id": body["action_id"], "run_id": handle.run_id, "replayed": False, "version_after": None, "status": "done"})
         r2 = await h.action(sid, body)
-        _check(r2.status_code == 200 and r2.headers.get("x-action-replayed") == "true", "重试应重放")
+        _check(r2.status_code == 200 and r2.headers.get("x-input-replayed") == "true", "重试应重放")
         st = await h.state(sid)
         _check(st["counters"]["executed"] == 1, f"只推进一次 {st['counters']}")
         return {"resumed_events": len(tail), "counters": st["counters"], **_metrics(h, handle.run_id)}
@@ -279,12 +278,10 @@ async def scn_disconnect_refresh(ctx: Ctx):
 async def scn_restart(ctx: Ctx):
     async with Harness(ctx.dir("rs"), scripts=A1_SCRIPTS) as h:
         sid = await h.new_session()
-        await h.store.try_start_run(sid, "dead-run")
-        await h.store.append_event(sid, "dead-run", {"type": "run_started", "seq": 1, "run_id": "dead-run", "resumed": False, "deadline_ms": 25000})
-        await h.store.append_event(sid, "dead-run", {"type": "progress", "seq": 2, "run_id": "dead-run", "stage": "intake"})
+        receipt, _ = await h.store.reserve_input(sid, "interrupted-input", {"kind": "message", "text": A1_TEXT}, expected_version=0)
         fresh = RunManager(h.store, h.graph)  # 新进程
         fixed = await fresh.reconcile_orphans()
-        _check(fixed == [(sid, "dead-run")], f"应收尾孤儿 run：{fixed}")
+        _check(fixed == [(sid, receipt["run_id"])], f"应收尾孤儿 run：{fixed}")
         _check(await fresh.reconcile_orphans() == [], "二次 reconcile 幂等")
         from app.main import app
 
@@ -500,7 +497,7 @@ def _rewrite_stats(st: dict, h: Harness, ev: Events) -> dict[str, Any]:
     }
 
 
-INTAKE_DEBRIS = {"emotion_level": "calm", "product_hints": ["X9 Pro"], "symptoms": ["跑完了地上还是一堆渣"], "wants_human": False}
+INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current"}]}
 DEBRIS_TEXT = "eufy X9 Pro 它跑完了，地上还是一堆渣"
 REWRITE_GOOD = {"query": "扫地机器人 清扫后残留碎屑 清洁效果差"}
 REWRITE_BAD = {"query": "扫地机器人 清扫后残留碎屑 电机损坏"}  # 新增原因词 → 拒绝

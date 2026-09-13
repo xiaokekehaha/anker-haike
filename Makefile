@@ -52,6 +52,9 @@ kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=
 
 kb-eval: ## 检索评测（ARM=A|B|C，默认 A）：data/eval/retrieval/cases.yaml → reports/retrieval/
 	cd orchestrator && uv run --env-file ../.env haike-kb eval --arm $(or $(ARM),A)
+
+eval-worksheet: ## 生成标注工作单（金标 vs 实际召回并排）：reports/retrieval/worksheet.md
+	cd orchestrator && uv run python ../scripts/eval_worksheet.py
 kb-verify: ## 打印各知识库解析状态与 custom_metadata
 	cd orchestrator && uv run --env-file ../.env haike-kb verify
 kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import logging
 import os
 import time
@@ -123,7 +125,7 @@ async def test_first_message_with_safety_term_skips_models(mem_runtime, monkeypa
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             resp = await client.post(
-                f"/sessions/{sid}/messages", data={"text": "扫地机充电时冒烟了，怎么办"}
+                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机充电时冒烟了，怎么办"})
             )
             events = sse.parse(resp.text)
             snap = (await client.get(f"/sessions/{sid}")).json()
@@ -147,7 +149,7 @@ async def test_normal_message_still_goes_to_reply(mem_runtime):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             resp = await client.post(
-                f"/sessions/{sid}/messages", data={"text": "扫地机 X10 吸力变小了"}
+                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 吸力变小了"})
             )
     finally:
         set_rules_service(None)

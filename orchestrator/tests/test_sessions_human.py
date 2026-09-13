@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import action_body, message_form
+
 import asyncio
 import uuid
 
@@ -20,7 +22,7 @@ def _client():
 
 
 async def _send(client, sid: str, text: str) -> list[dict]:
-    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text})
+    resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
 
@@ -52,14 +54,14 @@ async def test_a2_select_breast_pump_out_of_scope_then_r8(mem_runtime):
         pending = next(e for e in await _send(client, sid, MULTI) if e["type"] == "awaiting_input")
         resp = await client.post(
             f"/sessions/{sid}/actions",
-            json={
+            json=await action_body(client, f"/sessions/{sid}/actions", {
                 "action_id": uuid.uuid4().hex,
-                "interrupt_id": pending["interrupt_id"],
+                "input_token": pending["input_token"],
                 "card_id": pending["card_id"],
                 "expected_version": pending["version"],
                 "kind": "select_product",
                 "payload": {"sku": "EUFY-BP-S1-PRO"},
-            },
+            }),
         )
         assert resp.status_code == 200
         events = sse.parse(resp.text)
@@ -106,14 +108,14 @@ async def test_request_human_while_awaiting_input_is_not_409(mem_runtime):
         first = await _send(client, sid, MULTI)
         assert first[-1]["reason"] == "awaiting_input"
         body = _human(expected_version=0)  # 故意给错版本、不带 card_id
-        resp = await client.post(f"/sessions/{sid}/actions", json=body)
-        assert resp.status_code == 200 and resp.headers["x-action-replayed"] == "false"
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", body))
+        assert resp.status_code == 200 and resp.headers["x-input-replayed"] == "false"
         events = sse.parse(resp.text)
         snap = await _snap(client, sid)
         # 同 action_id 重放
-        again = await client.post(f"/sessions/{sid}/actions", json=body)
-        assert again.status_code == 200 and again.headers["x-action-replayed"] == "true"
-    assert events[0]["resumed"] is True  # 经 interrupt 恢复
+        again = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", body))
+        assert again.status_code == 200 and again.headers["x-input-replayed"] == "true"
+    assert events[0]["resumed"] is False  # 经 interrupt 恢复
     assert _stages(events) == ["escalate"] and "awaiting_input" not in [e["type"] for e in events]
     summary = _summary(events)
     assert summary["reason"]["rule_id"] == "R3"
@@ -144,7 +146,7 @@ async def test_request_human_during_streaming_cancels_then_escalates(mem_runtime
                 break
         monkeypatch.setenv("PLACEHOLDER_NODE_DELAY_S", "0")
         t0 = asyncio.get_event_loop().time()
-        resp = await client.post(f"/sessions/{sid}/actions", json=_human())
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _human()))
         elapsed = asyncio.get_event_loop().time() - t0
         assert resp.status_code == 200, resp.text
         events = sse.parse(resp.text)
@@ -168,19 +170,19 @@ async def test_request_human_when_idle_starts_from_entry(mem_runtime):
         # 点「解决了」→ verify 结束本 run，回到 idle（票 35）
         solved = await client.post(
             f"/sessions/{sid}/actions",
-            json={
+            json=await action_body(client, f"/sessions/{sid}/actions", {
                 "action_id": uuid.uuid4().hex,
-                "interrupt_id": pending["interrupt_id"],
+                "input_token": pending["input_token"],
                 "card_id": pending["card_id"],
                 "expected_version": pending["version"],
                 "kind": "step_feedback",
                 "payload": {"feedback": "solved"},
-            },
+            }),
         )
         assert solved.status_code == 200 and sse.parse(solved.text)[-1]["reason"] == "completed"
         before = await _snap(client, sid)
         assert before.pending_input is None and before.active_run is None
-        resp = await client.post(f"/sessions/{sid}/actions", json=_human(expected_version=999))
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _human(expected_version=999)))
         assert resp.status_code == 200
         events = sse.parse(resp.text)
         after = await _snap(client, sid)
@@ -206,7 +208,7 @@ async def test_request_human_on_fresh_session(mem_runtime):
     """会话刚创建、一句话没说就请求人工：同样可用。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        resp = await client.post(f"/sessions/{sid}/actions", json=_human())
+        resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _human()))
         assert resp.status_code == 200
         events = sse.parse(resp.text)
     summary = _summary(events)

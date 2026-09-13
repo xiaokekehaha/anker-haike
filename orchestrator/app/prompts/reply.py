@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.prompts.system import compose_system_prompt, wrap_data
+from app.prompts.system import compose_system_prompt, state_layer, wrap_data
 
 REPLY_PROMPT_VERSION = "2026-09-12.1"
 
@@ -25,7 +25,7 @@ def _msgs(
 ) -> list[tuple[str, str]]:
     return [
         ("system", compose_system_prompt(strategy, summary, simplified=simplified)),
-        ("human", human),
+        ("human", wrap_data(state_layer(summary or {}), kind="session_state") + "\n" + human),
     ]
 
 

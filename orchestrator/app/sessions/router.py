@@ -4,7 +4,6 @@ POST /sessions/{id}/actions（票 20 通路 + 票 22 幂等 / 会话锁 + 票 23
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from typing import Annotated, Literal
 
@@ -16,12 +15,13 @@ from pydantic import BaseModel, ValidationError
 
 from app.images import ImageRejected
 from app.images.runtime import get_image_store
+from app.images.store import MAX_IMAGE_BYTES, stage_image
 from app.sessions import sse
-from app.sessions.graph import in_guide
+from app.sessions.inputs import InputConflict, check_replay
 from app.sessions.locks import DEFAULT_LOCK_TIMEOUT_S, LockTimeout
 from app.sessions.manager import RunNotActive
-from app.sessions.snapshot import action_pending_apply, build_snapshot
-from app.sessions.store import ActiveRunConflict, SessionNotFound
+from app.sessions.snapshot import SnapshotRecovering, build_snapshot
+from app.sessions.store import SessionNotFound
 from app.settings import settings as app_settings
 
 log = logging.getLogger("sessions.router")
@@ -68,45 +68,48 @@ async def create_session(request: Request) -> SessionCreated:
 async def post_message(
     session_id: str,
     request: Request,
-    text: Annotated[str, Form(min_length=1, max_length=4000)],
+    input_id: Annotated[str, Form(min_length=1, max_length=128)],
+    expected_version: Annotated[int, Form(ge=0)],
+    text: Annotated[str, Form(max_length=4000)] = "",
+    target_issue_id: Annotated[str | None, Form()] = None,
     images: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI 表单默认
     purpose: Annotated[str, Form(pattern="^(fault|receipt)$")] = "fault",
 ):
-    store, graph, manager = _runtime(request)
+    store, _graph, _manager = _runtime(request)
     await _ensure_exists(store, session_id)
-    # 票 29：图片先入 session_images（>5 MB / 非图片 → 4xx，不进入对话流），状态只存引用
-    image_ids: list[str] = []
-    if images:
-        img_store = get_image_store(request.app)
-        if img_store is None:
+    if not text.strip() and not images:
+        raise HTTPException(422, detail={"code": "empty_input", "message": "请输入文字或添加图片"})
+    staged = []
+    img_store = get_image_store(request.app) if images else None
+    if images and img_store is None:
+        raise HTTPException(503, detail={"code": "images_unavailable", "message": "图片存储未就绪"})
+    for index, up in enumerate(images):
+        data = await up.read(MAX_IMAGE_BYTES + 1)
+        try:
+            staged.append(stage_image(session_id, input_id, index, purpose, data, up.content_type))
+        except ImageRejected as exc:
             return JSONResponse(
-                status_code=503, content={"code": "images_unavailable", "message": "图片存储未就绪"}
+                status_code=413 if exc.code == "too_large" else 415,
+                content={"code": exc.code, "message": str(exc)},
             )
-        for up in images:
-            data = await up.read()
-            try:
-                ref = await img_store.put(session_id, purpose, data, up.content_type)
-            except ImageRejected as exc:
-                status = 413 if exc.code == "too_large" else 415
-                return JSONResponse(
-                    status_code=status, content={"code": exc.code, "message": str(exc)}
-                )
-            image_ids.append(ref.image_id)
-    try:
-        handle = await manager.start(session_id, text, image_ids=image_ids)
-    except ActiveRunConflict as exc:
-        # 409 附最新权威快照供前端重建（08 §4 第 3 步）
-        snap = await build_snapshot(store, graph, session_id)
-        return JSONResponse(
-            status_code=409,
-            content={
-                "code": "run_active",
-                "message": f"session has active run {exc.active_run_id}",
-                "snapshot": snap.model_dump(mode="json"),
-            },
-        )
-    # run 已在后台执行；本响应只是从 seq 0 起的订阅者，断开不影响 run（08 §7）
-    return _sse(manager.subscribe(session_id, handle.run_id, after_seq=0))
+    payload = {
+        "kind": "message",
+        "text": text,
+        "purpose": purpose,
+        "image_ids": [item.ref.image_id for item in staged],
+        "images": [item.ref.public() for item in staged],
+        "attachment_hashes": [item.ref.sha256 for item in staged],
+        "target_issue_id": target_issue_id,
+    }
+    return await _accept(
+        request,
+        session_id,
+        input_id,
+        payload,
+        expected_version,
+        staged_images=staged,
+        image_store=img_store,
+    )
 
 
 @router.get("/{session_id}/images/{image_id}")
@@ -154,209 +157,174 @@ _CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_recei
 
 @router.post("/{session_id}/actions")
 async def post_action(session_id: str, request: Request):
-    """动作协议（08 §4）：会话锁串行 → action_id 去重（重放）→ 校验 → 占位 → Command(resume) → 回填。"""
-    store, graph, manager = _runtime(request)
-    lock = request.app.state.session_lock
-    await _ensure_exists(store, session_id)
     try:
         action = parse_action(await request.json())
     except (ValidationError, ValueError) as exc:
         raise HTTPException(
             422, detail={"code": "invalid_action", "message": str(exc)[:500]}
         ) from None
+    return await _accept(
+        request,
+        session_id,
+        action.action_id,
+        action.model_dump(mode="json"),
+        action.expected_version,
+    )
 
-    # 0. request_human（08 §4 步骤 4，票 25）：任何时刻可用；有 active run 先取消（取消会让持锁的动作 run 收尾）
-    if action.kind == "request_human":
-        pre = await build_snapshot(store, graph, session_id)
-        if pre.active_run is not None:
-            try:
-                await manager.cancel(session_id, pre.active_run.run_id)
-            except RunNotActive:
-                pass  # 已结束或不在本进程：孤儿 run 由 reconcile 收尾
 
-    # 1. 会话级锁：同会话动作串行；锁一直持有到本动作的 run 结束（见 _finish_action）
-    hold = lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S)
+async def _accept(
+    request: Request,
+    session_id: str,
+    input_id: str,
+    payload: dict,
+    expected_version: int,
+    *,
+    staged_images=(),
+    image_store=None,
+):
+    store, graph, manager = _runtime(request)
+    await _ensure_exists(store, session_id)
+    lock = request.app.state.session_lock
     try:
-        await hold.__aenter__()
+        # Retries MUST be recognized before a request_human can cancel another run.
+        async with lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S):
+            await manager.reconcile_session(session_id)
+            old = await store.get_input(session_id, input_id)
+            if old:
+                check_replay(old, payload)
+                return _sse(
+                    manager.subscribe(session_id, old["run_id"]),
+                    extra_headers={"X-Input-Replayed": "true", "X-Run-Id": old["run_id"]},
+                )
+        if payload["kind"] == "request_human":
+            async with lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S):
+                old = await store.get_input(session_id, input_id)
+                if old:
+                    check_replay(old, payload)
+                    return _sse(
+                        manager.subscribe(session_id, old["run_id"]),
+                        extra_headers={"X-Input-Replayed": "true", "X-Run-Id": old["run_id"]},
+                    )
+                row = await store.get_session(session_id)
+                if row.published_checkpoint_id:
+                    published = await graph.aget_state(
+                        {
+                            "configurable": {
+                                "thread_id": session_id,
+                                "checkpoint_id": row.published_checkpoint_id,
+                            }
+                        }
+                    )
+                    known = (published.values or {}).get("issues") or {}
+                    if known and payload.get("target_issue_id") not in known:
+                        raise InputConflict("wrong_issue")
+                cancel_id = row.active_run_id
+            # Never hold the acceptance lock while waiting for a run to finish.
+            if cancel_id:
+                try:
+                    await manager.cancel(session_id, cancel_id)
+                except RunNotActive:
+                    pass
+        async with lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S):
+            old = await store.get_input(session_id, input_id)
+            if old:
+                check_replay(old, payload)
+                return _sse(
+                    manager.subscribe(session_id, old["run_id"]),
+                    extra_headers={"X-Input-Replayed": "true", "X-Run-Id": old["run_id"]},
+                )
+            await manager.reconcile_session(session_id)
+            snap = await _consistent_snapshot(store, graph, session_id)
+            row = await store.get_session(session_id)
+            values = {}
+            if row.published_checkpoint_id:
+                state = await graph.aget_state(
+                    {
+                        "configurable": {
+                            "thread_id": session_id,
+                            "checkpoint_id": row.published_checkpoint_id,
+                        }
+                    }
+                )
+                values = state.values or {}
+            if payload["kind"] != "request_human" and expected_version != snap.version:
+                raise InputConflict("stale_version")
+            target = payload.get("target_issue_id")
+            if payload["kind"] == "request_human" and values.get("issues") and not target:
+                raise InputConflict("wrong_issue")
+            if target and target not in (values.get("issues") or {}):
+                raise InputConflict("unknown_issue")
+            if payload["kind"] in _CARD_KINDS:
+                pending = snap.pending_input
+                if pending is None:
+                    raise InputConflict("not_allowed_now")
+                if (
+                    payload.get("card_id") != pending.card_id
+                    or payload.get("input_token") != pending.input_token
+                ):
+                    raise InputConflict("stale_card")
+                if target and target != values.get("active_issue_id"):
+                    raise InputConflict("wrong_issue")
+                if not _kind_allowed(payload["kind"], pending.kind):
+                    raise InputConflict("not_allowed_now")
+                if payload["kind"] == "select_product" and payload["payload"]["sku"] not in {
+                    c["sku"]
+                    for c in (values.get("pending_card") or {})
+                    .get("payload", {})
+                    .get("candidates", [])
+                }:
+                    raise InputConflict("invalid_selection")
+            receipt, replay = await store.reserve_input(
+                session_id,
+                input_id,
+                payload,
+                expected_version=expected_version,
+                staged_images=staged_images,
+                image_store=image_store,
+            )
+            if not replay:
+                await manager.start(session_id, receipt=receipt)
+            return _sse(
+                manager.subscribe(session_id, receipt["run_id"]),
+                extra_headers={
+                    "X-Input-Replayed": str(replay).lower(),
+                    "X-Run-Id": receipt["run_id"],
+                },
+            )
+    except InputConflict as exc:
+        snap = await _consistent_snapshot(store, graph, session_id)
+        return JSONResponse(
+            status_code=409,
+            content={
+                "code": getattr(exc, "code", "run_active"),
+                "message": str(exc),
+                "snapshot": snap.model_dump(mode="json"),
+            },
+        )
+    except SnapshotRecovering:
+        return JSONResponse(
+            status_code=503,
+            headers={"Retry-After": "1"},
+            content={"code": "recovering", "message": "会话记录正在恢复，请稍后重试"},
+        )
     except LockTimeout:
         return JSONResponse(
             status_code=503,
             headers={"Retry-After": "2"},
             content={
                 "code": "lock_timeout",
-                "message": "会话正忙，请稍后重试同一动作",
+                "message": "会话正忙，请重试同一输入",
                 "recoverable": True,
-                "retry_with_same_action": True,
             },
         )
-    release = hold.__aexit__
-    handoff = False  # True = 锁交给后台回填任务释放
-    try:
-        # 2. 去重：同一 action_id 已记录 → 直接重放对应事件流（200，replayed=true）
-        recorded = await store.get_action(session_id, action.action_id)
-        if recorded is not None:
-            return _sse(
-                manager.subscribe(session_id, recorded["run_id"], after_seq=0),
-                extra_headers={
-                    "X-Action-Id": action.action_id,
-                    "X-Run-Id": recorded["run_id"],
-                    "X-Action-Replayed": "true",
-                },
-            )
-
-        # 3. 校验（票 23）
-        snap = await build_snapshot(store, graph, session_id)
-        # 同一 action_id 重试且图停在「动作已接收、apply_action 未成功」：跳过校验，从待执行节点继续
-        state = await graph.aget_state({"configurable": {"thread_id": session_id}})
-        continue_run = snap.active_run is None and action_pending_apply(state) == action.action_id
-
-        def conflict(code: str, message: str) -> JSONResponse:
-            return JSONResponse(
-                status_code=409,
-                content={
-                    "code": code,
-                    "message": message,
-                    "snapshot": snap.model_dump(mode="json"),
-                },
-            )
-
-        # 08 §4 步骤 3 的顺序：version → card → kind（票 23）。快照随 409 返回供前端重建
-        if snap.active_run is not None:
-            return conflict("run_active", f"session has active run {snap.active_run.run_id}")
-        if action.kind == "request_human":
-            pass  # 忽略 version 与 pending 校验（08 §4 步骤 4）
-        elif action.kind == "rediagnose" and not continue_run:
-            # 票 37（08 §4）：stage ∈ {guide, verify} 且无 active run；不绑定卡片，但 version 必须最新；
-            # 若正等待卡片，只允许在步骤卡等待期间（凭证 / 产品卡不接受补充文本）
-            if action.expected_version != snap.version:
-                return conflict(
-                    "stale_version", f"expected {action.expected_version}, current {snap.version}"
-                )
-            if not in_guide(state.values or {}):
-                return conflict("not_allowed_now", f"rediagnose is not allowed at stage {snap.stage}")
-            pending = snap.pending_input
-            if pending is not None and pending.kind != "step_feedback":
-                return conflict(
-                    "not_allowed_now", f"rediagnose is not allowed while awaiting {pending.kind}"
-                )
-            if not (action.payload.text or "").strip() and not action.payload.image_ids:
-                raise HTTPException(
-                    422, detail={"code": "invalid_action", "message": "rediagnose needs text or image_ids"}
-                )
-            if action.payload.image_ids:
-                img_store = get_image_store(request.app)
-                known = (
-                    {r.image_id for r in await img_store.refs(session_id, list(action.payload.image_ids))}
-                    if img_store is not None
-                    else set()
-                )
-                unknown = [i for i in action.payload.image_ids if i not in known]
-                if unknown:
-                    raise HTTPException(
-                        422,
-                        detail={"code": "invalid_action", "message": f"unknown image_ids {unknown}"},
-                    )
-        elif not continue_run:
-            if action.kind not in _CARD_KINDS:
-                return conflict("not_allowed_now", f"{action.kind} is not supported")
-            if action.expected_version != snap.version:
-                return conflict(
-                    "stale_version", f"expected {action.expected_version}, current {snap.version}"
-                )
-            pending = snap.pending_input
-            if pending is None:
-                return conflict("not_allowed_now", "no pending input")
-            if action.card_id != pending.card_id or action.interrupt_id != pending.interrupt_id:
-                return conflict("stale_card", "card_id / interrupt_id do not match pending input")
-            if not _kind_allowed(action.kind, pending.kind):
-                return conflict(
-                    "not_allowed_now",
-                    f"{action.kind} is not allowed while awaiting {pending.kind}",
-                )
-
-        # 4. 启动 run 并写占位（占位带 run_id：进程中途挂掉时，重放仍能定位到该 run 的事件）
-        try:
-            dumped = action.model_dump(mode="json")
-            if continue_run:
-                handle = await manager.start(session_id, continue_run=True)
-            elif action.kind in ("request_human", "rediagnose") and not _has_interrupt(state):
-                # 没有挂起的 interrupt：从 START 进图直达 human_request / rediagnose（不能 Command(resume)）
-                handle = await manager.start(session_id, entry_action=dumped)
-            else:
-                handle = await manager.start(session_id, resume=dumped)
-        except ActiveRunConflict as exc:
-            return conflict("run_active", f"session has active run {exc.active_run_id}")
-        inserted = await store.try_insert_action(
-            session_id,
-            action.action_id,
-            {
-                "action_id": action.action_id,
-                "run_id": handle.run_id,
-                "replayed": False,
-                "version_after": None,
-                "status": "pending",
-            },
-        )
-        if not inserted:  # 理论上不可能（锁内），防御性记录
-            log.error(
-                "action placeholder already present session=%s action=%s",
-                session_id,
-                action.action_id,
-            )
-        handoff = True
-    finally:
-        # 重放 / 409 / 异常：在此释放；只有成功启动 run 时锁交给 _finish_action 在 run 结束后释放
-        if not handoff:
-            await release(None, None, None)
-
-    # 5. 后台：run 结束后回填结果并释放锁；HTTP 响应只是订阅者
-    asyncio.create_task(_finish_action(store, manager, handle, action.action_id, release))
-    return _sse(
-        manager.subscribe(session_id, handle.run_id, after_seq=0),
-        extra_headers={
-            "X-Action-Id": action.action_id,
-            "X-Run-Id": handle.run_id,
-            "X-Action-Replayed": "false",
-        },
-    )
-
-
-def _has_interrupt(state) -> bool:
-    return any(getattr(t, "interrupts", None) for t in getattr(state, "tasks", ()) or ())
 
 
 def _kind_allowed(kind: str, pending_kind: str) -> bool:
-    """08 §4 允许时机表：skip_receipt 在 upload_receipt / confirm_receipt 下均可，其余 kind 须与 pending 相同。"""
-    if kind == "skip_receipt":
-        return pending_kind in ("upload_receipt", "confirm_receipt")
-    return kind == pending_kind
-
-
-async def _finish_action(store, manager, handle, action_id: str, release) -> None:
-    try:
-        await manager.wait_finished(handle)
-        events = await store.list_events(handle.session_id, run_id=handle.run_id)
-        done = next((e for e in reversed(events) if e["type"] == "done"), None)
-        if done is not None and done["reason"] in ("error", "cancelled"):
-            # 动作未被应用：撤销占位，同一 action_id 重试时真正执行而不是重放失败流（票 23，
-            # 与 error.retry_with_same_action=true 配套）。apply_action 以 card_id 幂等，重放副作用安全
-            await store.delete_action(handle.session_id, action_id)
-            return
-        await store.set_action_result(
-            handle.session_id,
-            action_id,
-            {
-                "action_id": action_id,
-                "run_id": handle.run_id,
-                "replayed": False,
-                "version_after": done["version"] if done else None,
-                "status": "done",
-            },
-        )
-    except Exception:
-        log.exception("action backfill failed session=%s action=%s", handle.session_id, action_id)
-    finally:
-        await release(None, None, None)
+    return (
+        pending_kind in ("upload_receipt", "confirm_receipt")
+        if kind == "skip_receipt"
+        else kind == pending_kind
+    )
 
 
 @router.post("/{session_id}/cancel", response_model=CancelResult)
@@ -368,7 +336,7 @@ async def cancel_run(session_id: str, body: CancelRequest, request: Request) -> 
     try:
         status = await manager.cancel(session_id, body.run_id)
     except RunNotActive:
-        snap = await build_snapshot(store, graph, session_id)
+        snap = await _consistent_snapshot(store, graph, session_id)
         return JSONResponse(  # type: ignore[return-value]
             status_code=409,
             content={
@@ -415,19 +383,27 @@ async def delete_session(
             await manager.cancel(session_id, row.active_run_id)
         except RunNotActive:
             pass
-    pool = getattr(request.app.state, "session_pool", None)
-    if pool is not None:
-        from app.retention import delete_session_data
+    async with request.app.state.session_lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S):
+        if await store.session_exists(session_id):
+            current = await store.get_session(session_id)
+            if current.active_run_id:
+                return JSONResponse(
+                    status_code=409,
+                    content={"code": "run_active", "message": "运行尚未结束，暂不能删除"},
+                )
+        pool = getattr(request.app.state, "session_pool", None)
+        if pool is not None:
+            from app.retention import delete_session_data
 
-        counts = await delete_session_data(pool, session_id)
-    else:
-        counts = await store.delete_session_data(session_id)
-        img_store = get_image_store(request.app)
-        if img_store is not None:
-            counts["session_images"] = await img_store.delete_session(session_id)
-        checkpointer = getattr(graph, "checkpointer", None)
-        if checkpointer is not None and hasattr(checkpointer, "adelete_thread"):
-            await checkpointer.adelete_thread(session_id)
+            counts = await delete_session_data(pool, session_id)
+        else:
+            counts = await store.delete_session_data(session_id)
+            img_store = get_image_store(request.app)
+            if img_store is not None:
+                counts["session_images"] = await img_store.delete_session(session_id)
+            checkpointer = getattr(graph, "checkpointer", None)
+            if checkpointer is not None and hasattr(checkpointer, "adelete_thread"):
+                await checkpointer.adelete_thread(session_id)
     if sum(counts.values()) == 0:
         raise HTTPException(404, detail={"code": "session_not_found", "message": session_id})
     return {"session_id": session_id, "deleted": counts}
@@ -436,9 +412,29 @@ async def delete_session(
 @router.get("/{session_id}", response_model=SessionSnapshot)
 async def get_snapshot(session_id: str, request: Request) -> SessionSnapshot:
     """权威快照（08 §6）：由 checkpoint 与事件日志派生，不读投影表。"""
-    store, graph, _ = _runtime(request)
-    await _ensure_exists(store, session_id)
-    return await build_snapshot(store, graph, session_id)
+    store, graph, manager = _runtime(request)
+    async with request.app.state.session_lock.hold(session_id, timeout_s=LOCK_TIMEOUT_S):
+        await _ensure_exists(store, session_id)
+        try:
+            await manager.reconcile_session(session_id)
+            return await _consistent_snapshot(store, graph, session_id)
+        except SnapshotRecovering:
+            raise HTTPException(
+                503,
+                detail={"code": "recovering", "message": "会话记录正在恢复"},
+                headers={"Retry-After": "1"},
+            ) from None
+
+
+async def _consistent_snapshot(store, graph, session_id):
+    try:
+        return await build_snapshot(store, graph, session_id)
+    except SnapshotRecovering:
+        raise HTTPException(
+            503,
+            detail={"code": "recovering", "message": "会话记录正在恢复"},
+            headers={"Retry-After": "1"},
+        ) from None
 
 
 async def _ensure_exists(store, session_id: str) -> None:

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: fbe7af9cc58280c64bbd71266a0e3b0e8cee1ede7f5c834ee05877d2f27ad7ac
+// SHA-256: 2d18988728fe2cf15ba0d0e559f855abd1f33f8ab7d6812434785e57dd4380a5
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -14,9 +14,25 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Card Id",
           "type": "string"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "event_id": {
+          "title": "Event Id",
           "type": "string"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
         },
         "kind": {
           "enum": [
@@ -26,6 +42,10 @@ export const serverEventSchema = z.fromJSONSchema({
             "confirm_receipt"
           ],
           "title": "Kind",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "run_id": {
@@ -52,9 +72,11 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "kind",
-        "interrupt_id",
+        "input_token",
         "card_id",
         "version"
       ],
@@ -64,6 +86,10 @@ export const serverEventSchema = z.fromJSONSchema({
     "Done": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "reason": {
           "enum": [
             "completed",
@@ -72,6 +98,10 @@ export const serverEventSchema = z.fromJSONSchema({
             "cancelled"
           ],
           "title": "Reason",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "run_id": {
@@ -99,6 +129,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "reason",
         "version"
@@ -142,8 +174,16 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Code",
           "type": "string"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "message": {
           "title": "Message",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "recoverable": {
@@ -174,6 +214,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "code",
         "message",
@@ -268,6 +310,47 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Card Id",
           "type": "string"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "handoff_status": {
+          "default": "prepared",
+          "enum": [
+            "prepared",
+            "requested",
+            "accepted",
+            "failed",
+            "cancelled"
+          ],
+          "title": "Handoff Status",
+          "type": "string"
+        },
+        "issue_id": {
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "previous_card_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Card Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
         "run_id": {
           "title": "Run Id",
           "type": "string"
@@ -278,21 +361,40 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Seq",
           "type": "integer"
         },
+        "source_through_seq": {
+          "title": "Source Through Seq",
+          "type": "integer"
+        },
         "summary": {
           "$ref": "#/$defs/EscalationSummary"
+        },
+        "summary_id": {
+          "title": "Summary Id",
+          "type": "string"
         },
         "type": {
           "const": "escalation_summary",
           "title": "Type",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
           "type": "string"
         }
       },
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "card_id",
-        "summary"
+        "summary",
+        "summary_id",
+        "revision",
+        "issue_id",
+        "updated_at",
+        "source_through_seq"
       ],
       "title": "EscalationSummaryEvent",
       "type": "object"
@@ -300,12 +402,20 @@ export const serverEventSchema = z.fromJSONSchema({
     "Evidence": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "items": {
           "items": {
             "$ref": "#/$defs/EvidenceItem"
           },
           "title": "Items",
           "type": "array"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
         },
         "run_id": {
           "title": "Run Id",
@@ -326,6 +436,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "items"
       ],
@@ -416,6 +528,142 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "ExecutedStep",
       "type": "object"
     },
+    "InputReceived": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "input_id": {
+          "title": "Input Id",
+          "type": "string"
+        },
+        "input_kind": {
+          "enum": [
+            "message",
+            "action"
+          ],
+          "title": "Input Kind",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "input_received",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "type",
+        "input_id",
+        "input_kind",
+        "payload"
+      ],
+      "title": "InputReceived",
+      "type": "object"
+    },
+    "IssueChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "active_issue_id": {
+          "title": "Active Issue Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "input_id": {
+          "title": "Input Id",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "resolved_issue_id": {
+          "title": "Resolved Issue Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "issue_changed",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "type",
+        "active_issue_id",
+        "issues",
+        "input_id",
+        "resolved_issue_id",
+        "version"
+      ],
+      "title": "IssueChanged",
+      "type": "object"
+    },
     "Message": {
       "additionalProperties": false,
       "properties": {
@@ -423,8 +671,16 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Delta",
           "type": "string"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "message_id": {
           "title": "Message Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "run_id": {
@@ -446,6 +702,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "message_id",
         "delta"
@@ -456,6 +714,10 @@ export const serverEventSchema = z.fromJSONSchema({
     "MessageEnd": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "message_id": {
           "title": "Message Id",
           "type": "string"
@@ -475,6 +737,10 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "default": null,
           "title": "Model Tier"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
         },
         "run_id": {
           "title": "Run Id",
@@ -503,6 +769,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "message_id",
         "status"
@@ -513,8 +781,28 @@ export const serverEventSchema = z.fromJSONSchema({
     "MessageStart": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "message_id": {
           "title": "Message Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "replaces": {
@@ -529,6 +817,18 @@ export const serverEventSchema = z.fromJSONSchema({
           "default": null,
           "description": "替换先前中断的消息",
           "title": "Replaces"
+        },
+        "reply_to_input_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reply To Input Id"
         },
         "run_id": {
           "title": "Run Id",
@@ -549,6 +849,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "message_id"
       ],
@@ -585,9 +887,98 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "ModelTraceItem",
       "type": "object"
     },
+    "PendingChanged": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "pending_id": {
+          "title": "Pending Id",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "suspended",
+            "consumed",
+            "invalidated"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "superseded_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Superseded By"
+        },
+        "type": {
+          "const": "pending_changed",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "type",
+        "issue_id",
+        "pending_id",
+        "status",
+        "reason",
+        "version"
+      ],
+      "title": "PendingChanged",
+      "type": "object"
+    },
     "Ping": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
         "run_id": {
           "title": "Run Id",
           "type": "string"
@@ -607,6 +998,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type"
       ],
       "title": "Ping",
@@ -668,6 +1061,26 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Card Id",
           "type": "string"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
         "run_id": {
           "title": "Run Id",
           "type": "string"
@@ -692,6 +1105,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "card_id",
         "version",
         "type",
@@ -703,6 +1118,14 @@ export const serverEventSchema = z.fromJSONSchema({
     "Progress": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
         "run_id": {
           "title": "Run Id",
           "type": "string"
@@ -748,6 +1171,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "stage"
       ],
@@ -768,8 +1193,28 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Confidence",
           "type": "object"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "fields": {
           "$ref": "#/$defs/ReceiptFields"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
         },
         "run_id": {
           "title": "Run Id",
@@ -802,6 +1247,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "card_id",
         "version",
         "type",
@@ -924,6 +1371,14 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Deadline Ms",
           "type": "integer"
         },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
         "resumed": {
           "title": "Resumed",
           "type": "boolean"
@@ -947,6 +1402,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "resumed",
         "deadline_ms"
@@ -959,6 +1416,26 @@ export const serverEventSchema = z.fromJSONSchema({
       "properties": {
         "card_id": {
           "title": "Card Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "run_id": {
@@ -988,6 +1465,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "card_id",
         "version",
         "type",
@@ -996,11 +1475,99 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "StepCard",
       "type": "object"
     },
+    "SummaryUpdated": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "previous_card_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Card Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "source_through_seq": {
+          "title": "Source Through Seq",
+          "type": "integer"
+        },
+        "summary_id": {
+          "title": "Summary Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "summary_updated",
+          "title": "Type",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "type",
+        "issue_id",
+        "summary_id",
+        "revision",
+        "card_id",
+        "source_through_seq",
+        "updated_at"
+      ],
+      "title": "SummaryUpdated",
+      "type": "object"
+    },
     "ToolCall": {
       "additionalProperties": false,
       "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
         "name": {
           "title": "Name",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
           "type": "string"
         },
         "run_id": {
@@ -1047,6 +1614,8 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "seq",
         "run_id",
+        "event_id",
+        "recorded_at",
         "type",
         "tool_id",
         "name",
@@ -1130,15 +1699,19 @@ export const serverEventSchema = z.fromJSONSchema({
       "error": "#/$defs/Error",
       "escalation_summary": "#/$defs/EscalationSummaryEvent",
       "evidence": "#/$defs/Evidence",
+      "input_received": "#/$defs/InputReceived",
+      "issue_changed": "#/$defs/IssueChanged",
       "message": "#/$defs/Message",
       "message_end": "#/$defs/MessageEnd",
       "message_start": "#/$defs/MessageStart",
+      "pending_changed": "#/$defs/PendingChanged",
       "ping": "#/$defs/Ping",
       "product_card": "#/$defs/ProductCard",
       "progress": "#/$defs/Progress",
       "receipt_card": "#/$defs/ReceiptCard",
       "run_started": "#/$defs/RunStarted",
       "step_card": "#/$defs/StepCard",
+      "summary_updated": "#/$defs/SummaryUpdated",
       "tool_call": "#/$defs/ToolCall"
     },
     "propertyName": "type"
@@ -1146,6 +1719,18 @@ export const serverEventSchema = z.fromJSONSchema({
   "oneOf": [
     {
       "$ref": "#/$defs/RunStarted"
+    },
+    {
+      "$ref": "#/$defs/InputReceived"
+    },
+    {
+      "$ref": "#/$defs/IssueChanged"
+    },
+    {
+      "$ref": "#/$defs/PendingChanged"
+    },
+    {
+      "$ref": "#/$defs/SummaryUpdated"
     },
     {
       "$ref": "#/$defs/Ping"

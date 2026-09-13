@@ -46,7 +46,7 @@
 
 ## 交付
 - 开关现状、证据与开启顺序：**[switches.md](switches.md)**（一页速查）。
-- 待用户动作：① 标注 `data/eval/retrieval/cases.yaml`；② 标注后重跑 A / C_nograde 对照并决定三个确定性开关；③ 需要时 `make release` 重新冻结（当前 RELEASE.md 记的 models.yaml 2026-09-13.1 与 kb_ver stub-embedding 已过期，实际为 2026-09-13.3 与 `2026-09-12.1+text-embedding-v4`）。
+- 待用户动作：① 标注 `data/eval/retrieval/cases.yaml` 剩余 54 条（指南与示范见 **[ANNOTATION.md](ANNOTATION.md)**，`make eval-worksheet` 生成工作单）；② 标注后重跑 A / C_nograde 对照并决定三个确定性开关；③ 需要时 `make release` 重新冻结（当前 RELEASE.md 记的 models.yaml 2026-09-13.1 与 kb_ver stub-embedding 已过期，实际为 2026-09-13.3 与 `2026-09-12.1+text-embedding-v4`）。
 
 ## Next Step
 本任务七个阶段全部完成。后续由用户标注评测集后决定开关，或按 switches.md 的再评估触发条件重启评估。

@@ -3,6 +3,7 @@ import { fetchModels, probeModel, type ModelList, type ModelStatus } from '../ap
 import styles from './ModelDialog.module.css';
 
 const STATUS = { unconfigured: '未配置', unchecked: '未检测', checking: '检测中', connected: '已连通', failed: '连接失败' };
+const LANE: Record<string, string> = { domestic: '国内', overseas: '海外', zhipu: '智谱优先' };
 const PROVIDER: Record<string, string> = { deepseek: 'DeepSeek', zhipu: '智谱', dashscope: '通义千问', anthropic: 'Anthropic', google: 'Google' };
 
 export function ModelDialog({ onClose }: { onClose: () => void }) {
@@ -154,7 +155,7 @@ export function ModelDialog({ onClose }: { onClose: () => void }) {
     {data && <>
       {data.disabled_reason && <p className={styles.notice}>{data.disabled_reason}</p>}
       <div className={styles.toolbar}>
-        <h3>当前通道 · {data.lane === 'domestic' ? '国内' : data.lane === 'overseas' ? '海外' : data.lane}<span>{current.length} 个模型</span></h3>
+        <h3>当前通道 · {LANE[data.lane] ?? data.lane}<span>{current.length} 个模型</span></h3>
         <button className={styles.primary} onClick={() => void checkCurrent()}
           disabled={!data.probe_enabled || batch || pending.size > 0 || !current.some((model) => model.configured)}>
           {batch ? '正在检测…' : '检测已配置模型'}

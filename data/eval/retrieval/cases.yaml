@@ -1,6 +1,7 @@
 # 检索评测集（有界 Agentic RAG，docs/planning/2026-09-13_bounded-agentic-rag/design.md §9）。
 #
-# 状态：draft。首批 56 条由 Claude 依据 data/knowledge 语料起草（2026-09-13），尚未人工标注；
+# 状态：标注中。首批 56 条由 Claude 依据 data/knowledge 语料起草（2026-09-13）；bin-01 与 chg-03 是两条标注示范。
+# 标注怎么做见 docs/planning/2026-09-13_bounded-agentic-rag/ANNOTATION.md，工作单用 make eval-worksheet 生成。
 # 每条 `annotated: false`，人工核对后改 true 并在 annotator 写名字。未标注的样例只能用于回归对比，不能作为开启开关的依据。
 #
 # 字段：
@@ -10,6 +11,7 @@
 #   text               用户原话（口语）
 #   symptoms           intake 抽取后的有效症状（若为空，query 退回原文）
 #   expected_doc_ids   金标文档：manual_rv_v1 / manual_rv_v2 / troubleshooting_rv / faq_rv / T0001 等；任一进 top5 记 hit
+#   expected_ticket_cause 可选：工单按根因匹配（命中片段含「原因：<该值>」即算金标），省得逐条列工单 id
 #   expected_chunk_hint 人可读的段落提示（c12 为手册标记，A–E 为排障手册章节，1–5 为 v2 手册章节，q7 为 FAQ 条目）
 #   expected_plan      期望 synthesize 排第一的 plan_id；null 表示无适用计划
 #   expected_outcome   evidence（有证据选计划）| standard_flow（无证据按预写计划）| escalate（R4/R5/R8）| no_query
@@ -21,7 +23,7 @@
 # 工单按 SKU 隔离；FAQ 目前不在运行时检索范围（design.md §14）。
 
 version: 2026-09-13.draft1
-annotated_count: 0
+annotated_count: 2
 cases:
 
   # ---- A1 主线：X10 滚刷缠绕（口语变体） ----
@@ -70,9 +72,12 @@ cases:
      tags: [口语], annotated: false, annotator: null, note: 30C 无专属手册；工单里该 SKU 滤网堵塞 3 例，看工单能否把 filter_clog 排到前面}
 
   # ---- 尘盒 ----
+  # 标注示范 A：金标方向没错，但实际召回里的 faq_rv#q5 与同因工单同样相关，漏列会把 precision 压低 → 补进金标。
   - {id: bin-01, product_state: confirmed_sku, sku: EUFY-X10-PRO-OMNI, text: 一直语音说请检查尘盒，我明明装上去了, symptoms: [提示请检查尘盒],
-     expected_doc_ids: [manual_rv_v1, troubleshooting_rv], expected_chunk_hint: "c18 / 第3章表 / C", expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
-     tags: [精确词], annotated: false, annotator: null}
+     expected_doc_ids: [manual_rv_v1, troubleshooting_rv, faq_rv], expected_ticket_cause: 尘盒未装到位,
+     expected_chunk_hint: "c18 / 第3章表 / C / faq q5", expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
+     tags: [精确词], annotated: true, annotator: kelly.zhou,
+     note: "2026-09-13 标注：top5 为 c18 / faq q5 / T0063（尘盒未装到位）/ 第3章表 / faq q33，前四条都相关；q33（请检查滚刷）不相关但只排第 5，可接受。模型选 dustbin_full 正确。"}
   - {id: bin-02, product_state: confirmed_sku, sku: EUFY-25C, text: 提示请检查尘盒, symptoms: [提示请检查尘盒],
      expected_doc_ids: [troubleshooting_rv, T0003], expected_chunk_hint: C, expected_plan: rv_suction_dustbin_full, expected_outcome: evidence,
      tags: [精确词], annotated: false, annotator: null}
@@ -118,9 +123,14 @@ cases:
   - {id: chg-02, product_state: confirmed_sku, sku: EUFY-11S-MAX, text: 充电触点是不是脏了，老充不进, symptoms: [不充电, 触点脏],
      expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
      tags: [无计划], annotated: false, annotator: null, note: 11S 工单基站触点脏污 solved 5 例，应排前}
+  # 标注示范 B：起草金标写错了。排障手册 E 节讲的是「充不上电」，没有「找不到基站」；真正的依据是 FAQ q14
+  # 与同 SKU 同因工单。工单同因的有好几条（T0178 / T0168…），用 expected_ticket_cause 按根因匹配，不逐条列 id。
   - {id: chg-03, product_state: confirmed_sku, sku: EUFY-G20-HYBRID, text: 找不到回家的路，每次都停在半路, symptoms: [找不到基站],
-     expected_doc_ids: [troubleshooting_rv], expected_chunk_hint: E, expected_plan: null, expected_outcome: standard_flow,
-     tags: [无计划, 口语], annotated: false, annotator: null, irrelevant_hint: 排障手册没有「找不到基站」，工单「基站位置遮挡」是主要来源；FAQ q14 不在检索范围}
+     expected_doc_ids: [faq_rv], expected_ticket_cause: 基站位置遮挡,
+     expected_chunk_hint: "faq q14", expected_plan: null, expected_outcome: standard_flow,
+     tags: [无计划, 口语], annotated: true, annotator: kelly.zhou,
+     irrelevant_hint: 排障手册 E 节是充电问题，不算本题依据；manual_rv_v2 的安全须知因「基站」二字被召回，属错配,
+     note: "2026-09-13 标注：原金标 troubleshooting_rv 判错，已改。plans.yaml 无对应计划，expected_outcome 保持 standard_flow 正确。"}
 
   # ---- L60 / G 系列专属（manual_rv_v2） ----
   - {id: v2-01, product_state: confirmed_sku, sku: EUFY-L60-HYBRID, text: 滚刷怎么拆，需要工具吗, symptoms: [滚刷拆卸],

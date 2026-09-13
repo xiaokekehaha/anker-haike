@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.message_form import model_task_text
+
+from tests.message_form import action_body, message_form
+
 import json
 import time
 import uuid
@@ -50,7 +54,7 @@ def _cfg(sid):
 def _feedback(pending: dict, feedback: str, note: str | None = None) -> dict:
     return {
         "action_id": uuid.uuid4().hex,
-        "interrupt_id": pending["interrupt_id"],
+        "input_token": pending["input_token"],
         "card_id": pending["card_id"],
         "expected_version": pending["version"],
         "kind": "step_feedback",
@@ -65,13 +69,13 @@ class Session:
         self.client, self.sid = client, sid
 
     async def send(self, text: str) -> list[dict]:
-        resp = await self.client.post(f"/sessions/{self.sid}/messages", data={"text": text})
+        resp = await self.client.post(f"/sessions/{self.sid}/messages", data=await message_form(self.client, f"/sessions/{self.sid}/messages", {"text": text}))
         assert resp.status_code == 200, resp.text
         return sse.parse(resp.text)
 
     async def feedback(self, pending: dict, fb: str, note: str | None = None) -> list[dict]:
         resp = await self.client.post(
-            f"/sessions/{self.sid}/actions", json=_feedback(pending, fb, note)
+            f"/sessions/{self.sid}/actions", json=await action_body(self.client, f"/sessions/{self.sid}/actions", _feedback(pending, fb, note))
         )
         assert resp.status_code == 200, resp.text
         return sse.parse(resp.text)
@@ -303,12 +307,10 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
         and pending["kind"] == "step_feedback"
         and done["reason"] == "awaiting_input"
     )
-    assert (
-        card["card_id"]
-        == pending["card_id"]
-        == pending["interrupt_id"]
-        == step_card_id(s.sid, "rv_suction_hair_wrap", "s1")
-    )
+    from app.conversation.reduce import stable_id
+    st = await s.state()
+    assert card["card_id"] == pending["card_id"] == stable_id(st["input_id"], st["active_issue_id"], step_card_id(s.sid, "rv_suction_hair_wrap", "s1"))
+    assert pending["input_token"] == stable_id(card["card_id"], "token")
     assert card["version"] == pending["version"] == done["version"]
     step = card["step"]
     assert (
@@ -323,8 +325,8 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
     call = fakes["main"].calls[-1]
     assert call["metadata"]["task"] == "guide.step" and "internal" in call["tags"]
     assert (
-        'kind="instruction_src"' in call["messages"][-1].content
-        and C12 in call["messages"][-1].content
+        'kind="instruction_src"' in model_task_text(call)
+        and C12 in model_task_text(call)
     )
     st = await s.state()
     assert st["stage"] == "guide" and st["pending_card"]["kind"] == "step_feedback"
@@ -385,21 +387,20 @@ async def test_step_card_replayed_with_same_id_on_resume_and_invalid_feedback_re
         "kind": "select_product",
         "payload": {"sku": "EUFY-X9-PRO"},
     }
-    r = await s.client.post(f"/sessions/{s.sid}/actions", json=bad)
+    r = await s.client.post(f"/sessions/{s.sid}/actions", json=await action_body(s.client, f"/sessions/{s.sid}/actions", bad))
     assert r.status_code == 409 and r.json()["code"] == "not_allowed_now"
     # 非法 feedback 值 → 422
     r = await s.client.post(
         f"/sessions/{s.sid}/actions",
-        json={**_feedback(pending, "solved"), "payload": {"feedback": "maybe"}},
+        json=await action_body(s.client, f"/sessions/{s.sid}/actions", {**_feedback(pending, "solved"), "payload": {"feedback": "maybe"}}),
     )
     assert r.status_code == 422
     # 正确反馈：恢复 run 先重发同一张卡（await_input 重跑），再进入 verify
     resumed = await s.feedback(pending, "not_solved")
-    assert (
-        resumed[0]["resumed"] is True
-        and resumed[1]["type"] == "step_card"
-        and resumed[1]["card_id"] == pending["card_id"]
-    )
+    assert resumed[0]["resumed"] is False
+    assert all(e.get("card_id") != pending["card_id"] for e in resumed if e["type"] == "step_card")
+    assert any(e["type"] == "pending_changed" and e["pending_id"] == pending["card_id"] and e["status"] == "consumed" for e in resumed)
+
 
 
 # ---------------- 票 35：反馈推进 ----------------
@@ -422,7 +423,8 @@ async def test_not_solved_advances_to_next_step_and_counts(runtime):
         and card["step"]["step_no"] == 2
         and card["step"]["title"] == "取出并清洁滤网"
     )
-    assert card["card_id"] == step_card_id(s.sid, "rv_suction_hair_wrap", "s2") != p1["card_id"]
+    assert card["card_id"] != p1["card_id"]
+    assert card["step"]["step_id"] == "s2"
     st = await s.state()
     assert st["counters"] == {"executed": 1, "advanced": 1, "skipped": 0, "plans_exhausted": 0}
     assert [(x["step_id"], x["feedback"], x["note"]) for x in st["steps_executed"]] == [

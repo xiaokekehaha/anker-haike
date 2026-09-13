@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import json
 import os
 
@@ -14,7 +16,7 @@ from app.intake import IntakeExtraction, extract_intake, strategy_for
 from app.intake.extract import build_messages
 from app.main import app
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -91,8 +93,8 @@ def test_system_prompt_three_layers():
         "reassure_first", {"stage": "guide", "product": "eufy X9 Pro", "symptoms": ["不吸了"]}
     )
     layers = prompt.split("\n\n")
-    assert len(layers) == 3 and layers[0] == ROLE_LAYER
-    assert "焦急" in layers[1] and "eufy X9 Pro" in layers[2] and "不吸了" in layers[2]
+    assert len(layers) == 2 and layers[0] == ROLE_LAYER
+    assert "焦急" in layers[1] and "eufy X9 Pro" not in prompt and "不吸了" not in prompt
     assert (
         "session" not in ROLE_LAYER.lower() and "<data>" in ROLE_LAYER
     )  # 固定层可缓存、声明 data 非指令
@@ -149,7 +151,7 @@ async def test_wants_human_from_extraction_escalates_like_r3(mem_runtime, tmp_pa
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             resp = await client.post(
-                f"/sessions/{sid}/messages", data={"text": "修了半天不行，找个人来处理"}
+                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "修了半天不行，找个人来处理"})
             )
             events = sse.parse(resp.text)
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
@@ -163,13 +165,8 @@ async def test_wants_human_from_extraction_escalates_like_r3(mem_runtime, tmp_pa
         "level": "angry",
         "strategy": "reassure_and_shorten",
     }
-    flags = state.values["safety_flags"]
-    assert flags[-1] == {
-        "rule_id": "R3",
-        "source": "intake",
-        "term": "wants_human",
-        "ts": state.values["at"],
-    }
+    assert state.values["turn_decision"]["escalation_trigger"] == "R3"
+    assert state.values["turn_decision"]["primary_intent"] == "request_human"
     assert state.values["model_trace"][0]["task"] == "intake"
 
 
@@ -180,7 +177,7 @@ async def test_extraction_writes_state_and_default_off_in_tests(mem_runtime):
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            await client.post(f"/sessions/{sid}/messages", data={"text": "吸力变小了"})
+            await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "吸力变小了"}))
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
     finally:
         set_rules_service(None)

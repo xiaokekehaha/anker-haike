@@ -1,0 +1,23 @@
+# 核查发现
+
+- 用户提供 WeKnora v0.8.0 的分析作为对照背景。
+- 9 月 12 日 role-explanation.md 已不足以代表当前工作区：graph.py 已引用 DashScopeReranker、grade_hits、rewrite_query，以及 conversation history/issue 状态。
+- conversation/reader.py 支持 recent / first / reference / time_range，recent 最近 6 个 run，上限 48 条，超限明确返回需缩小范围。
+- 本轮只读核查代码，不进行线上服务或数据库验证。
+- 当前 config/retrieval.yaml 的 query_rewrite、multi_query、faq、rerank、parent_expand、grade 均默认关闭，但实现已存在。
+- conversation/interpret.py 已有统一语义入口；history.py 从事件恢复 user/assistant/tool/card 与消息完成状态。故不应建议重新建设这两项。
+- conversation/reply.py 使用 build_context；graph.reply 仍用 reply_messages，仅传当前文本、简化状态、当轮证据和故障卡，未直接传完整问答历史与 steps_executed。
+- bounded-agentic-rag/progress.md 记录已完成增强实现及对照评估；这些历史记录不能代替本轮线上验证。
+- context/builder.py 已有整轮选择、token 预算、事实/风险/步骤状态与来源标记，不应把 token 管理列作从零建设项。
+- graph 的诊断回复与 conversation 的普通对话上下文仍有差异；历史问答证据关联可作为后续强化方向。
+- manager.subscribe 与 cancel 依赖本地 _live 句柄：续传已有，跨副本运行协调尚不能由持久化事件推导。
+- reduce 的 explain 路由与无新增操作约束应保留；建议按证据充分性补检索，不让模型意图直接授予操作权限。
+- 后续方案复核：current_evidence_ids 为 round_evidence 全集，不是答案实际引用；full_text 仅 internal item 保存，累计 evidence 不能保证含父块。
+- budget_error 已做 input/schema/images/output 窗口校验；必需内容预算异常发生在历史加入前。
+- 已有替身驱动的 7 轮原案例回归；缺口应表述为真实模型多轮 grounding 评测。
+- effects.PERSISTED 包含全部 message 事件，文本增量被捕获到 pending_effects；放开发布需配套消息提交状态。
+- 2026-09-13 本轮重新核查：当前已有 conversation/summary_cache.py，按整轮摘录历史、来源标记、revision/CAS 校验，builder 已接入。早先“参数仅配置未使用”的观察已过时；它是摘录缓存，不是模型语义压缩。优先级调整为完善任务上下文投影，不从零建记忆服务。
+- message delta 当前被 effects 捕获，与业务提交后再发布有关；流式优化必须独立设计未提交消息语义，不能直接移除 PERSISTED 项。
+- scripts/eval_conversation.py 已使用真实 intake + reducer，但每个 case 重建历史，未验证真实连续检索/回复；首批评测应补这一层。
+- runner 在 publish_commit 后发 pending_effects；流式体验需分离模型首 token 与浏览器首有效增量，提前发布须保留提交/作废语义。
+- 优先级已收敛至 P0-A 基线、P0-B 上下文、P0-C 证据关联；P0 代表首批而非确认线上事故。多副本为条件性发布前 P0。

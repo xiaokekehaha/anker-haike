@@ -1,0 +1,13 @@
+# Progress
+- 读取 diagnosing-bugs 与 planning-with-files 技能；检查 AGENTS.md 和工作区状态。
+- 开始读取真实会话与既有设计资料。
+- 保存 journey.json 与 events.json（项目观测日志已脱敏），核对各轮模型输出和历史条目。
+- 新建 test_conversation_model_clarification.py，回放前三轮，断言不重复追问且进入通用检索。
+- 路径探测 config/catalog.yaml 不存在，已改查实际 config/products.yaml。
+- 红灯：1 failed in 0.52s，断言“用户提供 00001 后重复询问型号”。
+- 对比实验确认仅本轮文字命中品类可放行，既有 state.category 不参与决策。
+- 修改 clarify.py 的当前问题品类回退和未匹配提示。
+- 原回放绿灯：1 passed in 0.32s。
+- 扩展针对性回归：16 passed in 1.51s；结果保存 regression.log。
+- 格式已修正，ruff check 与格式检查通过；没有临时 debug 日志。
+- 本轮未操作原会话或部署容器，运行版本仍需加载源码修复。

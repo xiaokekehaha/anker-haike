@@ -65,7 +65,7 @@ def compose_system_prompt(
     *,
     simplified: bool = False,
 ) -> str:
-    layers = [ROLE_LAYER, emotion_layer(strategy), state_layer(state_summary or {})]
+    layers = [ROLE_LAYER, emotion_layer(strategy)]
     if simplified:
         layers.append(SIMPLIFIED_LAYER)
     return "\n\n".join(layers)

@@ -58,6 +58,12 @@ def node_summary(update: Any) -> dict[str, Any] | None:
     for key, name in _SUMMARY_KEYS.items():
         if key in update and isinstance(update[key], (str, bool, int, type(None))):
             out[name] = update[key]
+    turn = update.get("turn_decision")
+    if isinstance(turn, dict):
+        for key in ("primary_intent", "reply_mode", "target_issue_id", "escalation_trigger", "allowed_operations"):
+            if key in turn: out[key] = turn[key]
+        out["patch_count"] = len(turn.get("patches", []))
+    if "context_revision" in update: out["context_revision"] = update["context_revision"]
     # 嵌套判定：只取枚举值
     decision = update.get("_decision")
     if isinstance(decision, dict) and decision.get("outcome"):
@@ -110,7 +116,11 @@ def classify(
     if stage == "done" and closing:
         verify = values.get("_verify") or {}
         return "resolved", verify.get("rule") or "solved"
-    if values.get("escalation_summary"):
+    issue = (values.get("issues") or {}).get(values.get("active_issue_id"), {})
+    summary = issue.get("latest_summary")
+    if summary and issue.get("handoff", {}).get("status") == "prepared":
+        return "escalated", summary["summary"]["reason"]["rule_id"]
+    if not values.get("issues") and values.get("escalation_summary"):
         return "escalated", values.get("escalate_reason")
     if stage == "escalate":
         # 摘要还没写完（等凭证 / 等确认）：仍在升级流程里，不算已升级
@@ -141,7 +151,7 @@ def is_abandoned(outcome: str, last_run_at: datetime, stage: str | None, *, afte
 
 def first_question(values: dict[str, Any]) -> str | None:
     """首条用户消息，脱敏并截断；用于会话列表的「他问了什么」。"""
-    for m in values.get("messages") or []:
+    for m in values.get("history") or values.get("messages") or []:
         if isinstance(m, dict) and m.get("role") == "user" and (m.get("text") or "").strip():
             return str(sanitize(m["text"]))[:FIRST_QUESTION_MAX]
     return None
@@ -192,7 +202,7 @@ def session_facts(
         last_run_at=last_run_at,
         runs=runs,
         user_messages=sum(
-            1 for m in (values.get("messages") or []) if isinstance(m, dict) and m.get("role") == "user"
+            1 for m in (values.get("history") or values.get("messages") or []) if isinstance(m, dict) and m.get("role") == "user" and m.get("kind", "message") == "message"
         ),
         first_question=first_question(values) if store_text else None,
         product_state=values.get("product_state"),

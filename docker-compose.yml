@@ -136,6 +136,17 @@ services:
       RERANK_MODEL_NAME: ${RERANK_MODEL_NAME:-gte-rerank-v2}
       # 票 26：内置模型由 YAML 登记（环境变量本身不会注册模型）
       BUILTIN_MODELS_CONFIG: /app/config/builtin_models.yaml
+      # 对话模型（KnowledgeQA）：WeKnora 内置「快速问答 / 智能推理」智能体用，缺它 UI 报「智能体未就绪」。
+      # 默认取 config/models.yaml domestic 链首位 deepseek-flash；换厂商只改 .env 三个变量后重启本服务。
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com/v1}
+      LLM_API_KEY: ${LLM_API_KEY:-${DEEPSEEK_API_KEY:-}}
+      LLM_MODEL_NAME: ${LLM_MODEL_NAME:-deepseek-flash}
+      # 视觉语言模型（VLLM）：图片 / 扫描件解析与后续图文检索用；百炼 qwen3-vl-plus 单次可收 10 张图
+      VLM_PROVIDER: ${VLM_PROVIDER:-openai}
+      VLM_BASE_URL: ${VLM_BASE_URL:-https://dashscope.aliyuncs.com/compatible-mode/v1}
+      VLM_API_KEY: ${VLM_API_KEY:-${DASHSCOPE_API_KEY:-}}
+      VLM_MODEL_NAME: ${VLM_MODEL_NAME:-qwen3-vl-plus}
       # 远程模型地址白名单（本机 embedding 桩用 host.docker.internal；生产留空）
       SSRF_WHITELIST_EXTRA: ${SSRF_WHITELIST_EXTRA:-}
     volumes:

@@ -1,0 +1,141 @@
+{
+  "stage": "escalate",
+  "substage": "summarize",
+  "category": "earbuds",
+  "product_confirmed": {
+    "name": "耳机（型号未确认）",
+    "category": "earbuds",
+    "in_scope": false
+  },
+  "product_state": "category_only",
+  "symptoms": [],
+  "product_hints": [],
+  "messages": [
+    {
+      "role": "user",
+      "text": "我的耳机没有声音",
+      "image_ids": [],
+      "images": [],
+      "run_id": "09f010d5b4fe40eb981f54239eb3bfaf",
+      "at": "2026-09-13T05:25:23.577512+00:00"
+    },
+    {
+      "role": "user",
+      "text": "我机器人，冒烟了",
+      "image_ids": [],
+      "images": [],
+      "run_id": "01b2392b04cc473eaa5e6ccc62803182",
+      "at": "2026-09-13T05:25:46.900477+00:00"
+    },
+    {
+      "role": "user",
+      "text": "我之前问了什么问题",
+      "image_ids": [],
+      "images": [],
+      "run_id": "7d84738900a041568f79c81db88b5092",
+      "at": "2026-09-13T05:33:34.516611+00:00"
+    },
+    {
+      "role": "user",
+      "text": "有什么故障",
+      "image_ids": [
+        "018c4d120c6c43f8b8610c047ce1adcc"
+      ],
+      "images": [
+        {
+          "image_id": "018c4d120c6c43f8b8610c047ce1adcc",
+          "purpose": "fault",
+          "sha256": "4242b545e3fd2d208b6fd29314fa48444cf33eed147f0927bdd678b9af66d571",
+          "mime": "image/jpeg",
+          "size": 47528
+        }
+      ],
+      "run_id": "ec030b24d65e4ca4a8b2721af411904d",
+      "at": "2026-09-13T05:46:40.953621+00:00"
+    },
+    {
+      "role": "user",
+      "text": "新问题",
+      "image_ids": [],
+      "images": [],
+      "run_id": "23292c8053fb465eb592c90bab44ca00",
+      "at": "2026-09-13T05:49:26.383585+00:00"
+    },
+    {
+      "role": "user",
+      "text": "刚说错了",
+      "image_ids": [],
+      "images": [],
+      "run_id": "ee5b70313d314ddf88531b1eb78ded1d",
+      "at": "2026-09-13T05:49:41.345894+00:00"
+    }
+  ],
+  "safety_flags": [
+    {
+      "rule_id": "R4",
+      "source": "text",
+      "term": "冒烟",
+      "ts": "2026-09-13T05:25:46.917096+00:00"
+    },
+    {
+      "rule_id": "R3",
+      "source": "action",
+      "term": "request_human",
+      "ts": "2026-09-13T05:49:38.919434+00:00",
+      "action_id": "7f0fab29-d66b-4f97-8efd-6f5b7c28a055"
+    }
+  ],
+  "escalate_reason": "R3",
+  "model_trace": [
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    }
+  ],
+  "image_refs": [
+    {
+      "image_id": "018c4d120c6c43f8b8610c047ce1adcc",
+      "purpose": "fault",
+      "sha256": "4242b545e3fd2d208b6fd29314fa48444cf33eed147f0927bdd678b9af66d571",
+      "mime": "image/jpeg",
+      "size": 47528,
+      "created_at": "2026-09-13T05:46:40.902862+00:00",
+      "run_id": "ec030b24d65e4ca4a8b2721af411904d"
+    }
+  ],
+  "observations": null,
+  "visible_messages": [
+    {
+      "message_id": "0364d7b3569e5663b92431ffbd6b1bd3",
+      "kind": "out_of_scope",
+      "text": "本期智能排障仅支持 eufy 扫地机器人。您咨询的「耳机（型号未确认）」属于耳机，不在当前支持范围内；我已把情况整理好转给人工客服，稍后会有专人协助您。",
+      "model_tier": null
+    }
+  ]
+}

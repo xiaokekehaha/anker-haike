@@ -88,8 +88,8 @@
           "title": "Expected Version",
           "type": "integer"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "input_token": {
+          "title": "Input Token",
           "type": "string"
         },
         "kind": {
@@ -99,12 +99,17 @@
         },
         "payload": {
           "$ref": "#/$defs/ConfirmReceiptPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
         }
       },
       "required": [
         "action_id",
         "expected_version",
-        "interrupt_id",
+        "target_issue_id",
+        "input_token",
         "card_id",
         "kind",
         "payload"
@@ -136,6 +141,41 @@
         "fields"
       ],
       "title": "ConfirmReceiptPayload",
+      "type": "object"
+    },
+    "NewIssueAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "new_issue",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/RequestHumanPayload"
+        },
+        "target_issue_id": {
+          "default": null,
+          "title": "Target Issue Id",
+          "type": "null"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "kind"
+      ],
+      "title": "NewIssueAction",
       "type": "object"
     },
     "ReceiptFields": {
@@ -193,88 +233,6 @@
       "title": "ReceiptFields",
       "type": "object"
     },
-    "RediagnoseAction": {
-      "additionalProperties": false,
-      "description": "guide / verify 阶段且无 active run；无绑定卡片。",
-      "properties": {
-        "action_id": {
-          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
-          "title": "Action Id",
-          "type": "string"
-        },
-        "card_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Card Id"
-        },
-        "expected_version": {
-          "minimum": 0,
-          "title": "Expected Version",
-          "type": "integer"
-        },
-        "interrupt_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Interrupt Id"
-        },
-        "kind": {
-          "const": "rediagnose",
-          "title": "Kind",
-          "type": "string"
-        },
-        "payload": {
-          "$ref": "#/$defs/RediagnosePayload"
-        }
-      },
-      "required": [
-        "action_id",
-        "expected_version",
-        "kind",
-        "payload"
-      ],
-      "title": "RediagnoseAction",
-      "type": "object"
-    },
-    "RediagnosePayload": {
-      "additionalProperties": false,
-      "properties": {
-        "image_ids": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Image Ids",
-          "type": "array"
-        },
-        "text": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Text"
-        }
-      },
-      "title": "RediagnosePayload",
-      "type": "object"
-    },
     "RequestHumanAction": {
       "additionalProperties": false,
       "description": "任何时刻可用；服务端忽略 version 与 pending 校验，有 active run 先取消。",
@@ -301,7 +259,7 @@
           "title": "Expected Version",
           "type": "integer"
         },
-        "interrupt_id": {
+        "input_token": {
           "anyOf": [
             {
               "type": "string"
@@ -311,7 +269,7 @@
             }
           ],
           "default": null,
-          "title": "Interrupt Id"
+          "title": "Input Token"
         },
         "kind": {
           "const": "request_human",
@@ -320,6 +278,18 @@
         },
         "payload": {
           "$ref": "#/$defs/RequestHumanPayload"
+        },
+        "target_issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Issue Id"
         }
       },
       "required": [
@@ -334,6 +304,41 @@
       "additionalProperties": false,
       "properties": {},
       "title": "RequestHumanPayload",
+      "type": "object"
+    },
+    "ResumeIssueAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "resume_issue",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/RequestHumanPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "kind"
+      ],
+      "title": "ResumeIssueAction",
       "type": "object"
     },
     "SelectProductAction": {
@@ -353,8 +358,8 @@
           "title": "Expected Version",
           "type": "integer"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "input_token": {
+          "title": "Input Token",
           "type": "string"
         },
         "kind": {
@@ -364,12 +369,17 @@
         },
         "payload": {
           "$ref": "#/$defs/SelectProductPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
         }
       },
       "required": [
         "action_id",
         "expected_version",
-        "interrupt_id",
+        "target_issue_id",
+        "input_token",
         "card_id",
         "kind",
         "payload"
@@ -408,8 +418,8 @@
           "title": "Expected Version",
           "type": "integer"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "input_token": {
+          "title": "Input Token",
           "type": "string"
         },
         "kind": {
@@ -419,12 +429,17 @@
         },
         "payload": {
           "$ref": "#/$defs/SkipReceiptPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
         }
       },
       "required": [
         "action_id",
         "expected_version",
-        "interrupt_id",
+        "target_issue_id",
+        "input_token",
         "card_id",
         "kind",
         "payload"
@@ -468,8 +483,8 @@
           "title": "Expected Version",
           "type": "integer"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "input_token": {
+          "title": "Input Token",
           "type": "string"
         },
         "kind": {
@@ -479,12 +494,17 @@
         },
         "payload": {
           "$ref": "#/$defs/StepFeedbackPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
         }
       },
       "required": [
         "action_id",
         "expected_version",
-        "interrupt_id",
+        "target_issue_id",
+        "input_token",
         "card_id",
         "kind",
         "payload"
@@ -528,8 +548,9 @@
   "discriminator": {
     "mapping": {
       "confirm_receipt": "#/$defs/ConfirmReceiptAction",
-      "rediagnose": "#/$defs/RediagnoseAction",
+      "new_issue": "#/$defs/NewIssueAction",
       "request_human": "#/$defs/RequestHumanAction",
+      "resume_issue": "#/$defs/ResumeIssueAction",
       "select_product": "#/$defs/SelectProductAction",
       "skip_receipt": "#/$defs/SkipReceiptAction",
       "step_feedback": "#/$defs/StepFeedbackAction"
@@ -553,7 +574,10 @@
       "$ref": "#/$defs/RequestHumanAction"
     },
     {
-      "$ref": "#/$defs/RediagnoseAction"
+      "$ref": "#/$defs/NewIssueAction"
+    },
+    {
+      "$ref": "#/$defs/ResumeIssueAction"
     }
   ],
   "title": "ActionRequest"

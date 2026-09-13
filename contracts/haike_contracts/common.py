@@ -50,10 +50,11 @@ ModelTier = Literal["primary", "fallback"]
 
 
 class PendingInput(Strict):
+    issue_id: str | None = None
     """当前唯一允许的用户输入；与 awaiting_input 事件同结构（08 §1、§6）。"""
 
     kind: PendingKind
-    interrupt_id: str
+    input_token: str
     card_id: str
     version: int = Field(ge=0)
 

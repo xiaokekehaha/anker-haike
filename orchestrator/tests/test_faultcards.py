@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import model_task_text
+
 import json
 
 import pytest
@@ -142,7 +144,7 @@ async def test_weknora_down_a1_still_reaches_guide_with_standard_flow_note(
     assert values["diagnose_outcome"]["mode"] == "fault_card"
     # 故障卡文本进入回复上下文；改写决策因「已有命中」不触发
     reply_call = next(c for c in fakes["main"].calls if c["metadata"]["task"] == "reply.stream")
-    human = reply_call["messages"][-1].content
+    human = model_task_text(reply_call)
     assert 'kind="fault_card"' in human and "eufy X9 Pro 故障卡" in human
     assert events[-1]["reason"] == "awaiting_input"  # 票 34：guide 发出首张步骤卡
 

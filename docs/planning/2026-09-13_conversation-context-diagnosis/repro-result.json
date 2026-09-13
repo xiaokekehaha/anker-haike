@@ -1,0 +1,470 @@
+{
+  "full": [
+    {
+      "input": "我的耳机没有声音",
+      "stages": [
+        "intake",
+        "disambiguate",
+        "out_of_scope",
+        "escalate"
+      ],
+      "reply": "本期智能排障仅支持 eufy 扫地机器人。您咨询的「耳机（型号未确认）」属于耳机，不在当前支持范围内；我已把情况整理好转给人工客服，稍后会有专人协助您。我已把目前的情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R8",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R8",
+          "text": "产品不在本期支持范围内"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "我机器人，冒烟了",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "我之前问了什么问题",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了",
+          "用户补充：我之前问了什么问题"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "有什么故障",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了",
+          "用户补充：我之前问了什么问题",
+          "用户补充：有什么故障"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "新问题",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了",
+          "用户补充：我之前问了什么问题",
+          "用户补充：有什么故障",
+          "用户补充：新问题"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "<request_human>",
+      "stages": [
+        "escalate"
+      ],
+      "reply": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+      "reason": "R3",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了",
+          "用户补充：我之前问了什么问题",
+          "用户补充：有什么故障",
+          "用户补充：新问题"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R3",
+          "text": "用户明确要求人工服务；命中词：request_human"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "刚说错了",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+      "reason": "R3",
+      "category": "earbuds",
+      "summary": {
+        "product": "耳机（型号未确认）",
+        "problem": "我的耳机没有声音",
+        "observations": [
+          "用户补充：我机器人，冒烟了",
+          "用户补充：我之前问了什么问题",
+          "用户补充：有什么故障",
+          "用户补充：新问题",
+          "用户补充：刚说错了"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R3",
+          "text": "用户明确要求人工服务；命中词：request_human"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ],
+  "minimal": [
+    {
+      "input": "我机器人，冒烟了",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": null,
+      "summary": {
+        "product": "未确认",
+        "problem": "我机器人，冒烟了",
+        "observations": [],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "新问题",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
+      "reason": "R4",
+      "category": null,
+      "summary": {
+        "product": "未确认",
+        "problem": "我机器人，冒烟了",
+        "observations": [
+          "用户补充：新问题"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R4",
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：冒烟"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ],
+  "correction": [
+    {
+      "input": "<request_human>",
+      "stages": [
+        "escalate"
+      ],
+      "reply": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+      "reason": "R3",
+      "category": null,
+      "summary": {
+        "product": "未确认",
+        "problem": "（用户尚未描述问题）",
+        "observations": [],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R3",
+          "text": "用户明确要求人工服务；命中词：request_human"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "input": "刚说错了",
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+      "reason": "R3",
+      "category": null,
+      "summary": {
+        "product": "未确认",
+        "problem": "刚说错了",
+        "observations": [],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R3",
+          "text": "用户明确要求人工服务；命中词：request_human"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "已转人工，如需质保核实请补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ],
+  "checks": {
+    "history_query_answers_previous_problem": false,
+    "new_issue_not_added_as_fault_observation": false,
+    "new_issue_not_only_repeated_safety_transfer": false,
+    "correction_not_only_repeated_human_transfer": false
+  }
+}

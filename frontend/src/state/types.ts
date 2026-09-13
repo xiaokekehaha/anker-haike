@@ -11,6 +11,8 @@ export type SessionState = {
   substage: string | null;
   ui: UiState;
   version: number;
+  activeIssueId: string | null;
+  issues: { issue_id: string; title?: string; status?: string }[];
   activeRun: ActiveRun | null;
   pendingInput: PendingInput | null;
   timeline: TimelineItem[];
@@ -49,6 +51,8 @@ export const initialState: SessionState = {
   substage: null,
   ui: 'idle',
   version: 0,
+  activeIssueId: null,
+  issues: [],
   activeRun: null,
   pendingInput: null,
   timeline: [],

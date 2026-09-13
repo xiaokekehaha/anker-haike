@@ -40,7 +40,8 @@ def test_topology_marks_conditional_edges():
     edges = topology()["edges"]
     conditional = {(e["source"], e["target"]) for e in edges if e["conditional"]}
     fixed = {(e["source"], e["target"]) for e in edges if not e["conditional"]}
-    assert ("__start__", "intake") in conditional  # route_entry 三选一
+    assert ("__start__", "understand") in fixed
+    assert ("understand", "intake") in conditional
     assert ("prepare_card", "await_input") in fixed  # 固定边
 
 

@@ -89,14 +89,24 @@ def _hit_text(h: Any) -> str:
     return f"{h.evidence_id}\n{h.full_text or ''}\n{h.snippet}"
 
 
+def is_gold(h: Any, case: dict[str, Any]) -> bool:
+    """金标命中：doc_id 在 expected_doc_ids 里，或（工单）根因与 expected_ticket_cause 一致。
+    工单同因的有好几条，逐条列 id 既繁琐又脆弱，按根因匹配更稳（标注指南见 ANNOTATION.md）。"""
+    if h.doc_id in set(case.get("expected_doc_ids") or []):
+        return True
+    cause = case.get("expected_ticket_cause")
+    return bool(cause and h.source == "kb_tickets" and f"原因：{cause}" in (h.snippet or ""))
+
+
 def score_case(case: dict[str, Any], hits: list[Any]) -> dict[str, Any]:
-    expected = set(case.get("expected_doc_ids") or [])
+    expected = bool(case.get("expected_doc_ids") or case.get("expected_ticket_cause"))
     docs = [h.doc_id for h in hits]
+    gold = [is_gold(h, case) for h in hits]
     out: dict[str, Any] = {"doc_ids": docs, "n_hits": len(hits)}
     if expected:
-        out["hit"] = any(d in expected for d in docs)
-        out["precision"] = (sum(d in expected for d in docs) / len(docs)) if docs else 0.0
-        out["first_rank"] = next((i + 1 for i, d in enumerate(docs) if d in expected), None)
+        out["hit"] = any(gold)
+        out["precision"] = (sum(gold) / len(gold)) if gold else 0.0
+        out["first_rank"] = next((i + 1 for i, g in enumerate(gold) if g), None)
         markers = chunk_markers(case.get("expected_chunk_hint"))
         if markers:
             texts = [_hit_text(h) for h in hits]
@@ -133,7 +143,6 @@ async def _model_side(
             lane=lane,
         )
         kept = apply_assessment(list(hits), a, keep_min=cfg.grade.keep_min)
-        expected = set(case.get("expected_doc_ids") or [])
         out["grade"] = {
             "status": a.status,
             "reason": a.reason,
@@ -144,7 +153,7 @@ async def _model_side(
             "kept_min": a.kept_min_ids,
             # 金标文档被判 irrelevant = 评分假阴性；非金标被判 relevant 只作参考（金标是文档级）
             "false_negative": [
-                h.evidence_id for h in hits if h.doc_id in expected and h.grade == "irrelevant"
+                h.evidence_id for h in hits if is_gold(h, case) and h.grade == "irrelevant"
             ],
             "relevant_n": len(a.relevant_ids),
         }

@@ -11,7 +11,8 @@ export class ApiError extends Error {
 async function fail(res: Response): Promise<never> {
   let body: { code?: string; message?: string; snapshot?: SessionSnapshot } = {};
   try {
-    body = await res.json();
+    const raw = await res.json();
+    body = raw.detail ?? raw;
   } catch {
     /* 非 JSON 错误体 */
   }
@@ -31,10 +32,12 @@ export async function getSnapshot(sessionId: string, signal?: AbortSignal): Prom
 }
 
 /** 发送文本 + 图片；返回 SSE 响应（调用方用 readSSE 消费）。 */
-export async function sendMessage(sessionId: string, text: string, files: File[], purpose: 'fault' | 'receipt', signal?: AbortSignal): Promise<Response> {
+export async function sendMessage(sessionId: string, text: string, files: File[], purpose: 'fault' | 'receipt', inputId: string, expectedVersion: number, signal?: AbortSignal): Promise<Response> {
   const form = new FormData();
   form.set('text', text);
   form.set('purpose', purpose);
+  form.set('input_id', inputId);
+  form.set('expected_version', String(expectedVersion));
   for (const f of files) form.append('images', f, f.name);
   const res = await fetch(`/sessions/${encodeURIComponent(sessionId)}/messages`, { method: 'POST', body: form, signal });
   if (!res.ok) return fail(res);

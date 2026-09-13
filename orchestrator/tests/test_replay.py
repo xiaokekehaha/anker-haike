@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import json
 from pathlib import Path
 
@@ -15,7 +17,8 @@ from app.knowledge.adapter import HINTS, Hit, KnowledgeScope, ToolResult
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel, ScriptExhausted
+from app.models.fake import ScriptExhausted
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelInvokeError, ModelRouter
 from app.models.runtime import set_model_router
@@ -259,7 +262,7 @@ async def _run_a1(client, sid):
         (
             await client.post(
                 f"/sessions/{sid}/messages",
-                data={"text": "eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发"},
+                data=await message_form(client, f"/sessions/{sid}/messages", {"text": "eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发"}),
             )
         ).text
     )

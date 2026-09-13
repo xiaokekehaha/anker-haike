@@ -7,6 +7,10 @@ from tests.samples import EVENTS
 
 CONTRACT_TYPES = {
     "run_started",
+    "input_received",
+    "issue_changed",
+    "pending_changed",
+    "summary_updated",
     "ping",
     "progress",
     "tool_call",
@@ -26,7 +30,7 @@ CONTRACT_TYPES = {
 
 def test_covers_all_15_types_from_contract_section_5():
     assert set(EVENT_TYPES) == CONTRACT_TYPES
-    assert len(EVENT_TYPES) == 15
+    assert len(EVENT_TYPES) == 19
     assert set(EVENTS) == CONTRACT_TYPES, "每种 type 都要有样例"
 
 

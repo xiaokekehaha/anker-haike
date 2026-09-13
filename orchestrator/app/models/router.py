@@ -240,7 +240,7 @@ class ModelRouter:
         self.gate = gate or BoundedGate(registry.cfg.concurrency.max_in_flight)
         self._factory = model_factory or (
             lambda r, route: registry.build(
-                r.alias, effort=route.effort, max_tokens=route.max_tokens
+                r.alias, effort=route.effort, max_tokens=route.max_tokens or 2048
             )
         )
         self._clock = clock
@@ -262,6 +262,11 @@ class ModelRouter:
         method: Method | None = None,
     ) -> ModelResult[T]:
         """结构化调用；全局门满时立即抛 CapacityExceeded（映射为 recoverable error）。"""
+        from app.context.runtime import prepare_messages
+        try:
+            messages = prepare_messages(task, messages, schema)
+        except ValueError as exc:
+            raise ModelInvokeError(task, [], "context budget exceeded") from exc
         started = time.monotonic()
         result = None
         error = None
@@ -349,6 +354,11 @@ class ModelRouter:
             while True:
                 if remaining_s() <= 0:
                     raise ModelInvokeError(task, attempts, "budget exhausted")
+                from app.context.budget import budget_error
+                rejected = budget_error(msgs, resolved.spec, schema=schema, schema_in_messages=chosen == "json_object", output_tokens=route.max_tokens or 2048)
+                if rejected:
+                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, chosen, "skipped", 0, rejected))
+                    break
                 timeout_s = min(resolved.spec.timeout_s, remaining_s())
                 start = self._clock()
                 outcome, error, result = await self._call(
@@ -411,6 +421,13 @@ class ModelRouter:
         lane=None,
         fallback_messages=None,
     ) -> AsyncIterator[StreamEvent]:
+        from app.context.runtime import prepare_messages
+        try:
+            messages = prepare_messages(task, messages)
+            if fallback_messages is not None:
+                fallback_messages = prepare_messages(task, fallback_messages)
+        except ValueError as exc:
+            raise ModelInvokeError(task, [], "context budget exceeded") from exc
         started = time.monotonic()
         trace = {"attempts": [], "usage": {}}
         output = ""
@@ -505,6 +522,12 @@ class ModelRouter:
                 tier: Literal["primary", "fallback"] = "primary" if tried == 0 else "fallback"
                 tried += 1
                 msgs = base if tier == "primary" else fb
+                from app.context.budget import budget_error
+                rejected = budget_error(msgs, resolved.spec, output_tokens=route.max_tokens or 2048)
+                if rejected:
+                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, None, "skipped", 0, rejected))
+                    tried -= 1
+                    continue
                 trace["input"] = msgs
                 trace["model_used"] = resolved.model_used
                 model = self._factory(resolved, route)

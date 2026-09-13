@@ -5,6 +5,8 @@ A3 样本用假 router 回放 OCR 输出；真实订单截图识别留票 42 bak
 
 from __future__ import annotations
 
+from tests.message_form import action_body, message_form, escalate_on_feedback
+
 import io
 import json
 import uuid
@@ -17,7 +19,7 @@ from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
 from app.main import app
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -47,17 +49,15 @@ def _cfg(sid: str):
 
 async def _to_confirm_card(client, sid: str, n_images: int = 1):
     """一轮正常对话 → 注入 R1 → 进入 collect_receipt → 上传凭证 → OCR → receipt_card。"""
-    r = await client.post(f"/sessions/{sid}/messages", data={"text": "扫地机 X10 不吸了"})
+    r = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 不吸了"}))
     assert r.status_code == 200
-    await app.state.session_graph.aupdate_state(_cfg(sid), {"escalate_reason": "R1"})
-    r = await client.post(f"/sessions/{sid}/messages", data={"text": "还是不行"})
-    assert sse.parse(r.text)[-1]["reason"] == "awaiting_input"
+    await escalate_on_feedback(client, sid, "R1")
     files = [
         ("images", (f"receipt{i}.png", io.BytesIO(png_bytes(700 + i)), "image/png"))
         for i in range(n_images)
     ]
     r = await client.post(
-        f"/sessions/{sid}/messages", data={"text": "订单截图", "purpose": "receipt"}, files=files
+        f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "订单截图", "purpose": "receipt"}), files=files
     )
     assert r.status_code == 200, r.text
     return sse.parse(r.text)
@@ -66,7 +66,7 @@ async def _to_confirm_card(client, sid: str, n_images: int = 1):
 def _confirm(pending: dict, fields: dict, edited: list[str]) -> dict:
     return {
         "action_id": uuid.uuid4().hex,
-        "interrupt_id": pending["interrupt_id"],
+        "input_token": pending["input_token"],
         "card_id": pending["card_id"],
         "expected_version": pending["version"],
         "kind": "confirm_receipt",
@@ -146,7 +146,7 @@ async def test_a3_sample_recognizes_order_and_channel_with_low_confidence_flag(
     # OCR 调用：internal、带凭证图、任务名正确、图片说明包 <data>
     ocr_call = next(c for c in env.fake.calls if c["metadata"]["task"] == "warranty.receipt_ocr")
     assert "internal" in ocr_call["tags"]
-    human = ocr_call["messages"][-1].content
+    human = next(m.content for m in ocr_call["messages"] if isinstance(m.content, list))
     assert (
         any(p.get("type") == "image_url" for p in human)
         and 'kind="receipt_image"' in human[0]["text"]
@@ -175,14 +175,14 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
                 "amount": None,
             }
             resp = await client.post(
-                f"/sessions/{sid}/actions", json=_confirm(pending, fields, ["channel"])
+                f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, fields, ["channel"]))
             )
             assert resp.status_code == 200, resp.text
             resumed = sse.parse(resp.text)
             snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
-    assert resumed[0]["resumed"] is True
+    assert resumed[0]["resumed"] is False
     types = [e["type"] for e in resumed]
-    assert "receipt_card" in types  # await_input 重跑重发同一卡片（前端按 card_id 幂等）
+    assert "receipt_card" not in types  # 已消费的卡片不重新发布
     assert "escalation_summary" in types and resumed[-1]["reason"] == "completed"
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert (
@@ -200,7 +200,7 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
     assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
     # 重复确认（旧 version）→ 409
     again = await _client().__aenter__()
-    r = await again.post(f"/sessions/{sid}/actions", json=_confirm(pending, fields, []))
+    r = await again.post(f"/sessions/{sid}/actions", json=await action_body(again, f"/sessions/{sid}/actions", _confirm(pending, fields, [])))
     assert r.status_code == 409 and r.json()["code"] == "stale_version"
     await again.__aexit__(None, None, None)
 
@@ -221,7 +221,7 @@ async def test_all_unreadable_yields_empty_card_for_manual_input(mem_runtime, tm
             # 手输订单号
             resp = await client.post(
                 f"/sessions/{sid}/actions",
-                json=_confirm(pending, {"order_no": " 2024ABC ", "channel": None}, ["order_no"]),
+                json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, {"order_no": " 2024ABC ", "channel": None}, ["order_no"])),
             )
             assert resp.status_code == 200
             resumed = sse.parse(resp.text)
@@ -245,14 +245,14 @@ async def test_ocr_failure_and_no_vision_still_emit_card_and_allow_skip(mem_runt
             pending = next(e for e in events if e["type"] == "awaiting_input")
             resp = await client.post(
                 f"/sessions/{sid}/actions",
-                json={
+                json=await action_body(client, f"/sessions/{sid}/actions", {
                     "action_id": uuid.uuid4().hex,
-                    "interrupt_id": pending["interrupt_id"],
+                    "input_token": pending["input_token"],
                     "card_id": pending["card_id"],
                     "expected_version": pending["version"],
                     "kind": "skip_receipt",
                     "payload": {"reason": "unreadable"},
-                },
+                }),
             )
             assert resp.status_code == 200
             resumed = sse.parse(resp.text)
@@ -276,6 +276,7 @@ async def test_receipt_card_has_no_warranty_conclusion_fields(mem_runtime, tmp_p
             events = await _to_confirm_card(client, sid)
     card = next(e for e in events if e["type"] == "receipt_card")
     assert set(card) == {
+        "event_id", "recorded_at", "issue_id",
         "type",
         "seq",
         "run_id",

@@ -280,8 +280,7 @@ def confirmed_receipt(
     clean = {k: (v.strip() or None) if isinstance(v, str) else v for k, v in clean.items()}
     previous = r.get("fields") or {}
     actual_edits = [
-        e for e in dict.fromkeys(edited)
-        if e in FIELDS and clean[e] != (previous.get(e) or None)
+        e for e in dict.fromkeys(edited) if e in FIELDS and clean[e] != (previous.get(e) or None)
     ]
     r.update(
         {
@@ -349,7 +348,8 @@ def skipped_receipt(state: dict[str, Any], reason: str) -> dict[str, Any]:
 def uploaded_receipt(state: dict[str, Any], image_ids: list[str]) -> dict[str, Any]:
     """收到 purpose=receipt 的图片：记引用，status 留空交 extract。"""
     r = {**empty_receipt(), **(state.get("receipt") or {})}
-    r["image_ids"] = [*r.get("image_ids", []), *image_ids]
+    r["image_ids"] = list(image_ids)
+    r.update(fields={}, confidence={}, edited=[], verified_facts={}, conflicts=[], next_step=None)
     r["status"] = None
     return r
 
@@ -368,7 +368,7 @@ def receipt_outcome(state: dict[str, Any], reason: str) -> dict[str, Any]:
     next_step = receipt.get("next_step") or (
         NEXT_STEP["not_collected"]
         if reason == "R6" or receipt.get("skipped_reason")
-        else "已转人工，如需质保核实请补充购买凭证"
+        else "摘要已整理；如需质保核实，可向客服补充购买凭证"
     )
     return {
         "status": status,

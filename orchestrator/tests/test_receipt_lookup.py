@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import action_body
+
 import json
 import uuid
 from datetime import date
@@ -125,7 +127,7 @@ async def test_a3_api_lookup_summary_snapshot_and_replay(
             events = await _to_confirm_card(client, sid)
             pending = next(e for e in events if e["type"] == "awaiting_input")
             action = _confirm(pending, {"order_no": order, "channel": DEALER}, [])
-            result = await client.post(f"/sessions/{sid}/actions", json=action)
+            result = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", action))
             assert result.status_code == 200, result.text
             events = sse.parse(result.text)
             for event in events:
@@ -145,8 +147,8 @@ async def test_a3_api_lookup_summary_snapshot_and_replay(
             item = next(x for x in snap["timeline"] if x["kind"] == "escalation_summary")
             assert item["summary"]["receipt"] == summary["receipt"]
             assert snap["pending_input"] is None
-            replay = await client.post(f"/sessions/{sid}/actions", json=action)
-            assert replay.status_code == 200 and replay.headers["X-Action-Replayed"] == "true"
+            replay = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", action))
+            assert replay.status_code == 200 and replay.headers["X-Input-Replayed"] == "true"
             assert sse.parse(replay.text) == events
             st = (
                 await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})

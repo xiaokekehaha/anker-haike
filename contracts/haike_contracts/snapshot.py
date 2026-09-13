@@ -50,7 +50,21 @@ class ImageRefItem(Strict):
     size: int = Field(ge=0)
 
 
-class UserMessageItem(Strict):
+class TimelineRecord(Strict):
+    at: str | None = None
+    first_seq: int = 0
+    last_seq: int = 0
+    issue_id: str | None = None
+
+
+class ActionItem(TimelineRecord):
+    kind: Literal["action"]
+    id: str
+    label: str
+    action_kind: str
+
+
+class UserMessageItem(TimelineRecord):
     kind: Literal["user_message"]
     id: str
     text: str
@@ -59,18 +73,19 @@ class UserMessageItem(Strict):
     at: str
 
 
-class AssistantMessageItem(Strict):
+class AssistantMessageItem(TimelineRecord):
     """message_start / message / message_end 折叠后的完整文本。"""
 
     kind: Literal["assistant_message"]
     message_id: str
     text: str
-    status: Literal["completed", "aborted", "streaming"]
+    status: Literal["completed", "aborted", "streaming", "replaced"]
+    reply_to_input_id: str | None = None
     model_tier: ModelTier | None = None
     replaces: str | None = None
 
 
-class ToolItem(Strict):
+class ToolItem(TimelineRecord):
     kind: Literal["tool"]
     tool_id: str
     name: str
@@ -78,7 +93,7 @@ class ToolItem(Strict):
     summary: str | None = None
 
 
-class ProductCardItem(Strict):
+class ProductCardItem(TimelineRecord):
     kind: Literal["product_card"]
     card_id: str
     version: int = Field(ge=0)
@@ -86,7 +101,7 @@ class ProductCardItem(Strict):
     selected_sku: str | None = Field(default=None, description="用户已选结果")
 
 
-class StepCardItem(Strict):
+class StepCardItem(TimelineRecord):
     kind: Literal["step_card"]
     card_id: str
     version: int = Field(ge=0)
@@ -95,7 +110,7 @@ class StepCardItem(Strict):
     note: str | None = None
 
 
-class ReceiptCardItem(Strict):
+class ReceiptCardItem(TimelineRecord):
     kind: Literal["receipt_card"]
     card_id: str
     version: int = Field(ge=0)
@@ -106,19 +121,26 @@ class ReceiptCardItem(Strict):
     skipped_reason: Literal["none", "unreadable", "later"] | None = None
 
 
-class EvidenceItemGroup(Strict):
+class EvidenceItemGroup(TimelineRecord):
     kind: Literal["evidence"]
     items: list[EvidenceItem]
 
 
-class SummaryItem(Strict):
+class SummaryItem(TimelineRecord):
     kind: Literal["escalation_summary"]
     card_id: str
     summary: EscalationSummary
+    summary_id: str
+    revision: int
+    updated_at: str
+    source_through_seq: int
+    previous_card_id: str | None = None
+    handoff_status: Literal["prepared", "requested", "accepted", "failed", "cancelled"] = "prepared"
 
 
 TimelineItem = Annotated[
     UserMessageItem
+    | ActionItem
     | AssistantMessageItem
     | ToolItem
     | ProductCardItem
@@ -140,3 +162,7 @@ class SessionSnapshot(Strict):
     timeline: list[TimelineItem] = Field(default_factory=list)
     last_error: LastError | None = None
     cancelled_run: CancelledRun | None = None
+    active_issue_id: str | None = None
+    issues: list[dict] = Field(default_factory=list)
+    last_event_seq: int = 0
+    latest_summaries: list[SummaryItem] = Field(default_factory=list)

@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.message_form import model_task_text
+
+from tests.message_form import message_form
+
 import json
 from datetime import UTC, datetime, timedelta
 
@@ -21,7 +25,7 @@ from app.knowledge.adapter import HINTS, Hit, ToolResult
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.config import load_models_config
-from app.models.fake import FakeChatModel
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -351,7 +355,7 @@ async def run_text(
             if (
                 at is not None
             ):  # 模拟 run 已耗时：先塞一个 at 到 checkpoint 输入不可行，改用 runner 钩子
-                from app.sessions import runner as runner_mod
+                from app.sessions import inputs as runner_mod
 
                 orig = runner_mod.datetime
 
@@ -363,7 +367,7 @@ async def run_text(
                 runner_mod.datetime = _Dt
             try:
                 events = sse.parse(
-                    (await client.post(f"/sessions/{sid}/messages", data={"text": text})).text
+                    (await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))).text
                 )
             finally:
                 if at is not None:
@@ -393,8 +397,8 @@ async def test_a1_plans_ranked_first_is_hair_wrap_and_bad_plan_dropped(mem_runti
     # synthesize 的 prompt 带允许计划枚举与证据 id，且是 internal
     call = fakes["main"].calls[0]
     assert (
-        "rv_suction_hair_wrap" in call["messages"][-1].content
-        and "[c12]" in call["messages"][-1].content
+        "rv_suction_hair_wrap" in model_task_text(call)
+        and "[c12]" in model_task_text(call)
     )
     assert "internal" in call["tags"] and call["metadata"]["task"] == "diagnose.synthesize"
     # query 只在 trace，不在任何事件里

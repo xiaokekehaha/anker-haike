@@ -32,15 +32,15 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
         expect(init?.body).toBeInstanceOf(FormData);
         expect((init!.body as FormData).get('text')).toBe('eufy X9 Pro 不吸了');
         return sse([
-          { type: 'run_started', seq: 1, run_id: 'r1', resumed: false, deadline_ms: 25000 },
-          { type: 'progress', seq: 2, run_id: 'r1', stage: 'intake' },
-          { type: 'progress', seq: 3, run_id: 'r1', stage: 'diagnose' },
-          { type: 'tool_call', seq: 4, run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'started' },
-          { type: 'tool_call', seq: 5, run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'finished', summary: '命中 2 条来源' },
-          { type: 'message_start', seq: 6, run_id: 'r1', message_id: 'm1' },
-          { type: 'message', seq: 7, run_id: 'r1', message_id: 'm1', delta: '请先清理滚刷。' },
-          { type: 'message_end', seq: 8, run_id: 'r1', message_id: 'm1', status: 'completed', model_tier: 'primary' },
-          { type: 'done', seq: 9, run_id: 'r1', reason: 'completed', version: 4 },
+          { type: 'run_started', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', resumed: false, deadline_ms: 25000 },
+          { type: 'progress', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', stage: 'intake' },
+          { type: 'progress', seq: 3, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', stage: 'diagnose' },
+          { type: 'tool_call', seq: 4, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'started' },
+          { type: 'tool_call', seq: 5, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', tool_id: 't', name: 'knowledge.search', status: 'finished', summary: '命中 2 条来源' },
+          { type: 'message_start', seq: 6, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', message_id: 'm1' },
+          { type: 'message', seq: 7, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', message_id: 'm1', delta: '请先清理滚刷。' },
+          { type: 'message_end', seq: 8, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', message_id: 'm1', status: 'completed', model_tier: 'primary' },
+          { type: 'done', seq: 9, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', reason: 'completed', version: 4 },
         ]);
       }
       throw new Error(`unexpected fetch ${url}`);
@@ -66,13 +66,13 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
       if (url === '/sessions' && init?.method === 'POST') return new Response(JSON.stringify({ session_id: 'sid2', version: 0 }), { status: 201 });
       if (url.endsWith('/messages')) {
         return sse([
-          { type: 'run_started', seq: 1, run_id: 'r1', resumed: false, deadline_ms: 25000 },
-          { type: 'product_card', seq: 2, run_id: 'r1', card_id: 'c1', version: 3, candidates: [
+          { type: 'run_started', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', resumed: false, deadline_ms: 25000 },
+          { type: 'product_card', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', card_id: 'c1', version: 3, candidates: [
             { sku: 'RV', name: 'eufy S1 Pro 扫地机器人', category: 'robot_vacuum', image: null, in_scope: true },
             { sku: 'BP', name: 'eufy S1 Pro 吸奶器', category: 'breast_pump', image: null, in_scope: false },
           ] },
-          { type: 'awaiting_input', seq: 3, run_id: 'r1', kind: 'select_product', interrupt_id: 'c1', card_id: 'c1', version: 3 },
-          { type: 'done', seq: 4, run_id: 'r1', reason: 'awaiting_input', version: 3 },
+          { type: 'awaiting_input', seq: 3, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', kind: 'select_product', input_token: 'c1', card_id: 'c1', version: 3 },
+          { type: 'done', seq: 4, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', reason: 'awaiting_input', version: 3 },
         ]);
       }
       if (url === '/sessions/sid2' && !init?.method) return new Response(JSON.stringify({
@@ -84,9 +84,9 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
       if (url.endsWith('/actions')) {
         posted.push(JSON.parse(String(init?.body)));
         return sse([
-          { type: 'run_started', seq: 5, run_id: 'r1', resumed: true, deadline_ms: 25000 },
-          { type: 'progress', seq: 6, run_id: 'r1', stage: 'diagnose' },
-          { type: 'done', seq: 7, run_id: 'r1', reason: 'completed', version: 5 },
+          { type: 'run_started', seq: 5, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', resumed: true, deadline_ms: 25000 },
+          { type: 'progress', seq: 6, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', stage: 'diagnose' },
+          { type: 'done', seq: 7, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', reason: 'completed', version: 5 },
         ]);
       }
       throw new Error(`unexpected fetch ${url}`);
@@ -101,7 +101,7 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
     await waitFor(() => expect(choice).toBeEnabled());
     fireEvent.click(choice);
     await waitFor(() => expect(posted).toHaveLength(1), { timeout: 3000 });
-    expect(posted[0]).toMatchObject({ kind: 'select_product', expected_version: 3, interrupt_id: 'c1', card_id: 'c1', payload: { sku: 'RV' } });
+    expect(posted[0]).toMatchObject({ kind: 'select_product', expected_version: 3, input_token: 'c1', card_id: 'c1', payload: { sku: 'RV' } });
     await waitFor(() => expect(document.querySelector('[data-ui]')).toHaveAttribute('data-ui', 'idle'));
   });
 });

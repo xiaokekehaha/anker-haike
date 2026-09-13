@@ -12,7 +12,7 @@ from tests.test_vision import CONFIG, _router
 def summary():
     return build_summary(
         {
-            "messages": [{"role": "user", "text": "扫地机  X10 不吸了！还有异响。"}],
+            "active_issue_id": "i", "issues": {"i": {"facts": [{"kind": "symptom", "value": "扫地机  X10 不吸了！还有异响。", "status": "active"}]}},
             "receipt": {
                 "status": "order_product_mismatch",
                 "conflicts": ["SKU 不一致"],

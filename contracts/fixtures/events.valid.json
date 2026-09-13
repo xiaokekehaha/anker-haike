@@ -1,17 +1,285 @@
 [
-  {"type":"run_started","seq":1,"run_id":"fixture_run_01","resumed":false,"deadline_ms":90000},
-  {"type":"ping","seq":2,"run_id":"fixture_run_01"},
-  {"type":"progress","seq":3,"run_id":"fixture_run_01","stage":"diagnose","substage":null},
-  {"type":"tool_call","seq":4,"run_id":"fixture_run_01","tool_id":"fixture_tool_01","name":"knowledge.search","status":"finished","summary":"找到滤网维护说明"},
-  {"type":"message_start","seq":5,"run_id":"fixture_run_01","message_id":"fixture_message_01","replaces":"fixture_message_old"},
-  {"type":"message","seq":6,"run_id":"fixture_run_01","message_id":"fixture_message_01","delta":"我们先检查滤网。"},
-  {"type":"message_end","seq":7,"run_id":"fixture_run_01","message_id":"fixture_message_01","status":"completed","model_tier":"fallback"},
-  {"type":"product_card","seq":8,"run_id":"fixture_run_01","card_id":"fixture_product_card","version":0,"candidates":[{"sku":"fixture_sku_01","name":"示例扫地机","category":"robot_vacuum","image":null,"in_scope":true}]},
-  {"type":"step_card","seq":9,"run_id":"fixture_run_01","card_id":"fixture_step_card","version":1,"step":{"step_id":"fixture_step_01","plan_id":"fixture_plan_01","plan_version":1,"step_no":1,"title":"检查滤网","instruction":"关闭设备后检查滤网是否堵塞。","expected_result":"滤网通畅","caution":"先关闭设备","evidence_ids":["fixture_evidence_01"]}},
-  {"type":"evidence","seq":10,"run_id":"fixture_run_01","items":[{"evidence_id":"fixture_evidence_01","source":"示例维护说明","doc_id":"fixture_doc_01","doc_version":"1","chunk_id":"fixture_chunk_01","snippet":"关闭设备后再检查滤网。","score":0.9,"status":"ok"}]},
-  {"type":"receipt_card","seq":11,"run_id":"fixture_run_01","card_id":"fixture_receipt_card","version":2,"fields":{"order_no":"DEMO-ORDER-001","channel":"示例渠道","purchase_date":"2026-01-01","amount":"999.00"},"confidence":{"order_no":0.9,"channel":0.6},"unreadable":[]},
-  {"type":"awaiting_input","seq":12,"run_id":"fixture_run_01","kind":"confirm_receipt","interrupt_id":"fixture_interrupt_01","card_id":"fixture_receipt_card","version":2},
-  {"type":"escalation_summary","seq":13,"run_id":"fixture_run_01","card_id":"fixture_summary_card","summary":{"product":"示例扫地机","problem":"吸力异常","observations":["滤网已检查"],"hypotheses":["需要进一步检查"],"steps":[{"step_id":"fixture_step_01","title":"检查滤网","feedback":"not_solved"}],"reason":{"rule_id":"R2","text":"用户请求人工处理"},"emotion":{"level":"anxious","strategy":"reassure_first"},"receipt":{"status":"needs_manual_check","verified_facts":{},"conflicts":[],"next_step":"由人工核对凭证"},"model_trace":[{"task":"diagnose.synthesize","model_used":"fixture_model","lane":"domestic","attempts":1}]}},
-  {"type":"error","seq":14,"run_id":"fixture_run_01","code":"dependency_unavailable","message":"服务暂不可用","recoverable":true,"retry_with_same_action":true},
-  {"type":"done","seq":15,"run_id":"fixture_run_01","reason":"error","version":3}
+  {
+    "seq": 1,
+    "run_id": "run-1",
+    "event_id": "fixture-1",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "run_started",
+    "resumed": false,
+    "deadline_ms": 25000
+  },
+  {
+    "seq": 2,
+    "run_id": "run-1",
+    "event_id": "fixture-2",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "ping"
+  },
+  {
+    "seq": 3,
+    "run_id": "run-1",
+    "event_id": "fixture-3",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "progress",
+    "stage": "diagnose",
+    "substage": null
+  },
+  {
+    "seq": 4,
+    "run_id": "run-1",
+    "event_id": "fixture-4",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "tool_call",
+    "tool_id": "t1",
+    "name": "knowledge.search",
+    "status": "started",
+    "summary": null
+  },
+  {
+    "seq": 5,
+    "run_id": "run-1",
+    "event_id": "fixture-5",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "message_start",
+    "reply_to_input_id": null,
+    "issue_id": null,
+    "message_id": "m1",
+    "replaces": null
+  },
+  {
+    "seq": 6,
+    "run_id": "run-1",
+    "event_id": "fixture-6",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "message",
+    "message_id": "m1",
+    "delta": "您好"
+  },
+  {
+    "seq": 7,
+    "run_id": "run-1",
+    "event_id": "fixture-7",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "message_end",
+    "message_id": "m1",
+    "status": "aborted",
+    "model_tier": "primary"
+  },
+  {
+    "seq": 8,
+    "run_id": "run-1",
+    "event_id": "fixture-8",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "product_card",
+    "card_id": "c1",
+    "version": 3,
+    "candidates": [
+      {
+        "sku": "A1",
+        "name": "充电器",
+        "category": "charger",
+        "image": null,
+        "in_scope": true
+      }
+    ]
+  },
+  {
+    "seq": 9,
+    "run_id": "run-1",
+    "event_id": "fixture-9",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "step_card",
+    "card_id": "c2",
+    "version": 4,
+    "step": {
+      "step_id": "s1",
+      "plan_id": "p1",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "重启设备",
+      "instruction": "长按电源键 10 秒",
+      "expected_result": "指示灯闪烁",
+      "caution": null,
+      "evidence_ids": [
+        "e1"
+      ]
+    }
+  },
+  {
+    "seq": 10,
+    "run_id": "run-1",
+    "event_id": "fixture-10",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "evidence",
+    "items": [
+      {
+        "evidence_id": "e1",
+        "source": "weknora",
+        "doc_id": "d1",
+        "doc_version": "v1",
+        "chunk_id": "k1",
+        "snippet": "……",
+        "score": 0.82,
+        "status": "ok"
+      }
+    ]
+  },
+  {
+    "seq": 11,
+    "run_id": "run-1",
+    "event_id": "fixture-11",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "receipt_card",
+    "card_id": "c3",
+    "version": 5,
+    "fields": {
+      "order_no": "1234",
+      "channel": "京东",
+      "purchase_date": "2026-01-02",
+      "amount": null
+    },
+    "confidence": {
+      "order_no": 0.9
+    },
+    "unreadable": [
+      "amount"
+    ]
+  },
+  {
+    "seq": 12,
+    "run_id": "run-1",
+    "event_id": "fixture-12",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "awaiting_input",
+    "kind": "step_feedback",
+    "input_token": "c2",
+    "card_id": "c2",
+    "version": 4
+  },
+  {
+    "seq": 13,
+    "run_id": "run-1",
+    "event_id": "fixture-13",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "escalation_summary",
+    "summary_id": "summary-1",
+    "revision": 1,
+    "issue_id": "issue-1",
+    "updated_at": "2026-09-13T00:00:00Z",
+    "source_through_seq": 1,
+    "previous_card_id": null,
+    "handoff_status": "prepared",
+    "card_id": "c9",
+    "summary": {
+      "product": "A1234",
+      "problem": "无法充电",
+      "observations": [
+        "指示灯不亮"
+      ],
+      "hypotheses": [
+        "线材故障"
+      ],
+      "steps": [
+        {
+          "step_id": "s1",
+          "title": "重启设备",
+          "feedback": "not_solved"
+        }
+      ],
+      "reason": {
+        "rule_id": "R2",
+        "text": "两步未解决"
+      },
+      "emotion": {
+        "level": "anxious",
+        "strategy": "reassure_first"
+      },
+      "receipt": {
+        "status": "not_collected",
+        "verified_facts": {},
+        "conflicts": [],
+        "next_step": null
+      },
+      "model_trace": [
+        {
+          "task": "intake.extract",
+          "model_used": "deepseek-chat",
+          "lane": "domestic",
+          "attempts": 1
+        }
+      ]
+    }
+  },
+  {
+    "seq": 14,
+    "run_id": "run-1",
+    "event_id": "fixture-14",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "error",
+    "code": "model_unavailable",
+    "message": "全部通道失败",
+    "recoverable": true,
+    "retry_with_same_action": true
+  },
+  {
+    "seq": 15,
+    "run_id": "run-1",
+    "event_id": "fixture-15",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "done",
+    "reason": "awaiting_input",
+    "version": 18
+  },
+  {
+    "seq": 16,
+    "run_id": "run-1",
+    "event_id": "fixture-16",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "input_received",
+    "issue_id": null,
+    "input_id": "i1",
+    "input_kind": "message",
+    "payload": {
+      "text": "设备不工作"
+    }
+  },
+  {
+    "seq": 17,
+    "run_id": "run-1",
+    "event_id": "fixture-17",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "issue_changed",
+    "active_issue_id": "issue-1",
+    "issues": [],
+    "input_id": "i1",
+    "resolved_issue_id": "issue-1",
+    "version": 1
+  },
+  {
+    "seq": 18,
+    "run_id": "run-1",
+    "event_id": "fixture-18",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "pending_changed",
+    "issue_id": "issue-1",
+    "pending_id": "c1",
+    "status": "suspended",
+    "reason": "issue_switched",
+    "superseded_by": null,
+    "version": 2
+  },
+  {
+    "seq": 19,
+    "run_id": "run-1",
+    "event_id": "fixture-19",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "summary_updated",
+    "issue_id": "issue-1",
+    "summary_id": "summary-1",
+    "revision": 2,
+    "card_id": "c2",
+    "previous_card_id": "c1",
+    "source_through_seq": 20,
+    "updated_at": "2026-09-13T00:00:00Z"
+  }
 ]

@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import asyncio
 import importlib.util
 import re
@@ -392,19 +394,19 @@ async def test_real_run_produces_node_runs_run_facts_and_session_facts(mem_runti
     sink, store = collecting_sink
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        resp = await client.post(f"/sessions/{sid}/messages", data={"text": "机器不亮了"})
+        resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "机器不亮了"}))
         assert resp.status_code == 200
     await asyncio.wait_for(sink.close(), timeout=5)
 
     nodes = [r for r in store.of("node_run") if r.session_id == sid]
-    assert [r.node for r in nodes] == ["intake", "disambiguate", "clarify"]
-    assert [r.idx for r in nodes] == [1, 2, 3]
-    assert [r.prev_node for r in nodes] == [None, "intake", "disambiguate"]
+    assert [r.node for r in nodes] == ["understand", "intake", "disambiguate", "clarify", "commit_issue"]
+    assert [r.idx for r in nodes] == [1, 2, 3, 4, 5]
+    assert [r.prev_node for r in nodes] == [None, "understand", "intake", "disambiguate", "clarify"]
     assert all(r.duration_ms is not None and r.duration_ms >= 0 for r in nodes)
 
     (run,) = [r for r in store.of("run_facts") if r.session_id == sid]
     assert run.entry == "message" and run.seq_no == 1
-    assert run.done_reason == "completed" and run.node_count == 3
+    assert run.done_reason == "completed" and run.node_count == 5
     assert run.stage_to == "disambiguate" and run.duration_ms >= 0
     assert run.first_visible_ms is not None  # 澄清问句是本 run 的首个可见输出
 
@@ -422,8 +424,8 @@ async def test_second_run_increments_seq_and_upserts_one_session_row(mem_runtime
     sink, store = collecting_sink
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        await client.post(f"/sessions/{sid}/messages", data={"text": "第一句"})
-        await client.post(f"/sessions/{sid}/messages", data={"text": "第二句"})
+        await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "第一句"}))
+        await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "第二句"}))
     await asyncio.wait_for(sink.close(), timeout=5)
 
     runs = sorted([r for r in store.of("run_facts") if r.session_id == sid], key=lambda r: r.seq_no)
@@ -447,7 +449,7 @@ async def test_analytics_failure_does_not_break_the_run(mem_runtime, monkeypatch
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            resp = await client.post(f"/sessions/{sid}/messages", data={"text": "机器不亮了"})
+            resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "机器不亮了"}))
         assert resp.status_code == 200
         assert '"reason":"completed"' in resp.text
     finally:

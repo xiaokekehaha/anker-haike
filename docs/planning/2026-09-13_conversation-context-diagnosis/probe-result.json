@@ -1,0 +1,25 @@
+{
+  "state_probe": [
+    {
+      "cleared_only_escalate_reason": false,
+      "stages": [
+        "intake",
+        "escalate"
+      ],
+      "reply": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。"
+    },
+    {
+      "cleared_only_escalate_reason": true,
+      "stages": [
+        "intake",
+        "disambiguate"
+      ],
+      "reply": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1 Pro 吸奶器」。"
+    }
+  ],
+  "history_only_routes": [
+    "escalate",
+    "escalate"
+  ],
+  "conclusion": "Clearing old escalation changes routing, but alone does not implement new-topic semantics. More history alone cannot bypass existing routing."
+}

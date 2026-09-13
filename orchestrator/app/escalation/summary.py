@@ -55,7 +55,8 @@ def build_summary(
     lane: str,
     polish_model_used: str | None = None,
 ) -> EscalationSummary:
-    texts = _user_texts(state)
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    facts = [f for f in issue.get("facts", []) if f.get("status") == "active"]
     product = state.get("product_confirmed") or {}
     product_text = (
         product.get("name") or product.get("sku") if isinstance(product, dict) else str(product)
@@ -97,8 +98,8 @@ def build_summary(
     )
     return EscalationSummary(
         product=product_text,
-        problem=texts[0] if texts else "（用户尚未描述问题）",
-        observations=list(state.get("observations") or []) + [f"用户补充：{t}" for t in texts[1:]],
+        problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "（用户尚未描述问题）",
+        observations=list(state.get("observations") or []),
         hypotheses=[
             h.get("fault") or h.get("plan_id")
             for h in state.get("plans_ranked") or []
@@ -151,10 +152,10 @@ def summary_to_text(s: EscalationSummary) -> str:
 
 
 REASSURANCE = {
-    "R4": "为了您的安全，请立即关机并停止使用设备，不要继续充电。我已把情况整理好并转给人工客服，稍后会有专人联系您。",
-    "R3": "好的，我马上为您转接人工客服，并把目前的情况整理好一并转过去，避免您重复描述。",
+    "R4": "您提到了设备安全风险，请停止使用，不要继续充电。我已整理这台设备的问题记录，您可以交给人工客服进一步核实。",
+    "R3": "已为您整理当前问题摘要，您可以复制给人工客服。目前尚未接入真实转接服务。",
 }
 
 
 def reassurance_text(reason: str) -> str:
-    return REASSURANCE.get(reason, "我已把目前的情况整理好并转给人工客服，稍后会有专人联系您。")
+    return REASSURANCE.get(reason, "我已整理当前问题记录，您可以复制给人工客服继续处理。")

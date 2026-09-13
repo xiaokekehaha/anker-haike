@@ -1,0 +1,635 @@
+[
+ {
+  "task": "disambiguate.clarify",
+  "lane": "domestic",
+  "samples": 12,
+  "candidates": [
+   {
+    "task": "disambiguate.clarify",
+    "alias": "glm",
+    "model_used": "zhipu/glm-4.7",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "prod_unknown",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2206,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 12,
+       "total_tokens": 395
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_unknown",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1070,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 12,
+       "total_tokens": 395
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_unknown",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1010,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 12,
+       "total_tokens": 395
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_vague",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2388,
+      "usage": {
+       "input_tokens": 382,
+       "output_tokens": 20,
+       "total_tokens": 402
+      },
+      "info": {
+       "question": "请问您指的是哪款白色设备？请提供具体的品类或型号。",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_vague",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1159,
+      "usage": {
+       "input_tokens": 382,
+       "output_tokens": 20,
+       "total_tokens": 402
+      },
+      "info": {
+       "question": "请问您指的是哪款白色设备？请提供具体的品类或型号。",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_vague",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1273,
+      "usage": {
+       "input_tokens": 382,
+       "output_tokens": 20,
+       "total_tokens": 402
+      },
+      "info": {
+       "question": "请问您指的是哪款白色设备？请提供具体的品类或型号。",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_light",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 6170,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 11,
+       "total_tokens": 394
+      },
+      "info": {
+       "question": "请问您的设备是什么型号？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_light",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 983,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 11,
+       "total_tokens": 394
+      },
+      "info": {
+       "question": "请问您的设备是什么型号？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_light",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 904,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 11,
+       "total_tokens": 394
+      },
+      "info": {
+       "question": "请问您的设备是什么型号？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_missing",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2236,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 28,
+       "total_tokens": 428
+      },
+      "info": {
+       "question": "请问您的 X10 具体出现了什么问题，是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_missing",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1533,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 28,
+       "total_tokens": 428
+      },
+      "info": {
+       "question": "请问您的 X10 具体出现了什么问题，是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_missing",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1617,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 28,
+       "total_tokens": 428
+      },
+      "info": {
+       "question": "请问您的 X10 具体出现了什么问题，是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_vague",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2058,
+      "usage": {
+       "input_tokens": 399,
+       "output_tokens": 19,
+       "total_tokens": 418
+      },
+      "info": {
+       "question": "请问是出现吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_vague",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1145,
+      "usage": {
+       "input_tokens": 399,
+       "output_tokens": 19,
+       "total_tokens": 418
+      },
+      "info": {
+       "question": "请问是出现吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_vague",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2976,
+      "usage": {
+       "input_tokens": 399,
+       "output_tokens": 25,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问L60具体出现了什么问题？是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_help",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1938,
+      "usage": {
+       "input_tokens": 398,
+       "output_tokens": 26,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问 G30 出现了什么问题？是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_help",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1058,
+      "usage": {
+       "input_tokens": 398,
+       "output_tokens": 26,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问您的G30具体出现了什么问题？是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_help",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1235,
+      "usage": {
+       "input_tokens": 398,
+       "output_tokens": 26,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问 G30 出现了什么问题？是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_x10_l60",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2302,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 20,
+       "total_tokens": 420
+      },
+      "info": {
+       "question": "请问您现在需要排查的是 L60 吗？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_x10_l60",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1048,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 21,
+       "total_tokens": 421
+      },
+      "info": {
+       "question": "请问您需要排查的是 eufy X10 Pro Omni 还是 L60？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_x10_l60",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1159,
+      "usage": {
+       "input_tokens": 400,
+       "output_tokens": 21,
+       "total_tokens": 421
+      },
+      "info": {
+       "question": "请问您需要排查的是 eufy X10 Pro Omni 还是 L60？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_s1",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1977,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 16,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问您需要排查的是哪一款吸奶器？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_s1",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1951,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 16,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问您需要排查的是哪一款吸奶器？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "conflict_s1",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 949,
+      "usage": {
+       "input_tokens": 408,
+       "output_tokens": 16,
+       "total_tokens": 424
+      },
+      "info": {
+       "question": "请问您需要排查的是哪一款吸奶器？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_angry",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2196,
+      "usage": {
+       "input_tokens": 397,
+       "output_tokens": 19,
+       "total_tokens": 416
+      },
+      "info": {
+       "question": "请问您遇到问题的设备是扫地机器人吗？具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_angry",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1663,
+      "usage": {
+       "input_tokens": 397,
+       "output_tokens": 19,
+       "total_tokens": 416
+      },
+      "info": {
+       "question": "请问您遇到问题的设备是扫地机器人吗？具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_angry",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1098,
+      "usage": {
+       "input_tokens": 397,
+       "output_tokens": 19,
+       "total_tokens": 416
+      },
+      "info": {
+       "question": "请问您遇到问题的设备是扫地机器人吗？具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_anxious",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 3746,
+      "usage": {
+       "input_tokens": 409,
+       "output_tokens": 27,
+       "total_tokens": 436
+      },
+      "info": {
+       "question": "别着急，我马上帮您处理。请问是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_anxious",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2398,
+      "usage": {
+       "input_tokens": 409,
+       "output_tokens": 27,
+       "total_tokens": 436
+      },
+      "info": {
+       "question": "别着急，我马上帮您处理。请问是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "symptom_anxious",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1309,
+      "usage": {
+       "input_tokens": 409,
+       "output_tokens": 27,
+       "total_tokens": 436
+      },
+      "info": {
+       "question": "别着急，我马上帮您处理。请问是吸力变弱、无法启动还是有异响？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_injection",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1876,
+      "usage": {
+       "input_tokens": 392,
+       "output_tokens": 12,
+       "total_tokens": 404
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_injection",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 1026,
+      "usage": {
+       "input_tokens": 392,
+       "output_tokens": 12,
+       "total_tokens": 404
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_injection",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 955,
+      "usage": {
+       "input_tokens": 392,
+       "output_tokens": 12,
+       "total_tokens": 404
+      },
+      "info": {
+       "question": "请问您的设备具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_english",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 20003,
+      "usage": {},
+      "info": {
+       "question": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1 Pro 吸奶器」。",
+       "model_used": "fixed"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_english",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2441,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 13,
+       "total_tokens": 396
+      },
+      "info": {
+       "question": "请问您的扫地机器人具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "prod_english",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 4042,
+      "usage": {
+       "input_tokens": 383,
+       "output_tokens": 13,
+       "total_tokens": 396
+      },
+      "info": {
+       "question": "请问您的扫地机器人具体型号是什么？",
+       "model_used": "zhipu/glm-4.7"
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 1.0,
+    "accuracy": 1.0,
+    "latency_p50_ms": 1445,
+    "cost_cny_per_call": 0.000938,
+    "verdict": "primary_ok",
+    "reasons": []
+   }
+  ],
+  "primary": "glm",
+  "fallback": null,
+  "note": "无来自另一家厂商的达标备用位（§3.8 要求主备至少两家）"
+ }
+]

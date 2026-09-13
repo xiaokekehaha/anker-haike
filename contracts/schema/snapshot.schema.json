@@ -1,5 +1,69 @@
 {
   "$defs": {
+    "ActionItem": {
+      "additionalProperties": false,
+      "properties": {
+        "action_kind": {
+          "title": "Action Kind",
+          "type": "string"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "action",
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "label",
+        "action_kind"
+      ],
+      "title": "ActionItem",
+      "type": "object"
+    },
     "ActiveRun": {
       "additionalProperties": false,
       "properties": {
@@ -28,10 +92,44 @@
       "additionalProperties": false,
       "description": "message_start / message / message_end 折叠后的完整文本。",
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "assistant_message",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "message_id": {
           "title": "Message Id",
@@ -65,11 +163,24 @@
           "default": null,
           "title": "Replaces"
         },
+        "reply_to_input_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reply To Input Id"
+        },
         "status": {
           "enum": [
             "completed",
             "aborted",
-            "streaming"
+            "streaming",
+            "replaced"
           ],
           "title": "Status",
           "type": "string"
@@ -273,6 +384,35 @@
     "EvidenceItemGroup": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "items": {
           "items": {
             "$ref": "#/$defs/EvidenceItem"
@@ -284,6 +424,11 @@
           "const": "evidence",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         }
       },
       "required": [
@@ -424,15 +569,26 @@
     },
     "PendingInput": {
       "additionalProperties": false,
-      "description": "当前唯一允许的用户输入；与 awaiting_input 事件同结构（08 §1、§6）。",
       "properties": {
         "card_id": {
           "title": "Card Id",
           "type": "string"
         },
-        "interrupt_id": {
-          "title": "Interrupt Id",
+        "input_token": {
+          "title": "Input Token",
           "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
         },
         "kind": {
           "enum": [
@@ -452,7 +608,7 @@
       },
       "required": [
         "kind",
-        "interrupt_id",
+        "input_token",
         "card_id",
         "version"
       ],
@@ -503,6 +659,18 @@
     "ProductCardItem": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
         "candidates": {
           "items": {
             "$ref": "#/$defs/ProductCandidate"
@@ -514,10 +682,32 @@
           "title": "Card Id",
           "type": "string"
         },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "product_card",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "selected_sku": {
           "anyOf": [
@@ -550,6 +740,18 @@
     "ReceiptCardItem": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
         "card_id": {
           "title": "Card Id",
           "type": "string"
@@ -575,10 +777,32 @@
         "fields": {
           "$ref": "#/$defs/ReceiptFields"
         },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "receipt_card",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "skipped_reason": {
           "anyOf": [
@@ -727,6 +951,18 @@
     "StepCardItem": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
         "card_id": {
           "title": "Card Id",
           "type": "string"
@@ -748,10 +984,32 @@
           "default": null,
           "title": "Feedback"
         },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "step_card",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "note": {
           "anyOf": [
@@ -786,23 +1044,101 @@
     "SummaryItem": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
         "card_id": {
           "title": "Card Id",
           "type": "string"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "handoff_status": {
+          "default": "prepared",
+          "enum": [
+            "prepared",
+            "requested",
+            "accepted",
+            "failed",
+            "cancelled"
+          ],
+          "title": "Handoff Status",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
         },
         "kind": {
           "const": "escalation_summary",
           "title": "Kind",
           "type": "string"
         },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "previous_card_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Card Id"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "integer"
+        },
+        "source_through_seq": {
+          "title": "Source Through Seq",
+          "type": "integer"
+        },
         "summary": {
           "$ref": "#/$defs/EscalationSummary"
+        },
+        "summary_id": {
+          "title": "Summary Id",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
         }
       },
       "required": [
         "kind",
         "card_id",
-        "summary"
+        "summary",
+        "summary_id",
+        "revision",
+        "updated_at",
+        "source_through_seq"
       ],
       "title": "SummaryItem",
       "type": "object"
@@ -810,10 +1146,44 @@
     "ToolItem": {
       "additionalProperties": false,
       "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "tool",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "name": {
           "title": "Name",
@@ -927,6 +1297,11 @@
           "title": "At",
           "type": "string"
         },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
         "id": {
           "title": "Id",
           "type": "string"
@@ -945,10 +1320,27 @@
           "title": "Images",
           "type": "array"
         },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
         "kind": {
           "const": "user_message",
           "title": "Kind",
           "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
         },
         "text": {
           "title": "Text",
@@ -956,10 +1348,10 @@
         }
       },
       "required": [
+        "at",
         "kind",
         "id",
-        "text",
-        "at"
+        "text"
       ],
       "title": "UserMessageItem",
       "type": "object"
@@ -968,6 +1360,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
+    "active_issue_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Active Issue Id"
+    },
     "active_run": {
       "anyOf": [
         {
@@ -990,6 +1394,14 @@
       ],
       "default": null
     },
+    "issues": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
     "last_error": {
       "anyOf": [
         {
@@ -1000,6 +1412,18 @@
         }
       ],
       "default": null
+    },
+    "last_event_seq": {
+      "default": 0,
+      "title": "Last Event Seq",
+      "type": "integer"
+    },
+    "latest_summaries": {
+      "items": {
+        "$ref": "#/$defs/SummaryItem"
+      },
+      "title": "Latest Summaries",
+      "type": "array"
     },
     "pending_input": {
       "anyOf": [
@@ -1046,6 +1470,7 @@
       "items": {
         "discriminator": {
           "mapping": {
+            "action": "#/$defs/ActionItem",
             "assistant_message": "#/$defs/AssistantMessageItem",
             "escalation_summary": "#/$defs/SummaryItem",
             "evidence": "#/$defs/EvidenceItemGroup",
@@ -1060,6 +1485,9 @@
         "oneOf": [
           {
             "$ref": "#/$defs/UserMessageItem"
+          },
+          {
+            "$ref": "#/$defs/ActionItem"
           },
           {
             "$ref": "#/$defs/AssistantMessageItem"

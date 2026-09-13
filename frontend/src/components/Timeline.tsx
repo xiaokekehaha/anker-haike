@@ -10,24 +10,35 @@ import { SummaryCard } from './SummaryCard';
 import { ToolRow } from './ToolRow';
 import { UserBubble } from './UserBubble';
 import styles from './Cards.module.css';
+import { MessageTime } from './MessageTime';
 
 type Props = {
   state: SessionState;
   onAction: (kind: 'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt', payload: Record<string, unknown>) => void;
+  onIssueAction?: (kind: 'new_issue' | 'resume_issue', issueId?: string) => void;
 };
 
 /** 按 timeline 渲染（05 §3）；只有 pendingInput 指向的卡片可交互，其余置为历史。 */
-export function Timeline({ state, onAction }: Props) {
+export function Timeline({ state, onAction, onIssueAction }: Props) {
   const [hover, setHover] = useState<string[]>([]);
   const pendingCard = state.ui === 'awaiting_input' ? state.pendingInput?.card_id ?? null : null;
   const busy = state.pendingActionId !== null;
   const evidence = state.timeline.filter((t): t is Extract<TimelineItem, { kind: 'evidence' }> => t.kind === 'evidence').flatMap((t) => t.items);
   return (
     <div className={styles.timeline} aria-live="polite">
+      {state.id && onIssueAction && <nav aria-label="会话中的问题" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        {state.issues.length > 1 && <select aria-label="选择要继续的问题" value={state.activeIssueId ?? ''} disabled={busy || !!state.activeRun}
+          onChange={e => onIssueAction('resume_issue', e.target.value)}>
+          {state.issues.map(issue => <option key={issue.issue_id} value={issue.issue_id}>{issue.title || '待描述的问题'}</option>)}
+        </select>}
+        <button type="button" disabled={busy || !!state.activeRun} onClick={() => onIssueAction('new_issue')}>新问题</button>
+      </nav>}
       {state.timeline.map((item, i) => {
         switch (item.kind) {
           case 'user_message':
-            return <UserBubble key={item.id} sessionId={state.id ?? ''} text={item.text} images={item.images} imageIds={item.image_ids} />;
+            return <UserBubble key={item.id} sessionId={state.id ?? ''} text={item.text} images={item.images} imageIds={item.image_ids} at={item.at} />;
+          case 'action':
+            return <div key={item.id}><small>{item.label}</small><MessageTime at={item.at} /></div>;
           case 'assistant_message':
             return <AssistantBubble key={item.message_id} item={item} />;
           case 'tool':
@@ -41,7 +52,7 @@ export function Timeline({ state, onAction }: Props) {
           case 'receipt_card':
             return <ReceiptCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
           case 'escalation_summary':
-            return <SummaryCard key={item.card_id} summary={item.summary} />;
+            return <SummaryCard key={item.card_id} summary={item.summary} updatedAt={item.updated_at} revision={item.revision} outdated={state.timeline.some(t => t.kind === 'escalation_summary' && t.summary_id === item.summary_id && t.revision > item.revision)} />;
           default:
             return null;
         }

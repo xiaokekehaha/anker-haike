@@ -1,0 +1,634 @@
+[
+ {
+  "task": "reply.stream",
+  "lane": "domestic",
+  "samples": 12,
+  "candidates": [
+   {
+    "task": "reply.stream",
+    "alias": "glm-flash",
+    "model_used": "zhipu/glm-4.5-flash",
+    "available": true,
+    "skip_reason": null,
+    "runs": [
+     {
+      "sample_id": "reassure_anxious",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 17855,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_anxious",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1514,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 4 attempt(s): OpenAIRateLimitError: Error code: 429 - {'error': {'code': '1302', 'message': '您的账户已达到速率限制，请您控制请求频率'}}"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_anxious",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15543,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 3 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_angry",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 14270,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 15
+      },
+      "info": {
+       "text": "非常抱歉给您带来困扰，我们会尽快为您解决问题。",
+       "first_visible_ms": 14270,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_angry",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 10480,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 15
+      },
+      "info": {
+       "text": "非常抱歉给您带来不便，我们会尽快为您解决问题。",
+       "first_visible_ms": 10480,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_angry",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 4448,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 15
+      },
+      "info": {
+       "text": "非常抱歉给您带来困扰，我们会尽快为您解决问题。",
+       "first_visible_ms": 4448,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_smell",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 7624,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别担心，我来帮您处理这个问题。",
+       "first_visible_ms": 7624,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_smell",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18586,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_smell",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 12369,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 4 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_guest",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 7151,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别着急，我来帮您解决机器人问题。",
+       "first_visible_ms": 7151,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_guest",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 14151,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别着急，我来帮您解决机器人问题。",
+       "first_visible_ms": 14151,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_guest",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2316,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别着急，我来帮您解决机器人问题。",
+       "first_visible_ms": 2316,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_return",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 6333,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 14
+      },
+      "info": {
+       "text": "非常抱歉给您带来不便，我会尽快为您解决问题。",
+       "first_visible_ms": 6333,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_return",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18762,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_return",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 16678,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 14
+      },
+      "info": {
+       "text": "非常抱歉给您带来不便，我会尽快为您解决问题。",
+       "first_visible_ms": 16678,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_inject",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 10570,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别着急，我来帮您解决吸力问题。",
+       "first_visible_ms": 10570,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_inject",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 11354,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 10
+      },
+      "info": {
+       "text": "别着急，我来帮您解决吸力问题。",
+       "first_visible_ms": 11354,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reassure_inject",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18911,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_hair",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 1322,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 4 attempt(s): OpenAIRateLimitError: Error code: 429 - {'error': {'code': '1302', 'message': '您的账户已达到速率限制，请您控制请求频率'}}"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_hair",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15286,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_hair",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 15859,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 3 attempt(s): budget exhausted"
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_filter",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 12502,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 4 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_filter",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 9258,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 51
+      },
+      "info": {
+       "text": "理解：您反映eufy L60 Hybrid吸力变小。\n\n最可能的原因是滤网堵塞，需要清洁滤网。\n\n* 取出滤网，轻拍去尘并用清水冲洗，晾干24小时后装回。",
+       "first_visible_ms": 9258,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_filter",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 2923,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 50
+      },
+      "info": {
+       "text": "理解：您的eufy L60 Hybrid吸力变小。\n\n最可能的原因是滤网堵塞，需要清洁滤网。\n\n- 取出滤网，轻拍去尘并用清水冲洗，晾干24小时后装回。",
+       "first_visible_ms": 2923,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_no_match",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 0.75,
+      "latency_ms": 9350,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 44
+      },
+      "info": {
+       "text": "理解：您的eufy X9 Pro扫地机器人不回充电座。\n\n可能原因与动作：\n- 检查充电座是否有障碍物，确保机器人能顺利到达充电位置",
+       "first_visible_ms": 9350,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_no_match",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 0.75,
+      "latency_ms": 3679,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 41
+      },
+      "info": {
+       "text": "理解：您的eufy X9 Pro扫地机器人不回充电座。\n\n可能原因与动作：\n- 检查充电座是否有电源，充电指示灯是否正常亮起",
+       "first_visible_ms": 3679,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_no_match",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 0.75,
+      "latency_ms": 1843,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 44
+      },
+      "info": {
+       "text": "理解：您的eufy X9 Pro扫地机器人不回充电座。\n\n可能原因与动作：\n- 检查充电座是否有障碍物，确保机器人能顺利到达充电位置",
+       "first_visible_ms": 1843,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_unavailable",
+      "repeat": 0,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 4088,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 58
+      },
+      "info": {
+       "text": "我理解您的边刷不转问题，会立即帮您排查。\n\n最可能的原因是边刷被异物卡住或电机故障。请先尝试以下步骤：\n\n- 关闭电源并翻转机器人，检查并清除边刷周围可能缠绕的毛发、线绳等异物",
+       "first_visible_ms": 4088,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_unavailable",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 13104,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 56
+      },
+      "info": {
+       "text": "我理解您的边刷不转问题，会立即帮您排查。\n\n最可能的原因是边刷被异物卡住或电机故障。请先尝试以下步骤：\n\n- 关闭电源，检查边刷周围是否有缠绕的毛发或异物，清理后重新启动",
+       "first_visible_ms": 13104,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_unavailable",
+      "repeat": 2,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18824,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_short",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18726,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_short",
+      "repeat": 1,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 13432,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 39
+      },
+      "info": {
+       "text": "我理解您的eufy X9 Pro显示尘盒提示。\n\n最可能的原因是尘盒未正确安装或已满。请重新安装尘盒，确保听到咔哒声。",
+       "first_visible_ms": 13432,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_short",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 5512,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 39
+      },
+      "info": {
+       "text": "我理解您的eufy X9 Pro显示尘盒提示。\n\n最可能的原因是尘盒未正确安装或已满。请重新安装尘盒，确保听到咔哒声。",
+       "first_visible_ms": 5512,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_inject_snippet",
+      "repeat": 0,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 18701,
+      "usage": {},
+      "info": {
+       "text": "",
+       "first_visible_ms": null,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 2 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_inject_snippet",
+      "repeat": 1,
+      "first_pass": false,
+      "accuracy": 0.0,
+      "latency_ms": 9075,
+      "usage": {},
+      "info": {
+       "text": "理解您的问题：eufy X9 Pro 不吸了。\n\n最可能的原因是滚刷被缠绕毛发堵塞，请翻转主机取出滚",
+       "first_visible_ms": 9075,
+       "completed": false,
+       "error": "task 'reply.stream' failed after 1 attempt(s): TimeoutError: "
+      },
+      "error": null
+     },
+     {
+      "sample_id": "reply_inject_snippet",
+      "repeat": 2,
+      "first_pass": true,
+      "accuracy": 1.0,
+      "latency_ms": 11883,
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 54
+      },
+      "info": {
+       "text": "理解：您的eufy X9 Pro扫地机器人不吸尘了。\n\n最可能的原因是滚刷被毛发缠绕导致吸力下降。\n\n请执行以下操作：\n- 翻转主机取出滚刷，清理缠绕的毛发后装回。",
+       "first_visible_ms": 11883,
+       "completed": true,
+       "error": null
+      },
+      "error": null
+     }
+    ],
+    "schema_pass": 0.6667,
+    "accuracy": 0.6458,
+    "latency_p50_ms": 12126,
+    "cost_cny_per_call": 0.0,
+    "verdict": "below",
+    "reasons": [
+     "schema_pass 67% < 95%",
+     "accuracy 65% < 90%",
+     "latency_p50 12126 ms > 3000 ms"
+    ]
+   }
+  ],
+  "primary": null,
+  "fallback": null,
+  "note": "无候选达到主模型门槛（见各候选 reasons）；按 §3.8 需降低门槛并记录原因"
+ }
+]

@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from tests.message_form import message_form
+
 import json
 import logging
 import os
@@ -54,7 +56,7 @@ def img_store():
 
 
 async def _send(client, sid: str, text: str, files=None) -> list[dict]:
-    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text}, files=files or [])
+    resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}), files=files or [])
     assert resp.status_code == 200, resp.text
     return sse.parse(resp.text)
 
@@ -120,11 +122,10 @@ async def test_purge_expired_sessions_real_postgres_keeps_active_and_fresh():
         old = (await store.create_session()).session_id
         fresh = (await store.create_session()).session_id
         active = (await store.create_session()).session_id
-        await store.try_start_run(active, "run-active")
+        await store.reserve_input(active, "active-input", {"kind": "message", "text": "处理中"}, expected_version=0)
         for sid in (old, fresh, active):
             await store.append_event(sid, "r1", {"type": "run_started", "resumed": False, "deadline_ms": 1})
             await images.put(sid, "fault", png_bytes(64), "image/png")
-        await store.try_insert_action(old, "a1", {"status": "pending"})
         orphan = "orphan-" + old[:8]
         await store.append_event(orphan, "r0", {"type": "ping"})
         async with pool.connection() as conn:
@@ -146,7 +147,7 @@ async def test_purge_expired_sessions_real_postgres_keeps_active_and_fresh():
         # 库里可能还有更早失败运行留下的过期数据，因此按「至少」与按 id 断言
         assert stats.sessions >= 1 and stats.orphan_sessions >= 1
         assert stats.deleted["sessions"] == stats.sessions
-        assert stats.deleted["session_events"] >= 2 and stats.deleted["session_actions"] >= 1
+        assert stats.deleted["session_events"] >= 2
         assert stats.deleted["session_images"] >= 1
         if has_ckpt:
             assert stats.deleted["checkpoints"] >= 1

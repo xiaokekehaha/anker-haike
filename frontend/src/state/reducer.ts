@@ -3,22 +3,31 @@
  * timeline 项复用快照的 TimelineItem 形状，刷新后 restore 与实时流共用同一套渲染。
  */
 import type { ServerEvent } from '../types/events';
-import type { TimelineItem } from '../types/snapshot';
+import type { ImageRefItem, TimelineItem } from '../types/snapshot';
 import { initialState } from './types';
 import type { SessionAction, SessionState } from './types';
 
 type Keyed = { kind: TimelineItem['kind']; key: string };
 
+function imageRefs(value: unknown): ImageRefItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((ref): ref is ImageRefItem => ref !== null && typeof ref === 'object'
+    && typeof ref.image_id === 'string' && (ref.purpose === 'fault' || ref.purpose === 'receipt')
+    && typeof ref.sha256 === 'string' && typeof ref.mime === 'string' && typeof ref.size === 'number')
+    .map(({ image_id, purpose, sha256, mime, size }) => ({ image_id, purpose, sha256, mime, size }));
+}
+
 function keyOf(item: TimelineItem): Keyed {
   switch (item.kind) {
     case 'user_message':
+    case 'action':
       return { kind: item.kind, key: item.id };
     case 'assistant_message':
       return { kind: item.kind, key: item.message_id };
     case 'tool':
       return { kind: item.kind, key: item.tool_id };
     case 'evidence':
-      return { kind: item.kind, key: item.items.map((e) => e.evidence_id).join('|') };
+      return { kind: item.kind, key: `${item.first_seq ?? 0}:${item.items.map((e) => e.evidence_id).join('|')}` };
     default:
       return { kind: item.kind, key: item.card_id };
   }
@@ -51,6 +60,20 @@ function patch(timeline: TimelineItem[], kind: TimelineItem['kind'], key: string
 function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionState {
   const base: SessionState = { ...state, lastSeq: Math.max(state.lastSeq, e.seq), lastEventAt: at, stalled: false };
   switch (e.type) {
+    case 'input_received': {
+      const meta = { at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, issue_id: e.issue_id };
+      const p = e.payload;
+      const timeline = e.input_kind === 'message'
+        ? upsert(base.timeline, { ...meta, kind: 'user_message', id: e.input_id, text: String(p.text ?? ''), image_ids: Array.isArray(p.image_ids) ? p.image_ids.map(String) : [], images: imageRefs(p.images) })
+        : upsert(base.timeline, { ...meta, kind: 'action', id: e.input_id, action_kind: String(p.kind), label: ({ request_human: '请求人工', new_issue: '开始新问题', resume_issue: '继续之前的问题', step_feedback: '反馈排障结果', select_product: '选择产品' } as Record<string, string>)[String(p.kind)] ?? '提交信息' });
+      return { ...base, timeline };
+    }
+    case 'issue_changed':
+      return { ...base, timeline: base.timeline.map(item => (item.kind === 'user_message' || item.kind === 'action') && item.id === e.input_id ? { ...item, issue_id: e.resolved_issue_id } : item), activeIssueId: e.active_issue_id, issues: e.issues.map(i => ({ issue_id: String(i.issue_id), title: String(i.title ?? ''), status: String(i.status ?? '') })) };
+    case 'pending_changed':
+      return { ...base, pendingInput: base.pendingInput?.card_id === e.pending_id && e.status !== 'active' ? null : base.pendingInput };
+    case 'summary_updated':
+      return base; // Full immutable revision arrives in escalation_summary.
     case 'run_started':
       return {
         ...base,
@@ -63,14 +86,15 @@ function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionSta
     case 'progress':
       return { ...base, stage: e.stage, substage: e.substage ?? null };
     case 'tool_call': {
-      const timeline = upsert(base.timeline, { kind: 'tool', tool_id: e.tool_id, name: e.name, status: e.status, summary: e.summary ?? null });
+      const prior = base.timeline.find(t => t.kind === 'tool' && t.tool_id === e.tool_id);
+      const timeline = upsert(base.timeline, { kind: 'tool', tool_id: e.tool_id, name: e.name, status: e.status, summary: e.summary ?? null, at: prior?.at ?? e.recorded_at, first_seq: prior?.first_seq ?? e.seq, last_seq: e.seq });
       const running = timeline.some((t) => t.kind === 'tool' && t.status === 'started');
       return { ...base, timeline, ui: running ? 'tool_running' : base.ui === 'tool_running' ? 'streaming' : base.ui };
     }
     case 'message_start': {
       let timeline = base.timeline;
-      if (e.replaces) timeline = timeline.filter((t) => !(t.kind === 'assistant_message' && t.message_id === e.replaces));
-      timeline = upsert(timeline, { kind: 'assistant_message', message_id: e.message_id, text: '', status: 'streaming', model_tier: null, replaces: e.replaces ?? null });
+      if (e.replaces) timeline = patch(timeline, 'assistant_message', e.replaces, t => t.kind === 'assistant_message' ? { ...t, status: 'replaced' } : t);
+      timeline = upsert(timeline, { kind: 'assistant_message', message_id: e.message_id, text: '', status: 'streaming', model_tier: null, replaces: e.replaces ?? null, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, issue_id: e.issue_id, reply_to_input_id: e.reply_to_input_id });
       return { ...base, timeline, ui: base.ui === 'tool_running' ? 'tool_running' : 'streaming' };
     }
     case 'message': {
@@ -84,26 +108,26 @@ function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionSta
       return {
         ...base,
         timeline: patch(base.timeline, 'assistant_message', e.message_id, (t) =>
-          t.kind === 'assistant_message' ? { ...t, status: e.status, model_tier: e.model_tier ?? null } : t,
+          t.kind === 'assistant_message' ? { ...t, status: e.status, model_tier: e.model_tier ?? null, last_seq: e.seq } : t,
         ),
       };
     case 'product_card':
-      return { ...base, timeline: upsert(base.timeline, { kind: 'product_card', card_id: e.card_id, version: e.version, candidates: e.candidates, selected_sku: null }) };
+      return { ...base, timeline: upsert(base.timeline, { kind: 'product_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, candidates: e.candidates, selected_sku: null }) };
     case 'step_card':
-      return { ...base, timeline: upsert(base.timeline, { kind: 'step_card', card_id: e.card_id, version: e.version, step: e.step, feedback: null, note: null }) };
+      return { ...base, timeline: upsert(base.timeline, { kind: 'step_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, step: e.step, feedback: null, note: null }) };
     case 'receipt_card':
       return {
         ...base,
         timeline: upsert(base.timeline, {
-          kind: 'receipt_card', card_id: e.card_id, version: e.version, fields: e.fields, confidence: e.confidence ?? {}, unreadable: e.unreadable ?? [], confirmed_fields: null, skipped_reason: null,
+          kind: 'receipt_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, fields: e.fields, confidence: e.confidence ?? {}, unreadable: e.unreadable ?? [], confirmed_fields: null, skipped_reason: null,
         }),
       };
     case 'evidence':
-      return { ...base, timeline: upsert(base.timeline, { kind: 'evidence', items: e.items }) };
+      return { ...base, timeline: upsert(base.timeline, { kind: 'evidence', items: e.items, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq }) };
     case 'awaiting_input':
-      return { ...base, pendingInput: { kind: e.kind, interrupt_id: e.interrupt_id, card_id: e.card_id, version: e.version } };
+      return { ...base, pendingInput: { issue_id: e.issue_id, kind: e.kind, input_token: e.input_token, card_id: e.card_id, version: e.version } };
     case 'escalation_summary':
-      return { ...base, timeline: upsert(base.timeline, { kind: 'escalation_summary', card_id: e.card_id, summary: e.summary }) };
+      return { ...base, timeline: upsert(base.timeline, { kind: 'escalation_summary', card_id: e.card_id, summary: e.summary, summary_id: e.summary_id, revision: e.revision, updated_at: e.updated_at, source_through_seq: e.source_through_seq, previous_card_id: e.previous_card_id, issue_id: e.issue_id, handoff_status: e.handoff_status, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq }) };
     case 'error':
       return { ...base, error: { code: e.code, message: e.message, recoverable: e.recoverable }, errorAt: null };
     case 'done': {
@@ -131,7 +155,7 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
         error: null,
         stalled: false,
         lastEventAt: Date.now(),
-        pendingInput: state.pendingInput?.kind === 'upload_receipt' ? state.pendingInput : null,
+        pendingInput: state.pendingInput,
         timeline: upsert(state.timeline, { kind: 'user_message', id: action.id, text: action.text, image_ids: action.imageIds ?? [], images: [], at: action.at }),
       };
     case 'action_sent':
@@ -149,7 +173,9 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
         substage: s.substage ?? null,
         version: s.version,
         timeline: s.timeline ?? [],
-        lastSeq: 0,
+        lastSeq: s.last_event_seq ?? 0,
+        activeIssueId: s.active_issue_id ?? null,
+        issues: (s.issues ?? []).map(i => ({ issue_id: String(i.issue_id), title: String(i.title ?? ''), status: String(i.status ?? '') })),
         pendingInput: s.pending_input ?? null,
         activeRun: active ? { run_id: active.run_id, deadline_at: active.deadline_at, deadline_ms: Math.max(0, new Date(active.deadline_at).getTime() - now) } : null,
         ui: active ? 'streaming' : s.pending_input ? 'awaiting_input' : 'idle',

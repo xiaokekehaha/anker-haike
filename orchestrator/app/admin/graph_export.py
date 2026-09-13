@@ -1,6 +1,6 @@
 """静态图拓扑：给管理端画 DAG 的底图。
 
-拓扑不手工维护——直接从编译后的 StateGraph 导出（当前 21 节点 / 46 边），图改了这里自动跟着改。
+拓扑不手工维护——直接从编译后的 StateGraph 导出，图改了这里自动跟着改。
 节点 → 阶段的归类是展示用的分组（着色 / 泳道），取自各节点实际发出的 progress.stage。
 """
 
@@ -16,8 +16,9 @@ log = logging.getLogger("admin.graph")
 # 不发 progress 的节点（await_input / apply_action / reassure / clarify）归入其所在流程段。
 NODE_STAGE: dict[str, str] = {
     "__start__": "start",
-    "intake": "intake",
-    "rediagnose": "intake",  # progress: intake/rediagnose
+    "understand": "intake",
+    "dialogue": "intake",
+    "commit_issue": "done",
     "reassure": "intake",  # 安抚句，不发 progress
     "disambiguate": "disambiguate",
     "prepare_card": "disambiguate",
@@ -26,13 +27,12 @@ NODE_STAGE: dict[str, str] = {
     "retrieve": "diagnose",  # progress: diagnose/retrieve
     "reply": "diagnose",  # progress: diagnose
     "guide": "guide",
-    "await_input": "wait",  # 唯一中断点
+    "await_input": "wait",  # 发布持久待办，本轮正常结束
     "apply_action": "wait",
     "escalate": "escalate",
     "summarize": "escalate",  # progress: escalate/summarize
     "prepare_receipt": "escalate",  # progress: escalate/collect_receipt
     "receipt_extract": "escalate",  # progress: escalate/extract
-    "human_request": "escalate",
     "out_of_scope": "out_of_scope",
     "close": "done",  # progress: done
     "__end__": "end",

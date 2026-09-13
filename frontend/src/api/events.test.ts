@@ -22,22 +22,22 @@ describe('shared event contract', () => {
 
   it('covers the 15 protocol variants and generates discriminated types', () => {
     const parsed = samples.map(parseServerEvent);
-    expect(new Set(parsed.map((event) => event?.type)).size).toBe(15);
+    expect(new Set(parsed.map((event) => event?.type)).size).toBe(19);
     const event = parsed.find((event) => event?.type === 'step_card');
     if (!event || event.type !== 'step_card') throw new Error('Missing step_card sample');
     expectTypeOf(event.step.evidence_ids).toEqualTypeOf<string[] | undefined>();
     expectTypeOf<PendingKind>().toEqualTypeOf<'select_product' | 'step_feedback' | 'upload_receipt' | 'confirm_receipt'>();
     expectTypeOf<ActionResult['replayed']>().toEqualTypeOf<boolean | undefined>();
     expectTypeOf<ActionConflict['code']>().toEqualTypeOf<'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active'>();
-    expectTypeOf<ActionRequest['kind']>().toEqualTypeOf<'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'request_human' | 'rediagnose'>();
+    expectTypeOf<ActionRequest['kind']>().toEqualTypeOf<'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'request_human' | 'new_issue' | 'resume_issue'>();
     expectTypeOf<TimelineItem>().toEqualTypeOf<NonNullable<SessionSnapshot['timeline']>[number]>();
   });
 
   it.each<PendingKind>(['select_product', 'step_feedback', 'upload_receipt', 'confirm_receipt'])(
     'accepts pending input kind %s', (kind) => {
       expect(parseServerEvent({
-        type: 'awaiting_input', seq: 1, run_id: 'fixture_run', kind,
-        interrupt_id: 'fixture_interrupt', card_id: 'fixture_card', version: 0,
+        type: 'awaiting_input', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'fixture_run', kind,
+        input_token: 'fixture_interrupt', card_id: 'fixture_card', version: 0,
       })).not.toBeNull();
     },
   );
@@ -46,16 +46,16 @@ describe('shared event contract', () => {
     null,
     [],
     '{"type":"ping"}',
-    { type: 'unknown_event', seq: 1, run_id: 'run' },
-    { type: 'ping', seq: '1', run_id: 'run' },
-    { type: 'ping', seq: 0, run_id: 'run' },
-    { type: 'ping', seq: 1.5, run_id: 'run' },
+    { type: 'unknown_event', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run' },
+    { type: 'ping', seq: '1', event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run' },
+    { type: 'ping', seq: 0, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run' },
+    { type: 'ping', seq: 1.5, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run' },
     { type: 'ping', seq: 1 },
-    { type: 'ping', seq: 1, run_id: 'run', unexpected: true },
-    { type: 'progress', seq: 1, run_id: 'run', stage: 'invented_stage' },
-    { type: 'run_started', seq: 1, run_id: 'run', resumed: false, deadline_ms: 0 },
-    { type: 'product_card', seq: 1, run_id: 'run', card_id: 'card', version: 0, candidates: [] },
-    { type: 'done', seq: 1, run_id: 'run', reason: 'completed', version: -1 },
+    { type: 'ping', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', unexpected: true },
+    { type: 'progress', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', stage: 'invented_stage' },
+    { type: 'run_started', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', resumed: false, deadline_ms: 0 },
+    { type: 'product_card', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', card_id: 'card', version: 0, candidates: [] },
+    { type: 'done', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', reason: 'completed', version: -1 },
   ])('drops invalid data %# and logs a diagnostic', (value) => {
     expect(parseServerEvent(value)).toBeNull();
     expect(console.warn).toHaveBeenCalledWith('[contracts] Dropped invalid server event', {
@@ -83,7 +83,7 @@ describe('shared event contract', () => {
 
   it('does not log message bodies, receipts, untrusted keys or complete validation errors', () => {
     const sensitive = 'PRIVATE-DEMO-ORDER-CONTENT';
-    parseServerEvent({ type: 'message', seq: 0, run_id: 'run', delta: sensitive, [sensitive]: true });
+    parseServerEvent({ type: 'message', seq: 0, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', delta: sensitive, [sensitive]: true });
     const warnings = vi.mocked(console.warn).mock.calls;
     expect(warnings).toHaveLength(1);
     expect(JSON.stringify(warnings)).not.toContain(sensitive);
@@ -91,9 +91,9 @@ describe('shared event contract', () => {
 
   it('keeps valid events flowing after dropping an invalid event', () => {
     const events = [
-      { type: 'run_started', seq: 1, run_id: 'run', resumed: false, deadline_ms: 1_000 },
-      { type: 'bad', seq: 2, run_id: 'run' },
-      { type: 'done', seq: 3, run_id: 'run', reason: 'completed', version: 1 },
+      { type: 'run_started', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', resumed: false, deadline_ms: 1_000 },
+      { type: 'bad', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run' },
+      { type: 'done', seq: 3, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'run', reason: 'completed', version: 1 },
     ].map(parseServerEvent).filter((event): event is ServerEvent => event !== null);
     expect(events.map((event) => event.type)).toEqual(['run_started', 'done']);
   });

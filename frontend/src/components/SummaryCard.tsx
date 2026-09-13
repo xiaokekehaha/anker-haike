@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { EscalationSummary } from '../types/snapshot';
 import styles from './Cards.module.css';
+import { MessageTime } from './MessageTime';
 
 const STATUS: Record<string, string> = {
   not_collected: '未收集', insufficient: '信息不足', order_verified: '订单已核实', order_product_mismatch: '订单与设备不一致',
@@ -35,7 +36,7 @@ export function summaryToText(s: EscalationSummary): string {
   ].join('\n');
 }
 
-export function SummaryCard({ summary }: { summary: EscalationSummary }) {
+export function SummaryCard({ summary, updatedAt, revision, outdated = false }: { summary: EscalationSummary; updatedAt?: string; revision?: number; outdated?: boolean }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
     try {
@@ -48,7 +49,9 @@ export function SummaryCard({ summary }: { summary: EscalationSummary }) {
   }
   return (
     <section className={styles.card} data-kind="escalation_summary" aria-label="转人工摘要">
-      <header className={styles.cardHead}><strong>已为您转接人工，以下是整理好的情况</strong><button type="button" onClick={copy} className={styles.copyBtn}>{copied ? '已复制' : '一键复制'}</button></header>
+      <header className={styles.cardHead}><strong>问题摘要已整理，可复制给人工客服</strong><button type="button" onClick={copy} className={styles.copyBtn}>{copied ? '已复制' : '一键复制'}</button></header>
+      {revision && <small>第 {revision} 版{outdated ? ' · 此为当时记录，已有更新' : ''}</small>}
+      <MessageTime at={updatedAt} />
       <dl className={styles.summary}>
         <div><dt>产品</dt><dd>{summary.product}</dd></div>
         <div><dt>问题</dt><dd>{summary.problem}</dd></div>

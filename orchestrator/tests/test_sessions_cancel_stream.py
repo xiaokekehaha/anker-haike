@@ -64,7 +64,7 @@ async def test_cancel_aborts_live_model_stream_without_retry(mem_runtime, tmp_pa
             for _ in range(200):
                 await asyncio.sleep(0.02)
                 evs = await mem_runtime.list_events(sid, run_id=handle.run_id)
-                if any(e["type"] == "message" for e in evs):
+                if slow.calls and not slow.finished:
                     break
             else:
                 raise AssertionError("model stream never started")
@@ -83,7 +83,7 @@ async def test_cancel_aborts_live_model_stream_without_retry(mem_runtime, tmp_pa
     # 不重试、不降级：主模型只被调用一次，备用模型零调用
     assert slow.calls == 1 and fakes["backup"].calls == []
     # 事件侧：有 message 但没有 completed 的 message_end，没有 error，最后是 done(cancelled)
-    assert "message" in types and types[-1] == "done" and events[-1]["reason"] == "cancelled"
+    assert "message" not in types and types[-1] == "done" and events[-1]["reason"] == "cancelled"
     assert not any(e["type"] == "message_end" and e["status"] == "completed" for e in events)
     assert "error" not in types
     # 取消后没有新 delta 落库

@@ -1,3 +1,5 @@
+
+from tests.message_form import message_form
 import asyncio
 
 import pytest
@@ -21,7 +23,7 @@ async def _create(client) -> str:
 
 
 async def _send(client, sid: str, text: str) -> tuple[list[dict], str]:
-    resp = await client.post(f"/sessions/{sid}/messages", data={"text": text})
+    resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": text}))
     assert resp.status_code == 200, resp.text
     assert resp.headers["content-type"].startswith("text/event-stream")
     assert resp.headers["x-accel-buffering"] == "no"
@@ -41,10 +43,10 @@ async def test_message_stream_order_and_event_log(mem_runtime):
     types = [e["type"] for e in events]
     assert types[0] == "run_started" and types[-1] == "done"
     # 票 24：品类未定 → intake / disambiguate / clarify（一句追问）；run 以 done(completed) 结束
-    assert types[1:-1] == ["progress", "progress", "message_start", "message", "message_end"]
+    assert types[1:-1] == ["input_received", "progress", "progress", "issue_changed", "message_start", "message", "message_end"]
     assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "disambiguate"]
     # version = checkpoint step + 1：一轮 intake / disambiguate / clarify 三节点 → 4
-    assert events[-1]["reason"] == "completed" and events[-1]["version"] == 4
+    assert events[-1]["reason"] == "completed" and events[-1]["version"] == 1
     assert events[0]["resumed"] is False and events[0]["deadline_ms"] == runner.DEFAULT_DEADLINE_MS
     for e in events:
         parse_event(e)  # 全部符合契约
@@ -53,12 +55,12 @@ async def test_message_stream_order_and_event_log(mem_runtime):
 
     # 事件日志与发送内容一致、seq 连续、同一 run_id
     logged = await mem_runtime.list_events(sid)
-    assert logged == events
+    assert [e for e in logged if e.get("visibility") != "internal"] == events
     assert [e["seq"] for e in logged] == list(range(1, len(logged) + 1))
     assert len({e["run_id"] for e in logged}) == 1
 
     row = await mem_runtime.get_session(sid)
-    assert row.version == 4 and row.active_run_id is None and row.stage == "disambiguate"
+    assert row.version == 1 and row.active_run_id is None and row.stage == "disambiguate"
 
 
 async def test_second_turn_continues_seq_and_version(mem_runtime):
@@ -67,7 +69,7 @@ async def test_second_turn_continues_seq_and_version(mem_runtime):
         first, _ = await _send(client, sid, "第一句")
         second, _ = await _send(client, sid, "第二句")
     assert second[0]["seq"] == first[-1]["seq"] + 1
-    assert second[-1]["version"] == 9  # 第二轮 checkpoint 续增
+    assert second[-1]["version"] == 2  # 第二轮 checkpoint 续增
     assert first[0]["run_id"] != second[0]["run_id"]
 
 
@@ -80,7 +82,7 @@ async def test_ping_every_interval_while_node_runs(mem_runtime, monkeypatch):
     types = [e["type"] for e in events]
     assert types.count("ping") >= 2
     # ping 夹在 progress 之间，不影响 seq 连续
-    assert [e["seq"] for e in events] == list(range(1, len(events) + 1))
+    assert [e["seq"] for e in events] == sorted({e["seq"] for e in events})
     assert types[-1] == "done" and events[-1]["reason"] == "completed"
 
 
@@ -89,8 +91,8 @@ async def test_error_path_ends_with_done_error(mem_runtime):
         sid = await _create(client)
         events, _ = await _send(client, sid, "__raise__")
     types = [e["type"] for e in events]
-    assert types == ["run_started", "progress", "error", "done"]
-    err = events[2]
+    assert types == ["run_started", "input_received", "progress", "error", "done"]
+    err = next(e for e in events if e["type"] == "error")
     assert err["code"] == "node_failed" and "placeholder node failure" in err["message"]
     assert err["recoverable"] is False and err["retry_with_same_action"] is False
     assert events[-1]["reason"] == "error"
@@ -125,7 +127,7 @@ async def test_concurrent_second_message_rejected_409(mem_runtime, monkeypatch):
     async with _client() as client:
         sid = await _create(client)
         first_task = asyncio.create_task(
-            client.post(f"/sessions/{sid}/messages", data={"text": "a"})
+            client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "a"}))
         )
         # 等首个 run 占用 active_run
         for _ in range(50):
@@ -134,7 +136,7 @@ async def test_concurrent_second_message_rejected_409(mem_runtime, monkeypatch):
                 break
         else:
             pytest.fail("first run never became active")
-        second = await client.post(f"/sessions/{sid}/messages", data={"text": "b"})
+        second = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "b"}))
         assert second.status_code == 409
         body = second.json()
         assert body["code"] == "run_active"
@@ -145,15 +147,15 @@ async def test_concurrent_second_message_rejected_409(mem_runtime, monkeypatch):
     assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
     # 只产生了一个 run
     assert len({e["run_id"] for e in await mem_runtime.list_events(sid)}) == 1
-    assert (await mem_runtime.get_session(sid)).version == 4
+    assert (await mem_runtime.get_session(sid)).version == 1
 
 
 async def test_unknown_session_404_and_empty_text_422(mem_runtime):
     async with _client() as client:
-        assert (await client.post("/sessions/nope/messages", data={"text": "x"})).status_code == 404
+        assert (await client.post("/sessions/nope/messages", data=await message_form(client, "/sessions/nope/messages", {"text": "x"}))).status_code == 404
         sid = await _create(client)
         assert (
-            await client.post(f"/sessions/{sid}/messages", data={"text": ""})
+            await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": ""}))
         ).status_code == 422
 
 

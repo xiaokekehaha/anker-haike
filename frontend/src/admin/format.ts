@@ -5,7 +5,7 @@ import type { Outcome } from './types';
  *  但颜色永远不单独承载含义：每处都带文字标签（dataviz 技能的 icon+label 要求）。 */
 export const OUTCOME: Record<Outcome, { label: string; role: Role; hint: string }> = {
   resolved: { label: '已解决', role: 'good', hint: '给出结束语，用户确认解决' },
-  escalated: { label: '已转人工', role: 'warning', hint: '生成升级摘要转人工' },
+  escalated: { label: '需人工处理', role: 'warning', hint: '问题摘要已整理；是否接单以实际人工状态为准' },
   abandoned: { label: '已放弃', role: 'serious', hint: '等用户回应但长时间没有下文' },
   errored: { label: '出错', role: 'critical', hint: '节点异常或超时' },
   awaiting_user: { label: '等用户', role: 'neutral', hint: '正等卡片反馈' },

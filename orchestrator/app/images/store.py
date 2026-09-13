@@ -63,6 +63,20 @@ class ImageRef:
         return d
 
 
+@dataclass(frozen=True)
+class StagedImage:
+    ref: ImageRef
+    data: bytes
+
+
+def stage_image(session_id: str, input_id: str, index: int, purpose: str, data: bytes, declared_mime: str | None) -> StagedImage:
+    """Validate in memory; the input receipt transaction owns the formal write."""
+    mime = validate_image(data, declared_mime)
+    digest = hashlib.sha256(data).hexdigest()
+    identity = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{input_id}:{index}:{purpose}:{digest}").hex
+    return StagedImage(ImageRef(identity, session_id, purpose, digest, mime, len(data), datetime.now(UTC).isoformat()), data)
+
+
 def sniff_mime(data: bytes, declared: str | None) -> str:
     if data[:3] == b"\xff\xd8\xff":
         return "image/jpeg"
@@ -147,6 +161,13 @@ class PostgresImageStore:
         )
         return ref
 
+    async def persist_staged(self, staged: list[StagedImage], *, conn) -> None:
+        for item in staged:
+            ref = item.ref
+            await conn.execute("""insert into session_images(image_id,session_id,purpose,sha256,mime,size,bytes,created_at)
+                values (%s,%s,%s,%s,%s,%s,%s,%s)""",
+                (ref.image_id,ref.session_id,ref.purpose,ref.sha256,ref.mime,ref.size,item.data,ref.created_at))
+
     async def get(self, session_id: str, image_id: str) -> tuple[ImageRef, bytes] | None:
         async with self._pool.connection() as conn:
             cur = await conn.execute(
@@ -221,6 +242,10 @@ class InMemoryImageStore:
             mime,
         )
         return ref
+
+    def persist_staged_memory(self, staged: list[StagedImage]) -> None:
+        # Caller holds the receipt store lock; no await between related writes.
+        self._rows.update({item.ref.image_id: (item.ref, item.data, datetime.fromisoformat(item.ref.created_at)) for item in staged})
 
     async def get(self, session_id: str, image_id: str) -> tuple[ImageRef, bytes] | None:
         row = self._rows.get(image_id)

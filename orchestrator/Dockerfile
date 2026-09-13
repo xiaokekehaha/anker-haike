@@ -23,6 +23,8 @@ COPY orchestrator/pyproject.toml orchestrator/uv.lock ./
 ARG UV_INDEX_URL=https://pypi.org/simple
 ENV UV_INDEX_URL=$UV_INDEX_URL
 RUN uv sync --frozen --no-dev --no-install-project
+ENV TIKTOKEN_CACHE_DIR=/srv/.cache/tiktoken
+RUN .venv/bin/python -c "import tiktoken; tiktoken.get_encoding('o200k_base')"
 
 COPY orchestrator/app ./app
 # 票 47：启动期迁移校验需要 alembic.ini 与 migrations/
@@ -43,8 +45,9 @@ ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
     FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
     RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
     RETRIEVAL_CONFIG_PATH=/srv/config/retrieval.yaml \
+    CONVERSATION_CONFIG_PATH=/srv/config/conversation.yaml \
     REPLAY_DIR=/srv/replay KB_MANIFEST_PATH=/srv/replay/kb_manifest.json
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=15s --retries=3 \
   CMD curl -fsS http://localhost:8000/health/live || exit 1
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

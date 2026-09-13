@@ -1,6 +1,6 @@
 """会话快照（08 §6）：由 checkpoint（权威业务状态）与 session_events（事件日志）派生。
 
-不读 sessions 投影表——投影表反过来由 rebuild_projection 用本模块结果重建。
+sessions 固定已发布 checkpoint 与事件水位，历史问答统一由 fold_history 折叠。
 """
 
 from __future__ import annotations
@@ -12,30 +12,56 @@ from typing import Any
 from haike_contracts.snapshot import SessionSnapshot
 from langgraph.graph.state import CompiledStateGraph
 
-from app.sessions.store import EventRecord, SessionStore
+from app.conversation.history import fold_history
+from app.sessions.store import EventRecord, SessionNotFound, SessionStore
 
 log = logging.getLogger("sessions.snapshot")
+
+
+class SnapshotRecovering(RuntimeError):
+    pass
 
 
 async def build_snapshot(
     store: SessionStore, graph: CompiledStateGraph, session_id: str
 ) -> SessionSnapshot:
-    records = await store.list_event_records(session_id)
-    state = await graph.aget_state({"configurable": {"thread_id": session_id}})
-    values: dict[str, Any] = state.values or {}
-    version = int(state.metadata.get("step", -1)) + 1 if state.metadata else 0
+    try:
+        await store.get_session(session_id)
+    except SessionNotFound:
+        return await rebuild_projection(store, graph, session_id)
+    async with store.snapshot_view(session_id) as (row, records):
+        if row.active_run_id and any(
+            r.run_id == row.active_run_id and r.event.get("type") == "state_committed"
+            for r in records
+        ):
+            raise SnapshotRecovering("committed output is still publishing")
+        if row.published_checkpoint_id:
+            state = await graph.aget_state(
+                {
+                    "configurable": {
+                        "thread_id": session_id,
+                        "checkpoint_id": row.published_checkpoint_id,
+                    }
+                }
+            )
+            values: dict[str, Any] = state.values or {}
+        else:
+            values = {}
+    version = row.version
 
     folded = fold_timeline(records, values)
-    # pending_input 以 checkpoint 里仍挂起的 interrupt 为准（08 §2 权威来源）：动作 run 出错 / 取消后
-    # 事件日志的最后一个 run 不是 awaiting_input，但图仍停在 await_input，用户仍可（重试）响应（票 23）
-    if folded["active_run"] is None:
-        pending_from_ckpt = _pending_from_interrupts(state, version)
-        if pending_from_ckpt is not None:
-            folded["pending_input"] = pending_from_ckpt
-        elif action_pending_apply(state) is not None:
-            # 动作已被 await_input 接收、apply_action 尚未成功（run 出错 / 取消）：不再等待用户输入，
-            # 前端按 error.retry_with_same_action 复用 action_id 重试即可继续
-            folded["pending_input"] = None
+    pending = values.get("pending_card")
+    folded["pending_input"] = (
+        {
+            "kind": pending["kind"],
+            "card_id": pending["card_id"],
+            "issue_id": values.get("active_issue_id"),
+            "input_token": pending.get("input_token") or pending["card_id"],
+            "version": version,
+        }
+        if pending
+        else None
+    )
     last_progress = next(
         (r.event["stage"] for r in reversed(records) if r.event["type"] == "progress"), None
     )
@@ -45,6 +71,21 @@ async def build_snapshot(
         {
             "session_id": session_id,
             "version": version,
+            "active_issue_id": values.get("active_issue_id"),
+            "issues": [
+                {
+                    "issue_id": k,
+                    "status": v.get("status", "open"),
+                    "title": v.get("title", "新问题"),
+                }
+                for k, v in (values.get("issues") or {}).items()
+            ],
+            "last_event_seq": max((r.seq for r in records), default=0),
+            "latest_summaries": [
+                dict(kind="escalation_summary", **i["latest_summary"])
+                for i in (values.get("issues") or {}).values()
+                if i.get("latest_summary")
+            ],
             "stage": stage,
             "substage": values.get("substage"),
             "active_run": folded["active_run"],
@@ -58,7 +99,6 @@ async def build_snapshot(
 
 def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[str, Any]:
     """按 seq 重放：消息合并为完整文本、卡片带用户已选结果、工具行保留（票 07 验收项 2）。"""
-    user_msgs = {m.get("run_id"): m for m in values.get("messages", []) if m.get("role") == "user"}
     card_results: dict[str, dict[str, Any]] = values.get("card_results") or {}
 
     timeline: list[dict[str, Any]] = []
@@ -87,62 +127,6 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                 run_order.append(r.run_id)
             run["started_at"] = r.created_at
             run["deadline_ms"] = e["deadline_ms"]
-            um = user_msgs.get(r.run_id)
-            if um:
-                put(
-                    "user_message",
-                    r.run_id,
-                    {
-                        "kind": "user_message",
-                        "id": f"u-{r.run_id}",
-                        "text": um.get("text", ""),
-                        "image_ids": list(um.get("image_ids") or []),
-                        "images": list(um.get("images") or []),  # 票 29：purpose / sha256 随快照
-                        "at": um.get("at") or _iso(r.created_at),
-                    },
-                )
-        elif t == "message_start":
-            if e.get("replaces"):
-                old = index.pop(("assistant_message", e["replaces"]), None)
-                if old is not None and old in timeline:
-                    timeline.remove(old)
-            put(
-                "assistant_message",
-                e["message_id"],
-                {
-                    "kind": "assistant_message",
-                    "message_id": e["message_id"],
-                    "text": "",
-                    "status": "streaming",
-                    "model_tier": None,
-                    "replaces": e.get("replaces"),
-                },
-            )
-        elif t == "message":
-            item = index.get(("assistant_message", e["message_id"]))
-            if item is None:
-                put("assistant_message", e["message_id"], _msg_stub(e["message_id"]))
-                item = index[("assistant_message", e["message_id"])]
-            item["text"] += e["delta"]
-        elif t == "message_end":
-            item = index.get(("assistant_message", e["message_id"]))
-            if item is None:
-                put("assistant_message", e["message_id"], _msg_stub(e["message_id"]))
-                item = index[("assistant_message", e["message_id"])]
-            item["status"] = e["status"]
-            item["model_tier"] = e.get("model_tier")
-        elif t == "tool_call":
-            put(
-                "tool",
-                e["tool_id"],
-                {
-                    "kind": "tool",
-                    "tool_id": e["tool_id"],
-                    "name": e["name"],
-                    "status": e["status"],
-                    "summary": e.get("summary"),
-                },
-            )
         elif t == "product_card":
             res = card_results.get(e["card_id"], {})
             put(
@@ -187,17 +171,32 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                 },
             )
         elif t == "evidence":
-            timeline.append({"kind": "evidence", "items": e["items"]})
+            timeline.append(
+                {
+                    "kind": "evidence",
+                    "items": e["items"],
+                    "at": _iso(r.created_at),
+                    "first_seq": r.seq,
+                    "last_seq": r.seq,
+                }
+            )
         elif t == "escalation_summary":
             put(
                 "escalation_summary",
                 e["card_id"],
-                {"kind": "escalation_summary", "card_id": e["card_id"], "summary": e["summary"]},
+                {
+                    "kind": "escalation_summary",
+                    **{
+                        k: v
+                        for k, v in e.items()
+                        if k not in {"type", "seq", "run_id", "event_id", "recorded_at"}
+                    },
+                },
             )
         elif t == "awaiting_input":
             run["awaiting"] = {
                 "kind": e["kind"],
-                "interrupt_id": e["interrupt_id"],
+                "input_token": e["input_token"],
                 "card_id": e["card_id"],
                 "version": e["version"],
             }
@@ -240,6 +239,75 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                     pending_input = runs[rid]["awaiting"]
                     break
 
+    history = fold_history("", records)
+    timeline = [
+        item
+        for item in timeline
+        if item["kind"] not in {"user_message", "assistant_message", "tool"}
+    ]
+    for entry in history:
+        common = {
+            "at": entry.received_at or entry.started_at or entry.recorded_at,
+            "first_seq": entry.first_seq,
+            "last_seq": entry.last_seq,
+            "issue_id": entry.issue_id,
+        }
+        if entry.kind == "message" and entry.role == "user":
+            timeline.append(
+                dict(
+                    common,
+                    kind="user_message",
+                    id=entry.entry_id,
+                    text=entry.text,
+                    image_ids=entry.attachments,
+                    images=[
+                        {k: ref[k] for k in ("image_id", "purpose", "sha256", "mime", "size")}
+                        for ref in entry.payload.get("images", [])
+                    ],
+                )
+            )
+        elif entry.kind == "message" and entry.role == "assistant":
+            timeline.append(
+                dict(
+                    common,
+                    kind="assistant_message",
+                    message_id=entry.entry_id,
+                    text=entry.text,
+                    status=entry.status,
+                    reply_to_input_id=entry.reply_to_input_id,
+                    model_tier=entry.payload.get("model_tier"),
+                    replaces=entry.references[0] if entry.references else None,
+                )
+            )
+        elif entry.kind == "action":
+            timeline.append(
+                dict(
+                    common,
+                    kind="action",
+                    id=entry.entry_id,
+                    label=entry.text,
+                    action_kind=entry.payload.get("kind", "unknown"),
+                )
+            )
+        elif entry.kind == "tool":
+            timeline.append(
+                dict(
+                    common,
+                    kind="tool",
+                    tool_id=entry.entry_id,
+                    name=entry.payload.get("name", "tool"),
+                    summary=entry.text,
+                    status={"completed": "finished", "streaming": "started"}.get(
+                        entry.status, "failed"
+                    ),
+                )
+            )
+        elif entry.kind == "card":
+            for item in timeline:
+                if item.get("card_id") == entry.entry_id:
+                    item.update(common)
+    timeline.sort(key=lambda item: item.get("first_seq", 0))
+
     return {
         "timeline": timeline,
         "active_run": active_run,
@@ -252,51 +320,30 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
 async def rebuild_projection(
     store: SessionStore, graph: CompiledStateGraph, session_id: str
 ) -> SessionSnapshot:
-    """用快照结果重写 sessions 投影行（票 07 验收项 3）。"""
-    snap = await build_snapshot(store, graph, session_id)
+    """Restore the published pointer from commit events, never the newest candidate."""
+    records = await store.list_event_records(session_id)
+    if not records:
+        raise SessionNotFound(session_id)
+    committed = next(
+        (r.event for r in reversed(records) if r.event.get("type") == "state_committed"), {}
+    )
+    pointer = committed.get("checkpoint_id")
+    values = {}
+    if pointer:
+        state = await graph.aget_state(
+            {"configurable": {"thread_id": session_id, "checkpoint_id": pointer}}
+        )
+        values = state.values or {}
+    folded = fold_timeline(records, values)
     await store.upsert_projection(
         session_id,
-        version=snap.version,
-        stage=snap.stage,
-        active_run_id=snap.active_run.run_id if snap.active_run else None,
-        pending_input=snap.pending_input.model_dump() if snap.pending_input else None,
+        version=committed.get("version", 0),
+        stage=values.get("stage", "intake"),
+        active_run_id=(folded.get("active_run") or {}).get("run_id"),
+        pending_input=None,
+        published_checkpoint_id=pointer,
     )
-    return snap
-
-
-def action_pending_apply(state: Any) -> str | None:
-    """图停在 apply_action 之前且状态里带着已接收的动作 → 返回其 action_id，否则 None（票 23）。"""
-    if "apply_action" not in (getattr(state, "next", ()) or ()):
-        return None
-    if _pending_from_interrupts(state, 0) is not None:
-        return None
-    last = (getattr(state, "values", None) or {}).get("last_action") or {}
-    return last.get("action_id") or None
-
-
-def _pending_from_interrupts(state: Any, version: int) -> dict[str, Any] | None:
-    for task in getattr(state, "tasks", ()) or ():
-        for intr in getattr(task, "interrupts", ()) or ():
-            value = getattr(intr, "value", None)
-            if isinstance(value, dict) and {"kind", "card_id"} <= set(value):
-                return {
-                    "kind": value["kind"],
-                    "interrupt_id": value.get("interrupt_id", value["card_id"]),
-                    "card_id": value["card_id"],
-                    "version": version,
-                }
-    return None
-
-
-def _msg_stub(message_id: str) -> dict[str, Any]:
-    return {
-        "kind": "assistant_message",
-        "message_id": message_id,
-        "text": "",
-        "status": "streaming",
-        "model_tier": None,
-        "replaces": None,
-    }
+    return await build_snapshot(store, graph, session_id)
 
 
 def _iso(dt: datetime) -> str:

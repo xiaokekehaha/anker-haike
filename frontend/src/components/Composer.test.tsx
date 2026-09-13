@@ -85,28 +85,36 @@ describe('pending input modes', () => {
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(''));
   });
 
-  it.each(['select_product', 'confirm_receipt'] as const)('restricts %s to card actions while keeping human request available', (pendingKind) => {
-    const onSend = vi.fn();
+  // CM 交接契约 §7 / 验收 A35：四种 pending 下都允许纯文字追问，卡片操作另走动作接口。
+  it.each(['select_product', 'confirm_receipt'] as const)('keeps plain text and photos available while a %s card waits', async (pendingKind) => {
+    const onSend = vi.fn().mockResolvedValue(true);
     const onRequestHuman = vi.fn();
-    render(<Composer value="旧草稿" onChange={vi.fn()} onSend={onSend} onRequestHuman={onRequestHuman} pendingKind={pendingKind} />);
-    expect(screen.getByLabelText('描述你的问题')).toBeDisabled();
-    expect(screen.getByRole('button', { name: '发送' })).toBeDisabled();
-    expect(screen.getByTestId('image-input')).toBeDisabled();
+    render(<Composer value="顺便问一下保修多久" onChange={vi.fn()} onSend={onSend} onRequestHuman={onRequestHuman} pendingKind={pendingKind} />);
+    expect(screen.getByLabelText('描述你的问题')).toBeEnabled();
+    expect(screen.getByTestId('image-input')).toBeEnabled();
+    expect(screen.getByRole('button', { name: '发送' })).toBeEnabled();
     fireEvent.submit(screen.getByRole('form', { name: '发送消息' }));
-    expect(onSend).not.toHaveBeenCalled();
+    await waitFor(() => expect(onSend).toHaveBeenCalledWith('顺便问一下保修多久', [], 'fault'));
     fireEvent.click(screen.getByRole('button', { name: '请求人工' }));
     expect(onRequestHuman).toHaveBeenCalledOnce();
   });
 
-  it('requires an image for receipt upload and sets purpose=receipt', async () => {
+  it('allows a text-only question while waiting for the receipt, and sends attachments as purpose=receipt', async () => {
     const onSend = vi.fn().mockResolvedValue(true);
     render(<Composer value="购买备注" onChange={vi.fn()} onSend={onSend} pendingKind="upload_receipt" />);
-    expect(screen.getByRole('button', { name: '上传凭证' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '上传凭证' })).toBeEnabled();
     fireEvent.change(screen.getByTestId('image-input'), { target: { files: [fileOf(100, 'receipt.png')] } });
-    await waitFor(() => expect(screen.getByRole('button', { name: '上传凭证' })).toBeEnabled());
+    await waitFor(() => expect(screen.getByLabelText('待发送图片')).toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: '上传凭证' }));
     await waitFor(() => expect(onSend).toHaveBeenCalledWith('购买备注', [expect.any(File)], 'receipt'));
     await waitFor(() => expect(screen.queryByLabelText('待发送图片')).not.toBeInTheDocument());
+  });
+
+  it('sends the note alone when there is no receipt image yet', async () => {
+    const onSend = vi.fn().mockResolvedValue(true);
+    render(<Composer value="发票在公司，明天补" onChange={vi.fn()} onSend={onSend} pendingKind="upload_receipt" />);
+    fireEvent.click(screen.getByRole('button', { name: '上传凭证' }));
+    await waitFor(() => expect(onSend).toHaveBeenCalledWith('发票在公司，明天补', [], 'receipt'));
   });
 
   it.each([['没有凭证，跳过', 'none'], ['看不清，跳过', 'unreadable'], ['稍后再提供', 'later']] as const)('passes the reason for %s', async (label, reason) => {
@@ -137,5 +145,91 @@ describe('pending input modes', () => {
     rerender(<Composer {...props} pendingKind="upload_receipt" purpose="receipt" />);
     expect(screen.queryByLabelText('待发送图片')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: '上传凭证' })).toBeDisabled();
+  });
+});
+
+function stubTouchPrimary(matches: boolean) {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: query.includes('pointer: coarse') ? matches : false,
+    media: query, onchange: null,
+    addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {}, dispatchEvent: () => false,
+  }));
+}
+
+describe('Composer keyboard sending', () => {
+  it('sends on Enter and keeps Shift+Enter as a newline on desktop', async () => {
+    const onSend = vi.fn().mockResolvedValue(true);
+    render(<Composer value="一边没声音" onChange={vi.fn()} onSend={onSend} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.keyDown(input, { key: 'Enter', shiftKey: true });
+    expect(onSend).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(onSend).toHaveBeenCalledWith('一边没声音', [], 'fault'));
+  });
+
+  it('ignores the Enter that confirms an IME candidate', () => {
+    const onSend = vi.fn();
+    render(<Composer value="一边没声音" onChange={vi.fn()} onSend={onSend} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.keyDown(input, { key: 'Enter', keyCode: 229 });
+    fireEvent.compositionStart(input);
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSend).not.toHaveBeenCalled();
+    fireEvent.compositionEnd(input);
+  });
+
+  it('does not send an empty draft on Enter', () => {
+    const onSend = vi.fn();
+    render(<Composer value="   " onChange={vi.fn()} onSend={onSend} />);
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+    expect(onSend).not.toHaveBeenCalled();
+  });
+
+  it('leaves Enter as a newline on touch devices but still accepts Cmd/Ctrl+Enter', async () => {
+    stubTouchPrimary(true);
+    const onSend = vi.fn().mockResolvedValue(true);
+    render(<Composer value="一边没声音" onChange={vi.fn()} onSend={onSend} />);
+    const input = screen.getByRole('textbox');
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSend).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Enter 发送/)).not.toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter', metaKey: true });
+    await waitFor(() => expect(onSend).toHaveBeenCalledOnce());
+  });
+
+  it('shows the desktop keyboard hint', () => {
+    stubTouchPrimary(false);
+    render(<Composer value="" onChange={vi.fn()} onSend={vi.fn()} />);
+    expect(screen.getByText(/Enter 发送，Shift\+Enter 换行/)).toBeInTheDocument();
+  });
+});
+
+describe('Composer clipboard images', () => {
+  it('attaches an image pasted into the textarea', async () => {
+    render(<Composer value="" onChange={vi.fn()} onSend={vi.fn()} />);
+    fireEvent.paste(screen.getByRole('textbox'), { clipboardData: { files: [fileOf(120 * 1024, 'shot.png')], items: [] } });
+    await screen.findByLabelText('待发送图片');
+    expect(screen.getByLabelText('移除图片 1')).toBeInTheDocument();
+  });
+
+  it('falls back to clipboard items when files is empty', async () => {
+    const file = fileOf(120 * 1024, 'shot.png');
+    render(<Composer value="" onChange={vi.fn()} onSend={vi.fn()} />);
+    fireEvent.paste(screen.getByRole('textbox'), {
+      clipboardData: { files: [], items: [{ kind: 'file', type: 'image/png', getAsFile: () => file }] },
+    });
+    await screen.findByLabelText('待发送图片');
+  });
+
+  it('leaves plain text pastes to the browser', () => {
+    render(<Composer value="" onChange={vi.fn()} onSend={vi.fn()} />);
+    fireEvent.paste(screen.getByRole('textbox'), { clipboardData: { files: [], items: [{ kind: 'string', type: 'text/plain', getAsFile: () => null }] } });
+    expect(screen.queryByLabelText('待发送图片')).not.toBeInTheDocument();
+  });
+
+  it('reports oversized pasted images inline', async () => {
+    render(<Composer value="" onChange={vi.fn()} onSend={vi.fn()} />);
+    fireEvent.paste(screen.getByRole('textbox'), { clipboardData: { files: [fileOf(6 * 1024 * 1024, 'big.png')], items: [] } });
+    expect(await screen.findByRole('alert')).toHaveTextContent('超过 5 MB');
   });
 });

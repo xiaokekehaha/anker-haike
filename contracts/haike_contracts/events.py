@@ -22,6 +22,46 @@ from haike_contracts.common import (
 class _Event(Strict):
     seq: int = Field(ge=1, description="会话内单调递增")
     run_id: str
+    event_id: str
+    recorded_at: str
+
+
+class InputReceived(_Event):
+    type: Literal["input_received"]
+    input_id: str
+    input_kind: Literal["message", "action"]
+    payload: dict
+    issue_id: str | None = None
+
+
+class IssueChanged(_Event):
+    type: Literal["issue_changed"]
+    active_issue_id: str
+    issues: list[dict]
+    input_id: str
+    resolved_issue_id: str
+    version: int = Field(ge=0)
+
+
+class PendingChanged(_Event):
+    type: Literal["pending_changed"]
+    issue_id: str
+    pending_id: str
+    status: Literal["active", "suspended", "consumed", "invalidated"]
+    reason: str
+    superseded_by: str | None = None
+    version: int = Field(ge=0)
+
+
+class SummaryUpdated(_Event):
+    type: Literal["summary_updated"]
+    issue_id: str
+    summary_id: str
+    revision: int = Field(ge=1)
+    card_id: str
+    previous_card_id: str | None = None
+    source_through_seq: int
+    updated_at: str
 
 
 class RunStarted(_Event):
@@ -53,6 +93,8 @@ class ToolCall(_Event):
 class MessageStart(_Event):
     type: Literal["message_start"]
     message_id: str
+    reply_to_input_id: str | None = None
+    issue_id: str | None = None
     replaces: str | None = Field(default=None, description="替换先前中断的消息")
 
 
@@ -71,6 +113,7 @@ class MessageEnd(_Event):
 
 class _Card(_Event):
     card_id: str
+    issue_id: str | None = None
     version: int = Field(ge=0)
 
 
@@ -98,8 +141,9 @@ class ReceiptCard(_Card):
 
 class AwaitingInput(_Event):
     type: Literal["awaiting_input"]
+    issue_id: str | None = None
     kind: PendingKind
-    interrupt_id: str
+    input_token: str
     card_id: str
     version: int = Field(ge=0)
 
@@ -108,6 +152,13 @@ class EscalationSummaryEvent(_Event):
     type: Literal["escalation_summary"]
     card_id: str
     summary: EscalationSummary
+    summary_id: str
+    revision: int = Field(ge=1)
+    issue_id: str
+    updated_at: str
+    source_through_seq: int
+    previous_card_id: str | None = None
+    handoff_status: Literal["prepared", "requested", "accepted", "failed", "cancelled"] = "prepared"
 
 
 class Error(_Event):
@@ -126,6 +177,10 @@ class Done(_Event):
 
 ServerEvent = Annotated[
     RunStarted
+    | InputReceived
+    | IssueChanged
+    | PendingChanged
+    | SummaryUpdated
     | Ping
     | Progress
     | ToolCall
