@@ -140,6 +140,8 @@ prepare_card ──▶ await_input ──▶ apply_action ──▶ (下一业�
 | 唯一重试层 | ModelRouter。厂商 SDK `max_retries=0`；节点不重试；HTTP 层不重试 |
 | ModelRouter 重试预算 | 同模型最多 1 次，链上最多 3 家，且总耗时不超过 task 预算 |
 | 可选查询改写 | 默认关闭；触发条件见 09 §4.1。仅剩余 ≥ 8 s 时启动：rewrite invoke 总预算 ≤ 3 s（含 Router 内重试 / 降级），补检索整轮共享 ≤ 3 s，至少保留 2 s 收尾；两步也受原 run deadline 约束，不延长 deadline |
+| 可选相关性评分 | 默认关闭（03 §1.4.3）。仅剩余 ≥ 6 s 时启动，单次 invoke 预算 ≤ 4 s 且不超过 `剩余 − 第二轮保留额`；失败 / 跳过均记 trace 后照常继续。默认每 run 至多 1 次，`grade.second_round` 开启时至多 2 次 |
+| 子流程模型调用上限 | 检索子流程（grade ≤ 2 + rewrite ≤ 1 + synthesize 1）合计 ≤ 4 次；默认配置下 ≤ 3 次 |
 | 检索补救次数 | 每 run 初次 + 至多一轮补检索，图片新增信息与查询改写共享名额；至多一次 rewrite invoke。重跑 / 恢复沿用 checkpoint 中已占用名额，禁止重置后重复补救 |
 | 前端 | 无事件 15 s 提示「仍在处理」；超过 deadline + 5 s 视为断流，走第 6 节恢复 |
 

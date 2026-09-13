@@ -108,6 +108,30 @@ describe('session reducer (票 06)', () => {
     expect(streaming.ui).toBe('streaming');
     expect(streaming.activeRun?.run_id).toBe('r2');
   });
+
+  it('用户关掉的快照错误不会被后续 restore 复活，新的错误仍然弹出', () => {
+    const snap = (last_error: { code: string; message: string; recoverable: boolean; at: string } | null) => ({
+      type: 'restore' as const,
+      now: 1_000,
+      snapshot: { session_id: 'sid', version: 7, stage: 'guide' as const, timeline: [], pending_input: null, active_run: null, cancelled_run: null, substage: null, last_error },
+    });
+    const err = { code: 'node_failed', message: '规则服务不可用', recoverable: false, at: 't1' };
+
+    const shown = reducer(initialState, snap(err));
+    expect(shown.error?.code).toBe('node_failed');
+
+    const dismissed = reducer(shown, { type: 'clear_error' });
+    expect(dismissed.error).toBeNull();
+
+    // 重连 / 409 冲突都会再次 restore，而最近一次运行仍是那次失败
+    expect(reducer(dismissed, snap(err)).error).toBeNull();
+
+    // 换一条新错误（at 不同）必须照常弹出
+    const next = reducer(dismissed, snap({ ...err, at: 't2' }));
+    expect(next.error?.code).toBe('node_failed');
+    // 新错误同样可以再被关掉
+    expect(reducer(next, { type: 'clear_error' }).error).toBeNull();
+  });
 });
 
 it('ignores replayed deltas and stale done events', () => {

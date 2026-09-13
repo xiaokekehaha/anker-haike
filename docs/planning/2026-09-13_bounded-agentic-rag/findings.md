@@ -87,6 +87,18 @@
   - 56 条里 7 条 grade 调用失败（百炼偶发限流 / 预算内重试用尽），全部落到 ungraded 不过滤、主流程无影响，符合设计。
   - 结论：**grade 默认保持关闭**，不建议在当前语料开启。语料扩大、或首轮召回噪声上升（多品类、更大 top_k）后重新用同一套 `--with-synthesize` 对照评估。
 
+## 2026-09-13 阶段 6 实施
+
+- **改写在本语料上根本不会触发**：`should_rewrite` 要求「实际请求的库全部 no_match」，而 56 条样例里 kb_manual 全部 ok（kb_tickets 6 条 no_match），两库同时 no_match 的样例 **0/56**。WeKnora 混合检索对任何 query 都会返回分数 ≈ 0.016 的命中，真 no_match 只在允许集合为空时出现，而那条路径按 09 §4.1 本来就不改写。因此 `query_rewrite.enabled` 在当前语料下是死代码，除非 grade 开启（graded 全不相关会被计为 no_match 参与决策，阶段 5 的 C 组里有 5 条 coverage=none）。
+- `validate_rewrite` 的过严来自实现超出了设计意图。03 §1.4.2 写的是「拒绝新增未经输入支持的**部件、原因或操作**」，实现却用 `_segmentable` 要求整句都能由原文片段切出来，任何自然连接词（完成后 / 无法 / 不佳）都会被拒。改为按文档意图判定：
+  - 新增**部件**检查（PARTS 列表：滚刷 / 边刷 / 滤网 / 尘盒 / 水箱 / 拖布 / 基站 / 传感器 / 触点…），原文没有且非已审核同义 → 拒 `new_part:X`；原因与操作沿用 FORBIDDEN_NEW；型号 / 数字 / 错误码检查不变。
+  - **否定分方向**：凭空加否定必拒（语义翻转）；丢否定只在被否定的是真事实时拒。「不是吸力小，是有异响」这类纠正句式里的否定属于被纠正掉的旧事实，比较前剥掉（`strip_corrected_clause`，逗号可省）。「滚刷没缠头发」→「滚刷缠头发」仍然拒。
+  - 新增**漂移锚点**检查：改写必须保留原症状的一个 2 字词，或一个已审核同义词（规范词或其口语说法）。改写的本职就是把口语换成说明书用语，字面重叠可能为零，所以同义映射必须算锚点；单字同义（扫 / 跑）区分度不够，不作锚点。「吸力下降」的同义表补了「吸力不足」「吸不起来」。
+  - 早期严格模式保留在 `query_rewrite.strict_terms`（默认 false），需要时可一键回到旧行为。
+- query.rewrite bake-off（8 样本 × 3 次，`reports/bakeoff/query_rewrite/`）：qwen-flash 0% → **100%**（706 ms，主），deepseek 0% → 88%（842 ms，差 2 pp 未达备用位门槛，失败项是模型原样返回原 query 与保留纠正从句），glm 38%。**修正过程中没有出现过「错误放行」，两轮失败全是保守拒绝**，这与设计的保守立场一致。
+- **Qwen 思考模式修复端到端验证通过**：重建镜像后真实会话里 intake / synthesize / reply.stream / guide.step 四个 task 全部首次命中 domestic 主模型（qwen-flash 2068 ms、qwen-max 4662 ms、qwen-plus 2289 ms、qwen-max 2578 ms），不再降级到 deepseek。
+- **验证时踩到 config 与镜像不成对的故障**：config/ 是热挂载而代码在镜像里，新版 retrieval.yaml（多了 grade / parent_expand / strict_terms）挂到旧镜像 → `RetrievalConfig` 的 `extra="forbid"` 在**首次使用时**才校验，于是 `/health` 200、容器 healthy，只有走到诊断节点的请求以 `error/node_failed` 失败。`docs/runbook/release.md` 原文写的是「直接启动失败并进入重启循环」，与实际不符且更危险（静默），已改正并补上「换 config 后必须发一条真实会话验活」。
+
 ## 待核对
 - 三家模型在 grade 枚举输出上的稳定性（阶段 5 bake-off）。
 - 真实 embedding 下 hybrid-search 的 latency_ms 分布（阶段 2 基线）。

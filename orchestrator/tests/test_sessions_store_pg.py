@@ -181,3 +181,27 @@ async def test_pg_actions_table_and_advisory_lock(pg_store):
             pass
     async with lock.hold(sid, timeout_s=0.5):
         pass
+
+
+async def test_list_events_repairs_legacy_rows_missing_seq(pg_store):
+    """历史行的 event_json 缺 seq / run_id 时，列值必须补回来。
+
+    早期集成测试在业务库留下过一批 run_started 事件的 event_json 没有 seq，导致重启收尾
+    与 SSE 重放在 ev["seq"] 上抛 KeyError 并整条中断。列是权威值，读取时以列为准。"""
+    sid = (await pg_store.create_session()).session_id
+    await pg_store.try_start_run(sid, "r1")
+    # 绕过 append_event 直写，复刻库里的坏行形状（无 seq、无 run_id）
+    async with pg_store._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            """insert into session_events (session_id, seq, run_id, event_json)
+               values (%s, 1, 'r1', %s::jsonb)""",
+            (sid, '{"type": "run_started"}'),
+        )
+    await pg_store.append_event(sid, "r1", {"type": "done", "reason": "completed"})
+
+    events = await pg_store.list_events(sid)
+    assert [e["seq"] for e in events] == [1, 2]
+    assert [e["run_id"] for e in events] == ["r1", "r1"]
+    assert events[0]["type"] == "run_started"
+    # 按 run 过滤与 after_seq 同样要能命中坏行
+    assert [e["seq"] for e in await pg_store.list_events(sid, run_id="r1")] == [1, 2]

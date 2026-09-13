@@ -163,6 +163,32 @@ async def test_reconcile_orphans_tolerates_events_missing_seq(mem_runtime):
         assert (await store.get_session(sid)).active_run_id is None
 
 
+async def test_legacy_rows_do_not_break_replay_or_next_run(mem_runtime):
+    """event_json 缺 seq / run_id 的历史行不得中断 SSE 重放与新 run 的续号。
+
+    收尾路径此前已改读事件表的列，但 list_events 仍原样返回 JSON，subscribe() 的
+    ev["seq"] 与 runner 的 max(e["seq"]) 依旧会 KeyError。列是权威值，读取时统一覆盖。"""
+    from app.sessions.manager import RunManager
+
+    store = mem_runtime
+    sid = (await store.create_session()).session_id
+    await store.try_start_run(sid, "r1")
+    await store.append_event(sid, "r1", {"type": "run_started"})  # 无 seq / 无 run_id
+    await store.append_event(sid, "r1", {"type": "done", "reason": "completed"})
+    await store.finish_run(sid, "r1", version=1, stage="intake")
+
+    # 读取路径：seq / run_id 由列补齐，其余字段原样保留
+    events = await store.list_events(sid, run_id="r1")
+    assert [e["seq"] for e in events] == [1, 2]
+    assert [e["run_id"] for e in events] == ["r1", "r1"]
+    assert events[0]["type"] == "run_started"
+    assert [e["seq"] for e in await store.list_events(sid, after_seq=1)] == [2]
+
+    # 重放路径：订阅已结束的 run 只回放历史，不再抛 KeyError
+    replayed = [ev async for ev in RunManager(store, app.state.session_graph).subscribe(sid, "r1")]
+    assert [e["seq"] for e in replayed] == [1, 2]
+
+
 async def test_reconcile_orphans_after_restart(mem_runtime):
     """服务重启：投影里 active 但内存无 live run → error(server_restarted) + done(error)，快照可恢复。"""
     from app.sessions.manager import RunManager

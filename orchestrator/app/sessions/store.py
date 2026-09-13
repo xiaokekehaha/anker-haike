@@ -81,6 +81,15 @@ class EventRecord:
     event: dict[str, Any]
 
 
+def _with_identity(event: dict[str, Any], seq: int, run_id: str) -> dict[str, Any]:
+    """用 session_events 的列值覆盖事件 JSON 里的 seq / run_id。
+
+    历史行的 event_json 可能缺这两个字段（早期集成测试残留），而调用方普遍直接读
+    ev["seq"] / ev["run_id"]，缺字段会抛 KeyError 并中断整条重放 / 启动链路。列是权威值，
+    JSON 只是副本，因此这里始终以列为准而不是仅在缺失时补。"""
+    return {**event, "seq": seq, "run_id": run_id}
+
+
 class SessionStore(Protocol):
     async def create_session(self) -> SessionRow: ...
     async def get_session(self, session_id: str) -> SessionRow: ...
@@ -198,13 +207,13 @@ class PostgresSessionStore:
     ) -> list[dict[str, Any]]:
         async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
             await cur.execute(
-                """select event_json from session_events
+                """select seq, run_id, event_json from session_events
                    where session_id = %s and seq > %s and (%s::text is null or run_id = %s)
                    order by seq""",
                 (session_id, after_seq, run_id, run_id),
             )
             rows = await cur.fetchall()
-        return [r["event_json"] for r in rows]
+        return [_with_identity(r["event_json"], r["seq"], r["run_id"]) for r in rows]
 
     async def session_exists(self, session_id: str) -> bool:
         async with self._pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
@@ -390,7 +399,11 @@ class InMemorySessionStore:
         self, session_id: str, *, run_id: str | None = None, after_seq: int = 0
     ) -> list[dict[str, Any]]:
         s = self._get(session_id)
-        return [r.event for r in s.events[after_seq:] if run_id is None or r.run_id == run_id]
+        return [
+            _with_identity(r.event, r.seq, r.run_id)
+            for r in s.events[after_seq:]
+            if run_id is None or r.run_id == run_id
+        ]
 
     async def list_event_records(self, session_id: str) -> list[EventRecord]:
         return list(self._get(session_id).events)

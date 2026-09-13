@@ -193,13 +193,21 @@ retry: {same_model_max: 1, chain_max: 3, sdk_max_retries: 0}
 - 每个 task 链在 domestic 与 overseas 两条通道各自完整；跨通道降级通过在 domestic 链尾放 overseas 别名实现（sonnet / haiku），不再另设「允许跨通道」开关。
 - 3.4 的展示表已废弃，以第 4 节由本文件生成的表为准。
 
-#### 3.7.1 可选 query.rewrite 路由（待票 32 实现）
+#### 3.7.1 可选 query.rewrite 路由（已实现）
 
-无命中改写复用 ModelRouter 的结构化 invoke，新增的仅是任务名 `query.rewrite`，不是独立服务。实现时在实际 `config/models.yaml` 的 domestic / overseas 下注册该任务，初始复用各通道 intake 的已配置模型别名链，`effort: low`、`max_tokens: 128`、无需视觉；不在业务节点硬编码厂商。实际配置仍是唯一路由来源，更新后从它生成路由展示表；本节为待实现要求，不表示当前配置已有该任务。
+无命中改写复用 ModelRouter 的结构化 invoke，新增的仅是任务名 `query.rewrite`，不是独立服务。实现时在实际 `config/models.yaml` 的 domestic / overseas 下注册该任务，初始复用各通道 intake 的已配置模型别名链，`effort: low`、`max_tokens: 128`、无需视觉；不在业务节点硬编码厂商。实际配置仍是唯一路由来源，更新后从它生成路由展示表。2026-09-13 已在两通道注册（domestic `[qwen-flash, deepseek, glm]`，`max_tokens` 由 128 提到 512 以容纳输出）。
 
 启用开关放编排配置 `config/retrieval.yaml: query_rewrite.enabled=false`，不混入现有严格校验的 ModelsConfig。开启前校验两通道路由齐全、所选通道有可调用模型；缺配置则保持补救关闭并记录配置问题，不阻断基本排障。输入 / 输出和保守校验见 03 §1.4.2，触发规则见 09 §4.1，invoke 的 3 s 预算包含现有 Router 内重试与降级；不新增重试层。单次 invoke 不等于必然只有一次厂商请求，实际 attempts 仍须记录。
 
 启用评测使用人工标注的口语 → 允许同义表达 → 应命中依据样例，加入否定、错误码、新增故障原因、错型号和原查询相同等反例。比较默认查询与一次改写后的适用证据命中、错误命中、语义漂移、额外成本及端到端延迟；未经验证保持默认关闭。
+
+bake-off 实测（2026-09-13，8 样本 × 3 次）：qwen-flash 100% / 706 ms（主），deepseek 88% / 842 ms，glm 38%。早期 0% 是 `validate_rewrite` 超出 03 §1.4.2 文档意图所致，已修正（见该节实现口径）。开关仍默认关闭：当前语料下两库同时 no_match 的样例为 0，触发条件无法满足，启用门槛不成立。
+
+#### 3.7.2 可选 retrieve.grade 路由（已实现）
+
+命中相关性评分同样只是新增任务名 `retrieve.grade`（03 §1.4.3），不是独立服务。domestic `[qwen-flash, deepseek, glm-flash]`、overseas `[haiku, sonnet]`，`effort: low`、`max_tokens: 512`（256 装不下逐条判定 + coverage）、无需视觉。开关在 `config/retrieval.yaml: grade.enabled=false`，与 ModelsConfig 分离；两通道缺链时按功能不可用处理，不阻断排障（登记在 `OPTIONAL_TASKS`）。
+
+bake-off 实测（2026-09-13，8 样本 × 2 次）：qwen-flash schema 100% / 准确率 98% / 1169 ms（主），deepseek 100% / 100% / 1038 ms（备），glm-flash 受账户限流未跑出有效数据。主备两家厂商满足 §3.8。开关默认关闭：模型侧对照显示当前语料上它反而让 plan 命中下降（见 docs/planning/2026-09-13_bounded-agentic-rag/findings.md）。
 
 ### 3.8 选型验证方式（bake-off）
 
@@ -250,6 +258,7 @@ retry: {same_model_max: 1, chain_max: 3, sdk_max_retries: 0}
 | escalate.summary | deepseek | qwen-flash | — | 否 |
 | warranty.receipt_ocr | qwen-vl | deepseek | sonnet（overseas） | 是 |
 | query.rewrite | qwen-flash | deepseek | — | 否 |
+| retrieve.grade | qwen-flash | deepseek | — | 否 |
 | embedding | embed-primary（百炼） | — | — | — |
 | rerank | rerank-primary（百炼） | LKEAP | 不 rerank | — |
 

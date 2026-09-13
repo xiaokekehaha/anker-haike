@@ -105,7 +105,7 @@ function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionSta
     case 'escalation_summary':
       return { ...base, timeline: upsert(base.timeline, { kind: 'escalation_summary', card_id: e.card_id, summary: e.summary }) };
     case 'error':
-      return { ...base, error: { code: e.code, message: e.message, recoverable: e.recoverable } };
+      return { ...base, error: { code: e.code, message: e.message, recoverable: e.recoverable }, errorAt: null };
     case 'done': {
       // completed：卡片已消费，pending 清空；awaiting_input / cancelled：保留 pending；error：进入 failed
       const pendingInput = e.reason === 'completed' ? null : base.pendingInput;
@@ -135,7 +135,7 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
         timeline: upsert(state.timeline, { kind: 'user_message', id: action.id, text: action.text, image_ids: action.imageIds ?? [], images: [], at: action.at }),
       };
     case 'action_sent':
-      return { ...state, pendingActionId: action.action_id, error: null, stalled: false, lastEventAt: Date.now() };
+      return { ...state, pendingActionId: action.action_id, error: null, errorAt: null, stalled: false, lastEventAt: Date.now() };
     case 'action_settled':
       return { ...state, pendingActionId: null };
     case 'restore': {
@@ -153,25 +153,31 @@ export function reducer(state: SessionState, action: SessionAction): SessionStat
         pendingInput: s.pending_input ?? null,
         activeRun: active ? { run_id: active.run_id, deadline_at: active.deadline_at, deadline_ms: Math.max(0, new Date(active.deadline_at).getTime() - now) } : null,
         ui: active ? 'streaming' : s.pending_input ? 'awaiting_input' : 'idle',
-        // 快照里的 last_error 只来自最近一次运行；message / recoverable 与实时 error 事件同源
-        error: s.last_error
-          ? { code: s.last_error.code, message: s.last_error.message ?? '', recoverable: s.last_error.recoverable ?? true }
-          : null,
+        // 快照里的 last_error 只来自最近一次运行；message / recoverable 与实时 error 事件同源。
+        // 用户已手动关掉的那一条（按 at 认身份）不再复活：重连 / 409 冲突都会触发 restore，
+        // 而最近一次运行仍是那次失败，否则关掉的提示会立刻又弹回来。
+        error:
+          s.last_error && s.last_error.at !== state.dismissedErrorAt
+            ? { code: s.last_error.code, message: s.last_error.message ?? '', recoverable: s.last_error.recoverable ?? true }
+            : null,
+        errorAt: s.last_error?.at ?? null,
+        dismissedErrorAt: state.dismissedErrorAt,
         stalled: false,
         pendingActionId: null,
         lastEventAt: now,
       };
     }
     case 'stream_error':
-      return { ...state, ui: 'failed', error: { code: 'stream_error', message: action.message, recoverable: true } };
+      return { ...state, ui: 'failed', error: { code: 'stream_error', message: action.message, recoverable: true }, errorAt: null };
     case 'stall':
       return { ...state, stalled: action.stalled };
     case 'recovering':
       return { ...state, ui: 'recovering' };
     case 'clear_error':
-      return { ...state, error: null };
+      // 记住这条错误的身份，避免后续 restore 把同一条重新挂上来
+      return { ...state, error: null, dismissedErrorAt: state.errorAt ?? state.dismissedErrorAt };
     case 'notice':
-      return { ...state, error: { code: 'notice', message: action.message, recoverable: false } };
+      return { ...state, error: { code: 'notice', message: action.message, recoverable: false }, errorAt: null };
     case 'reset':
       return initialState;
     default:

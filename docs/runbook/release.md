@@ -41,7 +41,8 @@ make rollback REL=<上一版 release_id>   # 复制 config → 重启 orchestrat
 ```
 
 - 回滚前的 config 自动留在 `releases/_pre-rollback/config/`（gitignore），误回滚可再回来。
-- **镜像与 config 必须是同一 release 的成对物**：把新版 config 挂到旧镜像（或反过来）会因配置校验直接启动失败并进入重启循环。跨 release 回滚时先 `docker compose pull` / 切镜像 tag，再换 config。
+- **镜像与 config 必须是同一 release 的成对物**：把新版 config 挂到旧镜像（或反过来）会因配置校验失败。跨 release 回滚时先 `docker compose pull` / 切镜像 tag，再换 config。
+  - 注意失败形态：`config/retrieval.yaml` 等是**首次使用时懒加载**的，不匹配不会让容器起不来——`/health` 照样 200、`docker compose ps` 照样 healthy，只有走到对应节点的请求会以 `error/node_failed` 结束（2026-09-13 实测：新版 retrieval.yaml + 旧镜像 → 诊断节点 ValidationError，会话直接失败）。因此换 config 后必须发一条真实会话验活，不能只看 /health。
 - 迁移只前向：回滚代码不回滚数据库；新版若加了列，旧代码不读它即可（迁移设计约束，见 database.md §4）。
 - 知识库回滚：`make kb-snapshot DIR=data/knowledge/snapshots/<ts>`。
 - 共享开发机上回滚会覆盖工作区里未提交的 config 修改——先 `git status config/`。

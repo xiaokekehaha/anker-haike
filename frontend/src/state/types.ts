@@ -20,6 +20,10 @@ export type SessionState = {
   lastEventAt: number | null;
   stalled: boolean;
   error: { code: string; message: string; recoverable: boolean } | null;
+  /** 当前 error 对应的快照 at 时间戳；实时 error 事件为 null */
+  errorAt: string | null;
+  /** 用户手动关掉的快照错误的 at 时间戳；同一条错误不再随后续 restore 复活 */
+  dismissedErrorAt: string | null;
   /** 已发出、等待服务端结果的 action_id（卡片置为 disabled） */
   pendingActionId: string | null;
 };
@@ -52,5 +56,7 @@ export const initialState: SessionState = {
   lastEventAt: null,
   stalled: false,
   error: null,
+  errorAt: null,
+  dismissedErrorAt: null,
   pendingActionId: null,
 };

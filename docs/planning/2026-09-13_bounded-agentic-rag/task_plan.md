@@ -18,8 +18,8 @@
 | 3 | S0 + S1 | `diagnose/expand.py`、`knowledge/search.py`（变体并发 + RRF + 跨库交错）、本地 FAQ 索引、适配器侧 rerank；跑 B / B_rerank | 报告 `reports/retrieval/20260913T0353*`；三个开关均保持关闭，待标注后决定（见 findings） | **complete**（2026-09-13） |
 | 4 | S4 父块扩展 | `list_chunks`（`GET /chunks/{knowledge_id}`）、手册子块缓存、同父子块拼接还原父块、synthesize 用 full_text、评测加 chunk_hit@5 与 P 组 | 单测 7 个；报告 `reports/retrieval/20260913T0406*` | **complete**（2026-09-13；默认关闭，见 findings） |
 | 5 | S2 + S3 grade | `diagnose/grade.py`、S3 决策改造（graded 全不相关视同无命中）、`retrieve.grade` bake-off（qwen-flash 主 / deepseek 备）、`haike-kb eval --with-synthesize` 模型侧对照 A / C_nograde / C | 报告 `reports/retrieval/*_synth.md`、`reports/bakeoff/retrieve_grade/` | **complete**（2026-09-13；结论见 findings） |
-| 6 | 改写开启评估 | 用 C 组数据评估 `query_rewrite.enabled`；修 validate_rewrite 词表 | 报告 | pending |
-| 7 | 收尾 | 00 / 03 / 08 / 09 / model-selection 回填；RELEASE.md；findings | 文档一致 | pending |
+| 6 | 改写开启评估 | 修 `validate_rewrite`（部件检查 / 否定分方向 / 纠正句式 / 漂移锚点，旧行为留 `strict_terms`）；query.rewrite bake-off 0% → 100%；验证 Qwen 修复；改正 release runbook | `reports/bakeoff/query_rewrite/` | **complete**（2026-09-13；开关仍关，见下） |
+| 7 | 收尾 | 00（D19）/ 03（§1.4.1 规则 4、§1.4.2 实现口径、新增 §1.4.3）/ 08 §8 / 09 §4.1 / model-selection §3.7.1–3.7.2 回填；models.yaml 升版；[switches.md](switches.md) 开关速查 | 文档与实现一致 | **complete**（2026-09-13） |
 
 ## 硬约束（不随阶段变化）
 - 轮数 ≤ 2；首轮请求 ≤ `max_requests_per_round`；第二轮请求 ≤ 2 且整轮 ≤ 3 s。
@@ -42,5 +42,11 @@
 - `grade.enabled`：**不建议开**。模型侧对照 plan_match 41/43（C_nograde）→ 39/43（C），两条回归都是金标段落被误剔；延迟 +1.6 s；56 条里 7 条调用失败（优雅降级）。单独探针证明它在命中含无关块时判断正确，但本期语料噪声少，收益抵不过误剔。语料扩大后重评。
 - `multi_query + faq + parent_expand`（C_nograde）：模型侧 plan_match 41/43、outcome_match 50/51，均**优于** A 组的 40/43、49/51，延迟 p50 反而略低（3291 vs 3645 ms）。这是三个开关第一次拿到正向判据，建议标注后一并开启。
 
+- `query_rewrite.enabled`：**保持关闭**。校验器已修好（bake-off 0% → 100%，无错误放行），但 56 条样例里两库同时 no_match 的有 0 条 —— 本语料下它根本不会触发，03 §1.4.2 的启用门槛（对照出收益）无法满足。语料扩大、或 grade 开启后（graded 全不相关会计为 no_match）再评。
+
+## 交付
+- 开关现状、证据与开启顺序：**[switches.md](switches.md)**（一页速查）。
+- 待用户动作：① 标注 `data/eval/retrieval/cases.yaml`；② 标注后重跑 A / C_nograde 对照并决定三个确定性开关；③ 需要时 `make release` 重新冻结（当前 RELEASE.md 记的 models.yaml 2026-09-13.1 与 kb_ver stub-embedding 已过期，实际为 2026-09-13.3 与 `2026-09-12.1+text-embedding-v4`）。
+
 ## Next Step
-阶段 6：用 `--with-synthesize` 对照评估 `query_rewrite.enabled` 并修 validate_rewrite 词表过严；顺带把阶段 5 发现的 Qwen 思考模式修复纳入回归（重启 orchestrator 容器验证 domestic 链不再降级）。
+本任务七个阶段全部完成。后续由用户标注评测集后决定开关，或按 switches.md 的再评估触发条件重启评估。

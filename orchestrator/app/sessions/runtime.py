@@ -56,11 +56,18 @@ async def open_session_runtime(app: FastAPI) -> None:
         manager = RunManager(store, app.state.session_graph)
         app.state.run_manager = manager
         app.state.session_lock = PostgresSessionLock(pool)
-        # 票 08：上次进程留下的 active run 以 error → done(error) 收尾，快照恢复到可继续状态
-        fixed = await manager.reconcile_orphans()
-        log.info("session runtime ready (orphan runs finalized: %d)", len(fixed))
+        log.info("session runtime ready")
     except Exception as exc:  # noqa: BLE001 - 启动期数据库故障要可见但不致命
         log.error("session runtime unavailable: %s: %s", type(exc).__name__, str(exc)[:200])
+        return
+    # 票 08：上次进程留下的 active run 以 error → done(error) 收尾，快照恢复到可继续状态。
+    # 单独一段且不致命：依赖此时已全部就绪，收尾失败只是孤儿 run 没收掉，不该把运行时标成
+    # unavailable，更不该让失败原因被「unavailable」这句盖掉。
+    try:
+        fixed = await manager.reconcile_orphans()
+        log.info("orphan runs finalized: %d", len(fixed))
+    except Exception as exc:  # noqa: BLE001
+        log.error("orphan run reconcile aborted: %s: %s", type(exc).__name__, str(exc)[:200])
 
 
 async def close_session_runtime(app: FastAPI) -> None:

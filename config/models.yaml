@@ -4,10 +4,13 @@
 # 规则：每个 task 的链上至少一家是当前环境可用的模型（只有 DEEPSEEK_API_KEY 时链不能整条 skipped，模型层 findings）。
 # params 为厂商专属请求参数（openai 协议进 extra_body）：DeepSeek V4 与智谱 GLM 默认开思考模式，关掉以免 reasoning token 计费与延迟翻倍。
 # 2026-09-13 实测：百炼 qwen3.7-flash / qwen3.8-max 默认也开思考（enable_thinking），结构化调用返回空 content、synthesize 8 s 超时，需显式关闭。
+# 2026-09-13.3（有界 RAG 阶段 5 / 6）：新增可选 task retrieve.grade（两通道）；query.rewrite max_tokens 128 → 512；
+# 给 qwen-flash / qwen-plus / qwen-max 加 enable_thinking=false —— 实测百炼这三个位默认开思考，OpenAI 兼容接口下
+# 结构化调用返回空 content，diagnose.synthesize 在 qwen-max 上 8 s 预算全部超时并降级到链尾，修复后 probe ≈ 1.2 s。
 # 2026-09-13.2（票 42 两家实测）：domestic 每个 task 的链尾换成本机实测达标的智谱位，使「主备至少两家厂商」在只有
 # DeepSeek + 智谱 key 的环境里也成立；未达标的候选不上链（glm 在 escalate.summary 10%、guide.step 89%，glm-flash 在
 # synthesize 67%）。diagnose.vision 的 glm-v 只达备用位门槛（77% < 主 80%），但它是唯一有视觉能力的智谱模型。
-version: 2026-09-13.2
+version: 2026-09-13.3
 default_lane: domestic
 
 providers:
