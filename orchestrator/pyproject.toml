@@ -23,6 +23,9 @@ dependencies = [
     "python-multipart>=0.0.20",
     "alembic>=1.16",
     "tiktoken>=0.12",
+    # 读图主链路依赖：EXIF 转正、九宫格裁剪、像素层画质门控（app/images/prepare.py、quality.py）。
+    # 曾经只有评测合成图用，属 dev 组；2026-09-15 起进主链路，必须随生产镜像安装。
+    "pillow>=11",
 ]
 
 [project.scripts]
@@ -46,7 +49,6 @@ haike-analytics = "app.analytics.cli:main"
 [dependency-groups]
 dev = [
     "jsonschema>=4.23",
-    "pillow>=11",
     "pytest>=8.4",
     "pytest-asyncio>=1.2",
     "ruff>=0.14",
