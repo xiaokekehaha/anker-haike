@@ -94,9 +94,14 @@ class PlanLibrary:
     def get(self, plan_id: str) -> Plan:
         return self._plans[plan_id]
 
-    def allowed_for(self, *, category: str, sku: str | None = None) -> list[Plan]:
+    def allowed_for(self, *, category: str, sku: str | None = None, symptom_codes=()) -> list[Plan]:
         """当前产品状态允许的计划集合：confirmed_sku 传 sku，category_only 不传（09 §2.1、§3.2）。"""
-        return [p for p in self._plans.values() if p.applies(category=category, sku=sku)]
+        codes = set(symptom_codes)
+        return [
+            p for p in self._plans.values()
+            if p.applies(category=category, sku=sku)
+            and (not codes or codes.intersection(p.symptom_codes))
+        ]
 
     def schema_for(self, *, category: str, sku: str | None = None) -> dict:
         return plan_json_schema([p.plan_id for p in self.allowed_for(category=category, sku=sku)])

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 95acfd485c4b1d25bb1cc3edf383a5f319eefd74f4bbfbb5ba01ab204c329111
+// SHA-256: 9a04cb8529014fc3bebb231330339ae9c35b18b3202bee7b0e8af38b14457670
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -13,7 +13,12 @@ export type ActionRequest =
   | SkipReceiptAction
   | RequestHumanAction
   | NewIssueAction
-  | ResumeIssueAction;
+  | ResumeIssueAction
+  | ConfirmContextAction
+  | ConfirmProposalAction
+  | DeclineProposalAction
+  | SkipRetakeAction
+  | RateSatisfactionAction;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
  */
@@ -82,9 +87,63 @@ export type ActionId6 = string;
 export type ExpectedVersion6 = number;
 export type Kind6 = 'resume_issue';
 export type TargetIssueId6 = string;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId7 = string;
+export type CardId5 = string;
+export type ExpectedVersion7 = number;
+export type InputToken5 = string;
+export type Kind7 = 'confirm_context';
+export type Channel1 = string;
+export type Platform = string | null;
+export type RegionPurchase = string;
+export type RegionUse = string;
+export type TargetIssueId7 = string;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId8 = string;
+export type CardId6 = string;
+export type ExpectedVersion8 = number;
+export type InputToken6 = string;
+export type Kind8 = 'confirm_proposal';
+export type OptionId = string;
+export type TargetIssueId8 = string;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId9 = string;
+export type CardId7 = string;
+export type ExpectedVersion9 = number;
+export type InputToken7 = string;
+export type Kind9 = 'decline_proposal';
+export type Reason1 = 'want_other' | 'not_now' | 'request_human';
+export type TargetIssueId9 = string;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId10 = string;
+export type CardId8 = string;
+export type ExpectedVersion10 = number;
+export type InputToken8 = string;
+export type Kind10 = 'skip_retake';
+export type Reason2 = string;
+export type TargetIssueId10 = string;
+/**
+ * 前端生成的 uuid，重试时复用，服务端据此幂等
+ */
+export type ActionId11 = string;
+export type CardId9 = string;
+export type ExpectedVersion11 = number;
+export type InputToken9 = string;
+export type Kind11 = 'rate_satisfaction';
+export type Comment = string | null;
+export type Score = number;
+export type TargetIssueId11 = string;
 export type Code = 'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active';
 export type Message = string;
-export type ActionId7 = string;
+export type ActionId12 = string;
 export type Replayed = boolean;
 export type RunId = string;
 export type VersionAfter = number | null;
@@ -227,6 +286,110 @@ export interface ResumeIssueAction {
   target_issue_id: TargetIssueId6;
 }
 /**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmContextAction".
+ */
+export interface ConfirmContextAction {
+  action_id: ActionId7;
+  card_id: CardId5;
+  expected_version: ExpectedVersion7;
+  input_token: InputToken5;
+  kind: Kind7;
+  payload: ConfirmContextPayload;
+  target_issue_id: TargetIssueId7;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmContextPayload".
+ */
+export interface ConfirmContextPayload {
+  channel: Channel1;
+  platform?: Platform;
+  region_purchase: RegionPurchase;
+  region_use: RegionUse;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmProposalAction".
+ */
+export interface ConfirmProposalAction {
+  action_id: ActionId8;
+  card_id: CardId6;
+  expected_version: ExpectedVersion8;
+  input_token: InputToken6;
+  kind: Kind8;
+  payload: ConfirmProposalPayload;
+  target_issue_id: TargetIssueId8;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ConfirmProposalPayload".
+ */
+export interface ConfirmProposalPayload {
+  option_id: OptionId;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "DeclineProposalAction".
+ */
+export interface DeclineProposalAction {
+  action_id: ActionId9;
+  card_id: CardId7;
+  expected_version: ExpectedVersion9;
+  input_token: InputToken7;
+  kind: Kind9;
+  payload: DeclineProposalPayload;
+  target_issue_id: TargetIssueId9;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "DeclineProposalPayload".
+ */
+export interface DeclineProposalPayload {
+  reason: Reason1;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SkipRetakeAction".
+ */
+export interface SkipRetakeAction {
+  action_id: ActionId10;
+  card_id: CardId8;
+  expected_version: ExpectedVersion10;
+  input_token: InputToken8;
+  kind: Kind10;
+  payload: SkipRetakePayload;
+  target_issue_id: TargetIssueId10;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "SkipRetakePayload".
+ */
+export interface SkipRetakePayload {
+  reason?: Reason2;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RateSatisfactionAction".
+ */
+export interface RateSatisfactionAction {
+  action_id: ActionId11;
+  card_id: CardId9;
+  expected_version: ExpectedVersion11;
+  input_token: InputToken9;
+  kind: Kind11;
+  payload: RateSatisfactionPayload;
+  target_issue_id: TargetIssueId11;
+}
+/**
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "RateSatisfactionPayload".
+ */
+export interface RateSatisfactionPayload {
+  comment?: Comment;
+  score: Score;
+}
+/**
  * 409 响应体：附最新快照供前端重建（08 §4 第 3 步）。
  *
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -250,7 +413,7 @@ export interface Snapshot {
  * via the `definition` "ActionResult".
  */
 export interface ActionResult {
-  action_id: ActionId7;
+  action_id: ActionId12;
   replayed?: Replayed;
   run_id: RunId;
   version_after?: VersionAfter;

@@ -71,6 +71,154 @@
       "title": "ActionResult",
       "type": "object"
     },
+    "ConfirmContextAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "confirm_context",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ConfirmContextPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "ConfirmContextAction",
+      "type": "object"
+    },
+    "ConfirmContextPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "Channel",
+          "type": "string"
+        },
+        "platform": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platform"
+        },
+        "region_purchase": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "Region Purchase",
+          "type": "string"
+        },
+        "region_use": {
+          "maxLength": 50,
+          "minLength": 1,
+          "title": "Region Use",
+          "type": "string"
+        }
+      },
+      "required": [
+        "region_purchase",
+        "region_use",
+        "channel"
+      ],
+      "title": "ConfirmContextPayload",
+      "type": "object"
+    },
+    "ConfirmProposalAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "confirm_proposal",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ConfirmProposalPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "ConfirmProposalAction",
+      "type": "object"
+    },
+    "ConfirmProposalPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id"
+      ],
+      "title": "ConfirmProposalPayload",
+      "type": "object"
+    },
     "ConfirmReceiptAction": {
       "additionalProperties": false,
       "properties": {
@@ -143,6 +291,71 @@
       "title": "ConfirmReceiptPayload",
       "type": "object"
     },
+    "DeclineProposalAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "decline_proposal",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/DeclineProposalPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "DeclineProposalAction",
+      "type": "object"
+    },
+    "DeclineProposalPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "enum": [
+            "want_other",
+            "not_now",
+            "request_human"
+          ],
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "DeclineProposalPayload",
+      "type": "object"
+    },
     "NewIssueAction": {
       "additionalProperties": false,
       "properties": {
@@ -176,6 +389,81 @@
         "kind"
       ],
       "title": "NewIssueAction",
+      "type": "object"
+    },
+    "RateSatisfactionAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "rate_satisfaction",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/RateSatisfactionPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "RateSatisfactionAction",
+      "type": "object"
+    },
+    "RateSatisfactionPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "comment": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comment"
+        },
+        "score": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Score",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "score"
+      ],
+      "title": "RateSatisfactionPayload",
       "type": "object"
     },
     "ReceiptFields": {
@@ -466,6 +754,64 @@
       "title": "SkipReceiptPayload",
       "type": "object"
     },
+    "SkipRetakeAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "skip_retake",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/SkipRetakePayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "SkipRetakeAction",
+      "type": "object"
+    },
+    "SkipRetakePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "default": "skip",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "title": "SkipRetakePayload",
+      "type": "object"
+    },
     "StepFeedbackAction": {
       "additionalProperties": false,
       "properties": {
@@ -547,12 +893,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "discriminator": {
     "mapping": {
+      "confirm_context": "#/$defs/ConfirmContextAction",
+      "confirm_proposal": "#/$defs/ConfirmProposalAction",
       "confirm_receipt": "#/$defs/ConfirmReceiptAction",
+      "decline_proposal": "#/$defs/DeclineProposalAction",
       "new_issue": "#/$defs/NewIssueAction",
+      "rate_satisfaction": "#/$defs/RateSatisfactionAction",
       "request_human": "#/$defs/RequestHumanAction",
       "resume_issue": "#/$defs/ResumeIssueAction",
       "select_product": "#/$defs/SelectProductAction",
       "skip_receipt": "#/$defs/SkipReceiptAction",
+      "skip_retake": "#/$defs/SkipRetakeAction",
       "step_feedback": "#/$defs/StepFeedbackAction"
     },
     "propertyName": "kind"
@@ -578,6 +929,21 @@
     },
     {
       "$ref": "#/$defs/ResumeIssueAction"
+    },
+    {
+      "$ref": "#/$defs/ConfirmContextAction"
+    },
+    {
+      "$ref": "#/$defs/ConfirmProposalAction"
+    },
+    {
+      "$ref": "#/$defs/DeclineProposalAction"
+    },
+    {
+      "$ref": "#/$defs/SkipRetakeAction"
+    },
+    {
+      "$ref": "#/$defs/RateSatisfactionAction"
     }
   ],
   "title": "ActionRequest"

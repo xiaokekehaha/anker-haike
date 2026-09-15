@@ -1,0 +1,68 @@
+{
+  "scenario": "a8_emotion",
+  "versions": {
+    "prompt_ver": "system=2026-09-14.1;interpret=2026-09-14.8;reply=2026-09-12.1;guide=2026-09-12.1;clarify=2026-09-13.1;vision=2026-09-14.1;ocr=2026-09-12.1;summary=2026-09-12.1",
+    "models_ver": "2026-09-13.5",
+    "kb_ver": "2026-09-12.1+text-embedding-v4",
+    "rules_ver": "2026-09-12.1",
+    "policy_version": "2026-09-14.1",
+    "actions_version": "2026-09-14.2"
+  },
+  "verification": {
+    "case_id": "a8_emotion",
+    "model_hits": 7,
+    "model_misses": [],
+    "knowledge_hits": 2,
+    "knowledge_misses": [],
+    "missing_expected": [],
+    "events": 81,
+    "runs": 5,
+    "types": [
+      "awaiting_input",
+      "case_changed",
+      "context_card",
+      "done",
+      "evidence",
+      "input_received",
+      "issue_changed",
+      "message",
+      "message_end",
+      "message_start",
+      "pending_changed",
+      "progress",
+      "proposal_card",
+      "run_started",
+      "step_card",
+      "tool_call"
+    ],
+    "evidence_status": [
+      "replay"
+    ],
+    "errors": []
+  },
+  "semantic_turns": [
+    {
+      "primary_intent": "report_problem",
+      "emotion_level": "dissatisfied",
+      "human_request_quote": null,
+      "device_safety_assertion": "none",
+      "device_safety_quote": null
+    },
+    {
+      "primary_intent": "complaint",
+      "emotion_level": "angry",
+      "human_request_quote": null,
+      "device_safety_assertion": "none",
+      "device_safety_quote": null
+    },
+    {
+      "primary_intent": "complaint",
+      "emotion_level": "complaint_risk",
+      "human_request_quote": null,
+      "device_safety_assertion": "none",
+      "device_safety_quote": null
+    }
+  ],
+  "checks": "44 passed; Ruff passed",
+  "failed_diagnostics": "replay/.failures/a8_emotion.json retains the earlier failed interpretation; not a successful package"
+}

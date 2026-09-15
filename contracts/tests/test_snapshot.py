@@ -12,7 +12,7 @@ def test_full_snapshot_roundtrip():
     assert REQUIRED_SECTIONS <= set(SessionSnapshot.model_fields)
     dumped = s.model_dump(mode="json")
     assert SessionSnapshot.model_validate(dumped) == s
-    assert dumped["pending_input"] == SNAPSHOT_FULL["pending_input"]
+    assert s.pending_input.model_dump(exclude_unset=True) == SNAPSHOT_FULL["pending_input"]
     assert {i.kind for i in s.timeline} == {
         "user_message",
         "assistant_message",
@@ -34,7 +34,13 @@ def test_pending_input_same_shape_as_awaiting_input():
     from haike_contracts.common import PendingInput
     from haike_contracts.events import AwaitingInput
 
-    ev_fields = set(AwaitingInput.model_fields) - {"type", "seq", "run_id", "event_id", "recorded_at"}
+    ev_fields = set(AwaitingInput.model_fields) - {
+        "type",
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+    }
     assert ev_fields == set(PendingInput.model_fields)
 
 

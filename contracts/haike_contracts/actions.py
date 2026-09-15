@@ -16,6 +16,11 @@ ActionKind = Literal[
     "request_human",
     "new_issue",
     "resume_issue",
+    "confirm_context",
+    "confirm_proposal",
+    "decline_proposal",
+    "skip_retake",
+    "rate_satisfaction",
 ]
 
 
@@ -98,6 +103,55 @@ class ResumeIssueAction(_Action):
     payload: RequestHumanPayload = Field(default_factory=RequestHumanPayload)
 
 
+class ConfirmContextPayload(Strict):
+    region_purchase: str = Field(min_length=1, max_length=50)
+    region_use: str = Field(min_length=1, max_length=50)
+    channel: str = Field(min_length=1, max_length=50)
+    platform: str | None = None
+
+
+class ConfirmContextAction(_CardAction):
+    kind: Literal["confirm_context"]
+    payload: ConfirmContextPayload
+
+
+class ConfirmProposalPayload(Strict):
+    option_id: str
+
+
+class ConfirmProposalAction(_CardAction):
+    kind: Literal["confirm_proposal"]
+    payload: ConfirmProposalPayload
+
+
+class DeclineProposalPayload(Strict):
+    reason: Literal["want_other", "not_now", "request_human"]
+
+
+class DeclineProposalAction(_CardAction):
+    kind: Literal["decline_proposal"]
+    payload: DeclineProposalPayload
+
+
+class SkipRetakePayload(Strict):
+    reason: str = "skip"
+
+
+class SkipRetakeAction(_CardAction):
+    kind: Literal["skip_retake"]
+    payload: SkipRetakePayload
+
+
+class RateSatisfactionPayload(Strict):
+    score: int = Field(ge=1, le=5)
+    comment: str | None = Field(default=None, max_length=2000)
+
+
+class RateSatisfactionAction(_CardAction):
+    kind: Literal["rate_satisfaction"]
+    payload: RateSatisfactionPayload
+
+
 ActionRequest = Annotated[
     SelectProductAction
     | StepFeedbackAction
@@ -105,7 +159,12 @@ ActionRequest = Annotated[
     | SkipReceiptAction
     | RequestHumanAction
     | NewIssueAction
-    | ResumeIssueAction,
+    | ResumeIssueAction
+    | ConfirmContextAction
+    | ConfirmProposalAction
+    | DeclineProposalAction
+    | SkipRetakeAction
+    | RateSatisfactionAction,
     Field(discriminator="kind"),
 ]
 

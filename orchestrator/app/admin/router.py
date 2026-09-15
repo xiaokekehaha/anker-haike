@@ -180,6 +180,8 @@ async def list_cases(
 async def upsert_case(body: CaseIn, request: Request, response: Response) -> dict[str, Any]:
     """标注一个会话（一会话一条案例，重复标注即更新）。"""
     _no_store(response)
+    if {"intent_correct", "intent_wrong"} <= set(body.reason_tags):
+        raise HTTPException(422, detail={"code": "conflicting_intent_labels", "message": "意图正确与错误只能选择一个"})
     unknown = [t for t in body.reason_tags if t not in REASON_TAGS]
     if unknown:
         raise HTTPException(
@@ -236,6 +238,8 @@ async def patch_case(
     if not fields:
         raise HTTPException(422, detail={"code": "empty_patch", "message": "没有要修改的字段"})
     if "reason_tags" in fields:
+        if {"intent_correct", "intent_wrong"} <= set(fields["reason_tags"]):
+            raise HTTPException(422, detail={"code": "conflicting_intent_labels", "message": "意图正确与错误只能选择一个"})
         unknown = [t for t in fields["reason_tags"] if t not in REASON_TAGS]
         if unknown:
             raise HTTPException(

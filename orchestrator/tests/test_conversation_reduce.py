@@ -44,6 +44,27 @@ def test_control_turns_preserve_facts_and_do_not_repeat_escalation():
     assert corrected["turn_decision"]["clarification"]
 
 
+def test_symptom_rule_code_is_persisted_and_overrides_model_disagreement():
+    state = turn({}, "i1", "吸力变弱", primary_intent="report_problem", device_relation="current", facts=[{"value": "吸力变弱", "quote": "吸力变弱", "symptom_code": "power_failure"}])
+    assert state["symptom_codes"] == ["suction_low"]
+    issue = state["issues"][state["active_issue_id"]]
+    assert issue["facts"][0]["symptom_code"] == "suction_low"
+    assert state["turn_decision"]["normalization_disagreements"]
+
+
+def test_human_handoff_requires_current_request_source():
+    state = earbuds()
+    card = {"card_id": "pending", "kind": "step_feedback", "payload": {}}
+    state["pending_card"] = card
+    complaint = turn(state, "i2", "再不解决我就去平台投诉", primary_intent="request_human", emotion_level="complaint_risk")
+    assert complaint["turn_decision"]["primary_intent"] == "complaint"
+    assert complaint["turn_decision"]["escalation_trigger"] is None
+    assert complaint["pending_card"] == card
+    handoff = turn(complaint, "i3", "请转人工客服", primary_intent="request_human", human_request_quote="请转人工客服")
+    assert handoff["turn_decision"]["escalation_trigger"] == "R3"
+    assert handoff["pending_card"] is None
+
+
 def test_other_device_risk_does_not_relabel_earbud():
     state = earbuds()
     earbud_id = state["active_issue_id"]
@@ -56,8 +77,8 @@ def test_other_device_risk_does_not_relabel_earbud():
         product_hints=["机器人"],
         device_category="robot_vacuum",
         facts=[{"value": "冒烟", "quote": "冒烟"}],
-        risk_assertion="reported",
-        risk_quote="冒烟",
+        device_safety_assertion="reported",
+        device_safety_quote="冒烟",
     )
     assert state["active_issue_id"] != earbud_id
     assert state["issues"][earbud_id]["symptoms"] == ["没有声音"]
@@ -129,8 +150,8 @@ def test_negated_smoke_does_not_create_risk_but_retraction_does_not_clear_one():
         primary_intent="report_problem",
         device_relation="other",
         product_hints=["机器人"],
-        risk_assertion="negated",
-        risk_quote="没有冒烟",
+        device_safety_assertion="negated",
+        device_safety_quote="没有冒烟",
     )
     assert state["risk_cases"] == []
     reported = turn(
@@ -140,8 +161,8 @@ def test_negated_smoke_does_not_create_risk_but_retraction_does_not_clear_one():
         primary_intent="supplement",
         device_relation="current",
         facts=[{"value": "冒烟", "quote": "冒烟"}],
-        risk_assertion="reported",
-        risk_quote="冒烟",
+        device_safety_assertion="reported",
+        device_safety_quote="冒烟",
     )
     denied = turn(
         reported,
@@ -149,8 +170,8 @@ def test_negated_smoke_does_not_create_risk_but_retraction_does_not_clear_one():
         "没有冒烟，是说错了",
         primary_intent="correct",
         device_relation="current",
-        risk_assertion="negated",
-        risk_quote="没有冒烟",
+        device_safety_assertion="negated",
+        device_safety_quote="没有冒烟",
     )
     assert denied["risk_cases"][0]["status"] == "disputed"
     assert not denied["turn_decision"]["allowed_operations"]
@@ -193,7 +214,7 @@ def test_draft_suspends_old_card_and_resume_replaces_token_without_reset():
     assert resumed["steps_executed"] == [{"step_id": "s1"}]
 
 
-def test_invalid_risk_quote_cannot_suppress_precheck():
+def test_invalid_device_safety_quote_cannot_suppress_precheck():
     for assertion in ("negated", "reported"):
         state = turn(
             {},
@@ -202,8 +223,8 @@ def test_invalid_risk_quote_cannot_suppress_precheck():
             primary_intent="report_problem",
             device_relation="other",
             product_hints=["机器人"],
-            risk_assertion=assertion,
-            risk_quote="不存在的原话",
+            device_safety_assertion=assertion,
+            device_safety_quote="不存在的原话",
         )
         assert state["risk_cases"]
         assert not state["turn_decision"]["allowed_operations"]

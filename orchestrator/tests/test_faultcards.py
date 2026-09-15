@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import model_task_text
-
 import json
 
 import pytest
@@ -19,6 +17,7 @@ from app.faultcards.library import MAX_CARD_TOKENS, MAX_PROMPT_TOKENS
 from app.plans import PlanLibrary
 from app.plans.runtime import set_plan_library
 from app.settings import REPO_ROOT
+from tests.message_form import model_task_text
 from tests.test_diagnose import (
     INTAKE_X9,
     NO_MATCH,
@@ -120,7 +119,6 @@ async def test_weknora_down_a1_still_reaches_guide_with_standard_flow_note(
                     ]
                 }
             ),
-            ["请先清理滚刷。"],
         ],
     )
     adapter = ScriptedAdapter({"kb_manual": [UNAVAILABLE()], "kb_tickets": [UNAVAILABLE()]})
@@ -142,14 +140,18 @@ async def test_weknora_down_a1_still_reaches_guide_with_standard_flow_note(
         "source": "synthesize",
     }
     assert values["diagnose_outcome"]["mode"] == "fault_card"
-    # 故障卡文本进入回复上下文；改写决策因「已有命中」不触发
-    reply_call = next(c for c in fakes["main"].calls if c["metadata"]["task"] == "reply.stream")
-    human = model_task_text(reply_call)
-    assert 'kind="fault_card"' in human and "eufy X9 Pro 故障卡" in human
+    # 故障卡驱动假设，其证据进 synthesize 上下文；票 19 起本轮不再有自由回复
+    synth_call = next(c for c in fakes["main"].calls if c["metadata"]["task"] == "diagnose.synthesize")
+    assert "fc:EUFY-X9-PRO" in model_task_text(synth_call)
+    assert [c["metadata"]["task"] for c in fakes["main"].calls] == ["diagnose.synthesize", "guide.step"]
     assert events[-1]["reason"] == "awaiting_input"  # 票 34：guide 发出首张步骤卡
 
 
-async def test_no_match_without_fault_card_hit_uses_standard_flow(mem_runtime, tmp_path, cards):
+async def test_no_match_and_no_applicable_plan_hands_off_instead_of_unrelated_steps(
+    mem_runtime, tmp_path, cards
+):
+    """票 19：降级计划按症状过滤。找不到基站属 navigation_failure，无预写计划 → R5 人工交接，
+    不再拿吸力计划顶替。"""
     intake = json.dumps(
         {
             "emotion_level": "calm",
@@ -163,14 +165,16 @@ async def test_no_match_without_fault_card_hit_uses_standard_flow(mem_runtime, t
     adapter = ScriptedAdapter({"kb_manual": [NO_MATCH()], "kb_tickets": [NO_MATCH()]})
     events, values = await run(router, adapter, "eufy X9 Pro 找不到基站")
     assert values["fault_card_hits"] == [] and values["knowledge_status"] == "no_match"
-    assert (
-        values["diagnose_outcome"]["mode"] == "standard_flow"
-        and values["diagnose_outcome"]["note"] == "按标准排障流程"
-    )
-    assert next(p["source"] for p in values["plans_ranked"]) == "standard_flow"
-    assert values["stage"] == "guide"
-    # 无证据不调 synthesize，模型不得凭常识给假设（票 34 起 guide.step 会再调一次 main）
-    assert [c["metadata"]["task"] for c in fakes["main"].calls] == ["reply.stream", "guide.step"]
+    assert values["symptom_codes"] == ["navigation_failure"]
+    assert values["diagnose_outcome"] == {
+        "mode": "escalate",
+        "reason": "R5",
+        "knowledge_status": "no_match",
+    }
+    assert values["plans_ranked"] == [] and values["stage"] == "escalate"
+    # 无证据不调 synthesize，也不出步骤卡：模型不得凭常识给假设
+    assert [c["metadata"]["task"] for c in fakes["main"].calls] == []
+    assert "step_card" not in [e["type"] for e in events]
     assert [e for e in events if e["type"] == "tool_call"][-1][
         "summary"
     ] == "未找到匹配知识，按标准排障流程"

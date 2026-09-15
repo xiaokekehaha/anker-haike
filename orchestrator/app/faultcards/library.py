@@ -37,11 +37,18 @@ class _Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class FaultSignature(_Strict):
+    part: str
+    phenomenon: str
+
+
 class FaultEntry(_Strict):
     fault: str
     plan_id: str = Field(pattern=r"^[a-z0-9_]+$")
     keywords: list[str] = Field(min_length=1)
     first_step: str
+    signatures: list[FaultSignature] = Field(default_factory=list)
+    symptom_codes: list[str] = Field(default_factory=list)
 
 
 class FaultCard(_Strict):
@@ -55,9 +62,9 @@ class FaultCard(_Strict):
     def is_category(self) -> bool:
         return self.key.startswith("category:")
 
-    def render(self) -> str:
+    def render(self, hits: list[FaultEntry] | None = None) -> str:
         lines = [f"【{self.title}】（版本 {self.doc_version}）", "常见故障与首步："]
-        for i, f in enumerate(self.faults, 1):
+        for i, f in enumerate(self.faults if hits is None else hits, 1):
             lines.append(f"{i}. {f.fault} → 首步：{f.first_step}（计划 {f.plan_id}）")
         if self.safety:
             lines.append("安全禁忌：")
@@ -67,9 +74,11 @@ class FaultCard(_Strict):
     def tokens(self) -> int:
         return estimate_tokens(self.render())
 
-    def match(self, texts: list[str]) -> list[FaultEntry]:
+    def match(self, texts: list[str], *, symptom_codes=()) -> list[FaultEntry]:
         blob = " ".join(t for t in texts if t).casefold()
-        return [f for f in self.faults if any(k.casefold() in blob for k in f.keywords)]
+        from app.conversation.taxonomy import normalize
+        codes = set(symptom_codes) | {item["symptom_code"] for item in normalize(blob)}
+        return [f for f in self.faults if codes.intersection(f.symptom_codes) or any(k.casefold() in blob for k in f.keywords)]
 
     def evidence_items(self, hits: list[FaultEntry]) -> list[dict[str, Any]]:
         """命中项作为证据（source=fault_card，evidence_id 稳定），供 synthesize 引用。"""

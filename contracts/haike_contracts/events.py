@@ -8,6 +8,9 @@ from pydantic import Field, TypeAdapter
 
 from haike_contracts.common import (
     EscalationSummary,
+    CaseStatus as CaseStatusValue,
+    ProposalOption,
+    Receipt,
     EvidenceItem,
     ModelTier,
     PendingKind,
@@ -29,7 +32,7 @@ class _Event(Strict):
 class InputReceived(_Event):
     type: Literal["input_received"]
     input_id: str
-    input_kind: Literal["message", "action"]
+    input_kind: Literal["message", "action", "human_decision"]
     payload: dict
     issue_id: str | None = None
 
@@ -175,6 +178,54 @@ class Done(_Event):
     version: int = Field(ge=0, description="本 run 结束后的会话版本")
 
 
+class ContextCardEvent(_Card):
+    type: Literal["context_card"]
+    fields: list[str]
+    prefilled: dict[str, str] = Field(default_factory=dict)
+    sources: dict[str, str] = Field(default_factory=dict)
+    choices: dict[str, list[str]] = Field(default_factory=dict)
+
+
+class ProposalCardEvent(_Card):
+    type: Literal["proposal_card"]
+    options: list[ProposalOption]
+    decision_summary: str
+    policy_version: str
+    retry: bool = False
+
+
+class ExecutionCardEvent(_Card):
+    type: Literal["execution_card"]
+    execution_id: str
+    action_kind: str
+    status: Literal["succeeded", "failed"]
+    receipt: Receipt
+    idempotency_key: str
+
+
+class RetakeCardEvent(_Card):
+    type: Literal["retake_card"]
+    reasons: list[str]
+    guidance: list[str]
+
+
+class RatingCardEvent(_Card):
+    type: Literal["rating_card"]
+    case_id: str | None = None
+
+
+class CaseStatusEvent(_Card):
+    type: Literal["case_changed"]
+    case_id: str
+    status: CaseStatusValue
+    complaint_risk: bool = False
+    priority: Literal["normal", "high"] = "normal"
+    owner: str | None = None
+    reason: str
+    external_refs: dict[str, str] = Field(default_factory=dict)
+    updated_at: str
+
+
 ServerEvent = Annotated[
     RunStarted
     | InputReceived
@@ -194,7 +245,13 @@ ServerEvent = Annotated[
     | AwaitingInput
     | EscalationSummaryEvent
     | Error
-    | Done,
+    | Done
+    | ContextCardEvent
+    | ProposalCardEvent
+    | ExecutionCardEvent
+    | RetakeCardEvent
+    | RatingCardEvent
+    | CaseStatusEvent,
     Field(discriminator="type"),
 ]
 

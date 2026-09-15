@@ -13,3 +13,9 @@
 - `contracts/haike_contracts/common.py:EvidenceItem` 目前以内部文档 id/version/chunk 为主；前端 EvidenceDrawer 无外链、抓取时间、信任等级展示。
 - `knowledge/ingest.py` 能导入带 front matter 的 Markdown；但当前 metadata 构造只保留固定字段，外部出处要扩展导入/读回链路。
 - 搜索命令曾因 zsh 未匹配到 `orchestrator/app/sessions/nodes*` 返回 1；改为真实路径 `graph.py` 后完成检查。
+
+## 综合结论
+- 上游 v1.5.0 Beta 的统一能力是配置与健康检查；存在局部 helper，但没有全平台 search/read SDK。自带 MCP 仅 get_status。
+- 推荐在线业务使用本项目拥有的 Exa HTTP/MCP provider，必要时补 Jina；Agent-Reach 的 CLI 工具集合更适合独立采集环境。
+- 系统安装可能修改用户级工具和多个 Agent Skill 目录，不能视为仓库内局部开关。此次未执行安装。
+- Exa/Jina 的匿名入口有配额；平台登录、部署网络和实际检索效果仍待验证。具体依据见 official-research.md。

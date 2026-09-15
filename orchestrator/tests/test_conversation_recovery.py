@@ -103,8 +103,8 @@ async def test_cancel_before_publish_does_not_publish_candidate_facts_but_retain
             device_relation="other",
             product_hints=["机器人"],
             facts=[{"value": "冒烟", "quote": "冒烟"}],
-            risk_assertion="reported",
-            risk_quote="冒烟",
+            device_safety_assertion="reported",
+            device_safety_quote="冒烟",
         ), {"source": "test"}
 
     monkeypatch.setattr("app.conversation.interpret.interpret_turn", interpret)

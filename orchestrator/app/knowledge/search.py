@@ -53,6 +53,7 @@ def rrf_merge(per_query: list[tuple[str, ToolResult]], *, k: int, top_k: int) ->
         h.source_queries = tuple(sources[eid])
         hits.append(h)
     hits.sort(key=lambda h: (h.counter_evidence, -h.score))
+    fused_total = len(hits)
     hits = hits[:top_k]
     statuses = [r.status for _, r in per_query]
     if any(s in ("ok", "replay") for s in statuses):
@@ -66,7 +67,8 @@ def rrf_merge(per_query: list[tuple[str, ToolResult]], *, k: int, top_k: int) ->
         status,
         hits if status == "ok" else [],
         hint=base.hint if status != "ok" else None,
-        truncated=any(r.truncated for _, r in per_query),
+        truncated=any(r.truncated for _, r in per_query) or fused_total > len(hits),
+        total_hits=fused_total,
         kb=base.kb,
         query=per_query[0][0],
         allowed_count=max(r.allowed_count for _, r in per_query),

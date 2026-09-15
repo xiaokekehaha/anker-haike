@@ -42,6 +42,7 @@ class KnowledgeScope:
     product_state: ProductState
     category: str
     sku: str | None = None
+    region: str | None = None
 
 
 @dataclass(frozen=True)
@@ -119,6 +120,7 @@ class ToolResult:
     hits: list[Hit] = field(default_factory=list)
     hint: str | None = None
     truncated: bool = False
+    total_hits: int = 0  # 截断前的命中总数；for_model 用它给模型回执
     kb: str | None = None
     query: str | None = None
     allowed_count: int = 0
@@ -141,7 +143,9 @@ class ToolResult:
                 for h in self.hits
             ]
         if self.truncated:
-            out["truncated"] = True
+            # 光一个 bool 无法支撑 rewrite 决策：「一共就 3 条」与「18 条里给了 3 条」
+            # 对应的下一步查询正好相反（前者扩召回，后者收窄）。
+            out["truncated"] = {"kept": len(self.hits), "total": self.total_hits or len(self.hits)}
         return out
 
 
@@ -375,6 +379,7 @@ class WeKnoraKnowledgeAdapter:
                 allowed_count=len(allowed),
                 latency_ms=ms,
             )
+        total = len(hits)
         hits, truncated = self._truncate(hits)
         return ToolResult(
             "ok",
@@ -382,6 +387,7 @@ class WeKnoraKnowledgeAdapter:
             kb=kb,
             query=query,
             truncated=truncated,
+            total_hits=total,
             allowed_count=len(allowed),
             latency_ms=ms,
         )
@@ -398,6 +404,8 @@ class WeKnoraKnowledgeAdapter:
             used += len(h.snippet)
             kept.append(h)
         return kept, False
+
+
 
     def _unavailable(
         self, kb: str, query: str, allowed: int, start: float, detail: str

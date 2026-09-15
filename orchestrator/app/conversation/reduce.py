@@ -10,6 +10,11 @@ from app.intake.extract import strategy_for
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
+    "business_context": None,
+    "case_status": None,
+    "case_order_no": None,
+    "execution_key": None,
+    "human_involved": False,
     "stage": "intake",
     "substage": None,
     "pending_card": None,
@@ -23,6 +28,8 @@ ISSUE_FIELDS = {
     "observations": [],
     "product_hints": [],
     "symptoms": [],
+    "symptom_codes": [],
+    "symptom_interview": None,
     "evidence": {},
     "current_evidence_ids": [],
     "image_observations": [],
@@ -42,6 +49,15 @@ ISSUE_FIELDS = {
     "receipt": None,
     "vision_status": None,
     "visible_parts": [],
+    "service_context": {}, "context_sources": {}, "policy_decision": None,
+    "proposal": None, "case_id": None, "execution": None, "gate_result": None,
+    "prior_remedies": [], "requested_remedy": None, "consult_intent": None,
+    "last_consult_params": {},
+    "consult_params": {}, "consult_attempts": 0, "consult_answered": False,
+    "emotion_trend": "stable", "emotion_actions": [], "unresolved_turns": 0,
+    "human_request_info": False, "human_decision_id": None,
+    "task_queue": [], "emotion_track": [], "fault_localization": None,
+    "image_quality": None, "retake_skipped": False, "retake_attempts": 0,
 }
 
 
@@ -49,7 +65,7 @@ def stable_id(*parts) -> str:
     return uuid.uuid5(uuid.NAMESPACE_URL, ":".join(map(str, parts))).hex
 
 
-def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False) -> dict:
+def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
     issues = copy.deepcopy(state.get("issues") or {})
     iid, at = state["input_id"], state["at"]
     current = state.get("active_issue_id")
@@ -75,8 +91,30 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         and bool(meaning.product_hints or meaning.device_category)
         and not (target in issues and target != current)
     )
-    if meaning.primary_intent in {"history_query", "handoff_status", "explain", "resume_issue"}:
+    if meaning.primary_intent in {"history_query", "handoff_status", "explain", "resume_issue"} or (meaning.answer_request and meaning.primary_intent in {"order_query", "warranty_query", "logistics_query"}):
         new_device = False
+    def case_order(issue):
+        # Old checkpoints predate the explicit binding, but retain the case receipt.
+        return issue.get("case_order_no") or (
+            ((issue.get("receipt") or {}).get("fields") or {}).get("order_no")
+            if issue.get("case_id") else None
+        )
+
+    business_switched = False
+    business_ambiguous = False
+    if new_business_subject and target in issues and case_order(issues[target]):
+        target = None
+        new_device = False
+        business_switched = True
+    if business_order_no and target in issues and case_order(issues[target]) not in {None, business_order_no}:
+        matches = [key for key, value in issues.items() if case_order(value) == business_order_no]
+        if len(matches) > 1:
+            business_ambiguous = True
+            clarify = "该订单有多个服务问题，请选择要继续处理的那一个。"
+        else:
+            target = matches[0] if matches else None
+            new_device = False
+            business_switched = True
     open_new = target is None or new_device or meaning.primary_intent == "new_issue"
     if meaning.primary_intent == "new_issue" and not new_device:
         clarify = clarify or "好的，请描述新问题，以及是否仍是同一台设备。之前的问题记录会保留。"
@@ -170,14 +208,20 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             )
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
+    normalization_disagreements = []
+    from app.conversation.taxonomy import canonical_codes, interview_answer, interview_codes
     for index, candidate in enumerate(meaning.facts):
         if not candidate.quote.strip() or candidate.quote not in text:
             continue
         if any(f["value"] == candidate.value and f["status"] == "active" for f in facts):
             continue
+        codes, disagreement = canonical_codes(candidate.quote, candidate.symptom_code, issue.get("category") or meaning.device_category) if candidate.kind == "symptom" else ([], None)
+        if disagreement:
+            normalization_disagreements.append({**disagreement, "quote": candidate.quote})
         fact = {
             "fact_id": stable_id(iid, "add", index),
             "kind": candidate.kind,
+            "context_field": candidate.context_field,
             "value": candidate.value,
             "issue_id": target,
             "device_ref_id": issue["device_ref"]["device_ref_id"],
@@ -190,6 +234,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "time_expression": candidate.time_expression,
             "precision": candidate.precision,
             "quote": candidate.quote,
+            "symptom_codes": codes,
+            "symptom_code": codes[0] if len(codes) == 1 else None,
         }
         facts.append(fact)
         applied.append({"op": "add", "fact_id": fact["fact_id"], "input_id": iid})
@@ -217,6 +263,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             plan_cursor=None,
             query=None,
             knowledge_status=None,
+            symptom_interview=None,
+            symptom_codes=[],
         )
     elif hints:
         issue["product_hints"] = list(dict.fromkeys([*issue.get("product_hints", []), *hints]))
@@ -244,15 +292,23 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     issue["observations"] = [
         f["value"] for f in facts if f["status"] == "active" and f["kind"] == "observation"
     ]
+    issue["symptom_interview"], symptom_answered = interview_answer(issue.get("symptom_interview"), meaning.symptom_answer, text, iid)
+    codes = list(dict.fromkeys(code for f in facts if f["status"] == "active" and f["kind"] == "symptom" for code in f.get("symptom_codes", [])))
+    if codes:
+        if issue.get("symptom_interview"):
+            issue["symptom_interview"] = {**issue["symptom_interview"], "status": "superseded", "question": None}
+    else:
+        codes = interview_codes(issue.get("symptom_interview"))
+    issue["symptom_codes"] = codes
     if issue["symptoms"]:
         issue["status"] = "open"
         issue["title"] = "、".join(issue["symptoms"])
     risks = copy.deepcopy(state.get("risk_cases") or [])
     new_risk = (
-        meaning.risk_assertion == "reported" and meaning.risk_quote and meaning.risk_quote in text
+        meaning.device_safety_assertion == "reported" and meaning.device_safety_quote and meaning.device_safety_quote in text
     )
-    validated_negation = meaning.risk_assertion == "negated" and bool(
-        meaning.risk_quote and meaning.risk_quote in text
+    validated_negation = meaning.device_safety_assertion == "negated" and bool(
+        meaning.device_safety_quote and meaning.device_safety_quote in text
     )
     uncertain_risk = precheck_risk and not new_risk and not validated_negation
     if new_risk or uncertain_risk:
@@ -311,6 +367,13 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         issue["pending_card"] = None
         resumed_pending = False
     intent = meaning.primary_intent
+    if intent == "request_human" and state.get("entry") != "action" and not (
+        meaning.human_request_quote and meaning.human_request_quote.strip() and meaning.human_request_quote in text
+    ):
+        # A classifier's recommendation is not a user request to cancel a task.
+        intent = "complaint" if meaning.emotion_level in {"dissatisfied", "angry", "complaint_risk"} else "unknown"
+        if intent == "unknown":
+            clarify = clarify or "请说明是需要接入人工客服，还是继续处理当前问题。"
     mode = (
         "clarify"
         if clarify
@@ -322,6 +385,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "handoff_status",
             "preference",
             "social",
+            "complaint",
             "unknown",
             "new_issue",
             "resume_issue",
@@ -356,6 +420,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     decision = {
         "input_id": iid,
         "primary_intent": intent,
+        "answer_scope": meaning.business_reference.relation if meaning.business_reference and meaning.business_reference.relation in {"case", "issue"} and meaning.business_reference.quote.strip() and meaning.business_reference.quote in text else "focus",
+        "answer_request": meaning.answer_request.model_dump() if meaning.answer_request and meaning.answer_request.quote.strip() and meaning.answer_request.quote in text else None,
         "secondary_intents": meaning.secondary_intents,
         "target_issue_id": target,
         "reply_mode": mode,
@@ -367,6 +433,10 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "switched": target != current,
         "pending_changes": pending_changes,
         "resumed_pending": resumed_pending,
+        "business_switched": business_switched,
+        "business_ambiguous": business_ambiguous,
+        "symptom_answered": symptom_answered,
+        "normalization_disagreements": normalization_disagreements,
     }
     result = {key: copy.deepcopy(issue.get(key, default)) for key, default in ISSUE_FIELDS.items()}
     preferences = dict(state.get("session_preferences") or {})
@@ -389,7 +459,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         escalate_reason=trigger,
         _decision=None,
         _verify=None,
-        emotion={"level": meaning.emotion_level, "strategy": strategy_for(meaning.emotion_level)},
+        emotion={"level": "dissatisfied" if meaning.emotion_level == "anxious" else meaning.emotion_level, "strategy": strategy_for(meaning.emotion_level)},
     )
     return result
 

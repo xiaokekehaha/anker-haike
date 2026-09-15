@@ -200,3 +200,9 @@ dialog.sheet textarea {
   border-radius: 9px; border: 1px solid var(--border); background: var(--page); color: var(--text); padding: 8px;
 }
 .sheet-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
+.l3-case-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(240px, .8fr); gap: 20px; }
+.l3-case-grid section { min-width: 0; overflow-wrap: anywhere; }
+.l3-case-grid fieldset { display: grid; gap: 12px; border: 1px solid var(--border); }
+.l3-case-grid label { display: grid; gap: 5px; }
+@media(max-width:1100px) { .l3-case-grid { grid-template-columns: 1fr; } }

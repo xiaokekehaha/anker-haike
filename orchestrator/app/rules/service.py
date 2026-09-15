@@ -211,15 +211,19 @@ class RulesService:
     def check_pre_step(
         self, *, instruction: str, title: str = "", caution: str | None, session_id: str | None = None
     ) -> PreStepResult:
-        """待下发步骤复查：文字含 R4 安全词 → escalate；含高危动作且来源无 caution → drop。"""
+        """步骤命中安全词或无 caution 的高危动作时丢弃；步骤文字不是用户风险事实。"""
         if self._hot:
             self.reload_if_changed()
-        blob = f"{title} {instruction}"
-        cp = self.check_in(text=blob, session_id=session_id)
-        r4 = [h for h in cp.hits if h.rule_id == "R4"]
-        if r4:
-            return PreStepResult("escalate", "R4", r4[0].term)
-        norm = _norm(blob)
+        norm = _norm(f"{title} {instruction}")
+        for rid, term, nterm in self._text_index:
+            if rid == "R4" and nterm and nterm in norm:
+                log.info(
+                    "rule_hit checkpoint=cp_pre_step rule_id=R4 source=step term=%s action=drop session=%s",
+                    term,
+                    session_id,
+                    extra={"event": "rule_hit", "checkpoint": "cp_pre_step", "rule_id": "R4", "source": "step", "term": term, "action": "drop", "session_id": session_id},
+                )
+                return PreStepResult("drop", "R4", term)
         risky = [w for w in self.pre_step.high_risk_actions if _norm(w) in norm]
         if risky and not (caution or "").strip():
             log.info(

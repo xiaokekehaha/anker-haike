@@ -19,12 +19,8 @@ async def test_refresh_preserves_order_sources_and_answer_time(conversation):
     )
     assert all(item["at"] for item in snapshot["timeline"])
     assert snapshot["timeline"][0]["id"] == "report"
-    assert (
-        next(item for item in snapshot["timeline"] if item["kind"] == "assistant_message")[
-            "reply_to_input_id"
-        ]
-        == "report"
-    )
+    # 票 19：命中计划的排障轮不再自由回复，本轮答复就是这张校验后的步骤卡
+    assert [item["kind"] for item in snapshot["timeline"]][-1] == "step_card"
     original = {
         item["card_id"]: item for item in snapshot["timeline"] if item["kind"].endswith("card")
     }
@@ -40,7 +36,8 @@ async def test_refresh_preserves_order_sources_and_answer_time(conversation):
     assert sse.parse(replay.text) == first
     last_intake = c.models["intake"].calls[-1]
     messages = "\n".join(str(m.content) for m in last_intake["messages"])
-    assert REPORT_TEXT in messages and "请看下面的排查步骤" in messages
+    # 上一轮以事实原话 + 步骤卡进入下一轮上下文（整句不再重复投影，见 10 号文档的预算收敛）
+    assert "滚刷缠了头发" in messages and "检查并清理滚刷" in messages
     assert after["timeline"][0]["at"] in messages
 
 

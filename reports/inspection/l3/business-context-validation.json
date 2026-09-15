@@ -1,0 +1,305 @@
+{
+  "scope": "business_context_refactor",
+  "source": "synthetic_smoke",
+  "runtime": "http://127.0.0.1:8002",
+  "targeted_tests": {
+    "passed": 89,
+    "failed": 0,
+    "log": "/tmp/haike-business-refactor-final-tests.log"
+  },
+  "live": {
+    "session_id": "e8a25ba4e87c4923901ee2af6ecb26b8",
+    "turns": [
+      {
+        "text": "查物流 DEMO-X10-001",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "我想退货怎么办",
+        "http": 200,
+        "reply": "为核对适用政策，请补充购买地、使用地和购买渠道中尚未确认的信息。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "就上面的那个订单",
+        "http": 200,
+        "reply": "为核对适用政策，请补充购买地、使用地和购买渠道中尚未确认的信息。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "我的物流是什么",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "物流id呢",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "好的，如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "隔了这么久，查一下同一个订单的物流单号",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "restart": {
+    "session_id": "e8a25ba4e87c4923901ee2af6ecb26b8",
+    "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+    "http": 200
+  },
+  "last_live_context": {
+    "omitted_entries": 28,
+    "tokens": 5434,
+    "model": "dashscope/qwen3.7-flash"
+  },
+  "browser_verified": true,
+  "full_backend_suite": {
+    "passed": 719,
+    "failed": 0,
+    "log": "/tmp/haike-l3-regression-final.log"
+  },
+  "cross_order_and_replay_tests": {
+    "passed": 36,
+    "failed": 0,
+    "log": "/tmp/haike-business-replay-final.log"
+  },
+  "live_current": {
+    "session_id": "8f2ea147357f40e6af0a9b693714c67d",
+    "turns": [
+      {
+        "text": "查物流 DEMO-X10-001",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "我想退货怎么办",
+        "http": 200,
+        "reply": "为核对适用政策，请补充使用地。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "就上面的那个订单",
+        "http": 200,
+        "reply": "为核对适用政策，请补充使用地。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "我的物流是什么",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "物流id呢",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "谢谢，我再考虑一下",
+        "http": 200,
+        "reply": "不客气。如果您后续决定办理退货或有其他问题，欢迎随时联系。",
+        "tools": [],
+        "errors": []
+      },
+      {
+        "text": "隔了这么久，查一下同一个订单的物流单号",
+        "http": 200,
+        "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+        "tools": [
+          "logistics.query"
+        ],
+        "errors": []
+      }
+    ],
+    "prompt_version": "2026-09-14.3"
+  },
+  "model_evaluation_current": {
+    "intent": {
+      "passed": 40,
+      "total": 40,
+      "report": "reports/eval/intent-model.json"
+    },
+    "emotion": {
+      "passed": 38,
+      "total": 40,
+      "report": "reports/eval/emotion-model.json"
+    },
+    "routing": {
+      "passed": 20,
+      "total": 20,
+      "report": "reports/eval/routing-model.json"
+    }
+  },
+  "restart_current": {
+    "session_id": "e8a25ba4e87c4923901ee2af6ecb26b8",
+    "http": 200,
+    "reply": "订单号：DEMO-X10-001，物流单号：DEMO-TRACK-001。当前物流状态：shipped，更新时间：2026-09-14T00:00:00+00:00。来源：物流系统（模拟）。",
+    "prompt_version": "2026-09-14.3"
+  }
+}

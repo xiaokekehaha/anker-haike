@@ -1,7 +1,7 @@
 """One validated configuration for conversational context and derived memory."""
 
-from functools import lru_cache
 import os
+from functools import lru_cache
 from pathlib import Path
 
 import yaml

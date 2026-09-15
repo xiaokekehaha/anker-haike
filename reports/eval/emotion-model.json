@@ -1,0 +1,926 @@
+{
+  "kind": "emotion",
+  "mode": "model",
+  "source": "synthetic_independent_text_gold",
+  "dataset_sha256": "f1e3dde543d3ace1ee66021c5b53bb6677a8a7437308a2d8fae8e138d339572c",
+  "versions": {
+    "policy_version": "2026-09-14.1",
+    "actions_version": "2026-09-14.1",
+    "prompt_ver": "system=2026-09-14.1;interpret=2026-09-14.3;reply=2026-09-12.1;guide=2026-09-12.1;clarify=2026-09-13.1;vision=2026-09-14.1;ocr=2026-09-12.1;summary=2026-09-12.1",
+    "models_ver": "2026-09-13.5",
+    "kb_ver": "2026-09-12.1+text-embedding-v4",
+    "rules_ver": "2026-09-12.1"
+  },
+  "lane": "domestic",
+  "at": "2026-09-14T11:37:36.606429+00:00",
+  "planned": 40,
+  "cases": [
+    {
+      "id": "calm-1",
+      "family": "calm",
+      "text": "请帮我查询保修期限。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "warranty_query",
+        "intents": [
+          "warranty_query"
+        ],
+        "order": [
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3386
+    },
+    {
+      "id": "calm-2",
+      "family": "calm",
+      "text": "好的，我按步骤试一下。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1898
+    },
+    {
+      "id": "calm-3",
+      "family": "calm",
+      "text": "谢谢，已经恢复正常了。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "confirm_received",
+        "intents": [
+          "confirm_received"
+        ],
+        "order": [
+          "confirm_received"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1959
+    },
+    {
+      "id": "calm-4",
+      "family": "calm",
+      "text": "没有生气，只是想了解处理进度。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "logistics_query",
+        "intents": [
+          "logistics_query"
+        ],
+        "order": [
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1838
+    },
+    {
+      "id": "calm-5",
+      "family": "calm",
+      "text": "我不会投诉，先帮我查查就好。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "logistics_query",
+        "intents": [
+          "logistics_query"
+        ],
+        "order": [
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2229
+    },
+    {
+      "id": "calm-6",
+      "family": "calm",
+      "text": "🙂 好的，明白了。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "intents": [
+          "social"
+        ],
+        "order": [
+          "social"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1942
+    },
+    {
+      "id": "calm-7",
+      "family": "calm",
+      "text": "没关系，可以再确认一下。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "confirm_received",
+        "intents": [
+          "confirm_received"
+        ],
+        "order": [
+          "confirm_received"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2510
+    },
+    {
+      "id": "calm-8",
+      "family": "calm",
+      "text": "现在方便帮我看看吗？",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "order": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [
+        "emotion_level"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1928
+    },
+    {
+      "id": "calm-9",
+      "family": "calm",
+      "text": "问题解决了，感谢你的耐心。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 4544
+    },
+    {
+      "id": "calm-10",
+      "family": "calm",
+      "text": "收到，我等你们的回复。",
+      "expected": {
+        "emotion_level": "calm"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [
+        "emotion_level"
+      ],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3005
+    },
+    {
+      "id": "dissatisfied-1",
+      "family": "dissatisfied",
+      "text": "体验有点失望，买来没多久就出问题。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2824
+    },
+    {
+      "id": "dissatisfied-2",
+      "family": "dissatisfied",
+      "text": "已经等了一天了，处理有点慢。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1972
+    },
+    {
+      "id": "dissatisfied-3",
+      "family": "dissatisfied",
+      "text": "又要重复提供订单号，挺麻烦的。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "intents": [
+          "social"
+        ],
+        "order": [
+          "social"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1375
+    },
+    {
+      "id": "dissatisfied-4",
+      "family": "dissatisfied",
+      "text": "我不太满意这个处理方案。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2279
+    },
+    {
+      "id": "dissatisfied-5",
+      "family": "dissatisfied",
+      "text": "🙄 怎么又让我重启啊。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2156
+    },
+    {
+      "id": "dissatisfied-6",
+      "family": "dissatisfied",
+      "text": "真是贴心，又让我把同样的信息填一遍。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "social",
+        "intents": [
+          "social"
+        ],
+        "order": [
+          "social"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1680
+    },
+    {
+      "id": "dissatisfied-7",
+      "family": "dissatisfied",
+      "text": "唉，这个流程实在不方便。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2246
+    },
+    {
+      "id": "dissatisfied-8",
+      "family": "dissatisfied",
+      "text": "我已经试过一次了，还是不行，有些失望。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2156
+    },
+    {
+      "id": "dissatisfied-9",
+      "family": "dissatisfied",
+      "text": "这个答复没有解决我的疑问。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1952
+    },
+    {
+      "id": "dissatisfied-10",
+      "family": "dissatisfied",
+      "text": "我希望你们认真处理，不要一直让我等。",
+      "expected": {
+        "emotion_level": "dissatisfied"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "dissatisfied",
+        "model_emotion_level": "dissatisfied"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2091
+    },
+    {
+      "id": "angry-1",
+      "family": "angry",
+      "text": "太气人了！你们到底会不会处理！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2459
+    },
+    {
+      "id": "angry-2",
+      "family": "angry",
+      "text": "我已经受够了，别再敷衍我！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3347
+    },
+    {
+      "id": "angry-3",
+      "family": "angry",
+      "text": "😡😡😡 一次次让我重复操作，烦死了！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2221
+    },
+    {
+      "id": "angry-4",
+      "family": "angry",
+      "text": "你们这服务太烂了，浪费我一整天！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2293
+    },
+    {
+      "id": "angry-5",
+      "family": "angry",
+      "text": "够了！不要再让我重启第四遍！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2272
+    },
+    {
+      "id": "angry-6",
+      "family": "angry",
+      "text": "气死我了，刚修完又坏！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2675
+    },
+    {
+      "id": "angry-7",
+      "family": "angry",
+      "text": "我真的火大了，这么简单的问题拖一周！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2274
+    },
+    {
+      "id": "angry-8",
+      "family": "angry",
+      "text": "真行啊，把我当傻子耍了三天是吧！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "order": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3335
+    },
+    {
+      "id": "angry-9",
+      "family": "angry",
+      "text": "我现在非常愤怒，马上给我一个解决办法！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2516
+    },
+    {
+      "id": "angry-10",
+      "family": "angry",
+      "text": "别再给我复制粘贴了！你们太不负责了！",
+      "expected": {
+        "emotion_level": "angry"
+      },
+      "actual": {
+        "primary_intent": "step_feedback",
+        "intents": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "order": [
+          "step_feedback",
+          "report_problem"
+        ],
+        "emotion_level": "angry",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2692
+    },
+    {
+      "id": "complaint_risk-1",
+      "family": "complaint_risk",
+      "text": "我要向消费者协会投诉你们。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1934
+    },
+    {
+      "id": "complaint_risk-2",
+      "family": "complaint_risk",
+      "text": "再这样拖延，我就去平台投诉。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "request_human"
+        ],
+        "order": [
+          "request_human",
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2581
+    },
+    {
+      "id": "complaint_risk-3",
+      "family": "complaint_risk",
+      "text": "我要打12315投诉。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "request_human"
+        ],
+        "order": [
+          "request_human",
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1528
+    },
+    {
+      "id": "complaint_risk-4",
+      "family": "complaint_risk",
+      "text": "我会把这件事曝光到媒体。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2075
+    },
+    {
+      "id": "complaint_risk-5",
+      "family": "complaint_risk",
+      "text": "我要找监管部门投诉这个售后。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "request_human",
+        "intents": [
+          "request_human"
+        ],
+        "order": [
+          "request_human"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2228
+    },
+    {
+      "id": "complaint_risk-6",
+      "family": "complaint_risk",
+      "text": "你们不处理我就向消协反映。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3853
+    },
+    {
+      "id": "complaint_risk-7",
+      "family": "complaint_risk",
+      "text": "我要公开曝光你们的售后问题。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem"
+        ],
+        "order": [
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2371
+    },
+    {
+      "id": "complaint_risk-8",
+      "family": "complaint_risk",
+      "text": "准备向平台发起投诉了。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "order": [
+          "report_problem",
+          "step_feedback"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "complaint_risk"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3365
+    },
+    {
+      "id": "complaint_risk-9",
+      "family": "complaint_risk",
+      "text": "我要向有关部门投诉，保留全部证据。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "request_human"
+        ],
+        "order": [
+          "request_human",
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2769
+    },
+    {
+      "id": "complaint_risk-10",
+      "family": "complaint_risk",
+      "text": "我已经在写投诉材料了，请记录我的投诉诉求。",
+      "expected": {
+        "emotion_level": "complaint_risk"
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "request_human"
+        ],
+        "order": [
+          "request_human",
+          "report_problem"
+        ],
+        "emotion_level": "complaint_risk",
+        "model_emotion_level": "angry"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3557
+    }
+  ],
+  "total": 40,
+  "passed": 38,
+  "complete": true,
+  "field_accuracy": {
+    "emotion_level": 0.95
+  },
+  "accuracy": 0.95
+}

@@ -185,7 +185,7 @@ cases:
   family: risk_reported
   text: 这台机器人冒烟了
   expected: &id009
-    risk_assertion: reported
+    device_safety_assertion: reported
 - id: risk_reported-2
   family: risk_reported
   text: 机器人现在真的在冒烟
@@ -206,7 +206,7 @@ cases:
   family: risk_negated
   text: 机器人没有冒烟
   expected: &id010
-    risk_assertion: negated
+    device_safety_assertion: negated
 - id: risk_negated-2
   family: risk_negated
   text: 确认这台机器不冒烟，只是滚刷不转

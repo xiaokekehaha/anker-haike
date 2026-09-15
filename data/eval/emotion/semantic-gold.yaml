@@ -1,0 +1,266 @@
+source: 独立人工情绪金标，含反讽、emoji、否定与多轮原话；不向模型提供期望等级
+cases:
+- id: calm-1
+  family: calm
+  text: 请帮我查询保修期限。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-2
+  family: calm
+  text: 好的，我按步骤试一下。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-3
+  family: calm
+  text: 谢谢，已经恢复正常了。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-4
+  family: calm
+  text: 没有生气，只是想了解处理进度。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-5
+  family: calm
+  text: 我不会投诉，先帮我查查就好。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-6
+  family: calm
+  text: 🙂 好的，明白了。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-7
+  family: calm
+  text: 没关系，可以再确认一下。
+  history: []
+  expected:
+    emotion_level: calm
+- id: calm-8
+  family: calm
+  text: 现在方便帮我看看吗？
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: calm
+- id: calm-9
+  family: calm
+  text: 问题解决了，感谢你的耐心。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: calm
+- id: calm-10
+  family: calm
+  text: 收到，我等你们的回复。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: calm
+- id: dissatisfied-1
+  family: dissatisfied
+  text: 体验有点失望，买来没多久就出问题。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-2
+  family: dissatisfied
+  text: 已经等了一天了，处理有点慢。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-3
+  family: dissatisfied
+  text: 又要重复提供订单号，挺麻烦的。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-4
+  family: dissatisfied
+  text: 我不太满意这个处理方案。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-5
+  family: dissatisfied
+  text: 🙄 怎么又让我重启啊。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-6
+  family: dissatisfied
+  text: 真是贴心，又让我把同样的信息填一遍。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-7
+  family: dissatisfied
+  text: 唉，这个流程实在不方便。
+  history: []
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-8
+  family: dissatisfied
+  text: 我已经试过一次了，还是不行，有些失望。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-9
+  family: dissatisfied
+  text: 这个答复没有解决我的疑问。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: dissatisfied
+- id: dissatisfied-10
+  family: dissatisfied
+  text: 我希望你们认真处理，不要一直让我等。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: dissatisfied
+- id: angry-1
+  family: angry
+  text: 太气人了！你们到底会不会处理！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-2
+  family: angry
+  text: 我已经受够了，别再敷衍我！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-3
+  family: angry
+  text: 😡😡😡 一次次让我重复操作，烦死了！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-4
+  family: angry
+  text: 你们这服务太烂了，浪费我一整天！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-5
+  family: angry
+  text: 够了！不要再让我重启第四遍！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-6
+  family: angry
+  text: 气死我了，刚修完又坏！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-7
+  family: angry
+  text: 我真的火大了，这么简单的问题拖一周！
+  history: []
+  expected:
+    emotion_level: angry
+- id: angry-8
+  family: angry
+  text: 真行啊，把我当傻子耍了三天是吧！
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: angry
+- id: angry-9
+  family: angry
+  text: 我现在非常愤怒，马上给我一个解决办法！
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: angry
+- id: angry-10
+  family: angry
+  text: 别再给我复制粘贴了！你们太不负责了！
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: angry
+- id: complaint_risk-1
+  family: complaint_risk
+  text: 我要向消费者协会投诉你们。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-2
+  family: complaint_risk
+  text: 再这样拖延，我就去平台投诉。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-3
+  family: complaint_risk
+  text: 我要打12315投诉。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-4
+  family: complaint_risk
+  text: 我会把这件事曝光到媒体。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-5
+  family: complaint_risk
+  text: 我要找监管部门投诉这个售后。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-6
+  family: complaint_risk
+  text: 你们不处理我就向消协反映。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-7
+  family: complaint_risk
+  text: 我要公开曝光你们的售后问题。
+  history: []
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-8
+  family: complaint_risk
+  text: 准备向平台发起投诉了。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-9
+  family: complaint_risk
+  text: 我要向有关部门投诉，保留全部证据。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: complaint_risk
+- id: complaint_risk-10
+  family: complaint_risk
+  text: 我已经在写投诉材料了，请记录我的投诉诉求。
+  history:
+  - 机器还是不好用。
+  - 按照你说的试过了，仍然没有改善。
+  expected:
+    emotion_level: complaint_risk

@@ -28,7 +28,7 @@ REASON_TEXT = {
     "R2": "预写排障计划已耗尽",
     "R3": "用户明确要求人工服务",
     "R4": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级",
-    "R5": "当前产品没有可用的排障知识",
+    "R5": "当前产品的这一问题没有可用的排障计划",
     "R6": "用户提出退换 / 保修诉求",
     "R7": "产品品类无法确认",
     "R8": "产品不在本期支持范围内",
@@ -97,6 +97,13 @@ def build_summary(
         )
     )
     return EscalationSummary(
+        case_id=state.get("case_id"),
+        policy_decision_brief={k: (state.get("policy_decision") or {}).get(k) for k in ("policy_id", "policy_version", "within_warranty", "needs_human_reasons")} if state.get("policy_decision") else None,
+        recommended_options=(state.get("proposal") or {}).get("options", []),
+        gate_result=state.get("gate_result"),
+        task_queue=state.get("task_queue") or [],
+        emotion_track=state.get("emotion_track") or [],
+        draft_reply="已整理订单与政策依据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
         problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "（用户尚未描述问题）",
         observations=list(state.get("observations") or []),

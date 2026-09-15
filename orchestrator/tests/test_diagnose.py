@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import model_task_text
-
-from tests.message_form import message_form
-
 import json
 from datetime import UTC, datetime, timedelta
 
@@ -25,7 +21,6 @@ from app.knowledge.adapter import HINTS, Hit, ToolResult
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.config import load_models_config
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -33,6 +28,8 @@ from app.plans import PlanLibrary
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form, model_task_text
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_reply_stream import CONFIG as REPLY_CONFIG
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -402,7 +399,8 @@ async def test_a1_plans_ranked_first_is_hair_wrap_and_bad_plan_dropped(mem_runti
     )
     assert "internal" in call["tags"] and call["metadata"]["task"] == "diagnose.synthesize"
     # query 只在 trace，不在任何事件里
-    assert values["query"] == "eufy X9 Pro 不吸了 滚刷缠头发"
+    # 票 19：症状码贯通检索，query 以故障族开头
+    assert values["query"] == "eufy X9 Pro 吸力下降 不吸了 滚刷缠头发"
     assert values["query"] not in json.dumps(events, ensure_ascii=False)
     r1 = [
         t
@@ -443,7 +441,9 @@ async def test_no_evidence_uses_standard_flow_plans_without_model_call(mem_runti
     adapter = ScriptedAdapter({"kb_manual": [NO_MATCH()], "kb_tickets": [NO_MATCH()]})
     _events, values = await run_text(router, adapter, "eufy X9 Pro 不吸了")
     pr = values["plans_ranked"]
-    assert [p["plan_id"] for p in pr] == [x.plan_id for x in LIB.plans] and all(
+    # 票 19：降级计划也按产品与症状过滤，不再下发与当前症状无关的计划
+    expected = LIB.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO", symptom_codes=["suction_low"])
+    assert expected and [p["plan_id"] for p in pr] == [x.plan_id for x in expected] and all(
         p["source"] == "standard_flow" and p["confidence"] == 0.3 for p in pr
     )
     assert values["knowledge_status"] == "no_match"

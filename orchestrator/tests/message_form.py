@@ -3,8 +3,8 @@
 Transport/idempotency tests exercise the raw endpoints separately. This helper does
 not infer semantics, retry requests, or change supplied version/ID/target values.
 """
-import uuid
 import json
+import uuid
 
 
 def model_task_text(call):
@@ -34,8 +34,9 @@ async def escalate_on_feedback(client, sid, reason='R1'):
     """Fixture a verify result at its boundary, then exercise the real input/commit path."""
     from dataclasses import replace
     from unittest.mock import patch
-    from app.sessions.graph import apply_feedback
+
     from app.sessions import sse
+    from app.sessions.graph import apply_feedback
     snapshot = (await client.get(f'/sessions/{sid}')).json()
     pending = snapshot['pending_input']
     assert pending and pending['kind'] == 'step_feedback', snapshot

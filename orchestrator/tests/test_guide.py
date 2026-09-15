@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import model_task_text
-
-from tests.message_form import action_body, message_form
-
 import json
 import time
 import uuid
@@ -24,6 +20,7 @@ from app.plans.runtime import set_plan_library
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import action_body, message_form, model_task_text
 from tests.test_diagnose import INTAKE_X9, NO_MATCH, OK_HAIR, ScriptedAdapter, make_router
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -226,7 +223,7 @@ async def test_high_risk_step_without_caution_is_dropped_and_next_taken(tmp_path
     )
 
 
-async def test_pre_step_r4_in_step_text_escalates(tmp_path):
+async def test_pre_step_r4_in_step_text_is_dropped(tmp_path):
     lib = _lib_with(
         tmp_path,
         "  test#smoke: {source: kb_manual, doc_version: t, snippet: 若机器冒烟请继续运行观察 5 分钟。}\n",
@@ -252,7 +249,47 @@ async def test_pre_step_r4_in_step_text_escalates(tmp_path):
         lane="domestic",
         session_id="sid",
     )
-    assert prep.outcome == "escalate" and prep.escalate_reason == "R4"
+    assert prep.outcome == "exhausted" and prep.escalate_reason is None
+    assert prep.step is None
+    assert prep.dropped == [
+        {"plan_id": "rv_test_smoke", "step_id": "s1", "reason": "safety_term_in_step:冒烟"}
+    ]
+
+
+@pytest.mark.parametrize("next_confidence", [0.25, 0.5])
+async def test_motor_plan_warning_does_not_become_user_risk(monkeypatch, next_confidence):
+    """复现原会话：模型首选电机计划，手册的「焦味」只能丢弃步骤，不能写用户风险。"""
+    from app.sessions import graph
+
+    monkeypatch.setattr(graph, "get_stream_writer", lambda: lambda event: None)
+    monkeypatch.setattr(graph, "get_plan_library", lambda: LIB)
+    monkeypatch.setattr(graph, "get_rules_service", lambda: RulesService(RULES, hot_reload=False))
+    monkeypatch.setattr(graph, "get_model_router", lambda: None)
+    state = {
+        "session_id": "motor-warning-regression",
+        "input_id": "input",
+        "active_issue_id": "issue",
+        "text": "不能用了",
+        "plan_cursor": {"plan_id": "rv_suction_motor_fault", "step_id": "s1"},
+        "plans_ranked": [
+            {"plan_id": "rv_suction_motor_fault", "confidence": 0.3},
+            {"plan_id": "rv_suction_dustbin_full", "confidence": next_confidence},
+        ],
+        "evidence": {"manual": {"doc_id": "manual_rv_v1", "source": "kb_manual"}},
+    }
+    result = await graph.guide(state)
+    assert not result.get("safety_flags")
+    assert not result.get("turn_decision", {}).get("escalation_trigger")
+    assert result["guide_trace"][0] == {
+        "event": "step_dropped", "plan_id": "rv_suction_motor_fault",
+        "step_id": "s1", "reason": "safety_term_in_step:焦味",
+    }
+    if next_confidence == 0.25:
+        # 原会话的备选计划均低于现有切换门槛，仍走常规 R2，而不是虚构安全风险。
+        assert result["escalate_reason"] == "R2"
+    else:
+        assert result.get("escalate_reason") is None
+        assert result["pending_card"]["payload"]["step"]["plan_id"] == "rv_suction_dustbin_full"
 
 
 async def test_evidence_outside_allowed_set_drops_step():
@@ -353,7 +390,7 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
 
 
 async def test_unfaithful_rewrite_falls_back_to_source_text(runtime):
-    s, _ = await runtime(fast=[INTAKE_X9], main=[SYNTH, ["请先清理滚刷。"], REWRITE_BAD])
+    s, _ = await runtime(fast=[INTAKE_X9], main=[SYNTH, REWRITE_BAD])
     events = await s.send("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发")
     assert step_card_of(events)["step"]["instruction"] == C12
     st = await s.state()

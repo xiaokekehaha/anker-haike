@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import io
 
 import pytest
@@ -16,6 +14,7 @@ from app.models.runtime import set_model_router
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form
 from tests.test_images import png_bytes
 from tests.test_vision import CONFIG, NO_VISION_CONFIG, _router
 

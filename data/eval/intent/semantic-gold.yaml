@@ -1,0 +1,202 @@
+source: 独立人工构造用户原话；标签不传给模型；8 族各 5 条
+cases:
+- id: logistics_query-1
+  family: logistics_query
+  text: 我的换货单发出去了吗？
+  expected:
+    primary_intent: logistics_query
+- id: logistics_query-2
+  family: logistics_query
+  text: 帮我查物流 DEMO-X10-001
+  expected:
+    primary_intent: logistics_query
+- id: logistics_query-3
+  family: logistics_query
+  text: 包裹现在到哪里了？
+  expected:
+    primary_intent: logistics_query
+- id: logistics_query-4
+  family: logistics_query
+  text: 这票快递预计哪天送到？
+  expected:
+    primary_intent: logistics_query
+- id: logistics_query-5
+  family: logistics_query
+  text: 有运单进度吗，我一直没收到包裹。
+  expected:
+    primary_intent: logistics_query
+- id: warranty_query-1
+  family: warranty_query
+  text: 帮我查一下这台机器还在保修期内吗？
+  expected:
+    primary_intent: warranty_query
+- id: warranty_query-2
+  family: warranty_query
+  text: 这个订单保修到哪天？
+  expected:
+    primary_intent: warranty_query
+- id: warranty_query-3
+  family: warranty_query
+  text: 我的质保是不是已经过期了？
+  expected:
+    primary_intent: warranty_query
+- id: warranty_query-4
+  family: warranty_query
+  text: 查一下 DEMO-X10-001 的保修期限。
+  expected:
+    primary_intent: warranty_query
+- id: warranty_query-5
+  family: warranty_query
+  text: 我想了解这台设备的在保情况。
+  expected:
+    primary_intent: warranty_query
+- id: order_query-1
+  family: order_query
+  text: 帮我查一下订单 DEMO-X10-001 的购买信息。
+  expected:
+    primary_intent: order_query
+- id: order_query-2
+  family: order_query
+  text: 这笔订单是什么时候下的？
+  expected:
+    primary_intent: order_query
+- id: order_query-3
+  family: order_query
+  text: 核对一下我的订单信息。
+  expected:
+    primary_intent: order_query
+- id: order_query-4
+  family: order_query
+  text: 我想查这笔订单购买的是哪个型号。
+  expected:
+    primary_intent: order_query
+- id: order_query-5
+  family: order_query
+  text: 帮我看看这个订单的购买渠道。
+  expected:
+    primary_intent: order_query
+- id: address_update-1
+  family: address_update
+  text: 我想修改收货地址。
+  expected:
+    primary_intent: address_update
+- id: address_update-2
+  family: address_update
+  text: 快递还没寄出，能改一下送货地址吗？
+  expected:
+    primary_intent: address_update
+- id: address_update-3
+  family: address_update
+  text: 我搬家了，把收件地址换成新的。
+  expected:
+    primary_intent: address_update
+- id: address_update-4
+  family: address_update
+  text: 售后寄回时请改寄到公司，我要更新地址。
+  expected:
+    primary_intent: address_update
+- id: address_update-5
+  family: address_update
+  text: 这笔订单填错地址了，帮我更正收货地址。
+  expected:
+    primary_intent: address_update
+- id: replacement_request-1
+  family: replacement_request
+  text: 这台不想修了，我要申请换货。
+  expected:
+    primary_intent: replacement_request
+- id: replacement_request-2
+  family: replacement_request
+  text: 请帮我换一台同型号的新机。
+  expected:
+    primary_intent: replacement_request
+- id: replacement_request-3
+  family: replacement_request
+  text: 我要办理换货申请。
+  expected:
+    primary_intent: replacement_request
+- id: replacement_request-4
+  family: replacement_request
+  text: 这次我选择换货方案，请办理。
+  expected:
+    primary_intent: replacement_request
+- id: replacement_request-5
+  family: replacement_request
+  text: 可以给我更换一台机器吗？
+  expected:
+    primary_intent: replacement_request
+- id: refund_request-1
+  family: refund_request
+  text: 我不要这台机器了，请退款。
+  expected:
+    primary_intent: refund_request
+- id: refund_request-2
+  family: refund_request
+  text: 我要退货退款。
+  expected:
+    primary_intent: refund_request
+- id: refund_request-3
+  family: refund_request
+  text: 帮我办理这笔订单的退款申请。
+  expected:
+    primary_intent: refund_request
+- id: refund_request-4
+  family: refund_request
+  text: 我不接受换货，要退钱。
+  expected:
+    primary_intent: refund_request
+- id: refund_request-5
+  family: refund_request
+  text: 请把这笔订单的钱退回原支付账户。
+  expected:
+    primary_intent: refund_request
+- id: confirm_received-1
+  family: confirm_received
+  text: 售后寄回的机器已经收到，谢谢。
+  expected:
+    primary_intent: confirm_received
+- id: confirm_received-2
+  family: confirm_received
+  text: 换来的新机我已签收。
+  expected:
+    primary_intent: confirm_received
+- id: confirm_received-3
+  family: confirm_received
+  text: 确认一下，货收到了。
+  expected:
+    primary_intent: confirm_received
+- id: confirm_received-4
+  family: confirm_received
+  text: 你们寄的包裹今天已收到。
+  expected:
+    primary_intent: confirm_received
+- id: confirm_received-5
+  family: confirm_received
+  text: 补发的货已经送到了，我来确认收货。
+  expected:
+    primary_intent: confirm_received
+- id: rate-1
+  family: rate
+  text: 我想给这次服务打个分。
+  expected:
+    primary_intent: rate
+- id: rate-2
+  family: rate
+  text: 我要评价这次售后服务。
+  expected:
+    primary_intent: rate
+- id: rate-3
+  family: rate
+  text: 在哪里提交服务满意度评分？
+  expected:
+    primary_intent: rate
+- id: rate-4
+  family: rate
+  text: 这次服务我给五星。
+  expected:
+    primary_intent: rate
+- id: rate-5
+  family: rate
+  text: 我给你们的服务打三分。
+  expected:
+    primary_intent: rate

@@ -3,6 +3,7 @@
 Real semantic evaluations and test_conversation_* use the unified schema directly.
 """
 import json
+
 from app.models.fake import FakeChatModel
 
 

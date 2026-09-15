@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 from haike_contracts.events import parse_event
 from httpx import ASGITransport, AsyncClient
 
@@ -13,6 +11,7 @@ from app.main import app
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
 

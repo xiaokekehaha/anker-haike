@@ -1,0 +1,1201 @@
+{
+  "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+  "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+  "initial_reply": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+  "initial_errors": [],
+  "snapshot": {
+    "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-09-14T13:05:26.814210+00:00",
+        "first_seq": 2,
+        "last_seq": 8,
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "kind": "user_message",
+        "id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+        "text": "我要换货 DEMO-UK-005，我在德国使用",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-09-14T13:05:30.590420+00:00",
+        "first_seq": 9,
+        "last_seq": 14,
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "kind": "case_changed",
+        "card_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "version": 1,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {
+          "order_no": "DEMO-UK-005"
+        },
+        "updated_at": "2026-09-14T13:05:30.528597+00:00"
+      },
+      {
+        "at": "2026-09-14T13:05:30.595699+00:00",
+        "first_seq": 10,
+        "last_seq": 12,
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "kind": "assistant_message",
+        "message_id": "388bd2b91468575c8c20df2112bc086f",
+        "text": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。",
+        "status": "completed",
+        "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-09-14T13:05:30.616536+00:00",
+        "first_seq": 15,
+        "last_seq": 17,
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "kind": "assistant_message",
+        "message_id": "8b910e9202125382989725c45860fb16",
+        "text": "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+        "status": "completed",
+        "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+    "issues": [
+      {
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "status": "open",
+        "title": "Germany",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 18,
+    "latest_summaries": []
+  },
+  "request_info_case": {
+    "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+    "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+    "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+    "sku": "EUFY-X10-PRO-OMNI",
+    "category": "robot_vacuum",
+    "status": "awaiting_confirmation",
+    "complaint_risk": false,
+    "priority": "normal",
+    "policy_decision": {
+      "matched": true,
+      "remedies": [
+        {
+          "remedy": "repair",
+          "clauses": [
+            {
+              "text": "品质故障保内由公司承担维修费用。",
+              "clause_id": "UK-W-3.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "replace",
+          "clauses": [
+            {
+              "text": "品质故障保内且未换货，可申请一次换货。",
+              "clause_id": "UK-W-3.2",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            },
+            {
+              "met": true,
+              "name": "not_prior",
+              "actual": [],
+              "expected": [
+                "replace"
+              ]
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "refund",
+          "clauses": [
+            {
+              "text": "购买七日内品质问题可申请人工退款审核。",
+              "clause_id": "UK-W-3.3",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": false,
+              "name": "days_since_purchase_lte",
+              "actual": 200,
+              "expected": 7
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "repair",
+          "clauses": [
+            {
+              "text": "保外品质故障可申请付费维修。",
+              "clause_id": "UK-W-4.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": false,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": false
+            }
+          ],
+          "cost_bearer": "customer",
+          "auto_allowed": false
+        }
+      ],
+      "trace_id": "963fc3a2a34786482111f6b4",
+      "policy_id": "uk_robot_vacuum_standard",
+      "fault_class": "unknown",
+      "needs_human": true,
+      "warranty_end": "2027-02-26",
+      "exclusions_hit": [
+        {
+          "effect": "needs_human",
+          "clauses": [
+            {
+              "text": "跨服务区域需要人工审核。",
+              "clause_id": "UK-W-6.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "conditions": [
+            {
+              "met": true,
+              "name": "region_use_not_in",
+              "actual": "Germany",
+              "expected": [
+                "UK"
+              ]
+            }
+          ]
+        }
+      ],
+      "missing_inputs": [],
+      "policy_version": "2026-09-14.1",
+      "within_warranty": true,
+      "needs_human_reasons": [
+        "fault_unknown",
+        "UK-W-6.1"
+      ]
+    },
+    "proposal": {
+      "status": "offered",
+      "options": [],
+      "excluded": [],
+      "user_confirmed": true,
+      "chosen_option_id": "replace"
+    },
+    "chosen_option_id": null,
+    "gate_result": null,
+    "owner": null,
+    "external_refs": {
+      "order_no": "DEMO-UK-005"
+    },
+    "opened_at": "2026-09-14T13:05:30.530262+00:00",
+    "updated_at": "2026-09-14T13:07:32.821779+00:00",
+    "closed_at": null,
+    "reopened_count": 0,
+    "revision": 4,
+    "events": [
+      {
+        "id": 25,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 1,
+        "type": "order_identified",
+        "payload": {
+          "order_no": "DEMO-UK-005"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.502335+00:00"
+      },
+      {
+        "id": 26,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 2,
+        "type": "status_changed",
+        "payload": {
+          "to": "proposing",
+          "from": "open",
+          "reason": "政策方案已计算"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.519837+00:00"
+      },
+      {
+        "id": 27,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 3,
+        "type": "status_changed",
+        "payload": {
+          "to": "awaiting_approval",
+          "from": "proposing",
+          "reason": "需要人工审核"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.528597+00:00"
+      },
+      {
+        "id": 28,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 4,
+        "type": "status_changed",
+        "payload": {
+          "to": "awaiting_confirmation",
+          "from": "awaiting_approval",
+          "reason": "请确认这笔订单的使用地区，以便核实最终方案。"
+        },
+        "actor": "agent:demo",
+        "at": "2026-09-14T13:07:32.821779+00:00"
+      }
+    ],
+    "decisions": [
+      {
+        "decision_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "actor": "agent:demo",
+        "decision": "request_info",
+        "edited_proposal": null,
+        "option_id": null,
+        "override_reason": null,
+        "note": "请确认这笔订单的使用地区，以便核实最终方案。",
+        "at": "2026-09-14T13:07:32.821736+00:00",
+        "consumed_input_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_revision": 3
+      }
+    ],
+    "commitments": [],
+    "snapshot": {
+      "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-09-14T13:05:26.814210+00:00",
+          "first_seq": 2,
+          "last_seq": 8,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "user_message",
+          "id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "text": "我要换货 DEMO-UK-005，我在德国使用",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-09-14T13:05:30.590420+00:00",
+          "first_seq": 9,
+          "last_seq": 24,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "case_changed",
+          "card_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+          "version": 2,
+          "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+          "status": "awaiting_confirmation",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "DEMO-UK-005"
+          },
+          "updated_at": "2026-09-14T13:07:32.821779+00:00"
+        },
+        {
+          "at": "2026-09-14T13:05:30.595699+00:00",
+          "first_seq": 10,
+          "last_seq": 12,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "388bd2b91468575c8c20df2112bc086f",
+          "text": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。",
+          "status": "completed",
+          "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:05:30.616536+00:00",
+          "first_seq": 15,
+          "last_seq": 17,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "8b910e9202125382989725c45860fb16",
+          "text": "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+          "status": "completed",
+          "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:07:32.884768+00:00",
+          "first_seq": 20,
+          "last_seq": 23,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "action",
+          "id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+          "label": "操作",
+          "action_kind": "human_decision"
+        },
+        {
+          "at": "2026-09-14T13:07:33.011594+00:00",
+          "first_seq": 25,
+          "last_seq": 27,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "a8650b469ee45b85b0816e431217116c",
+          "text": "人工审核回复：请确认这笔订单的使用地区，以便核实最终方案。",
+          "status": "completed",
+          "reply_to_input_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+      "issues": [
+        {
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "status": "open",
+          "title": "Germany",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 28,
+      "latest_summaries": []
+    },
+    "executions": []
+  },
+  "followup": {
+    "http": 200,
+    "reply": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+    "errors": []
+  },
+  "case_before_edited_approval": {
+    "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+    "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+    "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+    "sku": "EUFY-X10-PRO-OMNI",
+    "category": "robot_vacuum",
+    "status": "awaiting_approval",
+    "complaint_risk": false,
+    "priority": "normal",
+    "policy_decision": {
+      "matched": true,
+      "remedies": [
+        {
+          "remedy": "repair",
+          "clauses": [
+            {
+              "text": "品质故障保内由公司承担维修费用。",
+              "clause_id": "UK-W-3.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "replace",
+          "clauses": [
+            {
+              "text": "品质故障保内且未换货，可申请一次换货。",
+              "clause_id": "UK-W-3.2",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            },
+            {
+              "met": true,
+              "name": "not_prior",
+              "actual": [],
+              "expected": [
+                "replace"
+              ]
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "refund",
+          "clauses": [
+            {
+              "text": "购买七日内品质问题可申请人工退款审核。",
+              "clause_id": "UK-W-3.3",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": false,
+              "name": "days_since_purchase_lte",
+              "actual": 200,
+              "expected": 7
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false
+        },
+        {
+          "remedy": "repair",
+          "clauses": [
+            {
+              "text": "保外品质故障可申请付费维修。",
+              "clause_id": "UK-W-4.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "eligible": false,
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": false,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": false
+            }
+          ],
+          "cost_bearer": "customer",
+          "auto_allowed": false
+        }
+      ],
+      "trace_id": "963fc3a2a34786482111f6b4",
+      "policy_id": "uk_robot_vacuum_standard",
+      "fault_class": "unknown",
+      "needs_human": true,
+      "warranty_end": "2027-02-26",
+      "exclusions_hit": [
+        {
+          "effect": "needs_human",
+          "clauses": [
+            {
+              "text": "跨服务区域需要人工审核。",
+              "clause_id": "UK-W-6.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "conditions": [
+            {
+              "met": true,
+              "name": "region_use_not_in",
+              "actual": "Germany",
+              "expected": [
+                "UK"
+              ]
+            }
+          ]
+        }
+      ],
+      "missing_inputs": [],
+      "policy_version": "2026-09-14.1",
+      "within_warranty": true,
+      "needs_human_reasons": [
+        "fault_unknown",
+        "UK-W-6.1"
+      ]
+    },
+    "proposal": {
+      "status": "offered",
+      "options": [
+        {
+          "title": "申请换货",
+          "remedy": "replace",
+          "source": "policy",
+          "clauses": [
+            {
+              "text": "品质故障保内且未换货，可申请一次换货。",
+              "clause_id": "UK-W-3.2",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "option_id": "replace",
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            },
+            {
+              "met": true,
+              "name": "not_prior",
+              "actual": [],
+              "expected": [
+                "replace"
+              ]
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false,
+          "dispatch_estimate": {
+            "action": "replacement.create",
+            "working_days": 3,
+            "actions_version": "2026-09-14.2"
+          }
+        },
+        {
+          "title": "申请维修",
+          "remedy": "repair",
+          "source": "policy",
+          "clauses": [
+            {
+              "text": "品质故障保内由公司承担维修费用。",
+              "clause_id": "UK-W-3.1",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "option_id": "repair",
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false,
+          "dispatch_estimate": null
+        },
+        {
+          "title": "申请退款审核",
+          "remedy": "refund",
+          "source": "policy",
+          "clauses": [
+            {
+              "text": "购买七日内品质问题可申请人工退款审核。",
+              "clause_id": "UK-W-3.3",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "option_id": "refund",
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": false,
+              "name": "days_since_purchase_lte",
+              "actual": 200,
+              "expected": 7
+            }
+          ],
+          "cost_bearer": "company",
+          "auto_allowed": false,
+          "dispatch_estimate": null
+        }
+      ],
+      "excluded": [],
+      "user_confirmed": true,
+      "chosen_option_id": "replace"
+    },
+    "chosen_option_id": null,
+    "gate_result": null,
+    "owner": null,
+    "external_refs": {
+      "order_no": "DEMO-UK-005"
+    },
+    "opened_at": "2026-09-14T13:05:30.530262+00:00",
+    "updated_at": "2026-09-14T13:07:57.298516+00:00",
+    "closed_at": null,
+    "reopened_count": 0,
+    "revision": 6,
+    "events": [
+      {
+        "id": 25,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 1,
+        "type": "order_identified",
+        "payload": {
+          "order_no": "DEMO-UK-005"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.502335+00:00"
+      },
+      {
+        "id": 26,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 2,
+        "type": "status_changed",
+        "payload": {
+          "to": "proposing",
+          "from": "open",
+          "reason": "政策方案已计算"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.519837+00:00"
+      },
+      {
+        "id": 27,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 3,
+        "type": "status_changed",
+        "payload": {
+          "to": "awaiting_approval",
+          "from": "proposing",
+          "reason": "需要人工审核"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:05:30.528597+00:00"
+      },
+      {
+        "id": 28,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 4,
+        "type": "status_changed",
+        "payload": {
+          "to": "awaiting_confirmation",
+          "from": "awaiting_approval",
+          "reason": "请确认这笔订单的使用地区，以便核实最终方案。"
+        },
+        "actor": "agent:demo",
+        "at": "2026-09-14T13:07:32.821779+00:00"
+      },
+      {
+        "id": 29,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 5,
+        "type": "status_changed",
+        "payload": {
+          "to": "proposing",
+          "from": "awaiting_confirmation",
+          "reason": "政策方案已计算"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:07:57.291842+00:00"
+      },
+      {
+        "id": 30,
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "seq": 6,
+        "type": "status_changed",
+        "payload": {
+          "to": "awaiting_approval",
+          "from": "proposing",
+          "reason": "需要人工审核"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:07:57.298516+00:00"
+      }
+    ],
+    "decisions": [
+      {
+        "decision_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "actor": "agent:demo",
+        "decision": "request_info",
+        "edited_proposal": null,
+        "option_id": null,
+        "override_reason": null,
+        "note": "请确认这笔订单的使用地区，以便核实最终方案。",
+        "at": "2026-09-14T13:07:32.821736+00:00",
+        "consumed_input_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_revision": 3
+      }
+    ],
+    "commitments": [],
+    "snapshot": {
+      "session_id": "e5787dc1aacd41abb4008e2c6b03d4b1",
+      "version": 3,
+      "stage": "awaiting_human",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-09-14T13:05:26.814210+00:00",
+          "first_seq": 2,
+          "last_seq": 8,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "user_message",
+          "id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "text": "我要换货 DEMO-UK-005，我在德国使用",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-09-14T13:05:30.590420+00:00",
+          "first_seq": 9,
+          "last_seq": 42,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "case_changed",
+          "card_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+          "version": 3,
+          "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "DEMO-UK-005"
+          },
+          "updated_at": "2026-09-14T13:07:57.298516+00:00"
+        },
+        {
+          "at": "2026-09-14T13:05:30.595699+00:00",
+          "first_seq": 10,
+          "last_seq": 12,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "388bd2b91468575c8c20df2112bc086f",
+          "text": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。",
+          "status": "completed",
+          "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:05:30.616536+00:00",
+          "first_seq": 15,
+          "last_seq": 17,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "8b910e9202125382989725c45860fb16",
+          "text": "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+          "status": "completed",
+          "reply_to_input_id": "52f785bf-70c7-48a6-9cd6-78782c2ec37d",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:07:32.884768+00:00",
+          "first_seq": 20,
+          "last_seq": 23,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "action",
+          "id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+          "label": "操作",
+          "action_kind": "human_decision"
+        },
+        {
+          "at": "2026-09-14T13:07:33.011594+00:00",
+          "first_seq": 25,
+          "last_seq": 27,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "a8650b469ee45b85b0816e431217116c",
+          "text": "人工审核回复：请确认这笔订单的使用地区，以便核实最终方案。",
+          "status": "completed",
+          "reply_to_input_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:07:51.571576+00:00",
+          "first_seq": 30,
+          "last_seq": 36,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "user_message",
+          "id": "e3f43933-eb97-426c-bc08-8b4aad52074f",
+          "text": "确认这笔 DEMO-UK-005 在德国使用，请按这个信息继续审核换货",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-09-14T13:07:57.341899+00:00",
+          "first_seq": 38,
+          "last_seq": 40,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "ebf5fc4807a156658a1b9116ab47cf95",
+          "text": "当前情况需要人工审核，暂不能自动办理。跨服务区域需要人工审核。",
+          "status": "completed",
+          "reply_to_input_id": "e3f43933-eb97-426c-bc08-8b4aad52074f",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-09-14T13:07:57.369714+00:00",
+          "first_seq": 43,
+          "last_seq": 45,
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "kind": "assistant_message",
+          "message_id": "0293b18eeb6253f4bed60f3dbe63d6fd",
+          "text": "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+          "status": "completed",
+          "reply_to_input_id": "e3f43933-eb97-426c-bc08-8b4aad52074f",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+      "issues": [
+        {
+          "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+          "status": "open",
+          "title": "Germany",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 46,
+      "latest_summaries": []
+    },
+    "executions": []
+  },
+  "after_edited_approval": {
+    "pending_input": {
+      "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+      "kind": "confirm_proposal",
+      "input_token": "3d8c6a676b4855c389d0689a6ee06c25",
+      "card_id": "93c03de164245c7caf3b798ea9578cab",
+      "version": 4
+    },
+    "proposal_cards": [
+      {
+        "at": "2026-09-14T13:08:25.247332+00:00",
+        "first_seq": 60,
+        "last_seq": 60,
+        "issue_id": "0ba5d9600f0f59da8cc7cc60e6776a24",
+        "kind": "proposal_card",
+        "card_id": "93c03de164245c7caf3b798ea9578cab",
+        "version": 4,
+        "options": [
+          {
+            "option_id": "replace",
+            "remedy": "replace",
+            "title": "申请换货",
+            "cost_bearer": "shared",
+            "conditions": [
+              {
+                "name": "fault_class",
+                "expected": [
+                  "quality"
+                ],
+                "actual": "unknown",
+                "met": false
+              },
+              {
+                "name": "within_warranty",
+                "expected": true,
+                "actual": true,
+                "met": true
+              },
+              {
+                "name": "not_prior",
+                "expected": [
+                  "replace"
+                ],
+                "actual": [],
+                "met": true
+              }
+            ],
+            "clauses": [
+              {
+                "clause_id": "UK-W-3.2",
+                "text": "品质故障保内且未换货，可申请一次换货。",
+                "source_doc": "虚构演示政策，待真实 SOP 替换",
+                "doc_version": "2026-09-14.1",
+                "policy_version": "2026-09-14.1"
+              }
+            ],
+            "auto_allowed": false,
+            "source": "human",
+            "dispatch_estimate": {
+              "working_days": 3,
+              "action": "replacement.create",
+              "actions_version": "2026-09-14.2"
+            }
+          }
+        ],
+        "decision_summary": "人工审核后的方案，请确认",
+        "policy_version": "2026-09-14.1",
+        "retry": false,
+        "chosen_option_id": null,
+        "declined_reason": null
+      }
+    ],
+    "executions": [],
+    "decisions": [
+      {
+        "decision_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "actor": "agent:demo",
+        "decision": "request_info",
+        "edited_proposal": null,
+        "option_id": null,
+        "override_reason": null,
+        "note": "请确认这笔订单的使用地区，以便核实最终方案。",
+        "at": "2026-09-14T13:07:32.821736+00:00",
+        "consumed_input_id": "69095f74-f5af-4abe-bb0d-945c5130e9c3",
+        "case_revision": 3
+      },
+      {
+        "decision_id": "c94972bf-f8c0-4f62-876d-4fc05d51f578",
+        "case_id": "c66ba3af-3f89-5e57-a8ee-6502ca682cf5",
+        "actor": "agent:demo",
+        "decision": "approve",
+        "edited_proposal": {
+          "title": "申请换货",
+          "remedy": "replace",
+          "source": "human",
+          "clauses": [
+            {
+              "text": "品质故障保内且未换货，可申请一次换货。",
+              "clause_id": "UK-W-3.2",
+              "source_doc": "虚构演示政策，待真实 SOP 替换",
+              "doc_version": "2026-09-14.1",
+              "policy_version": "2026-09-14.1"
+            }
+          ],
+          "option_id": "replace",
+          "conditions": [
+            {
+              "met": false,
+              "name": "fault_class",
+              "actual": "unknown",
+              "expected": [
+                "quality"
+              ]
+            },
+            {
+              "met": true,
+              "name": "within_warranty",
+              "actual": true,
+              "expected": true
+            },
+            {
+              "met": true,
+              "name": "not_prior",
+              "actual": [],
+              "expected": [
+                "replace"
+              ]
+            }
+          ],
+          "cost_bearer": "shared",
+          "auto_allowed": false,
+          "dispatch_estimate": {
+            "action": "replacement.create",
+            "working_days": 3,
+            "actions_version": "2026-09-14.2"
+          }
+        },
+        "option_id": "replace",
+        "override_reason": "演示人工特批跨区域换货，并调整费用承担方式。",
+        "note": "演示审批：费用改为双方分担，请用户重新确认后办理。",
+        "at": "2026-09-14T13:08:24.970143+00:00",
+        "consumed_input_id": "c94972bf-f8c0-4f62-876d-4fc05d51f578",
+        "case_revision": 6
+      }
+    ],
+    "commitments": [
+      {
+        "at": "2026-09-14T13:08:25.114594+00:00",
+        "text": "申请换货；费用承担：shared",
+        "source": "human_decision",
+        "source_ref": "c94972bf-f8c0-4f62-876d-4fc05d51f578"
+      }
+    ]
+  },
+  "after_user_confirmation": {
+    "http": 200,
+    "errors": [],
+    "execution_cards": [],
+    "case_status": "awaiting_approval",
+    "executions": [],
+    "commitments": [
+      {
+        "at": "2026-09-14T13:08:25.114594+00:00",
+        "text": "申请换货；费用承担：shared",
+        "source": "human_decision",
+        "source_ref": "c94972bf-f8c0-4f62-876d-4fc05d51f578"
+      }
+    ],
+    "expected_block": "fault_class unknown; evidence gate remains required after policy approval"
+  },
+  "verification": {
+    "targeted_checks": "71 passed including real PostgreSQL",
+    "contracts": "passed",
+    "frontend_build": "passed",
+    "ruff": "passed",
+    "admin_ui": "补充信息请求、候选时效、修改费用及覆盖理由提交成功；确认前无执行，缺少故障证据时保持阻止",
+    "a6_replay": "format 3 record and verify passed; actions 2026-09-14.2",
+    "final_targeted_checks": "6 passed after approval preflight; Ruff/build passed"
+  },
+  "approval_preflight": {
+    "http": 422,
+    "body": {
+      "detail": {
+        "code": "invalid_decision",
+        "message": "请先核实故障并解除安全限制；人工审批不能替代故障证据，可要求补充信息"
+      }
+    }
+  }
+}

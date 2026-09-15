@@ -1,0 +1,34 @@
+{
+  "interpret_prompt_version": "2026-09-14.10",
+  "plans_version": "2026-09-14.2",
+  "session_id": "52ff39b4c7dc47f19244a136a81d6665",
+  "turns": [
+    {
+      "text": "eufy X10 Pro Omni 坏了",
+      "reply": "设备按电源后能正常启动吗？",
+      "errors": [],
+      "step_cards": 0,
+      "escalations": []
+    },
+    {
+      "text": "不能",
+      "reply": "放回基站后，设备有正常的充电指示或充电语音吗？",
+      "errors": [],
+      "step_cards": 0,
+      "escalations": []
+    },
+    {
+      "text": "没有",
+      "reply": "我已整理当前问题记录，您可以复制给人工客服继续处理。",
+      "errors": [],
+      "step_cards": 0,
+      "escalations": [
+        {
+          "rule_id": "R5",
+          "text": "当前产品的这一问题没有可用的排障计划"
+        }
+      ]
+    }
+  ],
+  "passed": true
+}

@@ -16,6 +16,7 @@ export type RecentSession = {
   updated_at: string;
   title: string | null;
   stage: Stage | null;
+  case_status?: string | null;
   /** 后端确认不存在的时刻。只隐藏不删除：万一是环境异常（连错库等）误判，
    *  下一轮探测确认存在就会清掉标记，会话自动回到列表；物理删除仍交给 48 h 过期。 */
   missing_since?: string | null;
@@ -91,7 +92,7 @@ export function makeTitle(text: string): string | null {
 }
 
 /** 新建或刷新一条记录；title 只在原来为空时写入，stage 有值才覆盖。 */
-export function touchRecent(id: string, patch: { title?: string | null; stage?: Stage | null } = {}) {
+export function touchRecent(id: string, patch: { title?: string | null; stage?: Stage | null; case_status?: string | null } = {}) {
   const now = new Date().toISOString();
   const list = readAll();
   const existing = list.find((x) => x.id === id);
@@ -99,6 +100,7 @@ export function touchRecent(id: string, patch: { title?: string | null; stage?: 
   const next: RecentSession = existing
     ? { ...existing, updated_at: now, title: existing.title ?? patch.title ?? null, stage: patch.stage ?? existing.stage, missing_since: null }
     : { id, created_at: now, updated_at: now, title: patch.title ?? null, stage: patch.stage ?? null, missing_since: null };
+  if ('case_status' in patch) next.case_status = patch.case_status;
   write([next, ...list.filter((x) => x.id !== id)]);
 }
 

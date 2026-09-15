@@ -1,0 +1,167 @@
+source: 独立用户原话多意图语料；intents 为完整集合，order 为生产优先级排序结果；无标签输入
+cases:
+- id: multi-01
+  family: multi_intent
+  text: 机器滚刷不转了，请排查。另外帮我查包裹到哪了。
+  expected:
+    intents: &id001
+    - report_problem
+    - logistics_query
+    order: *id001
+- id: multi-02
+  family: multi_intent
+  text: 帮我查物流，同时我想申请换货。
+  expected:
+    intents: &id002
+    - replacement_request
+    - logistics_query
+    order: *id002
+- id: multi-03
+  family: multi_intent
+  text: 请给我退款，另外查一下物流进度。
+  expected:
+    intents: &id003
+    - refund_request
+    - logistics_query
+    order: *id003
+- id: multi-04
+  family: multi_intent
+  text: 我要改收货地址，还要查一下保修期限。
+  expected:
+    intents: &id004
+    - address_update
+    - warranty_query
+    order: *id004
+- id: multi-05
+  family: multi_intent
+  text: 这台机器吸力变弱了，请排查，再帮我看是否在保。
+  expected:
+    intents: &id005
+    - report_problem
+    - warranty_query
+    order: *id005
+- id: multi-06
+  family: multi_intent
+  text: 我要申请换货，另外请查保修到期日。
+  expected:
+    intents: &id006
+    - replacement_request
+    - warranty_query
+    order: *id006
+- id: multi-07
+  family: multi_intent
+  text: 请退款并帮我核对订单购买信息。
+  expected:
+    intents: &id007
+    - refund_request
+    - order_query
+    order: *id007
+- id: multi-08
+  family: multi_intent
+  text: 请改收货地址，再查物流。
+  expected:
+    intents: &id008
+    - address_update
+    - logistics_query
+    order: *id008
+- id: multi-09
+  family: multi_intent
+  text: 查订单的购买日期，再查保修期。
+  expected:
+    intents: &id009
+    - order_query
+    - warranty_query
+    order: *id009
+- id: multi-10
+  family: multi_intent
+  text: 看看包裹到哪了，再帮我核对购买渠道。
+  expected:
+    intents: &id010
+    - logistics_query
+    - order_query
+    order: *id010
+- id: multi-11
+  family: multi_intent
+  text: 这台扫地机无法开机，请排查；还有一笔订单要退款。
+  expected:
+    intents: &id011
+    - refund_request
+    - report_problem
+    order: *id011
+- id: multi-12
+  family: multi_intent
+  text: 我要申请换货，另一台耳机只有左侧没声音，请排查。
+  expected:
+    intents: &id012
+    - replacement_request
+    - report_problem
+    order: *id012
+- id: multi-13
+  family: multi_intent
+  text: 机器充不上电，请排查。另外修改订单收货地址。
+  expected:
+    intents: &id013
+    - address_update
+    - report_problem
+    order: *id013
+- id: multi-14
+  family: multi_intent
+  text: 请查询保修日期，另外看看物流到哪了。
+  expected:
+    intents: &id014
+    - warranty_query
+    - logistics_query
+    order: *id014
+- id: multi-15
+  family: multi_intent
+  text: 一笔订单换货，另一笔订单退款，再查一下物流。
+  expected:
+    intents: &id015
+    - replacement_request
+    - refund_request
+    - logistics_query
+    order: *id015
+- id: multi-16
+  family: multi_intent
+  text: 先申请退款，另外一笔订单要换货，还想查一下保修。
+  expected:
+    intents: &id016
+    - refund_request
+    - replacement_request
+    - warranty_query
+    order: *id016
+- id: multi-17
+  family: multi_intent
+  text: 机器漏水了，请排查；再查这笔订单购买日期和保修期。
+  expected:
+    intents: &id017
+    - report_problem
+    - order_query
+    - warranty_query
+    order: *id017
+- id: multi-18
+  family: multi_intent
+  text: 换货申请请帮我办理，还要查订单购买信息、查物流。
+  expected:
+    intents: &id018
+    - replacement_request
+    - order_query
+    - logistics_query
+    order: *id018
+- id: multi-19
+  family: multi_intent
+  text: 请查物流，也请查物流单的配送进度；还要查保修日期。
+  expected:
+    intents: &id019
+    - logistics_query
+    - warranty_query
+    order: *id019
+- id: multi-20
+  family: multi_intent
+  text: 我想改地址，另外机器有异响需要排查，再查询保修。
+  expected:
+    intents: &id020
+    - address_update
+    - report_problem
+    - warranty_query
+    order: *id020

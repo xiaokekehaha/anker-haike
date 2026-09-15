@@ -1,3 +1,9 @@
+import { ContextCard } from './ContextCard';
+import { ProposalCard } from './ProposalCard';
+import { ExecutionCard } from './ExecutionCard';
+import { RetakeCard } from './RetakeCard';
+import { RatingCard } from './RatingCard';
+import { CaseStatus } from './CaseStatus';
 import { useState } from 'react';
 import type { SessionState } from '../state/types';
 import type { TimelineItem } from '../types/snapshot';
@@ -14,7 +20,7 @@ import { MessageTime } from './MessageTime';
 
 type Props = {
   state: SessionState;
-  onAction: (kind: 'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt', payload: Record<string, unknown>) => void;
+  onAction: (kind: 'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'confirm_context' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction', payload: Record<string, unknown>) => void;
   onIssueAction?: (kind: 'new_issue' | 'resume_issue', issueId?: string) => void;
 };
 
@@ -51,6 +57,18 @@ export function Timeline({ state, onAction, onIssueAction }: Props) {
             return <StepCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onHover={setHover} onFeedback={(feedback, note) => onAction('step_feedback', note ? { feedback, note } : { feedback })} />;
           case 'receipt_card':
             return <ReceiptCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
+          case 'context_card':
+            return <ContextCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={fields => onAction('confirm_context', fields)} />;
+          case 'proposal_card':
+            return <ProposalCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={option_id => onAction('confirm_proposal', { option_id })} onDecline={reason => onAction('decline_proposal', { reason })} />;
+          case 'execution_card':
+            return <ExecutionCard key={item.card_id} item={item} />;
+          case 'retake_card':
+            return <RetakeCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onSkip={() => onAction('skip_retake', { reason: 'skip' })} />;
+          case 'rating_card':
+            return <RatingCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onRate={(score, comment) => onAction('rate_satisfaction', { score, comment })} />;
+          case 'case_changed':
+            return <CaseStatus key={item.card_id} item={item} />;
           case 'escalation_summary':
             return <SummaryCard key={item.card_id} summary={item.summary} updatedAt={item.updated_at} revision={item.revision} outdated={state.timeline.some(t => t.kind === 'escalation_summary' && t.summary_id === item.summary_id && t.revision > item.revision)} />;
           default:

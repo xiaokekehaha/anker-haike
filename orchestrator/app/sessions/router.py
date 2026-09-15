@@ -104,6 +104,7 @@ async def post_message(
     target_issue_id: Annotated[str | None, Form()] = None,
     images: Annotated[list[UploadFile], File()] = [],  # noqa: B006 - FastAPI 表单默认
     purpose: Annotated[str, Form(pattern="^(fault|receipt)$")] = "fault",
+    evaluation_source: Annotated[str, Form(pattern="^(live|replay|smoke)$")] = "live",
 ):
     store, _graph, _manager = _runtime(request)
     await _ensure_exists(store, session_id)
@@ -124,6 +125,7 @@ async def post_message(
             )
     payload = {
         "kind": "message",
+        "evaluation_source": evaluation_source,
         "text": text,
         "purpose": purpose,
         "image_ids": [item.ref.image_id for item in staged],
@@ -182,7 +184,7 @@ async def resume_events(
     return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
 
 
-_CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_receipt"}
+_CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_receipt", "confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}
 
 
 @router.post("/{session_id}/actions")
@@ -304,6 +306,8 @@ async def _accept(
                     .get("candidates", [])
                 }:
                     raise InputConflict("invalid_selection")
+                if payload["kind"] == "confirm_proposal" and payload["payload"]["option_id"] not in {o["option_id"] for o in ((values.get("pending_card") or {}).get("payload") or {}).get("options",[])}:
+                    raise InputConflict("invalid_selection")
             receipt, replay = await store.reserve_input(
                 session_id,
                 input_id,
@@ -350,6 +354,10 @@ async def _accept(
 
 
 def _kind_allowed(kind: str, pending_kind: str) -> bool:
+    if kind == "decline_proposal":
+        return pending_kind == "confirm_proposal"
+    if kind == "skip_retake":
+        return pending_kind == "upload_retake"
     return (
         pending_kind in ("upload_receipt", "confirm_receipt")
         if kind == "skip_receipt"

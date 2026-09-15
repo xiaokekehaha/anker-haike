@@ -75,6 +75,18 @@ function Row({ item }: { item: TimelineItem }) {
           <div className="meta">{Object.entries(item.fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(' · ') || '未识别出字段'}</div>
         </div>
       );
+    case 'context_card':
+      return <div className="row card-item"><h4>服务信息</h4><div>{Object.entries(item.confirmed_fields ?? item.prefilled ?? {}).map(([k, v]) => `${k}: ${v}`).join(' · ')}</div></div>;
+    case 'proposal_card':
+      return <div className="row card-item"><h4>处理方案</h4><div>{item.decision_summary}</div>{item.options.map(o => <p key={o.option_id}>{o.title}{item.chosen_option_id === o.option_id ? '（已选择）' : ''}</p>)}</div>;
+    case 'execution_card':
+      return <div className="row card-item"><h4>办理回执 · {item.status === 'succeeded' ? '已提交' : '未完成'}</h4><div>{item.receipt.service_order_no ?? item.receipt.tracking_no}</div><div>{item.receipt.next_step}</div></div>;
+    case 'retake_card':
+      return <div className="row card-item"><h4>补拍照片{item.skipped ? '（已跳过）' : ''}</h4>{item.guidance.join('；')}</div>;
+    case 'rating_card':
+      return <div className="row card-item"><h4>服务评价</h4>{item.score ? `${item.score} / 5` : '尚未评价'}</div>;
+    case 'case_changed':
+      return <div className="row card-item"><h4>案件状态 · {item.status}</h4>{item.reason}</div>;
     case 'evidence':
       return (
         <details className="row card-item">

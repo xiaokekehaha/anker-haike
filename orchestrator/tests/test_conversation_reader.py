@@ -67,3 +67,42 @@ def test_reference_read_keeps_original_even_after_newer_messages():
         history, {"mode": "reference", "source_entry_ids": ["i4"]}, before_seq=125
     )
     assert selected["source_entry_ids"] == ["i4", "m4"]
+
+
+def test_overlong_current_input_is_elided_not_rejected():
+    """一次长粘贴不该把整轮变成「记录较多，无法理解」——头尾都要留住，中间标省略。"""
+    long_text = "开头诉求：扫地机不吸尘" + "无关描述" * 6000 + "结尾诉求：能换货吗"
+    history = fold_history("s", records([input_event("cur", long_text, "r1")]))
+    bundle = build_context(
+        history, current_input_id="cur", now="2026-09-13T00:00:00Z", state={}
+    )
+    text = "\n".join(m[1] for m in bundle.messages)
+    assert "开头诉求：扫地机不吸尘" in text and "结尾诉求：能换货吗" in text
+    assert "已省略" in text and "entry_id=cur" in text
+    assert bundle.tokens <= 8000
+    assert bundle.truncation["chars"] == len(long_text)
+    assert bundle.truncation["kept_chars"] < len(long_text)
+
+
+def test_other_issues_reach_every_boundary_without_caller_help():
+    """回答用的上下文也要看得见另一台设备已确认的事实，不能只有 interpret 看得见。"""
+    history = fold_history("s", records([input_event("cur", "另一台呢", "r1")]))
+    bundle = build_context(
+        history,
+        current_input_id="cur",
+        now="2026-09-13T00:00:00Z",
+        state={
+            "active_issue_id": "a",
+            "issues": {
+                "a": {"facts": [{"fact_id": "f1", "kind": "symptom", "value": "不吸尘", "status": "active"}]},
+                "b": {
+                    "title": "充不上电",
+                    "facts": [
+                        {"fact_id": "f2", "kind": "symptom", "value": "指示灯不亮", "status": "active"}
+                    ],
+                },
+            },
+        },
+    )
+    text = "\n".join(m[1] for m in bundle.messages)
+    assert "充不上电" in text and "指示灯不亮" in text

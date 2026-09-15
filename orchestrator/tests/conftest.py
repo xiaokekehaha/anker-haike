@@ -22,7 +22,7 @@ def mem_runtime(request, monkeypatch):
             from app.rules import get_rules_service
             cp = get_rules_service().check_in(text=state.get("text", ""), session_id=state.get("session_id"))
             intent = "request_human" if any(h.rule_id == "R3" for h in cp.hits) else "report_problem"
-            return semantic.TurnInterpretation(primary_intent=intent, device_relation="current"), {"source": "business-flow-fixture"}
+            return semantic.TurnInterpretation(primary_intent=intent, device_relation="current", human_request_quote=state.get("text") if intent == "request_human" else None), {"source": "business-flow-fixture"}
         monkeypatch.setattr(semantic, "interpret_turn", business_interpret)
     store = InMemorySessionStore()
     app.state.session_store = store

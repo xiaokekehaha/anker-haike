@@ -26,8 +26,8 @@ cases:
         device_category: robot_vacuum
         product_hints: [机器人]
         facts: [{kind: symptom, value: 冒烟, quote: 冒烟}]
-        risk_assertion: reported
-        risk_quote: 冒烟
+        device_safety_assertion: reported
+        device_safety_quote: 冒烟
       - {primary_intent: history_query, device_relation: current, history_request: {mode: recent}}
       - {primary_intent: explain, device_relation: current}
       - {primary_intent: new_issue, device_relation: unknown}

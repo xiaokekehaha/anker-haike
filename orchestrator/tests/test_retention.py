@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import json
 import logging
 import os
@@ -29,6 +27,7 @@ from app.retention import main as retention_main
 from app.sessions import sse
 from app.sessions.store import SessionNotFound
 from app.settings import settings
+from tests.message_form import message_form
 from tests.test_images import png_bytes
 
 PHONE = re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)")

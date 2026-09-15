@@ -32,6 +32,8 @@ REASON_TAGS: tuple[str, ...] = (
     "latency",                # 太慢
     "ui_flow",                # 交互问题
     "user_abandoned",         # 用户中途离开
+    "intent_correct",
+    "intent_wrong",
     "exemplary",              # 值得沉淀
 )
 
@@ -108,6 +110,13 @@ def classify(
         if error_code == "server_restarted":
             return "interrupted", error_code
         return "errored", error_code
+    case_status = values.get("case_status")
+    if case_status == "closed":
+        return ("human_executed" if values.get("human_involved") else "executed_closed"), "case_closed"
+    if case_status in {"awaiting_approval", "approved", "rejected"} or values.get("stage") == "awaiting_human":
+        return "awaiting_human", case_status
+    if values.get("consult_answered"):
+        return "consult_answered", None
     stage = values.get("stage")
     closing = any(
         isinstance(m, dict) and m.get("kind") == "closing"

@@ -1,12 +1,10 @@
 """票 23：三种 409（stale_version / stale_card / not_allowed_now）附快照；error.retry_with_same_action 与
 同一 action_id 重试的服务端语义；快照 pending_input 以 checkpoint 中断为准。"""
 
-from tests.message_form import action_body, message_form
-
 import asyncio
 import uuid
-import pytest
 
+import pytest
 from haike_contracts.actions import ActionConflict
 from haike_contracts.snapshot import SessionSnapshot
 from httpx import ASGITransport, AsyncClient
@@ -16,6 +14,7 @@ from app.main import app
 from app.sessions import graph as graph_mod
 from app.sessions import sse
 from app.sessions.manager import RunManager
+from tests.message_form import action_body, message_form
 
 MULTI = "我的 S1 Pro 不吸了"
 

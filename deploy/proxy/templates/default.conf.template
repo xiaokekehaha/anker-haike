@@ -43,6 +43,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Authenticated-User $remote_user;
         proxy_set_header Authorization "";   # 不把基础认证头透传给应用
 
         # SSE 透传：不缓冲、不缓存、长读超时（run deadline 最长 40 s，续接可能更久）

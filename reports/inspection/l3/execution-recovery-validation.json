@@ -1,0 +1,67 @@
+{
+  "case_id": "035145df-4250-5d64-9896-a0d06b2ca290",
+  "case_order_no": "DEMO-CN-003",
+  "service_context": {
+    "region_purchase": "CN",
+    "channel": "official_store",
+    "platform": "demo",
+    "region_use": "DE"
+  },
+  "context_sources": {
+    "region_purchase": "receipt",
+    "channel": "receipt",
+    "platform": "receipt",
+    "region_use": "user"
+  },
+  "card_results": {
+    "88e75fbe8765517fa7d94b6b077ea09e": {
+      "confirmed_fields": {
+        "region_purchase": "CN",
+        "channel": "official_store",
+        "platform": "demo",
+        "region_use": "DE"
+      }
+    }
+  },
+  "stage": "awaiting_human",
+  "session_id": "2f74aaf886504dd0a283852f403d3c2a",
+  "pending_input": null,
+  "ui_verified": "刷新后显示已核实购买地/渠道/平台，仅使用地输入；确认后进入人工审核，不再索要使用地",
+  "checks": "50 related backend checks; command routing 29 checks; Ruff/contracts-check/frontend build passed",
+  "a5_replay": {
+    "case_id": "a5_replacement",
+    "model_hits": 8,
+    "model_misses": [],
+    "knowledge_hits": 2,
+    "knowledge_misses": [],
+    "missing_expected": [],
+    "events": 136,
+    "runs": 9,
+    "types": [
+      "awaiting_input",
+      "case_changed",
+      "context_card",
+      "done",
+      "evidence",
+      "execution_card",
+      "input_received",
+      "issue_changed",
+      "message",
+      "message_end",
+      "message_start",
+      "pending_changed",
+      "progress",
+      "proposal_card",
+      "rating_card",
+      "run_started",
+      "step_card",
+      "tool_call"
+    ],
+    "evidence_status": [
+      "replay"
+    ],
+    "errors": []
+  },
+  "replay_format": 3,
+  "context_projection": "active issue facts no longer duplicated in issue index; executed steps not duplicated in conversation view"
+}

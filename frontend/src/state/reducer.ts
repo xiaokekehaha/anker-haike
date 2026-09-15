@@ -122,6 +122,30 @@ function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionSta
           kind: 'receipt_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, fields: e.fields, confidence: e.confidence ?? {}, unreadable: e.unreadable ?? [], confirmed_fields: null, skipped_reason: null,
         }),
       };
+    case 'context_card': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'context_card', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
+    case 'proposal_card': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'proposal_card', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
+    case 'execution_card': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'execution_card', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
+    case 'retake_card': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'retake_card', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
+    case 'rating_card': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'rating_card', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
+    case 'case_changed': {
+      const { type: _type, seq, run_id: _run, event_id: _id, recorded_at, ...card } = e;
+      return { ...base, timeline: upsert(base.timeline, { ...card, kind: 'case_changed', at: recorded_at, first_seq: seq, last_seq: seq }) };
+    }
     case 'evidence':
       return { ...base, timeline: upsert(base.timeline, { kind: 'evidence', items: e.items, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq }) };
     case 'awaiting_input':

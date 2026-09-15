@@ -31,11 +31,11 @@ log = logging.getLogger("sessions.clarify")
 Reason = Literal["product", "symptom", "conflict"]
 MAX_CLARIFICATIONS = 2  # R7：连续澄清 2 次并收到回答后仍不明 → 升级
 CLARIFY_BUDGET_MS = 4000
-CLARIFY_PROMPT_VERSION = "2026-09-13.1"
+CLARIFY_PROMPT_VERSION = "2026-09-14.2"
 
 # 指代 / 空泛表达：文本去掉产品与品类词后若只剩这些，视为「没有具体故障描述」
 _DEICTIC = re.compile(
-    r"^(这个|那个|它|机器|设备|这台|那台|我的|又|还是|还|就是|不行|坏了|不好用|有问题|出问题|了|啊|呀|吧|呢|的|。|，|,|\.|!|！|\?|？|\s)*$"
+    r"^(这个|那个|它|机器|设备|这台|那台|我的|又|还是|还|就是|不行|坏了|坏掉|不好用|有问题|出问题|不能用|无法正常工作|不能正常工作|故障|异常|了|啊|呀|吧|呢|的|。|，|,|\.|!|！|\?|？|\s)*$"
 )
 _SYMPTOM_WORDS = (
     "不吸",
@@ -211,18 +211,41 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     # ---- 3) 症状 ----
     # 抽取结果为空时回退到原文；产品已确认（明确上文）时承接更早轮次的故障描述，不把「这个又不行了」
     # 当成新故障，也不盲目归入某一现象（09 §1.1）
-    symptoms = state.get("symptoms") or []
+    from app.conversation.taxonomy import canonical_codes, interview_codes
+    interview = state.get("symptom_interview") or {}
+    direct_codes, _ = canonical_codes(text, category=update.get("category") or state.get("category"))
+    if interview and direct_codes and (state.get("turn_decision") or {}).get("primary_intent") in {"report_problem", "supplement", "correct", "answer_pending"}:
+        update.update(clarification=None, symptom_codes=direct_codes, symptom_interview={**interview, "status": "superseded", "question": None})
+        return Decision("continue", update)
+    if interview.get("status") == "narrowed":
+        update.update(clarification=None, symptom_codes=interview_codes(interview))
+        return Decision("continue", update)
+    if interview.get("status") == "asking":
+        return _symptom_clarify(state, clar, update)
+    symptoms = [s for s in state.get("symptoms") or [] if _has_symptom_text(catalog, s)]
     if not symptoms and not _has_symptom_text(catalog, text):
         earlier = [
             m.get("text", "") for m in (state.get("messages") or [])[:-1] if m.get("role") == "user"
         ]
         product_resolved = confirmed is not None or update.get("product_state") == "category_only"
         if not (product_resolved and any(_has_symptom_text(catalog, t) for t in earlier)):
-            return _clarify(clar, "symptom", update)
+            return _symptom_clarify(state, clar, update)
 
     # 信息齐全且可进入合法流程：澄清计数清零
     update["clarification"] = None
     return Decision("continue", update)
+
+
+def _symptom_clarify(state, clar, update):
+    from app.conversation.taxonomy import next_interview, taxonomy
+    category = update.get("category") or state.get("category") or (state.get("product_confirmed") or {}).get("category")
+    if category != taxonomy()["category"]:
+        return _clarify(clar, "symptom", update)
+    interview = next_interview(state.get("symptom_interview"), state.get("active_issue_id"), state.get("input_id"))
+    result = _clarify(clar, "symptom", update, symptom_interview=interview, discriminator=interview.get("question"))
+    if result.outcome == "escalate":
+        result.update["symptom_interview"] = {**interview, "status": "insufficient", "question": None}
+    return result
 
 
 def _clarify(
@@ -296,8 +319,15 @@ def _has_symptom_text(catalog, text: str) -> bool:
 
 
 def fixed_question(reason: str, detail: dict[str, Any]) -> str:
+    if detail.get("discriminator"):
+        return detail["discriminator"]["question"]
     if reason == "product" and detail.get("unmatched_hints"):
         return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
+    if reason == "symptom":
+        from app.conversation.taxonomy import discriminator, taxonomy
+        question = discriminator(detail.get("fault_families") or [f["fault_family"] for f in taxonomy()["families"]])
+        if question:
+            return question
     tpl = FIXED_QUESTIONS.get(reason, FIXED_QUESTIONS["product"])
     try:
         return tpl.format(**detail)
@@ -320,6 +350,8 @@ def build_messages(
         ctx = f"之前确认：{detail.get('confirmed')}；这次提到：{detail.get('mentioned')}。"
     elif reason == "product" and detail.get("unmatched_hints"):
         ctx = wrap_data("、".join(detail["unmatched_hints"]), kind="unmatched_product_hints")
+    if detail.get("discriminator"):
+        ctx += "原样保留下列核心问题，只允许在前面加一句简短引导，不增加其他问题或选项：" + detail["discriminator"]["question"]
     return [
         ("system", compose_system_prompt(strategy, summary)),
         (
@@ -350,6 +382,9 @@ async def make_question(
     budget_ms: int = CLARIFY_BUDGET_MS,
 ) -> QuestionOutcome:
     fallback = fixed_question(reason, detail)
+    if detail.get("discriminator"):
+        # The persisted partition defines this question; extra choices change its meaning.
+        return QuestionOutcome(fallback, "fixed")
     if router is None:
         return QuestionOutcome(fallback, "skipped")
     try:
@@ -369,6 +404,8 @@ async def make_question(
             {"task": "disambiguate.clarify", "model_used": "skipped", "lane": lane, "attempts": 1},
         )
     q = res.parsed.question.strip()
+    if detail.get("discriminator") and not q.endswith(detail["discriminator"]["question"]):
+        q = fallback
     return QuestionOutcome(
         q or fallback,
         res.model_used,

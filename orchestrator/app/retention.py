@@ -31,7 +31,6 @@ log = logging.getLogger("retention")
 
 # 会话数据所在的表 → 会话键列。checkpoint 三表由 LangGraph AsyncPostgresSaver 建，可能尚不存在（惰性建表）。
 SESSION_TABLES: tuple[tuple[str, str], ...] = (
-    ("cases", "session_id"),
     ("model_calls", "session_id"),
     ("retrieval_calls", "session_id"),
     ("node_runs", "session_id"),
@@ -79,6 +78,35 @@ async def delete_session_data(pool: AsyncConnectionPool, session_id: str, *, exp
             if active or (expired_before is not None and updated >= expired_before):
                 return {}
         tables = await _existing_tables(conn)
+        if "cases" in tables:
+            # Serialize the final aggregate snapshot with late manual decisions.
+            await conn.execute("select case_id from cases where session_id=%s for update", (session_id,))
+        if expired_before is not None and "cases" in tables:
+            cur = await conn.execute("""select 1 from cases where session_id=%s and
+                (closed_at is null or closed_at >= now()-interval '30 days') limit 1""", (session_id,))
+            if await cur.fetchone():
+                return {}
+        if "service_episodes" in tables:
+            from app.analytics.l3 import METRIC_ROWS_SQL
+
+            await conn.execute(
+                "with latest as (" + METRIC_ROWS_SQL + " where e.session_id=%s) "
+                "update service_episodes e set rating=l.rating,intent_correct=l.intent_correct,"
+                "human_involved=l.human_involved,outcome=l.outcome,session_id=null,issue_id=null "
+                "from latest l where e.episode_id=l.episode_id", (session_id,),
+            )
+        if "cases" in tables:
+            # L3 cases outlive the conversation; retain aggregate status, erase identifying content.
+            for table, statement in (
+                ("case_events", "update case_events set payload='{}',actor='anonymized' where case_id in (select case_id from cases where session_id=%s)"),
+                ("human_decisions", "update human_decisions set actor='anonymized',note='',override_reason=null,edited_proposal=null,consumed_input_id=null where case_id in (select case_id from cases where session_id=%s)"),
+                ("action_executions", "update action_executions set session_id=null,issue_id=null,request='{}',receipt=jsonb_build_object('status',status),error=null,gate_result=null where session_id=%s"),
+                ("satisfaction_ratings", "update satisfaction_ratings set session_id=null,issue_id=null,comment=null where session_id=%s"),
+                ("cases", "update cases set session_id=null,issue_id=null,proposal=null,policy_decision=null,gate_result=null,external_refs='{}',owner=null where session_id=%s"),
+            ):
+                if table in tables:
+                    cur = await conn.execute(statement, (session_id,))
+                    counts[table + "_anonymized"] = cur.rowcount or 0
         for table, col in SESSION_TABLES:
             if table not in tables:
                 continue

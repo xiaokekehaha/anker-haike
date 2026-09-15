@@ -1,0 +1,182 @@
+source: 人工确定性规则回归样本，不代表真实模型评测
+cases:
+- id: routing-01
+  input:
+    primary: replacement_request
+    secondary:
+    - refund_request
+  expected:
+    order:
+    - replacement_request
+    - refund_request
+- id: routing-02
+  input:
+    primary: replacement_request
+    secondary:
+    - report_problem
+  expected:
+    order:
+    - replacement_request
+    - report_problem
+- id: routing-03
+  input:
+    primary: replacement_request
+    secondary:
+    - logistics_query
+  expected:
+    order:
+    - replacement_request
+    - logistics_query
+- id: routing-04
+  input:
+    primary: replacement_request
+    secondary:
+    - warranty_query
+  expected:
+    order:
+    - replacement_request
+    - warranty_query
+- id: routing-05
+  input:
+    primary: refund_request
+    secondary:
+    - replacement_request
+  expected:
+    order:
+    - refund_request
+    - replacement_request
+- id: routing-06
+  input:
+    primary: refund_request
+    secondary:
+    - report_problem
+  expected:
+    order:
+    - refund_request
+    - report_problem
+- id: routing-07
+  input:
+    primary: refund_request
+    secondary:
+    - logistics_query
+  expected:
+    order:
+    - refund_request
+    - logistics_query
+- id: routing-08
+  input:
+    primary: refund_request
+    secondary:
+    - warranty_query
+  expected:
+    order:
+    - refund_request
+    - warranty_query
+- id: routing-09
+  input:
+    primary: report_problem
+    secondary:
+    - replacement_request
+  expected:
+    order:
+    - replacement_request
+    - report_problem
+- id: routing-10
+  input:
+    primary: report_problem
+    secondary:
+    - refund_request
+  expected:
+    order:
+    - refund_request
+    - report_problem
+- id: routing-11
+  input:
+    primary: report_problem
+    secondary:
+    - logistics_query
+  expected:
+    order:
+    - report_problem
+    - logistics_query
+- id: routing-12
+  input:
+    primary: report_problem
+    secondary:
+    - warranty_query
+  expected:
+    order:
+    - report_problem
+    - warranty_query
+- id: routing-13
+  input:
+    primary: logistics_query
+    secondary:
+    - replacement_request
+  expected:
+    order:
+    - replacement_request
+    - logistics_query
+- id: routing-14
+  input:
+    primary: logistics_query
+    secondary:
+    - refund_request
+  expected:
+    order:
+    - refund_request
+    - logistics_query
+- id: routing-15
+  input:
+    primary: logistics_query
+    secondary:
+    - report_problem
+  expected:
+    order:
+    - report_problem
+    - logistics_query
+- id: routing-16
+  input:
+    primary: logistics_query
+    secondary:
+    - warranty_query
+  expected:
+    order:
+    - logistics_query
+    - warranty_query
+- id: routing-17
+  input:
+    primary: warranty_query
+    secondary:
+    - replacement_request
+  expected:
+    order:
+    - replacement_request
+    - warranty_query
+- id: routing-18
+  input:
+    primary: warranty_query
+    secondary:
+    - refund_request
+  expected:
+    order:
+    - refund_request
+    - warranty_query
+- id: routing-19
+  input:
+    primary: warranty_query
+    secondary:
+    - report_problem
+  expected:
+    order:
+    - report_problem
+    - warranty_query
+- id: routing-20
+  input:
+    primary: warranty_query
+    secondary:
+    - logistics_query
+  expected:
+    order:
+    - warranty_query
+    - logistics_query

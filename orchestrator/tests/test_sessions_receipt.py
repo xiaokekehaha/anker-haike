@@ -6,8 +6,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import action_body, message_form, escalate_on_feedback
-
 import io
 import uuid
 
@@ -19,8 +17,9 @@ from app.images.runtime import set_image_store
 from app.main import app
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
-from app.sessions.receipt import DIRECT_SUMMARY_REASONS, receipt_card_id
+from app.sessions.receipt import DIRECT_SUMMARY_REASONS
 from app.settings import REPO_ROOT
+from tests.message_form import action_body, escalate_on_feedback, message_form
 from tests.test_images import png_bytes
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -84,8 +83,10 @@ async def test_regular_escalation_enters_collect_receipt_and_awaits_upload(mem_r
     assert ("escalate", "collect_receipt") in _progress(events)
     assert ("escalate", "summarize") not in _progress(events)  # 还没摘要
     pending = next(e for e in events if e["type"] == "awaiting_input")
-    assert pending["kind"] == "upload_receipt" and pending["card_id"] == pending["input_token"]
-    assert pending["card_id"] == receipt_card_id(sid, "R1")
+    assert pending["kind"] == "upload_receipt" and pending["card_id"] != pending["input_token"]
+    assert pending["issue_id"] == snap.active_issue_id
+    assert pending["card_id"] == snap.pending_input.card_id
+    assert pending["input_token"] == snap.pending_input.input_token
     assert events[-1]["reason"] == "awaiting_input" and events[-1]["version"] == pending["version"]
     assert "escalation_summary" not in [e["type"] for e in events]
     # 快照：pending_input 指向凭证上传；没有卡片事件（Composer 据 kind 切换为凭证上传态）
@@ -158,7 +159,7 @@ async def test_upload_receipt_while_awaiting_goes_to_extract_then_confirm_card(m
     finally:
         set_image_store(None)
         app.state.image_store = None
-    assert _progress(events) == [("escalate", "extract")]
+    assert _progress(events) == [("intake", None), ("escalate", "extract")]
     assert events[0]["resumed"] is False  # 新消息 run，不是 Command(resume)
     types = [e["type"] for e in events]
     assert "receipt_card" in types and "escalation_summary" not in types

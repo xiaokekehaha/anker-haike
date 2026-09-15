@@ -1,7 +1,5 @@
 """票 22：动作幂等与会话锁。"""
 
-from tests.message_form import action_body, message_form
-
 import asyncio
 import uuid
 
@@ -12,6 +10,7 @@ from app.main import app
 from app.sessions import router as router_mod
 from app.sessions import sse
 from app.sessions.locks import InMemorySessionLock, LockTimeout
+from tests.message_form import action_body, message_form
 
 MULTI = "我的 S1 Pro 不吸了"
 

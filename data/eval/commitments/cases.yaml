@@ -1,0 +1,20 @@
+source: 人工确定性规则回归样本，不代表真实模型评测
+cases:
+- id: commitment-1
+  input:
+    text: 预计3天后更新
+    source: receipt
+  expected:
+    valid: true
+- id: commitment-2
+  input:
+    text: 申请换货
+    source: clause
+  expected:
+    valid: true
+- id: commitment-3
+  input:
+    text: 保证补偿500元
+    source: model
+  expected:
+    valid: false

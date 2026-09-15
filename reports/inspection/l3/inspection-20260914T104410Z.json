@@ -1,0 +1,133 @@
+{
+  "summary": {
+    "generated_at": "2026-09-14T10:44:10.175912+00:00",
+    "git": "9190d21",
+    "python": "3.14.7",
+    "mode": "stub",
+    "live_url": null,
+    "groups": [
+      "l3"
+    ],
+    "total": 7,
+    "passed": 7,
+    "failed": [],
+    "by_group": {
+      "l3": {
+        "passed": 7,
+        "failed": 0
+      }
+    },
+    "latency": {
+      "first_visible_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "card_ready_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      }
+    },
+    "concurrency": null,
+    "rewrite": [],
+    "live": []
+  },
+  "results": [
+    {
+      "name": "l3_forged_authorization",
+      "group": "l3",
+      "title": "伪造通过标记不能绕过四项授权检查",
+      "passed": true,
+      "elapsed_ms": 10,
+      "detail": {
+        "unauthorized_writes": 0
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_idempotent_execution",
+      "group": "l3",
+      "title": "重复申请只创建一张服务单",
+      "passed": true,
+      "elapsed_ms": 36,
+      "detail": {
+        "created": 1,
+        "replayed": 5
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_hitl_reject",
+      "group": "l3",
+      "title": "拒绝决定持久化且不执行",
+      "passed": true,
+      "elapsed_ms": 0,
+      "detail": {
+        "status": "rejected"
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_backend_faults",
+      "group": "l3",
+      "title": "超时与不可用返回可解释失败回执",
+      "passed": true,
+      "elapsed_ms": 17,
+      "detail": {
+        "statuses": [
+          "failed",
+          "failed"
+        ]
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_complaint_escalation",
+      "group": "l3",
+      "title": "三轮情绪升高采用对应策略",
+      "passed": true,
+      "elapsed_ms": 4,
+      "detail": {
+        "levels": [
+          "dissatisfied",
+          "angry",
+          "complaint_risk"
+        ]
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_blurry_image",
+      "group": "l3",
+      "title": "不可用图片不会提高排障计划先验",
+      "passed": true,
+      "elapsed_ms": 1,
+      "detail": {
+        "usable": false,
+        "model_accuracy": "not_evaluated"
+      },
+      "error": null,
+      "metrics": {}
+    },
+    {
+      "name": "l3_task_continuation",
+      "group": "l3",
+      "title": "排障完成后接续物流查询",
+      "passed": true,
+      "elapsed_ms": 2,
+      "detail": {
+        "next": "logistics_query"
+      },
+      "error": null,
+      "metrics": {}
+    }
+  ]
+}

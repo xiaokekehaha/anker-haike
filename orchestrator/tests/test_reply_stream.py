@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import model_task_text
-
-from tests.message_form import message_form
-
 import json
 
 from haike_contracts.events import parse_event
@@ -13,7 +9,6 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.models.config import load_models_config
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -21,6 +16,8 @@ from app.prompts import PROMPT_VERSION, REPLY_PROMPT_VERSION, SIMPLIFIED_LAYER, 
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form, model_task_text
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
 CONFIG = """
@@ -55,6 +52,13 @@ INTAKE_ANXIOUS = json.dumps(
     },
     ensure_ascii=False,
 )
+# 票 19 起命中计划的排障轮直接由 guide 出步骤卡，不再走自由回复；
+# 用户可见的流式回复发生在对话轮（app/conversation/reply.py）。
+DIALOGUE_TURN = json.dumps(
+    {"primary_intent": "social", "device_relation": "current", "emotion_level": "calm"},
+    ensure_ascii=False,
+)
+DIALOGUE_TEXT = "先不修了，随便聊两句"
 INTAKE_CALM_X9 = json.dumps(
     {
         "emotion_level": "calm",
@@ -125,37 +129,37 @@ async def test_a2_reassurance_arrives_before_card_and_diagnose(mem_runtime, tmp_
 
 async def test_internal_tokens_never_enter_events_and_ids_aggregate(mem_runtime, tmp_path):
     router, fakes = make_router(
-        tmp_path, fast=[INTAKE_CALM_X9], main=[["根据说明书", "，请先清理滚刷。"]]
+        tmp_path, fast=[DIALOGUE_TURN], main=[["我在，", "您随时可以继续说问题。"]]
     )
-    events, snap = await run_text(router, "eufy X9 Pro 不吸了")
+    events, snap = await run_text(router, DIALOGUE_TEXT)
     msgs = [e for e in events if e["type"] == "message"]
     assert msgs and all(
-        "emotion_level" not in e["delta"] and "product_hints" not in e["delta"] for e in msgs
+        "primary_intent" not in e["delta"] and "emotion_level" not in e["delta"] for e in msgs
     )
-    assert INTAKE_CALM_X9 not in json.dumps(events, ensure_ascii=False)
+    assert DIALOGUE_TURN not in json.dumps(events, ensure_ascii=False)
     assert len({e["message_id"] for e in msgs}) == 1
     start = next(e for e in events if e["type"] == "message_start")
     assert start["message_id"] == msgs[0]["message_id"] and "replaces" not in start
-    # intake 的调用 tag=internal，回复流 tag=user_visible
+    # 语义解释 tag=internal，回复流 tag=user_visible
     assert (
         "internal" in fakes["fast"].calls[0]["tags"]
         and "user_visible" in fakes["main"].calls[0]["tags"]
     )
     bubble = next(i for i in snap["timeline"] if i["kind"] == "assistant_message")
-    assert bubble["text"] == "根据说明书，请先清理滚刷。" and bubble["status"] == "completed"
-    # 回复 prompt 带检索状态说明与 <data kind=retrieved_snippets>
-    human = model_task_text(fakes["main"].calls[0])
-    assert 'kind="retrieved_snippets"' in human and "知识库暂不可用" in human  # 单测默认适配器关闭
+    assert bubble["text"] == "我在，您随时可以继续说问题。" and bubble["status"] == "completed"
+    # 对话回复只被允许回顾 / 解释，不得生成新的排障动作
+    system = fakes["main"].calls[0]["messages"][0].content
+    assert "不生成新的排障动作" in system and SIMPLIFIED_LAYER not in system
 
 
 async def test_mid_stream_abort_replaced_by_fallback_with_tier(mem_runtime, tmp_path):
     router, fakes = make_router(
         tmp_path,
-        fast=[INTAKE_CALM_X9],
-        main=[["先清理", RuntimeError("connection reset")]],
-        backup=[["请先清理滚刷", "，再试运行。"]],
+        fast=[DIALOGUE_TURN],
+        main=[["我在", RuntimeError("connection reset")]],
+        backup=[["我在，您", "随时可以继续说问题。"]],
     )
-    events, snap = await run_text(router, "eufy X9 Pro 不吸了")
+    events, snap = await run_text(router, DIALOGUE_TEXT)
     for e in events:
         parse_event(e)
     seq = [
@@ -177,27 +181,27 @@ async def test_mid_stream_abort_replaced_by_fallback_with_tier(mem_runtime, tmp_
     bubbles = [i for i in snap["timeline"] if i["kind"] == "assistant_message"]
     assert (
         len(bubbles) == 2 and bubbles[0]["status"] == "replaced"
-        and bubbles[1]["text"] == "请先清理滚刷，再试运行。"
+        and bubbles[1]["text"] == "我在，您随时可以继续说问题。"
         and bubbles[1]["model_tier"] == "fallback"
     )
     assert SIMPLIFIED_LAYER in fakes["backup"].calls[0]["messages"][0].content
     assert SIMPLIFIED_LAYER not in fakes["main"].calls[0]["messages"][0].content
-    assert events[-1]["reason"] == "awaiting_input"  # 票 34：回复后进入 guide 出步骤卡
+    assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
 
 
 async def test_reply_chain_exhausted_flow_still_completes(mem_runtime, tmp_path):
     router, _ = make_router(
         tmp_path,
-        fast=[INTAKE_CALM_X9],
+        fast=[DIALOGUE_TURN],
         main=[["半", TimeoutError()]],
         backup=[TimeoutError(), TimeoutError()],
     )
-    events, _snap = await run_text(router, "eufy X9 Pro 不吸了")
+    events, snap = await run_text(router, DIALOGUE_TEXT)
     ends = [e for e in events if e["type"] == "message_end"]
-    assert ends and ends[-1]["status"] == "aborted"
-    # 回复链耗尽不影响后续：guide 仍出步骤卡（改写模型同样不可用 → 原文）
-    assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
-    assert "step_card" in [e["type"] for e in events]
+    # 链耗尽 → 该条中止，再用确定性文案兜底收尾，不留空回复
+    assert [e["status"] for e in ends] == ["aborted", "completed"]
+    assert events[-1]["type"] == "done" and events[-1]["reason"] == "completed"
+    assert [i["text"] for i in snap["timeline"] if i["kind"] == "assistant_message"][-1]
 
 
 def test_prompt_templates_are_versioned_and_wrap_injection():

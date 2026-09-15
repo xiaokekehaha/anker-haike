@@ -50,6 +50,8 @@ async def open_session_runtime(app: FastAPI) -> None:
         await store.setup()  # 幂等；结构以 migrations/ 为准
         saver = AsyncPostgresSaver(pool)  # type: ignore[arg-type]
         await saver.setup()
+        from app.actions.runtime import configure
+        app.state.l3_services = configure(pool)
         app.state.session_pool = pool
         app.state.session_store = store
         app.state.session_graph = build_graph(saver)

@@ -47,7 +47,7 @@ async def seed_reference(pool: AsyncConnectionPool, data: ReferenceData) -> dict
 
 async def load_from_db(pool: AsyncConnectionPool) -> ReferenceData:
     async with pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-        await cur.execute("select * from orders_mock order by order_no")
+        await cur.execute("select order_no,sku,channel,purchase_date from orders_mock order by order_no")
         orders = await cur.fetchall()
         await cur.execute("select * from dealers order by name")
         dealers = await cur.fetchall()

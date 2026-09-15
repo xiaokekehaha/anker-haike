@@ -69,6 +69,8 @@ replay-check: ## 录制包清单与当前 prompt / models / kb / rules 版本比
 	cd orchestrator && uv run --env-file ../.env haike-replay check $(CASE)
 replay-list: ## 列出录制包
 	cd orchestrator && uv run --env-file ../.env haike-replay list
+replay-all: ## 顺序核对全部演示回放包，缺包或失败时非零退出
+	cd orchestrator && uv run --env-file ../.env haike-replay verify-all
 
 ## ---- 契约（票 03 / 04）----
 contracts: ## 由 Pydantic 导出 Schema，并生成前端类型与 Zod 校验器

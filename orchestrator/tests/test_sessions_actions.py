@@ -1,7 +1,5 @@
 """票 20：三段式等待节点与 /actions 基本通路。"""
 
-from tests.message_form import action_body, message_form
-
 import uuid
 
 from haike_contracts.events import parse_event
@@ -10,6 +8,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.sessions import sse
+from tests.message_form import action_body, message_form
 
 MULTI = "我的 S1 Pro 不吸了"  # S1 Pro 同名：扫地机 + 吸奶器 → 多命中
 SINGLE = "X9 开不了机"

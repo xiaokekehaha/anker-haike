@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import action_body
-
 import json
 import uuid
 from datetime import date
@@ -17,6 +15,7 @@ from app.sessions import sse
 from app.sessions.receipt import confirmed_receipt
 from app.settings import REPO_ROOT
 from app.warranty.service import ReceiptLookup, ReferenceData
+from tests.message_form import action_body
 from tests.test_sessions_receipt_card import CONFIG, _client, _confirm, _Env, _to_confirm_card
 
 X10 = "EUFY-X10-PRO-OMNI"

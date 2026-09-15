@@ -154,3 +154,7 @@ prepare_card ──▶ await_input ──▶ apply_action ──▶ (下一业�
 - 事件、动作、快照的 Pydantic 模型位于 `contracts/` 包，`make contracts` 生成 `contracts/events.schema.json`、`actions.schema.json`、`snapshot.schema.json` 与前端 `src/types/*.ts`。
 - CI 步骤：重新生成并与提交内容比对，不一致则失败。
 - 共享 fixture：`contracts/fixtures/*.json` 包含 A1–A3 与故障场景的完整事件序列；后端流式测试和前端 reducer 测试消费同一批文件。
+
+## L3 增量（2026-09-14，票 51）
+
+沿用 card_id/input_token/target_issue_id/expected_version 校验，新增卡片动作 confirm_context、confirm_proposal、decline_proposal、skip_retake、rate_satisfaction。新增事件 context_card、proposal_card、execution_card、retake_card、rating_card、case_changed，实时流与快照共享载荷。动作与事件的完整字段以 contracts/schema 为准。EmotionLevel 保留 anxious 解析兼容，由 reduce 转换为 dissatisfied。人工审批输入 kind=human_decision 仅供管理端经过案件校验后投递。

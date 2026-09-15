@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from datetime import date
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -22,12 +23,27 @@ Stage = Literal[
     "verify",
     "escalate",
     "done",
+    "consult",
+    "context",
+    "propose",
+    "execute",
+    "track",
+    "awaiting_human",
 ]
 """状态机阶段（02 §3）。前端 ProgressBar 把八个阶段折叠为五段展示。"""
 
 EscalateSubstage = Literal["collect_receipt", "extract", "confirm_fields", "lookup", "summarize"]
 
-PendingKind = Literal["select_product", "step_feedback", "upload_receipt", "confirm_receipt"]
+PendingKind = Literal[
+    "select_product",
+    "step_feedback",
+    "upload_receipt",
+    "confirm_receipt",
+    "confirm_context",
+    "confirm_proposal",
+    "upload_retake",
+    "rate_satisfaction",
+]
 
 Feedback = Literal["solved", "not_solved", "cannot_do"]
 
@@ -43,8 +59,14 @@ ReceiptStatus = Literal[
     "channel_unknown",
 ]
 
-EmotionLevel = Literal["calm", "anxious", "angry"]
-EmotionStrategy = Literal["normal", "reassure_first", "reassure_and_shorten"]
+EmotionLevel = Literal["calm", "anxious", "dissatisfied", "angry", "complaint_risk"]
+EmotionStrategy = Literal[
+    "normal",
+    "reassure_first",
+    "reassure_and_shorten",
+    "direct_resolution",
+    "de_escalate_and_offer_human",
+]
 
 ModelTier = Literal["primary", "fallback"]
 
@@ -131,6 +153,128 @@ class ModelTraceItem(Strict):
     attempts: int = Field(ge=1)
 
 
+class Clause(Strict):
+    clause_id: str
+    text: str
+    source_doc: str = "演示政策，待真实 SOP 替换"
+    doc_version: str
+    policy_version: str
+
+
+class PolicyCondition(Strict):
+    name: str
+    expected: Any
+    actual: Any
+    met: bool
+
+
+class RemedyDecision(Strict):
+    remedy: Literal["repair", "replace", "refund", "none"]
+    eligible: bool
+    auto_allowed: bool
+    cost_bearer: Literal["company", "customer", "shared"] | None = None
+    conditions: list[PolicyCondition] = Field(default_factory=list)
+    clauses: list[Clause] = Field(default_factory=list)
+
+
+class PolicyDecision(Strict):
+    policy_id: str | None = None
+    policy_version: str
+    matched: bool = False
+    within_warranty: bool | None = None
+    warranty_end: date | None = None
+    fault_class: Literal["quality", "user_damage", "safety", "unknown"]
+    remedies: list[RemedyDecision] = Field(default_factory=list)
+    exclusions_hit: list[dict] = Field(default_factory=list)
+    needs_human: bool = False
+    needs_human_reasons: list[str] = Field(default_factory=list)
+    missing_inputs: list[str] = Field(default_factory=list)
+    trace_id: str
+
+
+class DispatchEstimate(Strict):
+    working_days: int = Field(gt=0)
+    action: Literal["replacement.create"] = "replacement.create"
+    actions_version: str
+
+
+class ProposalOption(Strict):
+    option_id: str
+    remedy: Literal["repair", "replace", "refund", "none"]
+    title: str
+    cost_bearer: Literal["company", "customer", "shared"] | None = None
+    conditions: list[PolicyCondition] = Field(default_factory=list)
+    clauses: list[Clause] = Field(default_factory=list)
+    auto_allowed: bool = False
+    source: Literal["policy", "human"] = "policy"
+    dispatch_estimate: DispatchEstimate | None = None
+
+
+class GateCheck(Strict):
+    name: str
+    passed: bool
+    detail: str
+
+
+class GateResult(Strict):
+    passed: bool
+    checks: list[GateCheck]
+    fallback: Literal["await_human", "summarize"] | None = None
+
+
+class Receipt(Strict):
+    status: str
+    service_order_no: str | None = None
+    tracking_no: str | None = None
+    order_no: str | None = None
+    eta_days: int | None = None
+    next_step: str = ""
+    updated_at: str | None = None
+    source: str = "业务系统（模拟）"
+    data: dict = Field(default_factory=dict)
+
+
+class Finding(Strict):
+    part: str
+    location: str | None = None
+    phenomenon: str
+    severity: Literal["low", "medium", "high"]
+    confidence: float = Field(ge=0, le=1)
+    quote_region: str | None = None
+    raw: dict[str, str] = Field(default_factory=dict)
+
+
+class ImageQuality(Strict):
+    usable: bool
+    reasons: list[Literal["blurry", "too_dark", "too_far", "wrong_subject", "occluded"]] = Field(default_factory=list)
+    guidance: list[str] = Field(default_factory=list)
+
+
+class FaultLocalization(Strict):
+    findings: list[Finding] = Field(default_factory=list)
+    image_quality: ImageQuality = Field(default_factory=lambda: ImageQuality(usable=True))
+    model_hint: str | None = None
+    conflicts_with_text: list[str] = Field(default_factory=list)
+
+
+CaseStatus = Literal[
+    "open",
+    "diagnosing",
+    "proposing",
+    "awaiting_confirmation",
+    "executing",
+    "executing_failed",
+    "tracking",
+    "closed",
+    "awaiting_approval",
+    "approved",
+    "rejected",
+    "closed_unresolved",
+    "reopened",
+    "escalated_summary",
+]
+
+
 class EscalationSummary(Strict):
     """escalation_summary 的唯一层级：summary 对象（08 §5）。"""
 
@@ -143,3 +287,10 @@ class EscalationSummary(Strict):
     emotion: Emotion
     receipt: ReceiptOutcome
     model_trace: list[ModelTraceItem] = Field(default_factory=list)
+    case_id: str | None = None
+    policy_decision_brief: dict | None = None
+    recommended_options: list[ProposalOption] = Field(default_factory=list)
+    gate_result: GateResult | None = None
+    task_queue: list[dict] = Field(default_factory=list)
+    emotion_track: list[dict] = Field(default_factory=list)
+    draft_reply: str | None = None

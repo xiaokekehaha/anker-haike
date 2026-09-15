@@ -11,6 +11,8 @@ SENSITIVE = {
     "address",
     "shipping_address",
     "order_no",
+    "tracking_no",
+    "service_order_no",
     "order_number",
     "phone",
     "mobile",
@@ -29,6 +31,7 @@ LABELLED = re.compile(
 LONG_NUMBER = re.compile(
     r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d[- ]?\d{4}[- ]?\d{4}(?!\d)|(?<!\d)\d{8,}(?!\d)"
 )
+BUSINESS_NUMBER = re.compile(r"\b(?:DEMO-[A-Z0-9-]+|SRV-[A-Z0-9]+)\b", re.IGNORECASE)
 DATA_URI = re.compile(r'data:image/[^\s"\']+')
 # 票 48：地址脱敏——「地址 / 收货地址 / 住址 / 寄到」标签后的整段（到句读为止）
 ADDRESS = re.compile(
@@ -53,6 +56,7 @@ def sanitize(value: Any, *, key: str = "") -> Any:
     if isinstance(value, bytes):
         return "[BINARY OMITTED]"
     if isinstance(value, str):
+        value = BUSINESS_NUMBER.sub(MASK, value)
         value = DATA_URI.sub("[IMAGE OMITTED]", value)
         value = LABELLED.sub(lambda m: m[1] + MASK, value)
         value = ADDRESS.sub(lambda m: m[1] + MASK, value)

@@ -48,7 +48,7 @@ def test_saved_category_is_issue_scoped_and_current_category_takes_priority():
     base = {
         "text": "00001",
         "product_hints": ["00001"],
-        "symptoms": ["不启动"],
+        "symptoms": ["不吸了"],
         "active_issue_id": "current",
         "issues": {"old": {"device_ref": {"category": "扫地机器人"}}, "current": {}},
     }

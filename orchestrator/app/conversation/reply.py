@@ -8,6 +8,7 @@ from app.context.builder import build_context
 from app.conversation.history import ConversationEntry
 from app.conversation.reduce import stable_id
 from app.models.runtime import get_model_router
+from app.prompts import SIMPLIFIED_LAYER
 from app.sessions.streaming import stream_to_writer
 
 
@@ -84,6 +85,11 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 state=state,
                 instruction=instruction,
             )
+            # 票 14：降级模型用简化提示变体重新生成，而不是重放主模型的完整提示。
+            simplified = [
+                (bundle.messages[0][0], bundle.messages[0][1] + "\n\n" + SIMPLIFIED_LAYER),
+                *bundle.messages[1:],
+            ]
             result = await stream_to_writer(
                 writer,
                 router,
@@ -93,6 +99,7 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 budget_ms=10000,
                 session_id=state.get("session_id"),
                 lane=os.environ.get("MODEL_LANE", "domestic"),
+                fallback_messages=simplified,
             )
             if result.completed:
                 return {}

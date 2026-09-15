@@ -4,6 +4,7 @@ import { ApiError, cancelRun, createSession, getSnapshot, isMissingSession, newI
 import { readSSE } from '../api/sse';
 import { makeTitle, markMissing, touchRecent, useRecentSessions } from './recentSessions';
 import { verifyRecent } from './verifyRecent';
+import { caseStatusOf } from './progress';
 import type { ActionRequest } from '../types/actions';
 import type { SessionSnapshot } from '../types/snapshot';
 import { reducer } from './reducer';
@@ -18,7 +19,7 @@ export type SendOptions = { files?: File[]; purpose?: 'fault' | 'receipt' };
 
 function noteSnapshot(id: string, snapshot: SessionSnapshot) {
   const first = snapshot.timeline?.find((item) => item.kind === 'user_message');
-  touchRecent(id, { stage: snapshot.stage, title: first && 'text' in first ? makeTitle(first.text) : null });
+  touchRecent(id, { stage: snapshot.stage, case_status: caseStatusOf(snapshot.timeline, snapshot.active_issue_id), title: first && 'text' in first ? makeTitle(first.text) : null });
 }
 
 export function useSession() {
@@ -68,7 +69,7 @@ export function useSession() {
       if (event.type === 'done') {
         // 本轮结束即把阶段写进最近列表，不用等下次恢复
         const s = stateRef.current;
-        if (s.id) touchRecent(s.id, { stage: s.stage });
+        if (s.id) touchRecent(s.id, { stage: s.stage, case_status: caseStatusOf(s.timeline, s.activeIssueId) });
         return false;
       }
     }, controller.signal);
@@ -154,6 +155,33 @@ export function useSession() {
     }, 1000);
     return () => clearInterval(timer);
   }, [dispatch, recover]);
+
+  useEffect(() => {
+    let probe: AbortController | null = null;
+    async function refreshCase() {
+      const before = stateRef.current;
+      if (document.visibilityState === 'hidden' || probe || operation.current || before.activeRun || !before.id || !before.timeline.some(item => item.kind === 'case_changed')) return;
+      const controller = new AbortController();
+      probe = controller;
+      try {
+        const snapshot = await getSnapshot(before.id, controller.signal);
+        const latest = stateRef.current;
+        // A background response must never overwrite a newer user submission.
+        if (!mounted.current || controller.signal.aborted || operation.current || latest.id !== before.id || latest.version !== before.version || latest.lastSeq !== before.lastSeq) return;
+        if (snapshot.version === latest.version && (snapshot.last_event_seq ?? 0) <= latest.lastSeq && !snapshot.active_run) return;
+        const update = begin();
+        try { await restore(before.id, update, snapshot); }
+        catch (error) { fail(error, update); }
+        finally { finish(update); }
+      } catch { /* Background delivery retries on the next visible interval. */ }
+      finally { if (probe === controller) probe = null; }
+    }
+    const timer = setInterval(() => { void refreshCase(); }, 5000);
+    document.addEventListener('visibilitychange', refreshCase);
+    return () => { clearInterval(timer); probe?.abort(); document.removeEventListener('visibilitychange', refreshCase); };
+    // State and in-flight operations are read from refs at request and response time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   const send = useCallback(async (text: string, opts: SendOptions = {}): Promise<boolean> => {
     if (operation.current || stateRef.current.activeRun) return false;

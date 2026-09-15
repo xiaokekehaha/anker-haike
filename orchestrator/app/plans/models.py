@@ -58,6 +58,7 @@ class Plan(_Strict):
     version: int = Field(ge=1)
     fault: str = Field(min_length=1)
     applies_to: AppliesTo
+    symptom_codes: list[str] = Field(default_factory=list)
     steps: list[PlanStep] = Field(min_length=1)
 
     @model_validator(mode="after")

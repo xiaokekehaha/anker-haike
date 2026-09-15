@@ -61,3 +61,10 @@ docker --context colima ps --format 'table {{.Names}}\t{{.Status}}'
 - 停止前当前 Docker context 中所有运行容器都属于 `haike`；其他项目及远程数据库未操作。
 - 已核验：13 个容器全部退出，业务与观测 PostgreSQL / Redis 均以退出码 0 停止，9 个项目命名卷仍在。Langfuse web / worker 与备份循环等待 60 秒后由 Docker 结束（退出码 137）；未删除其数据卷。
 - 确认当前实例没有运行容器后，已停止 Colima `default`。本次仅核验停机结果，未重新启动服务；下次启动后执行健康检查。
+
+## 2026-09-14 恢复记录
+
+- 应用户要求启动 Colima `default`，通过带 `ui` / `observability` profile 的 Compose `start --wait --wait-timeout 180` 恢复本项目已有 13 个容器，复用停机前镜像和数据。
+- 已启动 Vite 开发页面 `http://127.0.0.1:5173/`。临时 8780 后端、8099 embedding 测试桩及重复 Vite 实例不属于日常服务，未启动。
+- Compose 健康等待通过；后端 `/health` 返回 `status=ok`，数据库、Redis、WeKnora 及默认模型通道配置正常。
+- 本次只恢复已有服务，没有重建镜像；工作区尚在开发的后端改动需要之后构建镜像才会进入容器。

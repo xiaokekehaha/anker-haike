@@ -216,7 +216,7 @@ async def run_message(
                     "session_id": session_id,
                     "run_id": run_id,
                     "at": receipt["received_at"],
-                    "entry": "action",
+                    "entry": source["kind"] if source.get("kind") in {"human_decision", "case_command"} else "action",
                     "last_action": source,
                 }
             else:
@@ -242,6 +242,8 @@ async def run_message(
                 target_issue_id=source.get("target_issue_id"),
             )
             checkpoint = await graph.aget_state(config)
+            from app.replay.runtime import is_replay_mode
+            payload["evaluation_source"] = "replay" if is_replay_mode() else (checkpoint.values or {}).get("evaluation_source") or source.get("evaluation_source", "live")
             already_committed = (checkpoint.values or {}).get("committed_input_id") == receipt[
                 "input_id"
             ]

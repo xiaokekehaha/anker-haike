@@ -146,7 +146,9 @@ async def test_truncation_marks_result(adapter):
     ad.max_chars = 300
     res = await ad.hybrid_search("kb_manual", "滚刷", 5, X10)
     assert res.truncated is True and sum(len(h.snippet) for h in res.hits) <= 300 and res.hits
-    assert res.for_model()["truncated"] is True
+    # 回执要能让 rewrite 区分「一共就这么多」和「还有更多没给」
+    receipt = res.for_model()["truncated"]
+    assert receipt["kept"] == len(res.hits) and receipt["total"] > receipt["kept"]
 
 
 async def test_post_filter_drops_hits_outside_allowed(adapter):

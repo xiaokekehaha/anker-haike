@@ -122,8 +122,8 @@ class TaskFake(FakeChatModel):
             for fact in data.get("facts", []):
                 if fact.get("quote") == "$current":
                     fact["quote"] = current
-            if data.get("risk_quote") == "$current":
-                data["risk_quote"] = current
+            if data.get("device_safety_quote") == "$current":
+                data["device_safety_quote"] = current
             self.script[0] = js(data)
         try:
             return super()._next(messages, run_manager, kwargs)

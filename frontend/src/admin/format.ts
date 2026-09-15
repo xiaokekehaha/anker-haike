@@ -51,6 +51,7 @@ export function reasonText(reason: string | null): string {
 
 /** 复盘原因标签 → 中文。键与后端 derive.REASON_TAGS 一致。 */
 export const TAG_TEXT: Record<string, string> = {
+  intent_correct: '意图正确', intent_wrong: '意图有误',
   knowledge_missing: '知识缺失', retrieval_mismatch: '检索错配', wrong_plan: '计划不对',
   bad_step_wording: '步骤话术差', model_quality: '模型输出差', model_fallback: '降级导致',
   rule_false_positive: '规则误触', product_unrecognized: '产品未识别',
@@ -65,6 +66,8 @@ export const CASE_STATUS_TEXT: Record<string, string> = {
 
 /** 节点名 → 中文（与图节点一一对应）。 */
 export const NODE_TEXT: Record<string, string> = {
+  understand: '理解诉求', dialogue: '对话回应', commit_issue: '保存问题',
+  service_context: '核实服务信息', propose: '计算方案', authorize: '检查授权', execute: '办理业务', track: '跟踪服务单', await_human: '等待人工审核', consult: '业务查询', apply_human_decision: '应用审核决定', advance_tasks: '接续下一需求', prepare_retake: '请求补拍', vision_conflict: '核实图文差异',
   __start__: '开始', __end__: '结束', intake: '理解诉求', rediagnose: '补充信息',
   reassure: '安抚', disambiguate: '产品消歧', prepare_card: '准备产品卡', clarify: '澄清追问',
   vision: '读图', retrieve: '检索知识', reply: '生成回复', guide: '下发步骤',

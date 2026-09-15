@@ -1,5 +1,4 @@
 
-from tests.message_form import message_form
 import asyncio
 
 import pytest
@@ -8,6 +7,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.sessions import runner, sse
+from tests.message_form import message_form
 
 
 def _client():
@@ -86,14 +86,22 @@ async def test_ping_every_interval_while_node_runs(mem_runtime, monkeypatch):
     assert types[-1] == "done" and events[-1]["reason"] == "completed"
 
 
-async def test_error_path_ends_with_done_error(mem_runtime):
+async def test_error_path_ends_with_done_error(mem_runtime, monkeypatch):
+    from types import SimpleNamespace
+
+    import app.sessions.graph as graph_module
+
+    def fail(**kwargs):
+        raise RuntimeError("injected node failure")
+
+    monkeypatch.setattr(graph_module, "get_rules_service", lambda: SimpleNamespace(check_in=fail))
     async with _client() as client:
         sid = await _create(client)
-        events, _ = await _send(client, sid, "__raise__")
+        events, _ = await _send(client, sid, "机器不亮了")
     types = [e["type"] for e in events]
     assert types == ["run_started", "input_received", "progress", "error", "done"]
     err = next(e for e in events if e["type"] == "error")
-    assert err["code"] == "node_failed" and "placeholder node failure" in err["message"]
+    assert err["code"] == "node_failed" and "injected node failure" in err["message"]
     assert err["recoverable"] is False and err["retry_with_same_action"] is False
     assert events[-1]["reason"] == "error"
     # 失败的 run 同样释放 active run，version 仍推进（本 run 已提交事件）

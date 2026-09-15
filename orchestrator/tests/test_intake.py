@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import json
 import os
 
@@ -16,7 +14,6 @@ from app.intake import IntakeExtraction, extract_intake, strategy_for
 from app.intake.extract import build_messages
 from app.main import app
 from app.models.config import load_models_config
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
@@ -24,6 +21,8 @@ from app.prompts import PROMPT_VERSION, ROLE_LAYER, compose_system_prompt, wrap_
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT, settings
+from tests.message_form import message_form
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_models_router import CONFIG as ROUTER_CONFIG
 
 GOLDEN = yaml.safe_load(
@@ -138,10 +137,11 @@ async def test_wants_human_from_extraction_escalates_like_r3(mem_runtime, tmp_pa
         tmp_path,
         [
             {
+                "primary_intent": "request_human",
+                "human_request_quote": "找个人来处理",
                 "emotion_level": "angry",
-                "product_hints": [],
-                "symptoms": ["修不好"],
-                "wants_human": True,
+                "device_relation": "current",
+                "facts": [{"kind": "symptom", "value": "修不好", "quote": "修了半天不行"}],
             }
         ],
     )

@@ -82,7 +82,7 @@ def _new_input(sid: str, iid: str, payload: dict, seq: int, deadline_ms: int, ro
         "input_id": iid,
         "base_version": row.version,
         "base_checkpoint_id": row.published_checkpoint_id,
-        "kind": "message" if payload.get("kind") == "message" else "action",
+        "kind": payload["kind"] if payload.get("kind") in {"message", "human_decision"} else "action",
         "payload_digest": payload_digest(payload),
         "run_id": rid,
         "input_event_seq": seq + 2,

@@ -26,10 +26,10 @@ from langchain_core.messages.utils import convert_to_messages
 
 log = logging.getLogger("replay.package")
 
-VERSION_KEYS: tuple[str, ...] = ("prompt_ver", "models_ver", "kb_ver", "rules_ver")
+VERSION_KEYS: tuple[str, ...] = ("prompt_ver", "models_ver", "kb_ver", "rules_ver", "policy_version", "actions_version")
 MANIFEST_FILE = "manifest.json"
 EVENTS_FILE = "events.jsonl"
-FORMAT_VERSION = 1
+FORMAT_VERSION = 3
 
 
 class ReplayIncompatible(RuntimeError):
@@ -86,7 +86,10 @@ def canonical_messages(messages: Sequence[BaseMessage | tuple[str, str] | dict[s
 
 
 def model_key(task: str, schema_name: str | None, messages: Sequence[Any]) -> str:
-    payload = {"task": task, "schema": schema_name, "messages": canonical_messages(messages)}
+    from app.replay.context import context_identity
+
+    structured, _ = context_identity(messages)
+    payload = {"task": task, "schema": schema_name, "messages": structured if structured is not None else canonical_messages(messages)}
     return hashlib.sha256(
         json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
@@ -113,6 +116,7 @@ def knowledge_key(kb: str, query: str, scope: Any, top_k: int) -> str:
 
 PROMPT_VERSION_SOURCES: tuple[tuple[str, str, str], ...] = (
     ("system", "app.prompts.system", "PROMPT_VERSION"),
+    ("interpret", "app.conversation.interpret", "INTERPRET_PROMPT_VERSION"),
     ("reply", "app.prompts.reply", "REPLY_PROMPT_VERSION"),
     ("guide", "app.prompts.guide", "GUIDE_PROMPT_VERSION"),
     ("clarify", "app.sessions.clarify", "CLARIFY_PROMPT_VERSION"),
@@ -170,7 +174,11 @@ def current_versions(
     kb_manifest_path: str | Path,
     kb_ver_override: str = "",
 ) -> dict[str, str | None]:
+    from app.actions.registry import ActionRegistry
+    from app.policy.loader import PolicyLoader
     return {
+        "policy_version": PolicyLoader().load()["policy"]["version"],
+        "actions_version": ActionRegistry().version,
         "prompt_ver": prompt_version(),
         "models_ver": models_ver,
         "kb_ver": kb_version(kb_manifest_path, kb_ver_override),

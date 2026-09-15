@@ -1,0 +1,362 @@
+source: 人工确定性规则回归样本，不代表真实模型评测
+cases:
+- id: emotion-01
+  input:
+    text: 谢谢
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-02
+  input:
+    text: 好的
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-03
+  input:
+    text: 明白了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-04
+  input:
+    text: 收到
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-05
+  input:
+    text: 我再看看
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-06
+  input:
+    text: 请帮忙
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-07
+  input:
+    text: 继续
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-08
+  input:
+    text: 麻烦了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-09
+  input:
+    text: 可以
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-10
+  input:
+    text: 了解
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: calm
+    strategy: normal
+- id: emotion-11
+  input:
+    text: 不满意
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-12
+  input:
+    text: 有点不满
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-13
+  input:
+    text: 太慢了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-14
+  input:
+    text: 很失望
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-15
+  input:
+    text: 又坏了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-16
+  input:
+    text: 这没用
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-17
+  input:
+    text: 无语了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-18
+  input:
+    text: 🙄
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-19
+  input:
+    text: 真让人失望
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-20
+  input:
+    text: 等得太慢
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: dissatisfied
+    strategy: reassure_and_shorten
+- id: emotion-21
+  input:
+    text: 气死我了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-22
+  input:
+    text: 太烂了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-23
+  input:
+    text: 我受够了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-24
+  input:
+    text: 真生气
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-25
+  input:
+    text: 很愤怒
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-26
+  input:
+    text: 😡
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-27
+  input:
+    text: 🤬
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-28
+  input:
+    text: 我生气了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-29
+  input:
+    text: 实在受够
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-30
+  input:
+    text: 太烂
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: angry
+    strategy: direct_resolution
+- id: emotion-31
+  input:
+    text: 我要投诉
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-32
+  input:
+    text: 找315
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-33
+  input:
+    text: 联系消协
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-34
+  input:
+    text: 我要曝光
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-35
+  input:
+    text: 给你差评
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-36
+  input:
+    text: 找律师
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-37
+  input:
+    text: 去315投诉
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-38
+  input:
+    text: 投诉你们
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-39
+  input:
+    text: 差评了
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human
+- id: emotion-40
+  input:
+    text: 准备曝光
+    level: calm
+    track: []
+    input_id: e
+  expected:
+    level: complaint_risk
+    strategy: de_escalate_and_offer_human

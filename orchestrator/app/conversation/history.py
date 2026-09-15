@@ -72,17 +72,18 @@ def fold_history(
             run_inputs[record.run_id] = iid
             payload = copy.deepcopy(e["payload"])
             is_message = e["input_kind"] == "message"
+            is_admin = payload.get("kind") in {"human_decision", "case_command"}
             entry = entries.get(iid)
             if entry is None:
                 entry = ConversationEntry(
                     **base,
                     entry_id=iid,
-                    role="user",
+                    role="system" if is_admin else "user",
                     kind="message" if is_message else "action",
                     received_at=at,
                     text=payload.get("text", "")
                     if is_message
-                    else ACTION_LABELS.get(payload.get("kind"), "操作"),
+                    else ("人工案件操作" if is_admin else ACTION_LABELS.get(payload.get("kind"), "操作")),
                     payload=payload,
                     attachments=list(payload.get("image_ids") or []),
                     issue_id=e.get("issue_id"),
@@ -140,7 +141,7 @@ def fold_history(
             ]
             if e["status"] != "started":
                 entry.completed_at = at
-        elif kind in {"product_card", "step_card", "receipt_card", "escalation_summary"}:
+        elif kind in {"product_card", "step_card", "receipt_card", "escalation_summary", "context_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
             entry = entries.get(e["card_id"]) or ConversationEntry(
                 **base,
                 entry_id=e["card_id"],

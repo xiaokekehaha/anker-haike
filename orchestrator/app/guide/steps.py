@@ -3,7 +3,7 @@
 1. 取 plan_cursor 指向的步骤，instruction_src 原文来自 plans.yaml 的证据索引（已审核文本）。
 2. evidence_ids = 当前允许证据集合中与 instruction_src 同 doc 的条目 + 命中该计划的故障卡证据；
    若步骤引用了允许集合外的 id → 丢弃该步骤取下一步（09 §2.5）。
-3. CP-pre-step：文字含 R4 → 升级；含高危动作且无 caution → 丢弃取下一步。
+3. CP-pre-step：文字含 R4 或含高危动作且无 caution → 丢弃取下一步。
 4. LLM（guide.step，internal）只改写为一句可执行话；动作词集合必须 ⊆ 原文，否则用原文。
 card_id = uuid5(session_id, plan_id, step_id)，重跑稳定。
 """
@@ -175,7 +175,10 @@ async def prepare_step(
                 {
                     "plan_id": plan.plan_id,
                     "step_id": step_id,
-                    "reason": f"high_risk_without_caution:{pre.term}",
+                    "reason": (
+                        f"safety_term_in_step:{pre.term}" if pre.rule_id == "R4"
+                        else f"high_risk_without_caution:{pre.term}"
+                    ),
                 }
             )
             step_id = _advance_in_plan(plan, step_id)

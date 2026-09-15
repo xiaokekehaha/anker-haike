@@ -55,6 +55,39 @@ log = logging.getLogger("sessions.graph")
 
 
 class SessionState(TypedDict, total=False):
+    business_context: dict | None
+    case_status: str | None
+    human_involved: bool
+    evaluation_source: str
+    service_context: dict
+    context_sources: dict
+    policy_decision: dict | None
+    proposal: dict | None
+    case_id: str | None
+    case_order_no: str | None
+    execution: dict | None
+    execution_key: str | None
+    gate_result: dict | None
+    prior_remedies: list[str]
+    requested_remedy: str | None
+    consult_intent: str | None
+    last_consult_params: dict
+    consult_params: dict
+    consult_attempts: int
+    consult_answered: bool
+    l3_route: str | None
+    human_request_info: bool
+    human_decision_id: str | None
+    task_queue: list[dict]
+    emotion_trend: str
+    emotion_actions: list[str]
+    unresolved_turns: int
+    emotion_track: list[dict]
+    fault_localization: dict | None
+    image_quality: dict | None
+    retake_attempts: int
+    completed_task_intent: str | None
+    retake_skipped: bool
     input_id: str
     base_version: int
     committed_input_id: str
@@ -110,6 +143,8 @@ class SessionState(TypedDict, total=False):
     emotion: dict[str, str]
     product_hints: list[str]
     symptoms: list[str]
+    symptom_codes: list[str]
+    symptom_interview: dict[str, Any] | None
     model_trace: list[dict[str, Any]]
     # 票 28：检索结果。evidence 按 evidence_id 去重累积，供 step.evidence_ids 引用；knowledge_status 为最近一次四态
     evidence: dict[str, dict[str, Any]]
@@ -221,6 +256,9 @@ async def disambiguate(state: SessionState) -> SessionState:
     writer({"type": "progress", "stage": "disambiguate"})
     decision = clarify_mod.decide(dict(state), abandoned_card=state.get("abandoned_card"))
     update: SessionState = {"stage": "disambiguate", "abandoned_card": None, **decision.update}
+    from app.actions.runtime import get_services
+    if get_services() is not None and decision.reason == "symptom" and (state.get("requested_remedy") or (state.get("turn_decision") or {}).get("primary_intent") in {"refund_request", "address_update"}):
+        decision.outcome = "continue"
     update["_decision"] = {
         "outcome": decision.outcome,
         "reason": decision.reason,
@@ -277,6 +315,7 @@ async def clarify(state: SessionState) -> SessionState:
         "clarification": clarify_mod.count_attempt(
             state.get("clarification"), reason, state.get("run_id", "")
         ),
+        **({"symptom_interview": detail["symptom_interview"]} if detail.get("symptom_interview") else {}),
         "visible_messages": msgs,
         "model_trace": [
             *state.get("model_trace", []),
@@ -290,6 +329,12 @@ def _after_product(state: SessionState) -> str:
     """产品已确认或品类已知 → 本 run 带故障图先读图（票 30）→ 检索（票 28）；unknown 只允许追问（票 24），不检索。"""
     if state.get("product_state") not in ("confirmed_sku", "category_only"):
         return "reply"
+    from app.actions.runtime import get_services
+    intent = (state.get("turn_decision") or {}).get("primary_intent")
+    if get_services() is not None and state.get("product_state") == "confirmed_sku" and (
+        intent in {"replacement_request", "refund_request", "address_update"} or state.get("requested_remedy")
+    ):
+        return "service_context"
     return "vision" if _new_fault_images(state) else "retrieve"
 
 
@@ -340,6 +385,15 @@ async def vision(state: SessionState) -> SessionState:
             *([out.model_trace] if out.model_trace else []),
         ],
     }
+    if out.fault_localization is not None:
+        from app.diagnose.localization import signature_plans
+        update.update(fault_localization=out.fault_localization, image_quality=out.fault_localization['image_quality'], fault_card_hits=signature_plans(out.fault_localization))
+        hint=out.fault_localization.get('model_hint')
+        if hint and state.get('product_state') != 'confirmed_sku':
+            candidates=get_catalog().lookup_product(hint)
+            if len(candidates)==1:
+                chosen=candidates[0].model_dump(mode='json')
+                update.update(product_confirmed=chosen,product_state='confirmed_sku',category=chosen['category'])
     if out.status == "ok":
         summary = "；".join(out.observations) or "未识别出明显异常"
         if out.dropped_image_ids:
@@ -442,6 +496,12 @@ async def vision(state: SessionState) -> SessionState:
 
 
 def route_after_vision(state: SessionState) -> str:
+    from app.actions.runtime import get_services
+    if get_services() is not None and not state.get('escalate_reason'):
+        if (state.get('fault_localization') or {}).get('conflicts_with_text'):
+            return 'vision_conflict'
+        if (state.get('image_quality') or {}).get('usable') is False and not state.get('retake_skipped'):
+            return 'prepare_retake'
     return "escalate" if state.get("escalate_reason") else "retrieve"
 
 
@@ -513,6 +573,9 @@ async def await_input(state: SessionState) -> SessionState:
                 **pc["payload"],
             }
         )
+    elif pc["kind"] in {"confirm_context", "confirm_proposal", "upload_retake", "rate_satisfaction"}:
+        event_type = {"confirm_context":"context_card", "confirm_proposal":"proposal_card", "upload_retake":"retake_card", "rate_satisfaction":"rating_card"}[pc["kind"]]
+        writer({"type":event_type,"card_id":pc["card_id"],"version":current_version(),**pc["payload"]})
     # Waiting is business state. Every graph invocation reaches END normally.
     return {
         "pending_card": {
@@ -540,6 +603,9 @@ async def apply_action(state: SessionState) -> SessionState:
                 "version": state["base_version"] + 1,
             }
         )
+    if action.get("kind") in {"confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}:
+        from app.sessions.l3 import apply_l3_action
+        return await apply_l3_action(state, action, pc)
     results = dict(state.get("card_results") or {})
     # 接收时间由输入账本固定；_verify 只对本次 step_feedback 有效。
     update: SessionState = {
@@ -570,6 +636,10 @@ async def apply_action(state: SessionState) -> SessionState:
         fields = dict(payload.get("fields") or {})
         edited = list(payload.get("edited") or [])
         receipt = receipt_mod.confirmed_receipt(dict(state), fields, edited)
+        from app.conversation.business import BusinessContext
+        update["business_context"] = BusinessContext.restore(state).observe(
+            "receipt.confirm", fields, {}, state["input_id"]
+        ).model_dump(mode="json")
         results[pc.get("card_id", "")] = {
             "confirmed_fields": receipt["fields"],
             "edited": receipt["edited"],
@@ -602,6 +672,8 @@ async def apply_action(state: SessionState) -> SessionState:
 
 
 def route_after_apply(state: SessionState) -> str:
+    if state.get("l3_route"):
+        return state["l3_route"]
     if state.get("escalate_reason"):
         return "escalate"
     if state.get("out_of_scope"):
@@ -627,7 +699,7 @@ def _apply_step_feedback(
     card_id = pc.get("card_id", "")
     session_id = state.get("session_id", "")
     results[card_id] = {"feedback": feedback, **({"note": note} if note else {})}
-    update: SessionState = {"stage": "verify", "substage": None, "card_results": results}
+    update: SessionState = {"stage": "verify", "substage": None, "card_results": results, "unresolved_turns": 0 if feedback == "solved" else (state.get("unresolved_turns") or 0) + 1}
     cp = get_rules_service().check_in(
         action_kind="step_feedback", action_note=note, session_id=session_id
     )
@@ -702,7 +774,11 @@ async def understand(state: SessionState) -> SessionState:
     from app.conversation.policy import pending_risk_sources
     from app.conversation.reduce import reduce_turn
 
-    get_stream_writer()({"type": "progress", "stage": "intake"})
+    if state.get("entry") == "message":
+        get_stream_writer()({"type": "progress", "stage": "intake"})
+    if state.get("entry") in {"human_decision", "case_command"}:
+        from app.sessions.l3 import understand_human
+        return await understand_human(state)
     await asyncio.sleep(_delay())
     recovered_risks = pending_risk_sources(dict(state), get_rules_service())
     if recovered_risks:
@@ -716,9 +792,99 @@ async def understand(state: SessionState) -> SessionState:
     meaning, context = await interpret_turn(
         get_model_router(), dict(state), lane=os.environ.get("MODEL_LANE", "domestic")
     )
+    from app.actions.runtime import get_services
+    resumed_task = None
+    if get_services() is not None and meaning.primary_intent == "resume_task":
+        task = next((t for t in state.get("task_queue", []) if t["task_id"] == meaning.target_task_id and t["status"] in {"pending", "active"}), None)
+        if task:
+            from app.conversation.business import BusinessContext
+            from app.conversation.tasks import task_business
+            resumed_task = task
+            state = {**state, "business_context": task_business(task, BusinessContext.restore(state)).model_dump(mode="json")}
+            meaning = meaning.model_copy(update={"primary_intent": task["intent"], "secondary_intents": [], "business_reference": None, "answer_request": None})
+        else:
+            meaning = meaning.model_copy(update={"primary_intent": "unknown", "clarification": "请说明要优先处理哪项需求。"})
+    if get_services() is not None and meaning.secondary_intents:
+        from app.conversation.tasks import ordered_intents
+        intents=ordered_intents(meaning.primary_intent, meaning.secondary_intents)
+        meaning=meaning.model_copy(update={"primary_intent":intents[0],"secondary_intents":intents[1:]})
+    if meaning.answer_request and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update", "report_problem", "request_human"}:
+        # A single factual question can require several reads. Those reads are
+        # planned by the answer module, not queued as duplicate user tasks.
+        meaning = meaning.model_copy(update={"secondary_intents": [i for i in meaning.secondary_intents if i not in {"order_query", "warranty_query", "logistics_query"}]})
+    requested_business = None
+    business_order_no = None
+    if get_services() is not None and state.get("entry") == "message" and (
+        meaning.primary_intent in {"replacement_request", "refund_request", "address_update"}
+        or (state.get("requested_remedy") and (state.get("stage") == "context" or (state.get("pending_card") or {}).get("kind") in {"upload_receipt", "confirm_receipt"})
+            and meaning.primary_intent in {"supplement", "unknown", "answer_pending"})
+    ):
+        from app.conversation.business import BusinessContext
+
+        requested_business = BusinessContext.restore(state).accept(
+            text, state["input_id"], meaning.business_reference.model_dump() if meaning.business_reference else None
+        )
+        from app.actions.params import IDENTIFIER
+        if meaning.business_reference and meaning.business_reference.relation in {"case", "issue"} and state.get("case_order_no") and not IDENTIFIER.search(text):
+            requested_business = requested_business.for_order(state["case_order_no"])
+        binding = requested_business.bind("warranty.check")
+        if binding.status == "ready":
+            business_order_no = binding.params.get("order_no")
+        if meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"} and state.get("case_order_no") and business_order_no != state["case_order_no"]:
+            requested_business, business_order_no = None, None
+    # Context reported while discussing another order belongs to that subject,
+    # not to the still-open service issue. Keep the full meaning for subject storage.
+    reducer_meaning = meaning
+    if get_services() is not None and state.get("entry") == "message" and requested_business is None:
+        from app.conversation.business import BusinessContext
+        focus = BusinessContext.restore(state).accept(text, state["input_id"], meaning.business_reference.model_dump() if meaning.business_reference else None)
+        focus_order = focus.bind("warranty.check").params.get("order_no")
+        if state.get("case_order_no") and focus_order != state["case_order_no"]:
+            reducer_meaning = meaning.model_copy(update={"facts": [f for f in meaning.facts if f.kind != "context"]})
     update = reduce_turn(
-        dict(state), meaning, precheck_risk=any(h.rule_id == "R4" for h in cp.hits)
+        dict(state), reducer_meaning, precheck_risk=any(h.rule_id == "R4" for h in cp.hits),
+        business_order_no=business_order_no,
+        new_business_subject=requested_business is not None and requested_business.status == "missing",
     )
+    update["l3_route"] = None
+    if update["turn_decision"].get("business_switched") and state.get("requested_remedy"):
+        update["requested_remedy"] = state["requested_remedy"]
+    from app.actions.runtime import get_services
+    if get_services() is not None:
+        from app.conversation.business import BusinessContext
+        update["business_context"] = (requested_business.focused() if update["turn_decision"].get("business_switched") else BusinessContext.restore({**state, **update})).accept(
+            text, state["input_id"], meaning.business_reference.model_dump() if meaning.business_reference else None
+        ).model_dump(mode="json")
+        from app.emotion.policy import evaluate_emotion
+        emotion_update = evaluate_emotion(meaning.emotion_level, text, update.get("emotion_track") or [], state["input_id"], unresolved_turns=(update.get("unresolved_turns") or 0)+1, risk=not update["turn_decision"]["allowed_operations"])
+        if state.get("entry") == "message":
+            update.update(emotion_update)
+            record("emotion_strategy", session_id=state["session_id"], run_id=state["run_id"], level=emotion_update["emotion"]["level"], trend=emotion_update["emotion_trend"], strategy=emotion_update["emotion"]["strategy"])
+        from app.conversation.tasks import enqueue
+        from app.sessions.l3 import say
+        tasks, notice = enqueue(update.get("task_queue") or [],meaning.primary_intent,meaning.secondary_intents,text,state["input_id"], business=BusinessContext.restore({**state, **update}))
+        if resumed_task:
+            tasks = [{**task, "status": "active" if task["task_id"] == resumed_task["task_id"] else "pending"} if task["status"] in {"pending", "active"} else task for task in tasks]
+            update["turn_decision"]["task_id"] = resumed_task["task_id"]
+        update["task_queue"]=tasks
+        if notice:
+            say({**state,**update},notice)
+        if state.get("entry") == "message" and "offer_human" in update.get("emotion_actions", []):
+            say({**state, **update}, "很抱歉让您反复处理。您可以选择人工协助；如需补偿，我会将诉求交由人工评估。")
+        context_values = dict(update.get("service_context") or {})
+        context_sources = dict(update.get("context_sources") or {})
+        reported = {fact.context_field: fact.value for fact in meaning.facts if fact.kind == "context" and fact.context_field and fact.quote and fact.quote in text}
+        business = BusinessContext.restore({**state, **update}).remember(reported, state["input_id"], order_no=update.get("case_order_no") if update["turn_decision"].get("answer_scope") in {"case", "issue"} else None)
+        update["business_context"] = business.model_dump(mode="json")
+        from app.conversation.answers import conversation_view
+        view = conversation_view({**state, **update})
+        if not update.get("case_order_no") or view["issue_matches_focus"] or update["turn_decision"].get("answer_scope") in {"case", "issue"}:
+            for key, value in reported.items():
+                if context_sources.get(key) != "receipt":
+                    context_values[key], context_sources[key] = value, "user"
+        update.update(service_context=context_values, context_sources=context_sources)
+        if meaning.primary_intent in {"replacement_request", "refund_request", "address_update"}:
+            update["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[meaning.primary_intent]
     if context.get("source") != "validated_action":
         update["model_trace"] = [
             *state.get("model_trace", []),
@@ -784,7 +950,20 @@ async def understand(state: SessionState) -> SessionState:
             update["turn_decision"].update(reply_mode="clarify", clarification=selection["error"])
     from app.conversation.commands import resolve_command
 
-    command, clarification = resolve_command({**state, **update}, meaning)
+    reopening = None
+    if get_services() is not None:
+        from app.sessions.l3 import reopening_request
+        reopening = await reopening_request({**state, **update}, meaning)
+    if update["turn_decision"].get("symptom_answered"):
+        update["turn_decision"].update(reply_mode="diagnose", clarification=None)
+        command, clarification = None, None
+    elif reopening and not reopening.get("clarification"):
+        update["turn_decision"]["reopen_request"] = reopening
+        command, clarification = None, None
+    elif reopening:
+        command, clarification = None, reopening["clarification"]
+    else:
+        command, clarification = resolve_command({**state, **update}, meaning)
     if command:
         update["last_action"] = command
         update["turn_decision"]["internal_command"] = command["kind"]
@@ -834,8 +1013,22 @@ async def dialogue(state: SessionState) -> SessionState:
 
 
 async def commit_issue(state: SessionState) -> SessionState:
+    from app.actions.runtime import get_services
+    from app.analytics.l3 import episode
     from app.conversation.reduce import persist_issue
-
+    services = get_services()
+    if services is not None:
+        case = await services.cases.store.get(state["case_id"]) if state.get("case_id") else None
+        if case and state.get("emotion", {}).get("level") == "complaint_risk" and not case["complaint_risk"]:
+            case = await services.cases.transition(case["case_id"], case["status"], "投诉风险上升", complaint_risk=True, priority="high")
+        fact = episode(dict(state), case)
+        try:
+            await services.cases.store.record_episode(fact)
+        except Exception:
+            # A metrics outage must not discard a successfully persisted business receipt.
+            log.exception("L3 episode projection failed for session %s", state["session_id"])
+        get_stream_writer()({"type": "progress", "stage": state.get("stage") or "intake"})
+        state = {**state, "case_status": case["status"] if case else None, "human_involved": fact["human_involved"]}
     persisted = persist_issue(dict(state))
     issue = persisted["issues"].get(state["active_issue_id"], {})
     previous = issue.get("latest_summary")
@@ -851,23 +1044,67 @@ async def commit_issue(state: SessionState) -> SessionState:
         persisted["issues"] = refreshed["issues"]
     return {
         **persisted,
+        "case_status": state.get("case_status"),
+        "human_involved": state.get("human_involved", False),
         "committed_input_id": state["input_id"],
         "committed_version": state["base_version"] + 1,
     }
 
 
+def route_after_close(state: SessionState) -> str:
+    from app.actions.runtime import get_services
+    return "advance_tasks" if get_services() is not None else "commit_issue"
+
+
 def route_entry(state: SessionState) -> str:
+    from app.actions.runtime import get_services
+    from app.sessions.l3 import CONSULT_INTENTS
+    if state.get("entry") == "case_command":
+        return "apply_case_command"
+    if state.get("entry") == "human_decision":
+        return "apply_human_decision"
     decision = state.get("turn_decision") or {}
+    if decision.get("reopen_request"):
+        return "reopen_case"
     if decision.get("receipt_upload"):
         return "receipt_extract"
     if decision.get("escalation_trigger"):
         return "escalate"
-    if decision.get("internal_command"):
+    if decision.get("business_ambiguous"):
+        return "dialogue"
+    if decision.get("symptom_answered"):
+        return "disambiguate"
+    if decision.get("business_switched"):
+        return "service_context"
+    if (state.get('pending_card') or {}).get('kind') == 'upload_retake' and _new_fault_images(state):
+        return 'vision'
+    if decision.get("internal_command") or state.get("entry") == "action":
+        # Accepted card commands have already been scoped and validated. They
+        # must be applied before free-text business routing can advance a flow.
         return "apply_action"
+    if get_services() is not None:
+        intent = decision.get("primary_intent")
+        if state.get("emotion", {}).get("level") == "complaint_risk" and state.get("product_state") == "confirmed_sku" and not state.get("case_id"):
+            return "service_context"
+        from app.conversation.answers import FACTUAL_INTENTS
+        if decision.get("answer_request") and intent in FACTUAL_INTENTS:
+            return "consult"
+        if intent in CONSULT_INTENTS or (state.get("consult_intent") and intent in {"supplement","unknown","answer_pending"}):
+            return "consult"
+        if intent == "confirm_received" and state.get("case_id"):
+            return "track"
+        if intent in {"replacement_request","refund_request","address_update"}:
+            return "service_context"
+        if state.get("requested_remedy") and (state.get("stage") == "context" or (state.get("pending_card") or {}).get("kind") in {"upload_receipt", "confirm_receipt"}) and intent in {"supplement", "unknown", "answer_pending"}:
+            return "service_context"
+        if state.get("human_request_info") and intent in {"supplement","correct","answer_pending"}:
+            return "service_context"
+        if state.get("case_id") and state.get("stage") == "awaiting_human":
+            return "dialogue"
+        if intent == "report_problem" and decision.get("allowed_operations") and not state.get("pending_card"):
+            return "disambiguate"
     if decision.get("reply_mode") in {"dialogue", "clarify"}:
         return "dialogue"
-    if state.get("entry") == "action":
-        return "apply_action"
     if (state.get("emotion") or {}).get(
         "strategy", "normal"
     ) != "normal" and get_model_router() is not None:
@@ -1150,13 +1387,23 @@ async def retrieve(state: SessionState) -> SessionState:
     fault_card_state = None
     fc_evidence: list[dict[str, Any]] = []
     if card is not None:
+        fc_hits = card.match([query, *[str(s) for s in state.get("symptoms") or []]], symptom_codes=state.get("symptom_codes") or [])
+        from app.diagnose.localization import signature_plans
+        signature_ids=signature_plans(state.get('fault_localization'), card.faults)
+        fc_hits=[*[f for f in card.faults if f.plan_id in signature_ids], *[f for f in fc_hits if f.plan_id not in signature_ids]]
+        allowed_ids = {
+            p.plan_id for p in get_plan_library().allowed_for(
+                category=scope.category, sku=scope.sku,
+                symptom_codes=state.get("symptom_codes") or [],
+            )
+        }
+        fc_hits = [f for f in fc_hits if f.plan_id in allowed_ids]
         fault_card_state = {
             "key": card.key,
             "doc_version": card.doc_version,
             "tokens": card.tokens(),
-            "text": card.render(),
+            "text": card.render(fc_hits),
         }
-        fc_hits = card.match([query, *[str(s) for s in state.get("symptoms") or []]])
         fc_evidence = card.evidence_items(fc_hits)
     writer(
         {
@@ -1495,7 +1742,10 @@ async def _synthesize_step(
     state: SessionState, round_evidence: dict[str, dict[str, Any]], lane: str, rcfg
 ) -> dict[str, Any]:
     scope = knowledge_scope_of(state)
-    allowed = get_plan_library().allowed_for(category=scope.category, sku=scope.sku)
+    allowed = get_plan_library().allowed_for(
+        category=scope.category, sku=scope.sku,
+        symptom_codes=state.get("symptom_codes") or [],
+    )
     out = await synthesize(
         get_model_router(),
         state=dict(state),
@@ -1568,10 +1818,15 @@ def _diagnose_outcome(
 
 
 def route_after_retrieve(state: SessionState) -> str:
-    return "escalate" if state.get("escalate_reason") else "reply"
+    if state.get("escalate_reason"):
+        return "escalate"
+    # Only guide may publish operations, after evidence and pre-step policy checks.
+    return "guide" if state.get("plan_cursor") else "reply"
 
 
 async def guide(state: SessionState) -> SessionState:
+    if "prefer_proposal_over_more_steps" in state.get("emotion_actions", []) and (state.get("counters") or {}).get("executed",0) >= 2:
+        return {"escalate_reason":"R2","pending_card":None}
     """排障引导（票 34，03 §1.5）：取 plan_cursor 步骤 → 去重 / 证据校验 / CP-pre-step → guide.step 改写（失败用原文）
     → pending_card(kind=step_feedback)；随后 await_input 发 step_card。当前计划剩余步骤全被丢弃 → 切换计划或 R2。"""
     writer = get_stream_writer()
@@ -1620,11 +1875,13 @@ async def guide(state: SessionState) -> SessionState:
             )
             return update
         if prep.outcome == "ready":
+            from app.conversation.reduce import stable_id
+            published_card_id = stable_id(state["input_id"], state["active_issue_id"], prep.card_id)
             elapsed = _elapsed_ms(state)
             log.info(
                 "step_card ready session=%s card=%s plan=%s step=%s rewritten=%s card_ready_ms=%s",
                 session_id,
-                prep.card_id,
+                published_card_id,
                 prep.step["plan_id"],
                 prep.step["step_id"],
                 prep.rewritten,
@@ -1632,14 +1889,15 @@ async def guide(state: SessionState) -> SessionState:
                 extra={
                     "event": "card_ready",
                     "session_id": session_id,
-                    "card_id": prep.card_id,
+                    "card_id": published_card_id,
                     "card_ready_ms": elapsed,
                 },
             )
             update.update(
                 {
                     "pending_card": {
-                        "card_id": prep.card_id,
+                        "card_id": published_card_id,
+                        "input_token": stable_id(published_card_id, "token"),
                         "kind": "step_feedback",
                         "payload": {"step": prep.step},
                     },
@@ -1651,7 +1909,7 @@ async def guide(state: SessionState) -> SessionState:
                         *trace,
                         {
                             "event": "step_ready",
-                            "card_id": prep.card_id,
+                            "card_id": published_card_id,
                             "rewritten": prep.rewritten,
                         },
                     ],
@@ -1774,6 +2032,9 @@ async def escalate(state: SessionState) -> SessionState:
 
 
 def route_escalate(state: SessionState) -> str:
+    from app.actions.runtime import get_services
+    if get_services() is not None and state.get("product_state") == "confirmed_sku" and state.get("escalate_reason") in {"R1","R1b","R1c","R2","R6"}:
+        return "service_context"
     s = dict(state)
     if receipt_mod.has_uploaded(s):
         return "receipt_extract"
@@ -1949,6 +2210,11 @@ async def reply(state: SessionState) -> SessionState:
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "diagnose"})
     await asyncio.sleep(_delay())
+    if any(task.get("status") in {"active", "pending"} for task in state.get("task_queue", [])):
+        # The scheduler has already explained the task order. A second free-form
+        # answer to the original multi-request message could invent actions for
+        # suspended tasks. Let guide publish only the selected diagnostic step.
+        return {"stage": "diagnose"}
     router = get_model_router()
     if router is None or not state.get("product_state") in ("confirmed_sku", "category_only"):
         return {"stage": "diagnose"}
@@ -2002,7 +2268,23 @@ async def reply(state: SessionState) -> SessionState:
 
 
 def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
+    from app.sessions import l3
     g = StateGraph(SessionState)
+    l3_routes = {
+        "service_context": ["await_input", "prepare_receipt", "propose"],
+        "propose": ["commit_issue", "await_human", "summarize", "await_input"],
+        "authorize": ["execute", "await_human", "commit_issue", "service_context"],
+        "execute": ["commit_issue", "await_human", "track", "await_input"],
+        "track": ["advance_tasks"],
+        "await_human": ["commit_issue"],
+        "consult": ["commit_issue", "summarize", "advance_tasks"],
+        "apply_human_decision": ["await_input", "authorize", "propose", "commit_issue"],
+        "apply_case_command": ["commit_issue"],
+        "reopen_case": ["service_context", "escalate"],
+    }
+    for name, targets in l3_routes.items():
+        g.add_node(name, durable_node(getattr(l3, name)))
+        g.add_conditional_edges(name, l3.route, {target: target for target in targets})
     g.add_node("understand", durable_node(understand))
     g.add_node("dialogue", durable_node(dialogue))
     g.add_node("commit_issue", durable_node(commit_issue))
@@ -2017,6 +2299,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         "escalate",
         route_escalate,
         {
+            "service_context": "service_context",
             "summarize": "summarize",
             "prepare_receipt": "prepare_receipt",
             "receipt_extract": "receipt_extract",
@@ -2031,19 +2314,26 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("apply_action", durable_node(apply_action))
     g.add_node("retrieve", durable_node(retrieve))
     g.add_node("vision", durable_node(vision))
+    g.add_node("prepare_retake", durable_node(l3.prepare_retake))
+    g.add_conditional_edges("prepare_retake",l3.route,{"await_input":"await_input", "summarize":"summarize"})
+    g.add_node("vision_conflict",durable_node(l3.vision_conflict))
+    g.add_edge("vision_conflict","commit_issue")
     g.add_conditional_edges(
-        "vision", route_after_vision, {"retrieve": "retrieve", "escalate": "escalate"}
+        "vision", route_after_vision, {"retrieve": "retrieve", "escalate": "escalate", "prepare_retake":"prepare_retake", "vision_conflict":"vision_conflict"}
     )
     g.add_node("reassure", durable_node(reassure))
     g.add_node("clarify", durable_node(clarify))
     g.add_node("out_of_scope", durable_node(out_of_scope))
     g.add_node("guide", durable_node(guide))
     g.add_node("close", durable_node(close))
-    g.add_edge("close", "commit_issue")
+    g.add_node("advance_tasks",durable_node(l3.advance_tasks))
+    g.add_conditional_edges("advance_tasks",l3.route,{target:target for target in ("consult","service_context","disambiguate","await_input","commit_issue")})
+    g.add_conditional_edges("close",route_after_close, {"advance_tasks":"advance_tasks","commit_issue":"commit_issue"})
     g.add_conditional_edges(
         "understand",
         route_entry,
         {
+            **{name:name for name in ("consult","service_context","track","apply_human_decision","apply_case_command","reopen_case","vision")},
             "disambiguate": "disambiguate",
             "reassure": "reassure",
             "escalate": "escalate",
@@ -2059,6 +2349,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         route_after_disambiguate,
         {
             "prepare_card": "prepare_card",
+            "service_context": "service_context",
             "reply": "reply",
             "retrieve": "retrieve",
             "vision": "vision",
@@ -2074,6 +2365,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         "apply_action",
         route_after_apply,
         {
+            **{target:target for target in ("service_context","authorize","propose","await_human","commit_issue")},
             "reply": "reply",
             "retrieve": "retrieve",
             "vision": "vision",
@@ -2084,7 +2376,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         },
     )
     g.add_conditional_edges(
-        "retrieve", route_after_retrieve, {"reply": "reply", "escalate": "escalate"}
+        "retrieve", route_after_retrieve, {"reply": "reply", "guide": "guide", "escalate": "escalate"}
     )
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(

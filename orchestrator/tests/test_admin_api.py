@@ -27,7 +27,7 @@ pytestmark = pytest.mark.anyio if False else []  # 默认 asyncio 模式，见 p
 def test_topology_matches_the_compiled_graph():
     topo = topology()
     ids = {n["id"] for n in topo["nodes"]}
-    assert {"__start__", "intake", "await_input", "close", "__end__"} <= ids
+    assert {"__start__", "understand", "await_input", "close", "__end__"} <= ids
     assert len(topo["edges"]) > len(ids)  # 条件边多于节点
     # 每个节点都有阶段归类，前端才能着色
     assert all(n["stage"] != "other" for n in topo["nodes"]), [
@@ -41,7 +41,7 @@ def test_topology_marks_conditional_edges():
     conditional = {(e["source"], e["target"]) for e in edges if e["conditional"]}
     fixed = {(e["source"], e["target"]) for e in edges if not e["conditional"]}
     assert ("__start__", "understand") in fixed
-    assert ("understand", "intake") in conditional
+    assert ("understand", "disambiguate") in conditional
     assert ("prepare_card", "await_input") in fixed  # 固定边
 
 
@@ -289,7 +289,7 @@ async def test_graph_endpoint_serves_the_topology(api):
         resp = await client.get("/admin/api/graph")
     body = resp.json()
     assert resp.headers["cache-control"].startswith("public")
-    assert {n["id"] for n in body["nodes"]} >= {"intake", "guide", "close"}
+    assert {n["id"] for n in body["nodes"]} >= {"understand", "guide", "close"}
     assert body["stage_order"][0] == "start"
 
 

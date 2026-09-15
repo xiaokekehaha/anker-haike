@@ -8,12 +8,12 @@ rules:
     action: escalate
     priority: 1
     text_terms: [冒烟, 冒烟了, 烧焦, 焦味, 糊味, 异味, 鼓包, 电池鼓, 发热变形, 变形发烫, 漏液, 电击, 触电, 麻手, 火花, 起火, 着火, 冒火, 爆炸, 烫手, 烫到, 融化, 熔化]
-    observation_terms: [smoke, smoking, burn, burnt, scorch, charred, melted, deformed battery, swollen battery, swollen, bulging, bulge, leak, leaking, spark, fire, flame, overheat]
+    observation_terms: [烧焦, 冒烟, 鼓包, 漏液, 火花, smoke, smoking, burn, burnt, scorch, charred, melted, deformed battery, swollen battery, swollen, bulging, bulge, leak, leaking, spark, fire, flame, overheat]
   R3:
     name: 明确要求人工
     action: escalate
     priority: 2
-    text_terms: [转人工, 人工客服, 找人工, 要人工, 人工服务, 真人客服, 客服电话, 投诉, 找你们经理, 要人来处理]
+    text_terms: [转人工, 人工客服, 找人工, 要人工, 人工服务, 真人客服, 客服电话, 找你们经理, 要人来处理]
     action_kinds: [request_human]
   R6:
     name: 退换 / 保修诉求（常规升级时进入凭证子流程）

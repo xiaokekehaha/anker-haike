@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 2d18988728fe2cf15ba0d0e559f855abd1f33f8ab7d6812434785e57dd4380a5
+// SHA-256: 66926ed7814481f77ffcb8a11a12894a8da00805c944b24508b15da1c0c4e2af
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -39,7 +39,11 @@ export const serverEventSchema = z.fromJSONSchema({
             "select_product",
             "step_feedback",
             "upload_receipt",
-            "confirm_receipt"
+            "confirm_receipt",
+            "confirm_context",
+            "confirm_proposal",
+            "upload_retake",
+            "rate_satisfaction"
           ],
           "title": "Kind",
           "type": "string"
@@ -81,6 +85,287 @@ export const serverEventSchema = z.fromJSONSchema({
         "version"
       ],
       "title": "AwaitingInput",
+      "type": "object"
+    },
+    "CaseStatusEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "complaint_risk": {
+          "default": false,
+          "title": "Complaint Risk",
+          "type": "boolean"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "external_refs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "External Refs",
+          "type": "object"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "owner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Owner"
+        },
+        "priority": {
+          "default": "normal",
+          "enum": [
+            "normal",
+            "high"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "diagnosing",
+            "proposing",
+            "awaiting_confirmation",
+            "executing",
+            "executing_failed",
+            "tracking",
+            "closed",
+            "awaiting_approval",
+            "approved",
+            "rejected",
+            "closed_unresolved",
+            "reopened",
+            "escalated_summary"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "type": {
+          "const": "case_changed",
+          "title": "Type",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "case_id",
+        "status",
+        "reason",
+        "updated_at"
+      ],
+      "title": "CaseStatusEvent",
+      "type": "object"
+    },
+    "Clause": {
+      "additionalProperties": false,
+      "properties": {
+        "clause_id": {
+          "title": "Clause Id",
+          "type": "string"
+        },
+        "doc_version": {
+          "title": "Doc Version",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "source_doc": {
+          "default": "演示政策，待真实 SOP 替换",
+          "title": "Source Doc",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "clause_id",
+        "text",
+        "doc_version",
+        "policy_version"
+      ],
+      "title": "Clause",
+      "type": "object"
+    },
+    "ContextCardEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "choices": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Choices",
+          "type": "object"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "prefilled": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Prefilled",
+          "type": "object"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "object"
+        },
+        "type": {
+          "const": "context_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "fields"
+      ],
+      "title": "ContextCardEvent",
+      "type": "object"
+    },
+    "DispatchEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "const": "replacement.create",
+          "default": "replacement.create",
+          "title": "Action",
+          "type": "string"
+        },
+        "actions_version": {
+          "title": "Actions Version",
+          "type": "string"
+        },
+        "working_days": {
+          "exclusiveMinimum": 0,
+          "title": "Working Days",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "working_days",
+        "actions_version"
+      ],
+      "title": "DispatchEstimate",
       "type": "object"
     },
     "Done": {
@@ -145,7 +430,9 @@ export const serverEventSchema = z.fromJSONSchema({
           "enum": [
             "calm",
             "anxious",
-            "angry"
+            "dissatisfied",
+            "angry",
+            "complaint_risk"
           ],
           "title": "Level",
           "type": "string"
@@ -154,7 +441,9 @@ export const serverEventSchema = z.fromJSONSchema({
           "enum": [
             "normal",
             "reassure_first",
-            "reassure_and_shorten"
+            "reassure_and_shorten",
+            "direct_resolution",
+            "de_escalate_and_offer_human"
           ],
           "title": "Strategy",
           "type": "string"
@@ -247,8 +536,51 @@ export const serverEventSchema = z.fromJSONSchema({
       "additionalProperties": false,
       "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
       "properties": {
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Id"
+        },
+        "draft_reply": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Reply"
+        },
         "emotion": {
           "$ref": "#/$defs/Emotion"
+        },
+        "emotion_track": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Emotion Track",
+          "type": "array"
+        },
+        "gate_result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GateResult"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "hypotheses": {
           "items": {
@@ -271,6 +603,19 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Observations",
           "type": "array"
         },
+        "policy_decision_brief": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Decision Brief"
+        },
         "problem": {
           "title": "Problem",
           "type": "string"
@@ -285,11 +630,26 @@ export const serverEventSchema = z.fromJSONSchema({
         "receipt": {
           "$ref": "#/$defs/ReceiptOutcome"
         },
+        "recommended_options": {
+          "items": {
+            "$ref": "#/$defs/ProposalOption"
+          },
+          "title": "Recommended Options",
+          "type": "array"
+        },
         "steps": {
           "items": {
             "$ref": "#/$defs/ExecutedStep"
           },
           "title": "Steps",
+          "type": "array"
+        },
+        "task_queue": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Task Queue",
           "type": "array"
         }
       },
@@ -528,6 +888,294 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "ExecutedStep",
       "type": "object"
     },
+    "ExecutionCardEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "action_kind": {
+          "title": "Action Kind",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "execution_id": {
+          "title": "Execution Id",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "receipt": {
+          "$ref": "#/$defs/Receipt"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "type": {
+          "const": "execution_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "execution_id",
+        "action_kind",
+        "status",
+        "receipt",
+        "idempotency_key"
+      ],
+      "title": "ExecutionCardEvent",
+      "type": "object"
+    },
+    "FaultLocalization": {
+      "additionalProperties": false,
+      "properties": {
+        "conflicts_with_text": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflicts With Text",
+          "type": "array"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/Finding"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "image_quality": {
+          "$ref": "#/$defs/ImageQuality"
+        },
+        "model_hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Hint"
+        }
+      },
+      "title": "FaultLocalization",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "part": {
+          "title": "Part",
+          "type": "string"
+        },
+        "phenomenon": {
+          "title": "Phenomenon",
+          "type": "string"
+        },
+        "quote_region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Region"
+        },
+        "raw": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Raw",
+          "type": "object"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "part",
+        "phenomenon",
+        "severity",
+        "confidence"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "GateCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "detail"
+      ],
+      "title": "GateCheck",
+      "type": "object"
+    },
+    "GateResult": {
+      "additionalProperties": false,
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/GateCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "fallback": {
+          "anyOf": [
+            {
+              "enum": [
+                "await_human",
+                "summarize"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "passed",
+        "checks"
+      ],
+      "title": "GateResult",
+      "type": "object"
+    },
+    "ImageQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "guidance": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Guidance",
+          "type": "array"
+        },
+        "reasons": {
+          "items": {
+            "enum": [
+              "blurry",
+              "too_dark",
+              "too_far",
+              "wrong_subject",
+              "occluded"
+            ],
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "usable": {
+          "title": "Usable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "usable"
+      ],
+      "title": "ImageQuality",
+      "type": "object"
+    },
     "InputReceived": {
       "additionalProperties": false,
       "properties": {
@@ -542,7 +1190,8 @@ export const serverEventSchema = z.fromJSONSchema({
         "input_kind": {
           "enum": [
             "message",
-            "action"
+            "action",
+            "human_decision"
           ],
           "title": "Input Kind",
           "type": "string"
@@ -1005,6 +1654,139 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "Ping",
       "type": "object"
     },
+    "PolicyCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "actual": {
+          "title": "Actual"
+        },
+        "expected": {
+          "title": "Expected"
+        },
+        "met": {
+          "title": "Met",
+          "type": "boolean"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "expected",
+        "actual",
+        "met"
+      ],
+      "title": "PolicyCondition",
+      "type": "object"
+    },
+    "PolicyDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "exclusions_hit": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Exclusions Hit",
+          "type": "array"
+        },
+        "fault_class": {
+          "enum": [
+            "quality",
+            "user_damage",
+            "safety",
+            "unknown"
+          ],
+          "title": "Fault Class",
+          "type": "string"
+        },
+        "matched": {
+          "default": false,
+          "title": "Matched",
+          "type": "boolean"
+        },
+        "missing_inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Inputs",
+          "type": "array"
+        },
+        "needs_human": {
+          "default": false,
+          "title": "Needs Human",
+          "type": "boolean"
+        },
+        "needs_human_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Needs Human Reasons",
+          "type": "array"
+        },
+        "policy_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Id"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "remedies": {
+          "items": {
+            "$ref": "#/$defs/RemedyDecision"
+          },
+          "title": "Remedies",
+          "type": "array"
+        },
+        "trace_id": {
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "warranty_end": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty End"
+        },
+        "within_warranty": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Within Warranty"
+        }
+      },
+      "required": [
+        "policy_version",
+        "fault_class",
+        "trace_id"
+      ],
+      "title": "PolicyDecision",
+      "type": "object"
+    },
     "ProductCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -1145,7 +1927,13 @@ export const serverEventSchema = z.fromJSONSchema({
             "guide",
             "verify",
             "escalate",
-            "done"
+            "done",
+            "consult",
+            "context",
+            "propose",
+            "execute",
+            "track",
+            "awaiting_human"
           ],
           "title": "Stage",
           "type": "string"
@@ -1177,6 +1965,336 @@ export const serverEventSchema = z.fromJSONSchema({
         "stage"
       ],
       "title": "Progress",
+      "type": "object"
+    },
+    "ProposalCardEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "decision_summary": {
+          "title": "Decision Summary",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ProposalOption"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "retry": {
+          "default": false,
+          "title": "Retry",
+          "type": "boolean"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "proposal_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "options",
+        "decision_summary",
+        "policy_version"
+      ],
+      "title": "ProposalCardEvent",
+      "type": "object"
+    },
+    "ProposalOption": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_allowed": {
+          "default": false,
+          "title": "Auto Allowed",
+          "type": "boolean"
+        },
+        "clauses": {
+          "items": {
+            "$ref": "#/$defs/Clause"
+          },
+          "title": "Clauses",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/PolicyCondition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "cost_bearer": {
+          "anyOf": [
+            {
+              "enum": [
+                "company",
+                "customer",
+                "shared"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Bearer"
+        },
+        "dispatch_estimate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DispatchEstimate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "remedy": {
+          "enum": [
+            "repair",
+            "replace",
+            "refund",
+            "none"
+          ],
+          "title": "Remedy",
+          "type": "string"
+        },
+        "source": {
+          "default": "policy",
+          "enum": [
+            "policy",
+            "human"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id",
+        "remedy",
+        "title"
+      ],
+      "title": "ProposalOption",
+      "type": "object"
+    },
+    "RatingCardEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Id"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "rating_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type"
+      ],
+      "title": "RatingCardEvent",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": true,
+          "title": "Data",
+          "type": "object"
+        },
+        "eta_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eta Days"
+        },
+        "next_step": {
+          "default": "",
+          "title": "Next Step",
+          "type": "string"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "service_order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Order No"
+        },
+        "source": {
+          "default": "业务系统（模拟）",
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "tracking_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tracking No"
+        },
+        "updated_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Updated At"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "Receipt",
       "type": "object"
     },
     "ReceiptCard": {
@@ -1360,6 +2478,143 @@ export const serverEventSchema = z.fromJSONSchema({
         "status"
       ],
       "title": "ReceiptOutcome",
+      "type": "object"
+    },
+    "RemedyDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_allowed": {
+          "title": "Auto Allowed",
+          "type": "boolean"
+        },
+        "clauses": {
+          "items": {
+            "$ref": "#/$defs/Clause"
+          },
+          "title": "Clauses",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/PolicyCondition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "cost_bearer": {
+          "anyOf": [
+            {
+              "enum": [
+                "company",
+                "customer",
+                "shared"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Bearer"
+        },
+        "eligible": {
+          "title": "Eligible",
+          "type": "boolean"
+        },
+        "remedy": {
+          "enum": [
+            "repair",
+            "replace",
+            "refund",
+            "none"
+          ],
+          "title": "Remedy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "remedy",
+        "eligible",
+        "auto_allowed"
+      ],
+      "title": "RemedyDecision",
+      "type": "object"
+    },
+    "RetakeCardEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "guidance": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Guidance",
+          "type": "array"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "retake_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "reasons",
+        "guidance"
+      ],
+      "title": "RetakeCardEvent",
       "type": "object"
     },
     "RunStarted": {
@@ -1695,10 +2950,13 @@ export const serverEventSchema = z.fromJSONSchema({
   "discriminator": {
     "mapping": {
       "awaiting_input": "#/$defs/AwaitingInput",
+      "case_changed": "#/$defs/CaseStatusEvent",
+      "context_card": "#/$defs/ContextCardEvent",
       "done": "#/$defs/Done",
       "error": "#/$defs/Error",
       "escalation_summary": "#/$defs/EscalationSummaryEvent",
       "evidence": "#/$defs/Evidence",
+      "execution_card": "#/$defs/ExecutionCardEvent",
       "input_received": "#/$defs/InputReceived",
       "issue_changed": "#/$defs/IssueChanged",
       "message": "#/$defs/Message",
@@ -1708,7 +2966,10 @@ export const serverEventSchema = z.fromJSONSchema({
       "ping": "#/$defs/Ping",
       "product_card": "#/$defs/ProductCard",
       "progress": "#/$defs/Progress",
+      "proposal_card": "#/$defs/ProposalCardEvent",
+      "rating_card": "#/$defs/RatingCardEvent",
       "receipt_card": "#/$defs/ReceiptCard",
+      "retake_card": "#/$defs/RetakeCardEvent",
       "run_started": "#/$defs/RunStarted",
       "step_card": "#/$defs/StepCard",
       "summary_updated": "#/$defs/SummaryUpdated",
@@ -1773,6 +3034,24 @@ export const serverEventSchema = z.fromJSONSchema({
     },
     {
       "$ref": "#/$defs/Done"
+    },
+    {
+      "$ref": "#/$defs/ContextCardEvent"
+    },
+    {
+      "$ref": "#/$defs/ProposalCardEvent"
+    },
+    {
+      "$ref": "#/$defs/ExecutionCardEvent"
+    },
+    {
+      "$ref": "#/$defs/RetakeCardEvent"
+    },
+    {
+      "$ref": "#/$defs/RatingCardEvent"
+    },
+    {
+      "$ref": "#/$defs/CaseStatusEvent"
     }
   ],
   "title": "ServerEvent"

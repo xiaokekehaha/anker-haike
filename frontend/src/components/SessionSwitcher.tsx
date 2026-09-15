@@ -1,12 +1,7 @@
 /** 新建会话 + 本机最近会话切换（spec_session_switch）。列表只来自本浏览器，跨设备属第二阶段。 */
-import type { Stage } from '../types/events';
 import type { RecentSession } from '../state/recentSessions';
-import { PROGRESS_STEPS } from './ProgressBar';
+import { progressFor } from '../state/progress';
 import styles from './SessionSwitcher.module.css';
-
-const STAGE_STEP: Record<Stage, number> = {
-  intake: 0, disambiguate: 1, out_of_scope: 4, diagnose: 2, guide: 3, verify: 3, escalate: 4, done: 4,
-};
 
 type Props = {
   currentId: string | null;
@@ -21,7 +16,7 @@ type Props = {
 export function optionLabel(s: RecentSession, isCurrent: boolean): string {
   const time = new Date(s.created_at).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   const title = s.title ?? `新会话 · ${time}`;
-  const stage = s.stage ? PROGRESS_STEPS[STAGE_STEP[s.stage]]?.label : null;
+  const stage = progressFor(s.stage, s.case_status).label;
   return `${isCurrent ? '（当前）' : ''}${title}${stage ? ` · ${stage}` : ''}`;
 }
 

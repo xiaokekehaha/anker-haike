@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import json
 from pathlib import Path
 
@@ -18,7 +16,6 @@ from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.config import load_models_config
 from app.models.fake import ScriptExhausted
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelInvokeError, ModelRouter
 from app.models.runtime import set_model_router
@@ -37,6 +34,8 @@ from app.replay import runtime as replay_runtime
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_reply_stream import CONFIG as REPLY_CONFIG
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -107,7 +106,7 @@ def NO_MATCH():
     return ToolResult("no_match", hint=HINTS["no_match"], allowed_count=2)
 
 
-VERSIONS = {"prompt_ver": "p1", "models_ver": "m1", "kb_ver": "k1", "rules_ver": "r1"}
+VERSIONS = {"prompt_ver": "p1", "models_ver": "m1", "kb_ver": "k1", "rules_ver": "r1", "policy_version": "p1", "actions_version": "a1"}
 SCOPE = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X9-PRO")
 PNG_A = b"\x89PNG\r\n\x1a\n" + b"a" * 20
 PNG_B = b"\x89PNG\r\n\x1a\n" + b"b" * 20
@@ -272,9 +271,7 @@ async def _run_a1(client, sid):
 async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem_runtime, tmp_path):
     set_rules_service(RulesService(RULES, hot_reload=False))
     recorder = Recorder("a1", "A1", VERSIONS)
-    real, _fakes = make_router(
-        tmp_path, fast=[INTAKE_X9], main=[SYNTH_HAIR, ["请先", "清理滚刷。"]]
-    )
+    real, _fakes = make_router(tmp_path, fast=[INTAKE_X9], main=[SYNTH_HAIR])
     set_model_router(RecordingRouter(real, recorder))
     set_knowledge_adapter(
         RecordingKnowledgeAdapter(
@@ -291,10 +288,8 @@ async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem
     base = recorder.save(tmp_path / "replay")
     manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["versions"] == VERSIONS and manifest["counts"]["knowledge"] == 2
-    # intake / synthesize 的 invoke、reply 的 stream 都进包；失败的调用（如脚本耗尽的 guide.step）不入包
-    assert {"intake", "diagnose.synthesize", "reply.stream"} <= {
-        r["task"] for r in recorder.models.values()
-    }
+    # intake / synthesize 的 invoke 进包；失败的调用（如脚本耗尽的 guide.step）不入包
+    assert {"intake", "diagnose.synthesize"} <= {r["task"] for r in recorder.models.values()}
     failed_tasks = [m["task"] for m in recorder.misses]
     assert "guide.step" not in {r["task"] for r in recorder.models.values()}
 
@@ -328,8 +323,9 @@ async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem
     assert {i["status"] for i in ev["items"]} == {"replay"}
     assert all(v["status"] == "replay" for v in state["evidence"].values())
     assert state["knowledge_status"] == "ok"  # 回放命中等价 ok 路径进入 synthesize / guide
-    reply_text = "".join(e["delta"] for e in replayed if e["type"] == "message")
-    assert reply_text == "请先清理滚刷。"
+    # 票 19：命中计划的排障轮不再自由回复，本轮可见产物是步骤卡
+    assert not [e for e in replayed if e["type"] == "message"]
+    assert [e for e in replayed if e["type"] == "step_card"]
     # 一轮完整结束，done 原因与录制一致（有 guide 节点时为 awaiting_input + step_card）
     assert replayed[-1]["type"] == "done" and replayed[-1]["reason"] == recorded[-1]["reason"]
     with pytest.raises(ScriptExhausted):  # 佐证：若真去调模型，假模型会立刻抛出

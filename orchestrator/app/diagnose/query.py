@@ -69,6 +69,10 @@ def build_query(state: dict[str, Any]) -> str:
         return ""
     product = product_term(state)
     symptoms = dedupe([str(s) for s in (state.get("symptoms") or [])])
+    if state.get("symptom_codes"):
+        from app.conversation.taxonomy import taxonomy
+        families = [f["fault_family"] for f in taxonomy()["families"] if f["symptom_code"] in state["symptom_codes"]]
+        symptoms = dedupe([*families, *symptoms])
     if not symptoms:
         raw = _clean_part(str(state.get("text") or ""))
         symptoms = [raw] if raw else []

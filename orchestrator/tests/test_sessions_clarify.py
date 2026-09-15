@@ -6,10 +6,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import model_task_text
-
-from tests.message_form import action_body, message_form
-
 import json
 
 from haike_contracts.snapshot import SessionSnapshot
@@ -25,6 +21,7 @@ from app.sessions.clarify import (
     fixed_question,
     make_question,
 )
+from tests.message_form import action_body, message_form, model_task_text
 from tests.test_intake import fake_router
 
 
@@ -56,7 +53,8 @@ async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
         sid = (await client.post("/sessions")).json()["session_id"]
         ev1 = await _send(client, sid, "机器不吸了")
         assert _stages(ev1) == ["intake", "disambiguate"]  # 不进入 diagnose、不检索、不发卡
-        assert [e["type"] for e in ev1 if e["type"] not in ("progress",)] == [
+        assert any(e["type"] == "input_received" for e in ev1)
+        assert [e["type"] for e in ev1 if e["type"] not in {"progress", "input_received", "issue_changed"}] == [
             "run_started",
             "message_start",
             "message",
@@ -167,7 +165,7 @@ async def test_clarify_text_from_model_task_and_fixed_fallback(mem_runtime, tmp_
         session_id="s",
         lane="domestic",
     )
-    assert out.text == FIXED_QUESTIONS["symptom"] and out.model_used == "fixed"
+    assert out.text == "设备按电源后能正常启动吗？" and out.model_used == "fixed"
     assert fixed_question("conflict", {"confirmed": "A", "mentioned": "B"}) == (
         "您之前确认的是 A，这次提到的是 B，请问需要排查的是哪一台？"
     )
@@ -211,7 +209,8 @@ async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runti
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             ev1 = await _send(client, sid, "X10 这个又不行了")
-            assert _message_text(ev1) == "请问 X10 是吸力变弱、无法启动，还是有异响？"
+            # The model's different question cannot change the stored yes/no split.
+            assert _message_text(ev1) == "设备按电源后能正常启动吗？"
             s1 = await _state(sid)
             assert s1["product_state"] == "confirmed_sku"  # 产品已定，只问症状
             assert s1["clarification"] == {
@@ -228,28 +227,37 @@ async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runti
         set_model_router(None)
 
 
-async def test_abandoned_product_card_counts_and_clears_pending(mem_runtime):
-    """多命中出卡后用户不选而发文本：失效卡片从权威状态清除、计一次澄清；再次不明 → R7；
-    含品类词则 category_only（09 §2.1「两次未选中」）。验收项 6、8。"""
+async def test_uncertain_text_preserves_product_card_until_valid_selection(mem_runtime, monkeypatch):
+    """A conversational detour cannot consume a product choice or fabricate failed actions."""
+    import app.conversation.interpret as semantic
+
+    original = semantic.interpret_turn
+
+    async def uncertain_turn(router, state, **kwargs):
+        if state.get("entry") == "message" and state.get("active_issue_id"):
+            return semantic.TurnInterpretation(
+                primary_intent="unknown", clarification="请查看设备标签，确认设备品类。"
+            ), {"source": "uncertain-input-fixture"}
+        return await original(router, state, **kwargs)
+
+    monkeypatch.setattr(semantic, "interpret_turn", uncertain_turn)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        ev1 = await _send(client, sid, "我的 S1 Pro 不吸了")
-        assert "product_card" in [e["type"] for e in ev1] and ev1[-1]["reason"] == "awaiting_input"
-        assert (await _state(sid))["clarification"]["attempts"] == 1  # 出卡计一次
-        pending = next(e for e in ev1 if e["type"] == "awaiting_input")
-
-        ev2 = await _send(client, sid, "不知道是哪个")  # 未选中，改发文本
-        assert _message_text(ev2) == FIXED_QUESTIONS["product"]
-        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
-        assert snap.pending_input is None  # 失效卡片已从权威状态清除
-        s2 = await _state(sid)
-        assert s2["pending_card"] is None and s2["clarification"]["attempts"] == 2
-        assert "用户未在产品确认卡片中选择" in s2["observations"][-1]
-        # 旧卡片的动作现在被拒绝（不计入澄清次数）
-        stale = await client.post(
+        first = await _send(client, sid, "我的 S1 Pro 不吸了")
+        pending = next(e for e in first if e["type"] == "awaiting_input")
+        before = await _state(sid)
+        for text in ("不知道是哪个", "还是不知道"):
+            events = await _send(client, sid, text)
+            snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+            assert snap.pending_input.card_id == pending["card_id"]
+            assert snap.pending_input.input_token == pending["input_token"]
+            assert not any(e["type"] == "escalation_summary" for e in events)
+            state = await _state(sid)
+            assert state["clarification"]["attempts"] == before["clarification"]["attempts"]
+        response = await client.post(
             f"/sessions/{sid}/actions",
             json=await action_body(client, f"/sessions/{sid}/actions", {
-                "action_id": "a1",
+                "action_id": "selected-after-detour",
                 "input_token": pending["input_token"],
                 "card_id": pending["card_id"],
                 "expected_version": snap.version,
@@ -257,19 +265,8 @@ async def test_abandoned_product_card_counts_and_clears_pending(mem_runtime):
                 "payload": {"sku": "EUFY-S1-PRO"},
             }),
         )
-        assert stale.status_code == 409 and stale.json()["code"] == "not_allowed_now"
-        assert (await _state(sid))["clarification"]["attempts"] == 2
-
-        ev3 = await _send(client, sid, "还是不知道")  # 第二次回答仍不明 → R7
-        assert "escalation_summary" in [e["type"] for e in ev3]
-
-        # 另一会话：不选卡片但提到品类词 → category_only 继续
-        other = (await client.post("/sessions")).json()["session_id"]
-        await _send(client, other, "我的 S1 Pro 不吸了")
-        ev = await _send(client, other, "是扫地机那个")
-    assert "diagnose" in _stages(ev) and "product_card" not in [e["type"] for e in ev]
-    so = await _state(other)
-    assert so["product_state"] == "category_only" and so["clarification"] is None
+        assert response.status_code == 200
+        assert (await _state(sid))["product_confirmed"]["sku"] == "EUFY-S1-PRO"
 
 
 async def test_product_correction_and_category_conflict(mem_runtime):

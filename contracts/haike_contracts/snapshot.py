@@ -8,6 +8,9 @@ from pydantic import Field
 
 from haike_contracts.common import (
     EscalationSummary,
+    CaseStatus as CaseStatusValue,
+    ProposalOption,
+    Receipt,
     EvidenceItem,
     Feedback,
     ModelTier,
@@ -138,6 +141,71 @@ class SummaryItem(TimelineRecord):
     handoff_status: Literal["prepared", "requested", "accepted", "failed", "cancelled"] = "prepared"
 
 
+class ContextCardItem(TimelineRecord):
+    kind: Literal["context_card"]
+    card_id: str
+    version: int = Field(ge=0)
+    fields: list[str]
+    prefilled: dict[str, str] = Field(default_factory=dict)
+    sources: dict[str, str] = Field(default_factory=dict)
+    choices: dict[str, list[str]] = Field(default_factory=dict)
+    confirmed_fields: dict[str, str] | None = None
+
+
+class ProposalCardItem(TimelineRecord):
+    kind: Literal["proposal_card"]
+    card_id: str
+    version: int = Field(ge=0)
+    options: list[ProposalOption]
+    decision_summary: str
+    policy_version: str
+    retry: bool = False
+    chosen_option_id: str | None = None
+    declined_reason: str | None = None
+
+
+class ExecutionCardItem(TimelineRecord):
+    kind: Literal["execution_card"]
+    card_id: str
+    version: int = Field(ge=0)
+    execution_id: str
+    action_kind: str
+    status: Literal["succeeded", "failed"]
+    receipt: Receipt
+    idempotency_key: str
+
+
+class RetakeCardItem(TimelineRecord):
+    kind: Literal["retake_card"]
+    card_id: str
+    version: int = Field(ge=0)
+    reasons: list[str]
+    guidance: list[str]
+    skipped: bool = False
+
+
+class RatingCardItem(TimelineRecord):
+    kind: Literal["rating_card"]
+    card_id: str
+    version: int = Field(ge=0)
+    case_id: str | None = None
+    score: int | None = Field(default=None, ge=1, le=5)
+
+
+class CaseStatusItem(TimelineRecord):
+    kind: Literal["case_changed"]
+    card_id: str
+    version: int = Field(ge=0)
+    case_id: str
+    status: CaseStatusValue
+    complaint_risk: bool = False
+    priority: Literal["normal", "high"] = "normal"
+    owner: str | None = None
+    reason: str
+    external_refs: dict[str, str] = Field(default_factory=dict)
+    updated_at: str
+
+
 TimelineItem = Annotated[
     UserMessageItem
     | ActionItem
@@ -147,7 +215,13 @@ TimelineItem = Annotated[
     | StepCardItem
     | ReceiptCardItem
     | EvidenceItemGroup
-    | SummaryItem,
+    | SummaryItem
+    | ContextCardItem
+    | ProposalCardItem
+    | ExecutionCardItem
+    | RetakeCardItem
+    | RatingCardItem
+    | CaseStatusItem,
     Field(discriminator="kind"),
 ]
 

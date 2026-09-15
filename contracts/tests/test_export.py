@@ -19,9 +19,9 @@ def test_render_is_deterministic():
 
 def test_event_schema_discriminates_15_types():
     ev = build_schemas()["events.schema.json"]
-    assert len(ev["discriminator"]["mapping"]) == 19
+    assert len(ev["discriminator"]["mapping"]) == 25
     ac = build_schemas()["actions.schema.json"]
-    assert len(ac["discriminator"]["mapping"]) == 7
+    assert len(ac["discriminator"]["mapping"]) == 12
     assert {"ActionResult", "ActionConflict"} <= set(ac["$defs"])
 
 

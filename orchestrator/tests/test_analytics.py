@@ -5,8 +5,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import asyncio
 import importlib.util
 import re
@@ -19,6 +17,7 @@ from app.analytics.schema import ROW_TYPES, TABLE_OF, ModelCall, NodeRun
 from app.analytics.sink import AnalyticsSink
 from app.analytics.store import InMemoryAnalyticsStore, _sql
 from app.db import migrations as m
+from tests.message_form import message_form
 
 # ---------------------------------------------------------------- 迁移
 
@@ -399,14 +398,14 @@ async def test_real_run_produces_node_runs_run_facts_and_session_facts(mem_runti
     await asyncio.wait_for(sink.close(), timeout=5)
 
     nodes = [r for r in store.of("node_run") if r.session_id == sid]
-    assert [r.node for r in nodes] == ["understand", "intake", "disambiguate", "clarify", "commit_issue"]
-    assert [r.idx for r in nodes] == [1, 2, 3, 4, 5]
-    assert [r.prev_node for r in nodes] == [None, "understand", "intake", "disambiguate", "clarify"]
+    assert [r.node for r in nodes] == ["understand", "disambiguate", "clarify", "commit_issue"]
+    assert [r.idx for r in nodes] == [1, 2, 3, 4]
+    assert [r.prev_node for r in nodes] == [None, "understand", "disambiguate", "clarify"]
     assert all(r.duration_ms is not None and r.duration_ms >= 0 for r in nodes)
 
     (run,) = [r for r in store.of("run_facts") if r.session_id == sid]
     assert run.entry == "message" and run.seq_no == 1
-    assert run.done_reason == "completed" and run.node_count == 5
+    assert run.done_reason == "completed" and run.node_count == 4
     assert run.stage_to == "disambiguate" and run.duration_ms >= 0
     assert run.first_visible_ms is not None  # 澄清问句是本 run 的首个可见输出
 

@@ -16,6 +16,7 @@ import asyncio
 import io
 import json
 import logging
+import os
 import sys
 import uuid
 from pathlib import Path
@@ -51,6 +52,9 @@ class _Harness:
         from app.sessions.store import InMemorySessionStore
 
         self.app = app
+        from app.actions.runtime import configure
+
+        app.state.l3_services = configure(memory=True)
         store = InMemorySessionStore()
         app.state.session_store = store
         app.state.session_graph = build_graph(InMemorySaver())
@@ -62,6 +66,7 @@ class _Harness:
         return self
 
     def __exit__(self, *exc):
+        from app.actions.runtime import configure
         from app.images.runtime import set_image_store
 
         for name in (
@@ -70,9 +75,11 @@ class _Harness:
             "run_manager",
             "session_lock",
             "image_store",
+            "l3_services",
         ):
             setattr(self.app.state, name, None)
         set_image_store(None)
+        configure()
 
 
 async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
@@ -96,22 +103,100 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://replay") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         for step in scenario["steps"]:
+            snapshot = (await client.get(f"/sessions/{sid}")).json()
+            pending = snapshot.get("pending_input")
+            if "admin_decision" in step:
+                from app.actions.runtime import require_services
+
+                cases = await require_services().cases.store.queue("awaiting_approval")
+                case = next((c for c in cases if c["session_id"] == sid), None)
+                if case is None:
+                    raise RuntimeError("scenario has no case awaiting approval")
+                response = await client.post(
+                    f"/admin/api/cases/{case['case_id']}/decision",
+                    json={
+                        "decision_id": str(uuid.uuid4()),
+                        "expected_revision": case["revision"],
+                        **step["admin_decision"],
+                    },
+                )
+                if response.status_code not in {200, 202}:
+                    raise RuntimeError(
+                        f"admin decision failed {response.status_code}: {response.text[:300]}"
+                    )
+                # Admin delivery starts a normal run; await that concrete run before advancing.
+                run_id = response.json().get("run_id")
+                if run_id:
+                    for _ in range(900):
+                        rows = await app.state.session_store.list_events(sid, run_id=run_id)
+                        if rows and rows[-1].get("type") == "done":
+                            _absorb(rows)
+                            break
+                        await asyncio.sleep(0.1)
+                    else:
+                        raise RuntimeError(f"admin run {run_id} did not finish")
+                continue
+            if "backend_status" in step:
+                from app.actions.runtime import require_services
+                from app.backends.mock import MemoryBackend
+                from app.backends.protocol import ServiceOrder
+
+                backend = require_services().backend
+                if not isinstance(backend, MemoryBackend):
+                    raise RuntimeError("scenario backend events require the isolated demo backend")
+                state = (
+                    await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
+                ).values
+                number = (state.get("execution") or {}).get("receipt", {}).get("service_order_no")
+                if not number:
+                    raise RuntimeError("no created service order for the simulated shipment event")
+                current = await backend.get_service_order(number)
+                backend.service_orders[number] = ServiceOrder.model_validate(
+                    {**current.model_dump(), "status": step["backend_status"]}
+                )
+                continue
             if "message" in step:
                 files = None
                 if step.get("image"):
+                    image_name = step["image"]
+                    image_data = IMAGES.get(image_name)
+                    if image_data is None:
+                        from app.settings import REPO_ROOT
+
+                        image_path = (
+                            Path(
+                                os.environ.get(
+                                    "REPLAY_IMAGE_DIR", str(REPO_ROOT / "data/eval/vision/images")
+                                )
+                            )
+                            / image_name
+                        )
+                        if not image_path.is_file():
+                            raise RuntimeError(
+                                f"演示图片缺失：{image_path}；请设置 REPLAY_IMAGE_DIR 指向真实图片目录"
+                            )
+                        image_data = image_path.read_bytes()
                     files = [
                         (
                             "images",
                             (
-                                f"{step['image']}.png",
-                                io.BytesIO(IMAGES[step["image"]]),
-                                "image/png",
+                                image_name if "." in image_name else f"{image_name}.png",
+                                io.BytesIO(image_data),
+                                "image/jpeg"
+                                if image_name.lower().endswith((".jpg", ".jpeg"))
+                                else "image/png",
                             ),
                         )
                     ]
                 r = await client.post(
                     f"/sessions/{sid}/messages",
-                    data={"text": step["message"], "purpose": step.get("purpose", "fault")},
+                    data={
+                        "input_id": uuid.uuid4().hex,
+                        "expected_version": snapshot["version"],
+                        "evaluation_source": "replay",
+                        "text": step["message"],
+                        "purpose": step.get("purpose", "fault"),
+                    },
                     files=files,
                 )
                 if r.status_code != 200:
@@ -121,27 +206,52 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
             kind = step["action"]
             until, max_n = step.get("until"), int(step.get("max") or 1)
             for _ in range(max_n):
-                if pending is None:
-                    raise RuntimeError(f"no pending input for action {kind!r}")
+                if pending is None and kind != "request_human":
+                    state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
+                    diagnostic = {k: state.get(k) for k in ("stage", "turn_decision", "emotion", "case_id", "product_state")}
+                    raise RuntimeError(f"no pending input for action {kind!r}: " + json.dumps(diagnostic, ensure_ascii=False))
                 if until and pending["kind"] == until:
                     break
+                payload = dict(step["payload"])
+                if kind == "confirm_context":
+                    card = next(item for item in snapshot["timeline"] if item.get("kind") == "context_card" and item.get("card_id") == pending["card_id"])
+                    payload = {**card.get("prefilled", {}), **payload}
                 body = {
                     "action_id": uuid.uuid4().hex,
-                    "interrupt_id": pending["interrupt_id"],
-                    "card_id": pending["card_id"],
-                    "expected_version": pending["version"],
+                    "input_token": pending["input_token"] if pending else None,
+                    "target_issue_id": snapshot.get("active_issue_id"),
+                    "card_id": pending["card_id"] if pending else None,
+                    "expected_version": snapshot["version"],
                     "kind": kind,
-                    "payload": step["payload"],
+                    "payload": payload,
                 }
                 r = await client.post(f"/sessions/{sid}/actions", json=body)
                 if r.status_code != 200:
                     raise RuntimeError(f"action {kind} failed {r.status_code}: {r.text[:300]}")
                 _absorb(sse.parse(r.text))
+                snapshot = (await client.get(f"/sessions/{sid}")).json()
                 if not until:
                     break
             else:
                 if until and (pending is None or pending["kind"] != until):
                     raise RuntimeError(f"pending never became {until!r} after {max_n} rounds")
+        if scenario.get("final_case_status"):
+            from app.actions.runtime import require_services
+
+            state = (
+                await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
+            ).values
+            case = await require_services().cases.store.get(state["case_id"])
+            if case["status"] != scenario["final_case_status"]:
+                raise RuntimeError(
+                    f"case ended at {case['status']}, expected {scenario['final_case_status']}"
+                )
+        for name in scenario.get("tools", []):
+            if not any(
+                e["type"] == "tool_call" and e["name"] == name and e["status"] == "finished"
+                for e in events
+            ):
+                raise RuntimeError(f"scenario did not complete tool {name}")
     return events
 
 
@@ -185,17 +295,33 @@ async def _record(case_id: str, scenario_key: str, replay_dir: Path) -> int:
     cfg = load_models_config(settings.models_config_path, lane_override=settings.model_lane)
     router = RecordingRouter(ModelRouter(ModelRegistry(cfg)), recorder)
     inner_adapter = get_knowledge_adapter()
-    if inner_adapter is None:
+    if inner_adapter is None and scenario.get("knowledge", True):
         print(
             "知识适配器不可用（缺 WEKNORA_API_KEY 或 manifest）：录制包必须含真实检索结果",
             file=sys.stderr,
         )
         return 2
     set_model_router(router)  # type: ignore[arg-type]
-    set_knowledge_adapter(RecordingKnowledgeAdapter(inner_adapter, recorder))
+    set_knowledge_adapter(
+        RecordingKnowledgeAdapter(inner_adapter, recorder) if inner_adapter else None
+    )
     try:
         with _Harness() as h:
-            events = await run_scenario(h.app, scenario)
+            try:
+                events = await run_scenario(h.app, scenario)
+            except Exception as error:
+                # Failed recordings are diagnostics, never valid replay packages.
+                failures = replay_dir / ".failures"
+                failures.mkdir(parents=True, exist_ok=True)
+                (failures / (Path(case_id).name + ".json")).write_text(json.dumps({
+                    "status": "failed", "case_id": case_id, "scenario": scenario_key,
+                    "versions": versions, "error": str(error),
+                    "models": list(recorder.models.values()), "model_failures": recorder.misses,
+                    "knowledge_count": len(recorder.knowledge),
+                }, ensure_ascii=False, indent=2) + "\n")
+                raise
+            finally:
+                await h.app.state.run_manager.shutdown()
     finally:
         set_model_router(None)
         set_knowledge_adapter(None)
@@ -274,7 +400,10 @@ async def _verify(case_id: str, replay_dir: Path, scenario_key: str | None) -> i
     set_knowledge_adapter(adapter)
     try:
         with _Harness() as h:
-            events = await run_scenario(h.app, scenario)
+            try:
+                events = await run_scenario(h.app, scenario)
+            finally:
+                await h.app.state.run_manager.shutdown()
     finally:
         set_model_router(None)
         set_knowledge_adapter(None)
@@ -338,6 +467,7 @@ def main(argv: list[str] | None = None) -> int:
     v.add_argument("case_id")
     v.add_argument("--scenario", choices=sorted(SCENARIOS), default=None)
     sub.add_parser("list")
+    sub.add_parser("verify-all")
     ns = p.parse_args(sys.argv[1:] if argv is None else argv)
     replay_dir = Path(ns.replay_dir)
     if ns.cmd == "record":
@@ -346,6 +476,21 @@ def main(argv: list[str] | None = None) -> int:
         return _check(ns.case_id, replay_dir)
     if ns.cmd == "verify":
         return asyncio.run(_verify(ns.case_id, replay_dir, ns.scenario))
+    if ns.cmd == "verify-all":
+
+        async def verify_all():
+            failures = []
+            for key in SCENARIOS:
+                try:
+                    if await _verify(key, replay_dir, key):
+                        failures.append(key)
+                except (RuntimeError, KeyError) as error:
+                    print(f"{key}: {error}", file=sys.stderr)
+                    failures.append(key)
+            print(json.dumps({"failed": failures, "total": len(SCENARIOS)}, ensure_ascii=False))
+            return int(bool(failures))
+
+        return asyncio.run(verify_all())
     return _list(replay_dir)
 
 

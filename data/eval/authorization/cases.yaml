@@ -1,0 +1,98 @@
+source: 人工确定性规则回归样本，不代表真实模型评测
+cases:
+- id: authorization-01
+  input:
+    policy: &id001
+      sku: EUFY-X10-PRO-OMNI
+      region_purchase: CN
+      region_use: CN
+      channel: official_store
+      purchase_date: '2026-02-26'
+      today: '2026-09-14'
+      fault_class: quality
+    gate: {}
+  expected:
+    passed: true
+- id: authorization-02
+  input:
+    policy: *id001
+    gate:
+      user_confirmed: false
+  expected:
+    passed: false
+- id: authorization-03
+  input:
+    policy: *id001
+    gate:
+      receipt:
+        status: insufficient
+  expected:
+    passed: false
+- id: authorization-04
+  input:
+    policy: *id001
+    gate:
+      product_state: unknown
+  expected:
+    passed: false
+- id: authorization-05
+  input:
+    policy: *id001
+    gate:
+      allowed_operations: false
+  expected:
+    passed: false
+- id: authorization-06
+  input:
+    policy: *id001
+    gate:
+      risk_cases:
+      - rule_id: R4
+        status: reported
+  expected:
+    passed: false
+- id: authorization-07
+  input:
+    policy: *id001
+    gate:
+      execution_status: running
+  expected:
+    passed: false
+- id: authorization-08
+  input:
+    policy: *id001
+    gate:
+      execution_status: succeeded
+  expected:
+    passed: false
+- id: authorization-09
+  input:
+    policy: *id001
+    gate:
+      case_status: closed
+  expected:
+    passed: false
+- id: authorization-10
+  input:
+    policy: *id001
+    gate:
+      option:
+        remedy: refund
+  expected:
+    passed: false
+- id: authorization-11
+  input:
+    policy: *id001
+    gate:
+      human_approved: true
+      user_confirmed: false
+  expected:
+    passed: false
+- id: authorization-12
+  input:
+    policy: *id001
+    gate:
+      human_approved: true
+      allowed_operations: false
+  expected:
+    passed: false

@@ -5,8 +5,6 @@ A3 样本用假 router 回放 OCR 输出；真实订单截图识别留票 42 bak
 
 from __future__ import annotations
 
-from tests.message_form import action_body, message_form, escalate_on_feedback
-
 import io
 import json
 import uuid
@@ -19,12 +17,13 @@ from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
 from app.main import app
 from app.models.config import load_models_config
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
 from app.sessions import sse
-from app.sessions.receipt import FIELDS, LOW_CONFIDENCE, confirm_card_id, extract_receipt
+from app.sessions.receipt import FIELDS, LOW_CONFIDENCE, extract_receipt
+from tests.message_form import action_body, escalate_on_feedback, message_form
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_images import png_bytes
 from tests.test_vision import CONFIG, NO_VISION_CONFIG, _router
 
@@ -135,7 +134,8 @@ async def test_a3_sample_recognizes_order_and_channel_with_low_confidence_flag(
     assert [k for k, v in card["confidence"].items() if v < LOW_CONFIDENCE] == ["channel", "amount"]
     assert card["unreadable"] == ["amount"]
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
-    assert card["card_id"] == confirm_card_id(sid, st["receipt"]["image_ids"])
+    assert card["issue_id"] == st["active_issue_id"]
+    assert card["card_id"] == snap.pending_input.card_id
     tools = [e for e in events if e["type"] == "tool_call" and e["name"] == "warranty.receipt_ocr"]
     assert [t["status"] for t in tools] == ["started", "finished"] and "3 个字段" in tools[1][
         "summary"

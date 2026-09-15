@@ -56,6 +56,9 @@ async def _run(what: str, config_dir: Path) -> int:
             print("plans", await plans_store.seed_plans(pool, library))
         if what in ("fault_cards", "all"):
             print("fault_cards", await faultcard_store.seed_fault_cards(pool, cards))
+        if what in ("backends", "all"):
+            from app.backends.seed import seed_backends
+            print("backends", await seed_backends(pool, config_dir / "backends_mock.yaml"))
         if reference is not None:
             print("receipts", await seed_reference(pool, reference))
     finally:
@@ -66,7 +69,7 @@ async def _run(what: str, config_dir: Path) -> int:
 def seed(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="写入产品 / 计划 / 故障卡 / 凭证参考数据（幂等）")
     p.add_argument(
-        "what", nargs="?", default="all", choices=["products", "plans", "fault_cards", "receipts", "all"]
+        "what", nargs="?", default="all", choices=["products", "plans", "fault_cards", "receipts", "backends", "all"]
     )
     p.add_argument("--config-dir", default=str(CONFIG_DIR))
     args = p.parse_args(argv)

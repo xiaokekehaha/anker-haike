@@ -65,6 +65,8 @@ jobs:
         run: |
           uv run --project orchestrator --no-sync haike-db upgrade
           uv run --project orchestrator --no-sync haike-db check
+      - name: L3 authorization and evaluation schema gates
+        run: uv run --project orchestrator --no-sync haike-eval all
       - name: Unit + Postgres integration tests
         run: uv run --project orchestrator --no-sync pytest -q orchestrator/tests
 

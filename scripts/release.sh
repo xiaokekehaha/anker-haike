@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REL="${1:-$(date -u +%Y%m%d)-$(git rev-parse --short=7 HEAD)}"
-ver() { grep -m1 -E '^version:' "$1" 2>/dev/null | awk '{print $2}' || echo "-"; }
+ver() { grep -m1 -E '^version:' "$1" 2>/dev/null | sed -E "s/^version:[[:space:]]*//; s/^['\"]//; s/['\"][[:space:]]*$//" || echo "-"; }
 pyconst() { grep -m1 -E "^$2\s*=" "$1" 2>/dev/null | sed -E 's/.*=[[:space:]]*"([^"]+)".*/\1/' || echo "-"; }
 KB_VER="$(python3 -c "import json,sys; print(json.load(open('data/knowledge/manifest.json'))['kb_ver'])" 2>/dev/null || echo "-（未入库）")"
 WEKNORA_TAG="$(grep -m1 -E '^WEKNORA_VERSION=' .env 2>/dev/null | cut -d= -f2 || true)"; WEKNORA_TAG="${WEKNORA_TAG:-$(grep -m1 -oE 'WEKNORA_VERSION:-v[0-9.]+' docker-compose.yml | cut -d- -f2)}"
@@ -31,6 +31,10 @@ cat > RELEASE.md <<MD
 | models.yaml | $(ver config/models.yaml)（TBD / TODO 计数：${TBD}，须为 0 才能冻结，票 42） |
 | bake-off | ${BAKEOFF}（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | $(ver config/rules/safety_terms.yaml) |
+| policy_version | $(ver config/policy/warranty_policy.yaml) |
+| actions_version | $(ver config/actions.yaml) |
+| emotion_policy / symptom_taxonomy / vision_vocab | $(ver config/emotion_policy.yaml) / $(ver config/symptom_taxonomy.yaml) / $(ver config/vision_vocab.yaml) |
+| backends_mock seed | $(ver config/backends_mock.yaml) |
 | products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
 | kb_ver | $KB_VER |
 | WeKnora 镜像 tag | $WEKNORA_TAG |

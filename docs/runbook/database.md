@@ -79,3 +79,11 @@ make db-revision MSG="add session_images"
 
 排查：日志里搜 `retention_purge` 看每轮统计；`retention purge failed` 为异常（下一轮继续）；删除后想确认无残留可跑 `select count(*) from session_events where session_id = '<id>'` 等（表清单见 `orchestrator/app/retention.py: SESSION_TABLES`）。脱敏：JSONL 与 Langfuse 共用 `app/observability/privacy.py`，手机号 / 订单号 / 地址 / 长数字串在写出前替换为 `[REDACTED]`；核对方法见 `tests/test_retention.py::test_jsonl_has_no_plaintext_phone_order_or_address`。
 
+
+## L3 演示底座（0006）
+
+`make db-upgrade` 增加 `shipments_mock`、`service_orders_mock`、`action_executions`、`cases`、`case_events`、`human_decisions`、`satisfaction_ratings`，并为 orders_mock 补购买区域、平台、金额与币种。仅操作本项目库。
+
+执行 `make seed WHAT=backends` 幂等加载 config/backends_mock.yaml 的虚构订单和运单，保留原有 A3 订单。服务单按 (order_no,type) 唯一，执行审计按 idempotency_key 唯一。故障注入按 op + order_no 匹配，DEMO-FAIL-001/002/003 分别为超时、不可用、冲突；修改 YAML 后重启运行时生效。
+
+`cd orchestrator && uv run haike-policy lint` 校验政策；`uv run haike-policy explain --case ../data/eval/policy/cases.yaml` 输出条件 actual/expected/met 与条款。规则均为演示，待真实 SOP 替换。

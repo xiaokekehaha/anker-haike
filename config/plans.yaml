@@ -1,7 +1,7 @@
 # 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，LLM 只改写 instruction_src 原文（09 §3.2）。
 # next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
 # evidence 段是票 26/27 接入 WeKnora 前的证据索引占位：doc_id#chunk_id 与 WeKnora 入库元数据保持一致。
-version: 2026-09-12.1
+version: 2026-09-14.2
 
 evidence:
   manual_rv_v1#c12: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。}
@@ -16,6 +16,7 @@ evidence:
 
 plans:
   - plan_id: rv_suction_hair_wrap
+    symptom_codes: [suction_low]
     version: 1
     fault: 滚刷毛发缠绕导致吸力下降
     applies_to: {scope: category_generic, category: robot_vacuum}
@@ -28,6 +29,7 @@ plans:
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: rv_suction_filter_clog
+    symptom_codes: [suction_low, filter_clog]
     version: 1
     fault: 滤网堵塞导致吸力下降
     applies_to: {scope: category_generic, category: robot_vacuum}
@@ -38,6 +40,7 @@ plans:
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: rv_suction_dustbin_full
+    symptom_codes: [suction_low, dustbin_full]
     version: 1
     fault: 尘盒满或未装到位
     applies_to: {scope: category_generic, category: robot_vacuum}
@@ -48,6 +51,7 @@ plans:
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: rv_suction_side_brush
+    symptom_codes: [suction_low, side_brush_stuck]
     version: 1
     fault: 边刷缠绕或不转
     applies_to: {scope: category_generic, category: robot_vacuum}
@@ -58,6 +62,7 @@ plans:
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: rv_suction_motor_fault
+    symptom_codes: [abnormal_noise]
     version: 1
     fault: 风机 / 电机故障（异响、焦味或过热）
     applies_to: {scope: category_generic, category: robot_vacuum}

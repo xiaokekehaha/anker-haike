@@ -83,7 +83,9 @@ export type Snapshot = {
   timeline: TimelineItem[];
 };
 
-export type TimelineItem =
+import type { ContextCardItem, ProposalCardItem, ExecutionCardItem, RetakeCardItem, RatingCardItem, CaseStatusItem } from '../types/snapshot';
+
+export type TimelineItem = ContextCardItem | ProposalCardItem | ExecutionCardItem | RetakeCardItem | RatingCardItem | CaseStatusItem
   | { kind: 'user_message'; id: string; text: string; at: string; image_ids: string[] }
   | { kind: 'assistant_message'; message_id: string; text: string; status: string; model_tier: string | null }
   | { kind: 'tool'; tool_id: string; name: string; status: string; summary: string | null }

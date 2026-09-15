@@ -15,7 +15,7 @@ from langchain_core.outputs import ChatGenerationChunk
 from app.main import app
 from app.models.runtime import set_model_router
 from app.rules import RulesService, set_rules_service
-from tests.test_reply_stream import INTAKE_CALM_X9, RULES, make_router
+from tests.test_reply_stream import DIALOGUE_TEXT, DIALOGUE_TURN, RULES, make_router
 
 
 class SlowStreamModel(BaseChatModel):
@@ -49,7 +49,7 @@ class SlowStreamModel(BaseChatModel):
 
 async def test_cancel_aborts_live_model_stream_without_retry(mem_runtime, tmp_path):
     router, fakes = make_router(
-        tmp_path, fast=[INTAKE_CALM_X9], main=[["x"]], backup=[["备用回答"]]
+        tmp_path, fast=[DIALOGUE_TURN], main=[["x"]], backup=[["备用回答"]]
     )
     slow = SlowStreamModel()
     fakes["main"] = slow  # model_factory 闭包按 alias 取，替换成慢流模型
@@ -59,7 +59,7 @@ async def test_cancel_aborts_live_model_stream_without_retry(mem_runtime, tmp_pa
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            handle = await manager.start(sid, "eufy X9 Pro 不吸了")
+            handle = await manager.start(sid, DIALOGUE_TEXT)
             # 等第一个 message delta 落库（模型流已开始）
             for _ in range(200):
                 await asyncio.sleep(0.02)

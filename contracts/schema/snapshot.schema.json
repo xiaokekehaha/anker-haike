@@ -218,6 +218,302 @@
       "title": "CancelledRun",
       "type": "object"
     },
+    "CaseStatusItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "complaint_risk": {
+          "default": false,
+          "title": "Complaint Risk",
+          "type": "boolean"
+        },
+        "external_refs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "External Refs",
+          "type": "object"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "case_changed",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "owner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Owner"
+        },
+        "priority": {
+          "default": "normal",
+          "enum": [
+            "normal",
+            "high"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "diagnosing",
+            "proposing",
+            "awaiting_confirmation",
+            "executing",
+            "executing_failed",
+            "tracking",
+            "closed",
+            "awaiting_approval",
+            "approved",
+            "rejected",
+            "closed_unresolved",
+            "reopened",
+            "escalated_summary"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "case_id",
+        "status",
+        "reason",
+        "updated_at"
+      ],
+      "title": "CaseStatusItem",
+      "type": "object"
+    },
+    "Clause": {
+      "additionalProperties": false,
+      "properties": {
+        "clause_id": {
+          "title": "Clause Id",
+          "type": "string"
+        },
+        "doc_version": {
+          "title": "Doc Version",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "source_doc": {
+          "default": "演示政策，待真实 SOP 替换",
+          "title": "Source Doc",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "clause_id",
+        "text",
+        "doc_version",
+        "policy_version"
+      ],
+      "title": "Clause",
+      "type": "object"
+    },
+    "ContextCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "choices": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Choices",
+          "type": "object"
+        },
+        "confirmed_fields": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmed Fields"
+        },
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "context_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "prefilled": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Prefilled",
+          "type": "object"
+        },
+        "sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "object"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "fields"
+      ],
+      "title": "ContextCardItem",
+      "type": "object"
+    },
+    "DispatchEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "const": "replacement.create",
+          "default": "replacement.create",
+          "title": "Action",
+          "type": "string"
+        },
+        "actions_version": {
+          "title": "Actions Version",
+          "type": "string"
+        },
+        "working_days": {
+          "exclusiveMinimum": 0,
+          "title": "Working Days",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "working_days",
+        "actions_version"
+      ],
+      "title": "DispatchEstimate",
+      "type": "object"
+    },
     "Emotion": {
       "additionalProperties": false,
       "properties": {
@@ -225,7 +521,9 @@
           "enum": [
             "calm",
             "anxious",
-            "angry"
+            "dissatisfied",
+            "angry",
+            "complaint_risk"
           ],
           "title": "Level",
           "type": "string"
@@ -234,7 +532,9 @@
           "enum": [
             "normal",
             "reassure_first",
-            "reassure_and_shorten"
+            "reassure_and_shorten",
+            "direct_resolution",
+            "de_escalate_and_offer_human"
           ],
           "title": "Strategy",
           "type": "string"
@@ -270,8 +570,51 @@
       "additionalProperties": false,
       "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
       "properties": {
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Id"
+        },
+        "draft_reply": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draft Reply"
+        },
         "emotion": {
           "$ref": "#/$defs/Emotion"
+        },
+        "emotion_track": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Emotion Track",
+          "type": "array"
+        },
+        "gate_result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GateResult"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "hypotheses": {
           "items": {
@@ -294,6 +637,19 @@
           "title": "Observations",
           "type": "array"
         },
+        "policy_decision_brief": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy Decision Brief"
+        },
         "problem": {
           "title": "Problem",
           "type": "string"
@@ -308,11 +664,26 @@
         "receipt": {
           "$ref": "#/$defs/ReceiptOutcome"
         },
+        "recommended_options": {
+          "items": {
+            "$ref": "#/$defs/ProposalOption"
+          },
+          "title": "Recommended Options",
+          "type": "array"
+        },
         "steps": {
           "items": {
             "$ref": "#/$defs/ExecutedStep"
           },
           "title": "Steps",
+          "type": "array"
+        },
+        "task_queue": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Task Queue",
           "type": "array"
         }
       },
@@ -467,6 +838,156 @@
       "title": "ExecutedStep",
       "type": "object"
     },
+    "ExecutionCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "action_kind": {
+          "title": "Action Kind",
+          "type": "string"
+        },
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "execution_id": {
+          "title": "Execution Id",
+          "type": "string"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "idempotency_key": {
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "execution_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "receipt": {
+          "$ref": "#/$defs/Receipt"
+        },
+        "status": {
+          "enum": [
+            "succeeded",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "execution_id",
+        "action_kind",
+        "status",
+        "receipt",
+        "idempotency_key"
+      ],
+      "title": "ExecutionCardItem",
+      "type": "object"
+    },
+    "GateCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "detail"
+      ],
+      "title": "GateCheck",
+      "type": "object"
+    },
+    "GateResult": {
+      "additionalProperties": false,
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/GateCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "fallback": {
+          "anyOf": [
+            {
+              "enum": [
+                "await_human",
+                "summarize"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fallback"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "passed",
+        "checks"
+      ],
+      "title": "GateResult",
+      "type": "object"
+    },
     "ImageRefItem": {
       "additionalProperties": false,
       "description": "会话期图片引用（票 29）：只有引用与摘要，字节在 session_images，1 小时后清理。",
@@ -595,7 +1116,11 @@
             "select_product",
             "step_feedback",
             "upload_receipt",
-            "confirm_receipt"
+            "confirm_receipt",
+            "confirm_context",
+            "confirm_proposal",
+            "upload_retake",
+            "rate_satisfaction"
           ],
           "title": "Kind",
           "type": "string"
@@ -613,6 +1138,33 @@
         "version"
       ],
       "title": "PendingInput",
+      "type": "object"
+    },
+    "PolicyCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "actual": {
+          "title": "Actual"
+        },
+        "expected": {
+          "title": "Expected"
+        },
+        "met": {
+          "title": "Met",
+          "type": "boolean"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "expected",
+        "actual",
+        "met"
+      ],
+      "title": "PolicyCondition",
       "type": "object"
     },
     "ProductCandidate": {
@@ -735,6 +1287,374 @@
         "candidates"
       ],
       "title": "ProductCardItem",
+      "type": "object"
+    },
+    "ProposalCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "chosen_option_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chosen Option Id"
+        },
+        "decision_summary": {
+          "title": "Decision Summary",
+          "type": "string"
+        },
+        "declined_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Declined Reason"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "proposal_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ProposalOption"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "retry": {
+          "default": false,
+          "title": "Retry",
+          "type": "boolean"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "options",
+        "decision_summary",
+        "policy_version"
+      ],
+      "title": "ProposalCardItem",
+      "type": "object"
+    },
+    "ProposalOption": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_allowed": {
+          "default": false,
+          "title": "Auto Allowed",
+          "type": "boolean"
+        },
+        "clauses": {
+          "items": {
+            "$ref": "#/$defs/Clause"
+          },
+          "title": "Clauses",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/PolicyCondition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "cost_bearer": {
+          "anyOf": [
+            {
+              "enum": [
+                "company",
+                "customer",
+                "shared"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Bearer"
+        },
+        "dispatch_estimate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DispatchEstimate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "remedy": {
+          "enum": [
+            "repair",
+            "replace",
+            "refund",
+            "none"
+          ],
+          "title": "Remedy",
+          "type": "string"
+        },
+        "source": {
+          "default": "policy",
+          "enum": [
+            "policy",
+            "human"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id",
+        "remedy",
+        "title"
+      ],
+      "title": "ProposalOption",
+      "type": "object"
+    },
+    "RatingCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Id"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "rating_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version"
+      ],
+      "title": "RatingCardItem",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": true,
+          "title": "Data",
+          "type": "object"
+        },
+        "eta_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eta Days"
+        },
+        "next_step": {
+          "default": "",
+          "title": "Next Step",
+          "type": "string"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "service_order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Order No"
+        },
+        "source": {
+          "default": "业务系统（模拟）",
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "tracking_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tracking No"
+        },
+        "updated_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Updated At"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "Receipt",
       "type": "object"
     },
     "ReceiptCardItem": {
@@ -946,6 +1866,87 @@
         "status"
       ],
       "title": "ReceiptOutcome",
+      "type": "object"
+    },
+    "RetakeCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "guidance": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Guidance",
+          "type": "array"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "retake_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "skipped": {
+          "default": false,
+          "title": "Skipped",
+          "type": "boolean"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "reasons",
+        "guidance"
+      ],
+      "title": "RetakeCardItem",
       "type": "object"
     },
     "StepCardItem": {
@@ -1449,7 +2450,13 @@
         "guide",
         "verify",
         "escalate",
-        "done"
+        "done",
+        "consult",
+        "context",
+        "propose",
+        "execute",
+        "track",
+        "awaiting_human"
       ],
       "title": "Stage",
       "type": "string"
@@ -1472,10 +2479,16 @@
           "mapping": {
             "action": "#/$defs/ActionItem",
             "assistant_message": "#/$defs/AssistantMessageItem",
+            "case_changed": "#/$defs/CaseStatusItem",
+            "context_card": "#/$defs/ContextCardItem",
             "escalation_summary": "#/$defs/SummaryItem",
             "evidence": "#/$defs/EvidenceItemGroup",
+            "execution_card": "#/$defs/ExecutionCardItem",
             "product_card": "#/$defs/ProductCardItem",
+            "proposal_card": "#/$defs/ProposalCardItem",
+            "rating_card": "#/$defs/RatingCardItem",
             "receipt_card": "#/$defs/ReceiptCardItem",
+            "retake_card": "#/$defs/RetakeCardItem",
             "step_card": "#/$defs/StepCardItem",
             "tool": "#/$defs/ToolItem",
             "user_message": "#/$defs/UserMessageItem"
@@ -1509,6 +2522,24 @@
           },
           {
             "$ref": "#/$defs/SummaryItem"
+          },
+          {
+            "$ref": "#/$defs/ContextCardItem"
+          },
+          {
+            "$ref": "#/$defs/ProposalCardItem"
+          },
+          {
+            "$ref": "#/$defs/ExecutionCardItem"
+          },
+          {
+            "$ref": "#/$defs/RetakeCardItem"
+          },
+          {
+            "$ref": "#/$defs/RatingCardItem"
+          },
+          {
+            "$ref": "#/$defs/CaseStatusItem"
           }
         ]
       },

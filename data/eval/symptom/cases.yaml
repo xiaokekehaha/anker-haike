@@ -1,0 +1,242 @@
+source: 人工规则回归样本，非真实工单/模型准确率
+cases:
+- id: symptom-01
+  input:
+    text: 不吸了
+  expected:
+    fault_family: 吸力下降
+    symptom_code: suction_low
+- id: symptom-02
+  input:
+    text: 吸不干净
+  expected:
+    fault_family: 吸力下降
+    symptom_code: suction_low
+- id: symptom-03
+  input:
+    text: 扫不干净
+  expected:
+    fault_family: 吸力下降
+    symptom_code: suction_low
+- id: symptom-04
+  input:
+    text: 吸力变弱
+  expected:
+    fault_family: 吸力下降
+    symptom_code: suction_low
+- id: symptom-05
+  input:
+    text: 吸力下降
+  expected:
+    fault_family: 吸力下降
+    symptom_code: suction_low
+- id: symptom-06
+  input:
+    text: 不开机
+  expected:
+    fault_family: 不开机
+    symptom_code: power_failure
+- id: symptom-07
+  input:
+    text: 开不了机
+  expected:
+    fault_family: 不开机
+    symptom_code: power_failure
+- id: symptom-08
+  input:
+    text: 按了没反应
+  expected:
+    fault_family: 不开机
+    symptom_code: power_failure
+- id: symptom-09
+  input:
+    text: 无法启动
+  expected:
+    fault_family: 不开机
+    symptom_code: power_failure
+- id: symptom-10
+  input:
+    text: 开机没动静
+  expected:
+    fault_family: 不开机
+    symptom_code: power_failure
+- id: symptom-11
+  input:
+    text: 不充电
+  expected:
+    fault_family: 不充电
+    symptom_code: charging_failure
+- id: symptom-12
+  input:
+    text: 充不进电
+  expected:
+    fault_family: 不充电
+    symptom_code: charging_failure
+- id: symptom-13
+  input:
+    text: 放回去没充上
+  expected:
+    fault_family: 不充电
+    symptom_code: charging_failure
+- id: symptom-14
+  input:
+    text: 充电失败
+  expected:
+    fault_family: 不充电
+    symptom_code: charging_failure
+- id: symptom-15
+  input:
+    text: 一直没电
+  expected:
+    fault_family: 不充电
+    symptom_code: charging_failure
+- id: symptom-16
+  input:
+    text: 异响
+  expected:
+    fault_family: 异响
+    symptom_code: abnormal_noise
+- id: symptom-17
+  input:
+    text: 声音很大
+  expected:
+    fault_family: 异响
+    symptom_code: abnormal_noise
+- id: symptom-18
+  input:
+    text: 咔咔响
+  expected:
+    fault_family: 异响
+    symptom_code: abnormal_noise
+- id: symptom-19
+  input:
+    text: 吱吱响
+  expected:
+    fault_family: 异响
+    symptom_code: abnormal_noise
+- id: symptom-20
+  input:
+    text: 噪音大
+  expected:
+    fault_family: 异响
+    symptom_code: abnormal_noise
+- id: symptom-21
+  input:
+    text: 漏水
+  expected:
+    fault_family: 漏水
+    symptom_code: water_leak
+- id: symptom-22
+  input:
+    text: 底下有水
+  expected:
+    fault_family: 漏水
+    symptom_code: water_leak
+- id: symptom-23
+  input:
+    text: 水箱往外滴
+  expected:
+    fault_family: 漏水
+    symptom_code: water_leak
+- id: symptom-24
+  input:
+    text: 地上都是水
+  expected:
+    fault_family: 漏水
+    symptom_code: water_leak
+- id: symptom-25
+  input:
+    text: 往外渗水
+  expected:
+    fault_family: 漏水
+    symptom_code: water_leak
+- id: symptom-26
+  input:
+    text: 乱跑
+  expected:
+    fault_family: 导航异常
+    symptom_code: navigation_failure
+- id: symptom-27
+  input:
+    text: 撞来撞去
+  expected:
+    fault_family: 导航异常
+    symptom_code: navigation_failure
+- id: symptom-28
+  input:
+    text: 地图乱了
+  expected:
+    fault_family: 导航异常
+    symptom_code: navigation_failure
+- id: symptom-29
+  input:
+    text: 找不到基站
+  expected:
+    fault_family: 导航异常
+    symptom_code: navigation_failure
+- id: symptom-30
+  input:
+    text: 回不去基站
+  expected:
+    fault_family: 导航异常
+    symptom_code: navigation_failure
+- id: symptom-31
+  input:
+    text: 不拖地
+  expected:
+    fault_family: 拖地异常
+    symptom_code: mop_failure
+- id: symptom-32
+  input:
+    text: 拖布不转
+  expected:
+    fault_family: 拖地异常
+    symptom_code: mop_failure
+- id: symptom-33
+  input:
+    text: 拖地没水
+  expected:
+    fault_family: 拖地异常
+    symptom_code: mop_failure
+- id: symptom-34
+  input:
+    text: 拖布不湿
+  expected:
+    fault_family: 拖地异常
+    symptom_code: mop_failure
+- id: symptom-35
+  input:
+    text: 拖不干净
+  expected:
+    fault_family: 拖地异常
+    symptom_code: mop_failure
+- id: symptom-36
+  input:
+    text: 连不上网
+  expected:
+    fault_family: App 连接
+    symptom_code: app_connection
+- id: symptom-37
+  input:
+    text: App离线
+  expected:
+    fault_family: App 连接
+    symptom_code: app_connection
+- id: symptom-38
+  input:
+    text: 连接失败
+  expected:
+    fault_family: App 连接
+    symptom_code: app_connection
+- id: symptom-39
+  input:
+    text: 配网失败
+  expected:
+    fault_family: App 连接
+    symptom_code: app_connection
+- id: symptom-40
+  input:
+    text: 老是掉线
+  expected:
+    fault_family: App 连接
+    symptom_code: app_connection

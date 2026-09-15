@@ -1,0 +1,84 @@
+{
+  "session_id": "80ca105b74784abab1c17721bf14ab5c",
+  "turns": [
+    {
+      "text": "查一下 DEMO-X10-001 的型号、购买渠道和购买日期",
+      "http": 200,
+      "reply": "订单 DEMO-X10-001：\n产品型号：EUFY-X10-PRO-OMNI（来源：业务系统（模拟））。\n购买渠道：海科演示授权经销商（来源：业务系统（模拟））。\n购买日期：2026-03-15（来源：业务系统（模拟））。",
+      "tools": [
+        "warranty.check"
+      ],
+      "errors": []
+    },
+    {
+      "text": "这笔订单我要退款，我在中国使用",
+      "http": 200,
+      "reply": "已关联订单 DEMO-X10-001。退款需人工核实办理，当前未执行该操作。已提交人工审核。审核决定会回到本会话，您可以继续补充信息。",
+      "tools": [],
+      "errors": []
+    },
+    {
+      "text": "另外查一下 DEMO-CN-003 的型号和购买渠道",
+      "http": 200,
+      "reply": "订单 DEMO-CN-003：\n产品型号：EUFY-X10-PRO-OMNI（来源：业务系统（模拟））。\n购买渠道：official_store（来源：业务系统（模拟））。",
+      "tools": [
+        "warranty.check"
+      ],
+      "errors": []
+    },
+    {
+      "text": "这笔我在德国使用，记下了吗？我说的使用地是哪里？",
+      "http": 200,
+      "reply": "订单 DEMO-CN-003：\n使用地：德国（来源：您提供的信息）。",
+      "tools": [],
+      "errors": []
+    },
+    {
+      "text": "正在办理退款的那笔订单，之前我说的使用地是哪里？",
+      "http": 200,
+      "reply": "订单 DEMO-X10-001：\n使用地：中国（来源：您提供的信息）。接下来处理：订单查询。",
+      "tools": [],
+      "errors": []
+    },
+    {
+      "text": "查 DEMO-CN-003 的物流状态",
+      "http": 200,
+      "reply": "订单 DEMO-CN-003：\n物流状态：shipped（来源：业务系统（模拟））。",
+      "tools": [
+        "logistics.query"
+      ],
+      "errors": []
+    },
+    {
+      "text": "谢谢，我考虑一下",
+      "http": 200,
+      "reply": "不客气。如果您后续需要继续处理订单 DEMO-X10-001 的退款或其他事宜，随时告诉我。",
+      "tools": [],
+      "errors": []
+    },
+    {
+      "text": "刚查物流这笔的购买日期和渠道是什么？物流id也告诉我",
+      "http": 200,
+      "reply": "订单 DEMO-CN-003：\n购买日期：2026-02-26（来源：业务系统（模拟））。\n购买渠道：official_store（来源：业务系统（模拟））。\n物流单号：DEMO-TRACK-003（来源：业务系统（模拟））。",
+      "tools": [],
+      "errors": []
+    }
+  ],
+  "interpret_prompt_version": "2026-09-14.6",
+  "targeted_checks": "33 passed; Ruff passed",
+  "scope": "订单事实持久化、对象隔离、字段覆盖、实时物流刷新；未扩大语义评测矩阵",
+  "after_restart": [
+    {
+      "text": "正在办理退款那笔订单的使用地和案件状态是什么？",
+      "http": 200,
+      "reply": "订单 DEMO-X10-001：\n使用地：中国（来源：您提供的信息）。\n案件状态：awaiting_approval。",
+      "errors": []
+    },
+    {
+      "text": "刚查物流那笔订单的物流id呢？",
+      "http": 200,
+      "reply": "订单 DEMO-CN-003：\n物流单号：DEMO-TRACK-003（来源：业务系统（模拟））。",
+      "errors": []
+    }
+  ]
+}

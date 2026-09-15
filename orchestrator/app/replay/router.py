@@ -26,6 +26,7 @@ from app.models.router import (
     ModelRouter,
     StreamEvent,
 )
+from app.replay.context import context_identity, rebind_output
 from app.replay.package import Recorder, ReplayPackage, model_key
 
 log = logging.getLogger("replay.router")
@@ -88,8 +89,9 @@ class ReplayRouter:
         if rec is None or rec.get("mode") != "invoke":
             raise self._miss(task, lane, key, "invoke")
         try:
-            parsed = schema.model_validate(rec.get("output"))
-        except ValidationError as exc:
+            _, refs = context_identity(messages)
+            parsed = schema.model_validate(rebind_output(rec.get("output"), rec.get("context_refs", {}), refs))
+        except (ValidationError, ValueError) as exc:
             log.error("replay record invalid case=%s task=%s: %s", self.case_id, task, exc)
             raise self._miss(task, lane, key, "invoke") from exc
         self.hits += 1
@@ -182,6 +184,7 @@ class RecordingRouter:
                 "mode": "invoke",
                 "schema": schema.__name__,
                 "output": res.parsed.model_dump(mode="json"),
+                "context_refs": context_identity(messages)[1],
                 "model_used": res.model_used,
                 "method": res.method,
                 "lane": res.lane,

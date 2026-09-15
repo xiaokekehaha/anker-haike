@@ -1,6 +1,7 @@
 /** 经营面板：先给 KPI，再给趋势与构成，最后是模型 / 检索健康与聚合流程图。 */
 import { useMemo, useState } from 'react';
 import { api } from '../api';
+import { l3Api } from '../l3';
 import { BarList, Kpi, OutcomeStack, TrendChart } from '../components/Charts';
 import { GraphView } from '../components/GraphView';
 import { count, defaultWindow, ms, percent, reasonText } from '../format';
@@ -30,6 +31,7 @@ export function Dashboard() {
   const bucket = days <= 1 ? 'hour' : 'day';
 
   const overview = useAsync(() => api.overview({ from, bucket, dim }), [from, bucket, dim]);
+  const l3 = useAsync(() => l3Api.metrics(from), [from]);
   const flow = useAsync(() => api.flow({ from }), [from]);
   const topology = useAsync(() => api.topology(), []);
 
@@ -50,6 +52,13 @@ export function Dashboard() {
         </span>
       </div>
 
+      {l3.error && <p className="empty">L3 指标读取失败：{l3.error}</p>}
+      <div className="grid kpis" style={{ marginBottom: 16 }}>
+        <Kpi label="独立托管率" value={percent(l3.data?.managed_rate)} hint="按问题计数：独立解决、独立闭环、咨询回答 ÷ 所有终态及转人工、放弃；剔除 replay / smoke。申请提交仍在跟踪，不算闭环。" note={`完成 ${count(l3.data?.managed)} / 终态 ${count(l3.data?.terminal)}`} />
+        <Kpi label="意图准确率" value={percent(l3.data?.intent_accuracy)} hint="人工标注意图正确的问题数 ÷ 已标注意图的问题数；无标注时暂无数据。" note={`已标注 ${count(l3.data?.intent_labeled)}`} />
+        <Kpi label="净满意度 NSS" value={percent(l3.data?.nss)} hint="4–5 分占比减去 1–2 分占比；3 分中性。评分不改变案件状态。" note={`评分覆盖率 ${percent(l3.data?.rating_coverage)}`} />
+        <Kpi label="越权执行次数" value={l3.data?.unauthorized_executions == null ? '—' : count(l3.data.unauthorized_executions)} hint="写动作成功但缺少四项完整授权检查，或任一检查失败的执行次数。" />
+      </div>
       <div className="grid kpis" style={{ marginBottom: 16 }}>
         <Kpi label="自助解决率" value={percent(data?.rates.self_service)}
           hint="已解决 ÷（已解决 + 系统原因转人工 + 排障中途放弃）；用户主动要人工、安全升级、范围外不计入"

@@ -1,0 +1,667 @@
+{
+  "kind": "routing",
+  "mode": "model",
+  "source": "synthetic_independent_text_gold",
+  "dataset_sha256": "f586379f79b574bb6f5b819f3620236e9e6dd64d128c0f80b6f1f880948c0571",
+  "versions": {
+    "policy_version": "2026-09-14.1",
+    "actions_version": "2026-09-14.1",
+    "prompt_ver": "system=2026-09-14.1;interpret=2026-09-14.3;reply=2026-09-12.1;guide=2026-09-12.1;clarify=2026-09-13.1;vision=2026-09-14.1;ocr=2026-09-12.1;summary=2026-09-12.1",
+    "models_ver": "2026-09-13.5",
+    "kb_ver": "2026-09-12.1+text-embedding-v4",
+    "rules_ver": "2026-09-12.1"
+  },
+  "lane": "domestic",
+  "at": "2026-09-14T11:25:33.314038+00:00",
+  "planned": 20,
+  "cases": [
+    {
+      "id": "multi-01",
+      "family": "multi_intent",
+      "text": "机器滚刷不转了，请排查。另外帮我查包裹到哪了。",
+      "expected": {
+        "intents": [
+          "report_problem",
+          "logistics_query"
+        ],
+        "order": [
+          "report_problem",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "logistics_query",
+          "report_problem"
+        ],
+        "order": [
+          "report_problem",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 5352
+    },
+    {
+      "id": "multi-02",
+      "family": "multi_intent",
+      "text": "帮我查物流，同时我想申请换货。",
+      "expected": {
+        "intents": [
+          "replacement_request",
+          "logistics_query"
+        ],
+        "order": [
+          "replacement_request",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "logistics_query",
+        "intents": [
+          "logistics_query",
+          "replacement_request"
+        ],
+        "order": [
+          "replacement_request",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1627
+    },
+    {
+      "id": "multi-03",
+      "family": "multi_intent",
+      "text": "请给我退款，另外查一下物流进度。",
+      "expected": {
+        "intents": [
+          "refund_request",
+          "logistics_query"
+        ],
+        "order": [
+          "refund_request",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "refund_request",
+        "intents": [
+          "logistics_query",
+          "refund_request"
+        ],
+        "order": [
+          "refund_request",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1331
+    },
+    {
+      "id": "multi-04",
+      "family": "multi_intent",
+      "text": "我要改收货地址，还要查一下保修期限。",
+      "expected": {
+        "intents": [
+          "address_update",
+          "warranty_query"
+        ],
+        "order": [
+          "address_update",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "address_update",
+        "intents": [
+          "address_update",
+          "warranty_query"
+        ],
+        "order": [
+          "address_update",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2557
+    },
+    {
+      "id": "multi-05",
+      "family": "multi_intent",
+      "text": "这台机器吸力变弱了，请排查，再帮我看是否在保。",
+      "expected": {
+        "intents": [
+          "report_problem",
+          "warranty_query"
+        ],
+        "order": [
+          "report_problem",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "report_problem",
+          "warranty_query"
+        ],
+        "order": [
+          "report_problem",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2294
+    },
+    {
+      "id": "multi-06",
+      "family": "multi_intent",
+      "text": "我要申请换货，另外请查保修到期日。",
+      "expected": {
+        "intents": [
+          "replacement_request",
+          "warranty_query"
+        ],
+        "order": [
+          "replacement_request",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "replacement_request",
+        "intents": [
+          "replacement_request",
+          "warranty_query"
+        ],
+        "order": [
+          "replacement_request",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1632
+    },
+    {
+      "id": "multi-07",
+      "family": "multi_intent",
+      "text": "请退款并帮我核对订单购买信息。",
+      "expected": {
+        "intents": [
+          "refund_request",
+          "order_query"
+        ],
+        "order": [
+          "refund_request",
+          "order_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "refund_request",
+        "intents": [
+          "order_query",
+          "refund_request"
+        ],
+        "order": [
+          "refund_request",
+          "order_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1846
+    },
+    {
+      "id": "multi-08",
+      "family": "multi_intent",
+      "text": "请改收货地址，再查物流。",
+      "expected": {
+        "intents": [
+          "address_update",
+          "logistics_query"
+        ],
+        "order": [
+          "address_update",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "address_update",
+        "intents": [
+          "address_update",
+          "logistics_query"
+        ],
+        "order": [
+          "address_update",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2017
+    },
+    {
+      "id": "multi-09",
+      "family": "multi_intent",
+      "text": "查订单的购买日期，再查保修期。",
+      "expected": {
+        "intents": [
+          "order_query",
+          "warranty_query"
+        ],
+        "order": [
+          "order_query",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "order_query",
+        "intents": [
+          "order_query",
+          "warranty_query"
+        ],
+        "order": [
+          "order_query",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1675
+    },
+    {
+      "id": "multi-10",
+      "family": "multi_intent",
+      "text": "看看包裹到哪了，再帮我核对购买渠道。",
+      "expected": {
+        "intents": [
+          "logistics_query",
+          "order_query"
+        ],
+        "order": [
+          "logistics_query",
+          "order_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "logistics_query",
+        "intents": [
+          "logistics_query",
+          "order_query"
+        ],
+        "order": [
+          "logistics_query",
+          "order_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1505
+    },
+    {
+      "id": "multi-11",
+      "family": "multi_intent",
+      "text": "这台扫地机无法开机，请排查；还有一笔订单要退款。",
+      "expected": {
+        "intents": [
+          "refund_request",
+          "report_problem"
+        ],
+        "order": [
+          "refund_request",
+          "report_problem"
+        ]
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "refund_request",
+          "report_problem"
+        ],
+        "order": [
+          "refund_request",
+          "report_problem"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2105
+    },
+    {
+      "id": "multi-12",
+      "family": "multi_intent",
+      "text": "我要申请换货，另一台耳机只有左侧没声音，请排查。",
+      "expected": {
+        "intents": [
+          "replacement_request",
+          "report_problem"
+        ],
+        "order": [
+          "replacement_request",
+          "report_problem"
+        ]
+      },
+      "actual": {
+        "primary_intent": "replacement_request",
+        "intents": [
+          "replacement_request",
+          "report_problem"
+        ],
+        "order": [
+          "replacement_request",
+          "report_problem"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3052
+    },
+    {
+      "id": "multi-13",
+      "family": "multi_intent",
+      "text": "机器充不上电，请排查。另外修改订单收货地址。",
+      "expected": {
+        "intents": [
+          "address_update",
+          "report_problem"
+        ],
+        "order": [
+          "address_update",
+          "report_problem"
+        ]
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "address_update",
+          "report_problem"
+        ],
+        "order": [
+          "address_update",
+          "report_problem"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 3667
+    },
+    {
+      "id": "multi-14",
+      "family": "multi_intent",
+      "text": "请查询保修日期，另外看看物流到哪了。",
+      "expected": {
+        "intents": [
+          "warranty_query",
+          "logistics_query"
+        ],
+        "order": [
+          "warranty_query",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "warranty_query",
+        "intents": [
+          "logistics_query",
+          "warranty_query"
+        ],
+        "order": [
+          "warranty_query",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1549
+    },
+    {
+      "id": "multi-15",
+      "family": "multi_intent",
+      "text": "一笔订单换货，另一笔订单退款，再查一下物流。",
+      "expected": {
+        "intents": [
+          "replacement_request",
+          "refund_request",
+          "logistics_query"
+        ],
+        "order": [
+          "replacement_request",
+          "refund_request",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "replacement_request",
+        "intents": [
+          "logistics_query",
+          "refund_request",
+          "replacement_request"
+        ],
+        "order": [
+          "replacement_request",
+          "refund_request",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1971
+    },
+    {
+      "id": "multi-16",
+      "family": "multi_intent",
+      "text": "先申请退款，另外一笔订单要换货，还想查一下保修。",
+      "expected": {
+        "intents": [
+          "refund_request",
+          "replacement_request",
+          "warranty_query"
+        ],
+        "order": [
+          "refund_request",
+          "replacement_request",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "refund_request",
+        "intents": [
+          "refund_request",
+          "replacement_request",
+          "warranty_query"
+        ],
+        "order": [
+          "refund_request",
+          "replacement_request",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1436
+    },
+    {
+      "id": "multi-17",
+      "family": "multi_intent",
+      "text": "机器漏水了，请排查；再查这笔订单购买日期和保修期。",
+      "expected": {
+        "intents": [
+          "report_problem",
+          "order_query",
+          "warranty_query"
+        ],
+        "order": [
+          "report_problem",
+          "order_query",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "report_problem",
+        "intents": [
+          "order_query",
+          "report_problem",
+          "warranty_query"
+        ],
+        "order": [
+          "report_problem",
+          "order_query",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2367
+    },
+    {
+      "id": "multi-18",
+      "family": "multi_intent",
+      "text": "换货申请请帮我办理，还要查订单购买信息、查物流。",
+      "expected": {
+        "intents": [
+          "replacement_request",
+          "order_query",
+          "logistics_query"
+        ],
+        "order": [
+          "replacement_request",
+          "order_query",
+          "logistics_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "replacement_request",
+        "intents": [
+          "logistics_query",
+          "order_query",
+          "replacement_request"
+        ],
+        "order": [
+          "replacement_request",
+          "order_query",
+          "logistics_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1732
+    },
+    {
+      "id": "multi-19",
+      "family": "multi_intent",
+      "text": "请查物流，也请查物流单的配送进度；还要查保修日期。",
+      "expected": {
+        "intents": [
+          "logistics_query",
+          "warranty_query"
+        ],
+        "order": [
+          "logistics_query",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "logistics_query",
+        "intents": [
+          "logistics_query",
+          "warranty_query"
+        ],
+        "order": [
+          "logistics_query",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 1577
+    },
+    {
+      "id": "multi-20",
+      "family": "multi_intent",
+      "text": "我想改地址，另外机器有异响需要排查，再查询保修。",
+      "expected": {
+        "intents": [
+          "address_update",
+          "report_problem",
+          "warranty_query"
+        ],
+        "order": [
+          "address_update",
+          "report_problem",
+          "warranty_query"
+        ]
+      },
+      "actual": {
+        "primary_intent": "address_update",
+        "intents": [
+          "address_update",
+          "report_problem",
+          "warranty_query"
+        ],
+        "order": [
+          "address_update",
+          "report_problem",
+          "warranty_query"
+        ],
+        "emotion_level": "calm",
+        "model_emotion_level": "calm"
+      },
+      "errors": [],
+      "model": "dashscope/qwen3.7-flash",
+      "latency_ms": 2074
+    }
+  ],
+  "total": 20,
+  "passed": 20,
+  "complete": true,
+  "field_accuracy": {
+    "intents": 1.0,
+    "order": 1.0
+  },
+  "accuracy": 1.0
+}

@@ -155,7 +155,7 @@ async def scn_cannot_do_x3(ctx: Ctx):
 
 @scenario("safety_first_sentence", "boundary", "首句风险报告 → 一次语义判断后 R4，零检索", "09 §1；票 15")
 async def scn_safety_first(ctx: Ctx):
-    async with Harness(ctx.dir("sf1"), scripts={"intake": [{"primary_intent": "report_problem", "device_relation": "current", "risk_assertion": "reported", "risk_quote": "$current", "facts": [{"value": "冒烟、烧焦味", "quote": "$current"}]}]}) as h:
+    async with Harness(ctx.dir("sf1"), scripts={"intake": [{"primary_intent": "report_problem", "device_relation": "current", "device_safety_assertion": "reported", "device_safety_quote": "$current", "facts": [{"value": "冒烟、烧焦味", "quote": "$current"}]}]}) as h:
         sid = await h.new_session()
         ev = await h.send(sid, "扫地机冒烟了，有烧焦味")
         summary = ev.first("escalation_summary")
@@ -707,6 +707,7 @@ async def scn_live_a1(ctx: Ctx):
 
 
 def scenarios_for(groups: list[str] | None, live: bool) -> list[Scenario]:
+    from app.inspection import l3_scenarios  # noqa: F401 - registers bounded offline scenarios
     out = [s for s in SCENARIOS if (groups is None or s.group in groups)]
     if not live:
         out = [s for s in out if s.group != "live"]

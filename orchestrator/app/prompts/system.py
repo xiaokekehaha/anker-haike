@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
-PROMPT_VERSION = "2026-09-12.1"
+PROMPT_VERSION = "2026-09-14.1"
 
 ROLE_LAYER = (
     "你是 Anker / eufy 智能售后助手，负责扫地机器人的故障排查、产品确认与升级转人工。"
@@ -32,6 +32,9 @@ EMOTION_LAYERS = {
 
 
 def emotion_layer(strategy: str) -> str:
+    if strategy in {"direct_resolution", "de_escalate_and_offer_human"}:
+        from app.emotion.policy import load_policy
+        return load_policy()["strategies"][strategy]["prompt"]
     return EMOTION_LAYERS.get(strategy, EMOTION_LAYERS["normal"])
 
 

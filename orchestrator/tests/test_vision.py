@@ -15,11 +15,11 @@ from app.diagnose.vision import (
 )
 from app.images import InMemoryImageStore
 from app.models.config import load_models_config
-from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.rules import RulesService
 from app.settings import REPO_ROOT
+from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_images import png_bytes
 
 CONFIG = """

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import action_body, message_form
-
 import asyncio
 import uuid
 
@@ -13,6 +11,7 @@ from httpx import ASGITransport, AsyncClient
 from app.main import app
 from app.sessions import sse
 from app.sessions.graph import OUT_OF_SCOPE_TEXT
+from tests.message_form import action_body, message_form
 
 MULTI = "我的 S1 Pro 不吸了"
 
@@ -122,12 +121,8 @@ async def test_request_human_while_awaiting_input_is_not_409(mem_runtime):
     assert summary["product"].startswith("未确认")  # 卡片未选，产品仍未确认
     st = (await _state(sid)).values
     assert st["escalate_reason"] == "R3" and st["pending_card"] is None
-    flag = st["safety_flags"][-1]
-    assert (
-        flag["rule_id"] == "R3"
-        and flag["source"] == "action"
-        and flag["action_id"] == (body["action_id"])
-    )
+    assert st["turn_decision"]["escalation_trigger"] == "R3"
+    assert st["turn_decision"]["source_refs"] == [body["action_id"]]
     assert snap.pending_input is None and snap.stage == "escalate"
     card = next(i for i in snap.timeline if i.kind == "product_card")
     assert card.selected_sku is None  # 用户没有选
@@ -160,8 +155,21 @@ async def test_request_human_during_streaming_cancels_then_escalates(mem_runtime
     assert snap.stage == "escalate" and snap.active_run is None
 
 
-async def test_request_human_when_idle_starts_from_entry(mem_runtime):
+async def test_request_human_when_idle_starts_from_entry(mem_runtime, monkeypatch):
     """idle 状态（无 interrupt、无 active run）点「请求人工」：从 START 直达 human_request → escalate。"""
+    import app.conversation.interpret as semantic
+
+    original = semantic.interpret_turn
+
+    async def with_reported_fact(router, state, **kwargs):
+        meaning, context = await original(router, state, **kwargs)
+        if state.get("entry") == "message":
+            meaning = meaning.model_copy(update={
+                "facts": [semantic.FactCandidate(value=state["text"], quote=state["text"])],
+            })
+        return meaning, context
+
+    monkeypatch.setattr(semantic, "interpret_turn", with_reported_fact)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         first = await _send(client, sid, "扫地机 X10 不吸了")  # 票 34：一轮后停在步骤卡
@@ -187,7 +195,8 @@ async def test_request_human_when_idle_starts_from_entry(mem_runtime):
         events = sse.parse(resp.text)
         after = await _snap(client, sid)
     assert events[0]["resumed"] is False
-    assert [e["type"] for e in events if e["type"] != "ping"] == [
+    assert any(e["type"] == "input_received" and e["input_kind"] == "action" for e in events)
+    assert [e["type"] for e in events if e["type"] not in {"ping", "input_received", "issue_changed", "pending_changed", "summary_updated"}] == [
         "run_started",
         "progress",
         "message_start",

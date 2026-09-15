@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSession } from './useSession';
-import type { SessionSnapshot } from '../types/snapshot';
+import type { CaseStatusItem, SessionSnapshot } from '../types/snapshot';
 
 const pending = { kind: 'select_product', input_token: 'c', card_id: 'c', version: 4 } as const;
 const candidate = { sku: 'RV', name: '扫地机', category: 'robot_vacuum', in_scope: true, image: null };
@@ -31,6 +31,20 @@ beforeEach(() => { sessionStorage.clear(); localStorage.clear(); });
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('session recovery lifecycle', () => {
+  it('receives an external case update while idle without another user message', async () => {
+    sessionStorage.setItem('haike.session_id', 's');
+    const item: CaseStatusItem = { kind: 'case_changed', card_id: 'c', case_id: 'c', issue_id: 'i', version: 4, status: 'awaiting_approval', complaint_risk: false, priority: 'normal', owner: null, reason: '等待审核', external_refs: {}, updated_at: '2026-09-14T00:00:00Z' };
+    const fetch = vi.fn().mockResolvedValueOnce(json(snapshot({ active_issue_id: 'i', timeline: [item] })))
+      .mockResolvedValueOnce(json(snapshot({ active_issue_id: 'i', version: 5, stage: 'done', last_event_seq: 12, timeline: [{ ...item, version: 5, status: 'closed' }] })));
+    vi.stubGlobal('fetch', fetch);
+    const { result } = renderHook(useSession);
+    await waitFor(() => expect(result.current.state.version).toBe(4));
+    act(() => { document.dispatchEvent(new Event('visibilitychange')); });
+    await waitFor(() => expect(result.current.state.version).toBe(5));
+    expect(result.current.state.timeline[0]).toMatchObject({ status: 'closed' });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
   it.each([null, pending])('restores persisted idle or pending state', async (pending_input) => {
     sessionStorage.setItem('haike.session_id', 's');
     const fetch = vi.fn().mockResolvedValue(json(snapshot({ pending_input })));

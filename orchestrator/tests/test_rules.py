@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from tests.message_form import message_form
-
 import logging
 import os
 import time
@@ -15,6 +13,7 @@ from app.main import app
 from app.rules import RulesError, RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.message_form import message_form
 
 REAL = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
 
@@ -35,6 +34,7 @@ def test_dictionary_loads_with_numbered_rules(rules):
     [
         ("扫地机刚才冒烟了！", ["R4"], True),
         ("底部有一股烧焦的味道", ["R4"], True),
+        ("机身有焦味", ["R4"], True),
         ("电池 鼓包 了还能用吗", ["R4"], True),
         ("我要转人工", ["R3"], True),
         ("这个能保修吗", ["R6"], False),
@@ -76,6 +76,18 @@ def test_rule_hits_are_structured_logs(rules, caplog):
     assert rec.rule_id == "R4" and rec.source == "text" and rec.checkpoint == "cp_in"
     assert rec.session_id == "sess-9" and rec.rules_version == rules.version
     assert "rule_id=R4" in rec.getMessage()
+
+
+def test_step_warning_is_logged_as_step_drop_not_user_risk(rules, caplog):
+    caplog.set_level(logging.INFO, logger="rules")
+    result = rules.check_pre_step(instruction="若有焦味请立即关机。", caution=None)
+    assert result.action == "drop"
+    hits = [r for r in caplog.records if getattr(r, "event", None) == "rule_hit"]
+    assert len(hits) == 1
+    assert (hits[0].checkpoint, hits[0].source, hits[0].action) == (
+        "cp_pre_step", "step", "drop"
+    )
+    assert hits[0].term == "焦味"
 
 
 def test_hot_reload_on_file_change(tmp_path):

@@ -131,6 +131,8 @@ def create_app() -> FastAPI:
     app.include_router(health_router)
     app.include_router(models_router)
     app.include_router(sessions_router)
+    from app.admin.l3_router import router as l3_router
+    app.include_router(l3_router)
     app.include_router(admin_router)  # 管理员观测台 /admin/api/*（黑客松范围无鉴权）
 
     static_dir = Path(settings.static_dir)

@@ -16,6 +16,11 @@ log = logging.getLogger("admin.graph")
 # 不发 progress 的节点（await_input / apply_action / reassure / clarify）归入其所在流程段。
 NODE_STAGE: dict[str, str] = {
     "__start__": "start",
+    "service_context": "context", "propose": "propose", "authorize": "execute",
+    "execute": "execute", "track": "track", "await_human": "awaiting_human",
+    "consult": "consult", "apply_human_decision": "awaiting_human",
+    "advance_tasks": "done", "prepare_retake": "diagnose", "vision_conflict": "diagnose",
+    "apply_case_command": "awaiting_human", "reopen_case": "context",
     "understand": "intake",
     "dialogue": "intake",
     "commit_issue": "done",
@@ -45,6 +50,7 @@ STAGE_ORDER = [
     "disambiguate",
     "diagnose",
     "guide",
+    "consult", "context", "propose", "execute", "track", "awaiting_human",
     "wait",
     "escalate",
     "out_of_scope",

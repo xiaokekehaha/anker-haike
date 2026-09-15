@@ -50,7 +50,7 @@ export function LabelDialog({ sessionId, current, onClose, onSaved }: {
       <div className="chips">
         {available.map((tag) => (
           <button key={tag} className="chip" aria-pressed={tags.includes(tag)}
-            onClick={() => setTags((t) => (t.includes(tag) ? t.filter((x) => x !== tag) : [...t, tag]))}>
+            onClick={() => setTags((t) => (t.includes(tag) ? t.filter((x) => x !== tag) : [...t.filter(x => !(['intent_correct', 'intent_wrong'].includes(tag) && ['intent_correct', 'intent_wrong'].includes(x))), tag]))}>
             {TAG_TEXT[tag] ?? tag}
           </button>
         ))}

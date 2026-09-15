@@ -1,0 +1,80 @@
+{
+  "session_id": "a83fd21ac6874f60b9a6e83e2d078746",
+  "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+  "interpret_prompt_version": "2026-09-14.9",
+  "turns": [
+    {
+      "text": "之前退货那笔案件现在是什么状态？",
+      "reply": "根据记录，之前涉及退货的案件（关联订单 DEMO-X10-001）当前状态为：**已结案**（closed）。\n\n该案件在 2026-09-14 13:45:46 被人工操作结案，随后在 13:46:11 被重新受理，最终在 13:54:49 再次被人工操作结案。",
+      "errors": [],
+      "case_events": [],
+      "case_status": "closed",
+      "reopened_count": 1,
+      "pending_input": null,
+      "executions": []
+    },
+    {
+      "text": "之前退货那笔案件，我没有说已经解决，问题现在还没有解决",
+      "reply": "已恢复原案件，保留之前的订单和处理记录。接下来重新核实适用方案。为核对适用政策，请补充使用地。",
+      "errors": [],
+      "case_events": [
+        {
+          "type": "case_changed",
+          "card_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+          "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+          "issue_id": "6225df10397f503fbdbccaee16a66e6b",
+          "version": 12,
+          "status": "reopened",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "继续处理未解决的问题",
+          "external_refs": {
+            "order_no": "DEMO-X10-001"
+          },
+          "updated_at": "2026-09-14T13:55:00.293218+00:00",
+          "event_id": "35045bb8c7e853ea9102f0cabc784b88",
+          "run_id": "fcf273ae8e604acc846679c97305520d",
+          "seq": 184,
+          "recorded_at": "2026-09-14T13:55:00.354544+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+          "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+          "issue_id": "6225df10397f503fbdbccaee16a66e6b",
+          "version": 12,
+          "status": "reopened",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "DEMO-X10-001"
+          },
+          "updated_at": "2026-09-14T13:55:00.293218+00:00",
+          "event_id": "ee64f81082875e0ab10002fd35bdd472",
+          "run_id": "fcf273ae8e604acc846679c97305520d",
+          "seq": 188,
+          "recorded_at": "2026-09-14T13:55:00.376773+00:00"
+        }
+      ],
+      "case_status": "reopened",
+      "reopened_count": 2,
+      "pending_input": {
+        "issue_id": "6225df10397f503fbdbccaee16a66e6b",
+        "kind": "confirm_context",
+        "input_token": "f355560b53ef5cc2a6f717b4e3c77226",
+        "card_id": "f827c5ceadb457ada8bc80b5d050a791",
+        "version": 12
+      },
+      "executions": []
+    }
+  ],
+  "before": {
+    "status": "closed",
+    "revision": 7,
+    "reopened_count": 1
+  },
+  "result": "passed"
+}

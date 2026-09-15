@@ -15,8 +15,9 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from haike_contracts.common import FaultLocalization
 from langchain_core.messages import HumanMessage, SystemMessage
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 
 from app.images.store import ImageStore
 from app.models.queue import CapacityExceeded
@@ -28,7 +29,7 @@ log = logging.getLogger("diagnose.vision")
 TASK = "diagnose.vision"
 VISION_BUDGET_MS = 12_000  # 含图轮 run deadline 40 s（08 §8），读图给 12 s
 DEFAULT_MAX_IMAGES = 4
-VISION_PROMPT_VERSION = "2026-09-12.1"
+VISION_PROMPT_VERSION = "2026-09-14.1"
 NO_VISION_TEXT = (
     "当前暂时无法识别图片，请用文字描述一下照片里的情况（例如哪个部件、什么现象），我继续为您排查。"
 )
@@ -36,7 +37,7 @@ NO_VISION_TEXT = (
 Status = Literal["ok", "skipped", "no_images", "no_vision", "failed"]
 
 
-class VisionObservation(BaseModel):
+class VisionObservation(FaultLocalization):
     """模型输出 schema。"""
 
     model_config = ConfigDict(extra="forbid")
@@ -60,11 +61,15 @@ class VisionOutcome:
     model_used: str | None = None
     reason: str | None = None
     model_trace: dict[str, Any] | None = None
+    fault_localization: dict | None = None
     user_hint: str | None = None  # 需要提示用户的固定文案（无视觉能力时）
 
 
 INSTRUCTION = (
-    "你正在查看用户上传的设备故障照片。只描述图片中客观可见的现象与可辨认的部件，"
+    "你正在查看用户上传的设备故障照片。输出 findings（part/location/phenomenon/severity/confidence/quote_region）、image_quality（usable/reasons）、model_hint、conflicts_with_text。"
+    "部件只用滚刷/边刷/滤网/尘盒/吸口/轮组/传感器/充电触点/电池仓/基站/其他；现象只用缠绕/堵塞/破损/变形/烧焦/漏液/鼓包/污渍/松脱/缺失/正常/其他。"
+    "看不清时 usable=false，reasons 从 blurry/too_dark/too_far/wrong_subject/occluded 选择。多图中只要一张可用于判断则 usable=true。型号仅抄录看得清的铭牌，不猜测。"
+    "只描述图片中客观可见的现象与可辨认的部件，"
     "不要猜测故障原因、不要给排查步骤、不要编造看不清的细节。"
     "若出现冒烟、烧焦、电池鼓包、漏液、火花等安全相关现象，必须在 observations 中用英文关键词注明"
     "（如 smoke / burnt / swollen battery / leaking）。只输出 JSON。"
@@ -196,8 +201,13 @@ async def observe_images(
             model_trace={"task": TASK, "model_used": "skipped", "lane": lane, "attempts": 1},
         )
     parsed: VisionObservation = res.parsed
+    from app.diagnose.localization import normalize
+    localization = normalize(parsed)
+    derived = [f"{f['part']}{f['phenomenon']}" for f in localization['findings']]
     obs = [o.strip() for o in parsed.observations if o.strip()][:10]
+    obs = list(dict.fromkeys([*obs, *derived]))
     parts = [p.strip() for p in parsed.visible_parts if p.strip()][:10]
+    parts = list(dict.fromkeys([*parts, *[f["part"] for f in localization["findings"]]]))
     log.info(
         "vision observed session=%s images=%d observations=%s parts=%s model=%s prompt_ver=%s",
         session_id,
@@ -209,6 +219,7 @@ async def observe_images(
     )
     return VisionOutcome(
         "ok",
+        fault_localization=localization,
         observations=obs,
         visible_parts=parts,
         used_image_ids=[r["image_id"] for r, _ in images],
