@@ -211,3 +211,71 @@ async def test_postgres_image_store_roundtrip():
         assert await store.get("sess-img-test", ref.image_id) is None
     finally:
         await pool.close()
+
+
+def test_prepare_bakes_exif_orientation_into_pixels():
+    """A4 的前置条件：手机竖拍的方向只记在 EXIF 里，厂商文档都把 rotated 图列为已知失效条件。"""
+    import io
+
+    from PIL import Image
+
+    from app.images.prepare import prepare
+
+    im = Image.new("RGB", (80, 40), (10, 20, 30))
+    im.paste((240, 240, 240), (0, 0, 20, 10))  # 左上角标记，转正后应移动到右上
+    buf = io.BytesIO()
+    exif = im.getexif()
+    exif[274] = 6  # Orientation = 顺时针 90°
+    im.save(buf, "JPEG", exif=exif)
+    out, mime = prepare(buf.getvalue(), "image/jpeg")
+    got = Image.open(io.BytesIO(out))
+    assert mime == "image/jpeg"
+    assert got.size == (40, 80), "转正后宽高应互换"
+    assert (got.getexif() or {}).get(274) in (None, 1), "方向已烤进像素，不应再留 EXIF 标记"
+
+
+def test_prepare_is_a_noop_when_nothing_needs_changing():
+    """不做无谓重编码：3000×2250 远低于像素预算，重新压一遍只会损失小字。"""
+    from app.bakeoff.synth import render
+    from app.images.prepare import prepare
+
+    data = render({"kind": "nameplate", "font_size": 14})
+    out, mime = prepare(data, "image/png")
+    assert out is data and mime == "image/png"
+
+
+def test_prepare_downscales_only_above_the_pixel_budget():
+    import io
+
+    from PIL import Image
+
+    from app.images.prepare import prepare
+
+    buf = io.BytesIO()
+    Image.new("RGB", (2000, 2000), (0, 0, 0)).save(buf, "JPEG")
+    out, _ = prepare(buf.getvalue(), "image/jpeg", max_pixels=1_000_000)
+    got = Image.open(io.BytesIO(out))
+    assert got.width * got.height <= 1_000_000
+
+
+def test_crop_cell_zooms_the_requested_ninth():
+    import io
+
+    from PIL import Image
+
+    from app.bakeoff.synth import render
+    from app.images.prepare import crop_cell
+
+    data = render({"kind": "nameplate", "font_size": 14})
+    assert crop_cell(data, "画面右下角") is None, "不认识的格子不猜"
+    out, mime = crop_cell(data, "右下")
+    got = Image.open(io.BytesIO(out))
+    assert mime == "image/jpeg"
+    # 角落格：右、下两侧的外扩被画面边界截断，实际裁到 (1500,1125)-(3000,2250)，即画面的右下 1/4，
+    # 再放大 2 倍 → 与原图同尺寸但只装了 1/4 的内容，铭牌的像素密度翻倍。
+    assert got.size == (3000, 2250)
+    assert out != data
+
+    center, _ = crop_cell(data, "中心")
+    # 中心格四面都能外扩满：裁到 2/3 画面 = 2000×1500，放大 2 倍 = 12MP，正好等于像素预算，放大生效
+    assert Image.open(io.BytesIO(center)).size == (4000, 3000)

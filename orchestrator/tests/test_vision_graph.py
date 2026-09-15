@@ -28,6 +28,17 @@ INTAKE_OK = {
 
 
 @pytest.fixture
+def l3_services():
+    """补拍与图文冲突的路由挂在 route_after_vision 的 L3 分支上（graph.py 的 get_services() 判断），
+    生产里由 sessions/runtime.py 在数据库池就绪时注册；内存态测试要自己注册一份。"""
+    from app.actions.runtime import configure
+
+    configure(memory=True)
+    yield
+    configure()
+
+
+@pytest.fixture
 def img_store():
     store = InMemoryImageStore()
     set_image_store(store)
@@ -179,3 +190,178 @@ async def test_message_without_images_skips_vision_node(mem_runtime, img_store):
     events = sse.parse(resp.text)
     assert _tool(events, "diagnose.vision") == []
     assert "vision" not in [e.get("substage") for e in events if e["type"] == "progress"]
+
+
+# ---- 阶段 3 的补拍闭环：像素门控 → 补拍卡 → 重新上传 → 恢复排障 ----
+
+
+def _real_png(width: int = 900, height: int = 700, brightness: float = 1.0) -> bytes:
+    """可被 Pillow 解码的图（tests.test_images.png_bytes 是手工拼的，解不开，会绕过像素门控）。"""
+    from PIL import Image, ImageDraw, ImageEnhance
+
+    im = Image.new("RGB", (width, height), (210, 210, 214))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle([60, 180, 840, 470], radius=70, fill=(60, 60, 64))
+    for x in range(90, 820, 26):
+        d.line([(x, 200), (x + 12, 450)], fill=(150, 150, 155), width=3)
+    if brightness != 1.0:
+        im = ImageEnhance.Brightness(im).enhance(brightness)
+    buf = io.BytesIO()
+    im.save(buf, "PNG")
+    return buf.getvalue()
+
+
+async def _send_bytes(client, sid: str, text: str, blobs: list[bytes]):
+    files = [("images", (f"p{i}.png", io.BytesIO(b), "image/png")) for i, b in enumerate(blobs)]
+    resp = await client.post(
+        f"/sessions/{sid}/messages",
+        data=await message_form(client, f"/sessions/{sid}/messages", {"text": text, "purpose": "fault"}),
+        files=files,
+    )
+    assert resp.status_code == 200, resp.text
+    return sse.parse(resp.text)
+
+
+async def test_underexposed_photo_yields_a_retake_card_without_calling_the_model(
+    mem_runtime, img_store, l3_services, tmp_path
+):
+    """阶段 3 验收的端到端版：太暗的照片在零模型调用下变成补拍卡。"""
+    router, fake = _router(
+        tmp_path,
+        CONFIG,
+        [INTAKE_OK, {"observations": ["滚刷缠绕"], "visible_parts": ["滚刷"]}],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send_bytes(client, sid, "eufy X9 Pro 不吸了，拍了张照片", [_real_png(brightness=0.08)])
+    calls = [c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision"]
+    assert calls == [], "被像素门控拦下时不应发起任何视觉模型调用"
+    finished = [e for e in _tool(events, "diagnose.vision") if e["status"] == "finished"]
+    assert finished and "未调用识别模型" in finished[0]["summary"]
+    cards = [e for e in events if e["type"] == "retake_card"]
+    assert cards, "应当发出补拍卡"
+    assert cards[0]["reasons"] == ["too_dark"]
+    assert "光线充足" in cards[0]["guidance"][0]
+    state = await _state(sid)
+    assert state["vision_status"] == "unusable"
+    assert state["image_quality"]["usable"] is False
+
+
+async def test_a_good_retake_resumes_diagnosis(mem_runtime, img_store, l3_services, tmp_path):
+    """补拍一张正常照片后，读图应当真的跑起来并把观察写进状态。"""
+    router, fake = _router(
+        tmp_path,
+        CONFIG,
+        [
+            INTAKE_OK,  # 第一轮（暗图）的 intake
+            INTAKE_OK,  # 第二轮（补拍）的 intake
+            {
+                "observations": ["滚刷缠绕大量毛发"],
+                "visible_parts": ["滚刷"],
+                "findings": [{"part": "滚刷", "phenomenon": "缠绕", "evidence": "刷体缠满毛发"}],
+            },
+        ],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await _send_bytes(client, sid, "eufy X9 Pro 不吸了，拍了张照片", [_real_png(brightness=0.08)])
+        assert (await _state(sid))["vision_status"] == "unusable"
+        events = await _send_bytes(client, sid, "重新拍了一张", [_real_png()])
+    calls = [c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision"]
+    assert len(calls) == 1, "补拍后应当真正调用一次视觉模型"
+    state = await _state(sid)
+    assert state["vision_status"] == "ok"
+    assert any("毛发" in o for o in state["image_observations"])
+    # 签名先验由 retrieve 直接读 fault_localization 消费，不经 fault_card_hits（那个键存 chunk_id）
+    from app.diagnose.localization import signature_plans
+
+    assert signature_plans(state["fault_localization"]) == ["rv_suction_hair_wrap"]
+    assert [e["type"] for e in events if e["type"] == "retake_card"] == []
+
+
+async def test_unverified_model_hint_does_not_silently_lock_the_sku(
+    mem_runtime, img_store, l3_services, tmp_path
+):
+    """A8：没能复看确认的型号只当线索进 product_hints，绝不静默锁 SKU。"""
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [INTAKE_OK, {"observations": [], "visible_parts": [], "model_hint": "X10 Pro", "model_hint_cell": None}],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await _send_bytes(client, sid, "eufy X9 Pro 不吸了", [_real_png()])
+    state = await _state(sid)
+    assert state["fault_localization"]["model_hint_verified"] is False
+    # 用户文字已经确认了 X9 Pro：未验证的铭牌既不能改写它，也不能让它变成别的 SKU
+    assert state["product_confirmed"]["sku"] == "EUFY-X9-PRO"
+    assert state["product_state"] == "confirmed_sku"
+
+
+async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_store, l3_services, tmp_path):
+    """阶段 4 隐式确认：首张步骤卡带一句「从照片里我看到…」，且不掺进步骤正文。"""
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [
+            INTAKE_OK,
+            {
+                "observations": ["滚刷缠绕大量毛发"],
+                "visible_parts": ["滚刷"],
+                "findings": [
+                    {"part": "滚刷", "phenomenon": "缠绕", "evidence": "刷体缠满毛发"},
+                    {"part": "吸口", "phenomenon": "正常", "evidence": "无异物"},
+                ],
+            },
+        ],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send_bytes(client, sid, "eufy X9 Pro 不吸了", [_real_png()])
+    cards = [e for e in events if e["type"] == "step_card"]
+    assert cards, f"应当出步骤卡：{[e['type'] for e in events]}"
+    seen = cards[0].get("seen")
+    assert seen and "滚刷缠绕" in seen
+    assert "吸口正常" not in seen, "非故障项不该回显"
+    assert "如果不对" in seen, "隐式确认要留一句让用户纠正的话"
+    assert seen not in cards[0]["step"]["instruction"], "步骤是已审核原文，不能被掺入生成的句子"
+    assert (await _state(sid))["vision_echoed"] is True
+
+
+async def test_photo_contradicting_the_text_asks_before_diagnosing(
+    mem_runtime, img_store, l3_services, tmp_path
+):
+    """demo 第三步：用户咬定滤网，照片显示滚刷缠绕 → 先澄清，不带着错误前提往下走。
+
+    冲突判定在代码层做（视觉调用根本看不到用户那句话），所以这一步是确定性的，适合现场演示。
+    """
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [
+            INTAKE_OK,
+            {
+                "observations": ["滚刷缠绕大量毛发"],
+                "visible_parts": ["滚刷"],
+                "findings": [{"part": "滚刷", "phenomenon": "缠绕", "evidence": "刷体缠满毛发"}],
+            },
+        ],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send_bytes(
+            client, sid, "eufy X9 Pro 吸力变小，应该是滤网堵住了吧", [_real_png()]
+        )
+    state = await _state(sid)
+    conflicts = state["fault_localization"]["conflicts_with_text"]
+    assert conflicts == ["您提到的是滤网，但照片里看到问题的是滚刷（缠绕）"]
+    assert state["clarification"]["reason"] == "conflict"
+    said = " ".join(
+        e.get("text", "") for e in events if e["type"] in {"message_delta", "message_end"}
+    )
+    assert "滤网" in said or "滚刷" in said, f"应当把差异说给用户听：{[e['type'] for e in events]}"

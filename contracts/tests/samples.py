@@ -402,7 +402,7 @@ _reg(
 )
 
 _reg(
-    ev("context_card", card_id="l3-context_card", version=1, **{"fields": ["region_use"]}),
+    ev("context_card", card_id="l3-context_card", version=1, fields=["region_use"]),
     ev("context_card", version=1),
     "missing card_id",
 )
@@ -412,7 +412,7 @@ _reg(
         "proposal_card",
         card_id="l3-proposal_card",
         version=1,
-        **{"options": [], "decision_summary": "演示政策", "policy_version": "v1"},
+        options=[], decision_summary="演示政策", policy_version="v1",
     ),
     ev("proposal_card", version=1),
     "missing card_id",
@@ -423,13 +423,7 @@ _reg(
         "execution_card",
         card_id="l3-execution_card",
         version=1,
-        **{
-            "execution_id": "e1",
-            "action_kind": "replacement.create",
-            "status": "succeeded",
-            "receipt": {"status": "created"},
-            "idempotency_key": "case:replace",
-        },
+        execution_id="e1", action_kind="replacement.create", status="succeeded", receipt={"status": "created"}, idempotency_key="case:replace",
     ),
     ev("execution_card", version=1),
     "missing card_id",
@@ -440,14 +434,14 @@ _reg(
         "retake_card",
         card_id="l3-retake_card",
         version=1,
-        **{"reasons": ["模糊"], "guidance": ["请对焦"]},
+        reasons=["模糊"], guidance=["请对焦"],
     ),
     ev("retake_card", version=1),
     "missing card_id",
 )
 
 _reg(
-    ev("rating_card", card_id="l3-rating_card", version=1, **{}),
+    ev("rating_card", card_id="l3-rating_card", version=1),
     ev("rating_card", version=1),
     "missing card_id",
 )
@@ -457,12 +451,7 @@ _reg(
         "case_changed",
         card_id="l3-case_changed",
         version=1,
-        **{
-            "case_id": "case1",
-            "status": "tracking",
-            "reason": "created",
-            "updated_at": "2026-09-14T00:00:00Z",
-        },
+        case_id="case1", status="tracking", reason="created", updated_at="2026-09-14T00:00:00Z",
     ),
     ev("case_changed", version=1),
     "missing card_id",

@@ -7,15 +7,17 @@ from typing import Annotated, Literal
 from pydantic import Field
 
 from haike_contracts.common import (
-    EscalationSummary,
     CaseStatus as CaseStatusValue,
-    ProposalOption,
-    Receipt,
+)
+from haike_contracts.common import (
+    EscalationSummary,
     EvidenceItem,
     Feedback,
     ModelTier,
     PendingInput,
     ProductCandidate,
+    ProposalOption,
+    Receipt,
     ReceiptFields,
     Stage,
     Strict,
@@ -109,6 +111,7 @@ class StepCardItem(TimelineRecord):
     card_id: str
     version: int = Field(ge=0)
     step: TroubleshootStep
+    seen: str | None = None  # 读图结果的隐式确认，见 events.StepCard.seen
     feedback: Feedback | None = None
     note: str | None = None
 

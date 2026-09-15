@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: be82c21675ee27e2a63b6c43699b82f2cb4585e56361b7ac04772d5550a2ba90
+// SHA-256: d920709eb9dbd43a3d6eb13df4106de6763d79ef05fd098f3518dd3d55e5d7da
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -194,6 +194,7 @@ export type IssueId7 = string | null;
 export type Kind7 = 'step_card';
 export type LastSeq6 = number;
 export type Note = string | null;
+export type Seen = string | null;
 export type Caution = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
@@ -679,6 +680,7 @@ export interface StepCardItem {
   kind: Kind7;
   last_seq?: LastSeq6;
   note?: Note;
+  seen?: Seen;
   step: TroubleshootStep;
   version: Version2;
 }

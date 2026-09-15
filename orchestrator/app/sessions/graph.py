@@ -162,6 +162,7 @@ class SessionState(TypedDict, total=False):
     # 票 30：读图结果。visible_parts 累积；vision_status 为最近一次读图状态（ok / skipped / no_vision / failed）
     visible_parts: list[str]
     vision_status: str | None
+    vision_echoed: bool  # 读图结果是否已在步骤卡上回显过（阶段 4，只回显一次）
     plans_ranked: list[dict[str, Any]]
     retrieval_rounds: int
     rewrite_used: bool
@@ -370,10 +371,10 @@ async def vision(state: SessionState) -> SessionState:
         current_image_store(),
         session_id=session_id,
         refs=refs,
-        text=state.get("text", ""),
         lane=_lane(),
-        strategy=(state.get("emotion") or {}).get("strategy", "normal"),
-        summary=_state_summary(state),
+        # 用户文字只用于代码层的图文冲突比对，不进视觉调用（阶段 2）
+        text=state.get("text", ""),
+        symptoms=[str(s) for s in state.get("symptoms") or []],
     )
     update: SessionState = {
         "stage": "diagnose",
@@ -387,14 +388,50 @@ async def vision(state: SessionState) -> SessionState:
         ],
     }
     if out.fault_localization is not None:
-        from app.diagnose.localization import signature_plans
-        update.update(fault_localization=out.fault_localization, image_quality=out.fault_localization['image_quality'], fault_card_hits=signature_plans(out.fault_localization))
-        hint=out.fault_localization.get('model_hint')
-        if hint and state.get('product_state') != 'confirmed_sku':
-            candidates=get_catalog().lookup_product(hint)
-            if len(candidates)==1:
-                chosen=candidates[0].model_dump(mode='json')
-                update.update(product_confirmed=chosen,product_state='confirmed_sku',category=chosen['category'])
+        # 注意：不要在这里写 fault_card_hits —— 那个键存的是检索给出的 chunk_id，
+        # 而签名映射给的是 plan_id，两种语义混在一个键里。签名先验真正的消费点在 retrieve
+        # （见 `signature_plans(state['fault_localization'], card.faults)`），它直接读 fault_localization，
+        # 所以这里只要把定位结果放进状态就够了。
+        update.update(
+            fault_localization=out.fault_localization,
+            image_quality=out.fault_localization["image_quality"],
+        )
+        # 铭牌型号的使用权限与它的验证等级挂钩：
+        # 已验证（裁剪放大后复读与全图一致）→ 可以自动锁 SKU；
+        # 未验证（没能复看 / 两次不一致）→ 只当作一条产品线索，进 product_hints 参与后续正常的产品确认，
+        #   绝不静默锁单 —— 一个编出来的、恰好在目录里的型号会让整条排障走错，而用户全程不知道。
+        hint = out.fault_localization.get("model_hint")
+        verified = out.fault_localization.get("model_hint_verified", False)
+        if hint and state.get("product_state") != "confirmed_sku":
+            candidates = get_catalog().lookup_product(hint)
+            if len(candidates) == 1 and verified:
+                chosen = candidates[0].model_dump(mode="json")
+                update.update(
+                    product_confirmed=chosen,
+                    product_state="confirmed_sku",
+                    category=chosen["category"],
+                )
+            elif candidates:
+                log.info(
+                    "model hint not auto-confirmed session=%s hint=%r candidates=%d verified=%s",
+                    session_id, hint, len(candidates), verified,
+                )
+                update["product_hints"] = list(
+                    dict.fromkeys([*state.get("product_hints", []), hint])
+                )
+    if out.status == "unusable":
+        # 像素层硬阈值判定不可用：一次模型都没调，直接走补拍（阶段 3）
+        quality = (out.fault_localization or {}).get("image_quality", {})
+        writer(
+            {
+                "type": "tool_call",
+                "tool_id": tool_id,
+                "name": "diagnose.vision",
+                "status": "finished",
+                "summary": f"照片质量不足（{'、'.join(quality.get('reasons', [])) or '未知'}），未调用识别模型",
+            }
+        )
+        return update
     if out.status == "ok":
         summary = "；".join(out.observations) or "未识别出明显异常"
         if out.dropped_image_ids:
@@ -562,6 +599,7 @@ async def await_input(state: SessionState) -> SessionState:
                 "card_id": pc["card_id"],
                 "version": current_version(),
                 "step": pc["payload"]["step"],
+                **({"seen": pc["payload"]["seen"]} if pc["payload"].get("seen") else {}),
             }
         )
     elif pc["kind"] == "confirm_receipt":
@@ -1877,14 +1915,25 @@ async def guide(state: SessionState) -> SessionState:
                     "card_ready_ms": elapsed,
                 },
             )
+            # 隐式确认（阶段 4）：本轮读图有结果且还没回显过时，在首张步骤卡上附一句「我看到了什么」。
+            # 只回显一次 —— 每张步骤卡都重复一遍会变成噪音。
+            from app.diagnose.localization import echo_findings
+
+            seen = (
+                echo_findings(state.get("fault_localization"))
+                if state.get("vision_status") == "ok" and not state.get("vision_echoed")
+                else None
+            )
+            payload = {"step": prep.step, **({"seen": seen} if seen else {})}
             update.update(
                 {
                     "pending_card": {
                         "card_id": published_card_id,
                         "input_token": stable_id(published_card_id, "token"),
                         "kind": "step_feedback",
-                        "payload": {"step": prep.step},
+                        "payload": payload,
                     },
+                    **({"vision_echoed": True} if seen else {}),
                     "plan_cursor": prep.plan_cursor,
                     "card_ready_ms": elapsed,
                     "counters": work.get("counters") or {},

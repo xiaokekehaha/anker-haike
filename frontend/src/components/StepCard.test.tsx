@@ -80,3 +80,23 @@ describe('StepCard（票 34）', () => {
     expect(container.querySelectorAll('li[data-highlight]')).toHaveLength(0);
   });
 });
+
+describe('StepCard 的读图回显', () => {
+  const base = {
+    kind: 'step_card', card_id: 'c1', version: 1, at: '2026-09-15T00:00:00Z', seq: 1,
+    step: { step_id: 's1', plan_id: 'p1', plan_version: 1, step_no: 1, title: '清理滚刷', instruction: '取下滚刷并剪掉缠绕的毛发。', expected_result: '滚刷可自由转动', evidence_ids: [] },
+  } as unknown as StepCardItem;
+
+  it('有 seen 时单独成行显示，不混进操作正文', () => {
+    render(<StepCard item={{ ...base, seen: '从照片里我看到：滚刷缠绕。如果不对，您可以直接告诉我。' } as StepCardItem} active onFeedback={vi.fn()} />);
+    const echo = screen.getByText(/从照片里我看到/);
+    expect(echo).toBeInTheDocument();
+    expect(echo.textContent).not.toContain('取下滚刷');
+    expect(screen.getByText('取下滚刷并剪掉缠绕的毛发。')).toBeInTheDocument();
+  });
+
+  it('没有 seen 时不渲染空行', () => {
+    const { container } = render(<StepCard item={base} active onFeedback={vi.fn()} />);
+    expect(container.querySelector('[data-kind="vision-echo"]')).toBeNull();
+  });
+});

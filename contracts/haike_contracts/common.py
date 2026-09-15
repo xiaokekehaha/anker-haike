@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 
 class Strict(BaseModel):
@@ -234,19 +234,45 @@ class Receipt(Strict):
     data: dict = Field(default_factory=dict)
 
 
+# 粗定位用九宫格而不是 bbox：各厂商坐标口径互不兼容（OpenAI 不提供、Claude 要绝对像素、
+# Qwen 用 0–1000 相对），九宫格是模型无关的最小公分母，且足够支撑「裁剪该格再看一次」。
+_CELL_VALUES = ("左上", "上中", "右上", "左中", "中心", "右中", "左下", "下中", "右下")
+Cell = Literal["左上", "上中", "右上", "左中", "中心", "右中", "左下", "下中", "右下"]
+
+
+def _blank_to_none(v: Any) -> Any:
+    """模型被要求「没有就留空」时，各家给的是 "" / "无" / "null" 而不是 JSON null。
+    这类写法不该让整次调用因 schema 失败而重试 —— 语义就是「没有」，在入口处归一即可。"""
+    return None if isinstance(v, str) and v.strip() in ("", "无", "null", "none", "None") else v
+
+
+# 九宫格字段：空串等价于 None
+CellField = Annotated[Cell | None, BeforeValidator(_blank_to_none)]
+# 铭牌可读性由代码从 model_hint 派生（含 ? 即 partial，空即 unreadable），不由模型自报：
+# 模型自报置信度在错误检测上 AUROC≈0.5（2026-09-14 调研 §A3）。
+ModelHintReadable = Literal["full", "partial", "unreadable"]
+
+
 class Finding(Strict):
+    """一条可见故障结论。字段只保留有下游消费者的：
+    (part, phenomenon) 驱动 signature → plan_id；evidence 是反幻觉锚点；cell 是裁剪复看的坐标。
+    已移除 severity / location / confidence —— 前两个全仓无消费者，confidence 是模型自评不可用。"""
+
     part: str
-    location: str | None = None
     phenomenon: str
-    severity: Literal["low", "medium", "high"]
-    confidence: float = Field(ge=0, le=1)
-    quote_region: str | None = None
+    evidence: str | None = None
+    cell: CellField = None
+    # 第几张图（1 起，对应提示词里的 Image N 标签）。多图时 cell 单独没有意义 ——
+    # 「右下」得先知道是哪张图的右下，否则裁剪只能靠猜。
+    image_index: int | None = Field(default=None, ge=1)
     raw: dict[str, str] = Field(default_factory=dict)
 
 
 class ImageQuality(Strict):
     usable: bool
-    reasons: list[Literal["blurry", "too_dark", "too_far", "wrong_subject", "occluded"]] = Field(default_factory=list)
+    reasons: list[
+        Literal["blurry", "too_dark", "too_bright", "too_far", "wrong_subject", "occluded"]
+    ] = Field(default_factory=list)
     guidance: list[str] = Field(default_factory=list)
 
 
@@ -254,6 +280,13 @@ class FaultLocalization(Strict):
     findings: list[Finding] = Field(default_factory=list)
     image_quality: ImageQuality = Field(default_factory=lambda: ImageQuality(usable=True))
     model_hint: str | None = None
+    # 铭牌所在的九宫格，用于「读不清就裁这一格放大再看一次」；定位一个小方块远比读清 14px 小字容易
+    model_hint_cell: CellField = None
+    model_hint_image: int | None = Field(default=None, ge=1)  # 铭牌在第几张图（1 起）
+    model_hint_readable: ModelHintReadable = "unreadable"  # 派生字段，见 ModelHintReadable
+    # 型号是否经过第二次独立测量（裁剪放大后复读）确认。只有 True 才允许自动锁 SKU：
+    # 未验证的值不该享受已验证的值的权限，否则一个编出来的、恰好在目录里的型号会直接锁错单。
+    model_hint_verified: bool = False
     conflicts_with_text: list[str] = Field(default_factory=list)
 
 

@@ -1000,6 +1000,57 @@
           ],
           "default": null,
           "title": "Model Hint"
+        },
+        "model_hint_cell": {
+          "anyOf": [
+            {
+              "enum": [
+                "左上",
+                "上中",
+                "右上",
+                "左中",
+                "中心",
+                "右中",
+                "左下",
+                "下中",
+                "右下"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Hint Cell"
+        },
+        "model_hint_image": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Hint Image"
+        },
+        "model_hint_readable": {
+          "default": "unreadable",
+          "enum": [
+            "full",
+            "partial",
+            "unreadable"
+          ],
+          "title": "Model Hint Readable",
+          "type": "string"
+        },
+        "model_hint_verified": {
+          "default": false,
+          "title": "Model Hint Verified",
+          "type": "boolean"
         }
       },
       "title": "FaultLocalization",
@@ -1007,14 +1058,32 @@
     },
     "Finding": {
       "additionalProperties": false,
+      "description": "一条可见故障结论。字段只保留有下游消费者的：\n(part, phenomenon) 驱动 signature → plan_id；evidence 是反幻觉锚点；cell 是裁剪复看的坐标。\n已移除 severity / location / confidence —— 前两个全仓无消费者，confidence 是模型自评不可用。",
       "properties": {
-        "confidence": {
-          "maximum": 1,
-          "minimum": 0,
-          "title": "Confidence",
-          "type": "number"
+        "cell": {
+          "anyOf": [
+            {
+              "enum": [
+                "左上",
+                "上中",
+                "右上",
+                "左中",
+                "中心",
+                "右中",
+                "左下",
+                "下中",
+                "右下"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cell"
         },
-        "location": {
+        "evidence": {
           "anyOf": [
             {
               "type": "string"
@@ -1024,7 +1093,20 @@
             }
           ],
           "default": null,
-          "title": "Location"
+          "title": "Evidence"
+        },
+        "image_index": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Index"
         },
         "part": {
           "title": "Part",
@@ -1034,40 +1116,17 @@
           "title": "Phenomenon",
           "type": "string"
         },
-        "quote_region": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Quote Region"
-        },
         "raw": {
           "additionalProperties": {
             "type": "string"
           },
           "title": "Raw",
           "type": "object"
-        },
-        "severity": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ],
-          "title": "Severity",
-          "type": "string"
         }
       },
       "required": [
         "part",
-        "phenomenon",
-        "severity",
-        "confidence"
+        "phenomenon"
       ],
       "title": "Finding",
       "type": "object"
@@ -1149,6 +1208,7 @@
             "enum": [
               "blurry",
               "too_dark",
+              "too_bright",
               "too_far",
               "wrong_subject",
               "occluded"
@@ -2689,6 +2749,18 @@
         "run_id": {
           "title": "Run Id",
           "type": "string"
+        },
+        "seen": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seen"
         },
         "seq": {
           "description": "会话内单调递增",

@@ -95,6 +95,17 @@ def judge(
     th = cfg.thresholds
     lat_cap = th.latency_p50_ms.get(task)
     acc_th = cfg.accuracy_threshold(task)
+    # 硬门先于准确率：聚合准确率会把「失效方式」抹平 —— 一个在铭牌上编造、一个在误导文字下编造，
+    # 两种幻觉各扣几个点又被别的样本补回来，排序就看不出差别了。这几项不达标直接出局。
+    gates = th.hard_gates.get(task, {})
+    for c in cands:
+        if not c.available:
+            continue
+        breakdown = metric_breakdown(c)
+        for metric, floor in gates.items():
+            got = breakdown.get(metric)
+            if got is not None and got[0] < floor:
+                c.reasons.append(f"硬门 {METRIC_LABELS.get(metric, metric)} {got[0]:.0%} < {floor:.0%}")
     ok: list[CandidateResult] = []
     for c in cands:
         if not c.available or c.schema_pass is None:
@@ -188,7 +199,11 @@ async def _run_candidate(
                 acc, info, err = 0.0, {}, f"{type(exc).__name__}: {exc}"[:200]
             wall = int((time.perf_counter() - t0) * 1000)
         recs = getattr(router, "records", [])
-        first_pass = bool(recs) and all(r.first_pass for r in recs)
+        first_pass = (
+            all(r.first_pass for r in recs)
+            if recs
+            else bool(info.get("gated_without_model_call"))  # 有意不调模型，不是失败
+        )
         usage: dict[str, int] = {}
         for r in recs:
             for k, v in r.usage.items():
@@ -258,11 +273,43 @@ def conversation_cost(
     return (round(total, 4) if not missing else None), missing
 
 
+METRIC_LABELS = {
+    "part": "部件准确率",
+    "phenomenon": "现象准确率",
+    "plan": "plan 命中率",
+    "model_hint": "铭牌读出率",
+    "hallucination_free": "无幻觉率",
+    "abstention_free": "未过度弃答率",
+    "safety": "安全召回",
+    "usable": "可用判定准确率",
+}
+
+
+def metric_breakdown(cand: CandidateResult) -> dict[str, tuple[float, int]]:
+    """把各样本 info.metrics 按指标族聚合成（命中率, 适用样本数）。
+
+    样本内多遍先取中位数再跨样本平均，与 summarize 的口径一致；分母只算该指标适用的样本。
+    """
+    per_sample: dict[str, dict[str, list[float]]] = {}
+    for r in cand.runs:
+        for k, v in (r.info.get("metrics") or {}).items():
+            per_sample.setdefault(k, {}).setdefault(r.sample_id, []).append(1.0 if v else 0.0)
+    out: dict[str, tuple[float, int]] = {}
+    for k, samples in per_sample.items():
+        vals = [_median(xs) for xs in samples.values()]
+        out[k] = (round(sum(vals) / len(vals), 4), len(vals))
+    return out
+
+
 def render_markdown(results: list[TaskResult], cfg: BakeoffConfig, *, models_version: str) -> str:
-    lines = [
-        f"# bake-off 结果（models.yaml {models_version}，bakeoff.yaml {cfg.version}，repeats={cfg.repeats}）",
-        "",
-    ]
+    from app.diagnose.localization import vocabulary
+    from app.diagnose.vision import VISION_PROMPT_VERSION
+
+    header = (
+        f"# bake-off 结果（models.yaml {models_version}，bakeoff.yaml {cfg.version}，"
+        f"读图提示词 {VISION_PROMPT_VERSION}，词表 {vocabulary()['version']}，repeats={cfg.repeats}）"
+    )
+    lines = [header, ""]
     lines.append(
         "| task | 候选 | 模型 | Schema 通过率 | 字段准确率 | 延迟 P50 | 成本 ¥/次 | 裁决 |"
     )
@@ -294,6 +341,26 @@ def render_markdown(results: list[TaskResult], cfg: BakeoffConfig, *, models_ver
                 )
                 + " |"
             )
+    rows = [
+        (t_.task, c.alias, metric_breakdown(c))
+        for t_ in results
+        for c in t_.candidates
+        if c.available and metric_breakdown(c)
+    ]
+    if rows:
+        keys = [k for k in METRIC_LABELS if any(k in m for _, _, m in rows)]
+        lines.append("")
+        lines.append("## 字段级指标（分母为该指标适用的样本数）")
+        lines.append("| task | 候选 | " + " | ".join(METRIC_LABELS[k] for k in keys) + " |")
+        lines.append("| --- | --- | " + " | ".join(["---"] * len(keys)) + " |")
+        for task, alias, m in rows:
+            cells = [f"{m[k][0]:.0%} ({m[k][1]})" if k in m else "—" for k in keys]
+            lines.append(f"| {task} | {alias} | " + " | ".join(cells) + " |")
+        lines.append("")
+        lines.append(
+            "> 安全召回用的是合成烧灼图。合成图画不出烧焦的材质感（模型一致读成污渍 / 破损），"
+            "**该列在换上真实照片前不具备参考价值**。文字侧 R4（text_terms 冒烟 / 烧焦 / 鼓包）不依赖视觉，仍然生效。"
+        )
     lines.append("")
     lines.append("## 裁决")
     for t in results:

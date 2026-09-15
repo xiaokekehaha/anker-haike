@@ -52,6 +52,8 @@ class Thresholds(_Strict):
     primary: PrimaryThreshold = Field(default_factory=PrimaryThreshold)
     fallback: FallbackThreshold = Field(default_factory=FallbackThreshold)
     latency_p50_ms: dict[str, int] = Field(default_factory=dict)
+    # {task: {指标族: 下限}}。这些指标不达标即出局，不参与后续的延迟 / 成本排序。
+    hard_gates: dict[str, dict[str, float]] = Field(default_factory=dict)
     conversation_cost_cny_max: float = 0.5
 
 

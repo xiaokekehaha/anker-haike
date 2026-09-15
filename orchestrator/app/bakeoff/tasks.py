@@ -272,8 +272,8 @@ async def run_vision(router: ModelRouter, s: Sample, lane: str) -> tuple[float, 
         store,
         session_id=sid,
         refs=refs,
-        text=s.input.get("text", ""),
         lane=lane,
+        text=s.input.get("text", ""),
         budget_ms=30_000,
     )
     return scoring.score_vision(out, s.expect), {
@@ -281,6 +281,15 @@ async def run_vision(router: ModelRouter, s: Sample, lane: str) -> tuple[float, 
         "observations": out.observations,
         "parts": out.visible_parts,
         "reason": out.reason,
+        "findings": ((out.fault_localization or {}).get("findings")) or [],
+        "model_hint": (out.fault_localization or {}).get("model_hint"),
+        "model_hint_verified": (out.fault_localization or {}).get("model_hint_verified"),
+        "model_hint_cell": out.reread_cell,
+        "reread_verdict": out.reread_verdict,
+        "conflicts": ((out.fault_localization or {}).get("conflicts_with_text")) or [],
+        # 像素层门控命中时本轮没有任何模型调用，schema 首过率不该按「无记录」记 0
+        "gated_without_model_call": out.status == "unusable",
+        "metrics": scoring.vision_metrics(out, s.expect),
     }
 
 

@@ -152,13 +152,8 @@ def test_vision_vocabulary_quality_and_prior():
     result = normalize(
         FaultLocalization(
             findings=[
-                {"part": "滚刷", "phenomenon": "缠绕", "severity": "medium", "confidence": 0.9},
-                {
-                    "part": "未知零件",
-                    "phenomenon": "奇怪变化",
-                    "severity": "low",
-                    "confidence": 0.2,
-                },
+                {"part": "滚刷", "phenomenon": "缠绕", "evidence": "刷体缠绕大量毛发", "cell": "中心"},
+                {"part": "未知零件", "phenomenon": "奇怪变化", "evidence": "说不上来"},
             ]
         )
     )
@@ -171,6 +166,34 @@ def test_vision_vocabulary_quality_and_prior():
     assert signature_plans(result) == []
     blurry = normalize(FaultLocalization(image_quality={"usable": False, "reasons": ["blurry"]}))
     assert "对焦" in blurry["image_quality"]["guidance"][0]
+
+
+def test_vision_unknown_and_evidence_gate_plan_prior():
+    """A2/A3：说不上来的 finding 不驱动 plan；没有 evidence 的 finding 也不驱动 plan。"""
+    both_unknown = normalize(
+        FaultLocalization(findings=[{"part": "不可辨", "phenomenon": "不可辨"}])
+    )
+    assert both_unknown["findings"] == []  # 全未知的条目直接丢掉，不进下游
+    no_evidence = normalize(
+        FaultLocalization(findings=[{"part": "滚刷", "phenomenon": "缠绕"}])
+    )
+    assert signature_plans(no_evidence) == []
+    half_unknown = normalize(
+        FaultLocalization(findings=[{"part": "滚刷", "phenomenon": "不可辨", "evidence": "看不清"}])
+    )
+    assert signature_plans(half_unknown) == []
+    bad_cell = normalize(
+        FaultLocalization(findings=[{"part": "滚刷", "phenomenon": "缠绕", "evidence": "缠毛发"}])
+    )
+    assert bad_cell["findings"][0]["cell"] is None
+
+
+def test_model_hint_readable_is_derived_not_self_reported():
+    """A3：铭牌可读性由字面派生，不接受模型自报。"""
+    assert normalize(FaultLocalization(model_hint="X10 Pro"))["model_hint_readable"] == "full"
+    assert normalize(FaultLocalization(model_hint="A26?7K8J2"))["model_hint_readable"] == "partial"
+    assert normalize(FaultLocalization(model_hint="???"))["model_hint_readable"] == "unreadable"
+    assert normalize(FaultLocalization())["model_hint_readable"] == "unreadable"
 
 
 async def test_manual_close_commitment_and_reopen():

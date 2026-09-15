@@ -66,3 +66,15 @@
 .proposalOption label { font-weight: 600; }
 .proposalOption p, .proposalOption details { font-size: 13px; }
 .proposalOption small { display: block; color: var(--muted); }
+
+/* 读图结果的隐式确认：与操作正文区分开，弱化但可读 */
+.seen {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--accent, #6b7bd6);
+  background: var(--surface-subtle, rgba(107, 123, 214, 0.08));
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted, #444);
+}

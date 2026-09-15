@@ -2024,6 +2024,18 @@
           "default": null,
           "title": "Note"
         },
+        "seen": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seen"
+        },
         "step": {
           "$ref": "#/$defs/TroubleshootStep"
         },

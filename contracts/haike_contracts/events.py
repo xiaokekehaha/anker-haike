@@ -7,14 +7,16 @@ from typing import Annotated, Literal, get_args
 from pydantic import Field, TypeAdapter
 
 from haike_contracts.common import (
-    EscalationSummary,
     CaseStatus as CaseStatusValue,
-    ProposalOption,
-    Receipt,
+)
+from haike_contracts.common import (
+    EscalationSummary,
     EvidenceItem,
     ModelTier,
     PendingKind,
     ProductCandidate,
+    ProposalOption,
+    Receipt,
     ReceiptFields,
     Stage,
     Strict,
@@ -128,6 +130,10 @@ class ProductCard(_Card):
 class StepCard(_Card):
     type: Literal["step_card"]
     step: TroubleshootStep
+    # 读图结果的隐式确认（「从照片里我看到：滚刷缠绕」）。**刻意不并进 step.instruction**：
+    # 步骤是已审核的预写原文，不能掺入模型或代码生成的句子。放这里让前端单独渲染，用户一眼能看出
+    # 哪句是「我们看到的」、哪句是「让你做的」，看错了也能立刻纠正。
+    seen: str | None = None
 
 
 class Evidence(_Event):

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 66926ed7814481f77ffcb8a11a12894a8da00805c944b24508b15da1c0c4e2af
+// SHA-256: aab3242e2d68362ccd2faed1df60e9fc011fc0482406f42845a4f2c2e8cb701f
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -1007,6 +1007,57 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "default": null,
           "title": "Model Hint"
+        },
+        "model_hint_cell": {
+          "anyOf": [
+            {
+              "enum": [
+                "左上",
+                "上中",
+                "右上",
+                "左中",
+                "中心",
+                "右中",
+                "左下",
+                "下中",
+                "右下"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Hint Cell"
+        },
+        "model_hint_image": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Hint Image"
+        },
+        "model_hint_readable": {
+          "default": "unreadable",
+          "enum": [
+            "full",
+            "partial",
+            "unreadable"
+          ],
+          "title": "Model Hint Readable",
+          "type": "string"
+        },
+        "model_hint_verified": {
+          "default": false,
+          "title": "Model Hint Verified",
+          "type": "boolean"
         }
       },
       "title": "FaultLocalization",
@@ -1014,14 +1065,32 @@ export const serverEventSchema = z.fromJSONSchema({
     },
     "Finding": {
       "additionalProperties": false,
+      "description": "一条可见故障结论。字段只保留有下游消费者的：\n(part, phenomenon) 驱动 signature → plan_id；evidence 是反幻觉锚点；cell 是裁剪复看的坐标。\n已移除 severity / location / confidence —— 前两个全仓无消费者，confidence 是模型自评不可用。",
       "properties": {
-        "confidence": {
-          "maximum": 1,
-          "minimum": 0,
-          "title": "Confidence",
-          "type": "number"
+        "cell": {
+          "anyOf": [
+            {
+              "enum": [
+                "左上",
+                "上中",
+                "右上",
+                "左中",
+                "中心",
+                "右中",
+                "左下",
+                "下中",
+                "右下"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cell"
         },
-        "location": {
+        "evidence": {
           "anyOf": [
             {
               "type": "string"
@@ -1031,7 +1100,20 @@ export const serverEventSchema = z.fromJSONSchema({
             }
           ],
           "default": null,
-          "title": "Location"
+          "title": "Evidence"
+        },
+        "image_index": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image Index"
         },
         "part": {
           "title": "Part",
@@ -1041,40 +1123,17 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Phenomenon",
           "type": "string"
         },
-        "quote_region": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Quote Region"
-        },
         "raw": {
           "additionalProperties": {
             "type": "string"
           },
           "title": "Raw",
           "type": "object"
-        },
-        "severity": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ],
-          "title": "Severity",
-          "type": "string"
         }
       },
       "required": [
         "part",
-        "phenomenon",
-        "severity",
-        "confidence"
+        "phenomenon"
       ],
       "title": "Finding",
       "type": "object"
@@ -1156,6 +1215,7 @@ export const serverEventSchema = z.fromJSONSchema({
             "enum": [
               "blurry",
               "too_dark",
+              "too_bright",
               "too_far",
               "wrong_subject",
               "occluded"
@@ -2696,6 +2756,18 @@ export const serverEventSchema = z.fromJSONSchema({
         "run_id": {
           "title": "Run Id",
           "type": "string"
+        },
+        "seen": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seen"
         },
         "seq": {
           "description": "会话内单调递增",

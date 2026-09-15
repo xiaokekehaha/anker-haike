@@ -8,6 +8,13 @@ fx_cny_per_usd: 7.2
 thresholds:
   primary:  {schema_pass: 0.95, accuracy_text: 0.90, accuracy_vision: 0.80, accuracy_receipt: 0.85}
   fallback: {schema_pass: 0.90, accuracy_delta_max: 0.10, latency_ratio_max: 1.5}
+  # 硬门（2026-09-15）：这几类错误下游无法察觉，差几个百分点与差一半同样不可接受，
+  # 所以先出局再谈准确率排序。安全召回暂不入门 —— 合成烧灼图上的数字不作数，等真实照片。
+  hard_gates:
+    diagnose.vision:
+      model_hint: 1.0          # 铭牌读出率：假型号会直接进 SKU 确认
+      hallucination_free: 1.0  # 编造的故障 + 编造的证据会抬高错误 plan 的先验
+      abstention_free: 0.9     # A2 的上界：不许靠「全部不可辨」换幻觉率
   latency_p50_ms:
     intake: 3000
     disambiguate.clarify: 3000

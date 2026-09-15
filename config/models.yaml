@@ -22,7 +22,15 @@
 # 变化：diagnose.vision / diagnose.synthesize / guide.step / warranty.receipt_ocr / reply.stream 首位换 deepseek，
 # escalate.summary 首位换 qwen-flash，retrieve.grade 与 guide.step 的智谱位由 glm-flash 换成 glm-4.7。
 # 依据见每行行尾实测值与 bakeoff findings §「三家全量重排」。一次 A1 对话成本由 ¥0.0252（全 qwen 主位）降到约 ¥0.011。
-version: 2026-09-13.5
+# 2026-09-15.2：diagnose.vision 主位维持 deepseek，但换了一套依据 —— 这段绕了一圈，记录下来免得后人重走：
+#   曾经一度改成 qwen-vl，因为字段级评测首次跑（reports/bakeoff-baseline）显示 deepseek 在小铭牌上
+#   静默编造型号（铭牌读出率 67%，14px 那张编出 `T2351`），而 model_hint 直接进 disambiguate，
+#   假型号会造成错误单命中且下游无从察觉 —— 这类静默错误的代价远高于准确率差几个点。
+#   随后上线铭牌裁剪复看 + 交叉核对（diagnose/vision.py `_reread_nameplate`），**编造这条路径被堵死**：
+#   三家铭牌读出率变成 100/100/67，deepseek 综合 65%→93%、延迟 1377 ms、成本最低（reports/bakeoff-stage1）。
+#   前提没了，主位回到 deepseek。qwen-vl 必须留在第二位：它不依赖复看就能读出铭牌，复看失败时更稳。
+# 旧的 2026-09-13.5 排序基于合成大字示意图，对分辨率与小字是盲的，不再作为该 task 的裁决依据。
+version: 2026-09-15.2
 default_lane: domestic
 
 providers:
@@ -60,7 +68,7 @@ lanes:
     # 注意 repeats=3 在门槛线附近抖动可达 ±5 点，边界候选的裁决以 findings §「三家全量」的多轮记录为准。
     intake:                {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 512}    # 100/98 1051 ms ¥0.0002 | 100/100 953 ms ¥0.0016 | 100/97 1364 ms
     disambiguate.clarify:  {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 256}    # 100/100 752 ms ¥0.0001 | 100/100 990 ms ¥0.0010 | 100/100 965 ms
-    diagnose.vision:       {chain: [deepseek, qwen-vl, glm-v],    effort: medium, needs_vision: true} # 100/83 1188 ms | 100/83 1554 ms | 93/77 1261 ms（glm-v 未达标，仅兜底）。主位 deepseek 只收 4 张图，降级位收 10 张
+    diagnose.vision:       {chain: [deepseek, qwen-vl, glm-v],    effort: medium, needs_vision: true} # 2026-09-15 阶段 1 后 repeats=2：deepseek 93% 1377 ms | qwen-vl 88% 4939 ms | glm-v 82% 3390 ms；三家铭牌读出率 100/100/67。deepseek 只收 4 张图，qwen-vl / glm-v 收 10 张
     diagnose.synthesize:   {chain: [deepseek, qwen-max, glm-v],   effort: high}                       # 100/100 1162 ms ¥0.0023 | 100/100 2179 ms ¥0.0094 | 100/88 2320 ms
     guide.step:            {chain: [deepseek, qwen-max, glm],     effort: medium}                     # 100/97 929 ms ¥0.0011 | 100/94 998 ms ¥0.0047 | 100/89 1130 ms（glm 89–92% 跨门槛线，仅兜底）
     reply.stream:          {chain: [qwen-plus, deepseek, glm],    effort: low,    stream: true}       # 首字 100/98 900 ms ¥0.0003 | 100/98 1084 ms ¥0.0005 | 100/98 582 ms ¥0.0002（工具按成本判 glm 为主，人工不让智谱进主位：账号并发 4 即 429）

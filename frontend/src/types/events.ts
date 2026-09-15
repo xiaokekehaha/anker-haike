@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 66926ed7814481f77ffcb8a11a12894a8da00805c944b24508b15da1c0c4e2af
+// SHA-256: aab3242e2d68362ccd2faed1df60e9fc011fc0482406f42845a4f2c2e8cb701f
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -205,6 +205,7 @@ export type EventId12 = string;
 export type IssueId5 = string | null;
 export type RecordedAt12 = string;
 export type RunId12 = string;
+export type Seen = string | null;
 /**
  * 会话内单调递增
  */
@@ -491,17 +492,24 @@ export type Type24 = 'case_changed';
 export type UpdatedAt3 = string;
 export type Version12 = number;
 export type ConflictsWithText = string[];
-export type Confidence1 = number;
-export type Location = string | null;
+export type Cell =
+  ('左上' | '上中' | '右上' | '左中' | '中心' | '右中' | '左下' | '下中' | '右下') | null;
+export type Evidence1 = string | null;
+export type ImageIndex = number | null;
 export type Part = string;
 export type Phenomenon = string;
-export type QuoteRegion = string | null;
-export type Severity = 'low' | 'medium' | 'high';
 export type Findings = Finding[];
 export type Guidance1 = string[];
-export type Reasons1 = ('blurry' | 'too_dark' | 'too_far' | 'wrong_subject' | 'occluded')[];
+export type Reasons1 = (
+  'blurry' | 'too_dark' | 'too_bright' | 'too_far' | 'wrong_subject' | 'occluded'
+)[];
 export type Usable = boolean;
 export type ModelHint = string | null;
+export type ModelHintCell =
+  ('左上' | '上中' | '右上' | '左中' | '中心' | '右中' | '左下' | '下中' | '右下') | null;
+export type ModelHintImage = number | null;
+export type ModelHintReadable = 'full' | 'partial' | 'unreadable';
+export type ModelHintVerified = boolean;
 export type ExclusionsHit = {
   [k: string]: unknown;
 }[];
@@ -725,6 +733,7 @@ export interface StepCard {
   issue_id?: IssueId5;
   recorded_at: RecordedAt12;
   run_id: RunId12;
+  seen?: Seen;
   seq: Seq12;
   step: TroubleshootStep;
   type: Type12;
@@ -1157,19 +1166,26 @@ export interface FaultLocalization {
   findings?: Findings;
   image_quality?: ImageQuality;
   model_hint?: ModelHint;
+  model_hint_cell?: ModelHintCell;
+  model_hint_image?: ModelHintImage;
+  model_hint_readable?: ModelHintReadable;
+  model_hint_verified?: ModelHintVerified;
 }
 /**
+ * 一条可见故障结论。字段只保留有下游消费者的：
+ * (part, phenomenon) 驱动 signature → plan_id；evidence 是反幻觉锚点；cell 是裁剪复看的坐标。
+ * 已移除 severity / location / confidence —— 前两个全仓无消费者，confidence 是模型自评不可用。
+ *
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
  * via the `definition` "Finding".
  */
 export interface Finding {
-  confidence: Confidence1;
-  location?: Location;
+  cell?: Cell;
+  evidence?: Evidence1;
+  image_index?: ImageIndex;
   part: Part;
   phenomenon: Phenomenon;
-  quote_region?: QuoteRegion;
   raw?: Raw;
-  severity: Severity;
 }
 export interface Raw {
   [k: string]: string;
