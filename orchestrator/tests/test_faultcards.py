@@ -143,7 +143,7 @@ async def test_weknora_down_a1_still_reaches_guide_with_standard_flow_note(
     # 故障卡驱动假设，其证据进 synthesize 上下文；票 19 起本轮不再有自由回复
     synth_call = next(c for c in fakes["main"].calls if c["metadata"]["task"] == "diagnose.synthesize")
     assert "fc:EUFY-X9-PRO" in model_task_text(synth_call)
-    assert [c["metadata"]["task"] for c in fakes["main"].calls] == ["diagnose.synthesize", "guide.step"]
+    assert [c["metadata"]["task"] for c in fakes["main"].calls] == ["diagnose.synthesize"]
     assert events[-1]["reason"] == "awaiting_input"  # 票 34：guide 发出首张步骤卡
 
 
@@ -219,13 +219,17 @@ async def test_category_only_without_plans_escalates_r5(mem_runtime, tmp_path, c
     assert summ["reason"]["rule_id"] == "R5"
 
 
-async def test_rewrite_failure_paths_with_and_without_plans(mem_runtime, tmp_path, cards):
+async def test_rewrite_failure_paths_with_and_without_plans(mem_runtime, tmp_path, cards, monkeypatch):
+    # The coded symptom also matches the local fault card. Isolate external
+    # retrieval failure by making this scenario's local card unavailable.
+    monkeypatch.setattr(cards, "for_scope", lambda **kwargs: None)
     intake = json.dumps(
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )

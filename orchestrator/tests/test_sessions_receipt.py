@@ -45,7 +45,7 @@ async def _send(client, sid: str, text: str, receipt_images: int = 0, purpose: s
     return sse.parse(resp.text)
 
 
-async def _regular_escalation(client, sid: str, reason: str = "R1", text: str = "还是不行"):
+async def _regular_escalation(client, sid: str, reason: str = "R6", text: str = "还是不行"):
     """先跑一轮正常对话（产品已确认），再注入常规升级原因并发下一条消息 → 进入 escalate 子流程。"""
     await _send(client, sid, "扫地机 X10 不吸了")
     return await escalate_on_feedback(client, sid, reason)
@@ -78,7 +78,7 @@ async def test_regular_escalation_enters_collect_receipt_and_awaits_upload(mem_r
     """R1 升级 → progress(escalate, collect_receipt) → awaiting_input(kind=upload_receipt) → done(awaiting_input)（验收项 1）。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _regular_escalation(client, sid, "R1")
+        events = await _regular_escalation(client, sid, "R6")
         snap = await _snap(client, sid)
     assert ("escalate", "collect_receipt") in _progress(events)
     assert ("escalate", "summarize") not in _progress(events)  # 还没摘要
@@ -102,7 +102,7 @@ async def test_skip_receipt_goes_to_summary_not_collected(mem_runtime):
     """跳过 → escalation_summary(receipt.status=not_collected)，skipped_reason 记入卡片结果（验收项 2）。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _regular_escalation(client, sid, "R1")
+        events = await _regular_escalation(client, sid, "R6")
         pending = next(e for e in events if e["type"] == "awaiting_input")
         resp = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _skip(pending, "later")))
         assert resp.status_code == 200, resp.text
@@ -111,7 +111,7 @@ async def test_skip_receipt_goes_to_summary_not_collected(mem_runtime):
     assert resumed[0]["resumed"] is False
     assert _progress(resumed) == [("escalate", "summarize")]  # 不再要求凭证
     summary = _summary(resumed)
-    assert summary["reason"]["rule_id"] == "R1"
+    assert summary["reason"]["rule_id"] == "R6"
     assert summary["receipt"]["status"] == "not_collected"
     assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
     assert summary["receipt"]["verified_facts"] == {} and summary["receipt"]["conflicts"] == []
@@ -126,7 +126,7 @@ async def test_skip_receipt_goes_to_summary_not_collected(mem_runtime):
 async def test_skip_receipt_wrong_reason_or_kind_rejected(mem_runtime):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _regular_escalation(client, sid, "R2")
+        events = await _regular_escalation(client, sid, "R6")
         pending = next(e for e in events if e["type"] == "awaiting_input")
         bad_reason = await client.post(
             f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", {**_skip(pending), "payload": {"reason": "whatever"}})
@@ -153,7 +153,7 @@ async def test_upload_receipt_while_awaiting_goes_to_extract_then_confirm_card(m
     try:
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            await _regular_escalation(client, sid, "R1")
+            await _regular_escalation(client, sid, "R6")
             events = await _send(client, sid, "这是发票", receipt_images=1, purpose="receipt")
             snap = await _snap(client, sid)
     finally:
@@ -208,7 +208,7 @@ async def test_r6_mention_enters_receipt_flow_on_regular_escalation(mem_runtime)
             assert "escalate" not in [s for s, _ in _progress(first)]  # R6 本身不升级
             st = (await app.state.session_graph.aget_state(_cfg(sid))).values
             assert any(f["rule_id"] == "R6" for f in st["safety_flags"])
-            events = await escalate_on_feedback(client, sid, "R2")
+            events = await escalate_on_feedback(client, sid, "R6")
             pending = next(e for e in events if e["type"] == "awaiting_input")
             assert pending["kind"] == "upload_receipt"
             resumed = sse.parse(
@@ -217,7 +217,7 @@ async def test_r6_mention_enters_receipt_flow_on_regular_escalation(mem_runtime)
     finally:
         set_rules_service(None)
     summary = _summary(resumed)
-    assert summary["reason"]["rule_id"] == "R2" and summary["receipt"]["status"] == "not_collected"
+    assert summary["reason"]["rule_id"] == "R6" and summary["receipt"]["status"] == "not_collected"
     assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
 
 

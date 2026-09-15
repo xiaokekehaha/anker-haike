@@ -425,11 +425,10 @@ async def test_a1_plans_ranked_first_is_hair_wrap_and_bad_plan_dropped(mem_runti
         and values["retrieval_rounds"] == 1
         and values["rewrite_used"] is False
     )
-    # 票 34：reply 之后 guide 还会调一次 guide.step（脚本耗尽 → skipped，用原文）
+    # 操作原文发布，不再调用 guide.step。
     assert [a["task"] for a in values["model_trace"]] == [
         "intake",
         "diagnose.synthesize",
-        "guide.step",
     ]
     tool = [e for e in events if e["type"] == "tool_call"]
     assert tool[-1]["summary"].startswith("命中 2 条来源")
@@ -450,7 +449,6 @@ async def test_no_evidence_uses_standard_flow_plans_without_model_call(mem_runti
     assert [a["task"] for a in values["model_trace"]] == [
         "intake",
         "diagnose.synthesize",
-        "guide.step",
     ] and values["model_trace"][1]["model_used"] == "skipped"
     # 默认开关关闭：没有 query.rewrite 调用，fast 只被 intake 用过一次
     assert len(fakes["fast"].calls) == 1
@@ -469,8 +467,9 @@ async def test_rewrite_enabled_triggers_once_and_second_round_finds_plan(mem_run
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )
@@ -490,7 +489,7 @@ async def test_rewrite_enabled_triggers_once_and_second_round_finds_plan(mem_run
         router, adapter, "eufy X9 Pro 它跑完了，地上还是一堆渣", rcfg=_rcfg()
     )
     assert values["retrieval_rounds"] == 2 and values["rewrite_used"] is True
-    assert [c[1] for c in adapter.calls] == ["eufy X9 Pro 跑完了地上还是一堆渣"] * 2 + [
+    assert [c[1] for c in adapter.calls] == ["eufy X9 Pro 吸力下降 跑完了地上还是一堆渣"] * 2 + [
         "扫地机器人 清扫后残留碎屑 清洁效果差"
     ] * 2
     rw = next(t for t in values["retrieval_trace"] if t.get("event") == "rewrite_result")
@@ -554,8 +553,9 @@ async def test_rewrite_rejected_candidate_is_discarded_and_no_third_round(mem_ru
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )
@@ -587,8 +587,9 @@ async def test_second_round_skipped_when_budget_low(mem_runtime, tmp_path):
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )

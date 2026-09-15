@@ -276,7 +276,7 @@ async def test_product_correction_and_category_conflict(mem_runtime):
         await _send(client, sid, "扫地机 X10 不吸了")
         ev = await _send(client, sid, "说错了，是 X9 不吸")
         s = await _state(sid)
-        assert s["product_confirmed"]["sku"] == "EUFY-X9-PRO" and s["evidence"] == {}
+        assert s["product_confirmed"]["sku"] == "EUFY-X9-PRO" and all(e["source"] == "approved_plan" for e in s["evidence"].values())
         assert "diagnose" in _stages(ev)
 
         ev2 = await _send(client, sid, "吸奶器也坏了")

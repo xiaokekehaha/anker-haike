@@ -12,6 +12,7 @@ from app.settings import REPO_ROOT
 
 REAL = REPO_ROOT / "config" / "plans.yaml"
 EXPECTED_IDS = [
+    "rv_power_supply",
     "rv_suction_dustbin_full",
     "rv_suction_filter_clog",
     "rv_suction_hair_wrap",
@@ -36,7 +37,7 @@ def data():
     return yaml.safe_load(REAL.read_text(encoding="utf-8"))
 
 
-def test_five_plans_load(library):
+def test_plans_load(library):
     assert library.plan_ids == EXPECTED_IDS
     motor = library.get("rv_suction_motor_fault")
     assert len(motor.steps) == 1
@@ -60,8 +61,8 @@ def test_next_on_rule_advance(library):
 
 
 def test_allowed_for_product_state(library):
-    assert len(library.allowed_for(category="robot_vacuum")) == 5  # category_only
-    assert len(library.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO")) == 5
+    assert len(library.allowed_for(category="robot_vacuum")) == 6  # category_only
+    assert len(library.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO")) == 6
     assert library.allowed_for(category="breast_pump") == []
 
 
@@ -137,7 +138,7 @@ def test_latest_version_wins(tmp_path, data):
     v2["fault"] = "v2"
     data["plans"].append(v2)
     lib = PlanLibrary.from_yaml(_write(tmp_path, data))
-    assert lib.get("rv_suction_hair_wrap").version == 2 and len(lib.plan_ids) == 5
+    assert lib.get("rv_suction_hair_wrap").version == 2 and len(lib.plan_ids) == 6
 
 
 def test_plan_json_schema(library):
@@ -166,7 +167,7 @@ async def test_seed_plans_is_idempotent(library):
     try:
         a = await store.seed_plans(pool, library)
         b = await store.seed_plans(pool, library)
-        assert a["upserted"] == b["upserted"] == 5 and b["total"] >= 5
+        assert a["upserted"] == b["upserted"] == 6 and b["total"] >= 6
         async with pool.connection() as conn:
             cur = await conn.execute(
                 "select plan_id, steps from plans where plan_id = 'rv_suction_motor_fault'"

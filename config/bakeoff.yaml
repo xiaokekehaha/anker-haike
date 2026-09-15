@@ -14,18 +14,16 @@ thresholds:
     escalate.summary: 3000
     query.rewrite: 3000
     reply.stream: 3000          # 口径：首个可见 delta（08 §8 first_visible）
-    guide.step: 5000
     diagnose.vision: 8000
     diagnose.synthesize: 8000
     warranty.receipt_ocr: 8000
   conversation_cost_cny_max: 0.5
 
-# 一次 A1 对话各 task 调用次数（安抚 + 抽取 + 汇总 + 三步改写 + 三次回复 + 摘要）
+# 一次 A1 对话各 task 调用次数（安抚 + 抽取 + 汇总 + 回复 + 摘要；步骤原文不调用模型）
 conversation_profile:
   intake: 1
   reply.stream: 4
   diagnose.synthesize: 1
-  guide.step: 3
   escalate.summary: 1
 
 prices:

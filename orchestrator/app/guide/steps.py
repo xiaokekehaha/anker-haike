@@ -4,89 +4,39 @@
 2. evidence_ids = 当前允许证据集合中与 instruction_src 同 doc 的条目 + 命中该计划的故障卡证据；
    若步骤引用了允许集合外的 id → 丢弃该步骤取下一步（09 §2.5）。
 3. CP-pre-step：文字含 R4 或含高危动作且无 caution → 丢弃取下一步。
-4. LLM（guide.step，internal）只改写为一句可执行话；动作词集合必须 ⊆ 原文，否则用原文。
+4. 原样发布已审核操作；停止条件独立附在 caution 中，不参与用户风险判定。
 card_id = uuid5(session_id, plan_id, step_id)，重跑稳定。
 """
 
 from __future__ import annotations
 
-import logging
 import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from app.models.queue import CapacityExceeded
-from app.models.router import ModelInvokeError, ModelRouter
+from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
-from app.prompts.guide import guide_messages
 from app.rules.service import RulesService
 
-log = logging.getLogger("guide.steps")
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
 GUIDE_BUDGET_MS = 6000
-# 动作词干表：改写前后的动作集合必须相等（不得增删动作）。用词干而非完整词，避免「按下 / 按住」「装回 / 装上」
-# 这类同义变体被误判为增删动作。
-ACTION_VERBS = (
-    "翻",
-    "拆",
-    "装",
-    "取出",
-    "清理",
-    "割断",
-    "冲洗",
-    "清洗",
-    "晾干",
-    "更换",
-    "关机",
-    "断电",
-    "重启",
-    "按",
-    "倒空",
-    "擦",
-    "检查",
-    "移",
-    "放回",
-    "运行",
-    "打开",
-    "扳开",
-    "抽出",
-    "推入",
-    "联系",
-)
-
-
-class StepRewrite(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    instruction: str = Field(min_length=1, max_length=200)
 
 
 def step_card_id(session_id: str, plan_id: str, step_id: str) -> str:
     return uuid.uuid5(NS, f"{session_id}|{plan_id}|{step_id}").hex
 
 
-def action_verbs(text: str) -> set[str]:
-    return {v for v in ACTION_VERBS if v in text}
-
-
-def rewrite_is_faithful(source: str, rewritten: str) -> bool:
-    """动作不增不删：改写后的动作词干集合与原文相同且非空。"""
-    src, out = action_verbs(source), action_verbs(rewritten)
-    return bool(out) and out == src
-
-
 @dataclass
 class StepPrep:
-    outcome: str  # ready | exhausted | escalate
+    outcome: str  # ready | exhausted
     step: dict[str, Any] | None = None  # 契约 TroubleshootStep 形状
     card_id: str | None = None
     plan_cursor: dict[str, Any] | None = None
     dropped: list[dict[str, Any]] = field(default_factory=list)
-    escalate_reason: str | None = None
     rewritten: bool = False
     model_trace: dict[str, Any] | None = None
+    evidence: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 def _evidence_for(
@@ -126,7 +76,7 @@ async def prepare_step(
     session_id: str,
     budget_ms: int = GUIDE_BUDGET_MS,
 ) -> StepPrep:
-    """取 plan_cursor 指向的步骤并准备卡片；budget_ms ≤ 0 时跳过改写（08 §8 剩余不足跳过可选 task）。"""
+    """校验并发布已审核步骤；router/budget 参数保留以兼容现有编排接口。"""
     cursor = dict(state.get("plan_cursor") or {})
     if not cursor.get("plan_id"):
         return StepPrep("exhausted")
@@ -168,24 +118,43 @@ async def prepare_step(
         pre = rules.check_pre_step(
             instruction=source_text, title=step.title, caution=step.caution, session_id=session_id
         )
-        if pre.action == "escalate":
-            return StepPrep("escalate", escalate_reason=pre.rule_id, dropped=dropped)
         if pre.action == "drop":
             dropped.append(
                 {
                     "plan_id": plan.plan_id,
                     "step_id": step_id,
                     "reason": (
-                        f"safety_term_in_step:{pre.term}" if pre.rule_id == "R4"
+                        f"safety_term_in_step:{pre.term}"
+                        if pre.rule_id == "R4"
                         else f"high_risk_without_caution:{pre.term}"
                     ),
                 }
             )
             step_id = _advance_in_plan(plan, step_id)
             continue
-        instruction, rewritten, trace = await _rewrite(
-            router, source_text, step, state, lane, session_id, budget_ms
-        )
+        # Local approved sources remain inspectable even if retrieval is down.
+        # They are publication evidence, not model-proposed or user-reported facts.
+        doc_id, chunk_id = step.evidence_key.split("#", 1)
+        source = library.evidence[step.evidence_key]
+        published_evidence = {}
+        if not any(
+            e.get("doc_id") == doc_id
+            and e.get("chunk_id") == chunk_id
+            and e.get("snippet") == source_text
+            for e in allowed_evidence.values()
+        ):
+            eid = f"plan:{step.evidence_key}:{source.doc_version}"
+            published_evidence[eid] = {
+                "evidence_id": eid,
+                "source": "approved_plan",
+                "doc_id": doc_id,
+                "chunk_id": chunk_id,
+                "doc_version": source.doc_version,
+                "snippet": source_text,
+                "score": 1.0,
+                "status": "ok",
+            }
+            evidence_ids = sorted({*evidence_ids, eid})
         card_id = step_card_id(session_id, plan.plan_id, step_id)
         return StepPrep(
             "ready",
@@ -195,9 +164,9 @@ async def prepare_step(
                 "plan_version": plan.version,
                 "step_no": step_no_of(plan, step_id),
                 "title": step.title,
-                "instruction": instruction,
+                "instruction": source_text,
                 "expected_result": step.expected_result,
-                "caution": step.caution,
+                "caution": "；".join(filter(None, [step.caution, *step.stop_conditions])) or None,
                 "evidence_ids": evidence_ids,
             },
             card_id=card_id,
@@ -208,73 +177,10 @@ async def prepare_step(
                 "source": cursor.get("source"),
             },
             dropped=dropped,
-            rewritten=rewritten,
-            model_trace=trace,
+            evidence=published_evidence,
         )
     return StepPrep("exhausted", dropped=dropped)
 
 
 def step_no_of(plan: Plan, step_id: str) -> int:
     return next(i for i, s in enumerate(plan.steps, 1) if s.step_id == step_id)
-
-
-async def _rewrite(
-    router: ModelRouter | None,
-    source_text: str,
-    step: PlanStep,
-    state: dict[str, Any],
-    lane: str,
-    session_id: str,
-    budget_ms: int,
-) -> tuple[str, bool, dict[str, Any] | None]:
-    """guide.step（internal）：改写失败 / 不忠实 / 预算不足 → 原文（03 §1.5 降级）。"""
-    if router is None:
-        return source_text, False, None
-    if budget_ms <= 0:
-        log.info("guide.step rewrite skipped: no budget session=%s", session_id)
-        return (
-            source_text,
-            False,
-            {"task": "guide.step", "model_used": "skipped", "lane": lane, "attempts": 1},
-        )
-    strategy = (state.get("emotion") or {}).get("strategy", "normal")
-    product = (state.get("product_confirmed") or {}).get("name")
-    primary, _fallback = guide_messages(
-        source_text=source_text,
-        title=step.title,
-        product=product,
-        strategy=strategy,
-        summary={"stage": "guide", "product": product},
-    )
-    try:
-        res = await router.invoke(
-            "guide.step",
-            primary,
-            StepRewrite,
-            budget_ms=budget_ms,
-            session_id=session_id,
-            lane=lane,
-        )
-    except (ModelInvokeError, CapacityExceeded) as exc:
-        log.info("guide.step rewrite unavailable session=%s: %s", session_id, str(exc)[:160])
-        return (
-            source_text,
-            False,
-            {"task": "guide.step", "model_used": "skipped", "lane": lane, "attempts": 1},
-        )
-    cand = " ".join(res.parsed.instruction.split())
-    trace = {
-        "task": "guide.step",
-        "model_used": res.model_used,
-        "lane": res.lane,
-        "attempts": max(1, sum(1 for a in res.attempts if a.outcome != "skipped")),
-    }
-    if not rewrite_is_faithful(source_text, cand) or len(cand) > 120:
-        log.info(
-            "guide.step rewrite rejected session=%s src_verbs=%s out_verbs=%s",
-            session_id,
-            sorted(action_verbs(source_text)),
-            sorted(action_verbs(cand)),
-        )
-        return source_text, False, trace
-    return cand, True, trace

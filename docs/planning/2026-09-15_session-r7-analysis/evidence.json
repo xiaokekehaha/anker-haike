@@ -1,0 +1,482 @@
+{
+  "session": {
+    "session_id": "2702fe9bdd4942e9ab84122d42a6848e",
+    "lane": "domestic",
+    "created_at": "2026-09-15T02:57:22.789723Z",
+    "last_run_at": "2026-09-15T02:58:00.471335Z",
+    "runs": 4,
+    "user_messages": 4,
+    "first_question": "eufy X10 Pro Omni\r\n启动不了",
+    "product_state": "confirmed_sku",
+    "sku": "EUFY-X10-PRO-OMNI",
+    "category": "robot_vacuum",
+    "emotion_level": "calm",
+    "fault_plan_ids": [],
+    "steps_executed": 0,
+    "clarifications": 2,
+    "knowledge_status": null,
+    "receipt_status": null,
+    "outcome": "escalated",
+    "outcome_reason": "R7",
+    "outcome_at": "2026-09-15T02:58:00.471335Z",
+    "total_latency_ms": 9286,
+    "model_calls": 2,
+    "tokens_in": 9122,
+    "tokens_out": 466,
+    "raw_available_until": "2026-09-22T02:58:00.471335Z",
+    "raw_available": true
+  },
+  "runs": [
+    {
+      "seq_no": 1,
+      "nodes": [
+        {
+          "run_id": "6cabcc857990448ba523a7cdf9de6a27",
+          "idx": 1,
+          "node": "understand",
+          "prev_node": null,
+          "started_at": "2026-09-15T02:57:22.789723Z",
+          "duration_ms": 4018,
+          "status": "ok",
+          "summary": {
+            "stage": "intake",
+            "category": null,
+            "substage": null,
+            "reply_mode": "diagnose",
+            "patch_count": 1,
+            "out_of_scope": false,
+            "rewrite_used": false,
+            "product_state": "unknown",
+            "vision_status": null,
+            "primary_intent": "report_problem",
+            "escalate_reason": null,
+            "target_issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+            "context_revision": 1,
+            "knowledge_status": null,
+            "retrieval_rounds": 0,
+            "allowed_operations": true,
+            "escalation_trigger": null
+          }
+        },
+        {
+          "run_id": "6cabcc857990448ba523a7cdf9de6a27",
+          "idx": 2,
+          "node": "disambiguate",
+          "prev_node": "understand",
+          "started_at": "2026-09-15T02:57:26.808705Z",
+          "duration_ms": 41,
+          "status": "ok",
+          "summary": {
+            "stage": "disambiguate",
+            "category": "robot_vacuum",
+            "decision": "clarify",
+            "out_of_scope": false,
+            "product_state": "confirmed_sku"
+          }
+        },
+        {
+          "run_id": "6cabcc857990448ba523a7cdf9de6a27",
+          "idx": 3,
+          "node": "clarify",
+          "prev_node": "disambiguate",
+          "started_at": "2026-09-15T02:57:26.849720Z",
+          "duration_ms": 0,
+          "status": "ok",
+          "summary": null
+        },
+        {
+          "run_id": "6cabcc857990448ba523a7cdf9de6a27",
+          "idx": 4,
+          "node": "commit_issue",
+          "prev_node": "clarify",
+          "started_at": "2026-09-15T02:57:26.849725Z",
+          "duration_ms": 6,
+          "status": "ok",
+          "summary": null
+        }
+      ]
+    },
+    {
+      "seq_no": 2,
+      "nodes": [
+        {
+          "run_id": "e060a7ca4f5a4047984580daaa52cc53",
+          "idx": 1,
+          "node": "understand",
+          "prev_node": null,
+          "started_at": "2026-09-15T02:57:31.622209Z",
+          "duration_ms": 31,
+          "status": "ok",
+          "summary": {
+            "stage": "disambiguate",
+            "category": "robot_vacuum",
+            "substage": null,
+            "reply_mode": "diagnose",
+            "patch_count": 0,
+            "out_of_scope": false,
+            "rewrite_used": false,
+            "product_state": "confirmed_sku",
+            "vision_status": null,
+            "primary_intent": "answer_pending",
+            "escalate_reason": null,
+            "target_issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+            "context_revision": 1,
+            "knowledge_status": null,
+            "retrieval_rounds": 0,
+            "allowed_operations": true,
+            "escalation_trigger": null
+          }
+        },
+        {
+          "run_id": "e060a7ca4f5a4047984580daaa52cc53",
+          "idx": 2,
+          "node": "disambiguate",
+          "prev_node": "understand",
+          "started_at": "2026-09-15T02:57:31.653599Z",
+          "duration_ms": 1,
+          "status": "ok",
+          "summary": {
+            "stage": "disambiguate",
+            "decision": "clarify"
+          }
+        },
+        {
+          "run_id": "e060a7ca4f5a4047984580daaa52cc53",
+          "idx": 3,
+          "node": "clarify",
+          "prev_node": "disambiguate",
+          "started_at": "2026-09-15T02:57:31.655497Z",
+          "duration_ms": 0,
+          "status": "ok",
+          "summary": null
+        },
+        {
+          "run_id": "e060a7ca4f5a4047984580daaa52cc53",
+          "idx": 4,
+          "node": "commit_issue",
+          "prev_node": "clarify",
+          "started_at": "2026-09-15T02:57:31.655501Z",
+          "duration_ms": 4,
+          "status": "ok",
+          "summary": null
+        }
+      ]
+    },
+    {
+      "seq_no": 3,
+      "nodes": [
+        {
+          "run_id": "833e4e7473ff49d49ec6dcdb5c092648",
+          "idx": 1,
+          "node": "understand",
+          "prev_node": null,
+          "started_at": "2026-09-15T02:57:34.960575Z",
+          "duration_ms": 59,
+          "status": "ok",
+          "summary": {
+            "stage": "disambiguate",
+            "category": "robot_vacuum",
+            "substage": null,
+            "reply_mode": "diagnose",
+            "patch_count": 0,
+            "out_of_scope": false,
+            "rewrite_used": false,
+            "product_state": "confirmed_sku",
+            "vision_status": null,
+            "primary_intent": "answer_pending",
+            "escalate_reason": null,
+            "target_issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+            "context_revision": 1,
+            "knowledge_status": null,
+            "retrieval_rounds": 0,
+            "allowed_operations": true,
+            "escalation_trigger": null
+          }
+        },
+        {
+          "run_id": "833e4e7473ff49d49ec6dcdb5c092648",
+          "idx": 2,
+          "node": "disambiguate",
+          "prev_node": "understand",
+          "started_at": "2026-09-15T02:57:35.020025Z",
+          "duration_ms": 34,
+          "status": "ok",
+          "summary": {
+            "stage": "disambiguate",
+            "decision": "escalate",
+            "escalate_reason": "R7"
+          }
+        },
+        {
+          "run_id": "833e4e7473ff49d49ec6dcdb5c092648",
+          "idx": 3,
+          "node": "escalate",
+          "prev_node": "disambiguate",
+          "started_at": "2026-09-15T02:57:35.054563Z",
+          "duration_ms": 0,
+          "status": "ok",
+          "summary": {
+            "stage": "escalate"
+          }
+        },
+        {
+          "run_id": "833e4e7473ff49d49ec6dcdb5c092648",
+          "idx": 4,
+          "node": "summarize",
+          "prev_node": "escalate",
+          "started_at": "2026-09-15T02:57:35.054569Z",
+          "duration_ms": 1535,
+          "status": "ok",
+          "summary": {
+            "stage": "escalate",
+            "substage": "summarize"
+          }
+        },
+        {
+          "run_id": "833e4e7473ff49d49ec6dcdb5c092648",
+          "idx": 5,
+          "node": "commit_issue",
+          "prev_node": "summarize",
+          "started_at": "2026-09-15T02:57:36.590097Z",
+          "duration_ms": 6,
+          "status": "ok",
+          "summary": null
+        }
+      ]
+    },
+    {
+      "seq_no": 4,
+      "nodes": [
+        {
+          "run_id": "4c740c6c251340adaae732bedc7d4f62",
+          "idx": 1,
+          "node": "understand",
+          "prev_node": null,
+          "started_at": "2026-09-15T02:57:51.298989Z",
+          "duration_ms": 3708,
+          "status": "ok",
+          "summary": {
+            "stage": "escalate",
+            "category": "robot_vacuum",
+            "substage": "summarize",
+            "reply_mode": "dialogue",
+            "patch_count": 0,
+            "out_of_scope": false,
+            "rewrite_used": false,
+            "product_state": "confirmed_sku",
+            "vision_status": null,
+            "primary_intent": "explain",
+            "escalate_reason": null,
+            "target_issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+            "context_revision": 1,
+            "knowledge_status": null,
+            "retrieval_rounds": 0,
+            "allowed_operations": true,
+            "escalation_trigger": null
+          }
+        },
+        {
+          "run_id": "4c740c6c251340adaae732bedc7d4f62",
+          "idx": 2,
+          "node": "dialogue",
+          "prev_node": "understand",
+          "started_at": "2026-09-15T02:57:55.007726Z",
+          "duration_ms": 5294,
+          "status": "ok",
+          "summary": null
+        },
+        {
+          "run_id": "4c740c6c251340adaae732bedc7d4f62",
+          "idx": 3,
+          "node": "commit_issue",
+          "prev_node": "dialogue",
+          "started_at": "2026-09-15T02:58:00.301966Z",
+          "duration_ms": 2,
+          "status": "ok",
+          "summary": null
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "at": "2026-09-15T02:57:22.770846+00:00",
+      "first_seq": 2,
+      "last_seq": 7,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "user_message",
+      "id": "48c2ffdd-7342-4074-b7d6-c5456304a81a",
+      "text": "eufy X10 Pro Omni\r\n启动不了",
+      "image_ids": [],
+      "images": []
+    },
+    {
+      "at": "2026-09-15T02:57:26.883602+00:00",
+      "first_seq": 8,
+      "last_seq": 10,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "assistant_message",
+      "message_id": "462ddd6264f65845972ff553adfe5cfc",
+      "text": "设备按电源后能正常启动吗？",
+      "status": "completed",
+      "reply_to_input_id": "48c2ffdd-7342-4074-b7d6-c5456304a81a",
+      "model_tier": null,
+      "replaces": null
+    },
+    {
+      "at": "2026-09-15T02:57:31.619299+00:00",
+      "first_seq": 13,
+      "last_seq": 18,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "user_message",
+      "id": "4ef4cbef-009b-4c56-be04-44de195711f9",
+      "text": "不能",
+      "image_ids": [],
+      "images": []
+    },
+    {
+      "at": "2026-09-15T02:57:31.674097+00:00",
+      "first_seq": 19,
+      "last_seq": 21,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "assistant_message",
+      "message_id": "dcf52b1a17be5a3fb2c4feff0f549842",
+      "text": "放回基站后，设备有正常的充电指示或充电语音吗？",
+      "status": "completed",
+      "reply_to_input_id": "4ef4cbef-009b-4c56-be04-44de195711f9",
+      "model_tier": null,
+      "replaces": null
+    },
+    {
+      "at": "2026-09-15T02:57:34.957523+00:00",
+      "first_seq": 24,
+      "last_seq": 30,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "user_message",
+      "id": "a07625b5-72b8-4426-84aa-d13a77be0109",
+      "text": "不能",
+      "image_ids": [],
+      "images": []
+    },
+    {
+      "at": "2026-09-15T02:57:36.605878+00:00",
+      "first_seq": 31,
+      "last_seq": 33,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "assistant_message",
+      "message_id": "2d13117e2f9b575d85555e2f6d28a260",
+      "text": "我已整理当前问题记录，您可以复制给人工客服继续处理。",
+      "status": "completed",
+      "reply_to_input_id": "a07625b5-72b8-4426-84aa-d13a77be0109",
+      "model_tier": null,
+      "replaces": null
+    },
+    {
+      "at": "2026-09-15T02:57:36.609819+00:00",
+      "first_seq": 34,
+      "last_seq": 34,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "escalation_summary",
+      "card_id": "3d5c1a391ef45f4b93e3454b436dff1d",
+      "summary": {
+        "product": "eufy X10 Pro Omni",
+        "problem": "启动不了",
+        "observations": [
+          "R7：连续 2 次澄清（symptom）并收到回答后仍无法确认"
+        ],
+        "hypotheses": [],
+        "steps": [],
+        "reason": {
+          "rule_id": "R7",
+          "text": "产品品类无法确认"
+        },
+        "emotion": {
+          "level": "calm",
+          "strategy": "normal"
+        },
+        "receipt": {
+          "status": "not_collected",
+          "verified_facts": {},
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+        },
+        "model_trace": [
+          {
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "intake",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "intake",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          },
+          {
+            "task": "escalate.summary_polish",
+            "model_used": "skipped",
+            "lane": "domestic",
+            "attempts": 1
+          }
+        ],
+        "case_id": null,
+        "policy_decision_brief": null,
+        "recommended_options": [],
+        "gate_result": null,
+        "task_queue": [],
+        "emotion_track": [
+          {
+            "level": "calm",
+            "input_id": "48c2ffdd-7342-4074-b7d6-c5456304a81a"
+          },
+          {
+            "level": "calm",
+            "input_id": "4ef4cbef-009b-4c56-be04-44de195711f9"
+          },
+          {
+            "level": "calm",
+            "input_id": "a07625b5-72b8-4426-84aa-d13a77be0109"
+          }
+        ],
+        "draft_reply": null
+      },
+      "summary_id": "b2804f52d70355e8a6b7a6e4564d7785",
+      "revision": 1,
+      "updated_at": "2026-09-15T02:57:34.957523+00:00",
+      "source_through_seq": 24,
+      "previous_card_id": null,
+      "handoff_status": "prepared"
+    },
+    {
+      "at": "2026-09-15T02:57:51.294050+00:00",
+      "first_seq": 38,
+      "last_seq": 44,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "user_message",
+      "id": "0ee646f7-567b-445f-a89f-398e0e38c97f",
+      "text": "还有其他的方案吗",
+      "image_ids": [],
+      "images": []
+    },
+    {
+      "at": "2026-09-15T02:58:00.207465+00:00",
+      "first_seq": 45,
+      "last_seq": 113,
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "kind": "assistant_message",
+      "message_id": "38a811c32fff560abfb02ce3424af9dd",
+      "text": "根据之前的沟通记录，您的 eufy X10 Pro Omni 存在“启动不了”且“放回基站后无充电指示或语音”的情况。\n\n由于设备既无法通过按键启动，也无法在基站上显示充电状态，这通常指向电源供应或硬件连接层面的问题。基于目前已确认的事实，除了等待人工客服进一步处理外，您可以尝试以下基础检查（若尚未操作）：\n\n1. **检查基站电源**：确认基站电源适配器已牢固插入插座和基站接口，且插座供电正常。\n2. **检查充电触点**：查看机器人底部和基站充电弹片是否有异物遮挡或严重污渍，尝试用干布擦拭清洁。\n3. **重新放置机器人**：将机器人从基站取出，重新对准放入，确保充电触点对接良好。\n\n若上述检查后仍无任何反应（无灯光、无声音、无法开机），则极可能是内部电池或主板故障，建议直接联系人工客服进行售后维修评估。此前已为您准备好转接人工的摘要，您可以随时要求继续该流程。",
+      "status": "completed",
+      "reply_to_input_id": "0ee646f7-567b-445f-a89f-398e0e38c97f",
+      "model_tier": "primary",
+      "replaces": null
+    }
+  ]
+}

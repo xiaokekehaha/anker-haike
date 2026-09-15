@@ -30,7 +30,7 @@ REASON_TEXT = {
     "R4": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级",
     "R5": "当前产品的这一问题没有可用的排障计划",
     "R6": "用户提出退换 / 保修诉求",
-    "R7": "产品品类无法确认",
+    "R7": "缺少继续处理所需的信息",
     "R8": "产品不在本期支持范围内",
 }
 NS = uuid.UUID("7c4d0a7e-9d0e-4c4f-9a53-16a5d0d5f9e1")
@@ -69,6 +69,8 @@ def build_summary(
         {f["term"] for f in flags if f.get("rule_id") == reason and f.get("term")}
     )
     reason_text = REASON_TEXT.get(reason, reason)
+    if reason == "R7":
+        reason_text = {"product": "产品型号或品类仍未确认", "symptom": "当前故障信息不足，无法选择适用排查步骤", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
@@ -106,7 +108,10 @@ def build_summary(
         draft_reply="已整理订单与政策依据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
         problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "（用户尚未描述问题）",
-        observations=list(state.get("observations") or []),
+        observations=[*list(state.get("observations") or []), *[
+            f"问：{a['question']}；用户回答：{a['quote']}"
+            for a in (state.get("symptom_interview") or {}).get("answers", [])
+        ]],
         hypotheses=[
             h.get("fault") or h.get("plan_id")
             for h in state.get("plans_ranked") or []

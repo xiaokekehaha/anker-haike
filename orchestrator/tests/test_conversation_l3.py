@@ -76,7 +76,7 @@ async def test_a4_consult_fast_path_and_missing_param(l3_runtime):
 
 
 @pytest.mark.parametrize("answer", ["no", "unknown"])
-async def test_symptom_interview_narrows_or_stops_after_two_questions(l3_runtime, monkeypatch, answer):
+async def test_symptom_interview_stops_when_actions_are_known_or_answers_unavailable(l3_runtime, monkeypatch, answer):
     import app.conversation.interpret as semantic
 
     async def interpretation(router, state, **kwargs):
@@ -90,24 +90,21 @@ async def test_symptom_interview_narrows_or_stops_after_two_questions(l3_runtime
         sid = (await client.post("/sessions")).json()["session_id"]
         first = events(await send(client, sid, "eufy X10 Pro Omni 坏了"))
         assert "能正常启动" in "".join(e.get("delta", "") for e in first)
-        await send(client, sid, "不能" if answer == "no" else "不知道")
+        second = events(await send(client, sid, "不能" if answer == "no" else "不知道"))
         state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
         assert len(state["symptom_interview"]["candidates"]) == (2 if answer == "no" else 8)
-        assert state["clarification"]["attempts"] == 2
-        last = events(await send(client, sid, "没有" if answer == "no" else "还是不知道"))
-        assert not any(e["type"] == "error" for e in last), last
-        state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
         if answer == "no":
-            assert state["symptom_codes"] == ["charging_failure"]
-            assert state["symptom_interview"]["status"] == "narrowed"
-            assert "不充电" in state["query"]
-            assert not state["plans_ranked"]
-            assert not state.get("plan_cursor")
-            assert not any(e["type"] == "step_card" for e in last)
-            assert any(e["type"] == "escalation_summary" and e["summary"]["reason"]["rule_id"] == "R5" for e in last)
+            assert set(state["symptom_codes"]) == {"power_failure", "charging_failure"}
+            assert state["diagnostic_decision"]["reason"] == "same_applicable_plans"
+            assert any(e["type"] == "step_card" and e["step"]["plan_id"] == "rv_power_supply" for e in second)
+            assert not any(e["type"] == "escalation_summary" for e in second)
         else:
+            assert state["clarification"]["attempts"] == 2
+            last = events(await send(client, sid, "还是不知道"))
+            state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
             assert state["symptom_interview"]["status"] == "insufficient"
             assert any(e["type"] == "escalation_summary" and e["summary"]["reason"]["rule_id"] == "R7" for e in last)
+
 
 
 async def test_manual_close_reopen_syncs_case_snapshot_and_invalidates_consent(l3_runtime, monkeypatch):

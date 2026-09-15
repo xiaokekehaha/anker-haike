@@ -107,6 +107,7 @@ class TurnInterpretation(BaseModel):
     feedback: Literal["solved", "not_solved", "cannot_do"] | None = None
     feedback_quote: str | None = None
     unresolved_quote: str | None = Field(default=None, description="用户明确报告当前问题仍未解决、再次发生，或否认结案结果的本轮逐字原话。查询历史、假设将来复发、一般投诉情绪保持空；它不是某个排障步骤的反馈")
+    diagnostic_request_quote: str | None = Field(default=None, description="用户明确要求继续排查或询问其他排障方案的本轮原话；解释已有步骤、查询历史、办理退换不填。它不表示用户已执行步骤。")
     symptom_answer: SymptomAnswer | None = None
     pending_answer: PendingAnswer | None = None
     history_request: HistoryRequest | None = None
@@ -174,6 +175,11 @@ async def interpret_turn(router, state: dict, *, lane: str):
     answer = symptom_question_answer(state)
     if answer is not None:
         return answer, {"source": "symptom_question", "source_entry_ids": [state["input_id"]]}
+    from app.diagnose.decision import owns_diagnostic_reply
+    if owns_diagnostic_reply(state) and state.get("text", "").strip("。？！?! ") in {
+        "还有其他的方案吗", "还有其他方案吗", "继续排查", "继续排障", "还有别的办法吗",
+    }:
+        return TurnInterpretation(primary_intent="explain", device_relation="current", diagnostic_request_quote=state["text"]), {"source": "diagnostic_request"}
     entries = [ConversationEntry(**e) for e in state.get("history", [])]
     # issue_index is built by build_context for every conversational boundary, not just here.
     from app.conversation.taxonomy import taxonomy

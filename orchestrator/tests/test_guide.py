@@ -11,7 +11,7 @@ from haike_contracts.events import parse_event
 from haike_contracts.snapshot import SessionSnapshot
 from httpx import ASGITransport, AsyncClient
 
-from app.guide import apply_feedback, prepare_step, rewrite_is_faithful, step_card_id
+from app.guide import apply_feedback, prepare_step, step_card_id
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.runtime import set_model_router
@@ -20,7 +20,7 @@ from app.plans.runtime import set_plan_library
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
-from tests.message_form import action_body, message_form, model_task_text
+from tests.message_form import action_body, message_form
 from tests.test_diagnose import INTAKE_X9, NO_MATCH, OK_HAIR, ScriptedAdapter, make_router
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -125,23 +125,6 @@ async def runtime(mem_runtime, tmp_path):
 
 
 # ---------------- 票 34：单元 ----------------
-
-
-def test_rewrite_faithfulness_gold_pairs():
-    """金标：动作集合不增不删才接受；增删动作 / 空动作拒绝。"""
-    assert rewrite_is_faithful(
-        C12, "把主机翻过来，按住滚刷盖两侧卡扣取出滚刷，用清洁刀具割断毛发后装回。"
-    )
-    assert rewrite_is_faithful(
-        "打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。",
-        "打开尘盒盖取出滤网，清水冲洗后晾干一天再装回。",
-    )
-    # 多了动作（冲洗 / 晾干）→ 拒绝
-    assert not rewrite_is_faithful(C12, "取出滚刷后用清水冲洗并晾干，再装回。")
-    # 少了动作（没有装回）→ 拒绝
-    assert not rewrite_is_faithful(C12, "翻转主机取出滚刷，割断缠绕的毛发。")
-    # 没有任何动作词 → 拒绝
-    assert not rewrite_is_faithful(C12, "滚刷是位于机身底部的部件。")
 
 
 def test_step_card_id_is_derived_from_session_plan_step():
@@ -249,7 +232,7 @@ async def test_pre_step_r4_in_step_text_is_dropped(tmp_path):
         lane="domestic",
         session_id="sid",
     )
-    assert prep.outcome == "exhausted" and prep.escalate_reason is None
+    assert prep.outcome == "exhausted"
     assert prep.step is None
     assert prep.dropped == [
         {"plan_id": "rv_test_smoke", "step_id": "s1", "reason": "safety_term_in_step:冒烟"}
@@ -327,13 +310,13 @@ async def test_evidence_outside_allowed_set_drops_step():
         lane="domestic",
         session_id="sid",
     )
-    assert prep.outcome == "ready" and prep.step["evidence_ids"] == ["c15"]
+    assert prep.outcome == "ready" and prep.step["evidence_ids"] == ["c15", "plan:manual_rv_v1#c15:2026-09-12.1"]
 
 
 # ---------------- 票 34：图内 ----------------
 
 
-async def test_a1_first_step_card_rewritten_and_ready(runtime):
+async def test_a1_first_step_card_publishes_reviewed_source(runtime):
     s, fakes = await runtime(fast=[INTAKE_X9], main=[SYNTH, ["请先清理滚刷。"], REWRITE_OK])
     events = await s.send("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发")
     for e in events:
@@ -356,15 +339,9 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
         and step["step_no"] == 1
     )
     assert step["title"] == "检查并清理滚刷" and step["expected_result"] == "滚刷无缠绕物，转动顺畅"
-    assert step["instruction"] == json.loads(REWRITE_OK)["instruction"]  # 改写被接受
-    assert step["evidence_ids"] == ["c12", "c15"]  # 同 doc 的允许证据 + 计划引用
-    # guide.step 是 internal 调用，prompt 里包着 <data kind="instruction_src"> 原文
-    call = fakes["main"].calls[-1]
-    assert call["metadata"]["task"] == "guide.step" and "internal" in call["tags"]
-    assert (
-        'kind="instruction_src"' in model_task_text(call)
-        and C12 in model_task_text(call)
-    )
+    assert step["instruction"] == C12
+    assert step["evidence_ids"] == ["c12", "c15", "plan:manual_rv_v1#c12:2026-09-12.1"]
+    assert not any(call["metadata"]["task"] == "guide.step" for call in fakes["main"].calls)
     st = await s.state()
     assert st["stage"] == "guide" and st["pending_card"]["kind"] == "step_feedback"
     assert st["plan_cursor"] == {
@@ -374,14 +351,10 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
         "source": "synthesize",
     }
     assert isinstance(st["card_ready_ms"], int) and 0 <= st["card_ready_ms"] < 15000
-    assert (
-        st["model_trace"][-1]["task"] == "guide.step"
-        and st["model_trace"][-1]["model_used"] != "skipped"
-    )
     assert st["guide_trace"][-1] == {
         "event": "step_ready",
         "card_id": card["card_id"],
-        "rewritten": True,
+        "rewritten": False,
     }
     snap = await s.snap()
     assert snap.stage == "guide" and snap.pending_input.kind == "step_feedback"
@@ -389,29 +362,11 @@ async def test_a1_first_step_card_rewritten_and_ready(runtime):
     assert item.step.instruction == step["instruction"] and item.feedback is None
 
 
-async def test_unfaithful_rewrite_falls_back_to_source_text(runtime):
-    s, _ = await runtime(fast=[INTAKE_X9], main=[SYNTH, REWRITE_BAD])
+async def test_operation_text_never_uses_model_rewrite(runtime):
+    s, fakes = await runtime(fast=[INTAKE_X9], main=[SYNTH, REWRITE_BAD])
     events = await s.send("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发")
     assert step_card_of(events)["step"]["instruction"] == C12
-    st = await s.state()
-    assert st["guide_trace"][-1]["rewritten"] is False
-    trace = st["model_trace"][-1]
-    assert (
-        trace["task"] == "guide.step"
-        and trace["model_used"] != "skipped"
-        and trace["attempts"] == 1
-    )
-
-
-async def test_rewrite_model_failure_uses_source_and_marks_skipped(runtime):
-    s, _ = await runtime(fast=[INTAKE_X9], main=[SYNTH, ["请先清理滚刷。"], RuntimeError("down")])
-    events = await s.send("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发")
-    assert step_card_of(events)["step"]["instruction"] == C12
-    st = await s.state()
-    assert (
-        st["model_trace"][-1]["task"] == "guide.step"
-        and st["model_trace"][-1]["model_used"] == "skipped"
-    )
+    assert not any(call["metadata"]["task"] == "guide.step" for call in fakes["main"].calls)
 
 
 async def test_step_card_replayed_with_same_id_on_resume_and_invalid_feedback_rejected(runtime):
@@ -539,8 +494,8 @@ async def test_exhausted_with_low_confidence_next_plan_escalates_r2(runtime):
         p = pending_of(await s.feedback(p, "not_solved"))
     ev = await s.feedback(p, "not_solved")  # s3 → EXHAUSTED，下一计划 0.2 < 0.3 → R2
     stages = [(e["stage"], e.get("substage")) for e in ev if e["type"] == "progress"]
-    assert stages[0] == ("escalate", "collect_receipt")  # 常规升级先收凭证（票 39）
-    assert pending_of(ev)["kind"] == "upload_receipt"
+    assert stages[0] == ("escalate", "summarize")
+    assert any(e["type"] == "escalation_summary" for e in ev)
     st = await s.state()
     assert st["escalate_reason"] == "R2" and st["plan_cursor"] is None
     assert st["counters"]["plans_exhausted"] == 1 and st["exhausted_plans"] == [

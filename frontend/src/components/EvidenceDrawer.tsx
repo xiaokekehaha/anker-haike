@@ -1,7 +1,7 @@
 import type { EvidenceItem } from '../types/snapshot';
 import styles from './Cards.module.css';
 
-const SOURCE: Record<string, string> = { kb_manual: '说明书 / 手册', kb_tickets: '历史工单', fault_card: '产品故障卡' };
+const SOURCE: Record<string, string> = { kb_manual: '说明书 / 手册', kb_tickets: '历史工单', fault_card: '产品故障卡', approved_plan: '预写排障资料' };
 
 /** 来源抽屉（票 28）：折叠列出片段；highlight 为当前步骤卡引用的 evidence_ids，联动高亮。 */
 export function EvidenceDrawer({ items, highlight = [] }: { items: EvidenceItem[]; highlight?: string[] }) {

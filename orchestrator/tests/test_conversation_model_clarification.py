@@ -19,7 +19,7 @@ async def test_unknown_model_after_category_and_symptom_reaches_retrieval(conver
     )
     await session.send(
         "不启动",
-        {"primary_intent": "supplement", "facts": [{"value": "不启动", "quote": "不启动"}]},
+        {"primary_intent": "supplement", "facts": [{"value": "不启动", "quote": "不启动", "symptom_code": "power_failure"}]},
     )
     await session.send(
         "00001",

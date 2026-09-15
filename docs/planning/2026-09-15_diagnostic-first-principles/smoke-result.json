@@ -1,0 +1,145 @@
+[
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "input": "eufy X10 Pro Omni 启动不了",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "tool_call",
+      "tool_call",
+      "progress",
+      "progress",
+      "issue_changed",
+      "evidence",
+      "evidence",
+      "pending_changed",
+      "step_card",
+      "awaiting_input",
+      "done"
+    ],
+    "reply": "",
+    "steps": [
+      {
+        "step_id": "s1",
+        "plan_id": "rv_power_supply",
+        "plan_version": 1,
+        "step_no": 1,
+        "title": "检查基站供电与触点",
+        "instruction": "确认基站电源灯亮，触点无灰尘。",
+        "expected_result": "设备恢复正常充电和启动；若仍未恢复请反馈未解决",
+        "caution": "只观察外部状态，不拆开设备或处理带电接线；出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后",
+        "evidence_ids": [
+          "587c24db-dd94-4ba0-af4a-2d6e43045a51",
+          "d459d526-e845-4fd8-b334-e4b8dfa27208",
+          "plan:troubleshooting_rv#e1:2026-09-12.1"
+        ]
+      }
+    ],
+    "reasons": []
+  },
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "input": "还有其他的方案吗",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "awaiting_input",
+      "done"
+    ],
+    "reply": "当前已确认的排查步骤是：确认基站电源灯亮，触点无灰尘。。注意：只观察外部状态，不拆开设备或处理带电接线；出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后。预期结果：设备恢复正常充电和启动；若仍未恢复请反馈未解决。这次问答不会记为已执行；请完成后反馈结果，如不能操作请反馈“无法操作”。",
+    "steps": [],
+    "reasons": []
+  },
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "feedback": "not_solved",
+    "steps": [
+      "s2"
+    ],
+    "reasons": [],
+    "stage": "guide"
+  },
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "feedback": "not_solved",
+    "steps": [],
+    "reasons": [
+      "R2"
+    ],
+    "stage": "escalate"
+  },
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "input": "还有其他的方案吗",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "reply": "现有适用排查步骤已经尝试或无法继续，尚未确认解决。可以整理已试步骤给人工客服；不会重复建议您已做过的操作。",
+    "steps": [],
+    "reasons": []
+  },
+  {
+    "session_id": "1b47e1e3af5b409f94aa2487f7c33e90",
+    "input": "这台设备现在有焦味",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "escalation_summary",
+      "summary_updated",
+      "done"
+    ],
+    "reply": "您提到了设备安全风险，请停止使用，不要继续充电。我已整理这台设备的问题记录，您可以交给人工客服进一步核实。",
+    "steps": [],
+    "reasons": [
+      {
+        "rule_id": "R4",
+        "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：焦味"
+      }
+    ]
+  },
+  {
+    "session_id": "7b84fef59d0d476ca463a0dae36d2996",
+    "input": "eufy X10 Pro Omni 不能用了",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "reply": "设备按电源后能正常启动吗？",
+    "steps": [],
+    "reasons": []
+  }
+]

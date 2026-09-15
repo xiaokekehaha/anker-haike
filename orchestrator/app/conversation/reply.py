@@ -40,6 +40,9 @@ def fallback_reply(state: dict) -> str:
         if (issue.get("handoff") or {}).get("status") != "prepared":
             return "当前还没有整理人工服务摘要，也没有完成转接。您可以继续描述问题，或明确要求整理给客服的记录。"
         return "目前已整理问题记录，尚未接入真实人工转接服务，不能确认客服已接单。您可以复制摘要交给客服。"
+    from app.diagnose.decision import explanation, owns_diagnostic_reply
+    if owns_diagnostic_reply(state) and intent not in {"history_query", "social", "resume_issue"} and not (state.get("stage") != "done" and intent == "explain" and state.get("pending_card") and state["pending_card"].get("kind") != "step_feedback"):
+        return explanation(state)
     if intent == "explain" and state.get("pending_card"):
         payload = state["pending_card"].get("payload", {})
         step = payload.get("step", {})
@@ -63,9 +66,11 @@ async def reply_to_turn(state: dict, writer) -> dict:
     mid = stable_id(state["input_id"], "dialogue")
     text = fallback_reply(state)
     router = get_model_router()
+    from app.diagnose.decision import owns_diagnostic_reply
     # Precise clarification and service status must not be rewritten into invented actions.
     if (
         router
+        and not owns_diagnostic_reply(state)
         and not decision.get("clarification")
         and decision["primary_intent"] not in {"handoff_status", "request_human"}
     ):

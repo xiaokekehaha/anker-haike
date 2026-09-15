@@ -96,8 +96,9 @@ async def test_second_round_timeout_keeps_first_round_and_records_trace(mem_runt
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )
@@ -134,8 +135,9 @@ async def test_second_round_within_budget_merges_and_marks_round(mem_runtime, tm
         {
             "emotion_level": "calm",
             "product_hints": ["X9 Pro"],
-            "symptoms": ["跑完了地上还是一堆渣"],
-            "wants_human": False,
+            "primary_intent": "report_problem",
+            "device_relation": "current",
+            "facts": [{"value": "跑完了地上还是一堆渣", "quote": "地上还是一堆渣", "symptom_code": "suction_low"}],
         },
         ensure_ascii=False,
     )

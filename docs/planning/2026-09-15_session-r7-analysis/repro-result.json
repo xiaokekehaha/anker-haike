@@ -1,0 +1,32 @@
+{
+  "accepted": true,
+  "answer_result": {
+    "candidates": [
+      "不充电"
+    ],
+    "status": "narrowed"
+  },
+  "after_reduce": {
+    "candidates": [
+      "不充电"
+    ],
+    "status": "superseded",
+    "codes": [
+      "power_failure"
+    ]
+  },
+  "decision": {
+    "outcome": "escalate",
+    "reason": "R7"
+  },
+  "change_only_interview_status": {
+    "outcome": "continue",
+    "codes": [
+      "charging_failure"
+    ]
+  },
+  "legacy_text_check": {
+    "启动不了": false,
+    "无法启动": true
+  }
+}

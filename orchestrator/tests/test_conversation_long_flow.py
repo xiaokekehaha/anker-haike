@@ -1,5 +1,4 @@
 """Long-dialogue recall and correction through the real HTTP/model boundary."""
-from app.context.builder import estimate_tokens
 from tests.conversation_runtime import REPORT, REPORT_TEXT
 from tests.conversation_runtime import conversation as conversation  # noqa: PLC0414
 
@@ -15,11 +14,9 @@ async def test_recall_and_correct_after_thirty_turns(conversation):
     c.models["reply.stream"].script.append([f"您最初说的是：{REPORT_TEXT}。我当时请您查看排查步骤。"])
     await c.send("最开始我说了什么，你怎么回答的？", {"primary_intent": "history_query",
         "history_request": {"mode": "first"}}, input_id="recall-first")
-    messages = c.models["reply.stream"].calls[-1]["messages"]
-    context = "\n".join(str(message.content) for message in messages)
-    assert "first-question" in context and REPORT_TEXT in context and "请看下面的排查步骤" in context
-    assert context.count("最开始我说了什么，你怎么回答的？") == 1
-    assert estimate_tokens(context) < 8000
+    reply = "".join(e.get("delta", "") for e in c.outputs[-1])
+    assert REPORT_TEXT in reply
+    assert not c.models["reply.stream"].calls  # Diagnostic history uses the stored record.
     state = await c.state()
     issue = state["issues"][state["active_issue_id"]]
     old = next(f for f in issue["facts"] if f["value"] == "滚刷缠头发")

@@ -306,10 +306,15 @@ def skipped_after_upload(state: dict[str, Any], reason: str) -> dict[str, Any]:
     return r
 
 
+def diagnostic_only(state: dict[str, Any]) -> bool:
+    """排障受阻本身不构成退换/保修申请，不以凭证收集阻塞摘要。"""
+    return state.get("escalate_reason") in {"R1", "R1b", "R1c", "R2", "R5", "R7"} and not state.get("requested_remedy")
+
+
 def needs_collection(state: dict[str, Any]) -> bool:
     """常规升级且尚未收集 / 跳过凭证 → 进入 collect_receipt。"""
     reason = state.get("escalate_reason") or "R3"
-    if reason in DIRECT_SUMMARY_REASONS:
+    if reason in DIRECT_SUMMARY_REASONS or diagnostic_only(state):
         return False
     receipt = state.get("receipt") or {}
     return not receipt.get("status")

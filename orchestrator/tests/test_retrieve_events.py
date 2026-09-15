@@ -115,8 +115,9 @@ async def test_evidence_id_stable_within_session(mem_runtime):
         set_rules_service(None)
     ids1 = [i["evidence_id"] for e in e1 if e["type"] == "evidence" for i in e["items"]]
     ids2 = [i["evidence_id"] for e in e2 if e["type"] == "evidence" for i in e["items"]]
-    assert ids1 == ids2 == ["chunk-c12"]
-    assert list(state.values["evidence"]) == ["chunk-c12"]  # 累积去重，可被 step.evidence_ids 引用
+    assert ids1 == ["chunk-c12", "plan:manual_rv_v1#c12:2026-09-12.1"]
+    assert ids2 == ["chunk-c12"]  # 已发布的本地来源不重复发送，步骤继续引用稳定 ID。
+    assert list(state.values["evidence"]) == ["chunk-c12", "plan:manual_rv_v1#c12:2026-09-12.1"]  # 累积去重，可被 step.evidence_ids 引用
 
 
 async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
@@ -125,7 +126,7 @@ async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
     assert [t["status"] for t in tools] == ["started", "failed"] and "暂不可用" in tools[1][
         "summary"
     ]
-    assert "evidence" not in [e["type"] for e in events]
+    assert all(i["source"] == "approved_plan" for e in events if e["type"] == "evidence" for i in e["items"])
     assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
     assert "diagnose" in [e["stage"] for e in events if e["type"] == "progress"]
     assert state.values["knowledge_status"] == "unavailable" and snap["stage"] in (

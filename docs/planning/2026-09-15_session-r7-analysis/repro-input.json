@@ -1,0 +1,98 @@
+{
+  "session_id": "2702fe9bdd4942e9ab84122d42a6848e",
+  "input_id": "a07625b5-72b8-4426-84aa-d13a77be0109",
+  "at": "2026-09-15T02:57:34.957523+00:00",
+  "text": "不能",
+  "active_issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+  "category": "robot_vacuum",
+  "product_confirmed": {
+    "sku": "EUFY-X10-PRO-OMNI",
+    "name": "eufy X10 Pro Omni",
+    "category": "robot_vacuum",
+    "image": "/img/x10.png",
+    "in_scope": true
+  },
+  "product_state": "confirmed_sku",
+  "symptoms": [
+    "启动不了"
+  ],
+  "symptom_codes": [
+    "power_failure"
+  ],
+  "symptom_interview": {
+    "taxonomy_version": "2026-09-14.2",
+    "candidates": [
+      "不开机",
+      "不充电"
+    ],
+    "answers": [
+      {
+        "key": "80ca2f0c9d38",
+        "question": "设备按电源后能正常启动吗？",
+        "answer": "no",
+        "quote": "不能",
+        "input_id": "4ef4cbef-009b-4c56-be04-44de195711f9"
+      }
+    ],
+    "status": "superseded",
+    "question": {
+      "question": "放回基站后，设备有正常的充电指示或充电语音吗？",
+      "splits": {
+        "yes": [
+          "不开机"
+        ],
+        "no": [
+          "不充电"
+        ]
+      },
+      "key": "e8d18c7c80b1",
+      "question_id": "9079bd6127225bfcb44d7860aec1c6ff:4ef4cbef-009b-4c56-be04-44de195711f9:e8d18c7c80b1"
+    }
+  },
+  "clarification": {
+    "reason": "symptom",
+    "attempts": 2,
+    "asked_run_id": "e060a7ca4f5a4047984580daaa52cc53"
+  },
+  "issues": {
+    "9079bd6127225bfcb44d7860aec1c6ff": {
+      "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+      "device_ref": {
+        "device_ref_id": "6ed2d0dae89556bfa733430179e573ef",
+        "category": "robot_vacuum",
+        "identity_status": "provisional",
+        "source_ids": [
+          "48c2ffdd-7342-4074-b7d6-c5456304a81a"
+        ]
+      },
+      "facts": [
+        {
+          "fact_id": "df1cf455768653389729cedd614576dd",
+          "kind": "symptom",
+          "context_field": null,
+          "value": "启动不了",
+          "issue_id": "9079bd6127225bfcb44d7860aec1c6ff",
+          "device_ref_id": "6ed2d0dae89556bfa733430179e573ef",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source_entry_ids": [
+            "48c2ffdd-7342-4074-b7d6-c5456304a81a"
+          ],
+          "recorded_at": "2026-09-15T02:57:22.770846+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "启动不了",
+          "symptom_codes": [
+            "power_failure"
+          ],
+          "symptom_code": "power_failure"
+        }
+      ],
+      "issue_revision": 1,
+      "status": "open",
+      "title": "启动不了"
+    }
+  }
+}

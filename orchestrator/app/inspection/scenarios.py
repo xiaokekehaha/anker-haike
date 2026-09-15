@@ -497,7 +497,7 @@ def _rewrite_stats(st: dict, h: Harness, ev: Events) -> dict[str, Any]:
     }
 
 
-INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current"}]}
+INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current", "symptom_code": "suction_low"}]}
 DEBRIS_TEXT = "eufy X9 Pro 它跑完了，地上还是一堆渣"
 REWRITE_GOOD = {"query": "扫地机器人 清扫后残留碎屑 清洁效果差"}
 REWRITE_BAD = {"query": "扫地机器人 清扫后残留碎屑 电机损坏"}  # 新增原因词 → 拒绝

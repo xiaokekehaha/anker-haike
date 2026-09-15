@@ -84,18 +84,6 @@ def score_synthesize(out: dict[str, Any], expect: dict[str, Any]) -> float:
     return _checks(checks)
 
 
-def score_guide(prep: Any, expect: dict[str, Any]) -> float:
-    if prep.outcome != "ready" or prep.step is None:
-        return 0.0
-    text = prep.step["instruction"]
-    checks = [prep.rewritten, len(text) <= int(expect.get("max_chars", 60))]
-    if "must_contain" in expect:
-        checks.append(all(w in text for w in expect["must_contain"]))
-    if "must_not_contain" in expect:
-        checks.append(not _contains_any(text, expect["must_not_contain"]))
-    return _checks(checks)
-
-
 def score_stream(out: Any, expect: dict[str, Any]) -> float:
     if not out.completed or not out.text.strip():
         return 0.0

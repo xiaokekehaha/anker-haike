@@ -17,7 +17,7 @@ async def action(c, kind, payload):
 
 
 async def reach_receipt(c):
-    await c.send(REPORT_TEXT, REPORT)
+    await c.send(REPORT_TEXT + "，我想申请换货", {**REPORT, "primary_intent": "replacement_request"})
     for _ in range(5):
         snapshot = await c.snapshot()
         if snapshot["pending_input"]["kind"] == "upload_receipt":

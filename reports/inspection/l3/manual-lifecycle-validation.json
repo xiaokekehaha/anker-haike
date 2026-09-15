@@ -1,0 +1,98 @@
+{
+  "session_id": "a83fd21ac6874f60b9a6e83e2d078746",
+  "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+  "closed": {
+    "status": "closed",
+    "revision": 3,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-09-14T13:36:57.509389+00:00",
+        "first_seq": 21,
+        "last_seq": 113,
+        "issue_id": "6225df10397f503fbdbccaee16a66e6b",
+        "kind": "case_changed",
+        "card_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "version": 8,
+        "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "status": "closed",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "人工结案",
+        "external_refs": {
+          "order_no": "DEMO-X10-001"
+        },
+        "updated_at": "2026-09-14T13:45:46.636390+00:00"
+      }
+    ],
+    "events": [
+      {
+        "id": 35,
+        "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "seq": 1,
+        "type": "order_identified",
+        "payload": {
+          "order_no": "DEMO-X10-001"
+        },
+        "actor": "system",
+        "at": "2026-09-14T13:36:57.468332+00:00"
+      },
+      {
+        "id": 36,
+        "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "seq": 2,
+        "type": "status_changed",
+        "payload": {
+          "to": "closed",
+          "from": "open",
+          "reason": "人工结案"
+        },
+        "actor": "agent:demo",
+        "at": "2026-09-14T13:45:46.636387+00:00"
+      },
+      {
+        "id": 37,
+        "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "seq": 3,
+        "type": "manual_action",
+        "payload": {
+          "command": "close",
+          "command_id": "68e95114-79f1-53f0-a6b0-5d5ba29d96f4",
+          "expected_revision": 1
+        },
+        "actor": "agent:demo",
+        "at": "2026-09-14T13:45:46.636390+00:00"
+      }
+    ]
+  },
+  "reopened": {
+    "status": "reopened",
+    "revision": 5,
+    "reopened_count": 1,
+    "pending_input": null,
+    "case_status": [
+      {
+        "at": "2026-09-14T13:36:57.509389+00:00",
+        "first_seq": 21,
+        "last_seq": 123,
+        "issue_id": "6225df10397f503fbdbccaee16a66e6b",
+        "kind": "case_changed",
+        "card_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "version": 9,
+        "case_id": "ece94618-55d2-5cde-9e01-9a1e928e86c8",
+        "status": "reopened",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "人工重新受理",
+        "external_refs": {
+          "order_no": "DEMO-X10-001"
+        },
+        "updated_at": "2026-09-14T13:46:11.582394+00:00"
+      }
+    ],
+    "executions": []
+  },
+  "validation": "管理台实际点击结案和重新受理，PostgreSQL 案件、会话快照与通知一致。自动接收外部更新由前端 hook 检查验证；未实测浏览器后台计时。"
+}

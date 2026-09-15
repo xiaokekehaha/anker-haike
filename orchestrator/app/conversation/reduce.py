@@ -29,6 +29,7 @@ ISSUE_FIELDS = {
     "product_hints": [],
     "symptoms": [],
     "symptom_codes": [],
+    "diagnostic_decision": None,
     "symptom_interview": None,
     "evidence": {},
     "current_evidence_ids": [],
@@ -66,6 +67,8 @@ def stable_id(*parts) -> str:
 
 
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
+    from app.conversation.taxonomy import canonical_codes
+
     issues = copy.deepcopy(state.get("issues") or {})
     iid, at = state["input_id"], state["at"]
     current = state.get("active_issue_id")
@@ -199,6 +202,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
                     old,
                     fact_id=stable_id(iid, "replace", index),
                     value=correction.value,
+                    symptom_codes=canonical_codes(correction.value)[0] if old["kind"] == "symptom" else [],
+                    symptom_code=None,
                     status="active",
                     source_entry_ids=[iid],
                     recorded_at=at,
@@ -209,7 +214,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
     normalization_disagreements = []
-    from app.conversation.taxonomy import canonical_codes, interview_answer, interview_codes
+    from app.diagnose.decision import accept_answer
     for index, candidate in enumerate(meaning.facts):
         if not candidate.quote.strip() or candidate.quote not in text:
             continue
@@ -292,14 +297,11 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     issue["observations"] = [
         f["value"] for f in facts if f["status"] == "active" and f["kind"] == "observation"
     ]
-    issue["symptom_interview"], symptom_answered = interview_answer(issue.get("symptom_interview"), meaning.symptom_answer, text, iid)
-    codes = list(dict.fromkeys(code for f in facts if f["status"] == "active" and f["kind"] == "symptom" for code in f.get("symptom_codes", [])))
-    if codes:
-        if issue.get("symptom_interview"):
-            issue["symptom_interview"] = {**issue["symptom_interview"], "status": "superseded", "question": None}
-    else:
-        codes = interview_codes(issue.get("symptom_interview"))
-    issue["symptom_codes"] = codes
+    symptom_update, symptom_answered = accept_answer(
+        issue, meaning.symptom_answer, text=text, input_id=iid,
+        changed_fact_ids={p["fact_id"] for p in applied},
+    )
+    issue.update(symptom_update)
     if issue["symptoms"]:
         issue["status"] = "open"
         issue["title"] = "、".join(issue["symptoms"])
@@ -367,6 +369,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         issue["pending_card"] = None
         resumed_pending = False
     intent = meaning.primary_intent
+    if intent in {"replacement_request", "refund_request", "address_update"}:
+        issue["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[intent]
     if intent == "request_human" and state.get("entry") != "action" and not (
         meaning.human_request_quote and meaning.human_request_quote.strip() and meaning.human_request_quote in text
     ):
@@ -415,7 +419,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         resumed_pending = False
     if restriction and mode == "diagnose" and not trigger:
         mode = "dialogue"
-    if applied or open_new or product_corrected:
+    if applied or open_new or product_corrected or symptom_answered:
         issue["issue_revision"] = issue.get("issue_revision", 0) + 1
     decision = {
         "input_id": iid,
@@ -436,6 +440,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "business_switched": business_switched,
         "business_ambiguous": business_ambiguous,
         "symptom_answered": symptom_answered,
+        "diagnostic_request": bool(meaning.diagnostic_request_quote and meaning.diagnostic_request_quote.strip() and meaning.diagnostic_request_quote in text),
         "normalization_disagreements": normalization_disagreements,
     }
     result = {key: copy.deepcopy(issue.get(key, default)) for key, default in ISSUE_FIELDS.items()}
@@ -451,7 +456,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         context_revision=state.get("context_revision", 0)
         + (
             1
-            if applied or open_new or product_corrected or risks != state.get("risk_cases", [])
+            if applied or open_new or product_corrected or symptom_answered or risks != state.get("risk_cases", [])
             else 0
         ),
         applied_input_ids=[*state.get("applied_input_ids", []), iid],

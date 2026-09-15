@@ -27,6 +27,7 @@ class PlanStep(_Strict):
     instruction_src: str = Field(description="evidence:<doc_id>#<chunk_id>")
     expected_result: str = Field(min_length=1)
     caution: str | None = None
+    stop_conditions: list[str] = Field(default_factory=list)
     next_on: NextOn
 
     @field_validator("instruction_src")

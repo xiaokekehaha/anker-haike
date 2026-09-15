@@ -115,48 +115,6 @@ async def run_synthesize(router: ModelRouter, s: Sample, lane: str) -> tuple[flo
     }
 
 
-async def run_guide(router: ModelRouter, s: Sample, lane: str) -> tuple[float, dict[str, Any]]:
-    from app.guide.steps import prepare_step
-    from app.rules.service import RulesService
-
-    lib = plans()
-    rules = RulesService(settings.rules_config_path, hot_reload=False)
-    plan = lib.get(s.input["plan_id"])
-    step = plan.step(s.input.get("step_id") or plan.first_step().step_id)
-    doc_id = step.evidence_key.split("#", 1)[0]
-    # 允许证据集合：给该步骤原文所在 doc 一条证据，保证 evidence_ids 非空且合法
-    evidence = {
-        f"bk-{doc_id}": {
-            "evidence_id": f"bk-{doc_id}",
-            "doc_id": doc_id,
-            "source": "kb_manual",
-            "snippet": "",
-        }
-    }
-    state = {
-        "plan_cursor": {"plan_id": plan.plan_id, "step_id": step.step_id, "version": plan.version},
-        "evidence": evidence,
-        "product_confirmed": {"name": s.input.get("product", "扫地机器人")},
-        "emotion": {"strategy": s.input.get("strategy", "normal")},
-        "steps_executed": [],
-    }
-    prep = await prepare_step(
-        state=state,
-        library=lib,
-        rules=rules,
-        router=router,
-        lane=lane,
-        session_id=f"bakeoff-{s.id}",
-        budget_ms=20_000,
-    )
-    return scoring.score_guide(prep, s.expect), {
-        "outcome": prep.outcome,
-        "instruction": (prep.step or {}).get("instruction"),
-        "rewritten": prep.rewritten,
-        "source": lib.evidence_snippet(step.instruction_src),
-    }
-
-
 async def run_stream(router: ModelRouter, s: Sample, lane: str) -> tuple[float, dict[str, Any]]:
     from app.prompts import reassurance_messages, reply_messages
     from app.sessions.streaming import stream_to_writer
@@ -353,7 +311,6 @@ ADAPTORS: dict[str, Adaptor] = {
     "intake": run_intake,
     "disambiguate.clarify": run_clarify,
     "diagnose.synthesize": run_synthesize,
-    "guide.step": run_guide,
     "reply.stream": run_stream,
     "escalate.summary": run_summary,
     "query.rewrite": run_rewrite,

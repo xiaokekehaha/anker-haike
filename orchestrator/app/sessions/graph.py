@@ -144,6 +144,7 @@ class SessionState(TypedDict, total=False):
     product_hints: list[str]
     symptoms: list[str]
     symptom_codes: list[str]
+    diagnostic_decision: dict[str, Any]
     symptom_interview: dict[str, Any] | None
     model_trace: list[dict[str, Any]]
     # 票 28：检索结果。evidence 按 evidence_id 去重累积，供 step.evidence_ids 引用；knowledge_status 为最近一次四态
@@ -847,7 +848,7 @@ async def understand(state: SessionState) -> SessionState:
         new_business_subject=requested_business is not None and requested_business.status == "missing",
     )
     update["l3_route"] = None
-    if update["turn_decision"].get("business_switched") and state.get("requested_remedy"):
+    if update["turn_decision"].get("business_switched") and state.get("requested_remedy") and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"}:
         update["requested_remedy"] = state["requested_remedy"]
     from app.actions.runtime import get_services
     if get_services() is not None:
@@ -883,8 +884,6 @@ async def understand(state: SessionState) -> SessionState:
                 if context_sources.get(key) != "receipt":
                     context_values[key], context_sources[key] = value, "user"
         update.update(service_context=context_values, context_sources=context_sources)
-        if meaning.primary_intent in {"replacement_request", "refund_request", "address_update"}:
-            update["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[meaning.primary_intent]
     if context.get("source") != "validated_action":
         update["model_trace"] = [
             *state.get("model_trace", []),
@@ -1102,6 +1101,12 @@ def route_entry(state: SessionState) -> str:
         if state.get("case_id") and state.get("stage") == "awaiting_human":
             return "dialogue"
         if intent == "report_problem" and decision.get("allowed_operations") and not state.get("pending_card"):
+            return "disambiguate"
+    if decision.get("diagnostic_request") and decision.get("allowed_operations") and not state.get("pending_card"):
+        from app.diagnose.decision import owns_diagnostic_reply
+        if owns_diagnostic_reply(state):
+            if state.get("stage") == "done" or (state.get("exhausted_plans") and not decision.get("patches")):
+                return "dialogue"
             return "disambiguate"
     if decision.get("reply_mode") in {"dialogue", "clarify"}:
         return "dialogue"
@@ -1435,6 +1440,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 plans.get("plans_ranked") or [],
                 knowledge_status="unavailable",
                 fault_card_hits=[e["chunk_id"] for e in fc_evidence],
+            exhausted_plans=state.get("exhausted_plans") or [],
             )
         )
         return {
@@ -1774,7 +1780,8 @@ async def _synthesize_step(
 
 
 def _diagnose_outcome(
-    plans_ranked: list[dict[str, Any]], *, knowledge_status: str, fault_card_hits: list[str]
+    plans_ranked: list[dict[str, Any]], *, knowledge_status: str, fault_card_hits: list[str],
+    exhausted_plans: list[str] = (),
 ) -> dict[str, Any]:
     """票 33 / 09 §4：有假设 → 进 guide；来源 synthesize（有证据）或 standard_flow（预写计划默认顺序）；无适用计划 → R5。"""
     if not plans_ranked:
@@ -1787,7 +1794,10 @@ def _diagnose_outcome(
             "escalate_reason": "R5",
             "plan_cursor": None,
         }
-    first = plans_ranked[0]
+    available = [p for p in plans_ranked if p["plan_id"] not in exhausted_plans]
+    if not available:
+        return {"diagnose_outcome": {"mode": "escalate", "reason": "R2"}, "escalate_reason": "R2", "plan_cursor": None}
+    first = available[0]
     mode = (
         "standard_flow"
         if first.get("source") == "standard_flow"
@@ -1827,7 +1837,7 @@ def route_after_retrieve(state: SessionState) -> str:
 async def guide(state: SessionState) -> SessionState:
     if "prefer_proposal_over_more_steps" in state.get("emotion_actions", []) and (state.get("counters") or {}).get("executed",0) >= 2:
         return {"escalate_reason":"R2","pending_card":None}
-    """排障引导（票 34，03 §1.5）：取 plan_cursor 步骤 → 去重 / 证据校验 / CP-pre-step → guide.step 改写（失败用原文）
+    """排障引导（票 34，03 §1.5）：取 plan_cursor 步骤 → 去重 / 证据校验 / CP-pre-step → 已审核原文发布
     → pending_card(kind=step_feedback)；随后 await_input 发 step_card。当前计划剩余步骤全被丢弃 → 切换计划或 R2。"""
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "guide"})
@@ -1848,32 +1858,6 @@ async def guide(state: SessionState) -> SessionState:
             budget_ms=budget,
         )
         trace += [{"event": "step_dropped", **d} for d in prep.dropped]
-        if prep.outcome == "escalate":
-            if prep.escalate_reason == "R4":
-                from app.conversation.policy import restrict_operations
-
-                update.update(
-                    restrict_operations(
-                        dict(state), source_kind="step_policy", quote=str(prep.dropped)
-                    )
-                )
-            # CP-pre-step：待下发步骤文字含 R4 安全词 → 丢弃并升级（09 §1）
-            update.update(
-                {
-                    "escalate_reason": prep.escalate_reason,
-                    "safety_flags": [
-                        *state.get("safety_flags", []),
-                        {
-                            "rule_id": prep.escalate_reason,
-                            "source": "step",
-                            "term": "pre_step",
-                            "ts": state.get("at", ""),
-                        },
-                    ],
-                    "guide_trace": trace,
-                }
-            )
-            return update
         if prep.outcome == "ready":
             from app.conversation.reduce import stable_id
             published_card_id = stable_id(state["input_id"], state["active_issue_id"], prep.card_id)
@@ -1915,6 +1899,10 @@ async def guide(state: SessionState) -> SessionState:
                     ],
                 }
             )
+            if prep.evidence:
+                writer({"type": "evidence", "items": list(prep.evidence.values())})
+                update["evidence"] = {**state.get("evidence", {}), **prep.evidence}
+                update["current_evidence_ids"] = list(dict.fromkeys([*state.get("current_evidence_ids", []), *prep.evidence]))
             if prep.model_trace:
                 update["model_trace"] = [*state.get("model_trace", []), prep.model_trace]
             return update
@@ -2032,6 +2020,8 @@ async def escalate(state: SessionState) -> SessionState:
 
 
 def route_escalate(state: SessionState) -> str:
+    if receipt_mod.diagnostic_only(state):
+        return "summarize"
     from app.actions.runtime import get_services
     if get_services() is not None and state.get("product_state") == "confirmed_sku" and state.get("escalate_reason") in {"R1","R1b","R1c","R2","R6"}:
         return "service_context"
@@ -2214,6 +2204,11 @@ async def reply(state: SessionState) -> SessionState:
         # The scheduler has already explained the task order. A second free-form
         # answer to the original multi-request message could invent actions for
         # suspended tasks. Let guide publish only the selected diagnostic step.
+        return {"stage": "diagnose"}
+    from app.diagnose.decision import owns_diagnostic_reply
+    if owns_diagnostic_reply(state):
+        from app.conversation.reply import reply_to_turn
+        await reply_to_turn(dict(state), writer)
         return {"stage": "diagnose"}
     router = get_model_router()
     if router is None or not state.get("product_state") in ("confirmed_sku", "category_only"):

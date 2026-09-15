@@ -321,7 +321,7 @@ async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem
     assert [m["task"] for m in router.misses] == failed_tasks
     ev = next(e for e in replayed if e["type"] == "evidence")
     assert {i["status"] for i in ev["items"]} == {"replay"}
-    assert all(v["status"] == "replay" for v in state["evidence"].values())
+    assert all(v["status"] == "replay" or v["source"] == "approved_plan" for v in state["evidence"].values())
     assert state["knowledge_status"] == "ok"  # 回放命中等价 ok 路径进入 synthesize / guide
     # 票 19：命中计划的排障轮不再自由回复，本轮可见产物是步骤卡
     assert not [e for e in replayed if e["type"] == "message"]

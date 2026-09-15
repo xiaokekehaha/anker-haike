@@ -5,7 +5,7 @@
 - product_state：confirmed_sku（目录唯一命中或卡片选中）/ category_only（零命中但品类词明确，且有适用的
   category_generic 预写计划）/ unknown（品类未定，只允许追问或升级）。
 - clarification = {reason: product | symptom | conflict, attempts, asked_run_id}：checkpoint 内部状态。
-  每次实际发出澄清问题（文字追问或产品卡片）attempts + 1；收到回答后仍不明且 attempts ≥ 2 → R7。
+  每次实际发出问题记录 attempts；产品确认保留次数兜底，症状按有效答案和可区分问题决策。
   信息补齐并可进入合法流程后清零；同一未决问题换措辞、换 run 不重置。与排障 counters 分开计数。
 - 追问文案由 ModelRouter task=disambiguate.clarify 生成（tag=internal，结构化 {question}），失败用固定文案。
 - 澄清阶段不生成新步骤、不检索、不改写查询；run 以 done(completed) 结束但会话不算 solved。
@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 import logging
-import re
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -32,52 +31,6 @@ Reason = Literal["product", "symptom", "conflict"]
 MAX_CLARIFICATIONS = 2  # R7：连续澄清 2 次并收到回答后仍不明 → 升级
 CLARIFY_BUDGET_MS = 4000
 CLARIFY_PROMPT_VERSION = "2026-09-14.2"
-
-# 指代 / 空泛表达：文本去掉产品与品类词后若只剩这些，视为「没有具体故障描述」
-_DEICTIC = re.compile(
-    r"^(这个|那个|它|机器|设备|这台|那台|我的|又|还是|还|就是|不行|坏了|坏掉|不好用|有问题|出问题|不能用|无法正常工作|不能正常工作|故障|异常|了|啊|呀|吧|呢|的|。|，|,|\.|!|！|\?|？|\s)*$"
-)
-_SYMPTOM_WORDS = (
-    "不吸",
-    "吸力",
-    "不开机",
-    "无法启动",
-    "开不了",
-    "不充电",
-    "充不",
-    "异响",
-    "噪音",
-    "漏水",
-    "不拖",
-    "不回充",
-    "回不去",
-    "报错",
-    "错误",
-    "断连",
-    "连不上",
-    "app",
-    "APP",
-    "wifi",
-    "WiFi",
-    "地图",
-    "撞",
-    "卡住",
-    "掉线",
-    "关机",
-    "灯",
-    "响",
-    "不动",
-    "不走",
-    "转",
-    "停",
-    "臭",
-    "味",
-    "热",
-    "冒烟",
-    "电池",
-    "续航",
-    "掉电",
-)
 
 FIXED_QUESTIONS: dict[str, str] = {
     "product": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1 Pro 吸奶器」。",
@@ -208,51 +161,42 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     if update.get("out_of_scope"):
         return Decision("continue", update)
 
-    # ---- 3) 症状 ----
-    # 抽取结果为空时回退到原文；产品已确认（明确上文）时承接更早轮次的故障描述，不把「这个又不行了」
-    # 当成新故障，也不盲目归入某一现象（09 §1.1）
-    from app.conversation.taxonomy import canonical_codes, interview_codes
-    interview = state.get("symptom_interview") or {}
-    direct_codes, _ = canonical_codes(text, category=update.get("category") or state.get("category"))
-    if interview and direct_codes and (state.get("turn_decision") or {}).get("primary_intent") in {"report_problem", "supplement", "correct", "answer_pending"}:
-        update.update(clarification=None, symptom_codes=direct_codes, symptom_interview={**interview, "status": "superseded", "question": None})
+    # One diagnostic decision consumes accepted facts and quoted answers.
+    from app.diagnose.decision import decide_symptoms
+    product = confirmed or {}
+    decision = decide_symptoms({**state, **update}, available_plans=get_plans().allowed_for(
+        category=product.get("category") or update.get("category") or category,
+        sku=product.get("sku"),
+    ))
+    update["symptom_codes"] = decision.codes
+    update["diagnostic_decision"] = {
+        "outcome": decision.outcome, "reason": decision.reason,
+        "source_refs": list(decision.source_refs),
+    }
+    if decision.outcome == "continue":
+        update["clarification"] = None
         return Decision("continue", update)
-    if interview.get("status") == "narrowed":
-        update.update(clarification=None, symptom_codes=interview_codes(interview))
-        return Decision("continue", update)
-    if interview.get("status") == "asking":
-        return _symptom_clarify(state, clar, update)
-    symptoms = [s for s in state.get("symptoms") or [] if _has_symptom_text(catalog, s)]
-    if not symptoms and not _has_symptom_text(catalog, text):
-        earlier = [
-            m.get("text", "") for m in (state.get("messages") or [])[:-1] if m.get("role") == "user"
-        ]
-        product_resolved = confirmed is not None or update.get("product_state") == "category_only"
-        if not (product_resolved and any(_has_symptom_text(catalog, t) for t in earlier)):
-            return _symptom_clarify(state, clar, update)
-
-    # 信息齐全且可进入合法流程：澄清计数清零
-    update["clarification"] = None
-    return Decision("continue", update)
-
-
-def _symptom_clarify(state, clar, update):
-    from app.conversation.taxonomy import next_interview, taxonomy
-    category = update.get("category") or state.get("category") or (state.get("product_confirmed") or {}).get("category")
-    if category != taxonomy()["category"]:
+    if decision.interview is None:
         return _clarify(clar, "symptom", update)
-    interview = next_interview(state.get("symptom_interview"), state.get("active_issue_id"), state.get("input_id"))
-    result = _clarify(clar, "symptom", update, symptom_interview=interview, discriminator=interview.get("question"))
-    if result.outcome == "escalate":
-        result.update["symptom_interview"] = {**interview, "status": "insufficient", "question": None}
-    return result
+    if decision.outcome == "escalate":
+        update.update(escalate_reason="R7", symptom_interview=decision.interview,
+                      clarification={**clar, "reason": "symptom", "resolved": False},
+                      observations=[*state.get("observations", []),
+                                    "当前故障信息仍不足，无法选择适用的排查步骤"])
+        return Decision("escalate", update, "symptom")
+    # Product clarification budget is separate from useful symptom questions.
+    update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0)}
+    return Decision("clarify", update, "symptom", {
+        "symptom_interview": decision.interview,
+        "discriminator": decision.interview.get("question"),
+    })
 
 
 def _clarify(
     clar: dict[str, Any], reason: Reason, update: dict[str, Any], **detail: Any
 ) -> Decision:
     """attempts ≥ MAX 且这是对上一问的回答 → R7；否则再问一次（attempts 在真正发问时 +1）。"""
-    attempts = int(clar.get("attempts") or 0)
+    attempts = int(clar.get("attempts") or 0) if clar.get("reason") == reason else 0
     if attempts >= MAX_CLARIFICATIONS:
         update.update(
             {
@@ -274,7 +218,7 @@ def count_attempt(state_clar: dict[str, Any] | None, reason: Reason, run_id: str
     clar = dict(state_clar or {})
     return {
         "reason": reason,
-        "attempts": int(clar.get("attempts") or 0) + 1,
+        "attempts": (int(clar.get("attempts") or 0) if clar.get("reason") == reason else 0) + 1,
         "asked_run_id": run_id,
     }
 
@@ -299,18 +243,6 @@ def _lookup(catalog, text: str, hints: list[str]) -> list[dict[str, Any]]:
                     seen.add(c.sku)
                     cands.append(c.model_dump())
     return cands
-
-
-def _has_symptom_text(catalog, text: str) -> bool:
-    """抽取为空时的回退（03 §1.4.1 规则 3）：去掉产品 / 品类词后仍有具体故障描述才算有症状。"""
-    rest = catalog.strip_category_words(text)
-    for p in catalog.products:
-        for alias in (p.name, *p.aliases, p.sku):
-            rest = re.sub(re.escape(alias), " ", rest, flags=re.IGNORECASE)
-    rest = rest.strip()
-    if not rest or _DEICTIC.match(rest):
-        return False
-    return any(w.lower() in rest.lower() for w in _SYMPTOM_WORDS) or len(rest) >= 6
 
 
 # ---------------------------------------------------------------------------

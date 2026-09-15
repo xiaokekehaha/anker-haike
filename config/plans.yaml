@@ -1,9 +1,11 @@
-# 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，LLM 只改写 instruction_src 原文（09 §3.2）。
+# 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，操作原样发布 instruction_src，停止条件独立展示。
 # next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
 # evidence 段是票 26/27 接入 WeKnora 前的证据索引占位：doc_id#chunk_id 与 WeKnora 入库元数据保持一致。
-version: 2026-09-14.2
+version: 2026-09-15.1
 
 evidence:
+  troubleshooting_rv#e1: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 确认基站电源灯亮，触点无灰尘。}
+  troubleshooting_rv#e2: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 手动放回基站，观察 5 分钟内是否开始充电。}
   manual_rv_v1#c12: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。}
   manual_rv_v1#c15: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。}
   manual_rv_v1#c18: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 按下尘盒释放键抽出尘盒，倒空并检查进风口是否被堵塞。}
@@ -69,3 +71,23 @@ plans:
     steps:
       - {step_id: s1, title: 确认是否有异响或过热, instruction_src: evidence:manual_rv_v1#c30, expected_result: 确认现象后停止使用，等待人工处理,
          caution: 有焦味或过热时请立即关机，不要继续排查, next_on: {solved: EXHAUSTED, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_power_supply
+    symptom_codes: [power_failure, charging_failure]
+    version: 1
+    fault: 无法启动或充电时的基站供电与充电检查
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - step_id: s1
+        title: 检查基站供电与触点
+        instruction_src: evidence:troubleshooting_rv#e1
+        expected_result: 设备恢复正常充电和启动；若仍未恢复请反馈未解决
+        caution: 只观察外部状态，不拆开设备或处理带电接线
+        stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
+        next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}
+      - step_id: s2
+        title: 放回基站观察充电
+        instruction_src: evidence:troubleshooting_rv#e2
+        expected_result: 设备恢复正常充电和启动；仍不能使用时结束本流程并联系售后
+        stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
+        next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}

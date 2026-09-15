@@ -15,7 +15,6 @@ TEXT_TASKS = (
     "intake",
     "disambiguate.clarify",
     "diagnose.synthesize",
-    "guide.step",
     "reply.stream",
     "escalate.summary",
     "query.rewrite",
