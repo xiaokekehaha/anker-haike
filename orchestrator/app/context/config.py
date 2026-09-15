@@ -7,6 +7,8 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.settings import CONFIG_DIR
+
 
 class ConversationConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -22,6 +24,6 @@ class ConversationConfig(BaseModel):
 def conversation_config() -> ConversationConfig:
     path = Path(
         os.environ.get("CONVERSATION_CONFIG_PATH")
-        or Path(__file__).resolve().parents[3] / "config/conversation.yaml"
+        or CONFIG_DIR / "conversation.yaml"
     )
     return ConversationConfig.model_validate(yaml.safe_load(path.read_text()))

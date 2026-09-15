@@ -1,10 +1,10 @@
 import yaml
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 
 def vocabulary():
-    return yaml.safe_load((REPO_ROOT / "config/vision_vocab.yaml").read_text())
+    return yaml.safe_load((CONFIG_DIR / "vision_vocab.yaml").read_text())
 
 
 def normalize(localization):

@@ -20,11 +20,9 @@ from app.faultcards import FaultCardLibrary, FaultCardsError
 from app.faultcards import store as faultcard_store
 from app.plans import PlanLibrary, PlansError, plan_json_schema
 from app.plans import store as plans_store
-from app.settings import REPO_ROOT, settings
+from app.settings import CONFIG_DIR, settings
 from app.warranty.service import ReferenceData
 from app.warranty.store import seed_reference
-
-CONFIG_DIR = REPO_ROOT / "config"
 
 
 async def _run(what: str, config_dir: Path) -> int:

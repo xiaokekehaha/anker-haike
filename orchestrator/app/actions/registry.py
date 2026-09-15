@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 
 class ConfigError(ValueError):
@@ -22,7 +22,7 @@ class ActionRegistry:
         config = (
             config
             if config is not None
-            else yaml.safe_load((REPO_ROOT / "config/actions.yaml").read_text())
+            else yaml.safe_load((CONFIG_DIR / "actions.yaml").read_text())
         )
         self.version = str(config["version"])
         self.actions = config["actions"]

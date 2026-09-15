@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -12,6 +13,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 REPO_ROOT = Path(__file__).resolve().parents[2]
 # 把 .env 也放进 os.environ：模型厂商 key 按 models.yaml 的 api_key_env 名从环境读取，已有环境变量优先
 load_dotenv(REPO_ROOT / ".env", override=False)
+
+# 配置目录。容器内 app 装在 /srv/app，REPO_ROOT 会解析成 /，必须由 CONFIG_DIR 指到 /srv/config
+# （见 orchestrator/Dockerfile）。config/ 下的加载一律以它为基准，新增配置不必再单独补环境变量。
+CONFIG_DIR = Path(os.environ.get("CONFIG_DIR") or REPO_ROOT / "config")
 
 
 class Settings(BaseSettings):
@@ -32,24 +37,24 @@ class Settings(BaseSettings):
 
     model_lane: str = Field(default="domestic", alias="MODEL_LANE")
     models_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "models.yaml"), alias="MODELS_CONFIG_PATH"
+        default=str(CONFIG_DIR / "models.yaml"), alias="MODELS_CONFIG_PATH"
     )
 
     catalog_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "products.yaml"), alias="CATALOG_CONFIG_PATH"
+        default=str(CONFIG_DIR / "products.yaml"), alias="CATALOG_CONFIG_PATH"
     )
     plans_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "plans.yaml"), alias="PLANS_CONFIG_PATH"
+        default=str(CONFIG_DIR / "plans.yaml"), alias="PLANS_CONFIG_PATH"
     )
     receipt_reference_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "receipt_reference.yaml"),
+        default=str(CONFIG_DIR / "receipt_reference.yaml"),
         alias="RECEIPT_REFERENCE_CONFIG_PATH",
     )
     fault_cards_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "fault_cards.yaml"), alias="FAULT_CARDS_CONFIG_PATH"
+        default=str(CONFIG_DIR / "fault_cards.yaml"), alias="FAULT_CARDS_CONFIG_PATH"
     )
     rules_config_path: str = Field(
-        default=str(REPO_ROOT / "config" / "rules" / "safety_terms.yaml"), alias="RULES_CONFIG_PATH"
+        default=str(CONFIG_DIR / "rules" / "safety_terms.yaml"), alias="RULES_CONFIG_PATH"
     )
 
     observability_log_path: str = Field(

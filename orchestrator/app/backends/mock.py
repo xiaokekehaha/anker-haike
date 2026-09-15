@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 from psycopg.rows import dict_row
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 from .protocol import (
     Conflict,
@@ -22,7 +22,7 @@ from .protocol import (
 )
 
 
-def load_config(path: Path = REPO_ROOT / "config/backends_mock.yaml") -> dict:
+def load_config(path: Path = CONFIG_DIR / "backends_mock.yaml") -> dict:
     return yaml.safe_load(path.read_text())
 
 

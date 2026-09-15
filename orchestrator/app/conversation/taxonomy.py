@@ -6,11 +6,11 @@ import json
 
 import yaml
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 
 def taxonomy():
-    return yaml.safe_load((REPO_ROOT / "config/symptom_taxonomy.yaml").read_text())
+    return yaml.safe_load((CONFIG_DIR / "symptom_taxonomy.yaml").read_text())
 
 
 def normalize(text, category="robot_vacuum"):

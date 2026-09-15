@@ -8,9 +8,9 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
-DEFAULT_PATH = REPO_ROOT / "config" / "bakeoff.yaml"
+DEFAULT_PATH = CONFIG_DIR / "bakeoff.yaml"
 TEXT_TASKS = (
     "intake",
     "disambiguate.clarify",

@@ -36,8 +36,10 @@ COPY replay ./replay
 # 票 02：镜像内构建前端，不依赖宿主机事先生成 dist
 COPY --from=frontend-build /frontend/dist ./static/
 
-# 容器内 REPO_ROOT 解析为 /，settings 里所有 config 默认路径都要显式指到 /srv/config（票 19/31/15 的配置在容器里首次启用）
+# 容器内 app 装在 /srv/app，settings.REPO_ROOT 解析为 /。CONFIG_DIR 是 config/ 下所有加载的统一基准，
+# 新增配置文件只要放进 config/ 就能被找到，不必再逐个补 *_CONFIG_PATH（下面这些保留为显式覆盖）。
 ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
+    CONFIG_DIR=/srv/config \
     MODELS_CONFIG_PATH=/srv/config/models.yaml \
     CATALOG_CONFIG_PATH=/srv/config/products.yaml \
     PLANS_CONFIG_PATH=/srv/config/plans.yaml \

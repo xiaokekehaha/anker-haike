@@ -1,7 +1,7 @@
 import yaml
 
 from app.actions.params import changes_order, extract_params
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 
 def symptom_question_answer(state):
@@ -27,7 +27,7 @@ def fallback_interpretation(state):
     if answer:
         return answer
     text = state.get("text", "")
-    terms = yaml.safe_load((REPO_ROOT / "config/rules/intent_terms.yaml").read_text())
+    terms = yaml.safe_load((CONFIG_DIR / "rules/intent_terms.yaml").read_text())
     intents = [intent for intent, words in terms.items() if any(word in text for word in words)]
     from app.emotion.policy import evaluate_emotion
     from app.rules import get_rules_service

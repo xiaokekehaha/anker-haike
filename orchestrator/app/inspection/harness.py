@@ -42,7 +42,7 @@ from app.sessions.graph import build_graph
 from app.sessions.locks import InMemorySessionLock
 from app.sessions.manager import RunManager
 from app.sessions.store import InMemorySessionStore
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 MODELS_CONFIG = """
 version: inspection
@@ -278,8 +278,8 @@ class Harness:
         set_image_store(self.images)
         set_model_router(self.router)
         set_knowledge_adapter(self.adapter)
-        set_rules_service(RulesService(REPO_ROOT / "config" / "rules" / "safety_terms.yaml", hot_reload=False))
-        set_plan_library(PlanLibrary.from_yaml(REPO_ROOT / "config" / "plans.yaml"))
+        set_rules_service(RulesService(CONFIG_DIR / "rules" / "safety_terms.yaml", hot_reload=False))
+        set_plan_library(PlanLibrary.from_yaml(CONFIG_DIR / "plans.yaml"))
         set_retrieval_config(self.retrieval)
         set_alert_manager(self.alerts)
         logging.getLogger("observability").addHandler(self.metrics)

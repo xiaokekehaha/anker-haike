@@ -93,9 +93,9 @@ class RetrievalConfig(_Strict):
 
 def load_retrieval_config(path: str | Path | None = None) -> RetrievalConfig:
     if path is None:
-        from app.settings import REPO_ROOT
+        from app.settings import CONFIG_DIR
 
-        path = os.environ.get("RETRIEVAL_CONFIG_PATH") or REPO_ROOT / "config" / "retrieval.yaml"
+        path = os.environ.get("RETRIEVAL_CONFIG_PATH") or CONFIG_DIR / "retrieval.yaml"
     path = Path(path)
     if not path.is_file():
         return RetrievalConfig()

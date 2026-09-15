@@ -1,19 +1,19 @@
 import yaml
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 LEVELS = {"calm": 0, "dissatisfied": 1, "angry": 2, "complaint_risk": 3}
 
 
 def load_policy():
-    return yaml.safe_load((REPO_ROOT / "config/emotion_policy.yaml").read_text())
+    return yaml.safe_load((CONFIG_DIR / "emotion_policy.yaml").read_text())
 
 
 def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=False):
     level = "dissatisfied" if level == "anxious" else level
     if level not in LEVELS:
         level = "calm"
-    terms = yaml.safe_load((REPO_ROOT / "config/rules/complaint_terms.yaml").read_text())
+    terms = yaml.safe_load((CONFIG_DIR / "rules/complaint_terms.yaml").read_text())
     for candidate in ("complaint_risk", "angry", "dissatisfied"):
         hits = []
         for word in terms[candidate]:

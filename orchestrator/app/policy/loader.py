@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from app.settings import REPO_ROOT
+from app.settings import CONFIG_DIR
 
 CONDITIONS = {
     "fault_class",
@@ -68,7 +68,7 @@ def validate(bundle: dict) -> dict:
 
 
 class PolicyLoader:
-    def __init__(self, directory: Path | str = REPO_ROOT / "config/policy"):
+    def __init__(self, directory: Path | str = CONFIG_DIR / "policy"):
         self.directory = Path(directory)
         self._stamp = None
         self._bundle = None
