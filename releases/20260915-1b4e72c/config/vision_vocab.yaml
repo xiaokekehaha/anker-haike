@@ -1,0 +1,14 @@
+version: '2026-09-14.1'
+parts: [滚刷, 边刷, 滤网, 尘盒, 吸口, 轮组, 传感器, 充电触点, 电池仓, 基站, 其他]
+phenomena: [缠绕, 堵塞, 破损, 变形, 烧焦, 漏液, 鼓包, 污渍, 松脱, 缺失, 正常, 其他]
+retake_guidance:
+  blurry: 请擦净镜头，对焦后拍摄故障部件。
+  too_dark: 请在光线充足处拍摄。
+  too_far: 请靠近拍摄，让部件占据画面中心。
+  wrong_subject: 请拍摄当前设备的故障部件或铭牌。
+  occluded: 请移开遮挡物，保持安全距离。
+signatures:
+  - {part: 滚刷, phenomenon: 缠绕, plan_id: rv_suction_hair_wrap}
+  - {part: 滤网, phenomenon: 堵塞, plan_id: rv_suction_filter_clog}
+  - {part: 尘盒, phenomenon: 堵塞, plan_id: rv_suction_dustbin_full}
+  - {part: 边刷, phenomenon: 缠绕, plan_id: rv_suction_side_brush}

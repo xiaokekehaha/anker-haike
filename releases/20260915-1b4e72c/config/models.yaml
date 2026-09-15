@@ -1,0 +1,98 @@
+# 路由唯一来源（model-selection.md §3.7）。真实模型 ID 于 2026-09-13 冻结（票 42）：DeepSeek 与智谱 GLM 三款为本机实测，
+# 其余（dashscope / anthropic / google）为官方文档核对的当前 ID，本机无 key，通过率 / 延迟待补跑（见 docs/planning/2026-09-12_smart-service-bakeoff/）。
+# providers.lane 标注厂商通道，domestic 链尾接 overseas 别名即跨通道降级。
+# 规则：每个 task 的链上至少一家是当前环境可用的模型（只有 DEEPSEEK_API_KEY 时链不能整条 skipped，模型层 findings）。
+# params 为厂商专属请求参数（openai 协议进 extra_body）：DeepSeek V4 与智谱 GLM 默认开思考模式，关掉以免 reasoning token 计费与延迟翻倍。
+# 2026-09-13 实测：百炼 qwen3.7-flash / qwen3.8-max 默认也开思考（enable_thinking），结构化调用返回空 content、synthesize 8 s 超时，需显式关闭。
+# 2026-09-13.3（有界 RAG 阶段 5 / 6）：新增可选 task retrieve.grade（两通道）；query.rewrite max_tokens 128 → 512；
+# 给 qwen-flash / qwen-plus / qwen-max 加 enable_thinking=false —— 实测百炼这三个位默认开思考，OpenAI 兼容接口下
+# 结构化调用返回空 content，diagnose.synthesize 在 qwen-max 上 8 s 预算全部超时并降级到链尾，修复后 probe ≈ 1.2 s。
+# 2026-09-13.2（票 42 两家实测）：domestic 每个 task 的链尾换成本机实测达标的智谱位，使「主备至少两家厂商」在只有
+# DeepSeek + 智谱 key 的环境里也成立；未达标的候选不上链（glm 在 escalate.summary 10%、guide.step 89%，glm-flash 在
+# synthesize 67%）。diagnose.vision 的 glm-v 只达备用位门槛（77% < 主 80%），但它是唯一有视觉能力的智谱模型。
+# 2026-09-13.4：新增 zhipu 通道（GLM 优先）。每个 task 首位取 bake-off 实测达标的智谱位（findings.md §bake-off 结果），
+# deepseek / qwen 依次兜底；切换只需 .env 里 MODEL_LANE=zhipu 并重启 orchestrator，不改 domestic 链。
+# 已知：diagnose.vision 的 glm-v 只达备用位门槛（77%）。
+# 2026-09-13 补测（串行）：并发 4 会触发智谱账号 429（code 1302），此前 guide.step schema 92%、retrieve.grade schema 25%
+# 都是限流污染，串行后 schema 一律 100%；但准确率不是——guide.step / glm-4.7 多轮在 89–92% 之间抖，横跨 90% 门槛线，
+# retrieve.grade / glm-4.7 则稳定在 91–100%。详见 bakeoff findings §补测。
+# 注意：该限流是账号级的，并发 4 即打满——本通道在多会话并发下会真触发 429 并退避后降级到 deepseek。
+# 2026-09-13 实测 glm-4.5-flash 直连 16 token 要 14.6 s（免费档排队），15 s 超时必降级，故本通道不用 glm-flash，一律用 glm-4.7。
+# 2026-09-13.5：三家（dashscope / deepseek / zhipu）首次同时有 key，按全量 bake-off 重排 domestic 链——
+# 变化：diagnose.vision / diagnose.synthesize / guide.step / warranty.receipt_ocr / reply.stream 首位换 deepseek，
+# escalate.summary 首位换 qwen-flash，retrieve.grade 与 guide.step 的智谱位由 glm-flash 换成 glm-4.7。
+# 依据见每行行尾实测值与 bakeoff findings §「三家全量重排」。一次 A1 对话成本由 ¥0.0252（全 qwen 主位）降到约 ¥0.011。
+version: 2026-09-13.5
+default_lane: domestic
+
+providers:
+  anthropic: {sdk: anthropic, api_key_env: ANTHROPIC_API_KEY, lane: overseas}
+  google:    {sdk: google_genai, api_key_env: GOOGLE_API_KEY, lane: overseas}
+  dashscope: {sdk: openai, base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1", api_key_env: DASHSCOPE_API_KEY}
+  deepseek:  {sdk: openai, base_url: "https://api.deepseek.com/v1", api_key_env: DEEPSEEK_API_KEY}
+  zhipu:     {sdk: openai, base_url: "https://open.bigmodel.cn/api/paas/v4", api_key_env: ZHIPU_API_KEY}
+
+models:
+  sonnet:       {context_window: 1000000, provider: anthropic, id: claude-sonnet-5,             vision: true,  structured: native,      max_images: 20, timeout_s: 20}
+  haiku:        {context_window: 200000, provider: anthropic, id: claude-haiku-4-5-20251001,   vision: true,  structured: native,      max_images: 20, timeout_s: 15}
+  gemini-flash: {context_window: 1048576, provider: google,    id: gemini-2.5-flash,            vision: true,  structured: native,      max_images: 16, timeout_s: 20}
+  qwen-flash:   {context_window: 1000000, provider: dashscope, id: qwen3.7-flash,               vision: false, structured: json_object, timeout_s: 15, params: {enable_thinking: false}}
+  qwen-plus:    {context_window: 1000000, provider: dashscope, id: qwen3.7-plus,                vision: false, structured: native,      timeout_s: 20, params: {enable_thinking: false}}
+  qwen-max:     {context_window: 1000000, provider: dashscope, id: qwen3.8-max,                 vision: false, structured: native,      timeout_s: 20, params: {enable_thinking: false}}
+  qwen-vl:      {context_window: 262144, provider: dashscope, id: qwen3-vl-plus,               vision: true,  structured: json_object, max_images: 10, timeout_s: 30}
+  # deepseek-flash（V4.1-Flash）实测：json_object 可用、能读图（max_images 按 4 张保守）、关思考后 intake ≈ 0.9 s
+  deepseek:     {context_window: 1000000, provider: deepseek,  id: deepseek-flash,              vision: true,  structured: json_object, max_images: 4,  timeout_s: 20, params: {thinking: {type: disabled}}}
+  # deepseek-v4-pro：强推理档对照位（不读图，实测对图片凭空描述）；只作 synthesize / guide 的候选，默认不在链上
+  deepseek-pro: {context_window: 1000000, provider: deepseek,  id: deepseek-v4-pro,             vision: false, structured: json_object, timeout_s: 30, params: {thinking: {type: disabled}}}
+  # 智谱 2026-09-13 本机实测：json_schema 被静默忽略（返回散文 → 校验必失败），只能用 json_object；思考模式默认开，需关
+  glm:          {context_window: 200000, provider: zhipu,     id: glm-4.7,                     vision: false, structured: json_object, timeout_s: 20, params: {thinking: {type: disabled}}}
+  # glm-4.7-flash 不存在（调用返回 500 操作失败）；轻量档实测可用的是 glm-4.5-flash
+  glm-flash:    {context_window: 128000, provider: zhipu,     id: glm-4.5-flash,               vision: false, structured: json_object, timeout_s: 15, params: {thinking: {type: disabled}}}
+  glm-v:        {context_window: 128000, provider: zhipu,     id: glm-4.6v,                    vision: true,  structured: json_object, max_images: 10, timeout_s: 30, params: {thinking: {type: disabled}}}
+  embed-primary:  {provider: dashscope, id: text-embedding-v4, kind: embedding, dim: 1024}
+  rerank-primary: {provider: dashscope, id: gte-rerank-v2, kind: rerank}
+
+lanes:
+  domestic:
+    # 2026-09-13.5 三家全量实测重排（qwen 首次有 key）。行尾为冻结时那轮 bake-off（repeats=3、串行，reports/bakeoff/bakeoff.md）
+    # 的 schema/准确率、P50、成本，顺序同 chain。裁决口径同 runner.judge：准确率只作门槛，达标后按 延迟/上限 + 成本×100 排序；
+    # 智谱位一律用 glm-4.7 不用 glm-4.5-flash（免费档排队：reply.stream P50 12.1 s、67%/65%）。
+    # 注意 repeats=3 在门槛线附近抖动可达 ±5 点，边界候选的裁决以 findings §「三家全量」的多轮记录为准。
+    intake:                {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 512}    # 100/98 1051 ms ¥0.0002 | 100/100 953 ms ¥0.0016 | 100/97 1364 ms
+    disambiguate.clarify:  {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 256}    # 100/100 752 ms ¥0.0001 | 100/100 990 ms ¥0.0010 | 100/100 965 ms
+    diagnose.vision:       {chain: [deepseek, qwen-vl, glm-v],    effort: medium, needs_vision: true} # 100/83 1188 ms | 100/83 1554 ms | 93/77 1261 ms（glm-v 未达标，仅兜底）。主位 deepseek 只收 4 张图，降级位收 10 张
+    diagnose.synthesize:   {chain: [deepseek, qwen-max, glm-v],   effort: high}                       # 100/100 1162 ms ¥0.0023 | 100/100 2179 ms ¥0.0094 | 100/88 2320 ms
+    guide.step:            {chain: [deepseek, qwen-max, glm],     effort: medium}                     # 100/97 929 ms ¥0.0011 | 100/94 998 ms ¥0.0047 | 100/89 1130 ms（glm 89–92% 跨门槛线，仅兜底）
+    reply.stream:          {chain: [qwen-plus, deepseek, glm],    effort: low,    stream: true}       # 首字 100/98 900 ms ¥0.0003 | 100/98 1084 ms ¥0.0005 | 100/98 582 ms ¥0.0002（工具按成本判 glm 为主，人工不让智谱进主位：账号并发 4 即 429）
+    escalate.summary:      {chain: [qwen-flash, deepseek, glm-v], effort: low}                        # 100/100 648 ms ¥0.0001 | 100/100 899 ms ¥0.0006 | 100/100 723 ms
+    warranty.receipt_ocr:  {chain: [deepseek, qwen-vl, glm-v],    effort: low,    needs_vision: true} # 100/100 1218 ms ¥0.0027 | 100/100 3355 ms ¥0.0029 | 100/100 2958 ms（票 40 真实凭证四字段全对）
+    query.rewrite:         {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 128}    # 100/75 535 ms | 100/75 915 ms | 100/62 851 ms —— 三家全未达标且轮间摆动大（上一轮 qwen-flash 还是 100%），票 32 词表问题未解，默认关闭（config/retrieval.yaml）
+    retrieve.grade:        {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 256}    # 100/92 1193 ms ¥0.0002 | 100/100 1105 ms ¥0.0018 | 100/100 2135 ms。有界 RAG 阶段 5，默认关闭（retrieval.yaml grade.enabled）
+  overseas:
+    intake:                {chain: [haiku, sonnet],                     effort: low,    max_tokens: 1536}
+    disambiguate.clarify:  {chain: [haiku, sonnet],                     effort: low}
+    diagnose.vision:       {chain: [sonnet, gemini-flash],              effort: medium, needs_vision: true}
+    diagnose.synthesize:   {chain: [sonnet, gemini-flash],              effort: high}
+    guide.step:            {chain: [sonnet, haiku],                     effort: medium}
+    reply.stream:          {chain: [sonnet, haiku],                     effort: low,    stream: true}
+    escalate.summary:      {chain: [haiku, sonnet],                     effort: low}
+    warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],              effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [haiku, sonnet],                     effort: low,    max_tokens: 128}
+    retrieve.grade:        {chain: [haiku, sonnet],                     effort: low,    max_tokens: 256}
+
+  zhipu:
+    intake:                {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 1536}
+    disambiguate.clarify:  {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 256}
+    diagnose.vision:       {chain: [glm-v, qwen-vl, deepseek],         effort: medium, needs_vision: true}
+    diagnose.synthesize:   {chain: [glm-v, deepseek, qwen-max],        effort: high}
+    guide.step:            {chain: [glm, deepseek, qwen-max],          effort: medium}
+    reply.stream:          {chain: [glm, deepseek, qwen-plus],         effort: low,    stream: true}
+    escalate.summary:      {chain: [glm-v, deepseek, qwen-flash],      effort: low}
+    warranty.receipt_ocr:  {chain: [glm-v, qwen-vl, deepseek],         effort: low,    needs_vision: true}
+    query.rewrite:         {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 128}
+    retrieve.grade:        {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 256}
+
+# same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
+retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}
+# 全局同时进行的模型调用上限，满则立即返回 error(recoverable=true)（07 §13）
+concurrency: {max_in_flight: 50}

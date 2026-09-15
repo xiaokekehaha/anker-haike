@@ -1,12 +1,12 @@
-# RELEASE 20260915-61edb98
+# RELEASE 20260915-1b4e72c
 
-生成时间：2026-09-15T02:53:03Z　Git：61edb98（feat/memory-optimization-v2）
+生成时间：2026-09-15T04:03:29Z　Git：1b4e72c（feat/memory-optimization-v2）
 
 ## 冻结版本（04 §4）
 
 | 项 | 值 |
 | --- | --- |
-| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:20260915-61edb98`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
+| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:20260915-1b4e72c`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
 | prompt_ver | system 2026-09-14.1 / reply 2026-09-12.1 |
 | models.yaml | 2026-09-13.5（TBD / TODO 计数：0，须为 0 才能冻结，票 42） |
 | bake-off | models.yaml 2026-09-13.5，bakeoff.yaml 2026-09-12.1，repeats=3（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
@@ -15,12 +15,12 @@
 | actions_version | 2026-09-14.2 |
 | emotion_policy / symptom_taxonomy / vision_vocab | 2026-09-14.1 / 2026-09-14.2 / 2026-09-14.1 |
 | backends_mock seed | 2026-09-14.1 |
-| products / plans | 2026-09-12.1 / 2026-09-14.2 |
+| products / plans | 2026-09-12.1 / 2026-09-15.1 |
 | kb_ver | 2026-09-12.1+text-embedding-v4 |
 | WeKnora 镜像 tag | v0.8.0 |
 | 回放包清单 | a1_hair_wrap,a2_disambiguate,a3_receipt_channel,a4_logistics,a5_replacement,a6_human_approval,a7_multi_intent,a8_emotion |
 | 业务表迁移 head | 0007 |
-| config 快照 | `releases/20260915-61edb98/config/`（回滚用：`make rollback REL=<上一版>`） |
+| config 快照 | `releases/20260915-1b4e72c/config/`（回滚用：`make rollback REL=<上一版>`） |
 
 ## 灰度验证顺序（04 §4）
 
