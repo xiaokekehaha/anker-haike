@@ -2,7 +2,7 @@
 # 票 46：扫描仓库（已跟踪文件）与镜像里有没有真实密钥。用法：scripts/scan-secrets.sh [镜像名]
 set -uo pipefail
 cd "$(dirname "$0")/.."
-PAT='sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|glpat-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AIza[0-9A-Za-z_-]{35}'
+PAT='\bsk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|glpat-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AIza[0-9A-Za-z_-]{35}'
 rc=0
 echo "== git 跟踪文件"
 # 允许：测试用的占位串（sk-test-…）或行尾标注 scan-secrets:allow

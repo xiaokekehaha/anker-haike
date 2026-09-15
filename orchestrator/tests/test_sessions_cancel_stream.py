@@ -63,7 +63,6 @@ async def test_cancel_aborts_live_model_stream_without_retry(mem_runtime, tmp_pa
             # 等第一个 message delta 落库（模型流已开始）
             for _ in range(200):
                 await asyncio.sleep(0.02)
-                evs = await mem_runtime.list_events(sid, run_id=handle.run_id)
                 if slow.calls and not slow.finished:
                     break
             else:

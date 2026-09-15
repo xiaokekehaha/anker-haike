@@ -74,6 +74,6 @@ async def test_original_seven_turns_are_semantically_separated(mem_runtime, monk
     assert snapshot["version"] == 7
     assert sum(e["type"] == "input_received" for output in observed.values() for e in output) == 7
     # Fixture's relative timeline remains ordered, independent of local wall clock.
-    origin = datetime.fromisoformat(case["clock"].replace("Z", "+00:00"))
+    origin = datetime.fromisoformat(case["clock"])
     times = [origin + timedelta(seconds=i["after_seconds"]) for i in case["inputs"]]
     assert times == sorted(times)

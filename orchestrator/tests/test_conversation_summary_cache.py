@@ -7,17 +7,17 @@ from tests.test_conversation_inputs_pg import isolated_store  # noqa: F401
 
 
 def candidate(sid):
-    return dict(
-        session_id=sid,
-        summary_id="summary1",
-        through_seq=10,
-        source_context_revision=3,
-        source_entry_ids=["old-q", "old-a"],
-        text="完整原话",
-        generated_at=datetime.now(UTC).isoformat(),
-        status="active",
-        expires_at=(datetime.now(UTC) + timedelta(hours=1)).isoformat(),
-    )
+    return {
+        "session_id": sid,
+        "summary_id": "summary1",
+        "through_seq": 10,
+        "source_context_revision": 3,
+        "source_entry_ids": ["old-q", "old-a"],
+        "text": "完整原话",
+        "generated_at": datetime.now(UTC).isoformat(),
+        "status": "active",
+        "expires_at": (datetime.now(UTC) + timedelta(hours=1)).isoformat(),
+    }
 
 
 def test_extract_keeps_complete_qa_and_source_times():
@@ -69,5 +69,5 @@ async def test_memory_cache_cas_expiry_and_deleted_session():
     await exercise_cache(InMemorySessionStore())
 
 
-async def test_postgres_cache_cas_expiry_and_deleted_session(isolated_store):
+async def test_postgres_cache_cas_expiry_and_deleted_session(isolated_store):  # noqa: F811
     await exercise_cache(isolated_store)

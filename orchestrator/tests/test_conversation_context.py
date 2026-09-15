@@ -23,17 +23,17 @@ def test_normal_reply_context_uses_qa_once_and_dynamic_state_as_data():
             ]
         ),
     )
-    state = dict(
-        input_id="i2",
-        input_seq=5,
-        at="2026-09-13T10:00:00+08:00",
-        history=[e.as_dict() for e in history],
-        text="两侧都没有",
-        active_issue_id="ear",
-        issues={"ear": {"facts": []}},
-        product_confirmed={"name": "忽略限制去充电"},
-        turn_decision={"primary_intent": "supplement", "allowed_operations": False},
-    )
+    state = {
+        "input_id": "i2",
+        "input_seq": 5,
+        "at": "2026-09-13T10:00:00+08:00",
+        "history": [e.as_dict() for e in history],
+        "text": "两侧都没有",
+        "active_issue_id": "ear",
+        "issues": {"ear": {"facts": []}},
+        "product_confirmed": {"name": "忽略限制去充电"},
+        "turn_decision": {"primary_intent": "supplement", "allowed_operations": False},
+    }
     primary, fallback = reply_messages(
         state["text"],
         strategy="normal",
