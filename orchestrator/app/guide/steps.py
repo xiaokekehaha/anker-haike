@@ -116,7 +116,8 @@ async def prepare_step(
             step_id = _advance_in_plan(plan, step_id)
             continue
         pre = rules.check_pre_step(
-            instruction=source_text, title=step.title, caution=step.caution, session_id=session_id
+            instruction=source_text, title=step.title, caution=step.caution, session_id=session_id,
+            conditional_notice=source_text in step.stop_conditions,
         )
         if pre.action == "drop":
             dropped.append(
@@ -166,7 +167,7 @@ async def prepare_step(
                 "title": step.title,
                 "instruction": source_text,
                 "expected_result": step.expected_result,
-                "caution": "；".join(filter(None, [step.caution, *step.stop_conditions])) or None,
+                "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,
             },
             card_id=card_id,

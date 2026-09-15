@@ -49,6 +49,8 @@ ISSUE_FIELDS = {
     "exhausted_plans": [],
     "receipt": None,
     "vision_status": None,
+    "processed_fault_image_ids": [],
+    "visual_product": None,
     "visible_parts": [],
     "service_context": {}, "context_sources": {}, "policy_decision": None,
     "proposal": None, "case_id": None, "execution": None, "gate_result": None,

@@ -25,7 +25,8 @@ def _answer_codes(interview):
         return []
     # Recover old checkpoints whose `narrowed` flag was overwritten, using the
     # accepted answers and candidate set, not the stale presentation flag.
-    if not interview.get("answers") or len(interview.get("candidates", [])) != 1:
+    if not interview.get("answers") or (len(interview.get("candidates", [])) != 1
+            and not any(a.get("answer") == "selection" for a in interview["answers"])):
         return []
     return [
         f["symptom_code"]
@@ -140,7 +141,7 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
             break
         no_progress += 1
     if no_progress >= 2 or not interview.get("question"):
-        reason = "answers_unavailable" if no_progress >= 2 else "no_discriminating_question"
+        reason = "answers_unavailable" if no_progress >= 2 else "question_coverage_missing"
         return DiagnosticDecision(
             "escalate", [], reason, {**interview, "status": "insufficient", "question": None}, refs
         )

@@ -188,7 +188,7 @@ describe('图表与口径', () => {
   test('结局与规则号翻成人话', () => {
     expect(outcomeLabel('resolved')).toBe('已解决');
     expect(outcomeLabel('interrupted')).toBe('被打断');
-    expect(reasonText('R5')).toBe('知识库不可用');
+    expect(reasonText('R5')).toBe('没有适用排查方案');
     expect(reasonText(null)).toBe('—');
     expect(reasonText('R99')).toBe('R99');
   });

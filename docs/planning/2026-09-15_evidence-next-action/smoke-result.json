@@ -1,0 +1,255 @@
+[
+  {
+    "session_id": "c94ec80f2ce34aeeb8fec669186b99cf",
+    "input": "eufy X10 Pro Omni 不能正常工作",
+    "has_image": false,
+    "reply": "设备按电源后能正常启动吗？",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "c94ec80f2ce34aeeb8fec669186b99cf",
+    "input": "可以",
+    "has_image": false,
+    "reply": "是清扫或拖地的效果不好吗？",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "c94ec80f2ce34aeeb8fec669186b99cf",
+    "input": "效果不好",
+    "has_image": false,
+    "reply": "具体有哪些现象（可多选）？1．灰尘或颗粒吸不干净；2．拖地后仍有污渍或拖布异常。也可以描述其他现象，或回答不确定。",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "c94ec80f2ce34aeeb8fec669186b99cf",
+    "input": "两者都有",
+    "has_image": false,
+    "reply": "",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "tool_call",
+      "tool_call",
+      "progress",
+      "progress",
+      "issue_changed",
+      "evidence",
+      "evidence",
+      "pending_changed",
+      "step_card",
+      "awaiting_input",
+      "done"
+    ],
+    "tools": [
+      {
+        "name": "knowledge.search",
+        "status": "started",
+        "summary": "检索知识库"
+      },
+      {
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 10 条来源"
+      }
+    ],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "6ed7de363f484d4e98bec96b36a4e00a",
+    "input": "",
+    "has_image": true,
+    "reply": "请告诉我设备的品类，例如扫地机器人、吸奶器或充电宝；知道型号也可以一起提供。",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "tool_call",
+      "tool_call",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [
+      {
+        "name": "diagnose.vision",
+        "status": "started",
+        "summary": "识别 1 张故障照片"
+      },
+      {
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "照片质量不足（too_far），未调用识别模型"
+      }
+    ],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "6ed7de363f484d4e98bec96b36a4e00a",
+    "input": "有点问题",
+    "has_image": true,
+    "reply": "请告诉我设备的品类，例如扫地机器人、吸奶器或充电宝；知道型号也可以一起提供。",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "tool_call",
+      "tool_call",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [
+      {
+        "name": "diagnose.vision",
+        "status": "started",
+        "summary": "识别 1 张故障照片"
+      },
+      {
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "照片质量不足（too_far），未调用识别模型"
+      }
+    ],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "6ed7de363f484d4e98bec96b36a4e00a",
+    "input": "运行异响",
+    "has_image": false,
+    "reply": "请告诉我设备的品类，例如扫地机器人、吸奶器或充电宝；知道型号也可以一起提供。",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "6ed7de363f484d4e98bec96b36a4e00a",
+    "input": "x00001",
+    "has_image": false,
+    "reply": "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "issue_changed",
+      "message_start",
+      "message",
+      "message_end",
+      "done"
+    ],
+    "tools": [],
+    "reasons": [],
+    "errors": []
+  },
+  {
+    "session_id": "6ed7de363f484d4e98bec96b36a4e00a",
+    "input": "扫地机器人",
+    "has_image": false,
+    "reply": "",
+    "types": [
+      "run_started",
+      "input_received",
+      "progress",
+      "progress",
+      "progress",
+      "tool_call",
+      "tool_call",
+      "progress",
+      "progress",
+      "issue_changed",
+      "evidence",
+      "evidence",
+      "pending_changed",
+      "step_card",
+      "awaiting_input",
+      "done"
+    ],
+    "tools": [
+      {
+        "name": "knowledge.search",
+        "status": "started",
+        "summary": "检索知识库"
+      },
+      {
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 3 条来源"
+      }
+    ],
+    "reasons": [],
+    "errors": []
+  }
+]

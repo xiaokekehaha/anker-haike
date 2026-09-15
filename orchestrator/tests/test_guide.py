@@ -241,7 +241,7 @@ async def test_pre_step_r4_in_step_text_is_dropped(tmp_path):
 
 @pytest.mark.parametrize("next_confidence", [0.25, 0.5])
 async def test_motor_plan_warning_does_not_become_user_risk(monkeypatch, next_confidence):
-    """复现原会话：模型首选电机计划，手册的「焦味」只能丢弃步骤，不能写用户风险。"""
+    """已审核停止提醒原样发布；不制造风险，也不误报计划已耗尽。"""
     from app.sessions import graph
 
     monkeypatch.setattr(graph, "get_stream_writer", lambda: lambda event: None)
@@ -263,16 +263,11 @@ async def test_motor_plan_warning_does_not_become_user_risk(monkeypatch, next_co
     result = await graph.guide(state)
     assert not result.get("safety_flags")
     assert not result.get("turn_decision", {}).get("escalation_trigger")
-    assert result["guide_trace"][0] == {
-        "event": "step_dropped", "plan_id": "rv_suction_motor_fault",
-        "step_id": "s1", "reason": "safety_term_in_step:焦味",
-    }
-    if next_confidence == 0.25:
-        # 原会话的备选计划均低于现有切换门槛，仍走常规 R2，而不是虚构安全风险。
-        assert result["escalate_reason"] == "R2"
-    else:
-        assert result.get("escalate_reason") is None
-        assert result["pending_card"]["payload"]["step"]["plan_id"] == "rv_suction_dustbin_full"
+    assert result["guide_trace"][0]["event"] == "step_ready"
+    assert result.get("escalate_reason") is None
+    step = result["pending_card"]["payload"]["step"]
+    assert step["plan_id"] == "rv_suction_motor_fault"
+    assert step["instruction"] == LIB.evidence_snippet("evidence:manual_rv_v1#c30")
 
 
 async def test_evidence_outside_allowed_set_drops_step():

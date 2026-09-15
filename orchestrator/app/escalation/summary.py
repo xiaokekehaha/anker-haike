@@ -69,8 +69,13 @@ def build_summary(
         {f["term"] for f in flags if f.get("rule_id") == reason and f.get("term")}
     )
     reason_text = REASON_TEXT.get(reason, reason)
+    if reason == "R5" and (state.get("diagnostic_decision") or {}).get("reason") == "question_coverage_missing":
+        reason_text = "系统缺少适用的澄清问题，无法继续选择排查方案"
     if reason == "R7":
-        reason_text = {"product": "产品型号或品类仍未确认", "symptom": "当前故障信息不足，无法选择适用排查步骤", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
+        reason_text = {"product": "设备品类仍待确认", "symptom": "仍缺少选择适用步骤所需的故障现象", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
+        reason_text = {"answers_unavailable": "用户暂时无法确认所询问的故障现象",
+                       "question_coverage_missing": "系统缺少适用的澄清问题",
+                       "no_discriminating_question": "系统缺少适用的澄清问题"}.get((state.get("diagnostic_decision") or {}).get("reason"), reason_text)
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
@@ -107,7 +112,9 @@ def build_summary(
         emotion_track=state.get("emotion_track") or [],
         draft_reply="已整理订单与政策依据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
-        problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "（用户尚未描述问题）",
+        problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "；".join(
+            f"问：{a['question']}；用户回答：{a['quote']}" for a in (state.get("symptom_interview") or {}).get("answers", [])
+        ) or "（尚未记录具体故障现象）",
         observations=[*list(state.get("observations") or []), *[
             f"问：{a['question']}；用户回答：{a['quote']}"
             for a in (state.get("symptom_interview") or {}).get("answers", [])

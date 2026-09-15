@@ -21,7 +21,7 @@ from app.sessions.clarify import (
     fixed_question,
     make_question,
 )
-from tests.message_form import action_body, message_form, model_task_text
+from tests.message_form import action_body, message_form
 from tests.test_intake import fake_router
 
 
@@ -65,7 +65,7 @@ async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
         assert ev1[-1]["reason"] == "completed"  # 只结束本 run，会话未 solved
         s1 = await _state(sid)
         assert s1["product_state"] == "unknown" and s1["pending_card"] is None
-        assert s1["clarification"] == {
+        assert {k: s1["clarification"][k] for k in ("reason", "attempts", "asked_run_id")} == {
             "reason": "product",
             "attempts": 1,
             "asked_run_id": ev1[0]["run_id"],
@@ -130,8 +130,8 @@ async def test_three_product_states_written_and_in_summary(mem_runtime):
     assert summary["product"] == "未确认" and summary["reason"]["rule_id"] == "R7"
 
 
-async def test_clarify_text_from_model_task_and_fixed_fallback(mem_runtime, tmp_path):
-    """追问文案由 disambiguate.clarify 生成；失败用固定文案（验收项 4）。"""
+async def test_clarify_question_preserves_target_without_model_rewrite(mem_runtime, tmp_path):
+    """Question selection and wording share one authority; intake still uses the model."""
     intake_out = {
         "emotion_level": "calm",
         "product_hints": [],
@@ -144,12 +144,10 @@ async def test_clarify_text_from_model_task_and_fixed_fallback(mem_runtime, tmp_
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             events = await _send(client, sid, "机器不吸了")
-        assert _message_text(events) == "请问是哪一款设备不吸了？"
-        call = fake.calls[-1]
-        assert call["metadata"]["task"] == "disambiguate.clarify" and "internal" in call["tags"]
-        assert '本轮原话' in model_task_text(call)
+        assert _message_text(events) == FIXED_QUESTIONS["product"]
+        assert all(call["metadata"]["task"] != "disambiguate.clarify" for call in fake.calls)
         state = await _state(sid)
-        assert any(t["task"] == "disambiguate.clarify" for t in state["model_trace"])
+        assert state["clarification"]["question"] == _message_text(events)
     finally:
         set_model_router(None)
 
@@ -213,7 +211,7 @@ async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runti
             assert _message_text(ev1) == "设备按电源后能正常启动吗？"
             s1 = await _state(sid)
             assert s1["product_state"] == "confirmed_sku"  # 产品已定，只问症状
-            assert s1["clarification"] == {
+            assert {k: s1["clarification"][k] for k in ("reason", "attempts", "asked_run_id")} == {
                 "reason": "symptom",
                 "attempts": 1,
                 "asked_run_id": ev1[0]["run_id"],

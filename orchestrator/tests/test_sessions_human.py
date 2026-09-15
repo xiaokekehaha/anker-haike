@@ -221,4 +221,4 @@ async def test_request_human_on_fresh_session(mem_runtime):
         assert resp.status_code == 200
         events = sse.parse(resp.text)
     summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R3" and summary["problem"] == "（用户尚未描述问题）"
+    assert summary["reason"]["rule_id"] == "R3" and summary["problem"] == "（尚未记录具体故障现象）"

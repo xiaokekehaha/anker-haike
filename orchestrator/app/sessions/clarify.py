@@ -2,38 +2,33 @@
 
 路由只有三种处理结果：继续 / 澄清 / 升级，由后端根据状态与目录规则决定，不用模型自报置信度。
 
-- product_state：confirmed_sku（目录唯一命中或卡片选中）/ category_only（零命中但品类词明确，且有适用的
-  category_generic 预写计划）/ unknown（品类未定，只允许追问或升级）。
+- product_state：confirmed_sku（目录唯一命中或卡片选中）/ category_only（品类已知，方案覆盖另行判断）/ unknown（品类未定，只允许追问或升级）。
 - clarification = {reason: product | symptom | conflict, attempts, asked_run_id}：checkpoint 内部状态。
   每次实际发出问题记录 attempts；产品确认保留次数兜底，症状按有效答案和可区分问题决策。
   信息补齐并可进入合法流程后清零；同一未决问题换措辞、换 run 不重置。与排障 counters 分开计数。
-- 追问文案由 ModelRouter task=disambiguate.clarify 生成（tag=internal，结构化 {question}），失败用固定文案。
+- 追问采用确定性文案，记录实际问题与已有证据，新增有效信息会重算未进展次数。
 - 澄清阶段不生成新步骤、不检索、不改写查询；run 以 done(completed) 结束但会话不算 solved。
 """
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.queue import CapacityExceeded
-from app.models.router import ModelInvokeError, ModelRouter
+from app.models.router import ModelRouter
 from app.prompts import compose_system_prompt, wrap_data
 from app.prompts.system import state_layer
 from app.sessions.cards import get_catalog, get_plans
 
-log = logging.getLogger("sessions.clarify")
-
 Reason = Literal["product", "symptom", "conflict"]
 MAX_CLARIFICATIONS = 2  # R7：连续澄清 2 次并收到回答后仍不明 → 升级
 CLARIFY_BUDGET_MS = 4000
-CLARIFY_PROMPT_VERSION = "2026-09-14.2"
+CLARIFY_PROMPT_VERSION = "2026-09-15.1"
 
 FIXED_QUESTIONS: dict[str, str] = {
-    "product": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1 Pro 吸奶器」。",
+    "product": "请告诉我设备的品类，例如扫地机器人、吸奶器或充电宝；知道型号也可以一起提供。",
     "symptom": "请具体描述一下故障现象：是吸力变弱、无法启动、有异响，还是其他情况？",
     "conflict": "您之前确认的是 {confirmed}，这次提到的是 {mentioned}，请问需要排查的是哪一台？",
 }
@@ -92,6 +87,17 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                 if category:
                     break
     update: dict[str, Any] = {}
+    visual = state.get("visual_product") or {}
+    expected = clar.get("expected_category")
+    response = text.strip("。！! ")
+    if not category and expected and clar.get("question"):
+        if response in {"是", "是的", "对"}:
+            category = expected
+            update["visual_product"] = None
+        elif response in {"不是", "不是的", "不对"}:
+            visual = {}
+            update["visual_product"] = None
+            clar = {}
     if abandoned_card:
         # 用户对产品卡片未选而改发文本：卡片已由 intake 作废；这里只留观察记录（次数已在出卡时计入）
         update["observations"] = [
@@ -134,8 +140,8 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
             confirmed = cands[0]
         else:
             update["product_candidates"] = []
-            # 用户放弃卡片、原文含品类词、或历史线索含品类词 → category_only（前提：该品类有通用计划）
-            if category and get_plans().allowed_for(category=category):
+            # 用户放弃卡片、原文含品类词、或历史线索含品类词 → category_only；方案覆盖不影响品类事实
+            if category and category in catalog.categories:
                 spec = catalog.categories.get(category)
                 update.update(
                     {
@@ -145,18 +151,14 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                         "out_of_scope": bool(spec is not None and not spec.in_scope),
                     }
                 )
-            elif (
-                category
-                and category in catalog.categories
-                and not catalog.categories[category].in_scope
-            ):
-                # 品类明确但本期不支持（吸奶器 / 充电宝……）→ 范围外子流程 out_of_scope → escalate(R8)（票 25）
-                update.update(
-                    {"product_state": "category_only", "category": category, "out_of_scope": True}
-                )
             else:
                 update["product_state"] = "unknown"
-                return _clarify(clar, "product", update, unmatched_hints=hints)
+                visual_category = visual.get("category")
+                spec = catalog.categories.get(visual_category)
+                return _clarify(clar, "product", update, unmatched_hints=hints,
+                                known_symptoms=sorted(set(state.get("symptom_codes") or state.get("symptoms") or [])),
+                                expected_category=visual_category if spec else None,
+                                category_name=spec.name if spec else None)
 
     if update.get("out_of_scope"):
         return Decision("continue", update)
@@ -179,10 +181,11 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     if decision.interview is None:
         return _clarify(clar, "symptom", update)
     if decision.outcome == "escalate":
-        update.update(escalate_reason="R7", symptom_interview=decision.interview,
+        coverage_missing = decision.reason == "question_coverage_missing"
+        update.update(escalate_reason="R5" if coverage_missing else "R7", symptom_interview=decision.interview,
                       clarification={**clar, "reason": "symptom", "resolved": False},
                       observations=[*state.get("observations", []),
-                                    "当前故障信息仍不足，无法选择适用的排查步骤"])
+                                    "系统缺少适用的澄清问题" if coverage_missing else "用户暂时无法确认所询问的故障现象"])
         return Decision("escalate", update, "symptom")
     # Product clarification budget is separate from useful symptom questions.
     update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0)}
@@ -196,7 +199,13 @@ def _clarify(
     clar: dict[str, Any], reason: Reason, update: dict[str, Any], **detail: Any
 ) -> Decision:
     """attempts ≥ MAX 且这是对上一问的回答 → R7；否则再问一次（attempts 在真正发问时 +1）。"""
-    attempts = int(clar.get("attempts") or 0) if clar.get("reason") == reason else 0
+    # A budget belongs to an actual question about the same evidence. Legacy
+    # counters lack that binding and cannot prove the user was asked this field.
+    subject = {"reason": reason, "unmatched_hints": detail.get("unmatched_hints", []),
+               "known_symptoms": detail.get("known_symptoms", []),
+               "expected_category": detail.get("expected_category"),
+               "confirmed": detail.get("confirmed"), "mentioned": detail.get("mentioned")}
+    attempts = int(clar.get("attempts") or 0) if clar.get("question") and clar.get("subject") == subject else 0
     if attempts >= MAX_CLARIFICATIONS:
         update.update(
             {
@@ -204,22 +213,26 @@ def _clarify(
                 "clarification": {**clar, "reason": reason, "resolved": False},
                 "observations": [
                     *(update.get("observations") or []),
-                    f"R7：连续 {attempts} 次澄清（{clar.get('reason') or reason}）并收到回答后仍无法确认",
+                    f"R7：已就同一信息发出 {attempts} 次澄清，仍缺少继续处理所需的信息；最近问题：{clar['question']}",
                 ],
             }
         )
         return Decision("escalate", update, reason)
-    update["clarification"] = {"reason": reason, "attempts": attempts}
+    update["clarification"] = {"reason": reason, "attempts": attempts, "subject": subject,
+                               "expected_category": detail.get("expected_category")}
     return Decision("clarify", update, reason, detail)
 
 
-def count_attempt(state_clar: dict[str, Any] | None, reason: Reason, run_id: str) -> dict[str, Any]:
+def count_attempt(state_clar: dict[str, Any] | None, reason: Reason, run_id: str,
+                  *, question: str | None = None, input_id: str | None = None) -> dict[str, Any]:
     """真正发出一次澄清（文字追问或产品卡片）时调用：attempts + 1，记录发问的 run。"""
     clar = dict(state_clar or {})
     return {
+        **(clar if clar.get("reason") == reason else {}),
         "reason": reason,
         "attempts": (int(clar.get("attempts") or 0) if clar.get("reason") == reason else 0) + 1,
         "asked_run_id": run_id,
+        **({"question": question, "question_id": f"{input_id}:{reason}", "asked_input_id": input_id} if question else {}),
     }
 
 
@@ -253,6 +266,8 @@ def _lookup(catalog, text: str, hints: list[str]) -> list[dict[str, Any]]:
 def fixed_question(reason: str, detail: dict[str, Any]) -> str:
     if detail.get("discriminator"):
         return detail["discriminator"]["question"]
+    if reason == "product" and detail.get("expected_category"):
+        return f"照片中的设备看起来是{detail['category_name']}，请确认是这个品类吗？"
     if reason == "product" and detail.get("unmatched_hints"):
         return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
     if reason == "symptom":
@@ -313,38 +328,5 @@ async def make_question(
     lane: str,
     budget_ms: int = CLARIFY_BUDGET_MS,
 ) -> QuestionOutcome:
-    fallback = fixed_question(reason, detail)
-    if detail.get("discriminator"):
-        # The persisted partition defines this question; extra choices change its meaning.
-        return QuestionOutcome(fallback, "fixed")
-    if router is None:
-        return QuestionOutcome(fallback, "skipped")
-    try:
-        res = await router.invoke(
-            "disambiguate.clarify",
-            build_messages(reason, text, strategy=strategy, summary=summary, detail=detail),
-            ClarifyQuestion,
-            budget_ms=budget_ms,
-            session_id=session_id,
-            lane=lane,
-        )
-    except (ModelInvokeError, CapacityExceeded) as exc:
-        log.warning("clarify question degraded session=%s reason=%s", session_id, str(exc)[:200])
-        return QuestionOutcome(
-            fallback,
-            "fixed",
-            {"task": "disambiguate.clarify", "model_used": "skipped", "lane": lane, "attempts": 1},
-        )
-    q = res.parsed.question.strip()
-    if detail.get("discriminator") and not q.endswith(detail["discriminator"]["question"]):
-        q = fallback
-    return QuestionOutcome(
-        q or fallback,
-        res.model_used,
-        {
-            "task": "disambiguate.clarify",
-            "model_used": res.model_used,
-            "lane": res.lane,
-            "attempts": max(1, len(res.attempts)),
-        },
-    )
+    # Preserve the existing async call signature for callers and historical tooling.
+    return QuestionOutcome(fixed_question(reason, detail), "fixed")

@@ -81,7 +81,8 @@ class HistoryRequest(BaseModel):
 class SymptomAnswer(BaseModel):
     model_config = ConfigDict(extra="forbid")
     question_id: str
-    answer: Literal["yes", "no", "unknown"]
+    answer: Literal["yes", "no", "unknown", "selection"]
+    selected_families: list[str] = Field(default_factory=list)
     quote: str
 
 
@@ -170,7 +171,15 @@ async def interpret_turn(router, state: dict, *, lane: str):
             feedback=(action.get("payload") or {}).get("feedback"),
         )
         return meaning, {"source": "validated_action", "source_entry_ids": [state["input_id"]]}
-    from app.conversation.l3_intents import symptom_question_answer
+    current = next((e for e in state.get("history", []) if e["entry_id"] == state.get("input_id")), {})
+    payload = current.get("payload") or {}
+    if not state.get("text", "").strip() and payload.get("image_ids") and payload.get("purpose", "fault") == "fault":
+        return TurnInterpretation(primary_intent="report_problem", device_relation="current"), {"source": "image_input"}
+    from app.conversation.l3_intents import product_question_answer, symptom_question_answer
+
+    product_answer = product_question_answer(state)
+    if product_answer is not None:
+        return product_answer, {"source": "product_question"}
 
     answer = symptom_question_answer(state)
     if answer is not None:
@@ -186,6 +195,7 @@ async def interpret_turn(router, state: dict, *, lane: str):
 
     candidates = [f["symptom_code"] for f in taxonomy()["families"]][:60]
     instruction = INSTRUCTION + "\n症状码仅从候选中选，无法匹配留空：" + ",".join(candidates)
+    instruction += "\n当前症状问题 kind=symptom_selection 时，根据本轮原话选择 options 中明确符合的 value，填 symptom_answer.answer=selection 和 selected_families；可以多选，不把未选项认定为不存在。不能确定时用 unknown。其他新现象仍按逐字原话提取 facts。"
     try:
         bundle = build_context(
             entries,

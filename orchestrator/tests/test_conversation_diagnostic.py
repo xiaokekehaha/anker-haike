@@ -175,10 +175,10 @@ def test_exhausted_discriminators_have_explicit_reason():
         )
         if iid == "a":
             interview = next_interview(interview, "issue", "b")
-    # No more discriminators exist for this branch: stop with an accurate reason,
-    # not merely because two questions were asked.
+    # Missing hand-written discriminators lead to a direct symptom selection.
     result = decide_symptoms({"category": "robot_vacuum", "symptom_interview": interview})
-    assert result.reason == "no_discriminating_question"
+    assert result.outcome == "clarify"
+    assert result.interview["question"]["kind"] == "symptom_selection"
 
 
 @pytest.mark.usefixtures("l3_runtime")

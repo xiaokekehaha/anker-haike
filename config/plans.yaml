@@ -1,7 +1,7 @@
 # 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，操作原样发布 instruction_src，停止条件独立展示。
 # next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
 # evidence 段是票 26/27 接入 WeKnora 前的证据索引占位：doc_id#chunk_id 与 WeKnora 入库元数据保持一致。
-version: 2026-09-15.1
+version: 2026-09-15.2
 
 evidence:
   troubleshooting_rv#e1: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 确认基站电源灯亮，触点无灰尘。}
@@ -65,11 +65,12 @@ plans:
 
   - plan_id: rv_suction_motor_fault
     symptom_codes: [abnormal_noise]
-    version: 1
+    version: 2
     fault: 风机 / 电机故障（异响、焦味或过热）
     applies_to: {scope: category_generic, category: robot_vacuum}
     steps:
       - {step_id: s1, title: 确认是否有异响或过热, instruction_src: evidence:manual_rv_v1#c30, expected_result: 确认现象后停止使用，等待人工处理,
+         stop_conditions: [若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。],
          caution: 有焦味或过热时请立即关机，不要继续排查, next_on: {solved: EXHAUSTED, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: rv_power_supply

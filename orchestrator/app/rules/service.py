@@ -209,14 +209,19 @@ class RulesService:
 
     # ---- CP-pre-step（09 §1；票 34）----
     def check_pre_step(
-        self, *, instruction: str, title: str = "", caution: str | None, session_id: str | None = None
+        self, *, instruction: str, title: str = "", caution: str | None, session_id: str | None = None,
+        conditional_notice: bool = False,
     ) -> PreStepResult:
         """步骤命中安全词或无 caution 的高危动作时丢弃；步骤文字不是用户风险事实。"""
         if self._hot:
             self.reload_if_changed()
         norm = _norm(f"{title} {instruction}")
         for rid, term, nterm in self._text_index:
-            if rid == "R4" and nterm and nterm in norm:
+            # Only the approved plan library can mark the entire source as a
+            # stop condition. A quoted safety notice is not a reported risk or
+            # an instruction to operate a dangerous device. Action checks below
+            # still apply; model-generated text cannot grant this exemption.
+            if not conditional_notice and rid == "R4" and nterm and nterm in norm:
                 log.info(
                     "rule_hit checkpoint=cp_pre_step rule_id=R4 source=step term=%s action=drop session=%s",
                     term,

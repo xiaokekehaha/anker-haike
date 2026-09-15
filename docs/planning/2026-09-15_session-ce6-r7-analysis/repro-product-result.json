@@ -1,0 +1,20 @@
+{
+  "session_id": "9db433aece2d47378f9ce8bbeb0701e4",
+  "before": {
+    "outcome": "escalate",
+    "reason": "product",
+    "attempts": 2
+  },
+  "correct_count_only": {
+    "outcome": "clarify",
+    "fallback_question": "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
+  },
+  "hypothetical_verified_category_only": {
+    "outcome": "continue",
+    "product_state": "category_only",
+    "symptom_codes": [
+      "abnormal_noise"
+    ],
+    "applicable_noise_plan_count": 1
+  }
+}

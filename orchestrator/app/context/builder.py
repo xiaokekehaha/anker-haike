@@ -130,6 +130,7 @@ def build_context(
         product=state.get("product_confirmed"),
         decision=state.get("turn_decision"),
         symptom_interview=state.get("symptom_interview"),
+        clarification=state.get("clarification"),
     )
     from app.conversation.business import BusinessContext
     authority["business_subject"] = BusinessContext.restore(state).projection()

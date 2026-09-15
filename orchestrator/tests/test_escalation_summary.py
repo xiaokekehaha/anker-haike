@@ -96,7 +96,7 @@ async def test_safety_first_message_full_chain(mem_runtime):
     summ = next(e for e in events if e["type"] == "escalation_summary")
     s = EscalationSummary.model_validate(summ["summary"])
     assert s.receipt.status == "not_collected" and s.reason.rule_id == "R4"
-    assert s.problem == "（用户尚未描述问题）"  # 本测试的业务 fixture 不抽取事实；风险候选仍阻止操作
+    assert s.problem == "（尚未记录具体故障现象）"  # 本测试的业务 fixture 不抽取事实；风险候选仍阻止操作
     assert any(
         t.task == "escalate.summary_polish" and t.model_used == "skipped" for t in s.model_trace
     )

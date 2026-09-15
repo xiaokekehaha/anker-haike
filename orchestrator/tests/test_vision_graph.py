@@ -361,7 +361,5 @@ async def test_photo_contradicting_the_text_asks_before_diagnosing(
     conflicts = state["fault_localization"]["conflicts_with_text"]
     assert conflicts == ["您提到的是滤网，但照片里看到问题的是滚刷（缠绕）"]
     assert state["clarification"]["reason"] == "conflict"
-    said = " ".join(
-        e.get("text", "") for e in events if e["type"] in {"message_delta", "message_end"}
-    )
-    assert "滤网" in said or "滚刷" in said, f"应当把差异说给用户听：{[e['type'] for e in events]}"
+    said = " ".join(e.get("delta", "") for e in events if e["type"] == "message")
+    assert "图片与文字描述存在差异" in said and "滚刷" in said, f"应当把差异说给用户听：{said!r}"

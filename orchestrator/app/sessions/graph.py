@@ -155,6 +155,8 @@ class SessionState(TypedDict, total=False):
     first_visible_ms: int | None
     # 票 29：图片引用 {image_id, purpose, sha256, mime, size, created_at, run_id}，跨 run 累积；字节只在 session_images
     image_refs: list[dict[str, Any]]
+    processed_fault_image_ids: list[str]
+    visual_product: dict[str, Any] | None
     # 票 32：诊断。retrieval_trace 用 reducer 追加（读图节点与检索写不同字段，不覆盖）；
     # plans_ranked [{plan_id, version, confidence, evidence_ids, source}]；rewrite_used 为本 run 是否已用掉补检索名额
     retrieval_trace: Annotated[list[dict[str, Any]], operator.add]
@@ -256,6 +258,9 @@ async def disambiguate(state: SessionState) -> SessionState:
     """
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "disambiguate"})
+    if _new_fault_images(state):
+        # Evidence may resolve the very prerequisite this decision is checking.
+        return {"stage": "disambiguate", "_decision": {"outcome": "read_images"}}
     decision = clarify_mod.decide(dict(state), abandoned_card=state.get("abandoned_card"))
     update: SessionState = {"stage": "disambiguate", "abandoned_card": None, **decision.update}
     from app.actions.runtime import get_services
@@ -275,6 +280,8 @@ def route_after_reply(state: SessionState) -> str:
 
 def route_after_disambiguate(state: SessionState) -> str:
     decision = state.get("_decision") or {}
+    if decision.get("outcome") == "read_images":
+        return "vision"
     if decision.get("outcome") == "escalate" or state.get("escalate_reason"):
         return "escalate"
     if decision.get("outcome") == "clarify":
@@ -315,7 +322,8 @@ async def clarify(state: SessionState) -> SessionState:
     ]
     return {
         "clarification": clarify_mod.count_attempt(
-            state.get("clarification"), reason, state.get("run_id", "")
+            state.get("clarification"), reason, state.get("run_id", ""),
+            question=out.text, input_id=state.get("input_id"),
         ),
         **({"symptom_interview": detail["symptom_interview"]} if detail.get("symptom_interview") else {}),
         "visible_messages": msgs,
@@ -341,11 +349,20 @@ def _after_product(state: SessionState) -> str:
 
 
 def _new_fault_images(state: SessionState) -> list[dict[str, Any]]:
+    """Unconsumed evidence belonging to this issue, including earlier turns."""
     run_id = state.get("run_id", "")
+    issue_id = state.get("active_issue_id")
+    processed = set(state.get("processed_fault_image_ids") or [])
+    # Old checkpoints have no issue_id on refs; resolve ownership from history.
+    owned = {image_id for entry in state.get("history", [])
+             if issue_id and entry.get("issue_id") == issue_id
+             for image_id in (entry.get("payload") or {}).get("image_ids", [])}
     return [
         r
         for r in state.get("image_refs") or []
-        if r.get("run_id") == run_id and r.get("purpose", "fault") == "fault"
+        if r.get("purpose", "fault") == "fault" and r["image_id"] not in processed
+        and (r.get("issue_id") == issue_id if r.get("issue_id") else
+             r.get("run_id") == run_id or r["image_id"] in owned)
     ]
 
 
@@ -380,6 +397,11 @@ async def vision(state: SessionState) -> SessionState:
         "stage": "diagnose",
         "substage": "vision",
         "vision_status": out.status,
+        # Attempts are consumed even on failure; a new upload can retry without
+        # replaying the same unavailable evidence on every subsequent text turn.
+        "processed_fault_image_ids": list(dict.fromkeys([
+            *state.get("processed_fault_image_ids", []), *[r["image_id"] for r in refs],
+        ])),
         "image_observations": list(out.observations),
         "visible_parts": [*state.get("visible_parts", []), *out.visible_parts],
         "model_trace": [
@@ -387,6 +409,10 @@ async def vision(state: SessionState) -> SessionState:
             *([out.model_trace] if out.model_trace else []),
         ],
     }
+    if out.status == "ok" and state.get("product_state") != "confirmed_sku":
+        categories = {get_catalog().category_hint(o) for o in out.observations} - {None}
+        if len(categories) == 1:
+            update["visual_product"] = {"category": categories.pop(), "image_ids": out.used_image_ids}
     if out.fault_localization is not None:
         # 注意：不要在这里写 fault_card_hits —— 那个键存的是检索给出的 chunk_id，
         # 而签名映射给的是 plan_id，两种语义混在一个键里。签名先验真正的消费点在 retrieve
@@ -416,9 +442,12 @@ async def vision(state: SessionState) -> SessionState:
                     "model hint not auto-confirmed session=%s hint=%r candidates=%d verified=%s",
                     session_id, hint, len(candidates), verified,
                 )
-                update["product_hints"] = list(
-                    dict.fromkeys([*state.get("product_hints", []), hint])
-                )
+                # Unverified OCR must not bypass confirmation through the
+                # normal text-hint lookup on the next disambiguation pass.
+                update["visual_product"] = {
+                    **(update.get("visual_product") or {}),
+                    "model_hint": hint, "image_ids": out.used_image_ids,
+                }
     if out.status == "unusable":
         # 像素层硬阈值判定不可用：一次模型都没调，直接走补拍（阶段 3）
         quality = (out.fault_localization or {}).get("image_quality", {})
@@ -539,8 +568,16 @@ def route_after_vision(state: SessionState) -> str:
         if (state.get('fault_localization') or {}).get('conflicts_with_text'):
             return 'vision_conflict'
         if (state.get('image_quality') or {}).get('usable') is False and not state.get('retake_skipped'):
+            catalog = get_catalog()
+            identity_texts = [state.get("text", ""), *state.get("product_hints", [])]
+            if not state.get("category") and not state.get("product_confirmed") and not any(
+                catalog.category_hint(text) or catalog.lookup_product(text) for text in identity_texts
+            ):
+                # Product identity can be supplied in text. Do not force a
+                # fault-photo retake before knowing which device is involved.
+                return "disambiguate"
             return 'prepare_retake'
-    return "escalate" if state.get("escalate_reason") else "retrieve"
+    return "escalate" if state.get("escalate_reason") else "disambiguate"
 
 
 async def prepare_card(state: SessionState) -> SessionState:
@@ -885,6 +922,8 @@ async def understand(state: SessionState) -> SessionState:
         business_order_no=business_order_no,
         new_business_subject=requested_business is not None and requested_business.status == "missing",
     )
+    if context.get("source") == "product_question":
+        update["turn_decision"]["product_answered"] = True
     update["l3_route"] = None
     if update["turn_decision"].get("business_switched") and state.get("requested_remedy") and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"}:
         update["requested_remedy"] = state["requested_remedy"]
@@ -952,7 +991,7 @@ async def understand(state: SessionState) -> SessionState:
         ]
         update["image_refs"] = [
             *state.get("image_refs", []),
-            *[dict(ref, run_id=state["run_id"]) for ref in source.get("images", [])],
+            *[dict(ref, run_id=state["run_id"], issue_id=update["active_issue_id"]) for ref in source.get("images", [])],
         ]
     receipt_ids = source.get("image_ids", []) if source.get("purpose") == "receipt" else []
     if (
@@ -1109,7 +1148,7 @@ def route_entry(state: SessionState) -> str:
         return "escalate"
     if decision.get("business_ambiguous"):
         return "dialogue"
-    if decision.get("symptom_answered"):
+    if decision.get("symptom_answered") or decision.get("product_answered"):
         return "disambiguate"
     if decision.get("business_switched"):
         return "service_context"
@@ -1147,6 +1186,9 @@ def route_entry(state: SessionState) -> str:
                 return "dialogue"
             return "disambiguate"
     if decision.get("reply_mode") in {"dialogue", "clarify"}:
+        if (decision.get("primary_intent") in {"report_problem", "supplement", "unknown", "answer_pending"}
+                and decision.get("allowed_operations", True) and _new_fault_images(state)):
+            return "disambiguate"
         return "dialogue"
     if (state.get("emotion") or {}).get(
         "strategy", "normal"
@@ -2363,7 +2405,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("vision_conflict",durable_node(l3.vision_conflict))
     g.add_edge("vision_conflict","commit_issue")
     g.add_conditional_edges(
-        "vision", route_after_vision, {"retrieve": "retrieve", "escalate": "escalate", "prepare_retake":"prepare_retake", "vision_conflict":"vision_conflict"}
+        "vision", route_after_vision, {"disambiguate": "disambiguate", "escalate": "escalate", "prepare_retake":"prepare_retake", "vision_conflict":"vision_conflict"}
     )
     g.add_node("reassure", durable_node(reassure))
     g.add_node("clarify", durable_node(clarify))

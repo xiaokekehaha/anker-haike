@@ -74,9 +74,22 @@ def interview_answer(interview, answer, text, input_id):
     if any(a["input_id"] == input_id for a in answers):
         return interview, False
     candidates = interview["candidates"]
+    selected = []
+    if question.get("kind") == "symptom_selection":
+        allowed = {o["value"] for o in question["options"]}
+        selected = list(dict.fromkeys(answer.selected_families))
+        if answer.answer == "unknown" and selected:
+            return interview, False
+        if answer.answer != "unknown" and (answer.answer != "selection" or not selected or not set(selected) <= allowed):
+            return interview, False
+        if selected:
+            candidates = selected
+    elif answer.answer == "selection":
+        return interview, False
     if answer.answer in {"yes", "no"}:
         candidates = [f for f in candidates if f in question["splits"][answer.answer]]
-    answers.append({"key": question["key"], "question": question["question"], "answer": answer.answer, "quote": answer.quote, "input_id": input_id})
+    answers.append({"key": question["key"], "question": question["question"], "answer": answer.answer, "quote": answer.quote, "input_id": input_id,
+                    **({"selected_families": selected} if selected else {})})
     return {**interview, "candidates": candidates, "answers": answers, "question": None,
             "status": "narrowed" if len(candidates) == 1 else "asking"}, True
 
@@ -87,6 +100,14 @@ def next_interview(interview, issue_id, input_id):
     if current.get("taxonomy_version") != cfg["version"]:
         current = {"taxonomy_version": cfg["version"], "candidates": [f["fault_family"] for f in cfg["families"]], "answers": [], "status": "asking"}
     question = select_discriminator(current["candidates"], [a["key"] for a in current["answers"]])
+    if not question and current["candidates"]:
+        # Missing hand-written branches are a configuration limitation, not a
+        # failed answer. Ask directly about the remaining observed symptoms.
+        labels = {"吸力下降": "灰尘或颗粒吸不干净", "拖地异常": "拖地后仍有污渍或拖布异常"}
+        options = [{"value": f, "label": labels.get(f, f)} for f in current["candidates"]]
+        text = "具体有哪些现象（可多选）？" + "；".join(f"{i}．{o['label']}" for i, o in enumerate(options, 1)) + "。也可以描述其他现象，或回答不确定。"
+        question = {"kind": "symptom_selection", "question": text, "options": options,
+                    "key": hashlib.sha256(text.encode()).hexdigest()[:12]}
     if question:
         current["question"] = {**question, "question_id": f"{issue_id}:{input_id}:{question['key']}"}
     else:

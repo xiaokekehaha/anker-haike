@@ -1,6 +1,5 @@
 /** 只读时间线：直接消费快照，不复用聊天端组件（那些组件绑定会话状态与交互，
  *  管理端只要看，且要与聊天端解耦，互不影响改动）。 */
-import { reasonText } from '../format';
 import type { Snapshot, TimelineItem } from '../types';
 
 export function ReadonlyTimeline({ snapshot }: { snapshot: Snapshot | null }) {
@@ -104,7 +103,7 @@ function Row({ item }: { item: TimelineItem }) {
           <h4>升级摘要</h4>
           <div className="meta">
             {item.summary.product} · {item.summary.problem}<br />
-            原因：{item.summary.reason.rule_id} {reasonText(item.summary.reason.rule_id)} · {item.summary.reason.text}
+            原因：{item.summary.reason.rule_id} · {item.summary.reason.text}
           </div>
         </div>
       );

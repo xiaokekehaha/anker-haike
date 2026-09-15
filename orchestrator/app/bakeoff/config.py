@@ -13,7 +13,7 @@ from app.settings import CONFIG_DIR
 DEFAULT_PATH = CONFIG_DIR / "bakeoff.yaml"
 TEXT_TASKS = (
     "intake",
-    "disambiguate.clarify",
+    # Deterministic clarification no longer ranks model candidates.
     "diagnose.synthesize",
     "reply.stream",
     "escalate.summary",

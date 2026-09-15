@@ -35,8 +35,8 @@ export function outcomeRole(outcome: string): Role {
 /** 升级原因（规则号）→ 人话。R3/R4/R8 属政策，不计入「系统没解决」。 */
 export const REASON_TEXT: Record<string, string> = {
   R1: '步骤走完仍未解决', R1b: '步骤走完仍未解决', R1c: '步骤走完仍未解决',
-  R2: '用户明确表示做不到', R3: '用户要求人工', R4: '安全风险',
-  R5: '知识库不可用', R7: '多次澄清仍不明确', R8: '不在支持范围',
+  R2: '适用步骤已耗尽', R3: '用户要求人工', R4: '安全风险',
+  R5: '没有适用排查方案', R7: '继续处理所需信息待确认', R8: '不在支持范围',
   solved: '用户确认解决', plan_done: '计划执行完毕',
   server_restarted: '服务重启打断', node_failed: '节点异常',
   deadline_exceeded: '超过时限', no_checkpoint: '数据已过保留期',

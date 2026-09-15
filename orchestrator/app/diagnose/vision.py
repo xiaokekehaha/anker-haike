@@ -32,7 +32,7 @@ log = logging.getLogger("diagnose.vision")
 TASK = "diagnose.vision"
 VISION_BUDGET_MS = 12_000  # 含图轮 run deadline 40 s（08 §8），读图给 12 s
 DEFAULT_MAX_IMAGES = 4
-VISION_PROMPT_VERSION = "2026-09-15.2"
+VISION_PROMPT_VERSION = "2026-09-15.3"
 NO_VISION_TEXT = (
     "当前暂时无法识别图片，请用文字描述一下照片里的情况（例如哪个部件、什么现象），我继续为您排查。"
 )
@@ -100,6 +100,7 @@ def _instruction() -> str:
     return (
         "你正在查看用户上传的设备故障照片。只写图片里直接可见的内容。\n"
         "第一步 observations：先写出你在照片里看见的事实，每条不超过 20 字，最多 5 条。"
+        "设备整体可辨认时写出设备品类；只有局部部件时保留部件描述，不猜整机品类。"
         "出现冒烟 / 烧焦 / 电池鼓包 / 漏液 / 火花时，在这一步里中文与英文关键词各写一次"
         "（如「烧焦 burnt」「鼓包 swollen battery」）。\n"
         "第二步 findings：只依据第一步写下的事实填写，每条给出 part / phenomenon / evidence / cell。\n"
