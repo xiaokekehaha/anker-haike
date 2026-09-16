@@ -1,7 +1,7 @@
 # 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，操作原样发布 instruction_src，停止条件独立展示。
 # next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
 # evidence 段是票 26/27 接入 WeKnora 前的证据索引占位：doc_id#chunk_id 与 WeKnora 入库元数据保持一致。
-version: 2026-09-15.2
+version: 2026-09-16.1
 
 evidence:
   troubleshooting_rv#e1: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 确认基站电源灯亮，触点无灰尘。}
@@ -75,20 +75,43 @@ plans:
 
   - plan_id: rv_power_supply
     symptom_codes: [power_failure, charging_failure]
-    version: 1
+    version: 2
     fault: 无法启动或充电时的基站供电与充电检查
     applies_to: {scope: category_generic, category: robot_vacuum}
     steps:
       - step_id: s1
         title: 检查基站供电与触点
         instruction_src: evidence:troubleshooting_rv#e1
-        expected_result: 设备恢复正常充电和启动；若仍未恢复请反馈未解决
+        expected_result: 得到基站电源灯与触点的状态；检查正常不等于整机已恢复，设备恢复正常时可直接反馈已解决
         caution: 只观察外部状态，不拆开设备或处理带电接线
         stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
         next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}
+        observations:
+          - observation_id: dock_power_light
+            question: 基站电源灯亮吗？
+            options:
+              - {option_id: light_on, label: 电源灯亮, phrases: [灯亮, 灯是亮的, 电源灯亮着, 有亮]}
+              - {option_id: light_off, label: 电源灯不亮, phrases: [灯不亮, 不亮, 没亮, 电源灯没亮]}
+              - {option_id: unknown, label: 还没观察 / 无法判断, kind: unknown}
+          - observation_id: dock_contacts
+            question: 基站与主机的充电触点状态如何？
+            options:
+              - {option_id: clean, label: 触点干净, phrases: [触点干净, 触点没灰, 触点正常]}
+              - {option_id: dirty_cleaned, label: 触点有灰尘或异物，已清理, phrases: [有灰, 有灰尘, 已清理, 擦干净了]}
+              - {option_id: unknown, label: 还没观察 / 无法判断, kind: unknown}
       - step_id: s2
         title: 放回基站观察充电
         instruction_src: evidence:troubleshooting_rv#e2
-        expected_result: 设备恢复正常充电和启动；仍不能使用时结束本流程并联系售后
+        expected_result: 记录 5 分钟内是否出现充电提示；设备恢复正常充电和启动时反馈已解决
         stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}
+        observations:
+          - observation_id: charging_indication
+            question: 放回基站后有充电提示（指示灯或语音）吗？
+            options:
+              - {option_id: indicated, label: 有充电提示，但仍无法启动, phrases: [有充电提示, 有提示, 在充电, 显示充电, 亮了充电灯]}
+              - {option_id: none, label: 没有充电提示, phrases: [没有充电提示, 没提示, 没有提示, 不充电, 没充上, 没反应]}
+              - {option_id: unknown, label: 还没观察完 / 无法判断, kind: unknown}
+            interview_links:
+              - question: 放回基站后，设备有正常的充电指示或充电语音吗？
+                answers: {'yes': indicated, 'no': none}

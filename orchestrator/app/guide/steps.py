@@ -174,6 +174,7 @@ async def prepare_step(
                 "expected_result": step.expected_result,
                 "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,
+                "observations": _open_observations(step, state, library),
             },
             card_id=card_id,
             plan_cursor={
@@ -186,6 +187,25 @@ async def prepare_step(
             evidence=published_evidence,
         )
     return StepPrep("exhausted", dropped=dropped)
+
+
+def _open_observations(step: PlanStep, state: dict[str, Any], library: PlanLibrary) -> list[dict[str, Any]]:
+    """步骤声明的观察中，用户尚未明确提供结果的那些（design §4：用户明确提供的结果不重复问）。"""
+    if not step.observations:
+        return []
+    from app.diagnose.observations import known_observations
+
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    known = known_observations(issue, state.get("symptom_interview"), library)
+    return [
+        {
+            "observation_id": o.observation_id,
+            "question": o.question,
+            "options": [{"option_id": x.option_id, "label": x.label, "kind": x.kind} for x in o.options],
+        }
+        for o in step.observations
+        if o.observation_id not in known
+    ]
 
 
 def step_no_of(plan: Plan, step_id: str) -> int:

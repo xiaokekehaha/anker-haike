@@ -6,7 +6,7 @@ from typing import Annotated, Literal, get_args
 
 from pydantic import Field, TypeAdapter
 
-from haike_contracts.common import Feedback, ReceiptFields, Strict
+from haike_contracts.common import Feedback, ObservationAnswer, ReceiptFields, Strict
 
 ActionKind = Literal[
     "select_product",
@@ -31,6 +31,8 @@ class SelectProductPayload(Strict):
 class StepFeedbackPayload(Strict):
     feedback: Feedback
     note: str | None = None
+    # 步骤声明了 observations 时可携带的检查结果；未携带保持 unknown，不会被写成阴性
+    observations: list[ObservationAnswer] = Field(default_factory=list)
 
 
 class ConfirmReceiptPayload(Strict):

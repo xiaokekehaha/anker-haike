@@ -100,3 +100,44 @@ describe('StepCard 的读图回显', () => {
     expect(container.querySelector('[data-kind="vision-echo"]')).toBeNull();
   });
 });
+
+describe('StepCard 的观察结果（design §3.1）', () => {
+  const observed = (over: Partial<StepCardItem> = {}): StepCardItem => item({
+    step: step({
+      plan_id: 'rv_power_supply', title: '放回基站观察充电',
+      observations: [{
+        observation_id: 'charging_indication', question: '放回基站后有充电提示（指示灯或语音）吗？',
+        options: [
+          { option_id: 'indicated', label: '有充电提示，但仍无法启动', kind: 'finding' },
+          { option_id: 'none', label: '没有充电提示', kind: 'finding' },
+          { option_id: 'unknown', label: '还没观察完 / 无法判断', kind: 'unknown' },
+        ],
+      }],
+    }),
+    ...over,
+  });
+
+  it('只反馈三态时不携带观察：未选择保持未知，不会被记成阴性', () => {
+    const onFeedback = vi.fn();
+    render(<StepCard item={observed()} active onFeedback={onFeedback} />);
+    expect(screen.getByText('放回基站后有充电提示（指示灯或语音）吗？')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '还没解决' }));
+    expect(onFeedback).toHaveBeenCalledWith('not_solved', undefined);
+  });
+
+  it('选择观察选项后随反馈一起提交 observation_id / option_id', () => {
+    const onFeedback = vi.fn();
+    render(<StepCard item={observed()} active onFeedback={onFeedback} />);
+    fireEvent.click(screen.getByLabelText('没有充电提示'));
+    fireEvent.click(screen.getByRole('button', { name: '还没解决' }));
+    expect(onFeedback).toHaveBeenCalledWith('not_solved', undefined, [{ observation_id: 'charging_indication', option_id: 'none' }]);
+  });
+
+  it('已回答的卡片显示记录到的观察结果', () => {
+    const { container } = render(
+      <StepCard item={observed({ feedback: 'not_solved', observation_answers: [{ observation_id: 'charging_indication', option_id: 'none' }] })} active onFeedback={vi.fn()} />,
+    );
+    expect(container.querySelector('[data-kind="observation-recorded"]')).toHaveTextContent('放回基站后有充电提示（指示灯或语音）吗？没有充电提示');
+    expect(screen.queryByRole('radio')).toBeNull();
+  });
+});

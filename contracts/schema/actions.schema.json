@@ -391,6 +391,26 @@
       "title": "NewIssueAction",
       "type": "object"
     },
+    "ObservationAnswer": {
+      "additionalProperties": false,
+      "description": "用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。",
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "option_id"
+      ],
+      "title": "ObservationAnswer",
+      "type": "object"
+    },
     "RateSatisfactionAction": {
       "additionalProperties": false,
       "properties": {
@@ -881,6 +901,13 @@
           ],
           "default": null,
           "title": "Note"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/ObservationAnswer"
+          },
+          "title": "Observations",
+          "type": "array"
         }
       },
       "required": [

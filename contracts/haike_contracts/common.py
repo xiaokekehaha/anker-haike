@@ -94,6 +94,27 @@ class ProductCandidate(Strict):
     in_scope: bool
 
 
+class ObservationOption(Strict):
+    option_id: str
+    label: str
+    kind: Literal["finding", "unknown"] = "finding"
+
+
+class StepObservation(Strict):
+    """步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。"""
+
+    observation_id: str
+    question: str
+    options: list[ObservationOption] = Field(min_length=2)
+
+
+class ObservationAnswer(Strict):
+    """用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。"""
+
+    observation_id: str
+    option_id: str
+
+
 class TroubleshootStep(Strict):
     """step_card 的唯一层级：step 对象（08 §5）。"""
 
@@ -106,6 +127,8 @@ class TroubleshootStep(Strict):
     expected_result: str
     caution: str | None = None
     evidence_ids: list[str] = Field(default_factory=list)
+    # 可选：需要判别结果的步骤声明其观察问题；旧客户端忽略该字段仍可只反馈三态
+    observations: list[StepObservation] = Field(default_factory=list)
 
 
 class EvidenceItem(Strict):
@@ -139,11 +162,14 @@ class ExecutedStep(Strict):
     step_id: str
     title: str
     feedback: Feedback
+    observed: list[str] = Field(default_factory=list, description="该步骤记录到的观察结果（选项文字）")
 
 
 class EscalationReason(Strict):
     rule_id: str
     text: str
+    # 真实结束原因；rule_id 只是兼容 / 观测层的映射
+    cause: str | None = None
 
 
 class ModelTraceItem(Strict):

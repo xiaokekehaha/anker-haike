@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 from pydantic import ValidationError
 
-from app.plans.models import Plan, PlansConfig, plan_json_schema
+from app.plans.models import Plan, PlansConfig, StepObservation, plan_json_schema
 
 
 class PlansError(RuntimeError):
@@ -47,6 +47,29 @@ def load_plans_config(path: str | Path) -> PlansConfig:
                 problems.append(
                     f"{plan.plan_id}.{step.step_id}.instruction_src -> {step.instruction_src!r} not in evidence index"
                 )
+    # 观察条件必须指向某个计划步骤声明过的观察与选项，否则永远无法满足或排除
+    declared: dict[str, set[str]] = {}
+    for plan in cfg.plans:
+        for obs in plan.observations():
+            ids = declared.setdefault(obs.observation_id, set())
+            if ids and ids != {o.option_id for o in obs.options}:
+                problems.append(
+                    f"observation {obs.observation_id} declared with different options in {plan.plan_id}"
+                )
+            ids.update(o.option_id for o in obs.options)
+    for plan in cfg.plans:
+        for field in ("requires_observations", "excluded_by_observations"):
+            for cond in getattr(plan, field):
+                if cond.observation_id not in declared:
+                    problems.append(
+                        f"{plan.plan_id}.{field} -> observation {cond.observation_id!r} is not declared by any step"
+                    )
+                    continue
+                unknown = sorted(set(cond.option_ids) - declared[cond.observation_id])
+                if unknown:
+                    problems.append(
+                        f"{plan.plan_id}.{field} -> {cond.observation_id} has no option {unknown}"
+                    )
     if problems:
         raise PlansError(path, problems)
     return cfg
@@ -108,3 +131,11 @@ class PlanLibrary:
 
     def evidence_snippet(self, instruction_src: str) -> str:
         return self.evidence[instruction_src.removeprefix("evidence:")].snippet
+
+    def observation_definitions(self) -> dict[str, StepObservation]:
+        """全部计划声明过的观察，按 observation_id 去重（库加载时已校验同名定义选项一致）。"""
+        out: dict[str, StepObservation] = {}
+        for plan in self._plans.values():
+            for obs in plan.observations():
+                out.setdefault(obs.observation_id, obs)
+        return out

@@ -188,6 +188,10 @@ class SessionState(TypedDict, total=False):
     card_ready_ms: int | None
     guide_trace: Annotated[list[dict[str, Any]], operator.add]
     _verify: dict[str, Any] | None
+    # design §3.2：统一下一动作决策的快照（kind / reason / compat_rule / question），问题内持久；
+    # observation_requests 为已向用户追问过的观察 {observation_id, plan_id, input_id, status}
+    next_action: dict[str, Any] | None
+    observation_requests: list[dict[str, Any]]
 
 
 def _delay() -> float:
@@ -759,6 +763,8 @@ def route_after_apply(state: SessionState) -> str:
     verify = state.get("_verify")
     if verify:
         # 票 35：step_feedback 的判定——继续 → guide 出下一张卡；票 36：solved / DONE → close 结束语 → done(completed)
+        if verify["outcome"] == "ask":
+            return "ask_observation"
         return "guide" if verify["outcome"] == "next" else "close"
     return _after_product(state)
 
@@ -776,8 +782,53 @@ def _apply_step_feedback(
     note = payload.get("note") or None
     card_id = pc.get("card_id", "")
     session_id = state.get("session_id", "")
-    results[card_id] = {"feedback": feedback, **({"note": note} if note else {})}
+    step = (pc.get("payload") or {}).get("step") or {}
+    # 观察答案只接受本张卡片步骤声明过的观察；旧卡 / 其他步骤的选项不写入事实
+    declared = {o["observation_id"]: o for o in step.get("observations") or []}
+    observations = [
+        {"observation_id": o["observation_id"], "option_id": o["option_id"]}
+        for o in payload.get("observations") or []
+        if o.get("observation_id") in declared
+        and any(opt["option_id"] == o.get("option_id") for opt in declared[o["observation_id"]]["options"])
+    ]
+    results[card_id] = {
+        "feedback": feedback,
+        **({"note": note} if note else {}),
+        **({"observations": observations} if observations else {}),
+    }
     update: SessionState = {"stage": "verify", "substage": None, "card_results": results, "unresolved_turns": 0 if feedback == "solved" else (state.get("unresolved_turns") or 0) + 1}
+    if observations:
+        import copy
+
+        from app.diagnose.observations import record_observations
+
+        issues = copy.deepcopy(state.get("issues") or {})
+        issue_id = state.get("active_issue_id")
+        if issue_id in issues:
+            issue, patches = record_observations(
+                issues[issue_id],
+                observations,
+                definitions=get_plan_library().observation_definitions(),
+                input_id=state["input_id"],
+                at=state["at"],
+                source_kind="step_feedback",
+                binding={
+                    "card_id": card_id,
+                    "plan_id": step.get("plan_id"),
+                    "plan_version": step.get("plan_version"),
+                    "step_id": step.get("step_id"),
+                },
+            )
+            if patches:
+                issues[issue_id] = issue
+                update.update(
+                    {
+                        "issues": issues,
+                        "observations": list(dict.fromkeys([*state.get("observations", []), *issue["observations"]])),
+                        "context_revision": state.get("context_revision", 0) + 1,
+                    }
+                )
+        state = {**state, **update}
     cp = get_rules_service().check_in(
         action_kind="step_feedback", action_note=note, session_id=session_id
     )
@@ -799,8 +850,21 @@ def _apply_step_feedback(
         )
         return update
     out = apply_feedback(
-        state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library()
+        state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library(),
+        observations=observations,
     )
+    if out.outcome == "next" and out.plan_cursor:
+        # 新事实使当前计划不再适用 → 不继续该计划，进入重新评估
+        from app.diagnose.observations import known_observations, known_option_ids
+
+        issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+        known = known_option_ids(known_observations(issue, state.get("symptom_interview"), get_plan_library()))
+        if get_plan_library().get(out.plan_cursor["plan_id"]).observation_gate(known)[0] == "excluded":
+            out = exhaust_plan(
+                dict(state), out.plan_cursor["plan_id"], counters=out.counters,
+                executed=out.steps_executed, exhausted=out.exhausted_plans,
+            )
+            out.trace = {**out.trace, "rule": "excluded_by_observation"}
     log.info(
         "cp_verify session=%s card=%s feedback=%s outcome=%s rule=%s counters=%s",
         session_id,
@@ -841,7 +905,122 @@ def _apply_step_feedback(
     )
     if out.outcome == "escalate":
         update["escalate_reason"] = out.escalate_reason
+    if out.outcome == "reassess":
+        update.update(_apply_next_action({**state, **update}, feedback=feedback))
     return update
+
+
+def _apply_next_action(state: SessionState, *, feedback: str | None = None) -> SessionState:
+    """把 decide_next 的决策投影到图状态（design §3.2）：
+
+    step → plan_cursor + _verify(next)；ask → _verify(ask) 与待发布问题；resolved → _verify(done)；
+    handoff_offer / safety_stop → escalate_reason 取兼容规则码，真实原因保存在 next_action。
+    """
+    from app.diagnose.decision import decide_next
+
+    action = decide_next(dict(state), library=get_plan_library())
+    snapshot = action.snapshot(state)
+    log.info(
+        "next_action session=%s kind=%s reason=%s",
+        state.get("session_id"),
+        action.kind,
+        action.reason,
+        extra={"event": "next_action", "session_id": state.get("session_id"), **{k: v for k, v in snapshot.items() if k != "trace"}},
+    )
+    trace_entry = {"event": "reassess", "feedback": feedback, "kind": action.kind, "reason": action.reason, **action.trace}
+    update: SessionState = {"next_action": snapshot, "guide_trace": [trace_entry]}
+    if action.kind == "step":
+        update.update(
+            {
+                "plan_cursor": action.plan_cursor,
+                "_verify": {
+                    "outcome": "next",
+                    "rule": "switch_plan",
+                    "switched_to": action.plan_cursor["plan_id"],
+                },
+                "guide_trace": [
+                    trace_entry,
+                    {"event": "verify", "feedback": feedback, "outcome": "next", "rule": "switch_plan",
+                     "confidence": action.trace.get("confidence")},
+                    *[{"event": "step_dropped", **d} for d in action.trace.get("skipped_steps") or []],
+                ],
+            }
+        )
+    elif action.kind == "ask":
+        update.update({"plan_cursor": None, "_verify": {"outcome": "ask", "rule": action.reason}})
+    elif action.kind == "resolved":
+        update.update({"plan_cursor": None, "_verify": {"outcome": "done", "rule": action.reason}})
+    else:
+        rule = action.compat_rule or "R2"
+        update.update(
+            {
+                "plan_cursor": None,
+                "escalate_reason": rule,
+                "_verify": {"outcome": "escalate", "rule": rule, "cause": action.reason},
+            }
+        )
+    return update
+
+
+async def reassess(state: SessionState) -> SessionState:
+    """自由文本补上观察结果（或明确无法提供）后，依据更新后的事实重新决定下一动作。"""
+    get_stream_writer()({"type": "progress", "stage": "guide"})
+    update: SessionState = {"stage": "guide", "substage": None, "_verify": None}
+    update.update(_apply_next_action({**state, **update}))
+    return update
+
+
+def route_after_reassess(state: SessionState) -> str:
+    verify = state.get("_verify") or {}
+    if state.get("escalate_reason"):
+        return "escalate"
+    return {"next": "guide", "ask": "ask_observation", "done": "close"}.get(verify.get("outcome"), "dialogue")
+
+
+def observation_question_text(question: dict[str, Any]) -> str:
+    labels = "／".join(o["label"] for o in question.get("options", []))
+    if int(question.get("attempt", 1)) > 1:
+        return (
+            f"再确认一下：{question['question']}可以直接回复其中一项：{labels}。"
+            "如果确实无法判断，回复“无法判断”即可，我会按现有信息整理记录。"
+        )
+    return f"{question['question']}请直接回复其中一项：{labels}。这个结果会决定后续排查路径。"
+
+
+async def ask_observation(state: SessionState) -> SessionState:
+    """向用户追问一个会改变后续处理的观察结果（design §3.3 第 4 步）。固定文案，不调模型。"""
+    from app.conversation.reduce import stable_id
+
+    question = (state.get("next_action") or {}).get("question") or {}
+    writer = get_stream_writer()
+    writer({"type": "progress", "stage": "guide", "substage": "await_observation"})
+    message_id = stable_id(state.get("input_id"), "ask_observation", question.get("observation_id"))
+    text = observation_question_text(question)
+    writer({"type": "message_start", "message_id": message_id, "issue_id": state.get("active_issue_id"), "reply_to_input_id": state.get("input_id")})
+    writer({"type": "message", "message_id": message_id, "delta": text})
+    writer({"type": "message_end", "message_id": message_id, "status": "completed"})
+    msgs = [*(state.get("visible_messages") or []), {"message_id": message_id, "kind": "ask_observation", "text": text, "model_tier": None}]
+    requests = [
+        *(state.get("observation_requests") or []),
+        {
+            "observation_id": question.get("observation_id"),
+            "plan_id": question.get("plan_id"),
+            "issue_id": state.get("active_issue_id"),
+            "input_id": state.get("input_id"),
+            "asked_at": state.get("at"),
+            "status": "asked",
+            "attempt": question.get("attempt", 1),
+        },
+    ]
+    return {
+        "stage": "guide",
+        "substage": "await_observation",
+        "pending_card": None,
+        "plan_cursor": None,
+        "visible_messages": msgs,
+        "observation_requests": requests,
+        "guide_trace": [{"event": "ask_observation", "observation_id": question.get("observation_id")}],
+    }
 
 
 # ---------------- 票 25：范围外 R8 与 request_human ----------------
@@ -1148,6 +1327,8 @@ def route_entry(state: SessionState) -> str:
         return "receipt_extract"
     if decision.get("escalation_trigger"):
         return "escalate"
+    if decision.get("observation_answered") or decision.get("observation_attempted"):
+        return "reassess"
     if decision.get("business_ambiguous"):
         return "dialogue"
     if decision.get("symptom_answered") or decision.get("product_answered"):
@@ -1880,7 +2061,12 @@ def _diagnose_outcome(
         }
     available = [p for p in plans_ranked if p["plan_id"] not in exhausted_plans]
     if not available:
-        return {"diagnose_outcome": {"mode": "escalate", "reason": "R2"}, "escalate_reason": "R2", "plan_cursor": None}
+        return {
+            "diagnose_outcome": {"mode": "escalate", "reason": "R2"},
+            "escalate_reason": "R2",
+            "plan_cursor": None,
+            "next_action": {"kind": "handoff_offer", "reason": "no_supported_followup", "compat_rule": "R2"},
+        }
     first = available[0]
     mode = (
         "standard_flow"
@@ -1919,10 +2105,17 @@ def route_after_retrieve(state: SessionState) -> str:
 
 
 async def guide(state: SessionState) -> SessionState:
-    if "prefer_proposal_over_more_steps" in state.get("emotion_actions", []) and (state.get("counters") or {}).get("executed",0) >= 2:
-        return {"escalate_reason":"R2","pending_card":None}
     """排障引导（票 34，03 §1.5）：取 plan_cursor 步骤 → 去重 / 证据校验 / CP-pre-step → 已审核原文发布
-    → pending_card(kind=step_feedback)；随后 await_input 发 step_card。当前计划剩余步骤全被丢弃 → 切换计划或 R2。"""
+    → pending_card(kind=step_feedback)；随后 await_input 发 step_card。当前计划剩余步骤全被丢弃 → 标记耗尽，
+    由 decide_next 决定切换 / 追问 / 人工出口（design §3.2）。"""
+    if "prefer_proposal_over_more_steps" in state.get("emotion_actions", []) and (state.get("counters") or {}).get("executed",0) >= 2:
+        # 情绪动作：用户不愿继续逐步排查。对外仍映射 R2，真实原因单独记录。
+        return {
+            "escalate_reason": "R2",
+            "pending_card": None,
+            "next_action": {"kind": "handoff_offer", "reason": "burden_prefer_proposal", "compat_rule": "R2",
+                            "issue_id": state.get("active_issue_id"), "input_id": state.get("input_id")},
+        }
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "guide"})
     session_id = state.get("session_id", "")
@@ -2001,34 +2194,54 @@ async def guide(state: SessionState) -> SessionState:
             if prep.model_trace:
                 update["model_trace"] = [*state.get("model_trace", []), prep.model_trace]
             return update
-        # exhausted：本计划没有可下发的步骤 → 09 §3.4 切换或 R2
+        # exhausted：本计划没有可下发的步骤 → 标记耗尽，依据事实重新决策
         cursor = work.get("plan_cursor") or {}
-        out = exhaust_plan(work, cursor.get("plan_id", ""), library=get_plan_library())
+        out = exhaust_plan(work, cursor.get("plan_id", ""))
         trace.append({"event": "plan_exhausted", "plan_id": cursor.get("plan_id"), **out.trace})
         work.update(
             {
-                "plan_cursor": out.plan_cursor,
+                "plan_cursor": None,
                 "counters": out.counters,
                 "exhausted_plans": out.exhausted_plans,
             }
         )
-        if out.outcome == "escalate":
-            update.update(
-                {
-                    "escalate_reason": out.escalate_reason,
-                    "plan_cursor": None,
-                    "counters": out.counters,
-                    "exhausted_plans": out.exhausted_plans,
-                    "guide_trace": trace,
-                }
-            )
+        decided = _apply_next_action(work)
+        trace += decided.pop("guide_trace", [])
+        work.update(decided)
+        update.update(
+            {
+                "counters": out.counters,
+                "exhausted_plans": out.exhausted_plans,
+                "next_action": decided.get("next_action"),
+                "plan_cursor": decided.get("plan_cursor"),
+                "guide_trace": trace,
+            }
+        )
+        if decided.get("escalate_reason"):
+            update.update({"escalate_reason": decided["escalate_reason"], "_verify": decided.get("_verify")})
             return update
-    update.update({"escalate_reason": "R2", "plan_cursor": None, "guide_trace": trace})
+        if (decided.get("_verify") or {}).get("outcome") == "ask":
+            update.update({"_verify": decided.get("_verify")})
+            return update
+        if (decided.get("_verify") or {}).get("outcome") == "done":
+            update.update({"_verify": decided.get("_verify")})
+            return update
+        # step：换到新计划游标，继续循环准备卡片
+    update.update({"escalate_reason": "R2", "plan_cursor": None, "guide_trace": trace,
+                   "next_action": {"kind": "handoff_offer", "reason": "no_supported_followup", "compat_rule": "R2",
+                                   "issue_id": state.get("active_issue_id"), "input_id": state.get("input_id")}})
     return update
 
 
 def route_after_guide(state: SessionState) -> str:
-    return "escalate" if state.get("escalate_reason") else "await_input"
+    if state.get("escalate_reason"):
+        return "escalate"
+    verify = state.get("_verify") or {}
+    if verify.get("outcome") == "ask":
+        return "ask_observation"
+    if verify.get("outcome") == "done":
+        return "close"
+    return "await_input"
 
 
 # ---------------- 票 36：A1 完成——结束语与 done(completed) ----------------
@@ -2215,7 +2428,7 @@ async def summarize(state: SessionState) -> SessionState:
     session_id = state.get("session_id", "")
     run_id = state.get("run_id", "")
     message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:reassure").hex
-    text = reassurance_text(reason)
+    text = reassurance_text(reason, dict(state))
     if not state.get("summary_refresh"):
         writer({"type": "message_start", "message_id": message_id})
         writer({"type": "message", "message_id": message_id, "delta": text})
@@ -2415,6 +2628,13 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("clarify", durable_node(clarify))
     g.add_node("out_of_scope", durable_node(out_of_scope))
     g.add_node("guide", durable_node(guide))
+    g.add_node("reassess", durable_node(reassess))
+    g.add_node("ask_observation", durable_node(ask_observation))
+    g.add_edge("ask_observation", "commit_issue")
+    g.add_conditional_edges(
+        "reassess", route_after_reassess,
+        {"guide": "guide", "ask_observation": "ask_observation", "close": "close", "escalate": "escalate", "dialogue": "dialogue"},
+    )
     g.add_node("close", durable_node(close))
     g.add_node("advance_tasks",durable_node(l3.advance_tasks))
     g.add_conditional_edges("advance_tasks",l3.route,{target:target for target in ("consult","service_context","disambiguate","await_input","commit_issue")})
@@ -2430,6 +2650,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "apply_action": "apply_action",
             "dialogue": "dialogue",
             "receipt_extract": "receipt_extract",
+            "reassess": "reassess",
         },
     )
     g.add_edge("out_of_scope", "escalate")
@@ -2463,6 +2684,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "out_of_scope": "out_of_scope",
             "guide": "guide",
             "close": "close",
+            "ask_observation": "ask_observation",
         },
     )
     g.add_conditional_edges(
@@ -2470,7 +2692,8 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     )
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(
-        "guide", route_after_guide, {"await_input": "await_input", "escalate": "escalate"}
+        "guide", route_after_guide,
+        {"await_input": "await_input", "escalate": "escalate", "ask_observation": "ask_observation", "close": "close"},
     )
     g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

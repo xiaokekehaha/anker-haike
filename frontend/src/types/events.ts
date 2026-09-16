@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: aab3242e2d68362ccd2faed1df60e9fc011fc0482406f42845a4f2c2e8cb701f
+// SHA-256: 7fe74240c0a34e1e53db57961310a4fdbf280a688b3c829507905327d81a8ab4
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -214,6 +214,16 @@ export type Caution = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
 export type Instruction = string;
+export type ObservationId = string;
+/**
+ * @minItems 2
+ */
+export type Options = [ObservationOption, ObservationOption, ...ObservationOption[]];
+export type Kind = 'finding' | 'unknown';
+export type Label = string;
+export type OptionId = string;
+export type Question = string;
+export type Observations = StepObservation[];
 export type PlanId = string;
 export type PlanVersion = number;
 export type StepId = string;
@@ -258,7 +268,7 @@ export type CardId4 = string;
 export type EventId15 = string;
 export type InputToken = string;
 export type IssueId7 = string | null;
-export type Kind =
+export type Kind1 =
   | 'select_product'
   | 'step_feedback'
   | 'upload_receipt'
@@ -312,12 +322,13 @@ export type Lane = string;
 export type ModelUsed = string;
 export type Task = string;
 export type ModelTrace = ModelTraceItem[];
-export type Observations = string[];
+export type Observations1 = string[];
 export type PolicyDecisionBrief = {
   [k: string]: unknown;
 } | null;
 export type Problem = string;
 export type Product = string;
+export type Cause = string | null;
 export type RuleId = string;
 export type Text = string;
 export type Conflicts = string[];
@@ -344,12 +355,16 @@ export type CostBearer = ('company' | 'customer' | 'shared') | null;
 export type Action = 'replacement.create';
 export type ActionsVersion = string;
 export type WorkingDays = number;
-export type OptionId = string;
+export type OptionId1 = string;
 export type Remedy = 'repair' | 'replace' | 'refund' | 'none';
 export type Source1 = 'policy' | 'human';
 export type Title1 = string;
 export type RecommendedOptions = ProposalOption[];
 export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
+/**
+ * 该步骤记录到的观察结果（选项文字）
+ */
+export type Observed = string[];
 export type StepId1 = string;
 export type Title2 = string;
 export type Steps = ExecutedStep[];
@@ -400,7 +415,7 @@ export type CardId7 = string;
 export type DecisionSummary = string;
 export type EventId20 = string;
 export type IssueId10 = string | null;
-export type Options = ProposalOption[];
+export type Options1 = ProposalOption[];
 export type PolicyVersion1 = string;
 export type RecordedAt20 = string;
 export type Retry = boolean;
@@ -750,11 +765,32 @@ export interface TroubleshootStep {
   evidence_ids?: EvidenceIds;
   expected_result: ExpectedResult;
   instruction: Instruction;
+  observations?: Observations;
   plan_id: PlanId;
   plan_version: PlanVersion;
   step_id: StepId;
   step_no: StepNo;
   title: Title;
+}
+/**
+ * 步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "StepObservation".
+ */
+export interface StepObservation {
+  observation_id: ObservationId;
+  options: Options;
+  question: Question;
+}
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "ObservationOption".
+ */
+export interface ObservationOption {
+  kind?: Kind;
+  label: Label;
+  option_id: OptionId;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -821,7 +857,7 @@ export interface AwaitingInput {
   event_id: EventId15;
   input_token: InputToken;
   issue_id?: IssueId7;
-  kind: Kind;
+  kind: Kind1;
   recorded_at: RecordedAt15;
   run_id: RunId15;
   seq: Seq15;
@@ -862,7 +898,7 @@ export interface EscalationSummary {
   gate_result?: GateResult | null;
   hypotheses?: Hypotheses;
   model_trace?: ModelTrace;
-  observations?: Observations;
+  observations?: Observations1;
   policy_decision_brief?: PolicyDecisionBrief;
   problem: Problem;
   product: Product;
@@ -913,6 +949,7 @@ export interface ModelTraceItem {
  * via the `definition` "EscalationReason".
  */
 export interface EscalationReason {
+  cause?: Cause;
   rule_id: RuleId;
   text: Text;
 }
@@ -941,7 +978,7 @@ export interface ProposalOption {
   conditions?: Conditions;
   cost_bearer?: CostBearer;
   dispatch_estimate?: DispatchEstimate | null;
-  option_id: OptionId;
+  option_id: OptionId1;
   remedy: Remedy;
   source?: Source1;
   title: Title1;
@@ -988,6 +1025,7 @@ export interface DispatchEstimate {
  */
 export interface ExecutedStep {
   feedback: Feedback;
+  observed?: Observed;
   step_id: StepId1;
   title: Title2;
 }
@@ -1055,7 +1093,7 @@ export interface ProposalCardEvent {
   decision_summary: DecisionSummary;
   event_id: EventId20;
   issue_id?: IssueId10;
-  options: Options;
+  options: Options1;
   policy_version: PolicyVersion1;
   recorded_at: RecordedAt20;
   retry?: Retry;

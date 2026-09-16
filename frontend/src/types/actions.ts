@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 9a04cb8529014fc3bebb231330339ae9c35b18b3202bee7b0e8af38b14457670
+// SHA-256: dd1172505be137c81a6cd68f79e545e50f507fd26c3d104b23e7715562d6ad55
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -39,6 +39,9 @@ export type InputToken1 = string;
 export type Kind1 = 'step_feedback';
 export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
 export type Note = string | null;
+export type ObservationId = string;
+export type OptionId = string;
+export type Observations = ObservationAnswer[];
 export type TargetIssueId1 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -108,7 +111,7 @@ export type CardId6 = string;
 export type ExpectedVersion8 = number;
 export type InputToken6 = string;
 export type Kind8 = 'confirm_proposal';
-export type OptionId = string;
+export type OptionId1 = string;
 export type TargetIssueId8 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -191,6 +194,17 @@ export interface StepFeedbackAction {
 export interface StepFeedbackPayload {
   feedback: Feedback;
   note?: Note;
+  observations?: Observations;
+}
+/**
+ * 用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "ObservationAnswer".
+ */
+export interface ObservationAnswer {
+  observation_id: ObservationId;
+  option_id: OptionId;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -326,7 +340,7 @@ export interface ConfirmProposalAction {
  * via the `definition` "ConfirmProposalPayload".
  */
 export interface ConfirmProposalPayload {
-  option_id: OptionId;
+  option_id: OptionId1;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema

@@ -14,6 +14,7 @@ from haike_contracts.common import (
     EvidenceItem,
     Feedback,
     ModelTier,
+    ObservationAnswer,
     PendingInput,
     ProductCandidate,
     ProposalOption,
@@ -114,6 +115,7 @@ class StepCardItem(TimelineRecord):
     seen: str | None = None  # 读图结果的隐式确认，见 events.StepCard.seen
     feedback: Feedback | None = None
     note: str | None = None
+    observation_answers: list[ObservationAnswer] = Field(default_factory=list)
 
 
 class ReceiptCardItem(TimelineRecord):

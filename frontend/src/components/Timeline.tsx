@@ -54,7 +54,7 @@ export function Timeline({ state, onAction, onIssueAction }: Props) {
           case 'product_card':
             return <ProductCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onSelect={(sku) => onAction('select_product', { sku })} />;
           case 'step_card':
-            return <StepCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onHover={setHover} onFeedback={(feedback, note) => onAction('step_feedback', note ? { feedback, note } : { feedback })} />;
+            return <StepCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onHover={setHover} onFeedback={(feedback, note, observations) => onAction('step_feedback', { feedback, ...(note ? { note } : {}), ...(observations?.length ? { observations } : {}) })} />;
           case 'receipt_card':
             return <ReceiptCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
           case 'context_card':
@@ -70,7 +70,7 @@ export function Timeline({ state, onAction, onIssueAction }: Props) {
           case 'case_changed':
             return <CaseStatus key={item.card_id} item={item} />;
           case 'escalation_summary':
-            return <SummaryCard key={item.card_id} summary={item.summary} updatedAt={item.updated_at} revision={item.revision} outdated={state.timeline.some(t => t.kind === 'escalation_summary' && t.summary_id === item.summary_id && t.revision > item.revision)} />;
+            return <SummaryCard key={item.card_id} summary={item.summary} updatedAt={item.updated_at} revision={item.revision} handoffStatus={item.handoff_status} outdated={state.timeline.some(t => t.kind === 'escalation_summary' && t.summary_id === item.summary_id && t.revision > item.revision)} />;
           default:
             return null;
         }

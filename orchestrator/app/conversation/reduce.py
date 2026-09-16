@@ -47,6 +47,8 @@ ISSUE_FIELDS = {
     "steps_executed": [],
     "counters": {},
     "exhausted_plans": [],
+    "observation_requests": [],
+    "next_action": None,
     "receipt": None,
     "vision_status": None,
     "processed_fault_image_ids": [],
@@ -199,20 +201,22 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             }
         )
         if correction.value:
-            facts.append(
-                dict(
-                    old,
-                    fact_id=stable_id(iid, "replace", index),
-                    value=correction.value,
-                    symptom_codes=canonical_codes(correction.value)[0] if old["kind"] == "symptom" else [],
-                    symptom_code=None,
-                    status="active",
-                    source_entry_ids=[iid],
-                    recorded_at=at,
-                    supersedes=old["fact_id"],
-                    revision=old["revision"] + 1,
-                )
+            replacement = dict(
+                old,
+                fact_id=stable_id(iid, "replace", index),
+                value=correction.value,
+                symptom_codes=canonical_codes(correction.value)[0] if old["kind"] == "symptom" else [],
+                symptom_code=None,
+                status="active",
+                source_entry_ids=[iid],
+                recorded_at=at,
+                supersedes=old["fact_id"],
+                revision=old["revision"] + 1,
             )
+            if old.get("observation_id"):
+                # 更正后的观察重新匹配选项；匹配不到则保持未知，不沿用旧选项
+                replacement["option_id"] = _rematch_option(old["observation_id"], correction.value)
+            facts.append(replacement)
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
     normalization_disagreements = []
@@ -305,6 +309,10 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         answer_expected=meaning.primary_intent in {"answer_pending", "unknown"},
     )
     issue.update(symptom_update)
+    observation_answered, observation_attempted = _accept_observation_reply(
+        issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
+        entry=state.get("entry"),
+    )
     if basis_changed or symptom_answered:
         issue["diagnostic_decision"] = None
     if issue["symptoms"]:
@@ -432,6 +440,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         resumed_pending = False
     if restriction and mode == "diagnose" and not trigger:
         mode = "dialogue"
+    if observation_answered:
+        mode = "diagnose"
     if applied or open_new or product_corrected or symptom_answered:
         issue["issue_revision"] = issue.get("issue_revision", 0) + 1
     decision = {
@@ -453,6 +463,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "business_switched": business_switched,
         "business_ambiguous": business_ambiguous,
         "symptom_answered": symptom_answered,
+        "observation_answered": observation_answered,
+        "observation_attempted": observation_attempted,
         "diagnostic_request": bool(meaning.diagnostic_request_quote and meaning.diagnostic_request_quote.strip() and meaning.diagnostic_request_quote in text),
         "normalization_disagreements": normalization_disagreements,
     }
@@ -480,6 +492,72 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         emotion={"level": "dissatisfied" if meaning.emotion_level == "anxious" else meaning.emotion_level, "strategy": strategy_for(meaning.emotion_level)},
     )
     return result
+
+
+def _rematch_option(observation_id, text):
+    from app.diagnose.observations import definitions, match_reply
+
+    obs = definitions().get(observation_id)
+    if obs is None:
+        return None
+    matched = match_reply(text, obs)
+    return None if matched in {None, "unknown"} else matched
+
+
+def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
+    """把自由文本回答接到尚未回答的观察问题上（design §3.1）。
+
+    只在有 status=asked 的 observation_requests 时生效；匹配唯一选项 → 写观察事实，
+    明确说不知道 → 请求记为 unknown（不再追问），其他文本按一次未解析尝试计数。
+    返回 (observation_answered, observation_attempted)。
+    """
+    if entry != "message" or not text.strip():
+        return False, False
+    open_requests = [r for r in issue.get("observation_requests") or [] if r.get("status") == "asked"]
+    if not open_requests:
+        return False, False
+    from app.diagnose.observations import definitions as load_definitions
+    from app.diagnose.observations import match_reply, record_observations
+
+    definitions = load_definitions()
+    if not definitions:  # 计划库不可用是系统问题，不把用户回答当作未回答
+        return False, False
+
+    answered = attempted = False
+    for request in open_requests:
+        obs = definitions.get(request["observation_id"])
+        if obs is None:
+            continue
+        matched = match_reply(text, obs)
+        if matched is None:
+            if intent in {"answer_pending", "unknown", "supplement", "report_problem"}:
+                request["status"] = "unparsed"
+                request["quote"] = text
+                attempted = True
+            continue
+        if matched == "unknown":
+            request["status"] = "unknown"
+            request["quote"] = text
+            request["answered_input_id"] = iid
+            attempted = True
+            continue
+        updated, patches = record_observations(
+            issue,
+            [{"observation_id": obs.observation_id, "option_id": matched}],
+            definitions=definitions,
+            input_id=iid,
+            at=at,
+            source_kind="user_report",
+            binding={"plan_id": request.get("plan_id"), "asked_input_id": request.get("input_id")},
+        )
+        issue.clear()
+        issue.update(updated)
+        applied.extend(patches)
+        for r in issue.get("observation_requests") or []:
+            if r.get("observation_id") == obs.observation_id and r.get("status") == "asked":
+                r.update(status="answered", answered_input_id=iid, option_id=matched, quote=text)
+        answered = True
+    return answered, attempted
 
 
 def persist_issue(state: dict) -> dict:

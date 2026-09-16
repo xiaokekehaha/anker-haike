@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: aab3242e2d68362ccd2faed1df60e9fc011fc0482406f42845a4f2c2e8cb701f
+// SHA-256: 7fe74240c0a34e1e53db57961310a4fdbf280a688b3c829507905327d81a8ab4
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -516,6 +516,18 @@ export const serverEventSchema = z.fromJSONSchema({
     "EscalationReason": {
       "additionalProperties": false,
       "properties": {
+        "cause": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cause"
+        },
         "rule_id": {
           "title": "Rule Id",
           "type": "string"
@@ -870,6 +882,14 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "title": "Feedback",
           "type": "string"
+        },
+        "observed": {
+          "description": "该步骤记录到的观察结果（选项文字）",
+          "items": {
+            "type": "string"
+          },
+          "title": "Observed",
+          "type": "array"
         },
         "step_id": {
           "title": "Step Id",
@@ -1594,6 +1614,34 @@ export const serverEventSchema = z.fromJSONSchema({
         "attempts"
       ],
       "title": "ModelTraceItem",
+      "type": "object"
+    },
+    "ObservationOption": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "default": "finding",
+          "enum": [
+            "finding",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id",
+        "label"
+      ],
+      "title": "ObservationOption",
       "type": "object"
     },
     "PendingChanged": {
@@ -2802,6 +2850,35 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "StepCard",
       "type": "object"
     },
+    "StepObservation": {
+      "additionalProperties": false,
+      "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ObservationOption"
+          },
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "question",
+        "options"
+      ],
+      "title": "StepObservation",
+      "type": "object"
+    },
     "SummaryUpdated": {
       "additionalProperties": false,
       "properties": {
@@ -2981,6 +3058,13 @@ export const serverEventSchema = z.fromJSONSchema({
         "instruction": {
           "title": "Instruction",
           "type": "string"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/StepObservation"
+          },
+          "title": "Observations",
+          "type": "array"
         },
         "plan_id": {
           "title": "Plan Id",

@@ -48,6 +48,35 @@ def _user_texts(state: dict[str, Any]) -> list[str]:
     ]
 
 
+# design §3.5：R2 只是兼容映射，真实结束原因来自 next_action.reason
+NEXT_ACTION_TEXT = {
+    "no_supported_followup": "已完成{steps}，现有资料没有进一步可执行的排查操作",
+    "knowledge_coverage_missing": "当前资料没有适用于该现象的排查路径",
+    "observation_unavailable": "缺少选择后续路径所需的检查结果（{observations}），无法继续排查",
+    "user_requested_human": "用户明确要求人工服务",
+    "safety_risk": "存在待核实的安全风险，已停止相关操作",
+    "burden_prefer_proposal": "用户不愿继续逐步排查，转为服务方案",
+}
+
+
+def next_action_text(state: dict[str, Any], next_action: dict[str, Any] | None) -> str | None:
+    if not next_action or next_action.get("issue_id") not in {None, state.get("active_issue_id")}:
+        return None
+    template = NEXT_ACTION_TEXT.get(next_action.get("reason") or "")
+    if not template:
+        return None
+    titles = list(dict.fromkeys(s.get("title") for s in state.get("steps_executed") or [] if s.get("title")))
+    steps = "、".join(f"「{t}」" for t in titles) if titles else "现有排查步骤"
+    from app.diagnose.observations import definitions as load_definitions
+
+    definitions = load_definitions()
+    unavailable = (next_action.get("trace") or {}).get("unavailable") or []
+    observations = "、".join(
+        definitions[o].question if o in definitions else o for o in unavailable
+    ) or "相关观察"
+    return template.format(steps=steps, observations=observations)
+
+
 DIAGNOSTIC_REASON_TEXT = {
     "answers_unavailable": "用户暂时无法确认所询问的故障现象",
     "no_progress": "连续回答未能补充选择排查步骤所需的信息",
@@ -115,12 +144,29 @@ def build_summary(
     if reason == "R7":
         reason_text = {"product": "设备品类仍待确认", "symptom": "仍缺少选择适用步骤所需的故障现象", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
         reason_text = DIAGNOSTIC_REASON_TEXT.get(diagnostic.get("reason"), reason_text)
+    next_action = state.get("next_action") or {}
+    if next_action.get("compat_rule", reason) == reason and next_action_text(state, next_action):
+        reason_text = next_action_text(state, next_action)
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
+    from app.diagnose.observations import definitions as load_definitions
+    from app.diagnose.observations import option_label
+
+    definitions = load_definitions()
+
     steps = [
         ExecutedStep(
-            step_id=s["step_id"], title=s.get("title", s["step_id"]), feedback=s["feedback"]
+            step_id=s["step_id"],
+            title=s.get("title", s["step_id"]),
+            feedback=s["feedback"],
+            observed=[
+                option_label(definitions, o["observation_id"], o["option_id"])
+                for o in s.get("observations") or []
+                if definitions.get(o.get("observation_id"))
+                and (definitions[o["observation_id"]].option(o.get("option_id")) or None)
+                and definitions[o["observation_id"]].option(o["option_id"]).kind == "finding"
+            ],
         )
         for s in state.get("steps_executed") or []
         if s.get("feedback")
@@ -161,7 +207,11 @@ def build_summary(
             if isinstance(h, dict) and (h.get("fault") or h.get("plan_id"))
         ]])),
         steps=steps,
-        reason=EscalationReason(rule_id=reason, text=reason_text),
+        reason=EscalationReason(
+            rule_id=reason,
+            text=reason_text,
+            cause=next_action.get("reason") if next_action.get("compat_rule", reason) == reason else None,
+        ),
         emotion=Emotion(
             level=emotion.get("level", "calm"), strategy=emotion.get("strategy", "normal")
         ),
@@ -195,7 +245,14 @@ def summary_to_text(s: EscalationSummary) -> str:
         f"【问题】{s.problem}",
         f"【观察】{'；'.join(s.observations) or '无'}",
         f"【假设】{'；'.join(s.hypotheses) or '无'}",
-        "【已执行步骤】" + ("；".join(f"{x.title}（{x.feedback}）" for x in s.steps) or "无"),
+        "【已执行步骤】"
+        + (
+            "；".join(
+                f"{x.title}（{x.feedback}" + (f"；观察：{'、'.join(x.observed)}" if x.observed else "") + "）"
+                for x in s.steps
+            )
+            or "无"
+        ),
         f"【升级原因】{s.reason.rule_id}：{s.reason.text}",
         f"【情绪】{s.emotion.level} / {s.emotion.strategy}",
         f"【凭证】{s.receipt.status}"
@@ -212,5 +269,16 @@ REASSURANCE = {
 }
 
 
-def reassurance_text(reason: str) -> str:
+def reassurance_text(reason: str, state: dict[str, Any] | None = None) -> str:
+    """结束时对用户的说明：有真实原因时如实说明覆盖边界（design §4），并保持「已整理 / 未接入」的区分。"""
+    next_action = (state or {}).get("next_action") or {}
+    if state is not None and next_action.get("kind") == "handoff_offer" and next_action.get("compat_rule") == reason:
+        detail = next_action_text(state, next_action)
+        if detail and next_action.get("reason") in {
+            "no_supported_followup", "knowledge_coverage_missing", "observation_unavailable",
+        }:
+            return (
+                f"{detail}。我已整理当前问题记录和已试步骤，您可以复制给人工客服继续处理；"
+                "目前尚未接入真实转接，不会重复建议您已经做过的操作。"
+            )
     return REASSURANCE.get(reason, "我已整理当前问题记录，您可以复制给人工客服继续处理。")

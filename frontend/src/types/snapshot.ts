@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: d920709eb9dbd43a3d6eb13df4106de6763d79ef05fd098f3518dd3d55e5d7da
+// SHA-256: 8c731a4e5af087cb0a1e447e55bcf7aeb88e0d458e5823361e9bedd8f9341d90
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -56,6 +56,7 @@ export type PolicyDecisionBrief = {
 } | null;
 export type Problem = string;
 export type Product = string;
+export type Cause = string | null;
 export type RuleId = string;
 export type Text = string;
 export type Conflicts = string[];
@@ -88,6 +89,10 @@ export type Source = 'policy' | 'human';
 export type Title = string;
 export type RecommendedOptions = ProposalOption[];
 export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
+/**
+ * 该步骤记录到的观察结果（选项文字）
+ */
+export type Observed = string[];
 export type StepId = string;
 export type Title1 = string;
 export type Steps = ExecutedStep[];
@@ -194,11 +199,24 @@ export type IssueId7 = string | null;
 export type Kind7 = 'step_card';
 export type LastSeq6 = number;
 export type Note = string | null;
+export type ObservationId = string;
+export type OptionId1 = string;
+export type ObservationAnswers = ObservationAnswer[];
 export type Seen = string | null;
 export type Caution = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
 export type Instruction = string;
+export type ObservationId1 = string;
+/**
+ * @minItems 2
+ */
+export type Options = [ObservationOption, ObservationOption, ...ObservationOption[]];
+export type Kind8 = 'finding' | 'unknown';
+export type Label1 = string;
+export type OptionId2 = string;
+export type Question = string;
+export type Observations1 = StepObservation[];
 export type PlanId = string;
 export type PlanVersion = number;
 export type StepId1 = string;
@@ -213,7 +231,7 @@ export type OrderNo = string | null;
 export type PurchaseDate = string | null;
 export type FirstSeq7 = number;
 export type IssueId8 = string | null;
-export type Kind8 = 'receipt_card';
+export type Kind9 = 'receipt_card';
 export type LastSeq7 = number;
 export type SkippedReason = ('none' | 'unreadable' | 'later') | null;
 export type Unreadable = string[];
@@ -230,7 +248,7 @@ export type Snippet = string;
 export type Source1 = string;
 export type Status3 = 'ok' | 'replay';
 export type Items = EvidenceItem[];
-export type Kind9 = 'evidence';
+export type Kind10 = 'evidence';
 export type LastSeq8 = number;
 export type At11 = string | null;
 export type CardId5 = string;
@@ -240,7 +258,7 @@ export type ConfirmedFields = {
 export type Fields = string[];
 export type FirstSeq9 = number;
 export type IssueId10 = string | null;
-export type Kind10 = 'context_card';
+export type Kind11 = 'context_card';
 export type LastSeq9 = number;
 export type Version4 = number;
 export type At12 = string | null;
@@ -250,9 +268,9 @@ export type DecisionSummary = string;
 export type DeclinedReason = string | null;
 export type FirstSeq10 = number;
 export type IssueId11 = string | null;
-export type Kind11 = 'proposal_card';
+export type Kind12 = 'proposal_card';
 export type LastSeq10 = number;
-export type Options = ProposalOption[];
+export type Options1 = ProposalOption[];
 export type PolicyVersion1 = string;
 export type Retry = boolean;
 export type Version5 = number;
@@ -263,7 +281,7 @@ export type ExecutionId = string;
 export type FirstSeq11 = number;
 export type IdempotencyKey = string;
 export type IssueId12 = string | null;
-export type Kind12 = 'execution_card';
+export type Kind13 = 'execution_card';
 export type LastSeq11 = number;
 export type EtaDays = number | null;
 export type NextStep1 = string;
@@ -280,7 +298,7 @@ export type CardId8 = string;
 export type FirstSeq12 = number;
 export type Guidance = string[];
 export type IssueId13 = string | null;
-export type Kind13 = 'retake_card';
+export type Kind14 = 'retake_card';
 export type LastSeq12 = number;
 export type Reasons = string[];
 export type Skipped = boolean;
@@ -290,7 +308,7 @@ export type CardId9 = string;
 export type CaseId1 = string | null;
 export type FirstSeq13 = number;
 export type IssueId14 = string | null;
-export type Kind14 = 'rating_card';
+export type Kind15 = 'rating_card';
 export type LastSeq13 = number;
 export type Score1 = number | null;
 export type Version8 = number;
@@ -300,7 +318,7 @@ export type CaseId2 = string;
 export type ComplaintRisk = boolean;
 export type FirstSeq14 = number;
 export type IssueId15 = string | null;
-export type Kind15 = 'case_changed';
+export type Kind16 = 'case_changed';
 export type LastSeq14 = number;
 export type Owner = string | null;
 export type Priority = 'normal' | 'high';
@@ -476,6 +494,7 @@ export interface ModelTraceItem {
  * via the `definition` "EscalationReason".
  */
 export interface EscalationReason {
+  cause?: Cause;
   rule_id: RuleId;
   text: Text;
 }
@@ -551,6 +570,7 @@ export interface DispatchEstimate {
  */
 export interface ExecutedStep {
   feedback: Feedback;
+  observed?: Observed;
   step_id: StepId;
   title: Title1;
 }
@@ -680,9 +700,20 @@ export interface StepCardItem {
   kind: Kind7;
   last_seq?: LastSeq6;
   note?: Note;
+  observation_answers?: ObservationAnswers;
   seen?: Seen;
   step: TroubleshootStep;
   version: Version2;
+}
+/**
+ * 用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。
+ *
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "ObservationAnswer".
+ */
+export interface ObservationAnswer {
+  observation_id: ObservationId;
+  option_id: OptionId1;
 }
 /**
  * step_card 的唯一层级：step 对象（08 §5）。
@@ -695,11 +726,32 @@ export interface TroubleshootStep {
   evidence_ids?: EvidenceIds;
   expected_result: ExpectedResult;
   instruction: Instruction;
+  observations?: Observations1;
   plan_id: PlanId;
   plan_version: PlanVersion;
   step_id: StepId1;
   step_no: StepNo;
   title: Title2;
+}
+/**
+ * 步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。
+ *
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "StepObservation".
+ */
+export interface StepObservation {
+  observation_id: ObservationId1;
+  options: Options;
+  question: Question;
+}
+/**
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "ObservationOption".
+ */
+export interface ObservationOption {
+  kind?: Kind8;
+  label: Label1;
+  option_id: OptionId2;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -713,7 +765,7 @@ export interface ReceiptCardItem {
   fields: ReceiptFields;
   first_seq?: FirstSeq7;
   issue_id?: IssueId8;
-  kind: Kind8;
+  kind: Kind9;
   last_seq?: LastSeq7;
   skipped_reason?: SkippedReason;
   unreadable?: Unreadable;
@@ -741,7 +793,7 @@ export interface EvidenceItemGroup {
   first_seq?: FirstSeq8;
   issue_id?: IssueId9;
   items: Items;
-  kind: Kind9;
+  kind: Kind10;
   last_seq?: LastSeq8;
 }
 /**
@@ -770,7 +822,7 @@ export interface ContextCardItem {
   fields: Fields;
   first_seq?: FirstSeq9;
   issue_id?: IssueId10;
-  kind: Kind10;
+  kind: Kind11;
   last_seq?: LastSeq9;
   prefilled?: Prefilled;
   sources?: Sources;
@@ -797,9 +849,9 @@ export interface ProposalCardItem {
   declined_reason?: DeclinedReason;
   first_seq?: FirstSeq10;
   issue_id?: IssueId11;
-  kind: Kind11;
+  kind: Kind12;
   last_seq?: LastSeq10;
-  options: Options;
+  options: Options1;
   policy_version: PolicyVersion1;
   retry?: Retry;
   version: Version5;
@@ -816,7 +868,7 @@ export interface ExecutionCardItem {
   first_seq?: FirstSeq11;
   idempotency_key: IdempotencyKey;
   issue_id?: IssueId12;
-  kind: Kind12;
+  kind: Kind13;
   last_seq?: LastSeq11;
   receipt: Receipt;
   status: Status5;
@@ -850,7 +902,7 @@ export interface RetakeCardItem {
   first_seq?: FirstSeq12;
   guidance: Guidance;
   issue_id?: IssueId13;
-  kind: Kind13;
+  kind: Kind14;
   last_seq?: LastSeq12;
   reasons: Reasons;
   skipped?: Skipped;
@@ -866,7 +918,7 @@ export interface RatingCardItem {
   case_id?: CaseId1;
   first_seq?: FirstSeq13;
   issue_id?: IssueId14;
-  kind: Kind14;
+  kind: Kind15;
   last_seq?: LastSeq13;
   score?: Score1;
   version: Version8;
@@ -883,7 +935,7 @@ export interface CaseStatusItem {
   external_refs?: ExternalRefs;
   first_seq?: FirstSeq14;
   issue_id?: IssueId15;
-  kind: Kind15;
+  kind: Kind16;
   last_seq?: LastSeq14;
   owner?: Owner;
   priority?: Priority;

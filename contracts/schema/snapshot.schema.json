@@ -550,6 +550,18 @@
     "EscalationReason": {
       "additionalProperties": false,
       "properties": {
+        "cause": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cause"
+        },
         "rule_id": {
           "title": "Rule Id",
           "type": "string"
@@ -821,6 +833,14 @@
           "title": "Feedback",
           "type": "string"
         },
+        "observed": {
+          "description": "该步骤记录到的观察结果（选项文字）",
+          "items": {
+            "type": "string"
+          },
+          "title": "Observed",
+          "type": "array"
+        },
         "step_id": {
           "title": "Step Id",
           "type": "string"
@@ -1086,6 +1106,54 @@
         "attempts"
       ],
       "title": "ModelTraceItem",
+      "type": "object"
+    },
+    "ObservationAnswer": {
+      "additionalProperties": false,
+      "description": "用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。",
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "option_id"
+      ],
+      "title": "ObservationAnswer",
+      "type": "object"
+    },
+    "ObservationOption": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "default": "finding",
+          "enum": [
+            "finding",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "option_id",
+        "label"
+      ],
+      "title": "ObservationOption",
       "type": "object"
     },
     "PendingInput": {
@@ -2024,6 +2092,13 @@
           "default": null,
           "title": "Note"
         },
+        "observation_answers": {
+          "items": {
+            "$ref": "#/$defs/ObservationAnswer"
+          },
+          "title": "Observation Answers",
+          "type": "array"
+        },
         "seen": {
           "anyOf": [
             {
@@ -2052,6 +2127,35 @@
         "step"
       ],
       "title": "StepCardItem",
+      "type": "object"
+    },
+    "StepObservation": {
+      "additionalProperties": false,
+      "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/ObservationOption"
+          },
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "question",
+        "options"
+      ],
+      "title": "StepObservation",
       "type": "object"
     },
     "SummaryItem": {
@@ -2267,6 +2371,13 @@
         "instruction": {
           "title": "Instruction",
           "type": "string"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/StepObservation"
+          },
+          "title": "Observations",
+          "type": "array"
         },
         "plan_id": {
           "title": "Plan Id",

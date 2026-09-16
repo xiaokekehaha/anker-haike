@@ -1,7 +1,8 @@
 """反馈推进（票 35；03 §1.6、09 §3.3–§3.4）：无 LLM。
 
 solved → 结束；not_solved → executed+1、advanced+1；cannot_do → skipped+1（不计 executed）。
-按 next_on[feedback] 推进；EXHAUSTED 时下一计划 confidence ≥ 0.3 则切换（plans_exhausted+1），否则 R2。
+按 next_on[feedback] 推进；EXHAUSTED 时只标记计划耗尽并返回 reassess，
+下一动作由 diagnose.decision.decide_next 依据更新后的事实决定（design §3.2）。
 CP-verify：R1 executed ≥ 4、R1b skipped ≥ 3、R1c executed+skipped ≥ 6。
 """
 
@@ -20,7 +21,7 @@ LIMITS = {"R1": 4, "R1b": 3, "R1c": 6}
 
 @dataclass
 class VerifyOutcome:
-    outcome: Literal["done", "next", "escalate"]
+    outcome: Literal["done", "next", "escalate", "reassess"]
     plan_cursor: dict[str, Any] | None
     counters: dict[str, int]
     steps_executed: list[dict[str, Any]]
@@ -30,14 +31,6 @@ class VerifyOutcome:
     trace: dict[str, Any] = field(default_factory=dict)
 
 
-def _next_plan(plans_ranked: list[dict[str, Any]], exhausted: set[str]) -> dict[str, Any] | None:
-    for p in plans_ranked:
-        if p["plan_id"] in exhausted:
-            continue
-        return p
-    return None
-
-
 def apply_feedback(
     *,
     state: dict[str, Any],
@@ -45,6 +38,7 @@ def apply_feedback(
     note: str | None,
     card_id: str,
     library: PlanLibrary,
+    observations: list[dict[str, str]] | None = None,
 ) -> VerifyOutcome:
     cursor = dict(state.get("plan_cursor") or {})
     plan = library.get(cursor["plan_id"])
@@ -68,6 +62,11 @@ def apply_feedback(
             "instruction_src": step.instruction_src,
             "feedback": feedback,
             "note": note,
+            "observations": [
+                {"observation_id": o["observation_id"], "option_id": o["option_id"]}
+                for o in (observations or [])
+                if o.get("observation_id") and o.get("option_id")
+            ],
             "ts": datetime.now(UTC).isoformat(),
         }
     )
@@ -128,14 +127,15 @@ def exhaust_plan(
     state: dict[str, Any],
     plan_id: str,
     *,
-    library: PlanLibrary,
+    library: PlanLibrary | None = None,
     counters: dict[str, int] | None = None,
     executed: list[dict[str, Any]] | None = None,
     exhausted: list[str] | None = None,
 ) -> VerifyOutcome:
     """当前计划耗尽（next_on 到 EXHAUSTED，或剩余步骤全部被 CP-pre-step / 去重丢弃）：
 
-    plans_exhausted+1；plans_ranked 里下一未耗尽计划 confidence ≥ 0.3 → 切到其首步，否则 R2（09 §3.4）。
+    只做记账（exhausted_plans、plans_exhausted+1）并返回 reassess。计划耗尽表示当前动作集合需要重新评估，
+    不等于诊断失败，也不自动等于转人工；切换 / 追问 / 人工出口由 decide_next 统一决定。
     """
     counters = {
         "executed": 0,
@@ -146,33 +146,14 @@ def exhaust_plan(
     }
     executed = list(executed if executed is not None else state.get("steps_executed") or [])
     exhausted = list(exhausted if exhausted is not None else state.get("exhausted_plans") or [])
-    if plan_id not in exhausted:
+    if plan_id and plan_id not in exhausted:
         exhausted.append(plan_id)
-    counters["plans_exhausted"] += 1
-    candidate = _next_plan(list(state.get("plans_ranked") or []), set(exhausted))
-    if candidate is None or float(candidate.get("confidence", 0)) < SWITCH_CONFIDENCE:
-        return VerifyOutcome(
-            "escalate",
-            None,
-            counters,
-            executed,
-            exhausted,
-            escalate_reason="R2",
-            trace={"rule": "R2", "next_confidence": candidate and candidate.get("confidence")},
-        )
-    new_plan = library.get(candidate["plan_id"])
-    new_cursor = {
-        "plan_id": new_plan.plan_id,
-        "version": new_plan.version,
-        "step_id": new_plan.first_step().step_id,
-        "source": candidate.get("source"),
-    }
+        counters["plans_exhausted"] += 1
     return VerifyOutcome(
-        "next",
-        new_cursor,
+        "reassess",
+        None,
         counters,
         executed,
         exhausted,
-        switched_to=new_plan.plan_id,
-        trace={"rule": "switch_plan", "confidence": candidate.get("confidence")},
+        trace={"rule": "plan_exhausted", "plan_id": plan_id},
     )

@@ -35,7 +35,7 @@ def test_intersecting_plan_sets_continue_with_only_the_shared_plan():
     assert result.outcome == "continue"
     assert result.reason == "common_applicable_plans"
     assert [p["plan_id"] for p in result.allowed_plans] == ["rv_power_supply"]
-    assert result.allowed_plans[0]["version"] == 1
+    assert result.allowed_plans[0]["version"] == 2
 
 
 def test_exhausted_or_wrong_product_plan_is_not_a_common_action():
@@ -183,7 +183,7 @@ def test_constraint_cannot_reuse_a_new_plan_version_or_other_issue():
     state = ambiguous_state()
     result = decide_symptoms(state, available_plans=plans())
     state["diagnostic_decision"] = result.snapshot(state)
-    changed_plan = plans()[-1].model_copy(update={"version": 2})
+    changed_plan = plans()[-1].model_copy(update={"version": 3})
     assert constrain_plans(state, [changed_plan]) == []
     state["active_issue_id"] = "other"
     assert constrain_plans(state, plans()) == []
