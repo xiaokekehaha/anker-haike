@@ -81,6 +81,11 @@ async def prepare_step(
     if not cursor.get("plan_id"):
         return StepPrep("exhausted")
     plan = library.get(cursor["plan_id"])
+    from app.diagnose.decision import constrain_plans
+    if not constrain_plans(state, [plan]):
+        return StepPrep("exhausted", dropped=[{
+            "plan_id": plan.plan_id, "reason": "diagnostic_plan_constraint",
+        }])
     step_id = cursor.get("step_id") or plan.first_step().step_id
     allowed_evidence: dict[str, dict[str, Any]] = dict(state.get("evidence") or {})
     ranked_evidence = next(

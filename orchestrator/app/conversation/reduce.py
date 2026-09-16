@@ -302,8 +302,11 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     symptom_update, symptom_answered = accept_answer(
         issue, meaning.symptom_answer, text=text, input_id=iid,
         changed_fact_ids={p["fact_id"] for p in applied},
+        answer_expected=meaning.primary_intent in {"answer_pending", "unknown"},
     )
     issue.update(symptom_update)
+    if basis_changed or symptom_answered:
+        issue["diagnostic_decision"] = None
     if issue["symptoms"]:
         issue["status"] = "open"
         issue["title"] = "、".join(issue["symptoms"])
@@ -360,6 +363,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     )
     if restriction and (issue.get("pending_card") or {}).get("kind") == "step_feedback":
         pc = issue.pop("pending_card")
+        step = (pc.get("payload") or {}).get("step") or {}
+        issue["observations"].append(f"已提供但未反馈（安全限制已撤回）：{step.get('title', step.get('step_id', '排查步骤'))}")
         pending_changes.append(
             {
                 "issue_id": target,
@@ -398,6 +403,9 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         }
         else "diagnose"
     )
+    attempts = (issue.get("symptom_interview") or {}).get("response_attempts", [])
+    if intent == "unknown" and attempts and attempts[-1]["input_id"] == iid:
+        mode = "diagnose"
     if issue.get("pending_card") and intent == "supplement" and not basis_changed:
         mode = "dialogue"
     trigger = "R4" if new_risk or uncertain_risk else "R3" if intent == "request_human" else None
@@ -409,6 +417,9 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         trigger, mode = None, "dialogue"
     if trigger and issue.get("pending_card"):
         pc = issue["pending_card"]
+        if pc.get("kind") == "step_feedback":
+            step = (pc.get("payload") or {}).get("step") or {}
+            issue["observations"].append(f"已提供但未反馈（转人工已撤回）：{step.get('title', step.get('step_id', '排查步骤'))}")
         pending_changes.append(
             {
                 "issue_id": target,

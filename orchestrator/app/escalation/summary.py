@@ -48,6 +48,46 @@ def _user_texts(state: dict[str, Any]) -> list[str]:
     ]
 
 
+DIAGNOSTIC_REASON_TEXT = {
+    "answers_unavailable": "用户暂时无法确认所询问的故障现象",
+    "no_progress": "连续回答未能补充选择排查步骤所需的信息",
+    "clarification_budget_exhausted": "本次故障问诊已达轮次上限，仍需人工核对",
+    "evidence_conflict": "已记录的现象与回答存在冲突，需要核对",
+    "question_coverage_missing": "系统缺少适用的澄清问题",
+    "no_discriminating_question": "系统缺少适用的澄清问题",
+}
+
+
+def _diagnostic_context(state):
+    from app.conversation.taxonomy import taxonomy
+    from app.diagnose.decision import valid_interview
+
+    raw = state.get("symptom_interview")
+    interview = raw if valid_interview(raw) else {}
+    decision = state.get("diagnostic_decision") or {}
+    if (decision.get("issue_id", state.get("active_issue_id")) != state.get("active_issue_id")
+            or decision.get("taxonomy_version", taxonomy()["version"]) != taxonomy()["version"]):
+        decision = {}
+    codes = set(decision.get("candidate_codes") or decision.get("codes") or [])
+    families = [f["fault_family"] for f in taxonomy()["families"] if f["symptom_code"] in codes]
+    if not families and interview.get("answers"):
+        families = list(interview.get("candidates", []))
+    observations = [
+        f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
+    ]
+    observations += [
+        f"问：{a.get('question')}；用户回答未能解析：{a['quote']}"
+        for a in interview.get("response_attempts", [])
+        if a.get("outcome") == "unparsed" and a.get("quote")
+    ]
+    observations += [f"待确认：{item}" for item in decision.get("missing_information", [])]
+    pending = state.get("pending_card") or {}
+    if pending.get("kind") == "step_feedback":
+        step = (pending.get("payload") or {}).get("step") or {}
+        observations.append(f"已提供但未反馈：{step.get('title', step.get('step_id', '排查步骤'))}")
+    return decision, interview, families, observations
+
+
 def build_summary(
     state: dict[str, Any],
     *,
@@ -56,6 +96,7 @@ def build_summary(
     polish_model_used: str | None = None,
 ) -> EscalationSummary:
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    diagnostic, interview, candidate_families, diagnostic_observations = _diagnostic_context(state)
     facts = [f for f in issue.get("facts", []) if f.get("status") == "active"]
     product = state.get("product_confirmed") or {}
     product_text = (
@@ -69,13 +110,11 @@ def build_summary(
         {f["term"] for f in flags if f.get("rule_id") == reason and f.get("term")}
     )
     reason_text = REASON_TEXT.get(reason, reason)
-    if reason == "R5" and (state.get("diagnostic_decision") or {}).get("reason") == "question_coverage_missing":
+    if reason == "R5" and diagnostic.get("reason") == "question_coverage_missing":
         reason_text = "系统缺少适用的澄清问题，无法继续选择排查方案"
     if reason == "R7":
         reason_text = {"product": "设备品类仍待确认", "symptom": "仍缺少选择适用步骤所需的故障现象", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
-        reason_text = {"answers_unavailable": "用户暂时无法确认所询问的故障现象",
-                       "question_coverage_missing": "系统缺少适用的澄清问题",
-                       "no_discriminating_question": "系统缺少适用的澄清问题"}.get((state.get("diagnostic_decision") or {}).get("reason"), reason_text)
+        reason_text = DIAGNOSTIC_REASON_TEXT.get(diagnostic.get("reason"), reason_text)
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
@@ -113,17 +152,14 @@ def build_summary(
         draft_reply="已整理订单与政策依据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
         problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "；".join(
-            f"问：{a['question']}；用户回答：{a['quote']}" for a in (state.get("symptom_interview") or {}).get("answers", [])
+            f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
         ) or "（尚未记录具体故障现象）",
-        observations=[*list(state.get("observations") or []), *[
-            f"问：{a['question']}；用户回答：{a['quote']}"
-            for a in (state.get("symptom_interview") or {}).get("answers", [])
-        ]],
-        hypotheses=[
+        observations=list(dict.fromkeys([*list(state.get("observations") or []), *diagnostic_observations])),
+        hypotheses=list(dict.fromkeys([*candidate_families, *[
             h.get("fault") or h.get("plan_id")
             for h in state.get("plans_ranked") or []
-            if isinstance(h, dict)
-        ],
+            if isinstance(h, dict) and (h.get("fault") or h.get("plan_id"))
+        ]])),
         steps=steps,
         reason=EscalationReason(rule_id=reason, text=reason_text),
         emotion=Emotion(

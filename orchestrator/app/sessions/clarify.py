@@ -171,22 +171,20 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
         sku=product.get("sku"),
     ))
     update["symptom_codes"] = decision.codes
-    update["diagnostic_decision"] = {
-        "outcome": decision.outcome, "reason": decision.reason,
-        "source_refs": list(decision.source_refs),
-    }
+    update["diagnostic_decision"] = decision.snapshot(state)
     if decision.outcome == "continue":
         update["clarification"] = None
         return Decision("continue", update)
-    if decision.interview is None:
-        return _clarify(clar, "symptom", update)
     if decision.outcome == "escalate":
         coverage_missing = decision.reason == "question_coverage_missing"
-        update.update(escalate_reason="R5" if coverage_missing else "R7", symptom_interview=decision.interview,
+        rule_id = "R4" if decision.reason == "safety_restriction" else "R5" if coverage_missing else "R7"
+        update.update(escalate_reason=rule_id, symptom_interview=decision.interview,
                       clarification={**clar, "reason": "symptom", "resolved": False},
                       observations=[*state.get("observations", []),
-                                    "系统缺少适用的澄清问题" if coverage_missing else "用户暂时无法确认所询问的故障现象"])
+                                    "仍需核对的信息：" + "；".join(decision.missing_information) if decision.missing_information else "当前无法继续排查"])
         return Decision("escalate", update, "symptom")
+    if decision.interview is None:
+        return _clarify(clar, "symptom", update)
     # Product clarification budget is separate from useful symptom questions.
     update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0)}
     return Decision("clarify", update, "symptom", {

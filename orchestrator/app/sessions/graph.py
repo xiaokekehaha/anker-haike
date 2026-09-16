@@ -27,6 +27,7 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
+from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.query import CATEGORY_LABELS, product_term
 from app.diagnose.vision import observe_images
@@ -1477,10 +1478,10 @@ async def retrieve(state: SessionState) -> SessionState:
         signature_ids=signature_plans(state.get('fault_localization'), card.faults)
         fc_hits=[*[f for f in card.faults if f.plan_id in signature_ids], *[f for f in fc_hits if f.plan_id not in signature_ids]]
         allowed_ids = {
-            p.plan_id for p in get_plan_library().allowed_for(
+            p.plan_id for p in constrain_plans(state, get_plan_library().allowed_for(
                 category=scope.category, sku=scope.sku,
                 symptom_codes=state.get("symptom_codes") or [],
-            )
+            ))
         }
         fc_hits = [f for f in fc_hits if f.plan_id in allowed_ids]
         fault_card_state = {
@@ -1801,6 +1802,7 @@ async def retrieve(state: SessionState) -> SessionState:
             plans.get("plans_ranked") or [],
             knowledge_status=status,
             fault_card_hits=[e["chunk_id"] for e in fc_evidence],
+            exhausted_plans=state.get("exhausted_plans") or [],
         )
     )
     return {
@@ -1832,6 +1834,7 @@ async def _synthesize_step(
         category=scope.category, sku=scope.sku,
         symptom_codes=state.get("symptom_codes") or [],
     )
+    allowed = constrain_plans(state, allowed)
     out = await synthesize(
         get_model_router(),
         state=dict(state),
