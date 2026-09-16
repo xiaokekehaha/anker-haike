@@ -68,3 +68,13 @@
   「清扫效果不好 → 地面有残留」当轮就出排障步骤卡（改动前是复读判别问题）；
   「启动不了 → 不能 → 不能」仍两轮出步骤卡、无 R7。
 - 未验证：findings 第 5 条的 intake 解析稳定性，需要 bake-off。
+
+## 发布与部署（2026-09-16）
+
+- 提交：`777bef2` 否定语义 / `6919d2f` 问诊活性 / `27dc85e` retention 回归 /
+  `4fac6fc` 词表 / `66d561b` 本文档；release 登记 `20260916-66d561b`。
+- 镜像 `haike/orchestrator:dev` = `6e214086409c`；上一版 `bd888c00f00b` 打了
+  tag `before-negation-20260916`，回滚换 tag 重启即可。
+- `make health` 全 ok（overseas 未配置为预期）；`make db-backup` haike 4.85 MB、WeKnora 1.82 MB。
+- `make release-check` 仍有一项红：bake-off 报告基于 models.yaml 2026-09-13.5、当前 2026-09-15.2。
+  **上一版发布前就存在**，与本次改动无关，需要单独跑 `make bakeoff`。
