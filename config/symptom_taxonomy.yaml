@@ -1,4 +1,4 @@
-version: 2026-09-14.2
+version: 2026-09-16.1
 category: robot_vacuum
 source: 人工演示样本，待真实工单替换
 families:
@@ -12,6 +12,14 @@ families:
   - 扫不干净
   - 吸力变弱
   - 吸力下降
+  # 文字路径此前只认「吸不干净」这类说法：用户描述滚刷缠毛发、地面有残留时归不进任何故障族，
+  # 判别问答既问不出结果也停不下来。图片路径早已有这条映射（vision_vocab signatures
+  # 滚刷+缠绕 → rv_suction_hair_wrap，该 plan 的 symptom_codes 就是 suction_low），
+  # 这里只是把同一条已审核的知识补给文字路径。词形沿用 vision_vocab.text_aliases。
+  - 缠
+  - 缠绕
+  - 头发
+  - 残留
 - fault_family: 不开机
   symptom_code: power_failure
   expressions:
