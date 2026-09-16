@@ -18,6 +18,7 @@ from app.sessions import sse
 from app.sessions.clarify import (
     FIXED_QUESTIONS,
     MAX_CLARIFICATIONS,
+    REPEAT_LEAD,
     fixed_question,
     make_question,
 )
@@ -76,7 +77,8 @@ async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
         assert [i.kind for i in snap.timeline] == ["user_message", "assistant_message"]
 
         ev2 = await _send(client, sid, "就是那个机器啊")  # 第一次回答仍不明 → 第二次追问
-        assert _message_text(ev2) == FIXED_QUESTIONS["product"]
+        # 同一句再问一次时先承接，不一字不差地复读；问题本身原样保留
+        assert _message_text(ev2) == REPEAT_LEAD + FIXED_QUESTIONS["product"]
         s2 = await _state(sid)
         assert s2["clarification"]["attempts"] == 2  # 跨 run 保留并累加
         assert "escalation_summary" not in [e["type"] for e in ev2]

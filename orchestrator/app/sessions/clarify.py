@@ -186,7 +186,9 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     if decision.interview is None:
         return _clarify(clar, "symptom", update)
     # Product clarification budget is separate from useful symptom questions.
-    update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0)}
+    # 上一次真正问出去的那句话要留着：clarify 节点靠它认出「同一个问题又要问一遍」。
+    update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0),
+                               **({"question": clar["question"]} if clar.get("question") else {})}
     return Decision("clarify", update, "symptom", {
         "symptom_interview": decision.interview,
         "discriminator": decision.interview.get("question"),
@@ -217,7 +219,8 @@ def _clarify(
         )
         return Decision("escalate", update, reason)
     update["clarification"] = {"reason": reason, "attempts": attempts, "subject": subject,
-                               "expected_category": detail.get("expected_category")}
+                               "expected_category": detail.get("expected_category"),
+                               **({"question": clar["question"]} if clar.get("question") else {})}
     return Decision("clarify", update, reason, detail)
 
 
@@ -314,6 +317,16 @@ class QuestionOutcome:
     model_trace: dict[str, Any] | None = None
 
 
+# 同一句判别问题再问一次时先承接一下。一字不差地复读读起来像没听见（2026-09-16 实测）。
+# 只改呈现：问题原文与 question_id 保持不变，模型仍按原文引用，状态里也不多一个字段。
+REPEAT_LEAD = "您说的我记下了。还需要先确认一项："
+
+
+def render_question(reason: str, detail: dict[str, Any], *, previous: str | None = None) -> str:
+    text = fixed_question(reason, detail)
+    return REPEAT_LEAD + text if previous and previous.endswith(text) else text
+
+
 async def make_question(
     router: ModelRouter | None,
     reason: str,
@@ -325,6 +338,7 @@ async def make_question(
     session_id: str | None,
     lane: str,
     budget_ms: int = CLARIFY_BUDGET_MS,
+    previous_question: str | None = None,
 ) -> QuestionOutcome:
     # Preserve the existing async call signature for callers and historical tooling.
-    return QuestionOutcome(fixed_question(reason, detail), "fixed")
+    return QuestionOutcome(render_question(reason, detail, previous=previous_question), "fixed")

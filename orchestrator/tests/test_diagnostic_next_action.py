@@ -291,3 +291,93 @@ def test_fact_correction_invalidates_the_old_decision_snapshot():
     )
     assert result["diagnostic_decision"] is None
     assert "charging_failure" not in decide_symptoms({**state, **result}).codes
+
+
+def _supplement(text):
+    return TurnInterpretation(
+        primary_intent="supplement",
+        device_relation="current",
+        facts=[{"kind": "symptom", "value": text, "quote": text}],
+    )
+
+
+def test_unmappable_supplements_consume_the_interview_budget():
+    """补充的现象归不进任何故障族时必须计入预算，否则同一个问题会被无限重复。"""
+    state = ambiguous_state()
+    outcomes = []
+    for index, text in enumerate(["外壳看着有点旧", "用起来不太顺手", "颜色跟买的时候不一样"]):
+        state.update(input_id=f"sup{index}", text=text)
+        state.update(reduce_turn(state, _supplement(text)))
+        result = decide_symptoms(state, available_plans=[])
+        state["symptom_interview"] = result.interview
+        outcomes.append(result)
+    assert outcomes[-1].outcome == "escalate" and outcomes[-1].reason == "no_progress"
+    assert outcomes[-1].progress["consecutive_no_progress"] == 2
+    # 用户说过的话仍然进摘要，不因为归不进词表就丢掉
+    assert "外壳看着有点旧" in state["issues"]["issue"]["symptoms"]
+
+
+def test_recognised_symptom_supplement_still_clears_the_no_progress_window():
+    state = ambiguous_state()
+    state.update(input_id="sup0", text="外壳看着有点旧")
+    state.update(reduce_turn(state, _supplement("外壳看着有点旧")))
+    state["symptom_interview"] = decide_symptoms(state, available_plans=[]).interview
+    state.update(input_id="sup1", text="吸力变小")
+    state.update(reduce_turn(state, _supplement("吸力变小")))
+    result = decide_symptoms(state, available_plans=[])
+    assert result.outcome == "continue" and "suction_low" in result.codes
+    assert result.progress["consecutive_no_progress"] == 0
+
+
+def test_repeated_question_is_not_replayed_verbatim():
+    from app.sessions.clarify import render_question
+
+    first = next_interview(None, "issue", "first")
+    detail = {"discriminator": first["question"]}
+    asked = render_question("symptom", detail)
+    assert asked == first["question"]["question"]
+    again = next_interview(first, "issue", "second")
+    # 问题原文与 question_id 之外的状态不变，模型仍按原文引用
+    assert again["question"]["question"] == first["question"]["question"]
+    assert "repeats" not in again["question"]
+    rendered = render_question("symptom", {"discriminator": again["question"]}, previous=asked)
+    assert rendered.endswith(asked) and rendered != asked
+    # 再问第三次时上一句已经带了承接语，不能叠加两层
+    assert render_question("symptom", {"discriminator": again["question"]}, previous=rendered) == rendered
+
+
+def test_text_described_hair_wrap_reaches_the_same_family_as_the_photo():
+    """图片路径早就能从「滚刷缠绕」定位到 rv_suction_hair_wrap，文字路径不该停在无法归类。"""
+    from app.conversation.taxonomy import canonical_codes
+
+    for text in ["滚刷上缠了很多头发", "地面有残留", "滚刷缠绕严重"]:
+        assert canonical_codes(text)[0] == ["suction_low"], text
+    state = ambiguous_state()
+    state.update(input_id="sup0", text="滚刷上缠了很多头发")
+    state.update(reduce_turn(state, _supplement("滚刷上缠了很多头发")))
+    result = decide_symptoms(state, available_plans=[])
+    assert result.outcome == "continue" and result.codes == ["suction_low"]
+
+
+def test_answer_without_a_parsed_command_does_not_nag_when_nothing_is_pending():
+    """回答判别问题但模型没解析出结构化答案时，应当重问问题，而不是让用户「确认具体选择」。"""
+    from app.conversation.commands import resolve_command
+
+    state = ambiguous_state()
+    state["pending_card"] = None
+    meaning = TurnInterpretation(primary_intent="answer_pending", device_relation="current")
+    assert resolve_command(state, meaning) == (None, None)
+    state["pending_card"] = {"kind": "step_feedback", "payload": {}}
+    assert resolve_command(state, meaning)[1] == (
+        "请确认具体选择，或说明操作后是已解决、仍有问题还是无法操作。"
+    )
+
+
+def test_clarification_carries_the_previous_question_for_repeat_detection():
+    """重复提问的判断依据是上一次真正问出去的那句话，它必须留在状态里。"""
+    state = ambiguous_state()
+    state["symptom_interview"].update(taxonomy_version="obsolete", candidates=["不充电"])
+    state["clarification"] = {"reason": "symptom", "attempts": 1, "question": "设备按电源后能正常启动吗？"}
+    decided = decide(state, abandoned_card=None)
+    assert decided.outcome == "clarify"
+    assert decided.update["clarification"]["question"] == "设备按电源后能正常启动吗？"

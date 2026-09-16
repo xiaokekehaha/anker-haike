@@ -85,10 +85,30 @@ def accept_answer(issue, answer, *, text, input_id, changed_fact_ids, answer_exp
         if f.get("fact_id") in changed_fact_ids and f.get("kind") == "symptom"
     ]
     corrected = any(f.get("status") != "active" for f in changed)
-    if interview and changed and not corrected:
+    usable = [f for f in changed if f.get("symptom_codes")]
+    if interview and usable and not corrected:
         # New symptom evidence starts a new consecutive-progress window, not
         # a new total budget. Retries are de-duplicated by the reducer.
         interview = {**interview, "progress_start": len(response_attempts(interview))}
+    elif (
+        valid_interview(interview)
+        and changed
+        and not corrected
+        and not accepted
+        and interview.get("question")
+    ):
+        # A described symptom that maps to no fault family did not move the
+        # interview: it neither answers the pending question nor narrows the
+        # candidates. Counting it keeps both budgets live — otherwise every
+        # supplement clears the window and the same question repeats forever.
+        interview = record_response(
+            interview,
+            input_id=input_id,
+            outcome="unmapped",
+            candidates=interview.get("candidates", []),
+            progressed=False,
+            quote=text,
+        )
     if interview and corrected and not accepted:
         interview = {
             **interview,

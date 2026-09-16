@@ -10,7 +10,10 @@ def resolve_command(state, meaning):
     candidate = meaning.pending_answer
     feedback = meaning.feedback
     if candidate is None and feedback is None:
-        if meaning.primary_intent in {"step_feedback", "answer_pending"}:
+        # 没有待办卡时这句话无从谈起：既没有「选择」也没有可反馈的步骤。此时多半是模型把
+        # 判别问题的回答标成了 answer_pending 却没解析出结构化答案，交回排障路径重问那个问题，
+        # 比让用户在这里「确认具体选择」有用（2026-09-16 实测复现）。
+        if meaning.primary_intent in {"step_feedback", "answer_pending"} and state.get("pending_card"):
             return None, "请确认具体选择，或说明操作后是已解决、仍有问题还是无法操作。"
         return None, None
     pending = state.get("pending_card")

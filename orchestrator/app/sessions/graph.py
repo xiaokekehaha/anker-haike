@@ -310,6 +310,7 @@ async def clarify(state: SessionState) -> SessionState:
         detail=detail,
         session_id=state.get("session_id"),
         lane=_lane(),
+        previous_question=(state.get("clarification") or {}).get("question"),
     )
     message_id = uuid.uuid5(
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:clarify"
