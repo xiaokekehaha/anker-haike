@@ -96,6 +96,59 @@ def _norm(text: str) -> str:
     return _WS.sub("", text).casefold()
 
 
+# ---- 否定语义（2026-09-16）----
+# 视觉模型会把「没看到危险」也写成观察项：「未见冒烟烧焦鼓包漏液火花」。子串匹配读不出否定，
+# 正常的滚刷缠绕照片因此被当成安全风险升级 R4、排障直接中断（三次复现一次）。
+#
+# 这里只承认**一种**否定形态：否定词后面紧跟着一串安全词，词与词之间只允许 _FILLERS 里的连接。
+# 跨过标点或任何实义字符就当成新的陈述，继续按命中处理 —— 所以「无线充电座冒烟」的「无」不是否定，
+# 「未见冒烟，滚刷烧焦」也只遮住前半句。安全判定宁可误报不可漏报，判否定的条件因此比判命中严得多。
+_NEG_CUES = (
+    "未观察到", "未发现", "未检出", "未出现", "未见到", "未见", "未有", "未",
+    "没发现", "没看到", "没见到", "没见", "没有", "没",
+    "看不到", "看不见", "不见", "不存在", "无明显", "无任何", "无", "非", "不是", "不",
+)
+# 英文否定词按词边界匹配，避免 nozzle 里的 no 被当成否定。
+_NEG_CUE_RE = re.compile(
+    "|".join([*_NEG_CUES, r"(?<![a-z])(?:no|not|without|none|negative\s+for|free\s+of)(?![a-z])"])
+)
+# 否定词与安全词之间、安全词彼此之间允许出现的连接词。不含逗号句号等断句标点。
+_FILLERS = (
+    "明显", "任何", "相关", "上述", "这些", "类似", "迹象", "痕迹", "现象", "情况", "特征",
+    "的", "等", "或", "和", "与", "及", "、", "/", "-", "·",
+    "signs of", "sign of", "signs", "any", "obvious", "visible", "or", "and", "of",
+)
+
+
+def _skip_fillers(text: str, i: int) -> int:
+    while i < len(text):
+        if text[i].isspace():
+            i += 1
+            continue
+        filler = next((f for f in _FILLERS if text.startswith(f, i)), None)
+        if filler is None:
+            return i
+        i += len(filler)
+    return i
+
+
+def _mask_negated(text: str, terms: tuple[str, ...]) -> str:
+    """把「否定词 + 安全词串」里的安全词遮成不可匹配字符，其余原样返回（位置不变）。"""
+    if not text or not terms:
+        return text
+    masked = list(text)
+    for cue in _NEG_CUE_RE.finditer(text):
+        i = cue.end()
+        while True:
+            i = _skip_fillers(text, i)
+            term = next((t for t in terms if text.startswith(t, i)), None)
+            if term is None:
+                break
+            masked[i : i + len(term)] = "\x00" * len(term)
+            i += len(term)
+    return "".join(masked)
+
+
 def load_rules_config(path: str | Path) -> RulesConfig:
     path = Path(path)
     if not path.is_file():
@@ -132,6 +185,9 @@ class RulesService:
             for rid, r in self.rules.items()
             for term in r.observation_terms
         ]
+        # 否定遮蔽用的词表：长词在前，保证「swollen battery」不会先被「swollen」截断。
+        self._text_terms = tuple(sorted({n for _, _, n in self._text_index if n}, key=len, reverse=True))
+        self._obs_terms = tuple(sorted({n for _, _, n in self._obs_index if n}, key=len, reverse=True))
         log.info("rules loaded version=%s rules=%s", self.version, list(self.rules))
 
     def reload_if_changed(self) -> bool:
@@ -170,7 +226,7 @@ class RulesService:
         if action_note:
             result.hits += self._match_text(action_note, "action_note", ts)
         for obs in observations or []:
-            low = obs.casefold()
+            low = _mask_negated(obs.casefold(), self._obs_terms)
             for rid, term, nterm in self._obs_index:
                 if nterm in low:
                     result.hits.append(
@@ -215,7 +271,7 @@ class RulesService:
         """步骤命中安全词或无 caution 的高危动作时丢弃；步骤文字不是用户风险事实。"""
         if self._hot:
             self.reload_if_changed()
-        norm = _norm(f"{title} {instruction}")
+        norm = _mask_negated(_norm(f"{title} {instruction}"), self._text_terms)
         for rid, term, nterm in self._text_index:
             # Only the approved plan library can mark the entire source as a
             # stop condition. A quoted safety notice is not a reported risk or
@@ -241,7 +297,7 @@ class RulesService:
         return PreStepResult("ok", None, None)
 
     def _match_text(self, text: str, source: Source, ts: str) -> list[RuleHit]:
-        norm = _norm(text)
+        norm = _mask_negated(_norm(text), self._text_terms)
         return [
             RuleHit(rid, source, term, ts, self.rules[rid].action)
             for rid, term, nterm in self._text_index

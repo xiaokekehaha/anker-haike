@@ -169,3 +169,57 @@ async def test_normal_message_still_goes_to_reply(mem_runtime):
     stages = [e["stage"] for e in events if e["type"] == "progress"]
     assert stages[:2] == ["intake", "disambiguate"] and "diagnose" in stages
     assert "escalate" not in stages and all(e["type"] != "escalation_summary" for e in events)
+
+
+# ---- 否定语义（2026-09-16）：视觉模型会写「未见冒烟烧焦鼓包漏液火花」这类否定清单，
+# 子串匹配把它当成风险事实，正常的滚刷缠绕照片会被误升级 R4 并终止排障。----
+
+
+@pytest.mark.parametrize(
+    "observation",
+    [
+        "未见冒烟烧焦鼓包漏液火花",  # 实测样本：data/demo-photos/1_滚刷缠绕_正常曝光.png
+        "未见明显冒烟",
+        "无冒烟、烧焦迹象",
+        "没有漏液",
+        "滚刷无鼓包",
+        "no smoke or burning smell",
+        "no signs of swollen battery",
+    ],
+)
+def test_cp_in_observation_negated_safety_terms_do_not_escalate(rules, observation):
+    res = rules.check_in(observations=[observation])
+    assert res.rule_ids == [] and not res.escalate, res.flags
+
+
+@pytest.mark.parametrize(
+    "observation",
+    [
+        "未见冒烟，滚刷烧焦",  # 否定只管到标点为止
+        "无线充电座冒烟",  # 「无」后面不是安全词串，不是否定
+        "没有办法关机，机身冒烟",
+        "未见冒烟但有火花",
+        "visible smoke near the brush",
+        "battery swollen, no leaking",
+        "滚刷烧焦",
+    ],
+)
+def test_cp_in_observation_real_safety_terms_still_escalate(rules, observation):
+    res = rules.check_in(observations=[observation])
+    assert res.rule_ids == ["R4"] and res.escalate, observation
+
+
+@pytest.mark.parametrize(
+    ("text", "rule_ids"),
+    [
+        ("没有焦味", []),
+        ("机器不冒烟，就是吸力小", []),
+        ("未见鼓包", []),
+        ("没有异味但有火花", ["R4"]),  # 否定只遮住紧邻的那个词
+        ("没有办法关机，机器冒烟了", ["R4"]),
+        ("不小心闻到焦味", ["R4"]),
+    ],
+)
+def test_cp_in_text_negated_safety_terms(rules, text, rule_ids):
+    res = rules.check_in(text=text)
+    assert res.rule_ids == rule_ids, text
