@@ -29,7 +29,7 @@ cases:
       hits:
         - {id: B, snippet: "## B. 边刷不转 1. 关机后拆下边刷，清理缠绕的毛发与线头。2. 检查边刷轴是否有异物或进水，擦干后装回。3. 仍不转 → 边刷电机故障，升级人工。", doc_id: troubleshooting_rv}
         - {id: E, snippet: "## E. 充电问题 1. 确认基站电源灯亮，触点无灰尘。2. 手动放回基站，观察 5 分钟内是否开始充电。", doc_id: troubleshooting_rv}
-        - {id: header, snippet: "# eufy X10 Pro Omni 用户手册（排障节选）## 第 1 章 日常维护"}
+        - {id: header, snippet: "# 扫地机器人通用用户手册（排障节选）## 第 1 章 日常维护"}
     expect: {relevant: [B], irrelevant: [E, header], coverage_in: [sufficient, insufficient]}
   - id: none_relevant
     input:

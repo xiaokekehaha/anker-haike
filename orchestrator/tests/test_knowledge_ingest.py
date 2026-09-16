@@ -90,12 +90,13 @@ async def test_ingest_is_idempotent_and_metadata_queryable(client, server):
     assert len(server.calls) > n_calls  # 确实重跑了
     items = await verify_metadata(client, first.kb_ids["kb_manual"])
     by_title = {i["title"]: i["custom_metadata"] for i in items}
-    m = by_title["eufy X10 Pro Omni 用户手册（排障节选）"]
-    assert (
-        m["scope"] == "sku"
-        and "EUFY-X10-PRO-OMNI" in m["sku_list"]
-        and m["doc_version"] == "2026-09-12.1"
-    )
+    # 该手册内容是通用维护流程，已降为品类级，好让未确认型号的会话也检索得到（spec §9.6）
+    m = by_title["扫地机器人通用用户手册（排障节选）"]
+    assert m["scope"] == "category_generic" and m["doc_version"] == "2026-09-12.1"
+    assert not m["sku_list"]
+    # 机型专属手册仍是 sku 级，范围控制本身没有放开
+    v2 = by_title["eufy L60 / G 系列 用户手册（排障节选）"]
+    assert v2["scope"] == "sku" and "EUFY-L60-HYBRID" in v2["sku_list"]
     tickets = await verify_metadata(client, first.kb_ids["kb_tickets"])
     t1 = next(i for i in tickets if i["title"] == "T0001")["custom_metadata"]
     assert (

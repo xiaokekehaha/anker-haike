@@ -20,6 +20,8 @@ from tests.fake_weknora import FakeWeKnora
 
 DATA = REPO_ROOT / "data" / "knowledge"
 X10 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X10-PRO-OMNI")
+# manual_rv_v1 已降为品类级（通用维护流程），机型级手册只剩 v2，范围控制改由它来体现
+L60 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-L60-HYBRID")
 CAT_ONLY = KnowledgeScope("category_only", "robot_vacuum")
 UNKNOWN = KnowledgeScope("unknown", "robot_vacuum")
 
@@ -58,11 +60,12 @@ def test_parse_custom_metadata_dict_and_yaml():
 async def test_allowed_sets_follow_product_state(adapter):
     ad, _ = adapter
     manual = ad.index["kb_manual"]
-    assert {e.doc_id for e in allowed_entries(manual, CAT_ONLY)} == {"troubleshooting_rv"}
-    assert {e.doc_id for e in allowed_entries(manual, X10)} == {
-        "troubleshooting_rv",
-        "manual_rv_v1",
-    }
+    generic = {"troubleshooting_rv", "manual_rv_v1"}
+    assert {e.doc_id for e in allowed_entries(manual, CAT_ONLY)} == generic
+    # X10 没有专属手册，看到的就是两份品类级资料
+    assert {e.doc_id for e in allowed_entries(manual, X10)} == generic
+    # 机型专属手册仍然只对自己的 sku 可见
+    assert {e.doc_id for e in allowed_entries(manual, L60)} == generic | {"manual_rv_v2"}
     assert allowed_entries(manual, UNKNOWN) == []
     tickets_x10 = allowed_entries(ad.index["kb_tickets"], X10)
     assert tickets_x10 and all(e.sku_list == ("EUFY-X10-PRO-OMNI",) for e in tickets_x10)
@@ -74,7 +77,8 @@ async def test_category_only_results_exclude_sku_scope(adapter):
     ad, server = adapter
     res = await ad.hybrid_search("kb_manual", "滚刷", 5, CAT_ONLY)
     assert res.status == "ok" and res.hits
-    assert {h.doc_id for h in res.hits} == {"troubleshooting_rv"}
+    assert {h.doc_id for h in res.hits} <= {"troubleshooting_rv", "manual_rv_v1"}
+    assert "manual_rv_v2" not in {h.doc_id for h in res.hits}
     assert all(h.source == "kb_manual" and h.evidence_id == h.chunk_id for h in res.hits)
     # 请求确实带了 knowledge_ids（只含 generic 条目）
     assert ("POST", f"/knowledge-bases/{ad.kb_ids['kb_manual']}/hybrid-search") in server.calls
@@ -82,10 +86,11 @@ async def test_category_only_results_exclude_sku_scope(adapter):
 
 async def test_confirmed_sku_includes_own_manual_and_generic(adapter):
     ad, _ = adapter
-    res = await ad.hybrid_search("kb_manual", "滚刷", 5, X10)
+    res = await ad.hybrid_search("kb_manual", "滚刷", 5, L60)
     assert res.status == "ok" and {h.doc_id for h in res.hits} == {
         "troubleshooting_rv",
         "manual_rv_v1",
+        "manual_rv_v2",
     }
     assert res.hits[0].as_evidence_item()["status"] == "ok"
 
@@ -162,7 +167,8 @@ async def test_post_filter_drops_hits_outside_allowed(adapter):
 
     ad.client.hybrid_search = leaky  # type: ignore[method-assign]
     res = await ad.hybrid_search("kb_manual", "滚刷", 5, CAT_ONLY)
-    assert {h.doc_id for h in res.hits} == {"troubleshooting_rv"}
+    assert {h.doc_id for h in res.hits} <= {"troubleshooting_rv", "manual_rv_v1"}
+    assert "manual_rv_v2" not in {h.doc_id for h in res.hits}
 
 
 # ---- 本机 WeKnora 集成（有 key 且可达时）----
@@ -180,14 +186,17 @@ async def test_live_category_only_excludes_sku_docs():
             ad = WeKnoraKnowledgeAdapter(c, kb_ids)
             counts = await ad.refresh_index()
             res = await ad.hybrid_search("kb_manual", "滚刷缠绕毛发怎么清理", 5, CAT_ONLY)
-            res_sku = await ad.hybrid_search("kb_manual", "滚刷缠绕毛发怎么清理", 5, X10)
+            res_sku = await ad.hybrid_search("kb_manual", "滚刷缠绕毛发怎么清理", 5, L60)
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"weknora not reachable: {type(exc).__name__}")
     assert counts["kb_manual"] == 3 and counts["kb_tickets"] == 200
     assert res.status in ("ok", "no_match")
     if res.status == "ok":
-        assert {h.doc_id for h in res.hits} == {"troubleshooting_rv"}
+        # 通用维护手册降级后品类会话也能拿到；机型专属手册仍被挡在外面
+        assert {h.doc_id for h in res.hits} <= {"troubleshooting_rv", "manual_rv_v1"}
+        assert "manual_rv_v2" not in {h.doc_id for h in res.hits}
     assert res_sku.status == "ok" and {h.doc_id for h in res_sku.hits} <= {
         "troubleshooting_rv",
         "manual_rv_v1",
+        "manual_rv_v2",
     }

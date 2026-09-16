@@ -1,13 +1,13 @@
 ---
 doc_id: manual_rv_v1
-title: eufy X10 Pro Omni 用户手册（排障节选）
-scope: sku
-sku_list: [EUFY-X10-PRO-OMNI, EUFY-X9-PRO, EUFY-X8-PRO-SES]
+title: 扫地机器人通用用户手册（排障节选）
+scope: category_generic
+sku_list: []
 category: robot_vacuum
 doc_version: 2026-09-12.1
 ---
 
-# eufy X10 Pro Omni 用户手册（排障节选）
+# 扫地机器人通用用户手册（排障节选）
 
 ## 第 1 章 日常维护
 
