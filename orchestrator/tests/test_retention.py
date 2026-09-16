@@ -127,9 +127,19 @@ async def test_purge_expired_sessions_real_postgres_keeps_active_and_fresh():
             await images.put(sid, "fault", png_bytes(64), "image/png")
         orphan = "orphan-" + old[:8]
         await store.append_event(orphan, "r0", {"type": "ping"})
+        # 过期但带 30 天内 L3 case 的会话：purge 扫得到，但 delete_session_data 会保留（人工闭环还没完）
+        cased = (await store.create_session()).session_id
+        await store.append_event(cased, "r1", {"type": "run_started", "resumed": False, "deadline_ms": 1})
         async with pool.connection() as conn:
             stale = datetime.now(UTC) - timedelta(hours=30)
-            await conn.execute("update sessions set updated_at = %s where session_id in (%s, %s)", (stale, old, active))
+            await conn.execute(
+                "update sessions set updated_at = %s where session_id in (%s, %s, %s)", (stale, old, active, cased)
+            )
+            await conn.execute(
+                """insert into cases(case_id,session_id,issue_id,sku,category,status)
+                   values (gen_random_uuid(),%s,'issue-1','X10','rv','open')""",
+                (cased,),
+            )
             await conn.execute("update session_events set created_at = %s where session_id = %s", (stale, orphan))
             # 造一条 checkpoint 行（表可能尚不存在：由 saver 建；这里只在存在时验证）
             cur = await conn.execute("select (to_regclass('checkpoints') is not null) as has")
@@ -143,9 +153,10 @@ async def test_purge_expired_sessions_real_postgres_keeps_active_and_fresh():
 
         stats = await purge_expired(pool, session_ttl=timedelta(hours=24))
         assert isinstance(stats, PurgeStats)
-        # 库里可能还有更早失败运行留下的过期数据，因此按「至少」与按 id 断言
-        assert stats.sessions >= 1 and stats.orphan_sessions >= 1
-        assert stats.deleted["sessions"] == stats.sessions
+        # 库里可能还有更早失败运行留下的过期数据，因此按「至少」与按 id 断言。
+        # 扫描数（stats.sessions）天然可能大于实际删除数：带近期 case 的过期会话会被保留。
+        assert stats.sessions >= 2 and stats.orphan_sessions >= 1
+        assert 1 <= stats.deleted["sessions"] < stats.sessions
         assert stats.deleted["session_events"] >= 2
         assert stats.deleted["session_images"] >= 1
         if has_ckpt:
@@ -154,15 +165,19 @@ async def test_purge_expired_sessions_real_postgres_keeps_active_and_fresh():
         assert not await store.session_exists(old) and await store.session_exists(fresh)
         assert await store.session_exists(active) and await store.list_events(active)
         assert await store.list_events(orphan) == []
+        # 带未关闭 case 的过期会话原样保留，事件也不动
+        assert await store.session_exists(cased) and await store.list_events(cased)
         async with pool.connection() as conn:
             cur = await conn.execute(
                 "select count(*) as n from session_images where session_id = any(%s)",
                 ([old, fresh, active],),
             )
             assert (await cur.fetchone())["n"] == 2
-            await conn.execute("delete from sessions where session_id = any(%s)", ([fresh, active],))
-            await conn.execute("delete from session_events where session_id = any(%s)", ([fresh, active],))
-            await conn.execute("delete from session_images where session_id = any(%s)", ([fresh, active],))
+            keep = [fresh, active, cased]
+            await conn.execute("delete from cases where session_id = %s", (cased,))
+            await conn.execute("delete from sessions where session_id = any(%s)", (keep,))
+            await conn.execute("delete from session_events where session_id = any(%s)", (keep,))
+            await conn.execute("delete from session_images where session_id = any(%s)", (keep,))
     finally:
         await pool.close()
 
