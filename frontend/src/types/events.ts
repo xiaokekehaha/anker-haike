@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 7fe74240c0a34e1e53db57961310a4fdbf280a688b3c829507905327d81a8ab4
+// SHA-256: c7f67b63a671aac6ee12e0334d61f2a35da351f57fd7acea69722747281ca3e3
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -169,6 +169,7 @@ export type RunId9 = string;
  */
 export type Seq9 = number;
 export type Type9 = 'message';
+export type Citations = string[];
 export type EventId10 = string;
 export type MessageId2 = string;
 export type ModelTier = ('primary' | 'fallback') | null;
@@ -226,6 +227,7 @@ export type Question = string;
 export type Observations = StepObservation[];
 export type PlanId = string;
 export type PlanVersion = number;
+export type PrimaryEvidenceId = string | null;
 export type StepId = string;
 export type StepNo = number;
 export type Title = string;
@@ -703,6 +705,7 @@ export interface Message {
  * via the `definition` "MessageEnd".
  */
 export interface MessageEnd {
+  citations?: Citations;
   event_id: EventId10;
   message_id: MessageId2;
   model_tier?: ModelTier;
@@ -768,6 +771,7 @@ export interface TroubleshootStep {
   observations?: Observations;
   plan_id: PlanId;
   plan_version: PlanVersion;
+  primary_evidence_id?: PrimaryEvidenceId;
   step_id: StepId;
   step_no: StepNo;
   title: Title;

@@ -27,6 +27,8 @@ type Props = {
 /** 按 timeline 渲染（05 §3）；只有 pendingInput 指向的卡片可交互，其余置为历史。 */
 export function Timeline({ state, onAction, onIssueAction }: Props) {
   const [hover, setHover] = useState<string[]>([]);
+  // 抽屉在时间线里排在步骤卡之前，拿不到「下一张卡」，所以按全时间线收集主引用
+  const primary = state.timeline.flatMap((t) => (t.kind === 'step_card' && t.step.primary_evidence_id ? [t.step.primary_evidence_id] : []));
   const pendingCard = state.ui === 'awaiting_input' ? state.pendingInput?.card_id ?? null : null;
   const busy = state.pendingActionId !== null;
   const evidence = state.timeline.filter((t): t is Extract<TimelineItem, { kind: 'evidence' }> => t.kind === 'evidence').flatMap((t) => t.items);
@@ -50,7 +52,7 @@ export function Timeline({ state, onAction, onIssueAction }: Props) {
           case 'tool':
             return <ToolRow key={item.tool_id} item={item} />;
           case 'evidence':
-            return <EvidenceDrawer key={`ev-${i}`} items={item.items} highlight={hover} />;
+            return <EvidenceDrawer key={`ev-${i}`} items={item.items} highlight={hover} primary={primary} />;
           case 'product_card':
             return <ProductCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onSelect={(sku) => onAction('select_product', { sku })} />;
           case 'step_card':

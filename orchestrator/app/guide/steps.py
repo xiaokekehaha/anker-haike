@@ -3,6 +3,9 @@
 1. 取 plan_cursor 指向的步骤，instruction_src 原文来自 plans.yaml 的证据索引（已审核文本）。
 2. evidence_ids = 当前允许证据集合中与 instruction_src 同 doc 的条目 + 命中该计划的故障卡证据；
    若步骤引用了允许集合外的 id → 丢弃该步骤取下一步（09 §2.5）。
+2b. primary_evidence_id = 这一步真正的出处那一条。同 doc 集合太宽（一步清理滚刷会把滤网、
+   尘盒、边刷的命中一起挂上），所以按 instruction_src 的精确锚点在集合里认人；认得出就用
+   检索到的那条，认不出才本地发布已审核原文。见 spec_grounded_citation_20260916.md §4。
 3. CP-pre-step：文字含 R4 或含高危动作且无 caution → 丢弃取下一步。
 4. 原样发布已审核操作；停止条件独立附在 caution 中，不参与用户风险判定。
 card_id = uuid5(session_id, plan_id, step_id)，重跑稳定。
@@ -14,6 +17,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.knowledge.anchors import match_anchor
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
@@ -37,6 +41,8 @@ class StepPrep:
     rewritten: bool = False
     model_trace: dict[str, Any] | None = None
     evidence: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # 主引用从哪儿来：exact_chunk / marker / text 表示检索真的召回了锚点，none 表示退回本地发布
+    anchor: dict[str, Any] | None = None
 
 
 def _evidence_for(
@@ -138,29 +144,11 @@ async def prepare_step(
             )
             step_id = _advance_in_plan(plan, step_id)
             continue
-        # Local approved sources remain inspectable even if retrieval is down.
-        # They are publication evidence, not model-proposed or user-reported facts.
-        doc_id, chunk_id = step.evidence_key.split("#", 1)
-        source = library.evidence[step.evidence_key]
-        published_evidence = {}
-        if not any(
-            e.get("doc_id") == doc_id
-            and e.get("chunk_id") == chunk_id
-            and e.get("snippet") == source_text
-            for e in allowed_evidence.values()
-        ):
-            eid = f"plan:{step.evidence_key}:{source.doc_version}"
-            published_evidence[eid] = {
-                "evidence_id": eid,
-                "source": "approved_plan",
-                "doc_id": doc_id,
-                "chunk_id": chunk_id,
-                "doc_version": source.doc_version,
-                "snippet": source_text,
-                "score": 1.0,
-                "status": "ok",
-            }
-            evidence_ids = sorted({*evidence_ids, eid})
+        primary_id, published_evidence, anchor_match = _primary_evidence(
+            step, library, source_text, allowed_evidence
+        )
+        if published_evidence:
+            evidence_ids = sorted({*evidence_ids, *published_evidence})
         card_id = step_card_id(session_id, plan.plan_id, step_id)
         return StepPrep(
             "ready",
@@ -174,6 +162,7 @@ async def prepare_step(
                 "expected_result": step.expected_result,
                 "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,
+                "primary_evidence_id": primary_id,
                 "observations": _open_observations(step, state, library),
             },
             card_id=card_id,
@@ -185,8 +174,56 @@ async def prepare_step(
             },
             dropped=dropped,
             evidence=published_evidence,
+            anchor={
+                "evidence_key": step.evidence_key,
+                "match": anchor_match,
+                "primary_evidence_id": primary_id,
+                "retrieved": not published_evidence,
+            },
         )
     return StepPrep("exhausted", dropped=dropped)
+
+
+def _primary_evidence(
+    step: PlanStep,
+    library: PlanLibrary,
+    source_text: str,
+    allowed_evidence: dict[str, dict[str, Any]],
+) -> tuple[str, dict[str, dict[str, Any]], str]:
+    """这一步的主引用：优先用检索真的召回的那一条，认不出才本地发布。
+
+    返回 (primary_evidence_id, 需要额外发布的证据, 锚点命中方式)。
+
+    认得出时不再发布 approved_plan——此前的去重按 doc_id + chunk_id + snippet 比对，而检索侧
+    chunk_id 是 WeKnora 的 UUID、plans.yaml 侧是 c12，永远不相等，于是每一步都多发一条与某个
+    检索片段内容重叠的证据。按锚点认人才是这个去重本来的语义。
+
+    认不出的原因可能是检索没召回、文档不在当前 scope（manual_rv_v1 是 sku 文档，category_only
+    会话看不见），或该语料没进 WeKnora（FAQ 走独立索引且当前关闭）。这三种都退回本地发布：
+    已审核原文即便检索挂了也应当可查，但调用方会记一条 anchor_not_retrieved 以便归因。
+    """
+    eid, how = match_anchor(step.evidence_key, source_text, allowed_evidence)
+    if eid is not None:
+        return eid, {}, how
+    doc_id, chunk_id = step.evidence_key.split("#", 1)
+    source = library.evidence[step.evidence_key]
+    pid = f"plan:{step.evidence_key}:{source.doc_version}"
+    return (
+        pid,
+        {
+            pid: {
+                "evidence_id": pid,
+                "source": "approved_plan",
+                "doc_id": doc_id,
+                "chunk_id": chunk_id,
+                "doc_version": source.doc_version,
+                "snippet": source_text,
+                "score": 1.0,
+                "status": "ok",
+            }
+        },
+        how,
+    )
 
 
 def _open_observations(step: PlanStep, state: dict[str, Any], library: PlanLibrary) -> list[dict[str, Any]]:

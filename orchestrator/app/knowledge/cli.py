@@ -7,6 +7,7 @@ haike-kb ingest [--prune] [--recreate-kb]
 haike-kb eval [--arm A] [--config data/eval/retrieval/configs/B.yaml] [--cases …] [--top-k 5]
                               用评测集直接打 KnowledgeAdapter，输出 hit@k / precision@k / 泄漏 / 延迟到 reports/retrieval/
 haike-kb verify               打印各知识库解析状态与 custom_metadata
+haike-kb anchors              证据可达性基线：锚点分块 / 检索可达 / 元数据完整
 haike-kb search "query"       用 knowledge-search 试检索（验证 rerank 不可用时仍有结果）
 haike-kb snapshot export|import [DIR]
 """
@@ -20,6 +21,7 @@ import os
 import sys
 from pathlib import Path
 
+from app.knowledge.adapter import WeKnoraKnowledgeAdapter
 from app.knowledge.ingest import Ingestor, verify_metadata, wait_parsed, write_manifest
 from app.knowledge.snapshot import export_snapshot, import_snapshot
 from app.knowledge.weknora_client import WeKnoraClient, WeKnoraError
@@ -173,6 +175,52 @@ async def _verify() -> int:
     return 0
 
 
+async def _anchors(top_k: int) -> int:
+    """证据可达性基线（G4-A/B/C）：锚点标记与正文是否同块、锚点是否检索得到、元数据是否完整。"""
+    from app.knowledge.reachability import check_chunking, check_reachable, plan_anchors
+    from app.plans.runtime import get_plan_library
+
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    anchors = plan_anchors(get_plan_library())
+    async with _client() as c:
+        adapter = WeKnoraKnowledgeAdapter(c, manifest["knowledge_bases"])
+        await adapter.refresh_index()
+        await adapter.refresh_chunks()
+        by_doc: dict[str, list[dict]] = {}
+        for e in adapter.index["kb_manual"]:
+            by_doc.setdefault(e.doc_id, []).extend(adapter.chunks.get(e.knowledge_id) or [])
+        chunking = check_chunking(anchors, by_doc)
+        reach = await check_reachable(anchors, adapter, top_k=top_k)
+        missing = [
+            it
+            for kb, kb_id in manifest["knowledge_bases"].items()
+            if kb != "kb_faq"
+            for it in await verify_metadata(c, kb_id)
+            if not (it["custom_metadata"] or {}).get("doc_version")
+        ]
+    print("== B 分块：标记与正文同块 ==")
+    for r in chunking:
+        print(f"  {r['verdict']:<13} {r['evidence_key']:<24} {r['text'][:24]}")
+    print("== A 可达：步骤标题能否检索到锚点 ==")
+    for r in reach:
+        rank = f"@{r['hit_rank']}" if r["hit_rank"] else "-"
+        print(
+            f"  {r['verdict']:<16} {r['evidence_key']:<24} {rank:<4} "
+            f"match={r['match']:<12} scope={r.get('scope', '-'):<18} q={r['query']}"
+        )
+    print("== C 元数据：doc_version 缺失 ==")
+    print(f"  missing={len(missing)}")
+    bad_b = [r for r in chunking if r["verdict"] in ("split", "text_missing", "marker_missing")]
+    bad_a = [r for r in reach if r["verdict"] == "unreachable"]
+    print(
+        json.dumps(
+            {"chunking_bad": len(bad_b), "unreachable": len(bad_a), "metadata_missing": len(missing)},
+            ensure_ascii=False,
+        )
+    )
+    return 1 if (bad_b or bad_a or missing) else 0
+
+
 async def _search(query: str) -> int:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     kb_ids = [v for k, v in manifest["knowledge_bases"].items() if k != "kb_faq"]
@@ -236,6 +284,8 @@ def main(argv: list[str] | None = None) -> int:
         help="再用真实模型跑 grade（若开）+ synthesize，比较 expected_plan / expected_outcome（需厂商 key）",
     )
     sub.add_parser("verify")
+    an = sub.add_parser("anchors")
+    an.add_argument("--top-k", type=int, default=6)
     s = sub.add_parser("search")
     s.add_argument("query")
     sn = sub.add_parser("snapshot")
@@ -263,6 +313,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         if args.cmd == "verify":
             return asyncio.run(_verify())
+        if args.cmd == "anchors":
+            return asyncio.run(_anchors(args.top_k))
         if args.cmd == "search":
             return asyncio.run(_search(args.query))
         return asyncio.run(_snapshot(args.action, args.dir))

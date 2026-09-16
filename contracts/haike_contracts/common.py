@@ -127,6 +127,9 @@ class TroubleshootStep(Strict):
     expected_result: str
     caution: str | None = None
     evidence_ids: list[str] = Field(default_factory=list)
+    # 这一步真正的出处。evidence_ids 是同 doc 的宽集合（一步清理滚刷会带上滤网、尘盒的命中），
+    # 主引用按 instruction_src 的锚点认出，前端默认只展开它，其余折叠。
+    primary_evidence_id: str | None = None
     # 可选：需要判别结果的步骤声明其观察问题；旧客户端忽略该字段仍可只反馈三态
     observations: list[StepObservation] = Field(default_factory=list)
 

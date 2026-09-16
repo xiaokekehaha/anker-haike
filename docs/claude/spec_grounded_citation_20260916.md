@@ -224,3 +224,66 @@ A/B/C 全是确定性断言，可进 CI，**不需要人工标注集**——比�
 - [智能体式 RAG 方案评估](spec_agentic_rag_evaluation.md) —— 本 spec 的检索层现状基线来自此文 §1
 - [R7 误升级根因](spec_r7_symptom_interview_20260915.md) —— G1 的问题样本
 - [向量库选型](spec_vector_store_decision.md)、[上下文工程经验](spec_context_engineering_lessons.md)
+
+---
+
+## 9. 实施记录（2026-09-16，分支 feat/grounded-citation）
+
+本节追加，不改上文。上文是动工前的评估，这里记录实际做出来之后的事实与三处与评估不符的地方。
+
+### 9.1 已落地
+
+| 序 | 内容 | 位置 |
+| --- | --- | --- |
+| 1 | G4-A/B/C 可达性基线，`make kb-anchors`，非零退出即红 | `knowledge/reachability.py`、`knowledge/cli.py`、Makefile |
+| 2 | 锚点匹配三档（精确 chunk / 人工标记 / 已审核原文） | `knowledge/anchors.py` |
+| 3 | G2′ 主引用、去重修正、`anchor` 归因 trace | `guide/steps.py`、`sessions/graph.py` |
+| 4 | `TroubleshootStep.primary_evidence_id`、`MessageEnd.citations` | `contracts/haike_contracts/` |
+| 5 | 前端主引用直接展开、其余折叠一层 | `EvidenceDrawer.tsx`、`Timeline.tsx`、`Cards.module.css` |
+| 6 | G1a 事后字面归因与 `reply_grounding` 指标 | `conversation/citations.py`、`sessions/streaming.py`、`sessions/graph.py`、`conversation/reply.py` |
+
+验证：后端 892 passed（新增 `test_anchors.py` 8 例、`test_citations.py` 8 例）、前端 214 passed、
+`make contracts-check` 通过、`make lint` 通过、`make kb-anchors` 三项全绿。
+
+### 9.2 与评估不符的三处
+
+1. **G4-B(i) 的担心没有发生，但 G4-A 暴露了另一件事。**
+   §4 担心「（c12）标记写在标题行，可能与正文被切到不同子块」。实测五个手册锚点全部 `same_chunk`，
+   标记可用。真正拦路的是 **scope**：`manual_rv_v1` 是 `scope: sku` 文档，而引用它的计划全是
+   `applies_to.scope: category_generic`。所以 category_only 会话根本看不见这份手册，锚点必然认不出，
+   每一步都退回本地发布。这不是分块问题也不是检索问题，是**语料 scope 与计划 scope 不对齐**，
+   §5 的归因三问里没有这一类。可达性检查因此必须按「锚点所属文档可见的最小 scope」去测，
+   否则测的是范围控制而不是可达性。是否要把手册降为 category_generic，或给计划补 sku 版本，
+   留作开放问题 5。
+
+2. **四个 FAQ 锚点当前永远认不出。** `config/retrieval.yaml` 里 `faq.enabled: false`
+   （WeKnora v0.8.0 的 FAQ 接口返回空）。所以 `faq_rv#q7/q9/q12/q15` 这四步固定走本地发布。
+   基线把它记为 `skipped_faq_off` 而不是红，但这意味着**四步排障的来源抽屉里只有预写资料、
+   没有检索命中**，演示时值得知道。
+
+3. **§0.1 第 4 条关于 `reply_to_turn` 的说法要修正。** 它的模型分支条件是
+   `not owns_diagnostic_reply(state)`——排障回合根本不走模型，走的是模板。该路径的提示词明确
+   禁止「生成新的排障动作」。所以它不是「第二条排障自由文本路径」，G1a 在那里的正确用法不是
+   挂引用，而是**用空证据集合跑归因**：凡出现动作句就全部落进 `ungrounded`，正好当这条禁令的
+   观测口。已按此实现。
+
+### 9.3 实现中确认的两件事
+
+- **去重永不生效已证实**。`steps.py` 旧去重比对 `chunk_id`，而检索侧是 WeKnora UUID、FAQ 侧是
+  `faq_rv#q7`、`plans.yaml` 侧是 `c12`，三者互不相等。两个既有测试断言里都带着那条多余的
+  `plan:manual_rv_v1#c12:...`，等于把这个 bug 当成期望行为钉住了，本次一并改正。
+- **字面归因的偏差方向**符合预期：R7 样本那种「检查基站供电 / 清洁触点 / 重新归位」三步全部被判
+  `ungrounded`，而改写过的正确步骤也会被漏判。分母还有一层保守——动作句按关键词认，口语说法
+  认不出。这些都只影响基线高低，不影响「先观测不拦截」的结论。
+
+### 9.4 下一步
+
+§7 的 4–6 项未做：G4-A/C 进 CI、G3 的 locator + grade 出 SSE、G1b 模型自标引用。
+G1b 仍建议等 `reply_grounding` 跑出一周基线再决定。
+
+### 9.5 新增开放问题
+
+5. **手册 scope 与计划 scope 不对齐怎么处理？** 三个选项：把 `manual_rv_v1` 降为
+   `category_generic`（放宽范围控制）、给计划补 sku 维度（配置翻倍）、或接受 category_only
+   会话固定走本地发布（现状，来源抽屉里看不到检索命中）。这件事影响演示时「来源」的说服力，
+   需要你拍板。

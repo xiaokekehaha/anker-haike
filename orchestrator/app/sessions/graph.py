@@ -2184,6 +2184,20 @@ async def guide(state: SessionState) -> SessionState:
                             "card_id": published_card_id,
                             "rewritten": prep.rewritten,
                         },
+                        # 主引用是这张卡的属性：锚点没被召回时步骤照发（本地已审核原文），
+                        # 但要能归因到分块 / scope / 检索三者中的哪一个
+                        *(
+                            [
+                                {
+                                    "event": "step_anchor"
+                                    if prep.anchor["retrieved"]
+                                    else "anchor_not_retrieved",
+                                    **prep.anchor,
+                                }
+                            ]
+                            if prep.anchor
+                            else []
+                        ),
                     ],
                 }
             )
@@ -2542,6 +2556,9 @@ async def reply(state: SessionState) -> SessionState:
     message_id = uuid.uuid5(
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:reply"
     ).hex
+    from app.conversation.citations import attribute
+
+    cited = evidence_items[: len(kept)]
     out = await stream_to_writer(
         writer,
         router,
@@ -2552,6 +2569,15 @@ async def reply(state: SessionState) -> SessionState:
         session_id=state.get("session_id"),
         lane=_lane(),
         fallback_messages=fallback,
+        cite=lambda text: attribute(text, cited),
+    )
+    _log_grounding(
+        out.citation,
+        session_id=state.get("session_id"),
+        run_id=state.get("run_id"),
+        task="reply.stream",
+        knowledge_status=state.get("knowledge_status"),
+        evidence_n=len(cited),
     )
     msgs = list(state.get("visible_messages") or [])
     if out.completed:
@@ -2568,6 +2594,45 @@ async def reply(state: SessionState) -> SessionState:
         "visible_messages": msgs,
         "first_visible_ms": state.get("first_visible_ms") or out.first_visible_ms,
     }
+
+
+def _log_grounding(
+    citation: dict[str, Any] | None,
+    *,
+    session_id: str | None,
+    run_id: str | None,
+    task: str,
+    knowledge_status: str | None,
+    evidence_n: int,
+) -> None:
+    """自由文本回复的落地率（G1a）：只观测不拦截，先攒基线再决定要不要加门。
+
+    ungrounded 是「给了动作却对不上任何片段」的句子数。检索本来就没结果时（no_match /
+    unavailable）不计，那属于按标准流程说明，不是无据发挥。
+    """
+    if not citation:
+        return
+    ungrounded = citation["ungrounded"] if knowledge_status == "ok" else 0
+    log.info(
+        "grounding task=%s sentences=%d grounded=%d actionable=%d ungrounded=%d cites=%d",
+        task,
+        citation["sentences"],
+        citation["grounded"],
+        citation["actionable"],
+        ungrounded,
+        len(citation["citations"]),
+        extra={
+            "event": "reply_grounding",
+            "task": task,
+            "session_id": session_id,
+            "run_id": run_id,
+            "knowledge_status": knowledge_status,
+            "evidence_n": evidence_n,
+            "ungrounded_reply": bool(ungrounded),
+            **{k: v for k, v in citation.items() if k != "citations"},
+            "citations": len(citation["citations"]),
+        },
+    )
 
 
 def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:

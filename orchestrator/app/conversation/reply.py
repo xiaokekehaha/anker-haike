@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 
 from app.context.builder import build_context
@@ -10,6 +11,8 @@ from app.conversation.reduce import stable_id
 from app.models.runtime import get_model_router
 from app.prompts import SIMPLIFIED_LAYER
 from app.sessions.streaming import stream_to_writer
+
+log = logging.getLogger("conversation.reply")
 
 
 def fallback_reply(state: dict) -> str:
@@ -95,6 +98,10 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 (bundle.messages[0][0], bundle.messages[0][1] + "\n\n" + SIMPLIFIED_LAYER),
                 *bundle.messages[1:],
             ]
+            # 这条路径按记录回答，明令不得生成新的排障动作，所以不给它证据可引：
+            # 归因跑空集合，凡是出现动作句都会落到 ungrounded，正好当这条禁令的观测口。
+            from app.conversation.citations import attribute
+
             result = await stream_to_writer(
                 writer,
                 router,
@@ -105,8 +112,22 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 session_id=state.get("session_id"),
                 lane=os.environ.get("MODEL_LANE", "domestic"),
                 fallback_messages=simplified,
+                cite=lambda text: attribute(text, []),
             )
             if result.completed:
+                if result.citation and result.citation["ungrounded"]:
+                    log.info(
+                        "history reply produced %d action sentences session=%s",
+                        result.citation["ungrounded"],
+                        state.get("session_id"),
+                        extra={
+                            "event": "reply_grounding",
+                            "task": "reply.history",
+                            "session_id": state.get("session_id"),
+                            "ungrounded_reply": True,
+                            **{k: v for k, v in result.citation.items() if k != "citations"},
+                        },
+                    )
                 return {}
         except ValueError:
             pass

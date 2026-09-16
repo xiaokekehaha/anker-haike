@@ -23,6 +23,7 @@ class StreamOutcome:
     text: str = ""
     model_tier: str | None = None
     completed: bool = False
+    citation: dict[str, Any] | None = None  # G1a 事后归因：citations 与未落地句计数
     aborted_ids: list[str] = field(default_factory=list)
     first_visible_ms: int | None = None
     error: str | None = None
@@ -41,6 +42,7 @@ async def stream_to_writer(
     lane: str,
     fallback_messages=None,
     run_started_at: float | None = None,
+    cite: Callable[[str], dict[str, Any]] | None = None,
 ) -> StreamOutcome:
     out = StreamOutcome()
     t0 = time.perf_counter()
@@ -92,12 +94,19 @@ async def stream_to_writer(
                 )
             elif ev.kind == "end":
                 out.completed = True
+                # message_end 是这条回复的唯一收口，引用也在这里定稿
+                out.citation = cite(out.text) if cite else None
                 writer(
                     {
                         "type": "message_end",
                         "message_id": ev.message_id,
                         "status": "completed",
                         "model_tier": ev.model_tier,
+                        **(
+                            {"citations": out.citation["citations"]}
+                            if out.citation and out.citation["citations"]
+                            else {}
+                        ),
                     }
                 )
     except ModelInvokeError as exc:

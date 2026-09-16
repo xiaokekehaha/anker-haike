@@ -57,6 +57,9 @@ eval-worksheet: ## 生成标注工作单（金标 vs 实际召回并排）：rep
 	cd orchestrator && uv run python ../scripts/eval_worksheet.py
 kb-verify: ## 打印各知识库解析状态与 custom_metadata
 	cd orchestrator && uv run --env-file ../.env haike-kb verify
+kb-anchors: ## 证据可达性基线：锚点标记与正文同块、锚点检索可达、元数据完整（非零退出即有红）
+	cd orchestrator && uv run --env-file ../.env haike-kb anchors
+
 kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）
 	cd orchestrator && uv run --env-file ../.env haike-kb snapshot $(if $(DIR),import $(DIR),export)
 

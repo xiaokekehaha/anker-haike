@@ -114,6 +114,9 @@ class MessageEnd(_Event):
     message_id: str
     status: Literal["completed", "aborted"]
     model_tier: ModelTier | None = None
+    # 这条自由文本回复对得上的来源。服务端按字面重叠事后归因，不要求模型自己标注，
+    # 所以为空只表示「没对上」，不表示模型编造（判据仍是检索四态）。
+    citations: list[str] = Field(default_factory=list)
 
 
 class _Card(_Event):

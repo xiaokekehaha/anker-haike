@@ -2388,6 +2388,18 @@
           "title": "Plan Version",
           "type": "integer"
         },
+        "primary_evidence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Primary Evidence Id"
+        },
         "step_id": {
           "title": "Step Id",
           "type": "string"

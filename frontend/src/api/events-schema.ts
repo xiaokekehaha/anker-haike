@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 7fe74240c0a34e1e53db57961310a4fdbf280a688b3c829507905327d81a8ab4
+// SHA-256: c7f67b63a671aac6ee12e0334d61f2a35da351f57fd7acea69722747281ca3e3
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -1443,6 +1443,13 @@ export const serverEventSchema = z.fromJSONSchema({
     "MessageEnd": {
       "additionalProperties": false,
       "properties": {
+        "citations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
         "event_id": {
           "title": "Event Id",
           "type": "string"
@@ -3074,6 +3081,18 @@ export const serverEventSchema = z.fromJSONSchema({
           "minimum": 1,
           "title": "Plan Version",
           "type": "integer"
+        },
+        "primary_evidence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Primary Evidence Id"
         },
         "step_id": {
           "title": "Step Id",

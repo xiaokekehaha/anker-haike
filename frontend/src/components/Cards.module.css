@@ -23,6 +23,9 @@
 .evidenceList { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 8px; }
 .evidenceList li[data-highlight] { background: var(--accent-soft); border-radius: 6px; padding: 4px 6px; margin-left: -6px; }
 .evidenceList p { margin: 2px 0 0; color: var(--text); line-height: 1.6; }
+.evidenceMore { margin-top: 8px; }
+.evidenceMore summary { cursor: pointer; color: var(--muted); }
+.evidenceList li[data-primary] { border-left: 2px solid var(--accent); padding-left: 8px; margin-left: -10px; }
 .evidenceSource { font-weight: 600; margin-right: 6px; }
 .evidenceDoc { color: var(--muted); }
 .card { margin-left: 46px; max-width: 700px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }

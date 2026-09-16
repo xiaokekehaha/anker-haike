@@ -115,9 +115,10 @@ async def test_evidence_id_stable_within_session(mem_runtime):
         set_rules_service(None)
     ids1 = [i["evidence_id"] for e in e1 if e["type"] == "evidence" for i in e["items"]]
     ids2 = [i["evidence_id"] for e in e2 if e["type"] == "evidence" for i in e["items"]]
-    assert ids1 == ["chunk-c12", "plan:manual_rv_v1#c12:2026-09-12.1"]
-    assert ids2 == ["chunk-c12"]  # 已发布的本地来源不重复发送，步骤继续引用稳定 ID。
-    assert list(state.values["evidence"]) == ["chunk-c12", "plan:manual_rv_v1#c12:2026-09-12.1"]  # 累积去重，可被 step.evidence_ids 引用
+    # chunk-c12 的正文就是 c12 那段已审核原文 → 锚点认得出，不再发一条内容重复的本地副本
+    assert ids1 == ["chunk-c12"]
+    assert ids2 == ["chunk-c12"]
+    assert list(state.values["evidence"]) == ["chunk-c12"]  # 累积去重，可被 step.evidence_ids 引用
 
 
 async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: 8c731a4e5af087cb0a1e447e55bcf7aeb88e0d458e5823361e9bedd8f9341d90
+// SHA-256: 5c8432b66fa688b7efd7700822ba07c1ec86870d20f90fcb8386aeb3ca440c3a
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -219,6 +219,7 @@ export type Question = string;
 export type Observations1 = StepObservation[];
 export type PlanId = string;
 export type PlanVersion = number;
+export type PrimaryEvidenceId = string | null;
 export type StepId1 = string;
 export type StepNo = number;
 export type Title2 = string;
@@ -729,6 +730,7 @@ export interface TroubleshootStep {
   observations?: Observations1;
   plan_id: PlanId;
   plan_version: PlanVersion;
+  primary_evidence_id?: PrimaryEvidenceId;
   step_id: StepId1;
   step_no: StepNo;
   title: Title2;

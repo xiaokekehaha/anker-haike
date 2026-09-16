@@ -305,7 +305,16 @@ async def test_evidence_outside_allowed_set_drops_step():
         lane="domestic",
         session_id="sid",
     )
-    assert prep.outcome == "ready" and prep.step["evidence_ids"] == ["c15", "plan:manual_rv_v1#c15:2026-09-12.1"]
+    # 这条允许证据只有 doc_id、没有正文，锚点认不出 → 退回本地发布已审核原文并记可归因的 anchor
+    assert prep.outcome == "ready"
+    assert prep.step["evidence_ids"] == ["c15", "plan:manual_rv_v1#c15:2026-09-12.1"]
+    assert prep.step["primary_evidence_id"] == "plan:manual_rv_v1#c15:2026-09-12.1"
+    assert prep.anchor == {
+        "evidence_key": "manual_rv_v1#c15",
+        "match": "none",
+        "primary_evidence_id": "plan:manual_rv_v1#c15:2026-09-12.1",
+        "retrieved": False,
+    }
 
 
 # ---------------- 票 34：图内 ----------------
@@ -335,7 +344,9 @@ async def test_a1_first_step_card_publishes_reviewed_source(runtime):
     )
     assert step["title"] == "检查并清理滚刷" and step["expected_result"] == "滚刷无缠绕物，转动顺畅"
     assert step["instruction"] == C12
-    assert step["evidence_ids"] == ["c12", "c15", "plan:manual_rv_v1#c12:2026-09-12.1"]
+    # 同 doc 宽集合仍是 c12 + c15，但主引用只指向锚点 c12 那一条（前端默认只展开它）
+    assert step["evidence_ids"] == ["c12", "c15"]
+    assert step["primary_evidence_id"] == "c12"
     assert not any(call["metadata"]["task"] == "guide.step" for call in fakes["main"].calls)
     st = await s.state()
     assert st["stage"] == "guide" and st["pending_card"]["kind"] == "step_feedback"
@@ -346,10 +357,18 @@ async def test_a1_first_step_card_publishes_reviewed_source(runtime):
         "source": "synthesize",
     }
     assert isinstance(st["card_ready_ms"], int) and 0 <= st["card_ready_ms"] < 15000
-    assert st["guide_trace"][-1] == {
+    assert st["guide_trace"][-2] == {
         "event": "step_ready",
         "card_id": card["card_id"],
         "rewritten": False,
+    }
+    # 主引用可归因：这一步引的是检索真的召回的那条 c12，不是本地兜底
+    assert st["guide_trace"][-1] == {
+        "event": "step_anchor",
+        "evidence_key": "manual_rv_v1#c12",
+        "match": "exact_chunk",
+        "primary_evidence_id": "c12",
+        "retrieved": True,
     }
     snap = await s.snap()
     assert snap.stage == "guide" and snap.pending_input.kind == "step_feedback"

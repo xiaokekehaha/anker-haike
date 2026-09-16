@@ -58,6 +58,23 @@ describe('StepCard（票 34）', () => {
     expect(screen.queryByRole('button')).toBeNull();
   });
 
+  it('主引用直接展开，同 doc 的其余命中折叠一层', () => {
+    const { container } = render(<EvidenceDrawer items={EVIDENCE} primary={['c12']} />);
+    container.querySelector('details[data-testid="evidence-drawer"]')!.setAttribute('open', '');
+    const main = container.querySelector('[data-testid="evidence-primary"]')!;
+    expect(main.querySelectorAll('li')).toHaveLength(1);
+    expect(main).toHaveTextContent('翻转主机取出滚刷');
+    expect(screen.getByText('其他相关来源 1 条')).toBeVisible();
+    expect(container.querySelector('li[data-primary]')).toHaveTextContent('翻转主机取出滚刷');
+  });
+
+  it('没有主引用时退回单一列表，不显示空的折叠层', () => {
+    const { container } = render(<EvidenceDrawer items={EVIDENCE} />);
+    expect(container.querySelector('[data-testid="evidence-primary"]')).toBeNull();
+    expect(container.querySelector('[data-testid="evidence-others"]')).toBeNull();
+    expect(container.querySelectorAll('li')).toHaveLength(2);
+  });
+
   it('hovering a step card highlights its evidence_ids in the drawer', () => {
     function Harness() {
       const [hover, setHover] = React.useState<string[]>([]);
