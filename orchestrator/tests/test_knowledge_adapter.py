@@ -190,6 +190,10 @@ async def test_live_category_only_excludes_sku_docs():
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"weknora not reachable: {type(exc).__name__}")
     assert counts["kb_manual"] == 3 and counts["kb_tickets"] == 200
+    # 适配器把超时 / 不可达转成 status='unavailable' 返回值而非异常，上面的 except 接不住：
+    # 冷启动时首次检索要等 WeKnora 加载 embedding 模型，常超过 timeout_s=5（实测 5008 ms）。
+    if "unavailable" in (res.status, res_sku.status):
+        pytest.skip(f"weknora unavailable: {res.detail or res_sku.detail}")
     assert res.status in ("ok", "no_match")
     if res.status == "ok":
         # 通用维护手册降级后品类会话也能拿到；机型专属手册仍被挡在外面
