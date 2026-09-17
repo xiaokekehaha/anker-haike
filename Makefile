@@ -15,6 +15,8 @@ logs: ## 跟随日志
 	$(COMPOSE) logs -f --tail=100
 ps: ## 容器状态
 	$(COMPOSE) ps
+restart-api: ## 重启业务编排服务，使进程内知识索引重新加载
+	$(COMPOSE) restart orchestrator
 health: ## 打印编排服务聚合健康
 	@curl -fsS http://localhost:$${ORCHESTRATOR_PORT:-8000}/health | python3 -m json.tool
 
@@ -47,6 +49,12 @@ plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
 ## ---- 知识库（票 26）----
 kb-bootstrap: ## 在本机 WeKnora 自助注册项目独立 tenant，并把 API key 写入 .env
 	cd orchestrator && uv run --env-file ../.env haike-kb bootstrap
+kb-official-fetch: ## 定向采集官方支持文章到 tmp/official-knowledge，正文变更需复核摘要及哈希
+	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official fetch
+kb-official-build: ## 校验来源哈希、型号与语义单元长度，生成可入库的官方资料摘要
+	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official build
+kb-official-verify: ## 实测官方批次的来源元数据、完整切块、型号隔离与逐条 Top-5 召回
+	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official_verify
 kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=1 清理多余条目；RECREATE_KB=1 换 embedding 时删库重建）
 	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(PRUNE),--prune,) $(if $(RECREATE_KB),--recreate-kb,)
 

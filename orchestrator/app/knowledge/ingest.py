@@ -1,7 +1,7 @@
 """kb_manual / kb_tickets 的 bootstrap 与幂等导入（03 §3.2、09 §2.2）。
 
 - 知识库：按名称查找已存在则复用；新建时父子分块 800 / 200、混合检索（BM25 + 向量默认开启）、图谱关闭。
-- 文档（说明书 / 排障手册）：Markdown 源文件带 front-matter 元数据，以在线文本入库；以 title 幂等，
+- 文档（说明书 / 排障手册）：Markdown 源文件带 front-matter 元数据，以在线文本入库；按 doc_id / title 幂等，
   doc_version 相同则跳过，不同则删旧建新；元数据写入 custom_metadata。
 - FAQ：faq 类型知识库，批量 replace 模式整体覆盖（天然幂等）。
 - 工单：CSV 每行一条 manual 知识（WeKnora 原生 CSV 上传会整表变一份文档，不满足逐条元数据），title=ticket_id。
@@ -31,6 +31,11 @@ KB_FAQ = "haike_kb_faq"
 PARENT_CHUNK = 800
 CHILD_CHUNK = 200
 EMBEDDING_DIM = 1024
+SOURCE_METADATA = (
+    "source_type", "source_url", "source_title", "source_language", "language",
+    "source_sha256", "content_sha256", "fetched_at", "batch_id",
+    "publish_state", "review_status", "scope_note",
+)
 
 
 def chunking_config() -> dict[str, Any]:
@@ -108,6 +113,11 @@ def load_manual_docs(root: Path) -> list[ManualDoc]:
                     "category": meta["category"],
                     "doc_version": str(meta["doc_version"]),
                     "kb": "kb_manual",
+                    **{key: meta[key] for key in SOURCE_METADATA if key in meta},
+                    **{
+                        key: ",".join(meta[key])
+                        for key in ("region_list", "section_ids") if key in meta
+                    },
                 },
                 path=path,
             )
@@ -280,25 +290,36 @@ class Ingestor:
         self, kb_id: str, title: str, content: str, metadata: dict[str, Any]
     ) -> str:
         existing = await self.client.list_knowledge(kb_id)
-        same_title = [k for k in existing if k.get("title") == title]
+        same_document = [
+            k for k in existing
+            if k.get("title") == title or (
+                metadata.get("doc_id")
+                and (k.get("custom_metadata") or k.get("metadata") or {}).get("doc_id")
+                == metadata["doc_id"]
+            )
+        ]
         current = next(
             (
                 k
-                for k in same_title
+                for k in same_document
                 if (k.get("custom_metadata") or k.get("metadata") or {}).get("doc_version")
                 == metadata["doc_version"]
             ),
             None,
         )
         if current is not None:
+            current_meta = current.get("custom_metadata") or current.get("metadata") or {}
+            if any(current_meta.get(key) != value for key, value in metadata.items()):
+                # 采集时间等非内容字段变化时仅刷新元数据，不重新生成向量。
+                await self._set_metadata(current["id"], title, metadata)
             self.report.skipped += 1
             return current["id"]
-        for k in same_title:  # 版本不同：删旧建新
+        for k in same_document:  # 版本不同：删旧建新；来源标题改名不会残留旧版本
             await self.client.delete_knowledge(k["id"])
             self.report.replaced += 1
         created = await self.client.create_manual_knowledge(kb_id, title=title, content=content)
         await self._set_metadata(created["id"], title, metadata)
-        self.report.created += 1 if not same_title else 0
+        self.report.created += 1 if not same_document else 0
         return created["id"]
 
     async def _set_metadata(self, knowledge_id: str, title: str, metadata: dict[str, Any]) -> None:
@@ -308,7 +329,7 @@ class Ingestor:
             await self.client.update_knowledge(knowledge_id, custom_metadata=metadata)
             full = await self.client.get_knowledge(knowledge_id)
             meta = full.get("custom_metadata") or full.get("metadata") or {}
-            if meta.get("scope"):
+            if all(meta.get(key) == value for key, value in metadata.items()):
                 return
             log.warning("custom_metadata missing after update title=%s attempt=%d", title, attempt)
         self.report.errors.append(f"metadata not persisted: {title}")

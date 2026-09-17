@@ -1,8 +1,9 @@
-"""票 27：scope → 允许集合、空集合不发请求、后过滤、四态、截断、反证标记；末尾一条本机 WeKnora 集成测试（可达时）。"""
+"""票 27：scope → 允许集合、空集合不发请求、后过滤、四态、截断、反证标记；真实集成测试需显式开启。"""
 
 from __future__ import annotations
 
 import json
+import os
 
 import pytest
 
@@ -19,6 +20,7 @@ from app.settings import REPO_ROOT, settings
 from tests.fake_weknora import FakeWeKnora
 
 DATA = REPO_ROOT / "data" / "knowledge"
+MANUAL_COUNT = len(list((DATA / "kb_manual").glob("*.md")))
 X10 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X10-PRO-OMNI")
 # manual_rv_v1 已降为品类级（通用维护流程），机型级手册只剩 v2，范围控制改由它来体现
 L60 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-L60-HYBRID")
@@ -43,7 +45,7 @@ async def adapter():
         report = await Ingestor(c, embedding_model_id="emb").ingest_all(DATA)
         ad = WeKnoraKnowledgeAdapter(c, report.kb_ids)
         counts = await ad.refresh_index()
-        assert counts == {"kb_manual": 9, "kb_tickets": 380}  # 3 份扫地机 + 6 份新品类手册；200 + 6×30 工单
+        assert counts == {"kb_manual": MANUAL_COUNT, "kb_tickets": 380}
         yield ad, server
 
 
@@ -62,8 +64,10 @@ async def test_allowed_sets_follow_product_state(adapter):
     manual = ad.index["kb_manual"]
     generic = {"troubleshooting_rv", "manual_rv_v1"}
     assert {e.doc_id for e in allowed_entries(manual, CAT_ONLY)} == generic
-    # X10 没有专属手册，看到的就是两份品类级资料
-    assert {e.doc_id for e in allowed_entries(manual, X10)} == generic
+    # 官方资料必须确认到 X10 型号后才可见；其他机型的官方资料仍被隔离。
+    assert {e.doc_id for e in allowed_entries(manual, X10)} == generic | {
+        "official_x10_suction", "official_x10_charging", "official_x10_wifi", "official_x10_voice",
+    }
     # 机型专属手册仍然只对自己的 sku 可见
     assert {e.doc_id for e in allowed_entries(manual, L60)} == generic | {"manual_rv_v2"}
     assert allowed_entries(manual, UNKNOWN) == []
@@ -115,7 +119,7 @@ async def test_empty_allowed_set_sends_no_request(adapter):
 async def test_no_hit_is_no_match_with_hint(adapter):
     ad, _ = adapter
     res = await ad.hybrid_search("kb_manual", "量子纠缠", 5, X10)
-    assert res.status == "no_match" and res.hint == HINTS["no_match"] and res.allowed_count == 2
+    assert res.status == "no_match" and res.hint == HINTS["no_match"] and res.allowed_count == 6
     assert res.for_model() == {"status": "no_match", "hint": HINTS["no_match"]}
 
 
@@ -173,10 +177,12 @@ async def test_post_filter_drops_hits_outside_allowed(adapter):
     assert "manual_rv_v2" not in {h.doc_id for h in res.hits}
 
 
-# ---- 本机 WeKnora 集成（有 key 且可达时）----
+# ---- 本机 WeKnora 集成（显式开启且有 key 时；普通单测不连真实服务）----
 
 
 async def test_live_category_only_excludes_sku_docs():
+    if os.environ.get("HAIKE_KNOWLEDGE", "off").lower() in ("off", "0", "false"):
+        pytest.skip("set HAIKE_KNOWLEDGE=on explicitly for live integration")
     manifest = DATA / "manifest.json"
     if not settings.weknora_api_key or not manifest.is_file():
         pytest.skip("no WEKNORA_API_KEY / manifest")
@@ -191,7 +197,7 @@ async def test_live_category_only_excludes_sku_docs():
             res_sku = await ad.hybrid_search("kb_manual", "滚刷缠绕毛发怎么清理", 5, L60)
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"weknora not reachable: {type(exc).__name__}")
-    assert counts["kb_manual"] == 9 and counts["kb_tickets"] == 380  # 2026-09-17 多品类入库后的实际数量
+    assert counts["kb_manual"] == MANUAL_COUNT and counts["kb_tickets"] == 380
     # 适配器把超时 / 不可达转成 status='unavailable' 返回值而非异常，上面的 except 接不住：
     # 冷启动时首次检索要等 WeKnora 加载 embedding 模型，常超过 timeout_s=5（实测 5008 ms）。
     if "unavailable" in (res.status, res_sku.status):

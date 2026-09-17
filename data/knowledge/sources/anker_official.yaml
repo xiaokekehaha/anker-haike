@@ -1,0 +1,211 @@
+batch_id: anker-official-2026-09-17
+version: '2026-09-17.2'
+# 中文摘要经本次逐页核对；哈希固定后 build 才生成知识。仅采集技术资料，不编政策。
+sources:
+  - id: official_x10_suction
+    reviewed_source_sha256: 5950d4a18d73a794b221254aad9004c93bcaadbd717eeb8a47b620f880f553ba
+    url: https://service.eufy.com/article-description/The-X10-Pro-Omni-Troubleshooting-Weak-Suction-Power-and-Poor-Cleaning-Performance
+    product: X10 Pro Omni
+    category: robot_vacuum
+    sku_list: [EUFY-X10-PRO-OMNI]
+    units:
+      - id: c1
+        title: 吸力弱时检查滤网和尘盒
+        anchor: Filter
+        summary: 吸力下降时检查滤网是否严重堵塞，清洗后必须彻底干燥再装回；使用超过六个月且清洗无改善时考虑更换。取下尘盒，倒空并清理残留碎屑。
+        query: X10 Pro Omni 吸力变小 滤网堵了怎么清理
+      - id: c2
+        title: 地毯清洁与吸力设置
+        anchor: BoostIQ
+        summary: 清洁效果仍不佳时，可提高机器人吸力设置；清洁地毯时，在地毯清洁模式中启用 BoostIQ，以增强地毯清洁表现。
+        query: X10 Pro Omni 地毯吸不干净 BoostIQ 怎么设置
+      - id: c3
+        title: 滚刷侧刷与胶条检查
+        anchor: Rubber Strip
+        summary: 滚刷梳齿有碎屑时清理并用流动水冲洗，滚刷彻底干燥后再装回。检查侧刷是否严重掉毛，以及滚刷护罩胶条是否破损；损坏的相应配件需要更换。
+        query: X10 Pro Omni 滚刷梳齿卡垃圾 胶条破了
+
+  - id: official_x10_charging
+    reviewed_source_sha256: 03ac6012c17add9305ba2108892cf3a7f23a3e54941f876ae5b4b6950449b682
+    url: https://service.eufy.com/article-description/What-should-I-do-if-my-X10-Pro-Omni-is-not-charging-or-powering-on
+    product: X10 Pro Omni
+    category: robot_vacuum
+    sku_list: [EUFY-X10-PRO-OMNI]
+    units:
+      - id: c1
+        title: 无法充电或开机的电源检查
+        anchor: steady white
+        summary: 基站应显示白灯常亮，否则检查电源线是否牢固连接基站和可用插座。清洁机器人与基站的充电触点、信号收发模块镜片；具体维护和安全要求以随附说明书为准。
+        query: X10 Pro Omni 回基站不充电 白灯不亮
+      - id: c2
+        title: 充电温度保护与无响应
+        anchor: Environmental Temperature
+        summary: 环境低于4°C或高于45°C可能阻止充电；过冷时回暖至至少8°C，过热时降至不高于41°C再试。供电和触点检查后仍无响应，可按机器人 Reset 键并重新开机；仍异常联系售后。
+        query: X10 Pro Omni 温度太低不能充电 要多少度
+
+  - id: official_x10_wifi
+    reviewed_source_sha256: 6ee8efaacf3085145c0596e47c4802e508bffd9911de8ba7f7ce9aaf0d40a49c
+    url: https://service.eufy.com/article-description/What-Should-I-Do-if-My-X10-Pro-Omni-Fails-to-Connect-to-WiFi
+    product: X10 Pro Omni
+    category: robot_vacuum
+    sku_list: [EUFY-X10-PRO-OMNI]
+    units:
+      - id: c1
+        title: WiFi连接失败的准备检查
+        anchor: 2.4GHz
+        summary: 核对区分大小写的WiFi密码，让手机和机器人靠近路由器并使用2.4GHz网络。允许 eufy Clean 使用定位、精确位置、本地网络和蓝牙权限；双频路由可临时关闭5GHz后重试。
+        query: X10 Pro Omni 连接不上WiFi 只有5G网络
+      - id: c2
+        title: 重置WiFi与指示灯
+        anchor: three seconds
+        summary: 同时按住回充键和局部清扫键3秒，听到提示后重新配网。WiFi灯慢闪表示待连接、快闪表示连接中，蓝灯常亮才表示已连接；仍失败可用另一部手机或平板配合手机热点验证。
+        query: X10 Pro Omni 怎么重置无线网络 蓝灯一直闪
+
+  - id: official_x10_voice
+    reviewed_source_sha256: 9c098321c9bfb9f71b7d44736bfd9e4361d3bb7d69f65fcd18e93ad335cb164e
+    url: https://service.eufy.com/article-description/Voice-Alerts-Quick-Solutions-for-the-X10-Pro-Omni
+    product: X10 Pro Omni
+    category: robot_vacuum
+    sku_list: [EUFY-X10-PRO-OMNI]
+    units:
+      - id: c1
+        title: 充电连接失败提示
+        anchor: Charging connection failed
+        summary: 出现充电连接失败提示时，先关闭机器人并断开基站电源，擦拭双方充电触点，再恢复基站供电并放回机器人验证。若提示电池错误，应通过反馈联系售后，不自行判断电池已恢复。
+        query: X10 Pro Omni 提示充电连接失败 怎么擦充电片
+      - id: c2
+        title: Reset与恢复出厂设置的区别
+        anchor: factory settings
+        summary: 机器人 Reset 键执行强制断电重启，之后需重新开机；该操作不会恢复出厂设置、删除地图或重置网络。只有WiFi问题才使用回充键与局部清扫键同时按3秒的网络重置操作。
+        query: X10 Pro Omni 按Reset会删除地图吗
+
+  - id: official_s1_vacuum_suction
+    reviewed_source_sha256: 7a8be54f98e70b04b959f8ec72933a589d45a9c8299d1d2b2186f7cbd4d35998
+    url: https://service.eufy.com/article-description/What-should-I-do-if-my-S1-Pro-s-suction-becomes-weak
+    product: S1 Pro 扫地机器人
+    category: robot_vacuum
+    sku_list: [EUFY-S1-PRO]
+    units:
+      - id: c1
+        title: 吸力降低的堵塞检查
+        anchor: dust inlet
+        summary: 检查并清除侧刷、滚刷、尘盒及尘盒内高效滤网上的残留碎屑，这些部位的堵塞可能影响进尘与吸力。本条仅适用于S1 Pro扫地机器人，不适用于同名吸奶器。
+        query: S1 Pro 扫地机器人 吸力下降 吸尘口堵了
+      - id: c2
+        title: 护罩胶条与尘盒密封检查
+        anchor: foam seal
+        summary: 检查滚刷护罩胶条是否完整，损坏或缺失时及时更换；同时检查尘盒出口泡棉密封是否破损。该条是部件检查依据，不能仅凭吸力弱就认定某个配件已损坏。
+        query: S1 Pro 扫地机 尘盒密封泡棉 胶条损坏
+
+  - id: official_anker737_ports
+    reviewed_source_sha256: 6edd3ebd424c78eba5fea5c8b39485637e6de4f11ae486c0b9134887f232ea8a
+    url: https://service.anker.com/article-description/Introduction-to-the-Anker-737-Power-Bank-24K-A1289
+    product: Anker 737 A1289
+    category: power_bank
+    sku_list: [ANKER-A1289]
+    units:
+      - id: c1
+        title: 输入输出端口与功率分配
+        anchor: USB-C1
+        summary: USB-C1支持输入和输出，USB-C2用于输出；两USB-C口单口最高140W，USB-A最高18W，总输出上限140W。多设备同时使用时按需分配总功率，不是每个USB-C口都同时输出140W。
+        query: Anker 737 哪个口能给充电宝充电 两个口都是140W吗
+      - id: c2
+        title: 回充设备与时间条件
+        anchor: Recharging time
+        summary: 回充速度取决于充电器PD能力和输出功率；官方给出的140W PD条件下约1小时，96W PD条件下约1.5至2小时。该时间是特定条件下参考值，不能承诺所有充电器都一样快。
+        query: Anker 737 充满要多久 96W PD充电器
+
+  - id: official_anker737_troubleshooting
+    reviewed_source_sha256: 678f44304943eb554341f23948aa05df991b4d8e53f280fc5998500bb6c3e272
+    url: https://service.anker.com/article-description/Anker-737-Powerbank-Common-Problem-Troubleshooting
+    product: Anker 737 A1289
+    category: power_bank
+    sku_list: [ANKER-A1289]
+    units:
+      - id: c1
+        title: 屏幕或工作异常时的复位
+        anchor: 3-5 seconds
+        summary: 官方针对该型号给出的复位方式是用同一根线连接自身输入与输出端口3至5秒，直到显示剩余电量，再充放电检查。仍异常应联系售后；该方法不能扩展为所有充电宝的通用操作。
+        query: Anker 737 屏幕异常 怎么复位
+      - id: c2
+        title: 屏幕功率低与慢充判断
+        anchor: total recharging time
+        summary: 输入输出功率会随设备协商和保护机制变化，应结合实际充电时间及被充设备电量是否增长判断，不能仅凭瞬时屏幕瓦数认定故障。可换一根线和另一台设备交叉测试；无法正常充电时联系售后。
+        query: Anker 737 显示瓦数很低 是坏了吗
+
+  - id: official_anker737_faq
+    reviewed_source_sha256: 97adf00cf5566b7b70d09cab9bb547ac8271447764a2ab357981018b8c644ba2
+    url: https://service.anker.com/article-description/Anker-737-Power-Bank-Special-Issues-Troubleshooting-FAQs
+    product: Anker 737 A1289
+    category: power_bank
+    sku_list: [ANKER-A1289]
+    units:
+      - id: c1
+        title: 笔记本充电出现UVP提示
+        anchor: UVP
+        summary: USB-C1与笔记本PD口都可双向供电，方向识别可能造成UVP提示；可改用仅输出的USB-C2测试。本条对应笔记本连接场景，不能解释全部UVP故障。
+        query: Anker 737 给笔记本充电提示UVP怎么办
+      - id: c2
+        title: USB-A空载仍显示0.1W
+        anchor: trickle
+        summary: 开启小电流模式时USB-A可显示0.1W，双击电源键会启用该模式并出现绿色标记；拔掉USB-A设备后约两分钟仍显示0.1W，也可能是设备检测行为，不应直接判断端口损坏。
+        query: Anker 737 没插东西USB-A还显示0.1W
+      - id: c3
+        title: 新接设备导致短暂断充
+        anchor: redistribute
+        summary: 连接设备数量改变时，充电宝会重新协商并分配功率，因此原先USB-C连接可能短暂断开再恢复。这是该型号的功率分配行为；若持续无法恢复，应另行排查。
+        query: Anker 737 插第二台设备第一台就断一下充电
+
+  - id: official_eufy_pump_suction
+    reviewed_source_sha256: 027e68bb5bc9f5af73f2fa54b8921cc331a131a21d7d983dd77a04b1b6ac03e8
+    url: https://service.eufy.com/article-description/Why-does-my-eufy-Breast-Pump-have-no-suction-or-weak-suction
+    product: eufy 吸奶器
+    category: breast_pump
+    sku_list: [EUFY-BP-S1-PRO, EUFY-BP-E10]
+    units:
+      - id: c1
+        title: 无吸力时检查阀片和密封
+        anchor: duckbill valve
+        summary: 检查鸭嘴阀和隔膜是否有裂口、缺损、孔洞或撕裂；发现损坏应停用该配件并更换。确认鸭嘴阀、法兰通道、隔膜和泵主体装配正确、连接处密封。
+        query: eufy 吸奶器 没有吸力 鸭嘴阀漏气
+      - id: c2
+        title: 装配正常后检查佩戴
+        anchor: wearing position
+        summary: 确认佩戴位置使乳头位于法兰通道中央，泵与乳房贴合密封；检查法兰或插入件尺寸是否合适，再尝试不同吸力与节奏。这里只提供设备检查依据，不据此诊断健康问题。
+        query: eufy 吸奶器装好了还是吸力弱 佩戴位置
+
+  - id: official_spaceone_connection
+    reviewed_source_sha256: 6f7cabcd95bacf1c201a40351cec96499b3eb1498c49bd2576d75b00286cdfdd
+    url: https://service.soundcore.com/article-description/A-Guide-for-Bluetooth-Connection-about-Space-One
+    product: Space One A3035
+    category: headphones
+    sku_list: [SOUNDCORE-A3035]
+    units:
+      - id: c1
+        title: 蓝牙配对与重新连接
+        anchor: 5 seconds
+        summary: 首次使用会进入配对模式，在设备蓝牙列表选择 soundcore Space One；曾配对设备可自动重连。耳机关机时按住电源键5秒，可开机并进入配对模式。
+        query: Space One 蓝牙搜不到 怎么进入配对模式
+      - id: c2
+        title: AUX有线连接的限制
+        anchor: AUX-in
+        summary: 插入随附AUX线后蓝牙功能停用；连接后按电源键约3秒开启耳机。有线模式使用经典EQ，因此蓝牙连接状态和声音模式不能照搬到有线场景。
+        query: Space One 插音频线以后蓝牙断开了
+
+  - id: official_spaceone_microphone
+    reviewed_source_sha256: 9dcf621751f3a52571e913f0bd45550f2fb78b5b21bc0eb317158e539b2c5af9
+    url: https://service.soundcore.com/article-description/How-to-Fix-Microphone-Issues-with-Space-One
+    product: Space One A3035
+    category: headphones
+    sku_list: [SOUNDCORE-A3035]
+    units:
+      - id: c1
+        title: 通话麦克风无声检查
+        anchor: unmuted
+        summary: 检查耳机与通话软件是否静音、输入设备是否选对，并使用软件麦克风检测。可先将电脑输入输出切到电脑再切回耳机，或重启耳机、退出通话后重新进入。
+        query: Space One 电脑开会别人听不到我说话
+      - id: c2
+        title: 有线通话使用哪个麦克风
+        anchor: AUX-in
+        summary: AUX音频线本身没有麦克风；有线连接时，通话使用所连接设备自身的麦克风。应检查电脑或手机的麦克风输入，不能据此认定耳机蓝牙麦克风故障。
+        query: Space One AUX线接电脑 麦克风不能用

@@ -1,0 +1,103 @@
+{
+  "checked_at": "2026-09-17T07:56:35.078090+00:00",
+  "base_url": "http://127.0.0.1:8000",
+  "case": "x10",
+  "session_id": "741c6859601144498c3f262f5366a065",
+  "evaluation_source": "smoke",
+  "query": "我的 eufy X10 Pro Omni 扫地机器人最近吸力明显变弱，滤网有堵塞，吸不干净。没有异味或异常发热，应该怎么检查？",
+  "health": "ok",
+  "kb_ver": "2026-09-17.2-fc326dc6345e+text-embedding-v4",
+  "official_evidence": [
+    {
+      "evidence_id": "2f2fc68f-8483-4e5f-b873-26ab6725467a",
+      "source": "kb_manual",
+      "doc_id": "official_x10_suction",
+      "doc_version": "2026-09-17.2-9472e4059e3d",
+      "chunk_id": "2f2fc68f-8483-4e5f-b873-26ab6725467a",
+      "snippet": "## X10 Pro Omni：吸力弱时检查滤网和尘盒（c1）\n官方资料中文整理：吸力下降时检查滤网是否严重堵塞，清洗后必须彻底干燥再装回；使用超过六个月且清洗无改善时考虑更换。取下尘盒，倒空并清理残留碎屑。\n\n## X10 Pro Omni：地毯清洁与吸力设置（c2）\n官方资料中文整理：清洁效果仍不佳时，可提高机器人吸力设置；清洁地毯时，在地毯清洁模式中启用 BoostIQ，以增强地毯清洁表现。",
+      "score": 0.016393442622950817,
+      "status": "ok"
+    },
+    {
+      "evidence_id": "3691b1f2-ade4-4b2f-b733-39847451dcf7",
+      "source": "kb_manual",
+      "doc_id": "official_x10_suction",
+      "doc_version": "2026-09-17.2-9472e4059e3d",
+      "chunk_id": "3691b1f2-ade4-4b2f-b733-39847451dcf7",
+      "snippet": "## X10 Pro Omni：滚刷侧刷与胶条检查（c3）\n官方资料中文整理：滚刷梳齿有碎屑时清理并用流动水冲洗，滚刷彻底干燥后再装回。检查侧刷是否严重掉毛，以及滚刷护罩胶条是否破损；损坏的相应配件需要更换。",
+      "score": 0.016129032258064516,
+      "status": "ok"
+    },
+    {
+      "evidence_id": "ba043429-1765-4a0b-bb61-c57e81b24a65",
+      "source": "kb_manual",
+      "doc_id": "official_x10_wifi",
+      "doc_version": "2026-09-17.2-c9ca0d806b89",
+      "chunk_id": "ba043429-1765-4a0b-bb61-c57e81b24a65",
+      "snippet": "## X10 Pro Omni：WiFi连接失败的准备检查（c1）\n官方资料中文整理：核对区分大小写的WiFi密码，让手机和机器人靠近路由器并使用2.4GHz网络。允许 eufy Clean 使用定位、精确位置、本地网络和蓝牙权限；双频路由可临时关闭5GHz后重试。",
+      "score": 0.015873015873015872,
+      "status": "ok"
+    },
+    {
+      "evidence_id": "cf751bf1-d6c1-4466-9178-55b35c6c2640",
+      "source": "kb_manual",
+      "doc_id": "official_x10_charging",
+      "doc_version": "2026-09-17.2-0389f914e5e8",
+      "chunk_id": "cf751bf1-d6c1-4466-9178-55b35c6c2640",
+      "snippet": "## X10 Pro Omni：无法充电或开机的电源检查（c1）\n官方资料中文整理：基站应显示白灯常亮，否则检查电源线是否牢固连接基站和可用插座。清洁机器人与基站的充电触点、信号收发模块镜片；具体维护和安全要求以随附说明书为准。",
+      "score": 0.015415111940298508,
+      "status": "ok"
+    },
+    {
+      "evidence_id": "70dfac3d-950b-44d8-b576-36e145db9e38",
+      "source": "kb_manual",
+      "doc_id": "official_x10_voice",
+      "doc_version": "2026-09-17.2-93a8919ce917",
+      "chunk_id": "70dfac3d-950b-44d8-b576-36e145db9e38",
+      "snippet": "## X10 Pro Omni：充电连接失败提示（c1）\n官方资料中文整理：出现充电连接失败提示时，先关闭机器人并断开基站电源，擦拭双方充电触点，再恢复基站供电并放回机器人验证。若提示电池错误，应通过反馈联系售后，不自行判断电池已恢复。",
+      "score": 0.015293560606060606,
+      "status": "ok"
+    }
+  ],
+  "versions_match_manifest": true,
+  "expected_doc": "official_x10_suction",
+  "passed": true,
+  "errors": [],
+  "stage": "guide",
+  "pending_input": {
+    "issue_id": "2f8e9665cfce530abba2f53386d95dac",
+    "kind": "step_feedback",
+    "input_token": "84a0ed543c61568cb0b3f0b479124dee",
+    "card_id": "21ddce1329f8550e8f3a80a2f4eb982d",
+    "version": 1
+  },
+  "messages": [],
+  "knowledge_tool_calls": [
+    {
+      "type": "tool_call",
+      "tool_id": "a7cf61d1e9e75aa2bf6de9cb98396ade",
+      "name": "knowledge.search",
+      "status": "started",
+      "summary": "检索知识库",
+      "run_id": "2bceb851b4c147dc9fd5800b21a99b56",
+      "seq": 7,
+      "event_id": "7f9ad0a9d85244a3a845286bdf20632c",
+      "recorded_at": "2026-09-17T07:56:31.242282+00:00"
+    },
+    {
+      "type": "tool_call",
+      "tool_id": "a7cf61d1e9e75aa2bf6de9cb98396ade",
+      "name": "knowledge.search",
+      "status": "finished",
+      "summary": "命中 10 条来源",
+      "run_id": "2bceb851b4c147dc9fd5800b21a99b56",
+      "seq": 8,
+      "event_id": "1ad32d44dc1e4867bf360584380fe412",
+      "recorded_at": "2026-09-17T07:56:32.196545+00:00"
+    }
+  ],
+  "inputs": [
+    "我的 eufy X10 Pro Omni 扫地机器人最近吸力明显变弱，滤网有堵塞，吸不干净。没有异味或异常发热，应该怎么检查？"
+  ],
+  "blocked_before_retrieval": false
+}
