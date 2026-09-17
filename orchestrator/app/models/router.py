@@ -33,6 +33,8 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, System
 from langchain_core.messages.utils import convert_to_messages
 from pydantic import BaseModel, ValidationError
 
+from app.context.budget import budget_error, measure_input
+from app.context.config import conversation_config
 from app.models.config import Structured, TaskRoute
 from app.models.queue import BoundedGate
 from app.models.registry import ModelRegistry, ResolvedModel
@@ -74,6 +76,8 @@ class Attempt:
     outcome: Outcome
     latency_ms: int
     error: str | None = None
+    estimated_input_tokens: int | None = None
+    input_budget: int | None = None
 
 
 @dataclass
@@ -179,7 +183,7 @@ def messages_have_images(messages: Sequence[BaseMessage]) -> bool:
 
 
 def _schema_hint(schema: type[BaseModel]) -> str:
-    js = json.dumps(schema.model_json_schema(), ensure_ascii=False)
+    js = json.dumps(schema.model_json_schema(), ensure_ascii=False, separators=(",", ":"))
     return (
         "你必须只输出一个 JSON 对象，不要 Markdown 代码块，不要解释。"
         f"JSON 必须符合以下 JSON Schema：\n{js}"
@@ -354,10 +358,11 @@ class ModelRouter:
             while True:
                 if remaining_s() <= 0:
                     raise ModelInvokeError(task, attempts, "budget exhausted")
-                from app.context.budget import budget_error
-                rejected = budget_error(msgs, resolved.spec, schema=schema, schema_in_messages=chosen == "json_object", output_tokens=route.max_tokens or 2048)
+                measured = measure_input(msgs, schema=schema, schema_in_messages=chosen == "json_object")
+                input_budget = conversation_config().input_budget(task)
+                rejected = budget_error(msgs, resolved.spec, task=task, schema=schema, schema_in_messages=chosen == "json_object", output_tokens=route.max_tokens or 2048)
                 if rejected:
-                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, chosen, "skipped", 0, rejected))
+                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, chosen, "skipped", 0, rejected, measured["text_tokens"], input_budget))
                     break
                 timeout_s = min(resolved.spec.timeout_s, remaining_s())
                 start = self._clock()
@@ -374,6 +379,8 @@ class ModelRouter:
                         outcome,
                         ms,
                         error,
+                        measured["text_tokens"],
+                        input_budget,
                     )
                 )
                 if outcome == "ok":
@@ -522,10 +529,11 @@ class ModelRouter:
                 tier: Literal["primary", "fallback"] = "primary" if tried == 0 else "fallback"
                 tried += 1
                 msgs = base if tier == "primary" else fb
-                from app.context.budget import budget_error
-                rejected = budget_error(msgs, resolved.spec, output_tokens=route.max_tokens or 2048)
+                measured = measure_input(msgs)
+                input_budget = conversation_config().input_budget(task)
+                rejected = budget_error(msgs, resolved.spec, task=task, output_tokens=route.max_tokens or 2048)
                 if rejected:
-                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, None, "skipped", 0, rejected))
+                    attempts.append(Attempt(resolved.alias, resolved.model_used, resolved.lane, None, "skipped", 0, rejected, measured["text_tokens"], input_budget))
                     tried -= 1
                     continue
                 trace["input"] = msgs
@@ -607,6 +615,8 @@ class ModelRouter:
                                     None,
                                     "ok",
                                     ms,
+                                    estimated_input_tokens=measured["text_tokens"],
+                                    input_budget=input_budget,
                                 )
                             )
                             yield StreamEvent(
@@ -626,6 +636,8 @@ class ModelRouter:
                             outcome,
                             ms,
                             error,
+                            measured["text_tokens"],
+                            input_budget,
                         )
                     )
                     if emitted:

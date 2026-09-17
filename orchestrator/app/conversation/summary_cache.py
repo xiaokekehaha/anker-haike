@@ -28,7 +28,13 @@ def extract_summary(entries):
             and entry.processing_status not in {"failed", "cancelled"}
         ):
             groups.setdefault(entry.run_id, []).append(entry)
-    if len(groups) < cfg.summary_after_turns:
+    # Shared cache is prepared for intake, the first conversational task of every turn.
+    # Pressure can trigger before the turn threshold; recent turns still stay verbatim.
+    history_tokens = sum(estimate_tokens(e.text) + 8 for group in groups.values() for e in group)
+    if (
+        len(groups) < cfg.summary_after_turns
+        and history_tokens < cfg.input_budget("intake") * cfg.summary_trigger_ratio
+    ):
         return None
     selected, used = [], 0
     for group in list(groups.values())[: -cfg.recent_turns]:

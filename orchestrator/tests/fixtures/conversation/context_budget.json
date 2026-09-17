@@ -1,0 +1,749 @@
+{
+  "entry": "message",
+  "input_id": "24f402a7-803c-4df1-99f6-0bd836ab0e6e",
+  "input_seq": 56,
+  "at": "2026-09-17T09:15:05.235716+00:00",
+  "text": "我的产品是哪个",
+  "history": [
+    {
+      "entry_id": "f77d589e-dd2f-4bee-823c-d252c455e7d3",
+      "session_id": "context-budget-regression",
+      "run_id": "aaf4aa7ba32a45988778d67ee2e397ed",
+      "kind": "message",
+      "role": "user",
+      "first_seq": 2,
+      "last_seq": 8,
+      "recorded_at": "2026-09-17T09:12:11.224610+00:00",
+      "text": "我的 Anker 737 充电宝型号 A1289，用 USB-C1 给笔记本充电时提示 UVP，无法正常充电。没有异常发热或外观损坏，应该怎么排查？",
+      "payload": {
+        "kind": "message",
+        "text": "我的 Anker 737 充电宝型号 A1289，用 USB-C1 给笔记本充电时提示 UVP，无法正常充电。没有异常发热或外观损坏，应该怎么排查？",
+        "images": [],
+        "purpose": "fault",
+        "image_ids": [],
+        "target_issue_id": null,
+        "attachment_hashes": [],
+        "evaluation_source": "live"
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": "2026-09-17T09:12:11.224610+00:00",
+      "started_at": null,
+      "completed_at": null,
+      "time_source": "server",
+      "reply_to_input_id": null,
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": "completed",
+      "source_event_ids": [
+        "3380004ae3264be1a2104f7d0d7431c5",
+        "b791b898ab355f5aac698b14ac4adac4"
+      ]
+    },
+    {
+      "entry_id": "bf3b56a36c255a6ca35891d41a5daf40",
+      "session_id": "context-budget-regression",
+      "run_id": "aaf4aa7ba32a45988778d67ee2e397ed",
+      "kind": "message",
+      "role": "assistant",
+      "first_seq": 9,
+      "last_seq": 11,
+      "recorded_at": "2026-09-17T09:12:16.568380+00:00",
+      "text": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+      "payload": {
+        "model_tier": null
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:12:16.568380+00:00",
+      "completed_at": "2026-09-17T09:12:16.573652+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "f77d589e-dd2f-4bee-823c-d252c455e7d3",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "cd377383301b590fa75878ea6c52b2b0",
+        "a087a8bf2b7a5bd58beb553aae9711ba",
+        "3ae49cdd46485174bef83742cb3d194e"
+      ]
+    },
+    {
+      "entry_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
+      "session_id": "context-budget-regression",
+      "run_id": "2f2a576578bd4c9d9976383f07f4e9b1",
+      "kind": "message",
+      "role": "user",
+      "first_seq": 14,
+      "last_seq": 23,
+      "recorded_at": "2026-09-17T09:12:23.493434+00:00",
+      "text": "没有",
+      "payload": {
+        "kind": "message",
+        "text": "没有",
+        "images": [],
+        "purpose": "fault",
+        "image_ids": [],
+        "target_issue_id": null,
+        "attachment_hashes": [],
+        "evaluation_source": "live"
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": "2026-09-17T09:12:23.493434+00:00",
+      "started_at": null,
+      "completed_at": null,
+      "time_source": "server",
+      "reply_to_input_id": null,
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": "completed",
+      "source_event_ids": [
+        "40fe7a66e5744461a28b80ea23306843",
+        "6d48f44e785059978ad6329ab677f9d4"
+      ]
+    },
+    {
+      "entry_id": "39284179f957531ca5d25008baf15b84",
+      "session_id": "context-budget-regression",
+      "run_id": "2f2a576578bd4c9d9976383f07f4e9b1",
+      "kind": "tool",
+      "role": "tool",
+      "first_seq": 18,
+      "last_seq": 19,
+      "recorded_at": "2026-09-17T09:12:23.681672+00:00",
+      "text": "命中 10 条来源",
+      "payload": {
+        "seq": 19,
+        "name": "knowledge.search",
+        "type": "tool_call",
+        "run_id": "2f2a576578bd4c9d9976383f07f4e9b1",
+        "status": "finished",
+        "summary": "命中 10 条来源",
+        "tool_id": "39284179f957531ca5d25008baf15b84",
+        "event_id": "88e601db517f4d11b9512b98e428f316",
+        "recorded_at": "2026-09-17T09:12:24.381705+00:00"
+      },
+      "issue_id": null,
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:12:23.681672+00:00",
+      "completed_at": "2026-09-17T09:12:24.381705+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "f917cf2a4f424d8abbd5c7c9fcd38350",
+        "88e601db517f4d11b9512b98e428f316"
+      ]
+    },
+    {
+      "entry_id": "fe637a8d05015661a72cfdb2d140f6b8",
+      "session_id": "context-budget-regression",
+      "run_id": "2f2a576578bd4c9d9976383f07f4e9b1",
+      "kind": "card",
+      "role": "assistant",
+      "first_seq": 27,
+      "last_seq": 27,
+      "recorded_at": "2026-09-17T09:12:25.756842+00:00",
+      "text": "关机状态下用干燥的软毛刷或木质牙签轻轻清理输出接口内的灰尘和绒毛，不要使用金属物。",
+      "payload": {
+        "seq": 27,
+        "step": {
+          "title": "清理充电宝输出接口",
+          "caution": "清理前关机，不要用金属物伸进接口",
+          "plan_id": "pb_port_debris",
+          "step_id": "s1",
+          "step_no": 1,
+          "instruction": "关机状态下用干燥的软毛刷或木质牙签轻轻清理输出接口内的灰尘和绒毛，不要使用金属物。",
+          "evidence_ids": [
+            "e2fd2b1c-6a32-4fb7-b2a1-7068b97d716e",
+            "fc:category:power_bank:2026-09-17.1:pb_port_debris",
+            "plan:manual_pb#c12:2026-09-17.1"
+          ],
+          "observations": [],
+          "plan_version": 1,
+          "expected_result": "接口内无灰尘绒毛，插入数据线手感紧实",
+          "primary_evidence_id": "plan:manual_pb#c12:2026-09-17.1"
+        },
+        "type": "step_card",
+        "run_id": "2f2a576578bd4c9d9976383f07f4e9b1",
+        "card_id": "fe637a8d05015661a72cfdb2d140f6b8",
+        "version": 2,
+        "event_id": "17170486d005567d86c076bf69c6f021",
+        "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+        "recorded_at": "2026-09-17T09:12:25.756842+00:00"
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:12:25.756842+00:00",
+      "completed_at": "2026-09-17T09:12:25.756842+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "17170486d005567d86c076bf69c6f021"
+      ]
+    },
+    {
+      "entry_id": "4fd74b8e-c41c-4d5a-8e50-9fa960ff6cc8",
+      "session_id": "context-budget-regression",
+      "run_id": "b6e019841bea43f5a59b6aac39aac5a3",
+      "kind": "action",
+      "role": "user",
+      "first_seq": 31,
+      "last_seq": 35,
+      "recorded_at": "2026-09-17T09:14:45.882746+00:00",
+      "text": "反馈排障结果",
+      "payload": {
+        "kind": "step_feedback",
+        "card_id": "fe637a8d05015661a72cfdb2d140f6b8",
+        "payload": {
+          "note": null,
+          "feedback": "cannot_do",
+          "observations": []
+        },
+        "action_id": "4fd74b8e-c41c-4d5a-8e50-9fa960ff6cc8",
+        "input_token": "fixture-input-token",
+        "target_issue_id": "d85e1024727b50a1a58b14c1133c8156",
+        "expected_version": 2
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": "2026-09-17T09:14:45.882746+00:00",
+      "started_at": null,
+      "completed_at": null,
+      "time_source": "server",
+      "reply_to_input_id": null,
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": "completed",
+      "source_event_ids": [
+        "b21ac9b5d3614faeb5c16f037cd822aa",
+        "d0ef07b9cb7255828dba7f1882a525fb"
+      ]
+    },
+    {
+      "entry_id": "ac1934fd7c065dd0bf2799678f2f9376",
+      "session_id": "context-budget-regression",
+      "run_id": "b6e019841bea43f5a59b6aac39aac5a3",
+      "kind": "card",
+      "role": "assistant",
+      "first_seq": 39,
+      "last_seq": 39,
+      "recorded_at": "2026-09-17T09:14:46.647223+00:00",
+      "text": "换一根确认可用的数据线和另一台设备测试，以排除线材或被充设备本身的问题。",
+      "payload": {
+        "seq": 39,
+        "step": {
+          "title": "更换数据线和被充设备测试",
+          "caution": null,
+          "plan_id": "pb_port_debris",
+          "step_id": "s2",
+          "step_no": 2,
+          "instruction": "换一根确认可用的数据线和另一台设备测试，以排除线材或被充设备本身的问题。",
+          "evidence_ids": [
+            "e2fd2b1c-6a32-4fb7-b2a1-7068b97d716e",
+            "fc:category:power_bank:2026-09-17.1:pb_port_debris",
+            "plan:manual_pb#c12:2026-09-17.1",
+            "plan:manual_pb#c15:2026-09-17.1"
+          ],
+          "observations": [],
+          "plan_version": 1,
+          "expected_result": "换线或换设备后能正常输出",
+          "primary_evidence_id": "plan:manual_pb#c15:2026-09-17.1"
+        },
+        "type": "step_card",
+        "run_id": "b6e019841bea43f5a59b6aac39aac5a3",
+        "card_id": "ac1934fd7c065dd0bf2799678f2f9376",
+        "version": 3,
+        "event_id": "45623e69967850abb54428747919ff9e",
+        "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+        "recorded_at": "2026-09-17T09:14:46.647223+00:00"
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:14:46.647223+00:00",
+      "completed_at": "2026-09-17T09:14:46.647223+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "4fd74b8e-c41c-4d5a-8e50-9fa960ff6cc8",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "45623e69967850abb54428747919ff9e"
+      ]
+    },
+    {
+      "entry_id": "7a58158e-3791-4a42-bb38-e17c279cf9df",
+      "session_id": "context-budget-regression",
+      "run_id": "0672bec9dd894f15bb1a6874fa59cb92",
+      "kind": "action",
+      "role": "user",
+      "first_seq": 43,
+      "last_seq": 47,
+      "recorded_at": "2026-09-17T09:14:51.423159+00:00",
+      "text": "反馈排障结果",
+      "payload": {
+        "kind": "step_feedback",
+        "card_id": "ac1934fd7c065dd0bf2799678f2f9376",
+        "payload": {
+          "note": null,
+          "feedback": "cannot_do",
+          "observations": []
+        },
+        "action_id": "7a58158e-3791-4a42-bb38-e17c279cf9df",
+        "input_token": "fixture-input-token",
+        "target_issue_id": "d85e1024727b50a1a58b14c1133c8156",
+        "expected_version": 3
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": "2026-09-17T09:14:51.423159+00:00",
+      "started_at": null,
+      "completed_at": null,
+      "time_source": "server",
+      "reply_to_input_id": null,
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": "completed",
+      "source_event_ids": [
+        "7feac4b3b7d74910b4e6d0f620dcf961",
+        "2d4c15237ede5513930a92dcc4833551"
+      ]
+    },
+    {
+      "entry_id": "aaa6e70e27ec5e34bc42dea41bbd3ee8",
+      "session_id": "context-budget-regression",
+      "run_id": "0672bec9dd894f15bb1a6874fa59cb92",
+      "kind": "message",
+      "role": "assistant",
+      "first_seq": 49,
+      "last_seq": 51,
+      "recorded_at": "2026-09-17T09:14:53.434913+00:00",
+      "text": "无法操作「清理充电宝输出接口」、「更换数据线和被充设备测试」，现有资料没有进一步可执行的排查操作。我已整理当前问题和排查记录，您可以复制给人工客服继续处理；目前尚未接入真实转接，不会重复建议您已反馈过的相同操作。",
+      "payload": {
+        "model_tier": null
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:14:53.434913+00:00",
+      "completed_at": "2026-09-17T09:14:53.437598+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "7a58158e-3791-4a42-bb38-e17c279cf9df",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "8f256570c0ca51d293165e943a6a0de8",
+        "59b1f678750d5ebda8cb431be7aec142",
+        "ec19d4b67e375fac962a0693e3d7b853"
+      ]
+    },
+    {
+      "entry_id": "3795fb4beb095a9fa991e46779c82ad1",
+      "session_id": "context-budget-regression",
+      "run_id": "0672bec9dd894f15bb1a6874fa59cb92",
+      "kind": "card",
+      "role": "assistant",
+      "first_seq": 52,
+      "last_seq": 52,
+      "recorded_at": "2026-09-17T09:14:53.439299+00:00",
+      "text": "",
+      "payload": {
+        "seq": 52,
+        "type": "escalation_summary",
+        "run_id": "0672bec9dd894f15bb1a6874fa59cb92",
+        "card_id": "3795fb4beb095a9fa991e46779c82ad1",
+        "summary": {
+          "steps": [
+            {
+              "title": "清理充电宝输出接口",
+              "step_id": "s1",
+              "feedback": "cannot_do",
+              "observed": []
+            },
+            {
+              "title": "更换数据线和被充设备测试",
+              "step_id": "s2",
+              "feedback": "cannot_do",
+              "observed": []
+            }
+          ],
+          "reason": {
+            "text": "无法操作「清理充电宝输出接口」、「更换数据线和被充设备测试」，现有资料没有进一步可执行的排查操作",
+            "cause": "no_supported_followup",
+            "rule_id": "R2"
+          },
+          "case_id": null,
+          "emotion": {
+            "level": "calm",
+            "strategy": "normal"
+          },
+          "problem": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
+          "product": "Anker 737 PowerCore 24K",
+          "receipt": {
+            "status": "not_collected",
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+            "verified_facts": {}
+          },
+          "hypotheses": [
+            "无法给设备充电",
+            "接口松动或损坏",
+            "pb_port_debris"
+          ],
+          "task_queue": [],
+          "draft_reply": null,
+          "gate_result": null,
+          "model_trace": [
+            {
+              "lane": "domestic",
+              "task": "intake",
+              "attempts": 1,
+              "model_used": "dashscope/qwen3.7-flash"
+            },
+            {
+              "lane": "domestic",
+              "task": "intake",
+              "attempts": 1,
+              "model_used": "skipped"
+            },
+            {
+              "lane": "domestic",
+              "task": "diagnose.synthesize",
+              "attempts": 1,
+              "model_used": "deepseek/deepseek-flash"
+            },
+            {
+              "lane": "domestic",
+              "task": "escalate.summary_polish",
+              "attempts": 1,
+              "model_used": "skipped"
+            }
+          ],
+          "observations": [
+            "没有异常发热或外观损坏",
+            "问：插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？；用户回答：没有"
+          ],
+          "emotion_track": [
+            {
+              "level": "calm",
+              "input_id": "f77d589e-dd2f-4bee-823c-d252c455e7d3"
+            },
+            {
+              "level": "calm",
+              "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508"
+            }
+          ],
+          "recommended_options": [],
+          "policy_decision_brief": null
+        },
+        "event_id": "ea24ce7cd28455549f5e105a03983378",
+        "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+        "revision": 1,
+        "summary_id": "6b6a3547f17855e2bd2393980a8f212a",
+        "updated_at": "2026-09-17T09:14:51.423159+00:00",
+        "recorded_at": "2026-09-17T09:14:53.439299+00:00",
+        "handoff_status": "prepared",
+        "previous_card_id": null,
+        "source_through_seq": 43
+      },
+      "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+      "device_ref_id": null,
+      "received_at": null,
+      "started_at": "2026-09-17T09:14:53.439299+00:00",
+      "completed_at": "2026-09-17T09:14:53.439299+00:00",
+      "time_source": "server",
+      "reply_to_input_id": "7a58158e-3791-4a42-bb38-e17c279cf9df",
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "ea24ce7cd28455549f5e105a03983378"
+      ]
+    },
+    {
+      "entry_id": "24f402a7-803c-4df1-99f6-0bd836ab0e6e",
+      "session_id": "context-budget-regression",
+      "run_id": "44cd27c128094a1591e15a5585591172",
+      "kind": "message",
+      "role": "user",
+      "first_seq": 56,
+      "last_seq": 56,
+      "recorded_at": "2026-09-17T09:15:05.235716+00:00",
+      "text": "我的产品是哪个",
+      "payload": {
+        "kind": "message",
+        "text": "我的产品是哪个",
+        "images": [],
+        "purpose": "fault",
+        "image_ids": [],
+        "target_issue_id": null,
+        "attachment_hashes": [],
+        "evaluation_source": "live"
+      },
+      "issue_id": null,
+      "device_ref_id": null,
+      "received_at": "2026-09-17T09:15:05.235716+00:00",
+      "started_at": null,
+      "completed_at": null,
+      "time_source": "server",
+      "reply_to_input_id": null,
+      "references": [],
+      "attachments": [],
+      "status": "completed",
+      "processing_status": null,
+      "source_event_ids": [
+        "caee874bb34348cd93d6cc95cd910b3e"
+      ]
+    }
+  ],
+  "active_issue_id": "d85e1024727b50a1a58b14c1133c8156",
+  "issues": {
+    "d85e1024727b50a1a58b14c1133c8156": {
+      "stage": "escalate",
+      "product_confirmed": {
+        "sku": "ANKER-A1289",
+        "name": "Anker 737 PowerCore 24K",
+        "category": "power_bank",
+        "image": null,
+        "in_scope": true
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.1",
+        "category": "power_bank",
+        "candidates": [
+          "无法给设备充电",
+          "接口松动或损坏"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "no",
+            "quote": "没有",
+            "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
+            "question_id": "d85e1024727b50a1a58b14c1133c8156:f77d589e-dd2f-4bee-823c-d252c455e7d3:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "no",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "无法给设备充电",
+              "接口松动或损坏"
+            ],
+            "progressed": true,
+            "quote": "没有"
+          }
+        ]
+      },
+      "task_queue": [],
+      "title": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
+      "facts": [
+        {
+          "fact_id": "270c15b102df55a5bb2275b08b782094",
+          "kind": "symptom",
+          "context_field": null,
+          "value": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
+          "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+          "device_ref_id": "89d5f1bcbe2152868c2711ca55ccb894",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source_entry_ids": [
+            "f77d589e-dd2f-4bee-823c-d252c455e7d3"
+          ],
+          "recorded_at": "2026-09-17T09:12:11.224610+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
+          "symptom_codes": [],
+          "symptom_code": null
+        },
+        {
+          "fact_id": "1c80063de59c58a8bb3bdadaba4bb98c",
+          "kind": "observation",
+          "context_field": null,
+          "value": "没有异常发热或外观损坏",
+          "issue_id": "d85e1024727b50a1a58b14c1133c8156",
+          "device_ref_id": "89d5f1bcbe2152868c2711ca55ccb894",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source_entry_ids": [
+            "f77d589e-dd2f-4bee-823c-d252c455e7d3"
+          ],
+          "recorded_at": "2026-09-17T09:12:11.224610+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "没有异常发热或外观损坏",
+          "symptom_codes": [],
+          "symptom_code": null
+        }
+      ],
+      "device_ref": {
+        "device_ref_id": "89d5f1bcbe2152868c2711ca55ccb894",
+        "category": "Power Bank",
+        "identity_status": "provisional",
+        "source_ids": [
+          "f77d589e-dd2f-4bee-823c-d252c455e7d3"
+        ]
+      },
+      "handoff": {
+        "handoff_id": "009ca0de2e985c379e7bf55412265219",
+        "status": "prepared",
+        "prepared_at": "2026-09-17T09:14:51.423159+00:00",
+        "reason_refs": [
+          "7a58158e-3791-4a42-bb38-e17c279cf9df"
+        ]
+      }
+    }
+  },
+  "product_confirmed": {
+    "sku": "ANKER-A1289",
+    "name": "Anker 737 PowerCore 24K",
+    "category": "power_bank",
+    "image": null,
+    "in_scope": true
+  },
+  "category": "power_bank",
+  "symptom_interview": {
+    "taxonomy_version": "2026-09-17.1",
+    "category": "power_bank",
+    "candidates": [
+      "无法给设备充电",
+      "接口松动或损坏"
+    ],
+    "answers": [
+      {
+        "key": "c7b20e489fc0",
+        "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+        "answer": "no",
+        "quote": "没有",
+        "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508"
+      }
+    ],
+    "status": "resolved",
+    "question": null,
+    "response_attempts": [
+      {
+        "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
+        "question_id": "d85e1024727b50a1a58b14c1133c8156:f77d589e-dd2f-4bee-823c-d252c455e7d3:c7b20e489fc0",
+        "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+        "outcome": "no",
+        "candidates_before": [
+          "无法给设备充电",
+          "充电宝自身充不进电",
+          "掉电快",
+          "发热异常",
+          "指示灯异常",
+          "接口松动或损坏"
+        ],
+        "candidates_after": [
+          "无法给设备充电",
+          "接口松动或损坏"
+        ],
+        "progressed": true,
+        "quote": "没有"
+      }
+    ]
+  },
+  "steps_executed": [
+    {
+      "plan_id": "pb_port_debris",
+      "step_id": "s1",
+      "card_id": "fe637a8d05015661a72cfdb2d140f6b8",
+      "title": "清理充电宝输出接口",
+      "instruction_src": "evidence:manual_pb#c12",
+      "feedback": "cannot_do",
+      "note": null,
+      "observations": [],
+      "ts": "2026-09-17T09:14:46.594512+00:00"
+    },
+    {
+      "plan_id": "pb_port_debris",
+      "step_id": "s2",
+      "card_id": "ac1934fd7c065dd0bf2799678f2f9376",
+      "title": "更换数据线和被充设备测试",
+      "instruction_src": "evidence:manual_pb#c15",
+      "feedback": "cannot_do",
+      "note": null,
+      "observations": [],
+      "ts": "2026-09-17T09:14:51.498619+00:00"
+    }
+  ],
+  "turn_decision": {
+    "input_id": "7a58158e-3791-4a42-bb38-e17c279cf9df",
+    "primary_intent": "step_feedback",
+    "answer_scope": "focus",
+    "answer_request": null,
+    "secondary_intents": [],
+    "target_issue_id": "d85e1024727b50a1a58b14c1133c8156",
+    "reply_mode": "diagnose",
+    "clarification": null,
+    "allowed_operations": true,
+    "escalation_trigger": null,
+    "source_refs": [
+      "7a58158e-3791-4a42-bb38-e17c279cf9df"
+    ],
+    "patches": [],
+    "switched": false,
+    "pending_changes": [],
+    "resumed_pending": false,
+    "business_switched": false,
+    "business_ambiguous": false,
+    "symptom_answered": false,
+    "observation_answered": false,
+    "observation_attempted": false,
+    "diagnostic_request": false,
+    "normalization_disagreements": []
+  },
+  "context_revision": 2,
+  "risk_cases": [],
+  "business_context": {
+    "version": 1,
+    "subjects": {},
+    "active_subject_id": null,
+    "status": "missing",
+    "candidate_ids": [],
+    "last_input_id": "7a58158e-3791-4a42-bb38-e17c279cf9df"
+  },
+  "session_preferences": {},
+  "stage": "escalate",
+  "clarification": null,
+  "pending_card": null
+}

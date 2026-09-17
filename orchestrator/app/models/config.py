@@ -12,25 +12,13 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from app.model_tasks import KNOWN_TASKS, OPTIONAL_TASKS
+
 Sdk = Literal["openai", "anthropic", "google_genai"]
 Lane = Literal["domestic", "overseas"]
 Effort = Literal["low", "medium", "high"]
 Structured = Literal["native", "json_object", "none"]
 ModelKind = Literal["chat", "embedding", "rerank"]
-
-# 业务节点会用到的 task 名；默认通道必须为每一个给出链（model-selection §3.7）
-KNOWN_TASKS: tuple[str, ...] = (
-    "intake",
-    "disambiguate.clarify",
-    "diagnose.vision",
-    "diagnose.synthesize",
-    "guide.step",
-    "reply.stream",
-    "escalate.summary",
-    "warranty.receipt_ocr",
-)
-# 可选增强任务：配置里可以缺链（缺时对应功能按不可用处理），不参与「默认通道必须覆盖」校验
-OPTIONAL_TASKS: tuple[str, ...] = ("query.rewrite", "retrieve.grade")
 
 UNSET_MODEL_ID = "TBD"
 

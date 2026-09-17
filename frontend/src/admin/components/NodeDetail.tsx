@@ -1,6 +1,7 @@
 /** 右栏：选中节点的判定字段、模型调用与检索明细。 */
 import { ms, nodeLabel, reasonText } from '../format';
 import type { ModelCall, NodeRun, RetrievalCall } from '../types';
+import { ContextMetrics } from './ContextMetrics';
 
 const SUMMARY_TEXT: Record<string, string> = {
   product_state: '产品状态', category: '品类', knowledge_status: '知识检索',
@@ -38,11 +39,13 @@ export function NodeDetail({ node, models, retrievals }: {
   }
   const nodeModels = models.filter((m) => m.node === node.node);
   const nodeRetrievals = retrievals.filter((r) => r.node === node.node);
-  const summary = Object.entries(node.summary ?? {});
+  const summary = Object.entries(node.summary ?? {}).filter(([key]) => key !== 'context_metrics');
+  const contextMetrics = node.summary?.context_metrics;
   return (
     <div className="card detail">
       <h2>{node.idx}. {nodeLabel(node.node)}</h2>
       <p className="sub mono">{node.node} · {ms(node.duration_ms)}{node.status !== 'ok' && ` · ${node.status}`}</p>
+      <ContextMetrics value={contextMetrics} />
       {summary.length > 0 && (
         <dl>
           {summary.map(([key, value]) => (
@@ -78,7 +81,7 @@ export function NodeDetail({ node, models, retrievals }: {
           ))}
         </>
       )}
-      {summary.length === 0 && nodeModels.length === 0 && nodeRetrievals.length === 0 && (
+      {summary.length === 0 && !contextMetrics && nodeModels.length === 0 && nodeRetrievals.length === 0 && (
         <p className="muted" style={{ fontSize: 12.5 }}>这个节点没有留下额外判定信息。</p>
       )}
     </div>

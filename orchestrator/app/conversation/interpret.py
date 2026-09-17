@@ -2,21 +2,20 @@
 
 from __future__ import annotations
 
-import json
 import logging
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.context.builder import build_context, estimate_tokens
-from app.context.config import conversation_config
+from app.context.budget import context_input_budget
+from app.context.builder import ContextBudgetExceeded, build_context
 from app.conversation.answers import AnswerRequest
 from app.conversation.history import ConversationEntry
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError
 
 log = logging.getLogger("conversation.interpret")
-Intent = Literal[
+type Intent = Literal[
     "report_problem",
     "supplement",
     "correct",
@@ -125,7 +124,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-09-14.10"
+INTERPRET_PROMPT_VERSION = "2026-09-17.1"
 
 INSTRUCTION = """你是售后会话语义解释器，输出符合 schema 的 JSON。
 business_subject.active_subject 是最近选择或查询的业务对象，active_subject_id 是其 ID。「这笔订单、上面的订单」及普通短追问沿用该焦点，business_reference 用 current 且 subject_id 留空；不要因为本轮省略编号要求重填。service_case 是正在办理的案件，可以属于另一笔订单；不能用案件订单覆盖聊天焦点。业务缺参和不同订单的案件隔离由服务端处理，clarification 只用于意图或对象确实歧义。
@@ -195,8 +194,10 @@ async def interpret_turn(router, state: dict, *, lane: str):
 
     # 品类已知只给该品类的症状码；未知给全部品类的并集（后面 decide 再按品类过滤）
     candidates = list(dict.fromkeys(f["symptom_code"] for f in families(state.get("category"))))[:60]
-    instruction = INSTRUCTION + "\n症状码仅从候选中选，无法匹配留空：" + ",".join(candidates)
-    instruction += "\n当前症状问题 kind=symptom_selection 时，根据本轮原话选择 options 中明确符合的 value，填 symptom_answer.answer=selection 和 selected_families；可以多选，不把未选项认定为不存在。不能确定时用 unknown。其他新现象仍按逐字原话提取 facts。"
+    instruction = INSTRUCTION + "\n症状码仅从状态数据 symptom_candidates 中选，无法匹配留空。"
+    question = (state.get("symptom_interview") or {}).get("question") or {}
+    if question.get("kind") == "symptom_selection":
+        instruction += "\n当前症状问题 kind=symptom_selection 时，根据本轮原话选择 options 中明确符合的 value，填 symptom_answer.answer=selection 和 selected_families；可以多选，不把未选项认定为不存在。不能确定时用 unknown。其他新现象仍按逐字原话提取 facts。"
     try:
         bundle = build_context(
             entries,
@@ -205,15 +206,12 @@ async def interpret_turn(router, state: dict, *, lane: str):
             # Recall pins belong to the reply phase that requested them. The next
             # interpreter sees the prior selection metadata, then asks the reader
             # for exact history only if this new turn actually needs it.
-            state={**state, "recall_entry_ids": []},
+            state={**state, "recall_entry_ids": [], "symptom_candidates": candidates},
             instruction=instruction,
-            max_tokens=conversation_config().max_input_tokens
-            - estimate_tokens(
-                json.dumps(TurnInterpretation.model_json_schema(), ensure_ascii=False)
-            )
-            - 256,
+            task="intake",
+            max_tokens=context_input_budget("intake", TurnInterpretation),
         )
-    except ValueError as exc:
+    except ContextBudgetExceeded as exc:
         # Context capacity must not disable deterministic, explicit requests.
         from app.conversation.l3_intents import fallback_interpretation
 
@@ -222,8 +220,9 @@ async def interpret_turn(router, state: dict, *, lane: str):
             return fallback, {"source": "context_budget_rules", "source_entry_ids": [state["input_id"]]}
         return TurnInterpretation(
             primary_intent="unknown",
-            clarification="当前记录较多，我暂时无法准确理解这句追问。已有信息会保留，请直接说明要查询还是继续办理。",
-        ), {"source": "context_budget", "required_tokens": getattr(exc, "required_tokens", None), "max_tokens": getattr(exc, "max_tokens", None)}
+            clarification="我暂时无法完成这次理解，已有信息仍会保留。请指出要查询的信息或要继续的步骤。",
+        ), {"source": "context_budget", "required_tokens": exc.required_tokens,
+            "max_tokens": exc.max_tokens, "token_breakdown": exc.token_breakdown}
     if router is None:
         from app.conversation.l3_intents import fallback_interpretation
 
@@ -232,7 +231,7 @@ async def interpret_turn(router, state: dict, *, lane: str):
             return fallback, dict(bundle.as_dict(), source="l3_rules")
         return TurnInterpretation(
             primary_intent="unknown",
-            clarification="请说明设备型号和当前现象，我会结合已有记录继续处理。",
+            clarification="我暂时无法完成这次理解，已有信息仍会保留。请指出要查询的信息或要继续的步骤。",
         ), dict(bundle.as_dict(), source="unavailable")
     try:
         result = await router.invoke(
@@ -259,5 +258,5 @@ async def interpret_turn(router, state: dict, *, lane: str):
             return fallback, dict(bundle.as_dict(), source="l3_rules_degraded")
         return TurnInterpretation(
             primary_intent="unknown",
-            clarification="我暂时无法确认您这句话指的是哪项，请补充一下设备和要更正的内容。",
+            clarification="我暂时无法完成这次理解，已有信息仍会保留。请指出要查询的信息或要继续的步骤。",
         ), dict(bundle.as_dict(), source="degraded")

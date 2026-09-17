@@ -5,7 +5,8 @@ from __future__ import annotations
 import logging
 import os
 
-from app.context.builder import build_context
+from app.context.budget import context_input_budget
+from app.context.builder import ContextBudgetExceeded, build_context
 from app.conversation.history import ConversationEntry
 from app.conversation.reduce import stable_id
 from app.models.runtime import get_model_router
@@ -92,6 +93,8 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 now=state["at"],
                 state=state,
                 instruction=instruction,
+                task="reply.stream",
+                max_tokens=context_input_budget("reply.stream", extra_instruction=SIMPLIFIED_LAYER),
             )
             # 票 14：降级模型用简化提示变体重新生成，而不是重放主模型的完整提示。
             simplified = [
@@ -129,7 +132,7 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                         },
                     )
                 return {}
-        except ValueError:
+        except ContextBudgetExceeded:
             pass
     writer(
         {

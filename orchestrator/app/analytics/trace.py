@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from app.analytics import derive
+from app.analytics.context import clear_context_events, take_context_events
 from app.analytics.hooks import get_sink, take_counters
 from app.analytics.schema import RunFacts
 
@@ -32,6 +33,7 @@ class RunTrace:
         self.started = time.monotonic()
         self.started_wall = datetime.now(UTC)
         self.updates: list[tuple[str, Any, float]] = []
+        self.context_events: dict[int, list[dict[str, object]]] = {}
         self.interrupted = False
 
     def on_updates(self, chunk: Any) -> None:
@@ -46,6 +48,7 @@ class RunTrace:
                         self.interrupted = True
                     continue
                 self.updates.append((str(node), update, now))
+                self.context_events[len(self.updates)] = take_context_events(self.run_id, str(node))
         except Exception:
             log.debug("analytics on_updates failed", exc_info=True)
 
@@ -67,6 +70,7 @@ class RunTrace:
         """run 结束：写 node_runs + run_facts + session_facts（都进 sink 队列，不等待落库）。"""
         sink = get_sink()
         counters = take_counters(self.run_id)
+        clear_context_events(self.run_id)
         if sink is None:
             return
         try:
@@ -81,6 +85,8 @@ class RunTrace:
             if nodes and self.interrupted:
                 nodes[-1].status = "interrupt"
             for row in nodes:
+                if metrics := self.context_events.get(row.idx):
+                    row.summary = {**(row.summary or {}), "context_metrics": metrics}
                 sink.put("node_run", row)
 
             duration_ms = int((ended - self.started) * 1000)

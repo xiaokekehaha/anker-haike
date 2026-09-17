@@ -2,11 +2,19 @@
 
 import json
 
-from app.context.builder import estimate_tokens
+from app.context.builder import estimate_tokens, message_tokens
 from app.context.config import conversation_config
 
 
-def budget_error(messages, spec, *, schema=None, schema_in_messages=False, output_tokens=2048):
+def context_input_budget(task, schema=None, *, extra_instruction="") -> int:
+    """Reserve provider schema wrappers, optional fallback instructions and message framing."""
+    reserve = 256 + estimate_tokens(extra_instruction)
+    if schema is not None:
+        reserve += estimate_tokens(json.dumps(schema.model_json_schema(), ensure_ascii=False, separators=(",", ":")))
+    return conversation_config().input_budget(task) - reserve
+
+
+def measure_input(messages, *, schema=None, schema_in_messages=False) -> dict[str, int]:
     text = []
     images = 0
     for message in messages:
@@ -20,9 +28,14 @@ def budget_error(messages, spec, *, schema=None, schema_in_messages=False, outpu
                 elif isinstance(block, dict):
                     text.append(str(block.get("text", "")))
     if schema is not None and not schema_in_messages:
-        text.append(json.dumps(schema.model_json_schema(), ensure_ascii=False))
-    tokens = sum(estimate_tokens(value) + 8 for value in text)
-    if tokens > conversation_config().max_input_tokens:
+        text.append(json.dumps(schema.model_json_schema(), ensure_ascii=False, separators=(",", ":")))
+    return {"text_tokens": sum(message_tokens(value) for value in text), "images": images}
+
+
+def budget_error(messages, spec, *, task=None, schema=None, schema_in_messages=False, output_tokens=2048):
+    measured = measure_input(messages, schema=schema, schema_in_messages=schema_in_messages)
+    tokens, images = measured["text_tokens"], measured["images"]
+    if tokens > conversation_config().input_budget(task):
         return "text input/schema exceeds conversation budget"
     # Image encoding differs by provider; reserve 16k per image within the provider window.
     # Upload count/size limits are independently enforced by vision/OCR selection.

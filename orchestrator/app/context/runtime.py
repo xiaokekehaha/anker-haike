@@ -5,8 +5,8 @@ from contextvars import ContextVar
 
 from langchain_core.messages import convert_to_messages
 
-from app.context.builder import build_context, estimate_tokens
-from app.context.config import conversation_config
+from app.context.budget import context_input_budget
+from app.context.builder import build_context
 from app.conversation.history import ConversationEntry
 from app.prompts.system import wrap_data
 
@@ -47,15 +47,13 @@ def prepare_messages(task, messages, schema=None):
     task_data = "\n".join(m.content for m in normalized if m.type != "system")
     if state.get("text"):
         task_data = task_data.replace(wrap_data(state["text"]), "（本轮原话见带来源的用户消息）")
-    reserve = (
-        estimate_tokens(json.dumps(schema.model_json_schema(), ensure_ascii=False)) if schema else 0
-    )
     bundle = build_context(
         [ConversationEntry(**e) for e in state.get("history", [])],
         current_input_id=state["input_id"],
         now=state["at"],
         state={**state, "task_data": task_data, "task": task},
-        max_tokens=conversation_config().max_input_tokens - reserve - 256,
+        task=task,
+        max_tokens=context_input_budget(task, schema),
         instruction=instruction,
     )
     return bundle.messages

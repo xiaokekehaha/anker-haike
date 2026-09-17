@@ -15,6 +15,7 @@ import logging
 from datetime import UTC, datetime
 from typing import Any
 
+from app.analytics.context import observe_context
 from app.analytics.schema import ModelCall, RetrievalCall
 from app.analytics.sink import AnalyticsSink
 
@@ -65,6 +66,7 @@ def observe(event: str, data: dict[str, Any]) -> None:
     if sink is None:
         return
     try:
+        observe_context(event, data, current_node())
         if event == "model_call":
             sink.put("model_call", _model_call(data))
         elif event == "knowledge_search":
