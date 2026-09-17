@@ -20,7 +20,9 @@ def guide_messages(
     *, source_text: str, title: str, product: str | None, strategy: str, summary: dict[str, Any] | None
 ) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
     short = "用户情绪激动：改写结果不超过两句、越短越好。" if strategy == "reassure_and_shorten" else ""
-    human = wrap_data(state_layer(summary or {}), kind="session_state") + f"{INSTRUCTION}{short}\n步骤标题：{title}\n产品：{product or '扫地机器人'}\n{wrap_data(source_text, kind='instruction_src')}"
+    # 产品未知时不写这一行：随便填一个品类会让模型按那个品类的部件改写步骤。
+    product_line = f"\n产品：{product}" if product else ""
+    human = wrap_data(state_layer(summary or {}), kind="session_state") + f"{INSTRUCTION}{short}\n步骤标题：{title}{product_line}\n{wrap_data(source_text, kind='instruction_src')}"
     return (
         [("system", compose_system_prompt(strategy, summary)), ("human", human)],
         [("system", compose_system_prompt(strategy, summary, simplified=True)), ("human", human)],

@@ -12,6 +12,10 @@ from app.settings import REPO_ROOT
 
 KINDS = ("vision", "symptom", "routing", "emotion", "policy", "authorization", "commitments")
 
+# 这几个金标字段断言的是「出现在列表里」，不是整列表相等：一次判定可以有多个缺参数或多条转人工理由，
+# 用例只钉自己关心的那一条。
+MEMBERSHIP = {"missing": "missing_inputs", "reason": "needs_human_reasons"}
+
 
 class EvalCase(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -50,11 +54,19 @@ def evaluate(kind, value):
                 "replace_auto": any(
                     r.remedy == "replace" and r.auto_allowed for r in decision.remedies
                 ),
-                "paid_repair": any(
-                    r.remedy == "repair" and r.eligible and r.cost_bearer == "customer"
-                    for r in decision.remedies
+                "parts_auto": any(
+                    r.remedy == "parts" and r.auto_allowed for r in decision.remedies
                 ),
+                "paid_repair": any(
+                    r.remedy == "paid_repair" and r.eligible for r in decision.remedies
+                ),
+                "within_warranty": decision.within_warranty,
+                "warranty_end": decision.warranty_end.isoformat()
+                if decision.warranty_end
+                else None,
+                "policy_id": decision.policy_id,
                 "missing_inputs": decision.missing_inputs,
+                "needs_human_reasons": decision.needs_human_reasons,
             }
         from app.actions.gate import AuthorizationGate
 
@@ -92,7 +104,7 @@ def run(kind):
     for case in cases:
         actual = evaluate(kind, case.input)
         if any(
-            (v not in actual.get("missing_inputs", []) if k == "missing" else actual.get(k) != v)
+            (v not in actual.get(MEMBERSHIP[k], []) if k in MEMBERSHIP else actual.get(k) != v)
             for k, v in case.expected.items()
         ):
             failures.append({"id": case.id, "expected": case.expected, "actual": actual})

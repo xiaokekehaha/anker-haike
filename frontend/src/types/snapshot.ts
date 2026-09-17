@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: 5c8432b66fa688b7efd7700822ba07c1ec86870d20f90fcb8386aeb3ca440c3a
+// SHA-256: b6bd8f79aa6ae87a6599b770a486fe7b9d34442816697c01f387d2c35274dfa0
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -74,6 +74,7 @@ export type ClauseId = string;
 export type DocVersion = string;
 export type PolicyVersion = string;
 export type SourceDoc = string;
+export type SourceUrl = string | null;
 export type Text1 = string;
 export type Clauses = Clause[];
 export type Met = boolean;
@@ -84,7 +85,7 @@ export type Action = 'replacement.create';
 export type ActionsVersion = string;
 export type WorkingDays = number;
 export type OptionId = string;
-export type Remedy = 'repair' | 'replace' | 'refund' | 'none';
+export type Remedy = 'parts' | 'repair' | 'replace' | 'refund' | 'paid_repair' | 'none';
 export type Source = 'policy' | 'human';
 export type Title = string;
 export type RecommendedOptions = ProposalOption[];
@@ -537,7 +538,8 @@ export interface Clause {
   clause_id: ClauseId;
   doc_version: DocVersion;
   policy_version: PolicyVersion;
-  source_doc?: SourceDoc;
+  source_doc: SourceDoc;
+  source_url?: SourceUrl;
   text: Text1;
 }
 /**

@@ -1,762 +1,173 @@
-# 虚构演示决策金标，固定日期以便复现。
+# 政策决策金标。保修期取自 config/policy/warranty_policy.yaml 的公开来源，warranty_end 逐条钉死，
+# 有人改了保修期而没改来源引用，这里会红。固定 today=2026-09-17 以便复现。
+#
+# 覆盖：目录 20 个品类各一条在保 + 一条过保（终身保线材、按部件计的吸奶器配件单列），
+# 加不保清单、跨国、缺参数、已换货、系列名直给等边界。
+# 公开政策页查不到的四个品类（便携储能 / 家用储能 / 婴儿监视器 / UV 打印机）期望就是转人工。
 cases:
-- id: CN-official_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: CN-official_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: CN-official_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-official_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-platform_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: CN-platform_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: CN-platform_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-platform_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-authorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: CN-authorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: CN-authorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-authorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-unauthorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-unauthorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-unauthorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: CN-unauthorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-official_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: DE-official_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: DE-official_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-official_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-platform_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: DE-platform_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: DE-platform_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-platform_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-authorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: DE-authorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: DE-authorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-authorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-unauthorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-unauthorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-unauthorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: DE-unauthorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: DE
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-official_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: UK-official_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: UK-official_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-official_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-platform_store-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: UK-platform_store-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: UK-platform_store-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-platform_store-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: platform_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-authorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: UK-authorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: UK-authorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-authorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: authorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-unauthorized_dealer-quality
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-unauthorized_dealer-user_damage
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: user_damage
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-unauthorized_dealer-safety
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: safety
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: UK-unauthorized_dealer-unknown
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: UK
-    channel: unauthorized_dealer
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: unknown
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: a6
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: UK
-    region_use: DE
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-- id: expired
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2023-01-01'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: false
-    paid_repair: true
-- id: already_replaced
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-    prior_remedies:
-    - replace
-  expected:
-    needs_human: false
-    replace_auto: false
-- id: missing_region
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: null
-    region_use: CN
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
-    missing: region_purchase
-- id: eu_mutual
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: DE
-    region_use: FR
-    channel: official_store
-    purchase_date: '2026-02-26'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: false
-    replace_auto: true
-- id: future
-  input:
-    sku: T2351
-    category: robot_vacuum
-    region_purchase: CN
-    region_use: CN
-    channel: official_store
-    purchase_date: '2027-01-01'
-    receipt_status: order_verified
-    fault_class: quality
-    today: '2026-09-14'
-  expected:
-    needs_human: true
-    replace_auto: false
+# ---------- Anker Charging：在保 ----------
+- {id: power_bank-in, input: {sku: ANKER-A1257, category: power_bank, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01'}}
+- {id: charger-in, input: {sku: ANKER-A2337, category: charger, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: cable-in, input: {sku: ANKER-A8856, category: cable, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: wireless_charger-in, input: {sku: ANKER-A25M3, category: wireless_charger, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01'}}
+- {id: charging_station-in, input: {sku: ANKER-A9128, category: charging_station, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01'}}
+- {id: hub-in, input: {sku: ANKER-A8383, category: hub, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+
+# ---------- Anker eufy：在保 ----------
+- {id: robot_vacuum-in, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2027-08-01'}}
+- {id: robot_mower-in, input: {sku: EUFY-T2551, category: robot_mower, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01'}}
+- {id: security_cam-in, input: {sku: EUFY-T8213, category: security_cam, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2027-08-01'}}
+- {id: breast_pump-in, input: {sku: EUFY-BP-S1-PRO, category: breast_pump, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2027-08-01'}}
+- {id: smart_scale-in, input: {sku: EUFY-T9140, category: smart_scale, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01'}}
+
+# ---------- Anker soundcore：在保 ----------
+- {id: earbuds-in, input: {sku: SOUNDCORE-A3961, category: earbuds, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: headphones-in, input: {sku: SOUNDCORE-A3035, category: headphones, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: sleep_earbuds-in, input: {sku: SOUNDCORE-A6610, category: sleep_earbuds, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: speaker-in, input: {sku: SOUNDCORE-A3130, category: speaker, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-02-01'}}
+- {id: projector-in, input: {sku: NEBULA-D2426, category: projector, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2027-08-01'}}
+
+# ---------- 过保：免费处置全部失效，只有扫地机类还能付费维修 ----------
+- {id: power_bank-expired, input: {sku: ANKER-A1257, category: power_bank, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2021-01-01'}}
+- {id: charger-expired, input: {sku: ANKER-A2337, category: charger, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: cable-expired, input: {sku: ANKER-A8856, category: cable, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: wireless_charger-expired, input: {sku: ANKER-A25M3, category: wireless_charger, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2021-01-01'}}
+- {id: charging_station-expired, input: {sku: ANKER-A9128, category: charging_station, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2021-01-01'}}
+- {id: hub-expired, input: {sku: ANKER-A8383, category: hub, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: robot_vacuum-expired, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, paid_repair: true, within_warranty: false, warranty_end: '2020-01-01'}}
+- {id: robot_mower-expired, input: {sku: EUFY-T2551, category: robot_mower, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2021-01-01'}}
+- {id: security_cam-expired, input: {sku: EUFY-T8213, category: security_cam, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-01-01'}}
+- {id: breast_pump-expired, input: {sku: EUFY-BP-S1-PRO, category: breast_pump, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-01-01'}}
+- {id: smart_scale-expired, input: {sku: EUFY-T9140, category: smart_scale, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2021-01-01'}}
+- {id: earbuds-expired, input: {sku: SOUNDCORE-A3961, category: earbuds, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: headphones-expired, input: {sku: SOUNDCORE-A3035, category: headphones, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: sleep_earbuds-expired, input: {sku: SOUNDCORE-A6610, category: sleep_earbuds, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: speaker-expired, input: {sku: SOUNDCORE-A3130, category: speaker, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-07-01'}}
+- {id: projector-expired, input: {sku: NEBULA-D2426, category: projector, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2020-01-01'}}
+
+# ---------- 公开政策页无对应行的四个品类：一律转人工，不编保修期 ----------
+- {id: portable_power_station-no_source, input: {sku: ANKER-A1761, category: portable_power_station, region_purchase: US,
+     region_use: US, channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}
+- {id: home_storage-no_source, input: {sku: ANKER-A17C1, category: home_storage, region_purchase: US,
+     region_use: US, channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}
+- {id: baby_monitor-no_source, input: {sku: EUFY-T8300, category: baby_monitor, region_purchase: US,
+     region_use: US, channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}
+- {id: uv_printer-no_source, input: {sku: EUFYMAKE-E1, category: uv_printer, region_purchase: US,
+     region_use: US, channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}
+
+# ---------- 系列与部件：三级匹配 ----------
+- {id: cable-lifetime, input: {sku: ANKER-A8121, category: cable, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2019-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: null, policy_id: us_cable_powerline_lifetime}}
+- {id: breast_pump-accessory-in, input: {sku: EUFY-BP-S1-PRO, category: breast_pump, part_class: accessory,
+     region_purchase: US, region_use: US, channel: official_store, purchase_date: '2026-08-01',
+     receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2026-11-01', policy_id: us_breast_pump_accessory}}
+- {id: breast_pump-accessory-expired, input: {sku: EUFY-BP-S1-PRO, category: breast_pump, part_class: accessory,
+     region_purchase: US, region_use: US, channel: official_store, purchase_date: '2026-03-01',
+     receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: false, warranty_end: '2026-06-01'}}
+- {id: power_bank-series-only, input: {category: power_bank, series: Prime, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: true, parts_auto: true, within_warranty: true, warranty_end: '2028-08-01', policy_id: us_power_bank_prime}}
+
+# ---------- 不保清单与边界 ----------
+- {id: user_damage, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: user_damage, today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: false, within_warranty: true, warranty_end: '2027-08-01'}}
+- {id: safety, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: safety, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: fault_safety}}
+- {id: fault_unknown, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: unknown, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: fault_unknown}}
+- {id: unauthorized_dealer, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: unauthorized_dealer, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: US-W-2.2}}
+- {id: cross_region_use, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: DE,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: US-W-6.1}}
+- {id: cn_purchase_no_source, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: CN, region_use: CN,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}
+- {id: already_replaced, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality,
+     prior_remedies: [replace], today: '2026-09-17'},
+   expected: {needs_human: false, replace_auto: false, parts_auto: true, within_warranty: true, warranty_end: '2027-08-01'}}
+- {id: missing_region, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: null, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, missing: region_purchase}}
+- {id: future_purchase_date, input: {sku: EUFY-X10-PRO-OMNI, category: robot_vacuum, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2027-01-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: future_purchase_date}}
+- {id: unknown_category, input: {sku: NOT-IN-CATALOG, region_purchase: US, region_use: US,
+     channel: official_store, purchase_date: '2026-08-01', receipt_status: order_verified, fault_class: quality, today: '2026-09-17'},
+   expected: {needs_human: true, replace_auto: false, parts_auto: false, reason: no_policy_matched}}

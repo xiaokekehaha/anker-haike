@@ -225,9 +225,20 @@
           "type": "string"
         },
         "source_doc": {
-          "default": "演示政策，待真实 SOP 替换",
           "title": "Source Doc",
           "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
         },
         "text": {
           "title": "Text",
@@ -237,6 +248,7 @@
       "required": [
         "clause_id",
         "text",
+        "source_doc",
         "doc_version",
         "policy_version"
       ],
@@ -2214,9 +2226,11 @@
         },
         "remedy": {
           "enum": [
+            "parts",
             "repair",
             "replace",
             "refund",
+            "paid_repair",
             "none"
           ],
           "title": "Remedy",
@@ -2632,9 +2646,11 @@
         },
         "remedy": {
           "enum": [
+            "parts",
             "repair",
             "replace",
             "refund",
+            "paid_repair",
             "none"
           ],
           "title": "Remedy",

@@ -4,6 +4,8 @@ import hashlib
 import json
 from datetime import date
 
+from haike_contracts.common import REMEDY_LADDER
+
 from app.actions.gate import AuthorizationGate
 from app.actions.runtime import require_services
 from app.actions.store import ExecutionBusy
@@ -18,7 +20,13 @@ from app.policy.models import PolicyInput
 
 CONTEXT_FIELDS = ("region_purchase", "region_use", "channel", "platform")
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
-REMEDY_TITLES = {"replace": "申请换货", "repair": "申请维修", "refund": "申请退款审核"}
+REMEDY_TITLES = {
+    "parts": "寄送更换配件",
+    "repair": "申请维修",
+    "replace": "申请换货",
+    "refund": "申请退款审核",
+    "paid_repair": "申请付费维修",
+}
 
 
 def say(state, text):
@@ -189,8 +197,14 @@ async def propose(state):
     writer()({"type": "progress", "stage": "propose"})
     excluded = set((state.get("proposal") or {}).get("excluded", []))
     options = []
+    # 官方处置阶梯的顺序就是优先级：先寄配件，最后才谈退款。
+    # 滚刷、滤网、耳塞套这类件换一个就好，之前只能提整机换货，成本与交付周期都差一个量级。
     for remedy in sorted(
-        decision.remedies, key=lambda r: ({"replace": 0, "repair": 1, "refund": 2}.get(r.remedy, 3), not r.eligible)
+        decision.remedies,
+        key=lambda r: (
+            REMEDY_LADDER.index(r.remedy) if r.remedy in REMEDY_LADDER else len(REMEDY_LADDER),
+            not r.eligible,
+        ),
     ):
         # Human review needs candidates and unmet conditions even when no policy
         # remedy is eligible. These candidates are not offered to the user until
@@ -262,7 +276,7 @@ async def propose(state):
         )
         update["l3_route"] = "await_human"
     elif not options:
-        say(state, "根据当前演示政策，没有可直接办理的方案，我会整理资料交由人工核实。")
+        say(state, "按当前售后政策，没有可直接办理的方案，我会整理资料交由人工核实。")
         case = await services.cases.transition(
             state["case_id"], "escalated_summary", "没有可办理方案，已整理人工接续摘要"
         )

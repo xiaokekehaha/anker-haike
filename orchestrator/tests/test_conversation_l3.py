@@ -183,7 +183,7 @@ async def test_unresolved_report_reopens_original_case_and_requires_fresh_confir
         assert not case["proposal"]["user_confirmed"] and l3_runtime.backend.create_calls == 0
 
 
-async def seed_issue(client, monkeypatch, region="CN", order="DEMO-X10-001"):
+async def seed_issue(client, monkeypatch, region="US", order="DEMO-X10-001"):
     import app.conversation.interpret as semantic
 
     async def interpretation(router, state, **kwargs):
@@ -265,7 +265,9 @@ async def test_a6_approval_restores_graph(l3_runtime, monkeypatch, edit_cost):
     import asyncio
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        sid = await seed_issue(client, monkeypatch, region="DE", order="DEMO-UK-005")
+        # 美国买、德国用：政策命中但跨区域，需要人工特批。用 UK 订单已经不行了 ——
+        # 非 US 购买地没有可引用的政策，连候选方案都出不来，人工也没得批。
+        sid = await seed_issue(client, monkeypatch, region="DE", order="DEMO-X10-001")
         rows = events(await send(client, sid, "我要换货"))
         assert any(
             e["type"] == "case_changed" and e["status"] == "awaiting_approval" for e in rows

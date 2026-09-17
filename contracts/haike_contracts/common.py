@@ -185,9 +185,11 @@ class ModelTraceItem(Strict):
 class Clause(Strict):
     clause_id: str
     text: str
-    source_doc: str = "演示政策，待真实 SOP 替换"
+    source_doc: str
     doc_version: str
     policy_version: str
+    # 条款出处的可点链接。真实政策必须有，演示条款留空；用户可见文本只允许引用有出处的条款。
+    source_url: str | None = None
 
 
 class PolicyCondition(Strict):
@@ -197,8 +199,15 @@ class PolicyCondition(Strict):
     met: bool
 
 
+# 官方处置阶梯（anker.com / us.eufy.com 售后政策）：先寄配件，再维修，再换翻新/新机，
+# 最后才是按使用时长部分退款；过保另有付费维修。顺序即优先级，propose 按此排序。
+Remedy = Literal["parts", "repair", "replace", "refund", "paid_repair", "none"]
+
+REMEDY_LADDER: tuple[str, ...] = ("parts", "repair", "replace", "refund", "paid_repair")
+
+
 class RemedyDecision(Strict):
-    remedy: Literal["repair", "replace", "refund", "none"]
+    remedy: Remedy
     eligible: bool
     auto_allowed: bool
     cost_bearer: Literal["company", "customer", "shared"] | None = None
@@ -229,7 +238,7 @@ class DispatchEstimate(Strict):
 
 class ProposalOption(Strict):
     option_id: str
-    remedy: Literal["repair", "replace", "refund", "none"]
+    remedy: Remedy
     title: str
     cost_bearer: Literal["company", "customer", "shared"] | None = None
     conditions: list[PolicyCondition] = Field(default_factory=list)

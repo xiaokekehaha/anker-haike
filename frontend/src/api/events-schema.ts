@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: c7f67b63a671aac6ee12e0334d61f2a35da351f57fd7acea69722747281ca3e3
+// SHA-256: 5472993af7f87c9a4b642700efdb5007d87a72f5300c6ebe528354c2d50bdf28
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -232,9 +232,20 @@ export const serverEventSchema = z.fromJSONSchema({
           "type": "string"
         },
         "source_doc": {
-          "default": "演示政策，待真实 SOP 替换",
           "title": "Source Doc",
           "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
         },
         "text": {
           "title": "Text",
@@ -244,6 +255,7 @@ export const serverEventSchema = z.fromJSONSchema({
       "required": [
         "clause_id",
         "text",
+        "source_doc",
         "doc_version",
         "policy_version"
       ],
@@ -2221,9 +2233,11 @@ export const serverEventSchema = z.fromJSONSchema({
         },
         "remedy": {
           "enum": [
+            "parts",
             "repair",
             "replace",
             "refund",
+            "paid_repair",
             "none"
           ],
           "title": "Remedy",
@@ -2639,9 +2653,11 @@ export const serverEventSchema = z.fromJSONSchema({
         },
         "remedy": {
           "enum": [
+            "parts",
             "repair",
             "replace",
             "refund",
+            "paid_repair",
             "none"
           ],
           "title": "Remedy",

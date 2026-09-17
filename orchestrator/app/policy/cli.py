@@ -10,7 +10,7 @@ from .models import PolicyInput
 
 
 def main():
-    parser = argparse.ArgumentParser(description="演示政策校验与解释（待真实 SOP 替换）")
+    parser = argparse.ArgumentParser(description="政策校验与解释（来源见 config/policy/warranty_policy.yaml）")
     parser.add_argument("command", choices=["lint", "explain"])
     parser.add_argument("--case", type=Path)
     args = parser.parse_args()

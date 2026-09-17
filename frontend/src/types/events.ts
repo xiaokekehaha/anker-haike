@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: c7f67b63a671aac6ee12e0334d61f2a35da351f57fd7acea69722747281ca3e3
+// SHA-256: 5472993af7f87c9a4b642700efdb5007d87a72f5300c6ebe528354c2d50bdf28
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -348,6 +348,7 @@ export type ClauseId = string;
 export type DocVersion1 = string;
 export type PolicyVersion = string;
 export type SourceDoc = string;
+export type SourceUrl = string | null;
 export type Text1 = string;
 export type Clauses = Clause[];
 export type Met = boolean;
@@ -358,7 +359,7 @@ export type Action = 'replacement.create';
 export type ActionsVersion = string;
 export type WorkingDays = number;
 export type OptionId1 = string;
-export type Remedy = 'repair' | 'replace' | 'refund' | 'none';
+export type Remedy = 'parts' | 'repair' | 'replace' | 'refund' | 'paid_repair' | 'none';
 export type Source1 = 'policy' | 'human';
 export type Title1 = string;
 export type RecommendedOptions = ProposalOption[];
@@ -542,7 +543,7 @@ export type Clauses1 = Clause[];
 export type Conditions1 = PolicyCondition[];
 export type CostBearer1 = ('company' | 'customer' | 'shared') | null;
 export type Eligible = boolean;
-export type Remedy1 = 'repair' | 'replace' | 'refund' | 'none';
+export type Remedy1 = 'parts' | 'repair' | 'replace' | 'refund' | 'paid_repair' | 'none';
 export type Remedies = RemedyDecision[];
 export type TraceId = string;
 export type WarrantyEnd = string | null;
@@ -995,7 +996,8 @@ export interface Clause {
   clause_id: ClauseId;
   doc_version: DocVersion1;
   policy_version: PolicyVersion;
-  source_doc?: SourceDoc;
+  source_doc: SourceDoc;
+  source_url?: SourceUrl;
   text: Text1;
 }
 /**

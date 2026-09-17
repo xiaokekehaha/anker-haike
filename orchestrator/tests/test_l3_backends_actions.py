@@ -17,8 +17,8 @@ def gate(**overrides):
     decision = PolicyEngine().decide(
         PolicyInput(
             sku="EUFY-X10-PRO-OMNI",
-            region_purchase="CN",
-            region_use="CN",
+            region_purchase="US",
+            region_use="US",
             channel="official_store",
             purchase_date="2026-02-26",
             today="2026-09-14",

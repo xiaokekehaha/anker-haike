@@ -1436,7 +1436,7 @@ def out_of_scope_text(name: str, category_name: str) -> str:
 
 
 async def out_of_scope(state: SessionState) -> SessionState:
-    """范围外产品子流程（02 §3、09 §2.1）：说明本期仅支持扫地机，随后 escalate(R8)。"""
+    """范围外产品子流程（02 §3、09 §2.1）：说明支持范围（按目录 in_scope 产品线生成），随后 escalate(R8)。"""
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "out_of_scope"})
     catalog = get_catalog()

@@ -71,7 +71,7 @@ async def test_seed_sql_and_backend_idempotency(l3_pool):
     assert await seed_backends(l3_pool, path) == await seed_backends(l3_pool, path)
     backend = MockBackend(l3_pool)
     order = await backend.get_order("DEMO-X10-001")
-    assert order.region_purchase == "CN"
+    assert order.region_purchase == "US"
     shipment = await backend.get_shipment(order_no=order.order_no)
     assert await backend.get_shipment(tracking_no=shipment.tracking_no) == shipment
     req = ServiceOrderRequest(order_no=order.order_no, sku=order.sku, reason_code="quality")

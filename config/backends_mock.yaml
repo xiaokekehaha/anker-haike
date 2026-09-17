@@ -1,22 +1,26 @@
 # 虚构演示订单、运单与故障注入，不代表真实业务。
-version: 2026-09-14.1
+# 2026-09-17：保修政策改为只覆盖 US（唯一有公开来源的市场，见 config/policy/warranty_policy.yaml），
+# 两笔主演示订单随之改成 US，否则演示走到政策判定就只剩转人工。
+# order_no 里的 CN / DE / UK 是历史命名，真正的区域以 region_purchase 为准；
+# 这几笔保持非 US，正是用来演示「购买地没有可引用政策 → 如实转人工」。
+version: 2026-09-17.1
 orders:
 - order_no: DEMO-X10-001
   sku: EUFY-X10-PRO-OMNI
   channel: 海科演示授权经销商
   purchase_date: '2026-03-15'
-  region_purchase: CN
+  region_purchase: US
   platform: demo
-  amount: '2999.00'
-  currency: CNY
+  amount: '449.99'
+  currency: USD
 - order_no: DEMO-S1-002
   sku: EUFY-S1-PRO
   channel: 海科演示线上店
   purchase_date: '2026-04-20'
-  region_purchase: CN
+  region_purchase: US
   platform: demo
-  amount: '2999.00'
-  currency: CNY
+  amount: '799.99'
+  currency: USD
 - order_no: DEMO-CN-003
   sku: EUFY-X10-PRO-OMNI
   channel: official_store
