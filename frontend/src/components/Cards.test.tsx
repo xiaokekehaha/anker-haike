@@ -19,7 +19,7 @@ describe('cards', () => {
     fireEvent.click(screen.getByRole('button', { name: '一键复制' }));
     await screen.findByText('已复制');
     const text = writeText.mock.calls[0]?.[0] as string;
-    for (const k of ['【产品】eufy X9 Pro', '【问题】冒烟', '【观察】', '【假设】', '【已执行步骤】清理滚刷（not_solved）', '【升级原因】R4', '【凭证】not_collected']) expect(text).toContain(k);
+    for (const k of ['【产品】eufy X9 Pro', '【问题】冒烟', '【观察】', '【假设】', '【排查记录】清理滚刷（已操作，仍有问题）', '【升级原因】R4', '【凭证】not_collected']) expect(text).toContain(k);
     expect(summaryToText(SUMMARY)).toContain('【凭证核实事实】');
     expect(summaryToText(SUMMARY)).toContain('【凭证待核实差异】');
   });

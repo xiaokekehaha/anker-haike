@@ -15,10 +15,12 @@ from haike_contracts.common import (
     EscalationReason,
     EscalationSummary,
     ExecutedStep,
+    Feedback,
     ModelTraceItem,
     ReceiptOutcome,
 )
 
+from app.diagnose.query import category_label
 from app.sessions.receipt import receipt_outcome
 
 REASON_TEXT = {
@@ -50,7 +52,7 @@ def _user_texts(state: dict[str, Any]) -> list[str]:
 
 # design §3.5：R2 只是兼容映射，真实结束原因来自 next_action.reason
 NEXT_ACTION_TEXT = {
-    "no_supported_followup": "已完成{steps}，现有资料没有进一步可执行的排查操作",
+    "no_supported_followup": "{steps}，现有资料没有进一步可执行的排查操作",
     "knowledge_coverage_missing": "当前资料没有适用于该现象的排查路径",
     "observation_unavailable": "缺少选择后续路径所需的检查结果（{observations}），无法继续排查",
     "user_requested_human": "用户明确要求人工服务",
@@ -59,14 +61,39 @@ NEXT_ACTION_TEXT = {
 }
 
 
+FEEDBACK_LABELS: dict[Feedback, str] = {
+    "solved": "已解决",
+    "not_solved": "已操作，仍有问题",
+    "cannot_do": "无法操作",
+}
+
+
+def _executed_steps_text(executed: list[tuple[str, Feedback]]) -> str:
+    """结束原因区分实际操作与无法操作，不能把缺少反馈当作已尝试。"""
+    prefixes: dict[Feedback, str] = {
+        "solved": "已操作并解决",
+        "not_solved": "已操作但未解决",
+        "cannot_do": "无法操作",
+    }
+    parts = []
+    for feedback, prefix in prefixes.items():
+        titles = dict.fromkeys(title for title, result in executed if result == feedback)
+        if titles:
+            parts.append(prefix + "、".join(f"「{title}」" for title in titles))
+    return "，".join(parts) or "尚无已执行的排查记录"
+
+
 def next_action_text(state: dict[str, Any], next_action: dict[str, Any] | None) -> str | None:
     if not next_action or next_action.get("issue_id") not in {None, state.get("active_issue_id")}:
         return None
     template = NEXT_ACTION_TEXT.get(next_action.get("reason") or "")
     if not template:
         return None
-    titles = list(dict.fromkeys(s.get("title") for s in state.get("steps_executed") or [] if s.get("title")))
-    steps = "、".join(f"「{t}」" for t in titles) if titles else "现有排查步骤"
+    steps = _executed_steps_text([
+        (step.get("title") or step["step_id"], step["feedback"])
+        for step in state.get("steps_executed") or []
+        if step.get("feedback") in FEEDBACK_LABELS
+    ])
     from app.diagnose.observations import definitions as load_definitions
 
     definitions = load_definitions()
@@ -131,9 +158,16 @@ def build_summary(
     diagnostic, interview, candidate_families, diagnostic_observations = _diagnostic_context(state)
     facts = [f for f in issue.get("facts", []) if f.get("status") == "active"]
     product = state.get("product_confirmed") or {}
+    # 品类中文名只有一个真源（products.yaml categories[].name）：category_only 时按目录渲染，
+    # 不写死品类（2026-09-17 会话 c9e11 移动电源被写成扫地机器人）
+    category = state.get("category") or (product.get("category") if isinstance(product, dict) else None)
     product_text = (
         product.get("name") or product.get("sku") if isinstance(product, dict) else str(product)
-    ) or ("扫地机器人（型号未确认）" if state.get("product_state") == "category_only" else "未确认")
+    ) or (
+        f"{category_label(category)}（型号未确认）"
+        if state.get("product_state") == "category_only" and category
+        else "未确认"
+    )
     hints = state.get("product_hints") or []
     if product_text == "未确认" and hints:
         product_text = f"未确认（线索：{'、'.join(map(str, hints))}）"
@@ -251,10 +285,10 @@ def summary_to_text(s: EscalationSummary) -> str:
         f"【问题】{s.problem}",
         f"【观察】{'；'.join(s.observations) or '无'}",
         f"【假设】{'；'.join(s.hypotheses) or '无'}",
-        "【已执行步骤】"
+        "【排查记录】"
         + (
             "；".join(
-                f"{x.title}（{x.feedback}" + (f"；观察：{'、'.join(x.observed)}" if x.observed else "") + "）"
+                f"{x.title}（{FEEDBACK_LABELS[x.feedback]}" + (f"；观察：{'、'.join(x.observed)}" if x.observed else "") + "）"
                 for x in s.steps
             )
             or "无"
@@ -284,7 +318,7 @@ def reassurance_text(reason: str, state: dict[str, Any] | None = None) -> str:
             "no_supported_followup", "knowledge_coverage_missing", "observation_unavailable",
         }:
             return (
-                f"{detail}。我已整理当前问题记录和已试步骤，您可以复制给人工客服继续处理；"
-                "目前尚未接入真实转接，不会重复建议您已经做过的操作。"
+                f"{detail}。我已整理当前问题和排查记录，您可以复制给人工客服继续处理；"
+                "目前尚未接入真实转接，不会重复建议您已反馈过的相同操作。"
             )
     return REASSURANCE.get(reason, "我已整理当前问题记录，您可以复制给人工客服继续处理。")

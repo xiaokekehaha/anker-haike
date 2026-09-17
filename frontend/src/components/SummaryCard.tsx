@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { EscalationSummary } from '../types/snapshot';
+import type { EscalationSummary, ExecutedStep, Feedback } from '../types/snapshot';
 import styles from './Cards.module.css';
 import { MessageTime } from './MessageTime';
 
@@ -14,8 +14,12 @@ const HANDOFF: Record<string, string> = {
   failed: '人工接入失败', cancelled: '人工请求已取消',
 };
 
-const stepText = (x: { title: string; feedback: string; observed?: string[] }) =>
-  `${x.title}（${x.feedback}${x.observed?.length ? `；观察：${x.observed.join('、')}` : ''}）`;
+const FEEDBACK_LABELS: Record<Feedback, string> = {
+  solved: '已解决', not_solved: '已操作，仍有问题', cannot_do: '无法操作',
+};
+
+const stepText = (x: ExecutedStep) =>
+  `${x.title}（${FEEDBACK_LABELS[x.feedback]}${x.observed?.length ? `；观察：${x.observed.join('、')}` : ''}）`;
 
 const FACT_LABELS: Record<string, string> = {
   channel: '订单渠道', purchase_date: '购买日期', 'dealer.name': '经销商', authorized: '名录授权状态',
@@ -36,7 +40,7 @@ export function summaryToText(s: EscalationSummary): string {
     `【问题】${s.problem}`,
     `【观察】${s.observations?.join('；') || '无'}`,
     `【假设】${s.hypotheses?.join('；') || '无'}`,
-    `【已执行步骤】${s.steps?.map(stepText).join('；') || '无'}`,
+    `【排查记录】${s.steps?.map(stepText).join('；') || '无'}`,
     `【升级原因】${s.reason.rule_id}：${s.reason.text}`,
     `【情绪】${s.emotion.level} / ${s.emotion.strategy}`,
     `【凭证】${s.receipt.status}${s.receipt.next_step ? `，下一步：${s.receipt.next_step}` : ''}`,
@@ -67,7 +71,7 @@ export function SummaryCard({ summary, updatedAt, revision, handoffStatus = 'pre
         <div><dt>问题</dt><dd>{summary.problem}</dd></div>
         <div><dt>观察</dt><dd>{summary.observations?.length ? summary.observations.join('；') : '无'}</dd></div>
         <div><dt>假设</dt><dd>{summary.hypotheses?.length ? summary.hypotheses.join('；') : '无'}</dd></div>
-        <div><dt>已执行步骤</dt><dd>{summary.steps?.length ? summary.steps.map(stepText).join('；') : '无'}</dd></div>
+        <div><dt>排查记录</dt><dd>{summary.steps?.length ? summary.steps.map(stepText).join('；') : '无'}</dd></div>
         <div><dt>结束原因</dt><dd data-kind="end-reason">{summary.reason.text}<small> · 规则码 <code>{summary.reason.rule_id}</code>{summary.reason.cause ? ` · ${summary.reason.cause}` : ''}</small></dd></div>
         <div><dt>凭证状态</dt><dd>{STATUS[summary.receipt.status] ?? summary.receipt.status}{summary.receipt.next_step ? ` · 下一步：${summary.receipt.next_step}` : ''}</dd></div>
         {Object.keys(summary.receipt.verified_facts ?? {}).length > 0 && <div><dt>凭证核实事实</dt><dd>{receiptFacts(summary.receipt.verified_facts ?? {})}</dd></div>}
