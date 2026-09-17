@@ -7,7 +7,13 @@ from app.analytics.l3 import episode, metrics
 from app.cases.service import CaseService
 from app.cases.store import CaseConflict
 from app.conversation.tasks import enqueue, next_task, ordered_intents
-from app.diagnose.localization import normalize, signature_plans
+from app.diagnose.localization import (
+    normalize,
+    part_categories,
+    signature_matches,
+    signature_plans,
+    vocabulary,
+)
 from app.emotion.policy import evaluate_emotion
 from app.evaluation.cli import KINDS, run
 
@@ -186,6 +192,41 @@ def test_vision_unknown_and_evidence_gate_plan_prior():
         FaultLocalization(findings=[{"part": "滚刷", "phenomenon": "缠绕", "evidence": "缠毛发"}])
     )
     assert bad_cell["findings"][0]["cell"] is None
+
+
+def test_category_parts_are_confirmable_hints_from_known_parts():
+    """2026-09-17（9db 重放）：品类特有部件 → 待确认的品类线索；配置引用的部件、品类、plan 都必须真实存在。"""
+    from app.sessions.cards import get_catalog, get_plans
+
+    vocab = vocabulary()
+    known_parts = set(vocab["parts"]) - {"其他", vocab["unknown"]}
+    for category, parts in vocab["category_parts"].items():
+        assert category in get_catalog().categories, category
+        assert set(parts) <= known_parts, (category, parts)
+    assert {s["plan_id"] for s in vocab["signatures"]} <= set(get_plans().plan_ids)
+
+    healthy_brush = normalize(FaultLocalization(findings=[{"part": "滚刷", "phenomenon": "正常"}]))
+    assert part_categories(healthy_brush) == ["robot_vacuum"]  # 完好的滚刷同样说明这是扫地机器人
+    generic = normalize(
+        FaultLocalization(findings=[{"part": "传感器", "phenomenon": "污渍", "evidence": "有灰"}])
+    )
+    assert part_categories(generic) == []  # 各类设备都有的部件不作线索
+    assert part_categories(None) == []
+
+    wrapped = normalize(
+        FaultLocalization(
+            findings=[
+                {"part": "滚刷", "phenomenon": "缠绕", "evidence": "缠满毛发"},
+                {"part": "轮组", "phenomenon": "污渍", "evidence": "有灰"},
+            ]
+        )
+    )
+    # 按 finding 归因：没命中签名的观察也保留，plan_ids 为空
+    assert [(f["part"], ids) for f, ids in signature_matches(wrapped)] == [
+        ("滚刷", ["rv_suction_hair_wrap"]),
+        ("轮组", []),
+    ]
+    assert signature_plans(wrapped) == ["rv_suction_hair_wrap"]
 
 
 def test_model_hint_readable_is_derived_not_self_reported():

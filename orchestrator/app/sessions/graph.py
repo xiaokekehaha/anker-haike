@@ -29,6 +29,7 @@ from app.diagnose import (
 )
 from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
+from app.diagnose.localization import part_categories, signature_matches, signature_plans
 from app.diagnose.query import CATEGORY_LABELS, product_term
 from app.diagnose.vision import observe_images
 from app.escalation.polish import polish_summary
@@ -416,7 +417,10 @@ async def vision(state: SessionState) -> SessionState:
         ],
     }
     if out.status == "ok" and state.get("product_state") != "confirmed_sku":
+        # 观察句里的整机词，加上认出的品类特有部件（滚刷 / 尘盒…，见 vision_vocab category_parts）；
+        # 两路都只产生「待确认」线索，多于一个品类就当没看出来
         categories = {get_catalog().category_hint(o) for o in out.observations} - {None}
+        categories.update(part_categories(out.fault_localization))
         if len(categories) == 1:
             update["visual_product"] = {"category": categories.pop(), "image_ids": out.used_image_ids}
     if out.fault_localization is not None:
@@ -510,10 +514,52 @@ async def vision(state: SessionState) -> SessionState:
                     "recorded_at": state["at"],
                 }
             )
-        issue["issue_revision"] += bool(out.observations)
+        # 照片签名 → 症状事实（2026-09-17，9db 重放）。候选计划的三处过滤——decide_symptoms 的 selected、
+        # retrieve 的 allowed_ids、_synthesize_step 的 allowed——都只认 kind=symptom 事实里的 symptom_codes，
+        # 上面的观察事实进不了决策层：文字一说「异响」，滚刷缠绕的照片就对候选集毫无贡献。
+        # 这里把词表签名命中的 plan 在 plans.yaml 声明的症状码写成一条图片来源的症状事实，
+        # 图片路径与文字路径（symptom_taxonomy「缠绕 → suction_low」）在决策层等价。同一张图重传会读两次，按 value 去重。
+        library = get_plan_library()
+        signature_facts = []
+        for index, (finding, plan_ids) in enumerate(signature_matches(out.fault_localization)):
+            codes = list(dict.fromkeys(
+                code for pid in plan_ids if pid in library.plan_ids for code in library.get(pid).symptom_codes
+            ))
+            quote = f"{finding['part']}{finding['phenomenon']}"
+            if not codes or any(
+                f.get("kind") == "symptom" and f.get("status") == "active" and f.get("value") == f"图片：{quote}"
+                for f in issue.get("facts", [])
+            ):
+                continue
+            signature_facts.append(
+                {
+                    "fact_id": stable_id(state["input_id"], "vision_signature", index),
+                    "kind": "symptom",
+                    "context_field": None,
+                    "value": f"图片：{quote}",
+                    "quote": quote,
+                    "issue_id": state["active_issue_id"],
+                    "device_ref_id": issue["device_ref"]["device_ref_id"],
+                    "status": "active",
+                    "revision": 1,
+                    "source_kind": "image_signature",
+                    "source_entry_ids": [state["input_id"]],
+                    "image_ids": out.used_image_ids,
+                    "plan_ids": plan_ids,
+                    "symptom_codes": codes,
+                    "symptom_code": codes[0] if len(codes) == 1 else None,
+                    "recorded_at": state["at"],
+                    "occurred_at": None,
+                    "time_expression": None,
+                    "precision": None,
+                }
+            )
+        issue.setdefault("facts", []).extend(signature_facts)
+        changed = bool(out.observations or signature_facts)
+        issue["issue_revision"] += changed
         update.update(
             issues=issues,
-            context_revision=state.get("context_revision", 0) + bool(out.observations),
+            context_revision=state.get("context_revision", 0) + changed,
         )
         if cp.escalate:
             update["escalate_reason"] = next(h.rule_id for h in cp.hits if h.action == "escalate")
@@ -1656,7 +1702,6 @@ async def retrieve(state: SessionState) -> SessionState:
     fc_evidence: list[dict[str, Any]] = []
     if card is not None:
         fc_hits = card.match([query, *[str(s) for s in state.get("symptoms") or []]], symptom_codes=state.get("symptom_codes") or [])
-        from app.diagnose.localization import signature_plans
         signature_ids=signature_plans(state.get('fault_localization'), card.faults)
         fc_hits=[*[f for f in card.faults if f.plan_id in signature_ids], *[f for f in fc_hits if f.plan_id not in signature_ids]]
         allowed_ids = {

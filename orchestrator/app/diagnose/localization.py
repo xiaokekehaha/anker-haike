@@ -76,7 +76,11 @@ def usable_findings(localization) -> list[dict]:
     ]
 
 
-def signature_plans(localization, faults=None):
+def signature_matches(localization, faults=None) -> list[tuple[dict, list[str]]]:
+    """每条可用 finding 命中的 plan_id 列表，按 finding 归因（写症状事实时要带上「是哪条观察推出来的」）。
+
+    没命中任何签名的 finding 也保留（plan_ids 为空）：调用方据此知道这条观察对候选集没有贡献。
+    """
     if not localization or not localization["image_quality"]["usable"]:
         return []
     signatures = (
@@ -88,14 +92,37 @@ def signature_plans(localization, faults=None):
         if faults is not None
         else vocabulary()["signatures"]
     )
-    return list(
-        dict.fromkeys(
-            s["plan_id"]
-            for f in usable_findings(localization)
-            for s in signatures
-            if (f["part"], f["phenomenon"]) == (s["part"], s["phenomenon"])
+    return [
+        (
+            f,
+            list(
+                dict.fromkeys(
+                    s["plan_id"]
+                    for s in signatures
+                    if (f["part"], f["phenomenon"]) == (s["part"], s["phenomenon"])
+                )
+            ),
         )
-    )
+        for f in usable_findings(localization)
+    ]
+
+
+def signature_plans(localization, faults=None):
+    return list(dict.fromkeys(pid for _, ids in signature_matches(localization, faults) for pid in ids))
+
+
+def part_categories(localization) -> list[str]:
+    """照片里认出的品类特有部件 → 品类（`category_parts`）。只是线索：调用方仍要让用户确认。
+
+    用 findings（normalize 后已按词表归一）而不用 visible_parts（模型原话）。「正常」的 finding 也算：
+    看见一根完好的滚刷，同样说明这是扫地机器人。
+    """
+    parts = {f["part"] for f in (localization or {}).get("findings", [])}
+    return [
+        category
+        for category, hints in vocabulary().get("category_parts", {}).items()
+        if parts.intersection(hints)
+    ]
 
 
 def echo_findings(localization) -> str | None:

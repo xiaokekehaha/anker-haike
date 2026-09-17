@@ -92,6 +92,82 @@ async def test_image_only_then_noise_and_unknown_model_keeps_category(mem_runtim
         assert not any(e["type"] == "escalation_summary" and e["summary"]["reason"]["rule_id"] == "R7" for e in last)
 
 
+WRAPPED_BRUSH = {
+    "image_quality": {"usable": True, "reasons": []},
+    "model_hint": None,
+    "model_hint_verified": False,
+    "conflicts_with_text": [],
+    "findings": [{"part": "滚刷", "phenomenon": "缠绕", "evidence": "刷体缠绕大量毛发", "cell": "中心"}],
+}
+
+
+def _noise_interpreter(original):
+    async def interpret(router, state, **kwargs):
+        if state.get("text") == "运行异响":
+            return TurnInterpretation(primary_intent="report_problem", device_relation="current",
+                facts=[{"quote": "运行异响", "value": "运行异响", "symptom_code": "abnormal_noise"}]), {"source": "recorded"}
+        return await original(router, state, **kwargs)
+    return interpret
+
+
+def _signature_facts(state):
+    return [f for f in state["issues"][state["active_issue_id"]]["facts"] if f.get("source_kind") == "image_signature"]
+
+
+async def test_photo_signature_joins_candidates_beside_text_symptom(mem_runtime, img_store, monkeypatch):  # noqa: F811
+    """9db 重放（2026-09-17，会话 10c5eeaf）：滚刷缠绕照片 + 文字「运行异响」。
+
+    改动前照片只写观察事实，candidates 被 abnormal_noise 过滤成单一停机计划；现在照片签名写成症状事实，
+    hair_wrap 与 motor_fault 同在候选集。部件「滚刷」同时推出待确认的品类线索，仍要用户说「是」。"""
+    import app.conversation.interpret as semantic
+    monkeypatch.setattr(semantic, "interpret_turn", _noise_interpreter(semantic.interpret_turn))
+
+    async def observe(*args, **kwargs):
+        return VisionOutcome("ok", fault_localization=WRAPPED_BRUSH, observations=["滚刷缠绕大量毛发"],
+                             used_image_ids=[r["image_id"] for r in kwargs["refs"]])
+    monkeypatch.setattr("app.sessions.graph.observe_images", observe)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        first = await _send_with_images(client, sid, "")
+        # 观察句里没有整机词，只靠部件「滚刷」→ 问「是扫地机器人吗」，不静默锁定
+        assert "扫地机器人" in _message_text(first) and "确认" in _message_text(first), _message_text(first)
+        state = await _state(sid)
+        assert state["visual_product"]["category"] == "robot_vacuum" and state["product_state"] == "unknown"
+        assert [(f["kind"], f["quote"], f["symptom_codes"], f["plan_ids"]) for f in _signature_facts(state)] == [
+            ("symptom", "滚刷缠绕", ["suction_low"], ["rv_suction_hair_wrap"]),
+        ]
+        # 同一张图重传：读两次，症状事实只有一条
+        await _send_with_images(client, sid, "有点问题")
+        assert len(_signature_facts(await _state(sid))) == 1
+        await _send(client, sid, "运行异响")
+        last = await _send(client, sid, "是")
+        state = await _state(sid)
+        assert state["category"] == "robot_vacuum" and state["product_state"] == "category_only"
+        assert set(state["symptom_codes"]) == {"abnormal_noise", "suction_low"}
+        ranked = [p["plan_id"] for p in state["plans_ranked"]]
+        assert {"rv_suction_hair_wrap", "rv_suction_motor_fault"} <= set(ranked), ranked
+        assert last[-1]["reason"] == "awaiting_input", [e["type"] for e in last]
+
+
+@pytest.mark.usefixtures("img_store")
+async def test_generic_parts_do_not_hint_a_category_or_symptom(monkeypatch):
+    from app.sessions.graph import vision
+    localization = {**WRAPPED_BRUSH, "findings": [{"part": "传感器", "phenomenon": "污渍", "evidence": "有灰"}]}
+
+    async def observe(*args, **kwargs):
+        return VisionOutcome("ok", fault_localization=localization, observations=["传感器有灰"], used_image_ids=["pic"])
+    monkeypatch.setattr("app.sessions.graph.observe_images", observe)
+    monkeypatch.setattr("app.sessions.graph.get_stream_writer", lambda: lambda event: None)
+    state = {"session_id": "s", "run_id": "r", "input_id": "in1", "at": "2026-09-17T00:00:00Z",
+             "active_issue_id": "i", "product_state": "unknown",
+             "issues": {"i": {"issue_revision": 0, "device_ref": {"device_ref_id": "d"}}},
+             "image_refs": [{"image_id": "pic", "run_id": "r", "issue_id": "i"}]}
+    update = await vision(state)
+    assert "visual_product" not in update
+    facts = update["issues"]["i"]["facts"]
+    assert [f["kind"] for f in facts] == ["observation"] and not _signature_facts({**state, **update})
+
+
 def test_unread_images_belong_to_issue_and_survive_turn_boundary():
     from app.sessions.graph import _new_fault_images
     refs = [{"image_id": "old", "run_id": "r1", "issue_id": "i"},
