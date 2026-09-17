@@ -57,6 +57,8 @@ def test_candidates_carry_in_scope_and_contract_shape(catalog):
 def test_category_hint(catalog):
     assert catalog.category_hint("我家扫地机不吸了") == "robot_vacuum"
     assert catalog.category_hint("吸奶器坏了") == "breast_pump"
+    # 2026-09-17 会话 cd45df：目录里只有一个机器人品类，单说「机器人」就该认出来
+    assert catalog.category_hint("我的机器人有问题") == "robot_vacuum"
     assert catalog.category_hint("随便") is None
 
 

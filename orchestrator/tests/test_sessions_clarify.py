@@ -95,6 +95,28 @@ async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
     assert s3["clarification"]["attempts"] == MAX_CLARIFICATIONS
 
 
+async def test_out_of_scope_product_stays_out_of_scope_until_user_switches(mem_runtime):
+    """2026-09-17 会话 cd45df：范围外产品被 out_of_scope 节点写成 product_confirmed 占位后，
+    下一轮不能掉进症状问诊去问一台移动电源「按电源后能正常启动吗」；用户改说范围内品类才切换。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        first = await _send(client, sid, "我的充电与移动电源出问题了")
+        assert _stages(first)[-2:] == ["out_of_scope", "escalate"]
+        s1 = await _state(sid)
+        assert s1["category"] == "power_bank" and s1["product_confirmed"]["in_scope"] is False
+        # 没提到任何品类：仍是范围外，再说明一次，不问症状
+        second = await _send(client, sid, "有问题")
+        assert "out_of_scope" in _stages(second) and "clarify" not in _stages(second)
+        assert "启动" not in _message_text(second) and "仅支持" in _message_text(second)
+        # 改说机器人：切到范围内品类，占位产品作废
+        third = await _send(client, sid, "我的机器人有问题")
+        s3 = await _state(sid)
+        assert s3["product_state"] == "category_only" and s3["category"] == "robot_vacuum"
+        assert s3["product_confirmed"] is None and s3["out_of_scope"] is False
+        assert "out_of_scope" not in _stages(third)
+        assert not any(e["type"] == "escalation_summary" for e in third)
+
+
 async def test_category_word_without_model_goes_category_only(mem_runtime):
     """「扫地机不吸了，不知道型号」→ category_only → 进入 diagnose（验收项 2、7）。"""
     async with _client() as client:

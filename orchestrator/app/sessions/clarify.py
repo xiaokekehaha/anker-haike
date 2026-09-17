@@ -105,6 +105,18 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
             "用户未在产品确认卡片中选择，改为文字补充",
         ]
 
+    if confirmed and not confirmed.get("in_scope", True):
+        # 范围外产品（out_of_scope 节点写的「移动电源（型号未确认）」占位，或卡片里选中的范围外 SKU）
+        # 不是排障对象：本轮提到范围内的型号或品类就切换过去；否则仍是范围外，再走一次 R8 说明，
+        # 不能掉进下面的症状问诊去问一台移动电源「按电源后能正常启动吗」（2026-09-17 会话 cd45df）。
+        spec = catalog.categories.get(category or "")
+        if cands or (spec is not None and spec.in_scope):
+            confirmed = None
+            update["product_confirmed"] = None
+        else:
+            update["out_of_scope"] = True
+            return Decision("continue", update)
+
     if confirmed:
         confirmed_skus = {confirmed.get("sku")}
         if cands and {c["sku"] for c in cands} != confirmed_skus:

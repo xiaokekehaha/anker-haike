@@ -1,9 +1,11 @@
 # 产品目录 seed（票 19）。规则服务只在这里做型号精确 + 别名模糊匹配，不用模型猜型号（03 §1.3）。
 # 本期范围：扫地机（category: robot_vacuum, in_scope: true）；其他品类 in_scope: false，选中后走范围外子流程（R8）。
 # aliases 是配置化别名表，进入 L4 内存缓存；比较时忽略大小写、空格与连字符。
-version: 2026-09-12.1
+version: 2026-09-17.1
 categories:
-  robot_vacuum: {name: 扫地机器人, in_scope: true, keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, robovac, robot vacuum]}
+  # 「机器人」单独出现也算（2026-09-17 会话 cd45df：用户被告知移动电源不在范围后改说「我的机器人有问题」，
+  # 匹配不到就沿用了上一轮的品类）。目录里只有这一个机器人品类，不会歧义。
+  robot_vacuum: {name: 扫地机器人, in_scope: true, keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, 机器人, robovac, robot vacuum]}
   breast_pump:  {name: 吸奶器, in_scope: false, keywords: [吸奶器, breast pump]}
   power_bank:   {name: 移动电源, in_scope: false, keywords: [充电宝, 移动电源, power bank]}
   charger:      {name: 充电器, in_scope: false, keywords: [充电器, 充电头, charger]}
