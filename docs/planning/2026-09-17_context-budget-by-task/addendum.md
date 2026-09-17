@@ -66,3 +66,18 @@
 ## 提交与部署授权
 
 用户随后要求“提交和部署”。目标为原问题链接对应的本机 Compose 服务 localhost:8000；完整 CI、镜像构建、发布快照和少量真实会话验活纳入本轮。真实8k/16k/32k分档评测仍单独安排。
+
+## 部署结果
+
+- 实现提交：`2f3a1aa`；发布快照：`20260917-2f3a1aa`，由 `make release` 生成。
+- `make ci-local`：后端948 passed/1 skipped，契约94 passed，前端218 passed，协议生成检查及前端生产构建通过。`make scan-secrets` 通过。
+- 部署前活动run为0，`make db-backup` 成功生成 `haike_20260917T100543Z.dump` 与 `WeKnora_20260917T100543Z.dump`，保存在备份卷。
+- `make up` 构建更新本机 orchestrator，镜像 `sha256:666d1ae64f63c5d26c4f89e8a40bcf5b0987f236d37b7d833fd301d5f77dd42a`，另标记本机 `haike/orchestrator:20260917-2f3a1aa`。容器 healthy；`make health` 的DB/Redis/WeKnora/default模型通道均ok；`make db-check` 为0007=head。
+- 真实会话 `bede24a6b859474a9c71e463d8dc0c96`：报告 A1289 无法给手机充电后，追问“我的产品是哪个”，回复“产品型号：ANKER-A1289。”两次qwen3.7-flash调用均成功；估算输入5365/6409，实际输入3954/5032，额度均16000。没有context_budget事件，管理API指标已落库。
+- 浏览器已核对发布后的管理台节点详情：显示系统/事实/本轮/历史用量、Schema预留、历史遗漏、截断，以及每次模型估算/实际输入。
+
+### 仍未通过的验证
+
+- `make release-check` **非零退出**：bake-off报告基于models.yaml 2026-09-13.5，当前为2026-09-15.2。其余版本、迁移和知识库项通过。原690f6bd发布及之前版本已记录同一遗留项；本次未改models.yaml，也未修改旧评测报告冒充复测。
+- 首个真实验活会话 `a4d7a4596bdf4ff580354e220dfd8ae5` 使用“请先记录型号，暂时不要排查”，被模型归为new_issue而没有确认产品，随后追问回复订单缺参，产品回答断言失败；上下文装配、模型调用和指标正常。这条语义场景不能记为通过，需纳入后续语义评测。故障报障入口的第二条验活通过不能抵消该失败。
+- 本轮只做少量部署验活，不构成真实长上下文准确率、P95延迟或输出额度充分性的验收。
