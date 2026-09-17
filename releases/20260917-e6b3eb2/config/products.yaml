@@ -1,0 +1,38 @@
+# 产品目录 seed（票 19）。规则服务只在这里做型号精确 + 别名模糊匹配，不用模型猜型号（03 §1.3）。
+# 本期范围：扫地机（category: robot_vacuum, in_scope: true）；其他品类 in_scope: false，选中后走范围外子流程（R8）。
+# aliases 是配置化别名表，进入 L4 内存缓存；比较时忽略大小写、空格与连字符。
+version: 2026-09-17.1
+categories:
+  # 「机器人」单独出现也算（2026-09-17 会话 cd45df：用户被告知移动电源不在范围后改说「我的机器人有问题」，
+  # 匹配不到就沿用了上一轮的品类）。目录里只有这一个机器人品类，不会歧义。
+  robot_vacuum: {name: 扫地机器人, in_scope: true, keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, 机器人, robovac, robot vacuum]}
+  breast_pump:  {name: 吸奶器, in_scope: false, keywords: [吸奶器, breast pump]}
+  power_bank:   {name: 移动电源, in_scope: false, keywords: [充电宝, 移动电源, power bank]}
+  charger:      {name: 充电器, in_scope: false, keywords: [充电器, 充电头, charger]}
+  earbuds:      {name: 耳机, in_scope: false, keywords: [耳机, earbuds]}
+  security_cam: {name: 摄像头, in_scope: false, keywords: [摄像头, 门铃, camera]}
+
+products:
+  # ---- 扫地机（in scope）----
+  - {sku: EUFY-X10-PRO-OMNI, name: eufy X10 Pro Omni, category: robot_vacuum, aliases: [X10 Pro Omni, X10 Pro, X10, X], image: /img/x10.png}
+  - {sku: EUFY-X9-PRO,       name: eufy X9 Pro,       category: robot_vacuum, aliases: [X9 Pro, X9]}
+  - {sku: EUFY-X8-PRO-SES,   name: eufy X8 Pro SES,   category: robot_vacuum, aliases: [X8 Pro SES, X8 Pro, X8]}
+  - {sku: EUFY-S1-PRO,       name: eufy S1 Pro 扫地机器人, category: robot_vacuum, aliases: [S1 Pro, S1, Omni S1 Pro]}
+  - {sku: EUFY-L60-HYBRID,   name: eufy L60 Hybrid,   category: robot_vacuum, aliases: [L60 Hybrid, L60]}
+  - {sku: EUFY-L50-SES,      name: eufy L50 SES,      category: robot_vacuum, aliases: [L50 SES, L50]}
+  - {sku: EUFY-G50-HYBRID,   name: eufy G50 Hybrid,   category: robot_vacuum, aliases: [G50 Hybrid, G50]}
+  - {sku: EUFY-G40-HYBRID,   name: eufy G40 Hybrid+,  category: robot_vacuum, aliases: [G40 Hybrid, G40 Hybrid+, G40]}
+  - {sku: EUFY-G30-VERGE,    name: eufy RoboVac G30 Verge, category: robot_vacuum, aliases: [G30 Verge, G30]}
+  - {sku: EUFY-G20-HYBRID,   name: eufy RoboVac G20 Hybrid, category: robot_vacuum, aliases: [G20 Hybrid, G20]}
+  - {sku: EUFY-30C-MAX,      name: eufy RoboVac 30C MAX, category: robot_vacuum, aliases: [30C MAX, 30C]}
+  - {sku: EUFY-25C,          name: eufy RoboVac 25C,  category: robot_vacuum, aliases: [25C]}
+  - {sku: EUFY-15C-MAX,      name: eufy RoboVac 15C MAX, category: robot_vacuum, aliases: [15C MAX, 15C]}
+  - {sku: EUFY-11S-MAX,      name: eufy RoboVac 11S MAX, category: robot_vacuum, aliases: [11S MAX, 11S]}
+  - {sku: EUFY-E20,          name: eufy E20 三合一, category: robot_vacuum, aliases: [E20, 三合一]}
+  # ---- 范围外（in_scope=false；S1 Pro 同名异类）----
+  - {sku: EUFY-BP-S1-PRO,    name: eufy S1 Pro 吸奶器, category: breast_pump, aliases: [S1 Pro, 吸奶器 S1 Pro, S1 Pro 吸奶器]}
+  - {sku: EUFY-BP-E10,       name: eufy E10 吸奶器,   category: breast_pump, aliases: [E10]}
+  - {sku: ANKER-A1257,       name: Anker Prime 20000 充电宝, category: power_bank, aliases: [A1257, Prime 20000, 20000 充电宝]}
+  - {sku: ANKER-A2337,       name: Anker Nano 65W 充电器, category: charger, aliases: [A2337, Nano 65W, 65W 充电头]}
+  - {sku: SOUNDCORE-A3961,   name: soundcore Liberty 4, category: earbuds, aliases: [Liberty 4, A3961]}
+  - {sku: EUFY-T8213,        name: eufy SoloCam S340, category: security_cam, aliases: [S340, SoloCam S340, T8213]}
