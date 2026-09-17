@@ -7,8 +7,10 @@ from typing import Any
 
 from app.bakeoff import scoring
 from app.bakeoff.samples import Sample
+from app.diagnose.query import category_label
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
+from app.sessions.cards import get_catalog
 from app.settings import settings
 
 Adaptor = Callable[[ModelRouter, Sample, str], Awaitable[tuple[float, dict[str, Any]]]]
@@ -88,13 +90,18 @@ async def run_synthesize(router: ModelRouter, s: Sample, lane: str) -> tuple[flo
     from app.diagnose.synthesize import synthesize
 
     lib = plans()
-    allowed = lib.allowed_for(
-        category=s.input.get("category", "robot_vacuum"), sku=s.input.get("sku")
+    # 样本没写 category 时按 sku / 产品名从目录反查，不默认成某个品类
+    sku, product_name = s.input.get("sku"), s.input.get("product")
+    category = s.input.get("category") or next(
+        (p.category for p in get_catalog().products if p.sku == sku or p.name == product_name), None
     )
+    if not category:
+        raise ValueError(f"bakeoff 样本 {s.id} 缺少 category，且 sku / product 不在目录里")
+    allowed = lib.allowed_for(category=category, sku=sku)
     state = {
         "text": s.input["text"],
         "symptoms": s.input.get("symptoms") or [],
-        "product_confirmed": {"name": s.input.get("product", "扫地机器人")},
+        "product_confirmed": {"name": product_name or category_label(category)},
         "emotion": {"strategy": s.input.get("strategy", "normal")},
     }
     out = await synthesize(

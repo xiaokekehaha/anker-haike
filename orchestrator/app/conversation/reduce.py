@@ -205,7 +205,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
                 old,
                 fact_id=stable_id(iid, "replace", index),
                 value=correction.value,
-                symptom_codes=canonical_codes(correction.value)[0] if old["kind"] == "symptom" else [],
+                symptom_codes=canonical_codes(correction.value, category=issue.get("category") or meaning.device_category)[0] if old["kind"] == "symptom" else [],
                 symptom_code=None,
                 status="active",
                 source_entry_ids=[iid],

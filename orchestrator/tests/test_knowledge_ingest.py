@@ -49,13 +49,15 @@ async def client(server):
 
 def test_seed_sources_are_complete():
     docs = load_manual_docs(DATA)
-    assert {d.doc_id for d in docs} == {"manual_rv_v1", "manual_rv_v2", "troubleshooting_rv"}
+    assert {"manual_rv_v1", "manual_rv_v2", "troubleshooting_rv"} <= {d.doc_id for d in docs}
     assert all({"scope", "sku_list", "category", "doc_version"} <= set(d.metadata) for d in docs)
     assert any(d.metadata["scope"] == "category_generic" for d in docs)
-    meta, entries = load_faq(DATA)
-    assert len(entries) >= 50 and meta["scope"] == "category_generic"
+    faq_docs = load_faq(DATA)  # 每品类一份 faq_*.yaml
+    by_id = {meta["doc_id"]: (meta, entries) for meta, entries in faq_docs}
+    assert len(by_id["faq_rv"][1]) >= 50 and by_id["faq_rv"][0]["scope"] == "category_generic"
+    assert all(meta["category"] and meta["doc_version"] for meta, _ in faq_docs)
     rows = load_tickets(DATA)
-    assert len(rows) == 200 and {r["result"] for r in rows} == {"solved", "unsolved", "escalated"}
+    assert len(rows) >= 200 and {r["result"] for r in rows} == {"solved", "unsolved", "escalated"}
 
 
 async def test_ingest_creates_kbs_with_parent_child_chunking(client, server):
@@ -74,7 +76,7 @@ async def test_ingest_creates_kbs_with_parent_child_chunking(client, server):
         assert "graph" not in json.dumps(kb).lower()  # 图谱不开启
         assert kb["embedding_model_id"] == "emb-1"
     assert server.kbs[report.kb_ids["kb_faq"]]["type"] == "faq"
-    assert report.created == 3 + 200 and report.faq_entries >= 50
+    assert report.created == 9 + 380 and report.faq_entries >= 50 + 6 * 10  # 手册 + 工单；FAQ 七个品类
     assert report.embedding == {"id": "emb-1", "name": "text-embedding-v4", "dimension": 1024}
 
 
@@ -84,8 +86,8 @@ async def test_ingest_is_idempotent_and_metadata_queryable(client, server):
     n_calls = len(server.calls)
     ing2 = Ingestor(client, embedding_model_id="emb-1")
     second = await ing2.ingest_all(DATA)
-    assert second.created == 0 and second.replaced == 0 and second.skipped == 203
-    assert len(server.knowledge) == 203 and len(server.kbs) == 3
+    assert second.created == 0 and second.replaced == 0 and second.skipped == 389
+    assert len(server.knowledge) == 389 and len(server.kbs) == 3
     assert len(server.faq[first.kb_ids["kb_faq"]]) >= 50
     assert len(server.calls) > n_calls  # 确实重跑了
     items = await verify_metadata(client, first.kb_ids["kb_manual"])
@@ -120,7 +122,7 @@ async def test_version_bump_replaces_old_knowledge(client, server, tmp_path):
     )
     ing2 = Ingestor(client, embedding_model_id="emb-1")
     r = await ing2.ingest_all(root)
-    assert r.replaced == 1 and r.skipped == 202 and len(server.knowledge) == 203
+    assert r.replaced == 1 and r.skipped == 388 and len(server.knowledge) == 389
     assert r.docs["manual_rv_v1"] == "2026-09-13.1"
 
 
@@ -129,7 +131,7 @@ async def test_manifest_records_kb_ver_bound_to_embedding(client, tmp_path):
     ing.embedding_model_id = await ing.ensure_embedding_model(None)
     report = await ing.ingest_all(DATA)
     manifest = write_manifest(tmp_path / "manifest.json", report, source_root=DATA)
-    assert manifest["kb_ver"] == "2026-09-12.1+text-embedding-v4"
+    assert manifest["kb_ver"] == "2026-09-17.1+text-embedding-v4"  # 取语料里最新的 doc_version
     assert manifest["embedding"]["dimension"] == EMBEDDING_DIM == 1024
     assert manifest["chunking"] == {
         "parent": 800,
@@ -197,16 +199,16 @@ async def test_snapshot_export_and_rollback(client, server, tmp_path):
         snap / "kb_tickets" / "tickets.csv"
     ).exists()
     remote = json.loads((snap / "remote.json").read_text(encoding="utf-8"))
-    assert len(remote["kb_tickets"]["knowledge"]) == 200 and remote["kb_faq"]["faq_entries"] >= 50
+    assert len(remote["kb_tickets"]["knowledge"]) == 380 and remote["kb_faq"]["faq_entries"] >= 50
     # 模拟事后误操作：多加一条、删一条
     kb_manual = report.kb_ids["kb_manual"]
     extra = await client.create_manual_knowledge(kb_manual, title="误加文档", content="x")
     victim = next(k for k in server.knowledge.values() if k["title"] == "T0007")
     await client.delete_knowledge(victim["id"])
-    assert len(server.knowledge) == 203
+    assert len(server.knowledge) == 389
     manifest = await import_snapshot(client, snap, manifest_path, embedding_model_id="emb-1")
     titles = {k["title"] for k in server.knowledge.values()}
-    assert "误加文档" not in titles and "T0007" in titles and len(server.knowledge) == 203
+    assert "误加文档" not in titles and "T0007" in titles and len(server.knowledge) == 389
     assert manifest["counts"]["deleted"] == 1 and manifest["counts"]["created"] == 1
     assert extra["id"] not in server.knowledge
 

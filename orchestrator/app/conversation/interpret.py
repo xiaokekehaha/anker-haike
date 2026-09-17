@@ -191,9 +191,10 @@ async def interpret_turn(router, state: dict, *, lane: str):
         return TurnInterpretation(primary_intent="explain", device_relation="current", diagnostic_request_quote=state["text"]), {"source": "diagnostic_request"}
     entries = [ConversationEntry(**e) for e in state.get("history", [])]
     # issue_index is built by build_context for every conversational boundary, not just here.
-    from app.conversation.taxonomy import taxonomy
+    from app.conversation.taxonomy import families
 
-    candidates = [f["symptom_code"] for f in taxonomy()["families"]][:60]
+    # 品类已知只给该品类的症状码；未知给全部品类的并集（后面 decide 再按品类过滤）
+    candidates = list(dict.fromkeys(f["symptom_code"] for f in families(state.get("category"))))[:60]
     instruction = INSTRUCTION + "\n症状码仅从候选中选，无法匹配留空：" + ",".join(candidates)
     instruction += "\n当前症状问题 kind=symptom_selection 时，根据本轮原话选择 options 中明确符合的 value，填 symptom_answer.answer=selection 和 selected_families；可以多选，不把未选项认定为不存在。不能确定时用 unknown。其他新现象仍按逐字原话提取 facts。"
     try:

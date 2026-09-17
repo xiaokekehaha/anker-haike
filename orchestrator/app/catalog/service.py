@@ -32,6 +32,7 @@ class _Strict(BaseModel):
 
 class CategorySpec(_Strict):
     name: str
+    line: str  # 官网产品线：Anker Charging / Anker SOLIX / Anker eufy / Anker soundcore / Anker eufyMake
     in_scope: bool
     keywords: list[str] = Field(default_factory=list)
 
@@ -193,10 +194,14 @@ class ProductCatalog:
     def category_hint(self, text: str) -> str | None:
         """文本里出现某品类关键词 → 该品类（消歧降级 category_only 用）。"""
         norm = normalize(text)
+        # 最长关键词优先：「无线充电器」不能被「充电器」抢走，「割草机器人」不能被「机器人」抢走
+        best: tuple[int, str] | None = None
         for cat, spec in self.categories.items():
-            if any(normalize(kw) in norm for kw in spec.keywords):
-                return cat
-        return None
+            for kw in spec.keywords:
+                k = normalize(kw)
+                if k and k in norm and (best is None or len(k) > best[0]):
+                    best = (len(k), cat)
+        return best[1] if best else None
 
     def strip_category_words(self, text: str) -> str:
         out = text

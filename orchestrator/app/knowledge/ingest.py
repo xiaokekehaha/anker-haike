@@ -115,8 +115,13 @@ def load_manual_docs(root: Path) -> list[ManualDoc]:
     return docs
 
 
-def load_faq(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    data = yaml.safe_load((root / "kb_manual" / "faq_rv.yaml").read_text(encoding="utf-8"))
+def load_faq(root: Path) -> list[tuple[dict[str, Any], list[dict[str, Any]]]]:
+    """kb_manual/faq_*.yaml 每个品类一份；返回 [(meta, entries)]，调用方合并后一次 replace 整库。"""
+    return [_load_faq_file(path) for path in sorted((root / "kb_manual").glob("faq_*.yaml"))]
+
+
+def _load_faq_file(path: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
     meta = {
         "doc_id": data["doc_id"],
         "scope": data["scope"],
@@ -313,7 +318,7 @@ class Ingestor:
         kb_manual = await self.ensure_kb(
             KB_MANUAL, "document", "说明书 / 排障手册（scope 元数据见 custom_metadata）"
         )
-        kb_faq = await self.ensure_kb(KB_FAQ, "faq", "扫地机 FAQ")
+        kb_faq = await self.ensure_kb(KB_FAQ, "faq", "各品类 FAQ（tag 为 category/scope）")
         kb_tickets = await self.ensure_kb(KB_TICKETS, "document", "历史工单，每行一条")
         r.kb_ids = {
             "kb_manual": kb_manual["id"],
@@ -327,10 +332,13 @@ class Ingestor:
             await self.upsert_manual(kb_manual["id"], doc.title, doc.content, doc.metadata)
             r.docs[doc.doc_id] = doc.metadata["doc_version"]
 
-        faq_meta, entries = load_faq(root)
-        await self.client.upsert_faq_entries(kb_faq["id"], entries, mode="replace")
-        r.faq_entries = len(entries)
-        r.docs[faq_meta["doc_id"]] = faq_meta["doc_version"]
+        faq_docs = load_faq(root)
+        # replace 模式整库覆盖：多份 FAQ 必须合并成一次调用，逐份 replace 会互相抹掉
+        all_entries = [e for _, entries in faq_docs for e in entries]
+        await self.client.upsert_faq_entries(kb_faq["id"], all_entries, mode="replace")
+        r.faq_entries = len(all_entries)
+        for faq_meta, _ in faq_docs:
+            r.docs[faq_meta["doc_id"]] = faq_meta["doc_version"]
 
         rows = load_tickets(root)
         for row in rows:

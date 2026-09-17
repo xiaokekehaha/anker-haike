@@ -10,7 +10,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.sessions import sse
-from app.sessions.graph import OUT_OF_SCOPE_TEXT
+from app.sessions.graph import out_of_scope_text
 from tests.message_form import action_body, message_form
 
 MULTI = "我的 S1 Pro 不吸了"
@@ -46,8 +46,8 @@ async def _snap(client, sid: str) -> SessionSnapshot:
     return SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
 
 
-async def test_a2_select_breast_pump_out_of_scope_then_r8(mem_runtime):
-    """A2 选吸奶器 → 说明文本 → escalation_summary(reason R8)（验收项 1）。"""
+async def test_a2_select_breast_pump_continues_in_scope(mem_runtime):
+    """A2 选吸奶器：2026-09-17 多品类后吸奶器在范围内 → 确认 SKU 后进入排障，不再 R8。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         pending = next(e for e in await _send(client, sid, MULTI) if e["type"] == "awaiting_input")
@@ -64,40 +64,58 @@ async def test_a2_select_breast_pump_out_of_scope_then_r8(mem_runtime):
         )
         assert resp.status_code == 200
         events = sse.parse(resp.text)
-        snap = await _snap(client, sid)
-    assert _stages(events) == ["out_of_scope", "escalate"]
+    assert "out_of_scope" not in _stages(events) and not any(e["type"] == "escalation_summary" for e in events)
+    st = (await _state(sid)).values
+    assert st["product_state"] == "confirmed_sku" and st["product_confirmed"]["sku"] == "EUFY-BP-S1-PRO"
+    assert st["category"] == "breast_pump" and st["out_of_scope"] is False
+
+
+async def test_out_of_scope_category_text_names_supported_lines(mem_runtime):
+    """范围外说明从目录生成：家用储能（电工安装）→ R8，文案列出支持的产品线而不写死某个品类。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我家的阳台光储充不进电")
+    assert _stages(events)[-2:] == ["out_of_scope", "escalate"]
     texts = [
         "".join(e["delta"] for e in events if e["type"] == "message" and e["message_id"] == mid)
         for mid in dict.fromkeys(e["message_id"] for e in events if e["type"] == "message_start")
     ]
-    assert texts[0] == OUT_OF_SCOPE_TEXT.format(name="eufy S1 Pro 吸奶器", category="吸奶器")
+    assert texts[0] == out_of_scope_text("家用储能（型号未确认）", "家用储能")
+    assert "Anker Charging" in texts[0] and "Anker eufy" in texts[0] and "扫地机器人" not in texts[0]
     summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R8" and summary["product"] == "eufy S1 Pro 吸奶器"
+    assert summary["reason"]["rule_id"] == "R8" and summary["product"] == "家用储能（型号未确认）"
     assert summary["receipt"]["status"] == "not_collected"
     assert events[-1]["reason"] == "completed"
     st = (await _state(sid)).values
-    assert st["stage"] == "escalate" and st["out_of_scope"] is True
-    assert st["product_state"] == "confirmed_sku" and st["escalate_reason"] == "R8"
-    # 快照：卡片带已选结果、说明文本与摘要卡各一张，无 pending
-    kinds = [i.kind for i in snap.timeline]
-    assert kinds.count("product_card") == 1 and kinds.count("escalation_summary") == 1
-    assert next(i for i in snap.timeline if i.kind == "product_card").selected_sku == (
-        "EUFY-BP-S1-PRO"
-    )
-    assert snap.pending_input is None and snap.stage == "escalate"
+    assert st["stage"] == "escalate" and st["out_of_scope"] is True and st["escalate_reason"] == "R8"
 
 
-async def test_out_of_scope_category_without_sku_goes_r8_with_category_product(mem_runtime):
-    """只提到范围外品类（充电器）、无具体型号：不追问，直接说明并 R8；摘要产品写品类。"""
+async def test_catalog_only_category_ends_honestly_with_r5(mem_runtime):
+    """目录级品类（拓展坞）：识别得到、没有该品类的排查资料 → 不借用别的品类的判别题，直接 R5 说明原因。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的拓展坞识别不了硬盘")
+    assert "out_of_scope" not in _stages(events) and "clarify" not in _stages(events)
+    said = "".join(e["delta"] for e in events if e["type"] == "message")
+    assert "启动" not in said and "充电" not in said, said
+    summary = _summary(events)
+    assert summary["reason"]["rule_id"] == "R5" and "暂无可用的排查资料" in summary["reason"]["text"]
+    st = (await _state(sid)).values
+    assert st["category"] == "hub" and st["product_state"] == "category_only"
+
+
+async def test_in_scope_category_without_sku_enters_diagnosis(mem_runtime):
+    """只提到品类（充电器）、无具体型号：2026-09-17 多品类后进入该品类的排障问诊，不 R8、不出产品卡。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         events = await _send(client, sid, "充电器不亮灯")
-    assert _stages(events) == ["intake", "disambiguate", "out_of_scope", "escalate"]
-    assert "product_card" not in [e["type"] for e in events]
-    summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R8" and summary["product"] == "充电器（型号未确认）"
+    assert "out_of_scope" not in _stages(events) and "product_card" not in [e["type"] for e in events]
+    assert not any(e["type"] == "escalation_summary" for e in events)
     st = (await _state(sid)).values
     assert st["product_state"] == "category_only" and st["category"] == "charger"
+    # 充电器词表里的判别题，不是扫地机的「按电源后能启动吗」
+    said = "".join(e["delta"] for e in events if e["type"] == "message")
+    assert "充电" in said and "启动" not in said, said
 
 
 async def test_request_human_while_awaiting_input_is_not_409(mem_runtime):

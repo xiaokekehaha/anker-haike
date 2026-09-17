@@ -84,11 +84,12 @@ DIAGNOSTIC_REASON_TEXT = {
     "evidence_conflict": "已记录的现象与回答存在冲突，需要核对",
     "question_coverage_missing": "系统缺少适用的澄清问题",
     "no_discriminating_question": "系统缺少适用的澄清问题",
+    "category_coverage_missing": "该品类暂无可用的排查资料",
 }
 
 
 def _diagnostic_context(state):
-    from app.conversation.taxonomy import taxonomy
+    from app.conversation.taxonomy import families, taxonomy
     from app.diagnose.decision import valid_interview
 
     raw = state.get("symptom_interview")
@@ -98,9 +99,11 @@ def _diagnostic_context(state):
             or decision.get("taxonomy_version", taxonomy()["version"]) != taxonomy()["version"]):
         decision = {}
     codes = set(decision.get("candidate_codes") or decision.get("codes") or [])
-    families = [f["fault_family"] for f in taxonomy()["families"] if f["symptom_code"] in codes]
-    if not families and interview.get("answers"):
-        families = list(interview.get("candidates", []))
+    category = state.get("category") or (state.get("product_confirmed") or {}).get("category")
+    labels = [f["fault_family"] for f in families(category) if f["symptom_code"] in codes]
+    if not labels and interview.get("answers"):
+        labels = list(interview.get("candidates", []))
+    families = labels
     observations = [
         f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
     ]
@@ -141,6 +144,9 @@ def build_summary(
     reason_text = REASON_TEXT.get(reason, reason)
     if reason == "R5" and diagnostic.get("reason") == "question_coverage_missing":
         reason_text = "系统缺少适用的澄清问题，无法继续选择排查方案"
+    if reason == "R5" and diagnostic.get("reason") == "category_coverage_missing":
+        # 目录级品类：能识别、能记录，但还没有这个品类的排查资料——如实说明，不装作问过症状
+        reason_text = "该品类暂无可用的排查资料，已整理问题记录转人工"
     if reason == "R7":
         reason_text = {"product": "设备品类仍待确认", "symptom": "仍缺少选择适用步骤所需的故障现象", "conflict": "设备信息存在待确认的冲突"}.get((state.get("clarification") or {}).get("reason"), reason_text)
         reason_text = DIAGNOSTIC_REASON_TEXT.get(diagnostic.get("reason"), reason_text)

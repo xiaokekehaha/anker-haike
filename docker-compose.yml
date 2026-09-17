@@ -34,8 +34,9 @@ services:
       # 票 49：config/ 以只读卷覆盖镜像内拷贝，回滚 = 换目录 + 重启，不重建镜像
       - ./config:/srv/config:ro
       - ./data/knowledge/manifest.json:/srv/data/knowledge/manifest.json:ro
-      # 阶段 3：本地 FAQ 索引源文件（WeKnora FAQ 检索接口在 v0.8.0 返回空，适配器侧匹配）
-      - ./data/knowledge/kb_manual/faq_rv.yaml:/srv/data/knowledge/kb_manual/faq_rv.yaml:ro
+      # 阶段 3：本地 FAQ 索引源文件（WeKnora FAQ 检索接口在 v0.8.0 返回空，适配器侧匹配）；
+      # 2026-09-17 起每品类一份 faq_*.yaml，挂整个目录
+      - ./data/knowledge/kb_manual:/srv/data/knowledge/kb_manual:ro
       - ./logs:/srv/logs
     depends_on:
       postgres:

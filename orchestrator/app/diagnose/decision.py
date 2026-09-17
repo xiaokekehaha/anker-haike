@@ -11,11 +11,13 @@ from typing import Any, Literal
 
 from app.conversation.taxonomy import (
     canonical_codes,
+    families,
     interview_answer,
     next_interview,
     record_response,
     response_attempts,
     taxonomy,
+    taxonomy_for,
 )
 
 
@@ -47,7 +49,7 @@ def _answer_codes(interview):
         return []
     return [
         f["symptom_code"]
-        for f in taxonomy()["families"]
+        for f in families(interview.get("category"))
         if f["fault_family"] in interview["candidates"]
     ]
 
@@ -209,6 +211,11 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
             codes.extend(canonical_codes(text, category=category)[0])
         codes.extend(canonical_codes(state.get("text", ""), category=category)[0])
     codes = list(dict.fromkeys(codes))
+    # 品类未定时 intake 用全品类并集归一症状码（「异响」同时命中扫地机 / 充电器 / 吸奶器）；
+    # 品类一定，只保留本品类词表里的码，别的品类的码不进决策与状态
+    known = {f["symptom_code"] for f in families(category)}
+    if known:
+        codes = [c for c in codes if c in known]
     refs = list(
         dict.fromkeys(ref for f in _active_facts(issue) for ref in f.get("source_entry_ids", []))
     )
@@ -216,7 +223,7 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
         refs = list(dict.fromkeys([*refs, *(a["input_id"] for a in response_attempts(interview))]))
     candidates = tuple(
         f["symptom_code"]
-        for f in taxonomy()["families"]
+        for f in families(category)
         if interview and f["fault_family"] in interview.get("candidates", [])
     )
     eligible = [
@@ -268,8 +275,12 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
             "symptom_evidence_available",
             selected=[p for p in eligible if set(codes).intersection(p.symptom_codes)],
         )
-    if category != taxonomy()["category"]:
-        return result("clarify", "symptom_missing", missing=["具体故障现象"])
+    if not taxonomy_for(category)["families"]:
+        # 该品类没有症状词表（目录级品类）：没有判别题可问，按「缺少适用的澄清问题」诚实结束，
+        # 不拿别的品类的判别题去问用户
+        return result(
+            "escalate", "category_coverage_missing", missing=["该品类暂无可用的排查资料"], current=None
+        )
     # Same plan identity/version guarantees compatible instructions, conditions,
     # and subsequent transitions. Similar step names do not establish equivalence.
     if interview and any(a["answer"] in {"yes", "no"} for a in interview.get("answers", [])):
@@ -288,7 +299,7 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
                 constrained=True,
                 resolved_codes=list(candidates),
             )
-    interview = next_interview(interview, state.get("active_issue_id"), state.get("input_id"))
+    interview = next_interview(interview, state.get("active_issue_id"), state.get("input_id"), category=category)
     progress = _progress(interview)
     question = (interview.get("question") or {}).get("question")
     missing = [question] if question else ["可区分当前现象的澄清问题"]

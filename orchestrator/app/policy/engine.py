@@ -7,6 +7,8 @@ from datetime import date
 
 from haike_contracts.common import Clause, PolicyCondition, PolicyDecision, RemedyDecision
 
+from app.sessions.cards import get_catalog
+
 from .loader import PolicyLoader, validate
 from .models import PolicyInput
 
@@ -46,6 +48,10 @@ class PolicyEngine:
 
     def decide(self, value: PolicyInput) -> PolicyDecision:
         data = value.model_dump(mode="json")
+        if not data.get("category") and data.get("sku"):
+            # 只给了型号：品类从目录反查；目录里没有的型号保持 None → 匹配不到政策 → 转人工
+            product = get_catalog().get(data["sku"])
+            data["category"] = product.category if product else None
         aliases = self.bundle["regions"].get("aliases", {})
         for field in ("region_purchase", "region_use", "channel"):
             data[field] = aliases.get(data[field], data[field])

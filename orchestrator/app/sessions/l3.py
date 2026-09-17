@@ -51,7 +51,7 @@ def policy_input(state):
         purchase = None
     return PolicyInput(
         sku=(state.get("product_confirmed") or {}).get("sku"),
-        category=state.get("category") or "robot_vacuum",
+        category=state.get("category") or (state.get("product_confirmed") or {}).get("category"),
         **{k: context.get(k) for k in CONTEXT_FIELDS},
         purchase_date=purchase,
         receipt_status=receipt.get("status", "not_collected"),
@@ -581,7 +581,9 @@ async def consult(state):
         facts = {key: fact["value"] for key, fact in view["fields"].items()}
         if facts.get("purchase_date") and facts.get("sku"):
             value = PolicyInput(
-                sku=facts["sku"], region_purchase=facts.get("region_purchase"),
+                sku=facts["sku"],
+                category=state.get("category") or (state.get("product_confirmed") or {}).get("category"),
+                region_purchase=facts.get("region_purchase"),
                 region_use=facts.get("region_use") or facts.get("region_purchase"),
                 channel=facts.get("channel"), platform=facts.get("platform"),
                 purchase_date=facts["purchase_date"], receipt_status="order_verified",

@@ -1,13 +1,16 @@
 import type { ReactNode } from 'react';
 import styles from './ChatPane.module.css';
 
+// 品类键与文案对齐 config/products.yaml（官网五大产品线下的品类）；点击发出的文字要能被 category_hint 的关键词认出
 export const PRODUCT_CATEGORIES = [
+  { key: 'power_bank', label: '移动电源', icon: '🔋' },
+  { key: 'charger', label: '充电器', icon: '🔌' },
   { key: 'robot_vacuum', label: '扫地机器人', icon: '🤖' },
+  { key: 'security_cam', label: '安防摄像头', icon: '📷' },
   { key: 'breast_pump', label: '吸奶器', icon: '🍼' },
-  { key: 'charging', label: '充电与移动电源', icon: '🔋' },
-  { key: 'audio', label: '耳机与音箱', icon: '🎧' },
-  { key: 'security', label: '安防摄像头', icon: '📷' },
-  { key: 'projector', label: '投影仪', icon: '📽️' },
+  { key: 'earbuds', label: '无线耳机', icon: '🎧' },
+  { key: 'speaker', label: '音箱', icon: '🔊' },
+  { key: 'projector', label: '便携投影仪', icon: '📽️' },
 ] as const;
 
 export const STARTER_PROMPTS = [

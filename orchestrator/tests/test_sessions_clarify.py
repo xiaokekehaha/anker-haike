@@ -97,17 +97,18 @@ async def test_unknown_category_two_clarifications_then_r7(mem_runtime):
 
 async def test_out_of_scope_product_stays_out_of_scope_until_user_switches(mem_runtime):
     """2026-09-17 会话 cd45df：范围外产品被 out_of_scope 节点写成 product_confirmed 占位后，
-    下一轮不能掉进症状问诊去问一台移动电源「按电源后能正常启动吗」；用户改说范围内品类才切换。"""
+    下一轮不能掉进症状问诊去问一台储能设备「按电源后能正常启动吗」；用户改说范围内品类才切换。
+    （原案是移动电源；多品类后移动电源已在范围内，这里用仍在范围外的家用储能复现同一条路。）"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        first = await _send(client, sid, "我的充电与移动电源出问题了")
+        first = await _send(client, sid, "我家的阳台光储出问题了")
         assert _stages(first)[-2:] == ["out_of_scope", "escalate"]
         s1 = await _state(sid)
-        assert s1["category"] == "power_bank" and s1["product_confirmed"]["in_scope"] is False
+        assert s1["category"] == "home_storage" and s1["product_confirmed"]["in_scope"] is False
         # 没提到任何品类：仍是范围外，再说明一次，不问症状
         second = await _send(client, sid, "有问题")
         assert "out_of_scope" in _stages(second) and "clarify" not in _stages(second)
-        assert "启动" not in _message_text(second) and "仅支持" in _message_text(second)
+        assert "启动" not in _message_text(second) and "暂不在支持范围内" in _message_text(second)
         # 改说机器人：切到范围内品类，占位产品作废
         third = await _send(client, sid, "我的机器人有问题")
         s3 = await _state(sid)
@@ -183,7 +184,7 @@ async def test_clarify_question_preserves_target_without_model_rewrite(mem_runti
         "这个又不行了",
         strategy="normal",
         summary=None,
-        detail={},
+        detail={"category": "robot_vacuum"},  # 判别题按品类选：decide 把品类放进 detail
         session_id="s",
         lane="domestic",
     )

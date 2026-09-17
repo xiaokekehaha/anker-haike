@@ -30,7 +30,7 @@ from app.diagnose import (
 from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches, signature_plans
-from app.diagnose.query import CATEGORY_LABELS, product_term
+from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
 from app.escalation.polish import polish_summary
 from app.escalation.summary import build_summary, reassurance_text
@@ -1426,10 +1426,13 @@ def route_entry(state: SessionState) -> str:
     return "disambiguate"
 
 
-OUT_OF_SCOPE_TEXT = (
-    "本期智能排障仅支持 eufy 扫地机器人。您咨询的「{name}」属于{category}，不在当前支持范围内；"
-    "我会整理问题记录，供您交给人工客服继续处理。"
-)
+def out_of_scope_text(name: str, category_name: str) -> str:
+    """范围外说明：支持范围从目录 in_scope 品类所属的产品线生成，不写死品牌与品类。"""
+    lines = list(dict.fromkeys(spec.line for spec in get_catalog().categories.values() if spec.in_scope))
+    return (
+        f"当前智能排障覆盖 {' / '.join(lines)} 产品线的常见品类。"
+        f"您咨询的「{name}」属于{category_name}，暂不在支持范围内；我会整理问题记录，供您交给人工客服继续处理。"
+    )
 
 
 async def out_of_scope(state: SessionState) -> SessionState:
@@ -1450,9 +1453,7 @@ async def out_of_scope(state: SessionState) -> SessionState:
             "in_scope": False,
         }
         update["product_confirmed"] = product
-    text = OUT_OF_SCOPE_TEXT.format(
-        name=product.get("name") or product.get("sku"), category=category_name
-    )
+    text = out_of_scope_text(product.get("name") or product.get("sku"), category_name)
     message_id = uuid.uuid5(
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:out_of_scope"
     ).hex
@@ -1472,7 +1473,7 @@ async def out_of_scope(state: SessionState) -> SessionState:
 def knowledge_scope_of(state: SessionState) -> KnowledgeScope:
     product = state.get("product_confirmed") or {}
     ps = state.get("product_state") or "unknown"
-    category = product.get("category") or state.get("category") or "robot_vacuum"
+    category = product.get("category") or state.get("category") or ""
     return KnowledgeScope(ps, category, product.get("sku") if ps == "confirmed_sku" else None)  # type: ignore[arg-type]
 
 
@@ -1910,7 +1911,7 @@ async def retrieve(state: SessionState) -> SessionState:
             cfg=rcfg.query_rewrite,
             session_id=session_id,
             lane=lane,
-            category_label=CATEGORY_LABELS.get(scope.category, scope.category),
+            category_label=category_label(scope.category),
             budget_ms=min(
                 rcfg.query_rewrite.budget_ms,
                 max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),

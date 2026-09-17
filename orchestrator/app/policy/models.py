@@ -7,7 +7,7 @@ from pydantic import Field
 
 class PolicyInput(Strict):
     sku: str | None = None
-    category: str = "robot_vacuum"
+    category: str | None = None  # 未知品类匹配不到任何政策 → no_policy_matched 转人工，不默认成某个品类
     region_purchase: str | None = None
     region_use: str | None = None
     channel: str | None = None

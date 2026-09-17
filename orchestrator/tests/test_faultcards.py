@@ -54,7 +54,9 @@ def test_cards_within_800_tokens_and_plan_ids_valid(cards):
     assert (
         cards.for_scope(sku="EUFY-25C", category="robot_vacuum").key == "category:robot_vacuum"
     )  # 无 SKU 卡退回品类卡
-    assert cards.for_scope(sku=None, category="breast_pump") is None
+    # 深度品类有品类卡；目录级品类（如拓展坞）没有
+    assert cards.for_scope(sku=None, category="breast_pump").key == "category:breast_pump"
+    assert cards.for_scope(sku=None, category="hub") is None
 
 
 def test_card_match_and_evidence_items(cards):

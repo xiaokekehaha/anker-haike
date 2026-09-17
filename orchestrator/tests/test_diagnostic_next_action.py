@@ -103,7 +103,7 @@ def test_unparsed_answers_use_a_bound_budget_and_replay_is_idempotent():
 
 
 def test_answer_records_actual_candidate_progress():
-    interview = next_interview(None, "issue", "ask")
+    interview = next_interview(None, "issue", "ask", category="robot_vacuum")
     updated, accepted = interview_answer(
         interview,
         SymptomAnswer(question_id=interview["question"]["question_id"], answer="no", quote="不能"),
@@ -332,11 +332,11 @@ def test_recognised_symptom_supplement_still_clears_the_no_progress_window():
 def test_repeated_question_is_not_replayed_verbatim():
     from app.sessions.clarify import render_question
 
-    first = next_interview(None, "issue", "first")
+    first = next_interview(None, "issue", "first", category="robot_vacuum")
     detail = {"discriminator": first["question"]}
     asked = render_question("symptom", detail)
     assert asked == first["question"]["question"]
-    again = next_interview(first, "issue", "second")
+    again = next_interview(first, "issue", "second", category="robot_vacuum")
     # 问题原文与 question_id 之外的状态不变，模型仍按原文引用
     assert again["question"]["question"] == first["question"]["question"]
     assert "repeats" not in again["question"]

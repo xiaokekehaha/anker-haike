@@ -43,7 +43,7 @@ async def adapter():
         report = await Ingestor(c, embedding_model_id="emb").ingest_all(DATA)
         ad = WeKnoraKnowledgeAdapter(c, report.kb_ids)
         counts = await ad.refresh_index()
-        assert counts == {"kb_manual": 3, "kb_tickets": 200}
+        assert counts == {"kb_manual": 9, "kb_tickets": 380}  # 3 份扫地机 + 6 份新品类手册；200 + 6×30 工单
         yield ad, server
 
 
@@ -70,7 +70,9 @@ async def test_allowed_sets_follow_product_state(adapter):
     tickets_x10 = allowed_entries(ad.index["kb_tickets"], X10)
     assert tickets_x10 and all(e.sku_list == ("EUFY-X10-PRO-OMNI",) for e in tickets_x10)
     assert allowed_entries(ad.index["kb_tickets"], CAT_ONLY) == []  # 工单都是 scope=sku
-    assert allowed_entries(manual, KnowledgeScope("category_only", "breast_pump")) == []
+    # 目录级品类（拓展坞）没有任何资料；吸奶器等深度品类自 2026-09-17 起有自己的手册
+    assert allowed_entries(manual, KnowledgeScope("category_only", "hub")) == []
+    assert {e.doc_id for e in allowed_entries(manual, KnowledgeScope("category_only", "breast_pump"))} == {"manual_bp"}
 
 
 async def test_category_only_results_exclude_sku_scope(adapter):
@@ -98,7 +100,7 @@ async def test_confirmed_sku_includes_own_manual_and_generic(adapter):
 async def test_empty_allowed_set_sends_no_request(adapter):
     ad, server = adapter
     before = len(server.calls)
-    for scope in (UNKNOWN, KnowledgeScope("category_only", "breast_pump")):
+    for scope in (UNKNOWN, KnowledgeScope("category_only", "hub")):
         res = await ad.hybrid_search("kb_manual", "滚刷", 5, scope)
         assert (
             res.status == "no_match"
@@ -189,7 +191,7 @@ async def test_live_category_only_excludes_sku_docs():
             res_sku = await ad.hybrid_search("kb_manual", "滚刷缠绕毛发怎么清理", 5, L60)
     except Exception as exc:  # noqa: BLE001
         pytest.skip(f"weknora not reachable: {type(exc).__name__}")
-    assert counts["kb_manual"] == 3 and counts["kb_tickets"] == 200
+    assert counts["kb_manual"] == 9 and counts["kb_tickets"] == 380  # 2026-09-17 多品类入库后的实际数量
     # 适配器把超时 / 不可达转成 status='unavailable' 返回值而非异常，上面的 except 接不住：
     # 冷启动时首次检索要等 WeKnora 加载 embedding 模型，常超过 timeout_s=5（实测 5008 ms）。
     if "unavailable" in (res.status, res_sku.status):

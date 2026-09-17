@@ -10,16 +10,17 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from app.conversation.taxonomy import families
+from app.sessions.cards import get_catalog
+
 _WS = re.compile(r"[\s　]+")
 _PUNCT_EDGE = re.compile(r"^[，。！？、,.!?;；:：\-—]+|[，。！？、,.!?;；:：\-—]+$")
-CATEGORY_LABELS = {
-    "robot_vacuum": "扫地机器人",
-    "breast_pump": "吸奶器",
-    "power_bank": "移动电源",
-    "charger": "充电器",
-    "earbuds": "耳机",
-    "security_cam": "摄像头",
-}
+
+
+def category_label(category: str | None) -> str:
+    """品类中文名只有一处真源：products.yaml 的 categories[].name。未登记的品类原样返回。"""
+    spec = get_catalog().categories.get(category or "")
+    return spec.name if spec else (category or "")
 
 
 def normalize_query(text: str) -> str:
@@ -53,12 +54,7 @@ def product_term(state: dict[str, Any]) -> str:
         product = state.get("product_confirmed") or {}
         return _clean_part(product.get("name") or product.get("sku") or "")
     if ps == "category_only":
-        cat = (
-            state.get("category")
-            or (state.get("product_confirmed") or {}).get("category")
-            or "robot_vacuum"
-        )
-        return CATEGORY_LABELS.get(cat, cat)
+        return category_label(state.get("category") or (state.get("product_confirmed") or {}).get("category"))
     return ""
 
 
@@ -70,9 +66,9 @@ def build_query(state: dict[str, Any]) -> str:
     product = product_term(state)
     symptoms = dedupe([str(s) for s in (state.get("symptoms") or [])])
     if state.get("symptom_codes"):
-        from app.conversation.taxonomy import taxonomy
-        families = [f["fault_family"] for f in taxonomy()["families"] if f["symptom_code"] in state["symptom_codes"]]
-        symptoms = dedupe([*families, *symptoms])
+        category = state.get("category") or (state.get("product_confirmed") or {}).get("category")
+        labels = [f["fault_family"] for f in families(category) if f["symptom_code"] in state["symptom_codes"]]
+        symptoms = dedupe([*labels, *symptoms])
     if not symptoms:
         raw = _clean_part(str(state.get("text") or ""))
         symptoms = [raw] if raw else []

@@ -38,7 +38,7 @@ def data():
 
 
 def test_plans_load(library):
-    assert library.plan_ids == EXPECTED_IDS
+    assert [p for p in library.plan_ids if p.startswith("rv_")] == EXPECTED_IDS  # 多品类后库里还有其他前缀
     motor = library.get("rv_suction_motor_fault")
     assert len(motor.steps) == 1
     assert motor.steps[0].next_on.model_dump() == {
@@ -63,7 +63,7 @@ def test_next_on_rule_advance(library):
 def test_allowed_for_product_state(library):
     assert len(library.allowed_for(category="robot_vacuum")) == 6  # category_only
     assert len(library.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO")) == 6
-    assert library.allowed_for(category="breast_pump") == []
+    assert {p.plan_id for p in library.allowed_for(category="breast_pump")} == {"bp_valve_membrane", "bp_power_check", "bp_noise_check", "bp_app_pair"}; assert library.allowed_for(category="hub") == []  # 目录级品类没有计划
 
 
 @pytest.mark.parametrize(
@@ -138,7 +138,7 @@ def test_latest_version_wins(tmp_path, data):
     v2["fault"] = "v2"
     data["plans"].append(v2)
     lib = PlanLibrary.from_yaml(_write(tmp_path, data))
-    assert lib.get("rv_suction_hair_wrap").version == 2 and len(lib.plan_ids) == 6
+    assert lib.get("rv_suction_hair_wrap").version == 2 and len(lib.plan_ids) == 32
 
 
 def test_plan_json_schema(library):
@@ -147,7 +147,7 @@ def test_plan_json_schema(library):
     assert set(schema["required"]) >= {"plan_id", "version", "fault", "applies_to", "steps"}
     narrowed = library.schema_for(category="robot_vacuum")
     assert narrowed["properties"]["plan_id"] == {"type": "string", "enum": EXPECTED_IDS}
-    assert library.schema_for(category="breast_pump")["properties"]["plan_id"]["enum"] == []
+    assert library.schema_for(category="hub")["properties"]["plan_id"]["enum"] == []
     import jsonschema
 
     jsonschema.Draft202012Validator(narrowed).validate(
@@ -167,7 +167,7 @@ async def test_seed_plans_is_idempotent(library):
     try:
         a = await store.seed_plans(pool, library)
         b = await store.seed_plans(pool, library)
-        assert a["upserted"] == b["upserted"] == 6 and b["total"] >= 6
+        assert a["upserted"] == b["upserted"] == 32 and b["total"] >= 32
         async with pool.connection() as conn:
             cur = await conn.execute(
                 "select plan_id, steps from plans where plan_id = 'rv_suction_motor_fault'"

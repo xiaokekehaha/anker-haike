@@ -43,10 +43,10 @@ def case_state(case: dict[str, Any]) -> dict[str, Any]:
         state["product_confirmed"] = {
             "sku": case["sku"],
             "name": case.get("product_name") or case["sku"],
-            "category": case.get("category") or "robot_vacuum",
+            "category": case["category"],
         }
     else:
-        state["category"] = case.get("category") or "robot_vacuum"
+        state["category"] = case["category"]
     return state
 
 
@@ -54,7 +54,7 @@ def case_scope(case: dict[str, Any]) -> KnowledgeScope:
     ps = case["product_state"]
     return KnowledgeScope(
         ps,
-        case.get("category") or "robot_vacuum",
+        case["category"],
         case.get("sku") if ps == "confirmed_sku" else None,
     )
 

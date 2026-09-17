@@ -29,13 +29,13 @@ async def test_product_question_cannot_be_replaced_with_symptom_question():
 
 
 def narrowed_effect_interview():
-    interview = next_interview(None, "i", "a")
+    interview = next_interview(None, "i", "a", category="robot_vacuum")
     for iid, quote in [("b", "可以"), ("c", "效果不好")]:
         interview, accepted = interview_answer(interview, SymptomAnswer(
             question_id=interview["question"]["question_id"], answer="yes", quote=quote), quote, iid)
         assert accepted
         if iid == "b":
-            interview = next_interview(interview, "i", iid)
+            interview = next_interview(interview, "i", iid, category="robot_vacuum")
     return interview
 
 

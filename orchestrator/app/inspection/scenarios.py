@@ -363,7 +363,7 @@ async def scn_ambiguity(ctx: Ctx):
         ev = await h.send(sid, "我的 S1 Pro 不吸了")
         card = ev.first("product_card")
         _check(card is not None and len(card["candidates"]) >= 2, f"应出产品卡：{ev.types}")
-        _check(any(not c["in_scope"] for c in card["candidates"]), "应有范围外候选（吸奶器）")
+        _check(len({c["category"] for c in card["candidates"]}) >= 2, "两候选应属不同品类（扫地机器人 / 吸奶器）")
         return {"candidates": [c["sku"] for c in card["candidates"]], **_metrics(h, ev.run_id)}
 
 

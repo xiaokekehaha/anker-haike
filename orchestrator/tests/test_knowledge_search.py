@@ -150,15 +150,9 @@ async def test_multi_query_expands_concurrently_and_fuses_with_request_cap():
 
 
 async def test_faq_index_added_as_third_kb_when_enabled():
-    idx = LocalFaqIndex(
-        entries=[],
-        doc_id="faq_rv",
-        doc_version="v",
-        category="robot_vacuum",
-    )
     from app.knowledge.faq import FaqEntry
 
-    idx.entries.append(FaqEntry("q35", "App 连不上机器", ("连不上",), "重新配网"))
+    idx = LocalFaqIndex([FaqEntry("q35", "App 连不上机器", ("连不上",), "重新配网", "faq_rv", "v", "robot_vacuum")])
     ad = RecordingAdapter({})
     cfg = _cfg(faq={"enabled": True})
     out = await search_round(

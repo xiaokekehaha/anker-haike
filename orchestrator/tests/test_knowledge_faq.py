@@ -23,7 +23,8 @@ def test_similarity_substring_and_bigram():
 
 def test_index_from_repo_yaml_hits_expected_entries():
     idx = LocalFaqIndex.from_yaml(FAQ)
-    assert len(idx.entries) == 50 and idx.doc_id == "faq_rv" and idx.category == "robot_vacuum"
+    assert len(idx.entries) == 50 and idx.docs == {"faq_rv": "2026-09-12.1"}
+    assert {e.category for e in idx.entries} == {"robot_vacuum"}
     r = idx.search("EUFY-X10-PRO-OMNI App 无法连接", 3, X10)
     assert r.status == "ok" and r.hits[0].chunk_id == "faq_rv#q35"
     h = r.hits[0]
@@ -56,7 +57,7 @@ def test_runtime_getter_loads_repo_file_and_can_be_overridden():
 
         mod._built = False
         mod._index = None
-    idx = get_faq_index()
-    assert idx is not None and len(idx.entries) == 50
+    idx = get_faq_index()  # 默认加载目录下全部 faq_*.yaml
+    assert idx is not None and len(idx.entries) >= 50 and "faq_rv" in idx.docs and "faq_pb" in idx.docs
     mod._built = False
     mod._index = None

@@ -18,14 +18,14 @@ def old_answer_state():
     from app.conversation.interpret import SymptomAnswer
     from app.conversation.taxonomy import interview_answer, next_interview
 
-    interview = next_interview(None, "issue", "first")
+    interview = next_interview(None, "issue", "first", category="robot_vacuum")
     interview, _ = interview_answer(
         interview,
         SymptomAnswer(question_id=interview["question"]["question_id"], answer="no", quote="不能"),
         "不能",
         "second",
     )
-    interview = next_interview(interview, "issue", "second")
+    interview = next_interview(interview, "issue", "second", category="robot_vacuum")
     fact = {
         "fact_id": "power",
         "revision": 1,
@@ -161,7 +161,7 @@ def test_exhausted_discriminators_have_explicit_reason():
     from app.conversation.interpret import SymptomAnswer
     from app.conversation.taxonomy import interview_answer, next_interview
 
-    interview = next_interview(None, "issue", "a")
+    interview = next_interview(None, "issue", "a", category="robot_vacuum")
     for iid in ["a", "b"]:
         interview, _ = interview_answer(
             interview,
@@ -174,7 +174,7 @@ def test_exhausted_discriminators_have_explicit_reason():
             iid,
         )
         if iid == "a":
-            interview = next_interview(interview, "issue", "b")
+            interview = next_interview(interview, "issue", "b", category="robot_vacuum")
     # Missing hand-written discriminators lead to a direct symptom selection.
     result = decide_symptoms({"category": "robot_vacuum", "symptom_interview": interview})
     assert result.outcome == "clarify"

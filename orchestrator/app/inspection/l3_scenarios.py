@@ -12,7 +12,7 @@ from app.inspection.scenarios import scenario
 def valid_gate():
     from app.actions.gate import AuthorizationGate
     from app.policy import PolicyEngine, PolicyInput
-    policy = PolicyEngine().decide(PolicyInput(sku='EUFY-X10-PRO-OMNI', region_purchase='CN', region_use='CN', channel='official_store', purchase_date='2026-02-26', today='2026-09-14', fault_class='quality'))
+    policy = PolicyEngine().decide(PolicyInput(sku='EUFY-X10-PRO-OMNI', category='robot_vacuum', region_purchase='CN', region_use='CN', channel='official_store', purchase_date='2026-02-26', today='2026-09-14', fault_class='quality'))
     return AuthorizationGate().check(decision=policy, option={'remedy':'replace'},receipt={'status':'order_verified'},product_state='confirmed_sku',risk_cases=[],allowed_operations=True,user_confirmed=True,case_status='awaiting_confirmation')
 
 

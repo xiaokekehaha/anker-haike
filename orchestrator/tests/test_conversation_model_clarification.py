@@ -61,8 +61,8 @@ def test_saved_category_is_issue_scoped_and_current_category_takes_priority():
         assert result.update["category"] == "robot_vacuum"
         assert result.update["product_state"] == "category_only"
         changed = decide({**state, "text": "充电宝 00001"}, abandoned_card=None)
-        assert changed.update["category"] == "power_bank"
-        assert changed.update["out_of_scope"] is True
+        assert changed.update["category"] == "power_bank"  # 本轮品类词优先于旧 issue 里存的品类
+        assert changed.update["out_of_scope"] is False and changed.update["product_state"] == "category_only"
     cached = decide({**base, "category": "robot_vacuum"}, abandoned_card=None)
     assert cached.outcome == "continue"
     assert cached.update["category"] == "robot_vacuum"

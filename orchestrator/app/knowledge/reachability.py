@@ -125,7 +125,7 @@ async def check_reachable(
             if faq_index is None:
                 rows.append({**a, "scope": "-", "match": "none", "hit_rank": None, "verdict": verdict})
                 continue
-            scope = KnowledgeScope("category_only", "robot_vacuum", None)
+            scope = KnowledgeScope("category_only", faq_index.category_of(a["doc_id"]) or "", None)
         out = await search_round(
             adapter,
             a["query"],

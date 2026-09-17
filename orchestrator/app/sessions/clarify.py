@@ -188,7 +188,7 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
         update["clarification"] = None
         return Decision("continue", update)
     if decision.outcome == "escalate":
-        coverage_missing = decision.reason == "question_coverage_missing"
+        coverage_missing = decision.reason in {"question_coverage_missing", "category_coverage_missing"}
         rule_id = "R4" if decision.reason == "safety_restriction" else "R5" if coverage_missing else "R7"
         update.update(escalate_reason=rule_id, symptom_interview=decision.interview,
                       clarification={**clar, "reason": "symptom", "resolved": False},
@@ -196,7 +196,8 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                                     "仍需核对的信息：" + "；".join(decision.missing_information) if decision.missing_information else "当前无法继续排查"])
         return Decision("escalate", update, "symptom")
     if decision.interview is None:
-        return _clarify(clar, "symptom", update)
+        return _clarify(clar, "symptom", update,
+                        category=product.get("category") or update.get("category") or category)
     # Product clarification budget is separate from useful symptom questions.
     # 上一次真正问出去的那句话要留着：clarify 节点靠它认出「同一个问题又要问一遍」。
     update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0),
@@ -284,8 +285,11 @@ def fixed_question(reason: str, detail: dict[str, Any]) -> str:
     if reason == "product" and detail.get("unmatched_hints"):
         return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
     if reason == "symptom":
-        from app.conversation.taxonomy import discriminator, taxonomy
-        question = discriminator(detail.get("fault_families") or [f["fault_family"] for f in taxonomy()["families"]])
+        from app.conversation.taxonomy import discriminator, families
+        category = detail.get("category")
+        question = discriminator(
+            detail.get("fault_families") or [f["fault_family"] for f in families(category)], category=category
+        )
         if question:
             return question
     tpl = FIXED_QUESTIONS.get(reason, FIXED_QUESTIONS["product"])
@@ -297,7 +301,7 @@ def fixed_question(reason: str, detail: dict[str, Any]) -> str:
 
 CLARIFY_INSTRUCTION = {
     "product": "当前信息尚未匹配到可用的产品或品类。结合历史问答，只追问仍缺少的信息；用户已提供型号但未匹配时，先说明已收到且目录未匹配，再请补充品类或机身型号标签，不要重复询问已回答的型号。不要给排查步骤，不要猜测型号。",
-    "symptom": "设备已确认，但用户没有描述具体故障现象。请只输出一句具体的中文追问，给出两三个常见现象让用户选择（如吸力变弱 / 无法启动 / 异响）；不要给排查步骤。",
+    "symptom": "设备已确认，但用户没有描述具体故障现象。请只输出一句具体的中文追问，给出两三个该类设备的常见现象让用户选择；不要给排查步骤。",
     "conflict": "用户之前确认的产品与这次提到的产品不一致。请只输出一句具体的中文追问，请用户确认要排查的是哪一台；不要给排查步骤。",
 }
 

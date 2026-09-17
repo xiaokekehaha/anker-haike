@@ -63,7 +63,7 @@ async def test_multi_hit_emits_card_then_awaiting_and_done_awaiting(mem_runtime)
     card, awaiting, done = (next(e for e in events if e["type"] == kind) for kind in ("product_card", "awaiting_input", "done"))
     assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "disambiguate"]
     assert {c["sku"] for c in card["candidates"]} == {"EUFY-S1-PRO", "EUFY-BP-S1-PRO"}
-    assert [c["in_scope"] for c in card["candidates"]] == [True, False]  # in_scope 优先
+    assert [c["in_scope"] for c in card["candidates"]] == [True, True]  # 多品类后两者都在范围内
     # 成对且 version 一致（验收项 2）
     assert done["reason"] == "awaiting_input"
     assert awaiting["version"] == done["version"] == card["version"]
@@ -141,7 +141,8 @@ async def test_select_product_resumes_run_and_completes(mem_runtime):
     assert snap.version == resumed[-1]["version"]
 
 
-async def test_select_out_of_scope_candidate_routes_to_escalate(mem_runtime):
+async def test_select_other_category_candidate_confirms_it(mem_runtime):
+    """同名异类卡片里选吸奶器：2026-09-17 多品类后它在范围内，确认 SKU 与品类后继续，不走 R8。"""
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         pending = next(e for e in await _send(client, sid, MULTI) if e["type"] == "awaiting_input")
@@ -153,11 +154,11 @@ async def test_select_out_of_scope_candidate_routes_to_escalate(mem_runtime):
             ).text
         )
     stages = [e["stage"] for e in resumed if e["type"] == "progress"]
-    # 票 25：out_of_scope 子流程（说明文本）→ escalate(R8)
-    assert stages == ["out_of_scope", "escalate"] and resumed[-1]["reason"] == "completed"
+    assert "out_of_scope" not in stages
     state = await app.state.session_graph.aget_state(_cfg(sid))
-    assert state.values["out_of_scope"] is True and state.values["stage"] == "escalate"
-    assert state.values["escalate_reason"] == "R8"
+    assert state.values["out_of_scope"] is False and state.values["product_state"] == "confirmed_sku"
+    assert state.values["product_confirmed"]["sku"] == "EUFY-BP-S1-PRO" and state.values["category"] == "breast_pump"
+    assert state.values.get("escalate_reason") != "R8"
 
 
 async def test_single_hit_and_zero_hit_skip_card(mem_runtime):

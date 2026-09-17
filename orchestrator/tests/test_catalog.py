@@ -20,15 +20,19 @@ def catalog() -> ProductCatalog:
 
 def test_seed_config_shape(catalog):
     assert len(catalog.products) >= 20
+    # 2026-09-17 多品类：只有家用储能（电工安装、专业售后）留在范围外；每个品类都标注官网产品线
     out_of_scope = [p for p in catalog.products if not p.in_scope]
-    assert any(p.category == "breast_pump" for p in out_of_scope)
+    assert {p.category for p in out_of_scope} == {"home_storage"}
+    assert {spec.line for spec in catalog.categories.values()} == {
+        "Anker Charging", "Anker SOLIX", "Anker eufy", "Anker soundcore", "Anker eufyMake",
+    }
     assert len({p.sku for p in catalog.products}) == len(catalog.products)
 
 
 @pytest.mark.parametrize(
     ("query", "expected"),
     [
-        ("S1 Pro", ["EUFY-S1-PRO", "EUFY-BP-S1-PRO"]),  # 同名异类：两个候选，范围内在前
+        ("S1 Pro", ["EUFY-BP-S1-PRO", "EUFY-S1-PRO"]),  # 同名异类：两个候选都在范围内，按名称稳定排序
         ("扫地机 X", ["EUFY-X10-PRO-OMNI"]),  # 单命中
         ("随便", []),  # 零命中
         ("扫地机器人", []),  # 只有品类词
@@ -49,8 +53,8 @@ def test_lookup_product(catalog, query, expected):
 
 def test_candidates_carry_in_scope_and_contract_shape(catalog):
     cands = catalog.lookup_product("S1 Pro")
-    assert [c.in_scope for c in cands] == [True, False]
-    assert cands[1].category == "breast_pump"
+    assert [c.in_scope for c in cands] == [True, True]  # 2026-09-17 多品类：吸奶器也在范围内
+    assert {c.category for c in cands} == {"breast_pump", "robot_vacuum"}
     assert set(cands[0].model_dump()) == {"sku", "name", "category", "image", "in_scope"}
 
 
@@ -130,7 +134,7 @@ async def test_seed_products_is_idempotent(catalog):
         loaded = await store.load_from_db(pool, catalog.categories)
         assert loaded.version == catalog.version
         assert {p.sku for p in loaded.products} == {p.sku for p in catalog.products}
-        assert [c.sku for c in loaded.lookup_product("S1 Pro")] == ["EUFY-S1-PRO", "EUFY-BP-S1-PRO"]
-        assert any(not p.in_scope and p.category == "breast_pump" for p in loaded.products)
+        assert {c.sku for c in loaded.lookup_product("S1 Pro")} == {"EUFY-S1-PRO", "EUFY-BP-S1-PRO"}
+        assert any(not p.in_scope and p.category == "home_storage" for p in loaded.products)
     finally:
         await pool.close()

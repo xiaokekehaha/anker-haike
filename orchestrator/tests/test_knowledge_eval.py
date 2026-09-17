@@ -25,6 +25,7 @@ def test_case_state_and_scope_confirmed_and_category_only():
         "id": "x",
         "product_state": "confirmed_sku",
         "sku": "EUFY-X9-PRO",
+        "category": "robot_vacuum",
         "text": "不吸",
         "symptoms": ["不吸"],
     }
