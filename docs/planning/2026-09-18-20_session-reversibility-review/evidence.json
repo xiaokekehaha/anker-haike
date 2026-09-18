@@ -1,0 +1,1833 @@
+{
+  "session_id": "37cea3ff86574d05a162adf53bca34d3",
+  "analysis_date": "2026-09-18",
+  "code_commit": "4a7dc4e413e3b8a174b22fef5f2793844bc20a3c",
+  "source": "Read-only journey API and checkpoint connection with default_transaction_read_only=on",
+  "session": {
+    "created_at": "2026-09-18T09:47:29.797419Z",
+    "last_run_at": "2026-09-18T09:48:56.190822Z",
+    "sku": "ANKER-A1289",
+    "steps_executed": 0,
+    "knowledge_status": "ok",
+    "outcome": "escalated",
+    "outcome_reason": "R2"
+  },
+  "messages": [
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:47:29.764464+00:00",
+      "id": "c817318f-8502-4360-8cbb-808d56779e34",
+      "text": "Anker 737 充电宝型号 A1289，怎么这么难用"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:47:34.965641+00:00",
+      "reply_to_input_id": "c817318f-8502-4360-8cbb-808d56779e34",
+      "text": "抱歉，这次使用体验不好。插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:47:49.321656+00:00",
+      "id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+      "text": "有的"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:47:52.095505+00:00",
+      "reply_to_input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+      "text": "问题出现在给充电宝本身充电的时候吗？"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:47:59.395490+00:00",
+      "id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+      "text": "是的，很慢"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:48:09.171890+00:00",
+      "reply_to_input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+      "text": "737 连接设备时，屏幕显示更接近下面哪种情况？请直接回复其中一项：连接笔记本时显示 UVP／屏幕显示异常或无法显示剩余电量／能显示电量，但设备充不上或功率偏低／USB-A 空载显示 0.1W 或绿色标记／设备不在身边或无法判断。这个结果会决定后续排查路径。"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:48:11.827845+00:00",
+      "id": "a47f21fa-ba8f-426e-87ae-4705f2779c22",
+      "text": "设备不在身边"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:48:16.847695+00:00",
+      "reply_to_input_id": "a47f21fa-ba8f-426e-87ae-4705f2779c22",
+      "text": "已记下设备不在身边，先不安排读屏或动手操作。拿到设备后回复“设备现在在身边”，我再结合已有记录继续；也可以先整理问题摘要。"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:48:23.325879+00:00",
+      "id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+      "text": "连接笔记本时显示 UVP／屏幕显示异常"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:48:28.176796+00:00",
+      "reply_to_input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+      "text": "设备现在在身边了吗？拿到了回复“设备现在在身边”，我按已有记录接着排查；还不在也可以先整理问题摘要。"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:48:33.578676+00:00",
+      "id": "9f00261c-6701-454a-b0f6-d97fc27fa29d",
+      "text": "已在"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:48:38.881605+00:00",
+      "reply_to_input_id": "9f00261c-6701-454a-b0f6-d97fc27fa29d",
+      "text": "当前资料没有适用于该现象的排查路径。我已整理当前问题和排查记录，您可以复制给人工客服继续处理；目前尚未接入真实转接。新的观察或操作条件变化后，仍可以结合已有记录继续。"
+    },
+    {
+      "kind": "user_message",
+      "at": "2026-09-18T09:48:46.805043+00:00",
+      "id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+      "text": "连接笔记本时显示 UVP／屏幕显示异常"
+    },
+    {
+      "kind": "assistant_message",
+      "at": "2026-09-18T09:48:56.177926+00:00",
+      "reply_to_input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+      "text": "当前资料没有适用于该现象的排查路径。我已整理当前问题和排查记录，您可以复制给人工客服继续处理；目前尚未接入真实转接。新的观察或操作条件变化后，仍可以结合已有记录继续。"
+    }
+  ],
+  "runs": [
+    {
+      "seq_no": 1,
+      "nodes": [
+        "understand",
+        "disambiguate",
+        "clarify",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 2,
+      "nodes": [
+        "understand",
+        "disambiguate",
+        "clarify",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 3,
+      "nodes": [
+        "understand",
+        "disambiguate",
+        "retrieve",
+        "guide",
+        "ask_observation",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 4,
+      "nodes": [
+        "understand",
+        "reassess",
+        "dialogue",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 5,
+      "nodes": [
+        "understand",
+        "reassess",
+        "ask_observation",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 6,
+      "nodes": [
+        "understand",
+        "reassess",
+        "escalate",
+        "summarize",
+        "commit_issue"
+      ]
+    },
+    {
+      "seq_no": 7,
+      "nodes": [
+        "understand",
+        "disambiguate",
+        "retrieve",
+        "guide",
+        "escalate",
+        "summarize",
+        "commit_issue"
+      ]
+    }
+  ],
+  "turn_states": [
+    {
+      "input_id": "c817318f-8502-4360-8cbb-808d56779e34",
+      "text": "Anker 737 充电宝型号 A1289，怎么这么难用",
+      "stage": "disambiguate",
+      "substage": null,
+      "symptom_codes": [],
+      "diagnostic_decision": {
+        "outcome": "clarify",
+        "codes": [],
+        "reason": "symptom_missing",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34"
+        ],
+        "candidate_codes": [],
+        "allowed_plans": [],
+        "constrain_plans": false,
+        "missing_information": [
+          "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？"
+        ],
+        "progress": {
+          "attempts": 0,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "c817318f-8502-4360-8cbb-808d56779e34"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "无法给设备充电",
+          "充电宝自身充不进电",
+          "掉电快",
+          "发热异常",
+          "指示灯异常",
+          "接口松动或损坏"
+        ],
+        "answers": [],
+        "status": "asking",
+        "question": {
+          "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+          "splits": {
+            "yes": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "no": [
+              "无法给设备充电",
+              "接口松动或损坏"
+            ]
+          },
+          "key": "c7b20e489fc0",
+          "asked_input_id": "c817318f-8502-4360-8cbb-808d56779e34",
+          "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0"
+        }
+      },
+      "plans_ranked": [],
+      "next_action": null,
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [],
+      "turn_decision": {
+        "input_id": "c817318f-8502-4360-8cbb-808d56779e34",
+        "primary_intent": "report_problem",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34"
+        ],
+        "patches": [
+          {
+            "op": "add",
+            "fact_id": "0712665080ba5ae28beca254c5a81942",
+            "input_id": "c817318f-8502-4360-8cbb-808d56779e34"
+          }
+        ],
+        "switched": true,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": false,
+        "observation_answered": false,
+        "observation_attempted": false,
+        "operation_changed": false,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+      "text": "有的",
+      "stage": "disambiguate",
+      "substage": null,
+      "symptom_codes": [],
+      "diagnostic_decision": {
+        "outcome": "clarify",
+        "codes": [],
+        "reason": "symptom_missing",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_battery_drain",
+          "pb_overheat",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [],
+        "constrain_plans": false,
+        "missing_information": [
+          "问题出现在给充电宝本身充电的时候吗？"
+        ],
+        "progress": {
+          "attempts": 1,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "掉电快",
+          "发热异常",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          }
+        ],
+        "status": "resolved",
+        "question": {
+          "question": "问题出现在给充电宝本身充电的时候吗？",
+          "splits": {
+            "yes": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "no": [
+              "无法给设备充电",
+              "掉电快",
+              "发热异常",
+              "接口松动或损坏"
+            ]
+          },
+          "key": "297dbb1316d2",
+          "asked_input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+          "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2"
+        },
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          }
+        ]
+      },
+      "plans_ranked": [],
+      "next_action": null,
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [],
+      "turn_decision": {
+        "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "patches": [],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": true,
+        "observation_answered": false,
+        "observation_attempted": false,
+        "operation_changed": false,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+      "text": "是的，很慢",
+      "stage": "guide",
+      "substage": "await_observation",
+      "symptom_codes": [
+        "pb_no_input"
+      ],
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "codes": [
+          "pb_no_input"
+        ],
+        "reason": "symptom_evidence_available",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [
+          {
+            "plan_id": "pb_737_output_check",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+          }
+        ],
+        "constrain_plans": false,
+        "missing_information": [],
+        "progress": {
+          "attempts": 2,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          },
+          {
+            "key": "297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "answer": "yes",
+            "quote": "是的",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          },
+          {
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "outcome": "yes",
+            "candidates_before": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "是的"
+          }
+        ],
+        "progress_start": 2
+      },
+      "plans_ranked": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "confidence": 0.72,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check",
+            "a7bf302a-e7a4-4f4f-825d-278dc667a9b8",
+            "09768e0f-ed2c-44f7-982a-3ca030e5e742"
+          ],
+          "rationale": "自身回充慢，需核对屏幕与充电器线材交叉测试",
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "confidence": 0.2,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset",
+            "7296bb3f-0acd-4fc7-9d45-f37e3681b44c"
+          ],
+          "rationale": "若屏幕显示异常可先按官方方法复位",
+          "source": "synthesize"
+        }
+      ],
+      "next_action": {
+        "kind": "ask",
+        "reason": "observation_changes_next_action",
+        "plan_cursor": null,
+        "question": {
+          "observation_id": "pb_737_display",
+          "question": "737 连接设备时，屏幕显示更接近下面哪种情况？",
+          "options": [
+            {
+              "option_id": "laptop_uvp",
+              "label": "连接笔记本时显示 UVP",
+              "kind": "finding"
+            },
+            {
+              "option_id": "abnormal",
+              "label": "屏幕显示异常或无法显示剩余电量",
+              "kind": "finding"
+            },
+            {
+              "option_id": "normal",
+              "label": "能显示电量，但设备充不上或功率偏低",
+              "kind": "finding"
+            },
+            {
+              "option_id": "low_current",
+              "label": "USB-A 空载显示 0.1W 或绿色标记",
+              "kind": "finding"
+            },
+            {
+              "option_id": "unknown",
+              "label": "设备不在身边或无法判断",
+              "kind": "unknown"
+            }
+          ],
+          "plan_id": "pb_737_output_check",
+          "attempt": 1
+        },
+        "basis": [],
+        "trace": {
+          "skipped": [
+            {
+              "plan_id": "pb_737_output_check",
+              "reason": "observation_missing",
+              "missing": [
+                "pb_737_display"
+              ]
+            },
+            {
+              "plan_id": "pb_737_display_reset",
+              "reason": "observation_missing",
+              "missing": [
+                "pb_737_display"
+              ]
+            }
+          ],
+          "known_observations": {}
+        },
+        "compat_rule": null,
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+        "issue_revision": 3
+      },
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [
+        {
+          "observation_id": "pb_737_display",
+          "plan_id": "pb_737_output_check",
+          "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+          "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "asked_at": "2026-09-18T09:47:59.395490+00:00",
+          "status": "asked",
+          "attempt": 1
+        }
+      ],
+      "turn_decision": {
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "2e53b70e-3853-466b-b762-42b95c5e14ba"
+        ],
+        "patches": [
+          {
+            "op": "add",
+            "fact_id": "760c8110df28531c87b1d650c41114c1",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": true,
+        "observation_answered": false,
+        "observation_attempted": false,
+        "operation_changed": false,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "a47f21fa-ba8f-426e-87ae-4705f2779c22",
+      "text": "设备不在身边",
+      "stage": "guide",
+      "substage": null,
+      "symptom_codes": [
+        "pb_no_input"
+      ],
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "codes": [
+          "pb_no_input"
+        ],
+        "reason": "symptom_evidence_available",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [
+          {
+            "plan_id": "pb_737_output_check",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+          }
+        ],
+        "constrain_plans": false,
+        "missing_information": [],
+        "progress": {
+          "attempts": 2,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          },
+          {
+            "key": "297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "answer": "yes",
+            "quote": "是的",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          },
+          {
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "outcome": "yes",
+            "candidates_before": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "是的"
+          }
+        ],
+        "progress_start": 2
+      },
+      "plans_ranked": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "confidence": 0.72,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check",
+            "a7bf302a-e7a4-4f4f-825d-278dc667a9b8",
+            "09768e0f-ed2c-44f7-982a-3ca030e5e742"
+          ],
+          "rationale": "自身回充慢，需核对屏幕与充电器线材交叉测试",
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "confidence": 0.2,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset",
+            "7296bb3f-0acd-4fc7-9d45-f37e3681b44c"
+          ],
+          "rationale": "若屏幕显示异常可先按官方方法复位",
+          "source": "synthesize"
+        }
+      ],
+      "next_action": {
+        "kind": "pause",
+        "reason": "operation_conditions_unavailable",
+        "plan_cursor": null,
+        "question": null,
+        "basis": [],
+        "trace": {
+          "skipped": [
+            {
+              "plan_id": "pb_737_output_check",
+              "reason": "observation_missing",
+              "missing": [
+                "pb_737_display"
+              ]
+            },
+            {
+              "plan_id": "pb_737_display_reset",
+              "reason": "observation_missing",
+              "missing": [
+                "pb_737_display"
+              ]
+            }
+          ],
+          "known_observations": {}
+        },
+        "compat_rule": null,
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "input_id": "a47f21fa-ba8f-426e-87ae-4705f2779c22",
+        "issue_revision": 4
+      },
+      "operation_conditions": {
+        "paused": false,
+        "resources": {
+          "device": false
+        },
+        "resource_sources": {
+          "device": "a47f21fa-ba8f-426e-87ae-4705f2779c22"
+        },
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [
+        {
+          "observation_id": "pb_737_display",
+          "plan_id": "pb_737_output_check",
+          "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+          "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "asked_at": "2026-09-18T09:47:59.395490+00:00",
+          "status": "unparsed",
+          "attempt": 1,
+          "quote": "设备不在身边"
+        }
+      ],
+      "turn_decision": {
+        "input_id": "a47f21fa-ba8f-426e-87ae-4705f2779c22",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "a47f21fa-ba8f-426e-87ae-4705f2779c22"
+        ],
+        "patches": [],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": false,
+        "observation_answered": false,
+        "observation_attempted": true,
+        "operation_changed": true,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+      "text": "连接笔记本时显示 UVP／屏幕显示异常",
+      "stage": "guide",
+      "substage": "await_operation_conditions",
+      "symptom_codes": [
+        "pb_no_input"
+      ],
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "codes": [
+          "pb_no_input"
+        ],
+        "reason": "symptom_evidence_available",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [
+          {
+            "plan_id": "pb_737_output_check",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+          }
+        ],
+        "constrain_plans": false,
+        "missing_information": [],
+        "progress": {
+          "attempts": 2,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          },
+          {
+            "key": "297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "answer": "yes",
+            "quote": "是的",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          },
+          {
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "outcome": "yes",
+            "candidates_before": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "是的"
+          }
+        ],
+        "progress_start": 2
+      },
+      "plans_ranked": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "confidence": 0.72,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check",
+            "a7bf302a-e7a4-4f4f-825d-278dc667a9b8",
+            "09768e0f-ed2c-44f7-982a-3ca030e5e742"
+          ],
+          "rationale": "自身回充慢，需核对屏幕与充电器线材交叉测试",
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "confidence": 0.2,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset",
+            "7296bb3f-0acd-4fc7-9d45-f37e3681b44c"
+          ],
+          "rationale": "若屏幕显示异常可先按官方方法复位",
+          "source": "synthesize"
+        }
+      ],
+      "next_action": {
+        "kind": "ask",
+        "reason": "operation_conditions_recheck",
+        "plan_cursor": null,
+        "question": {
+          "kind": "operation_blocker",
+          "resource": "device",
+          "question": "设备现在在身边了吗？拿到了回复“设备现在在身边”，我按已有记录接着排查；还不在也可以先整理问题摘要。"
+        },
+        "basis": [
+          "e94e98bb209f5244ad9a17b7f3e7bf4a"
+        ],
+        "trace": {
+          "skipped": [
+            {
+              "plan_id": "pb_737_output_check",
+              "reason": "excluded_by_observation"
+            },
+            {
+              "plan_id": "pb_737_display_reset",
+              "reason": "excluded_by_observation"
+            }
+          ],
+          "known_observations": {
+            "pb_737_display": "laptop_uvp"
+          }
+        },
+        "compat_rule": null,
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+        "issue_revision": 6
+      },
+      "operation_conditions": {
+        "paused": false,
+        "resources": {
+          "device": false
+        },
+        "resource_sources": {
+          "device": "a47f21fa-ba8f-426e-87ae-4705f2779c22"
+        },
+        "resource_asks": {
+          "device": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d"
+        },
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [
+        {
+          "observation_id": "pb_737_display",
+          "plan_id": "pb_737_output_check",
+          "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+          "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "asked_at": "2026-09-18T09:47:59.395490+00:00",
+          "status": "answered",
+          "attempt": 1,
+          "quote": "连接笔记本时显示 UVP／屏幕显示异常",
+          "answered_input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+          "option_id": "laptop_uvp"
+        }
+      ],
+      "turn_decision": {
+        "input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d"
+        ],
+        "patches": [
+          {
+            "op": "add",
+            "fact_id": "e94e98bb209f5244ad9a17b7f3e7bf4a",
+            "input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d"
+          }
+        ],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": false,
+        "observation_answered": true,
+        "observation_attempted": false,
+        "operation_changed": false,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "9f00261c-6701-454a-b0f6-d97fc27fa29d",
+      "text": "已在",
+      "stage": "escalate",
+      "substage": "summarize",
+      "symptom_codes": [
+        "pb_no_input"
+      ],
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "codes": [
+          "pb_no_input"
+        ],
+        "reason": "symptom_evidence_available",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [
+          {
+            "plan_id": "pb_737_output_check",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+          }
+        ],
+        "constrain_plans": false,
+        "missing_information": [],
+        "progress": {
+          "attempts": 2,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          },
+          {
+            "key": "297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "answer": "yes",
+            "quote": "是的",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          },
+          {
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "outcome": "yes",
+            "candidates_before": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "是的"
+          }
+        ],
+        "progress_start": 2
+      },
+      "plans_ranked": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "confidence": 0.72,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check",
+            "a7bf302a-e7a4-4f4f-825d-278dc667a9b8",
+            "09768e0f-ed2c-44f7-982a-3ca030e5e742"
+          ],
+          "rationale": "自身回充慢，需核对屏幕与充电器线材交叉测试",
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "confidence": 0.2,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset",
+            "7296bb3f-0acd-4fc7-9d45-f37e3681b44c"
+          ],
+          "rationale": "若屏幕显示异常可先按官方方法复位",
+          "source": "synthesize"
+        }
+      ],
+      "next_action": {
+        "kind": "handoff_offer",
+        "reason": "knowledge_coverage_missing",
+        "plan_cursor": null,
+        "question": null,
+        "basis": [
+          "e94e98bb209f5244ad9a17b7f3e7bf4a"
+        ],
+        "trace": {
+          "skipped": [
+            {
+              "plan_id": "pb_737_output_check",
+              "reason": "excluded_by_observation"
+            },
+            {
+              "plan_id": "pb_737_display_reset",
+              "reason": "excluded_by_observation"
+            }
+          ],
+          "known_observations": {
+            "pb_737_display": "laptop_uvp"
+          },
+          "unavailable": []
+        },
+        "compat_rule": "R2",
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "input_id": "9f00261c-6701-454a-b0f6-d97fc27fa29d",
+        "issue_revision": 7
+      },
+      "operation_conditions": {
+        "paused": false,
+        "resources": {
+          "device": true
+        },
+        "resource_sources": {
+          "device": "9f00261c-6701-454a-b0f6-d97fc27fa29d"
+        },
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [
+        {
+          "observation_id": "pb_737_display",
+          "plan_id": "pb_737_output_check",
+          "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+          "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "asked_at": "2026-09-18T09:47:59.395490+00:00",
+          "status": "answered",
+          "attempt": 1,
+          "quote": "连接笔记本时显示 UVP／屏幕显示异常",
+          "answered_input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+          "option_id": "laptop_uvp"
+        }
+      ],
+      "turn_decision": {
+        "input_id": "9f00261c-6701-454a-b0f6-d97fc27fa29d",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "9f00261c-6701-454a-b0f6-d97fc27fa29d"
+        ],
+        "patches": [],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": false,
+        "observation_answered": false,
+        "observation_attempted": false,
+        "operation_changed": true,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    },
+    {
+      "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+      "text": "连接笔记本时显示 UVP／屏幕显示异常",
+      "stage": "escalate",
+      "substage": "summarize",
+      "symptom_codes": [
+        "pb_no_input"
+      ],
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "codes": [
+          "pb_no_input"
+        ],
+        "reason": "symptom_evidence_available",
+        "source_refs": [
+          "c817318f-8502-4360-8cbb-808d56779e34",
+          "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+        ],
+        "candidate_codes": [
+          "pb_no_input",
+          "pb_indicator_abnormal"
+        ],
+        "allowed_plans": [
+          {
+            "plan_id": "pb_737_output_check",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "version": 1,
+            "step_id": "s1",
+            "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+          }
+        ],
+        "constrain_plans": false,
+        "missing_information": [],
+        "progress": {
+          "attempts": 2,
+          "consecutive_no_progress": 0,
+          "hard_limit": 8
+        },
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "taxonomy_version": "2026-09-17.2",
+        "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d"
+      },
+      "symptom_interview": {
+        "taxonomy_version": "2026-09-17.2",
+        "category": "power_bank",
+        "candidates": [
+          "充电宝自身充不进电",
+          "指示灯异常"
+        ],
+        "answers": [
+          {
+            "key": "c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "answer": "yes",
+            "quote": "有的",
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+          },
+          {
+            "key": "297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "answer": "yes",
+            "quote": "是的",
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+          }
+        ],
+        "status": "resolved",
+        "question": null,
+        "response_attempts": [
+          {
+            "input_id": "57114063-6c36-4d41-9673-a4b0d97d1dc4",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:c817318f-8502-4360-8cbb-808d56779e34:c7b20e489fc0",
+            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
+            "outcome": "yes",
+            "candidates_before": [
+              "无法给设备充电",
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常",
+              "接口松动或损坏"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "有的"
+          },
+          {
+            "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+            "question_id": "9ab67695452b53c3800f9c125cf173e5:57114063-6c36-4d41-9673-a4b0d97d1dc4:297dbb1316d2",
+            "question": "问题出现在给充电宝本身充电的时候吗？",
+            "outcome": "yes",
+            "candidates_before": [
+              "充电宝自身充不进电",
+              "掉电快",
+              "发热异常",
+              "指示灯异常"
+            ],
+            "candidates_after": [
+              "充电宝自身充不进电",
+              "指示灯异常"
+            ],
+            "progressed": true,
+            "quote": "是的"
+          }
+        ],
+        "progress_start": 2
+      },
+      "plans_ranked": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "confidence": 0.62,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check"
+          ],
+          "rationale": "回充慢且笔记本端显示UVP，需交叉核对线材与设备",
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "confidence": 0.3,
+          "evidence_ids": [
+            "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset"
+          ],
+          "rationale": "屏幕显示异常，可先按A1289官方方法复位",
+          "source": "synthesize"
+        }
+      ],
+      "next_action": {
+        "kind": "handoff_offer",
+        "reason": "knowledge_coverage_missing",
+        "plan_cursor": null,
+        "question": null,
+        "basis": [
+          "e94e98bb209f5244ad9a17b7f3e7bf4a"
+        ],
+        "trace": {
+          "skipped": [
+            {
+              "plan_id": "pb_737_output_check",
+              "reason": "excluded_by_observation"
+            },
+            {
+              "plan_id": "pb_737_display_reset",
+              "reason": "excluded_by_observation"
+            }
+          ],
+          "known_observations": {
+            "pb_737_display": "laptop_uvp"
+          },
+          "unavailable": []
+        },
+        "compat_rule": "R2",
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+        "issue_revision": 7
+      },
+      "operation_conditions": {
+        "paused": false,
+        "resources": {
+          "device": true
+        },
+        "resource_sources": {
+          "device": "9f00261c-6701-454a-b0f6-d97fc27fa29d"
+        },
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "observation_requests": [
+        {
+          "observation_id": "pb_737_display",
+          "plan_id": "pb_737_output_check",
+          "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+          "input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba",
+          "asked_at": "2026-09-18T09:47:59.395490+00:00",
+          "status": "answered",
+          "attempt": 1,
+          "quote": "连接笔记本时显示 UVP／屏幕显示异常",
+          "answered_input_id": "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d",
+          "option_id": "laptop_uvp"
+        }
+      ],
+      "turn_decision": {
+        "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+        "primary_intent": "answer_pending",
+        "answer_scope": "focus",
+        "answer_request": null,
+        "secondary_intents": [],
+        "target_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "reply_mode": "diagnose",
+        "clarification": null,
+        "allowed_operations": true,
+        "escalation_trigger": null,
+        "source_refs": [
+          "e38b78b8-9d0e-46b5-baed-6beffcebf78d"
+        ],
+        "patches": [],
+        "switched": false,
+        "pending_changes": [],
+        "resumed_pending": false,
+        "business_switched": false,
+        "business_ambiguous": false,
+        "symptom_answered": false,
+        "observation_answered": false,
+        "observation_attempted": false,
+        "operation_changed": false,
+        "diagnostic_request": false,
+        "normalization_disagreements": []
+      },
+      "steps_executed": [],
+      "exhausted_plans": []
+    }
+  ],
+  "final_state": {
+    "active_issue_id": "9ab67695452b53c3800f9c125cf173e5",
+    "category": "power_bank",
+    "product_confirmed": {
+      "sku": "ANKER-A1289",
+      "name": "Anker 737 PowerCore 24K",
+      "category": "power_bank",
+      "image": null,
+      "in_scope": true
+    },
+    "symptom_codes": [
+      "pb_no_input"
+    ],
+    "diagnostic_decision": {
+      "outcome": "continue",
+      "codes": [
+        "pb_no_input"
+      ],
+      "reason": "symptom_evidence_available",
+      "source_refs": [
+        "c817318f-8502-4360-8cbb-808d56779e34",
+        "2e53b70e-3853-466b-b762-42b95c5e14ba",
+        "57114063-6c36-4d41-9673-a4b0d97d1dc4"
+      ],
+      "candidate_codes": [
+        "pb_no_input",
+        "pb_indicator_abnormal"
+      ],
+      "allowed_plans": [
+        {
+          "plan_id": "pb_737_output_check",
+          "version": 1,
+          "step_id": "s1",
+          "instruction_src": "evidence:official_anker737_troubleshooting#c2"
+        },
+        {
+          "plan_id": "pb_737_display_reset",
+          "version": 1,
+          "step_id": "s1",
+          "instruction_src": "evidence:official_anker737_troubleshooting#c1"
+        }
+      ],
+      "constrain_plans": false,
+      "missing_information": [],
+      "progress": {
+        "attempts": 2,
+        "consecutive_no_progress": 0,
+        "hard_limit": 8
+      },
+      "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+      "taxonomy_version": "2026-09-17.2",
+      "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d"
+    },
+    "plans_ranked": [
+      {
+        "plan_id": "pb_737_output_check",
+        "version": 1,
+        "confidence": 0.62,
+        "evidence_ids": [
+          "fc:ANKER-A1289:2026-09-18.1:pb_737_output_check"
+        ],
+        "rationale": "回充慢且笔记本端显示UVP，需交叉核对线材与设备",
+        "source": "synthesize"
+      },
+      {
+        "plan_id": "pb_737_display_reset",
+        "version": 1,
+        "confidence": 0.3,
+        "evidence_ids": [
+          "fc:ANKER-A1289:2026-09-18.1:pb_737_display_reset"
+        ],
+        "rationale": "屏幕显示异常，可先按A1289官方方法复位",
+        "source": "synthesize"
+      }
+    ],
+    "next_action": {
+      "kind": "handoff_offer",
+      "reason": "knowledge_coverage_missing",
+      "plan_cursor": null,
+      "question": null,
+      "basis": [
+        "e94e98bb209f5244ad9a17b7f3e7bf4a"
+      ],
+      "trace": {
+        "skipped": [
+          {
+            "plan_id": "pb_737_output_check",
+            "reason": "excluded_by_observation"
+          },
+          {
+            "plan_id": "pb_737_display_reset",
+            "reason": "excluded_by_observation"
+          }
+        ],
+        "known_observations": {
+          "pb_737_display": "laptop_uvp"
+        },
+        "unavailable": []
+      },
+      "compat_rule": "R2",
+      "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+      "input_id": "e38b78b8-9d0e-46b5-baed-6beffcebf78d",
+      "issue_revision": 7
+    },
+    "operation_conditions": {
+      "paused": false,
+      "resources": {
+        "device": true
+      },
+      "resource_sources": {
+        "device": "9f00261c-6701-454a-b0f6-d97fc27fa29d"
+      },
+      "resource_asks": {},
+      "blockers": [],
+      "skip_baseline": 0,
+      "continue_input_id": null
+    },
+    "steps_executed": [],
+    "exhausted_plans": [],
+    "case_id": null
+  },
+  "active_issue": {
+    "status": "open",
+    "facts": [
+      {
+        "fact_id": "0712665080ba5ae28beca254c5a81942",
+        "kind": "symptom",
+        "context_field": null,
+        "value": "难用",
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "device_ref_id": "969fc94fbb3c508fb63ac60422843063",
+        "status": "active",
+        "revision": 1,
+        "source_kind": "user_report",
+        "source_entry_ids": [
+          "c817318f-8502-4360-8cbb-808d56779e34"
+        ],
+        "recorded_at": "2026-09-18T09:47:29.764464+00:00",
+        "occurred_at": null,
+        "time_expression": null,
+        "precision": null,
+        "quote": "怎么这么难用",
+        "symptom_codes": [],
+        "symptom_code": null
+      },
+      {
+        "fact_id": "760c8110df28531c87b1d650c41114c1",
+        "kind": "symptom",
+        "context_field": null,
+        "value": "充电很慢",
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "device_ref_id": "969fc94fbb3c508fb63ac60422843063",
+        "status": "active",
+        "revision": 1,
+        "source_kind": "user_report",
+        "source_entry_ids": [
+          "2e53b70e-3853-466b-b762-42b95c5e14ba"
+        ],
+        "recorded_at": "2026-09-18T09:47:59.395490+00:00",
+        "occurred_at": null,
+        "time_expression": null,
+        "precision": null,
+        "quote": "是的，很慢",
+        "symptom_codes": [
+          "pb_no_input"
+        ],
+        "symptom_code": "pb_no_input"
+      },
+      {
+        "fact_id": "e94e98bb209f5244ad9a17b7f3e7bf4a",
+        "kind": "observation",
+        "context_field": null,
+        "value": "737 连接设备时，屏幕显示更接近下面哪种情况？连接笔记本时显示 UVP",
+        "issue_id": "9ab67695452b53c3800f9c125cf173e5",
+        "device_ref_id": "969fc94fbb3c508fb63ac60422843063",
+        "status": "active",
+        "revision": 1,
+        "source_kind": "user_report",
+        "source_entry_ids": [
+          "7d96e804-9a2e-44ee-bf8a-3edd9a3b970d"
+        ],
+        "recorded_at": "2026-09-18T09:48:23.325879+00:00",
+        "occurred_at": null,
+        "time_expression": null,
+        "precision": null,
+        "quote": "连接笔记本时显示 UVP",
+        "symptom_codes": [],
+        "symptom_code": null,
+        "observation_id": "pb_737_display",
+        "option_id": "laptop_uvp",
+        "binding": {
+          "plan_id": "pb_737_output_check",
+          "asked_input_id": "2e53b70e-3853-466b-b762-42b95c5e14ba"
+        }
+      }
+    ]
+  },
+  "summaries": [
+    {
+      "revision": 2,
+      "handoff_status": "prepared",
+      "summary_id": "f77c3d3acc8c559aaeadbf1128416b8e",
+      "reason": {
+        "rule_id": "R2",
+        "text": "当前资料没有适用于该现象的排查路径",
+        "cause": "knowledge_coverage_missing"
+      },
+      "steps": [],
+      "case_id": null
+    }
+  ],
+  "offline_verification": {
+    "network_services": "LLM and knowledge disabled; pure decision function only",
+    "baseline": {
+      "kind": "handoff_offer",
+      "reason": "knowledge_coverage_missing"
+    },
+    "uvp_observation_gate": "ok",
+    "counterfactual": {
+      "change": "Append pb_no_input to UVP plan symptom codes in a deep-copied in-memory library only",
+      "kind": "step",
+      "reason": "observation_unlocked_plan",
+      "plan_id": "pb_737_laptop_uvp",
+      "limitation": "Identifies the filtering gate; not a proposed fix or proof that direct UVP execution matches user intent"
+    },
+    "recovery_assertion": "Expected baseline kind in {ask, step}; failed with RECOVERY_GAP",
+    "related_tests": {
+      "files": [
+        "tests/test_conversation_observation_deadlock.py",
+        "tests/test_diagnostic_next_action.py"
+      ],
+      "result": "57 passed in 9.93s"
+    }
+  }
+}

@@ -184,7 +184,7 @@ async def resume_events(
     return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
 
 
-_CARD_KINDS = {"select_product", "step_feedback", "confirm_receipt", "skip_receipt", "confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}
+_CARD_KINDS = {"select_product", "step_feedback", "answer_observation", "confirm_receipt", "skip_receipt", "confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}
 
 
 @router.post("/{session_id}/actions")
@@ -308,6 +308,12 @@ async def _accept(
                     raise InputConflict("invalid_selection")
                 if payload["kind"] == "confirm_proposal" and payload["payload"]["option_id"] not in {o["option_id"] for o in ((values.get("pending_card") or {}).get("payload") or {}).get("options",[])}:
                     raise InputConflict("invalid_selection")
+                if payload["kind"] == "answer_observation":
+                    declared = ((values.get("pending_card") or {}).get("payload") or {}).get("observation") or {}
+                    if payload["payload"]["observation_id"] != declared.get("observation_id") or payload["payload"]["option_id"] not in {
+                        o["option_id"] for o in declared.get("options", [])
+                    }:
+                        raise InputConflict("invalid_selection")
             receipt, replay = await store.reserve_input(
                 session_id,
                 input_id,

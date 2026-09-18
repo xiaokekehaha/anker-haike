@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 56a2b8661c78b66372af6a96be66ae6680d6e717fb2d47788e78f489191b46fb
+// SHA-256: 8b99031ae575fb58fbb63641a00df4c354861b405c3a6783b88c705d6af3a8f7
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -38,6 +38,7 @@ export const serverEventSchema = z.fromJSONSchema({
           "enum": [
             "select_product",
             "step_feedback",
+            "answer_observation",
             "upload_receipt",
             "confirm_receipt",
             "confirm_context",
@@ -1642,6 +1643,82 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "ModelTraceItem",
       "type": "object"
     },
+    "ObservationCard": {
+      "additionalProperties": false,
+      "description": "计划级判别问题的卡片。与步骤内 observations 用同一份定义，独立追问时也要能点选 ——\n自由文本回答只能靠字面匹配，两次匹配不上该观察就被记为不可用，依赖它的计划再也解锁不了。",
+      "properties": {
+        "attempt": {
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "observation": {
+          "$ref": "#/$defs/StepObservation"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        },
+        "seq": {
+          "description": "会话内单调递增",
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "observation_card",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seq",
+        "run_id",
+        "event_id",
+        "recorded_at",
+        "card_id",
+        "version",
+        "type",
+        "observation",
+        "plan_id",
+        "attempt"
+      ],
+      "title": "ObservationCard",
+      "type": "object"
+    },
     "ObservationOption": {
       "additionalProperties": false,
       "properties": {
@@ -3160,6 +3237,7 @@ export const serverEventSchema = z.fromJSONSchema({
       "message": "#/$defs/Message",
       "message_end": "#/$defs/MessageEnd",
       "message_start": "#/$defs/MessageStart",
+      "observation_card": "#/$defs/ObservationCard",
       "pending_changed": "#/$defs/PendingChanged",
       "ping": "#/$defs/Ping",
       "product_card": "#/$defs/ProductCard",
@@ -3214,6 +3292,9 @@ export const serverEventSchema = z.fromJSONSchema({
     },
     {
       "$ref": "#/$defs/StepCard"
+    },
+    {
+      "$ref": "#/$defs/ObservationCard"
     },
     {
       "$ref": "#/$defs/Evidence"

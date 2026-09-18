@@ -71,6 +71,72 @@
       "title": "ActionResult",
       "type": "object"
     },
+    "AnswerObservationAction": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "input_token": {
+          "title": "Input Token",
+          "type": "string"
+        },
+        "kind": {
+          "const": "answer_observation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/AnswerObservationPayload"
+        },
+        "target_issue_id": {
+          "title": "Target Issue Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action_id",
+        "expected_version",
+        "target_issue_id",
+        "input_token",
+        "card_id",
+        "kind",
+        "payload"
+      ],
+      "title": "AnswerObservationAction",
+      "type": "object"
+    },
+    "AnswerObservationPayload": {
+      "additionalProperties": false,
+      "description": "observation_card 的作答；option_id 必须是该卡声明过的选项。\nkind=unknown 的选项记为「答不上来」，不写成观察事实。",
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "option_id"
+      ],
+      "title": "AnswerObservationPayload",
+      "type": "object"
+    },
     "ConfirmContextAction": {
       "additionalProperties": false,
       "properties": {
@@ -920,6 +986,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "discriminator": {
     "mapping": {
+      "answer_observation": "#/$defs/AnswerObservationAction",
       "confirm_context": "#/$defs/ConfirmContextAction",
       "confirm_proposal": "#/$defs/ConfirmProposalAction",
       "confirm_receipt": "#/$defs/ConfirmReceiptAction",
@@ -941,6 +1008,9 @@
     },
     {
       "$ref": "#/$defs/StepFeedbackAction"
+    },
+    {
+      "$ref": "#/$defs/AnswerObservationAction"
     },
     {
       "$ref": "#/$defs/ConfirmReceiptAction"

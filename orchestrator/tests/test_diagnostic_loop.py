@@ -397,9 +397,14 @@ async def test_missing_observation_is_asked_and_free_text_answer_reenters_the_lo
         rows = await run_power_steps(client, sid, None)
         assert not any(e["type"] in {"step_card", "escalation_summary"} for e in rows)
         asked = messages_of(rows)
-        assert "放回基站后有充电提示" in asked and "没有充电提示" in asked
+        # 正文只留问题；选项在卡片上，不再在一句话里用 ／ 罗列
+        assert "放回基站后有充电提示" in asked and "没有充电提示" not in asked
+        card = next(e for e in rows if e["type"] == "observation_card")
+        assert card["observation"]["observation_id"] == "charging_indication"
+        assert "没有充电提示" in [o["label"] for o in card["observation"]["options"]]
         state = await graph_state(sid)
-        assert state["observation_requests"][-1]["status"] == "asked" and state["pending_card"] is None
+        assert state["observation_requests"][-1]["status"] == "asked"
+        assert state["pending_card"]["kind"] == "answer_observation"
         # 只说「不行」不会被写成阴性；系统换一种表达再问一次
         rows = events(await send(client, sid, "还是不行"))
         assert "再确认一下" in messages_of(rows) and not any(e["type"] == "step_card" for e in rows)
@@ -409,6 +414,8 @@ async def test_missing_observation_is_asked_and_free_text_answer_reenters_the_lo
         rows = events(await send(client, sid, "没有充电提示"))
         card = next(e for e in rows if e["type"] == "step_card")
         assert card["step"]["plan_id"] == "rv_power_no_indication"
+        # 改用文本答同一个问题：卡片收掉，不留一个已经答过的问题挂在界面上
+        assert any(e["type"] == "pending_changed" and e["reason"] == "answered_in_text" for e in rows)
         state = await graph_state(sid)
         facts = [f for f in state["issues"][state["active_issue_id"]]["facts"] if f["kind"] == "observation" and f["status"] == "active"]
         assert [(f["observation_id"], f["option_id"], f["source_kind"]) for f in facts] == [
@@ -430,3 +437,50 @@ async def test_user_unable_to_observe_ends_with_observation_unavailable():
         state = await graph_state(sid)
         assert state["observation_requests"][-1]["status"] == "unknown"
         assert not [f for f in state["issues"][state["active_issue_id"]]["facts"] if f.get("observation_id") == "charging_indication"]
+
+
+@pytest.mark.usefixtures("l3_runtime", "third_plan_library")
+async def test_observation_card_selection_records_the_fact_and_advances():
+    """点选走 option_id 直达事实写入，不经过只认唯一字面命中的 match_reply。"""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await run_power_steps(client, sid, None)
+        snap = (await client.get(f"/sessions/{sid}")).json()
+        assert snap["pending_input"]["kind"] == "answer_observation"
+        item = next(t for t in snap["timeline"] if t["kind"] == "observation_card")
+        assert item["chosen_option_id"] is None and item["plan_id"] == "rv_power_no_indication"
+        rows = events(await act(client, sid, "answer_observation", {"observation_id": "charging_indication", "option_id": "none"}))
+        card = next(e for e in rows if e["type"] == "step_card")
+        assert card["step"]["plan_id"] == "rv_power_no_indication"
+        state = await graph_state(sid)
+        facts = [f for f in state["issues"][state["active_issue_id"]]["facts"] if f["kind"] == "observation" and f["status"] == "active"]
+        assert ("charging_indication", "none", "observation_card") in [(f["observation_id"], f["option_id"], f["source_kind"]) for f in facts]
+        assert state["observation_requests"][-1]["status"] == "answered"
+        snap = (await client.get(f"/sessions/{sid}")).json()
+        item = next(t for t in snap["timeline"] if t["kind"] == "observation_card")
+        assert item["chosen_option_id"] == "none"
+
+
+@pytest.mark.usefixtures("l3_runtime", "third_plan_library")
+async def test_observation_card_unknown_option_stops_asking_without_a_negative_fact():
+    """「答不上来」是一个明确选项，不是一种现象：不写事实，也不再追问同一题。"""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await run_power_steps(client, sid, None)
+        rows = events(await act(client, sid, "answer_observation", {"observation_id": "charging_indication", "option_id": "unknown"}))
+        assert summary_of(rows)["summary"]["reason"]["cause"] == "observation_unavailable"
+        assert not any(e["type"] == "step_card" for e in rows)
+        state = await graph_state(sid)
+        assert state["observation_requests"][-1]["status"] == "unknown"
+        assert not [f for f in state["issues"][state["active_issue_id"]]["facts"] if f.get("observation_id") == "charging_indication"]
+
+
+@pytest.mark.usefixtures("l3_runtime", "third_plan_library")
+async def test_observation_card_rejects_an_option_it_never_offered():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await run_power_steps(client, sid, None)
+        response = await act(client, sid, "answer_observation", {"observation_id": "charging_indication", "option_id": "light_off"})
+        assert response.status_code == 409 and response.json()["code"] == "invalid_selection"
+        response = await act(client, sid, "answer_observation", {"observation_id": "dock_power_light", "option_id": "light_on"})
+        assert response.status_code == 409 and response.json()["code"] == "invalid_selection"

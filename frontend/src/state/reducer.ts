@@ -47,6 +47,7 @@ function upsert(timeline: TimelineItem[], item: TimelineItem): TimelineItem[] {
   if (previous.kind === 'product_card' && item.kind === 'product_card') next[idx] = { ...item, selected_sku: previous.selected_sku };
   if (previous.kind === 'step_card' && item.kind === 'step_card') next[idx] = { ...item, feedback: previous.feedback, note: previous.note };
   if (previous.kind === 'receipt_card' && item.kind === 'receipt_card') next[idx] = { ...item, confirmed_fields: previous.confirmed_fields, skipped_reason: previous.skipped_reason };
+  if (previous.kind === 'observation_card' && item.kind === 'observation_card') next[idx] = { ...item, chosen_option_id: previous.chosen_option_id };
   return next;
 }
 
@@ -115,6 +116,8 @@ function applyEvent(state: SessionState, e: ServerEvent, at: number): SessionSta
       return { ...base, timeline: upsert(base.timeline, { kind: 'product_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, candidates: e.candidates, selected_sku: null }) };
     case 'step_card':
       return { ...base, timeline: upsert(base.timeline, { kind: 'step_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, step: e.step, feedback: null, note: null }) };
+    case 'observation_card':
+      return { ...base, timeline: upsert(base.timeline, { kind: 'observation_card', card_id: e.card_id, version: e.version, issue_id: e.issue_id, at: e.recorded_at, first_seq: e.seq, last_seq: e.seq, observation: e.observation, plan_id: e.plan_id, attempt: e.attempt, chosen_option_id: null }) };
     case 'receipt_card':
       return {
         ...base,

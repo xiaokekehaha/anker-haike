@@ -33,8 +33,8 @@ describe('session reducer (票 06)', () => {
     const before = structuredClone(initialState);
     const s = run(FIXTURE);
     expect(initialState).toEqual(before);
-    expect(s.lastSeq).toBe(19);
-    expect(s.timeline.map((t) => t.kind)).toEqual(['tool', 'assistant_message', 'product_card', 'step_card', 'evidence', 'receipt_card', 'escalation_summary', 'user_message']);
+    expect(s.lastSeq).toBe(20);
+    expect(s.timeline.map((t) => t.kind)).toEqual(['tool', 'assistant_message', 'product_card', 'step_card', 'evidence', 'receipt_card', 'escalation_summary', 'user_message', 'observation_card']);
   });
 
   it('drives idle → streaming → idle on run_started/done and tracks stage + version', () => {

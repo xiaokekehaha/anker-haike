@@ -331,6 +331,17 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
             entry=state.get("entry"),
         )
+    pc = issue.get("pending_card")
+    if pc and pc.get("kind") == "answer_observation":
+        obs_id = ((pc.get("payload") or {}).get("observation") or {}).get("observation_id")
+        # 用户改用文本答了同一个问题时收掉卡片；未解析的那一轮保留，问题还开着就还该能点。
+        if any(
+            r.get("observation_id") == obs_id and r.get("status") in {"answered", "unknown"}
+            for r in issue.get("observation_requests") or []
+        ):
+            pending_changes.append({"issue_id": target, "pending_id": pc["card_id"], "status": "consumed", "reason": "answered_in_text"})
+            issue["pending_card"] = None
+            resumed_pending = False
     conditions, operation_changed = update_conditions(issue, operation_proposal, text=text, input_id=iid)
     issue["operation_conditions"] = conditions
     if operation_changed:

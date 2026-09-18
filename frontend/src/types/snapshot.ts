@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: 2c9ee217ceac7761b68d1e102cdd7f1de6d630c84d4a659e75aaefeb1c2b5488
+// SHA-256: d270e12b39399ec44cd07d0f7706d8cf0c6a76f8f894035d5fd8b71c43aab595
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -109,6 +109,7 @@ export type IssueId1 = string | null;
 export type Kind1 =
   | 'select_product'
   | 'step_feedback'
+  | 'answer_observation'
   | 'upload_receipt'
   | 'confirm_receipt'
   | 'confirm_context'
@@ -226,21 +227,31 @@ export type StepNo = number;
 export type Title2 = string;
 export type Version2 = number;
 export type At9 = string | null;
+export type Attempt = number;
 export type CardId4 = string;
+export type ChosenOptionId = string | null;
+export type FirstSeq7 = number;
+export type IssueId8 = string | null;
+export type Kind9 = 'observation_card';
+export type LastSeq7 = number;
+export type PlanId1 = string;
+export type Version3 = number;
+export type At10 = string | null;
+export type CardId5 = string;
 export type Amount = string | null;
 export type Channel = string | null;
 export type OrderNo = string | null;
 export type PurchaseDate = string | null;
-export type FirstSeq7 = number;
-export type IssueId8 = string | null;
-export type Kind9 = 'receipt_card';
-export type LastSeq7 = number;
-export type SkippedReason = ('none' | 'unreadable' | 'later') | null;
-export type Unreadable = string[];
-export type Version3 = number;
-export type At10 = string | null;
 export type FirstSeq8 = number;
 export type IssueId9 = string | null;
+export type Kind10 = 'receipt_card';
+export type LastSeq8 = number;
+export type SkippedReason = ('none' | 'unreadable' | 'later') | null;
+export type Unreadable = string[];
+export type Version4 = number;
+export type At11 = string | null;
+export type FirstSeq9 = number;
+export type IssueId10 = string | null;
 export type ChunkId = string;
 export type DocId = string;
 export type DocVersion1 = string;
@@ -250,41 +261,41 @@ export type Snippet = string;
 export type Source1 = string;
 export type Status3 = 'ok' | 'replay';
 export type Items = EvidenceItem[];
-export type Kind10 = 'evidence';
-export type LastSeq8 = number;
-export type At11 = string | null;
-export type CardId5 = string;
+export type Kind11 = 'evidence';
+export type LastSeq9 = number;
+export type At12 = string | null;
+export type CardId6 = string;
 export type ConfirmedFields = {
   [k: string]: string;
 } | null;
 export type Fields = string[];
-export type FirstSeq9 = number;
-export type IssueId10 = string | null;
-export type Kind11 = 'context_card';
-export type LastSeq9 = number;
-export type Version4 = number;
-export type At12 = string | null;
-export type CardId6 = string;
-export type ChosenOptionId = string | null;
-export type DecisionSummary = string;
-export type DeclinedReason = string | null;
 export type FirstSeq10 = number;
 export type IssueId11 = string | null;
-export type Kind12 = 'proposal_card';
+export type Kind12 = 'context_card';
 export type LastSeq10 = number;
+export type Version5 = number;
+export type At13 = string | null;
+export type CardId7 = string;
+export type ChosenOptionId1 = string | null;
+export type DecisionSummary = string;
+export type DeclinedReason = string | null;
+export type FirstSeq11 = number;
+export type IssueId12 = string | null;
+export type Kind13 = 'proposal_card';
+export type LastSeq11 = number;
 export type Options1 = ProposalOption[];
 export type PolicyVersion1 = string;
 export type Retry = boolean;
-export type Version5 = number;
+export type Version6 = number;
 export type ActionKind1 = string;
-export type At13 = string | null;
-export type CardId7 = string;
+export type At14 = string | null;
+export type CardId8 = string;
 export type ExecutionId = string;
-export type FirstSeq11 = number;
+export type FirstSeq12 = number;
 export type IdempotencyKey = string;
-export type IssueId12 = string | null;
-export type Kind13 = 'execution_card';
-export type LastSeq11 = number;
+export type IssueId13 = string | null;
+export type Kind14 = 'execution_card';
+export type LastSeq12 = number;
 export type EtaDays = number | null;
 export type NextStep1 = string;
 export type OrderNo1 = string | null;
@@ -294,34 +305,34 @@ export type Status4 = string;
 export type TrackingNo = string | null;
 export type UpdatedAt1 = string | null;
 export type Status5 = 'succeeded' | 'failed';
-export type Version6 = number;
-export type At14 = string | null;
-export type CardId8 = string;
-export type FirstSeq12 = number;
-export type Guidance = string[];
-export type IssueId13 = string | null;
-export type Kind14 = 'retake_card';
-export type LastSeq12 = number;
-export type Reasons = string[];
-export type Skipped = boolean;
 export type Version7 = number;
 export type At15 = string | null;
 export type CardId9 = string;
-export type CaseId1 = string | null;
 export type FirstSeq13 = number;
+export type Guidance = string[];
 export type IssueId14 = string | null;
-export type Kind15 = 'rating_card';
+export type Kind15 = 'retake_card';
 export type LastSeq13 = number;
-export type Score1 = number | null;
+export type Reasons = string[];
+export type Skipped = boolean;
 export type Version8 = number;
 export type At16 = string | null;
 export type CardId10 = string;
-export type CaseId2 = string;
-export type ComplaintRisk = boolean;
+export type CaseId1 = string | null;
 export type FirstSeq14 = number;
 export type IssueId15 = string | null;
-export type Kind16 = 'case_changed';
+export type Kind16 = 'rating_card';
 export type LastSeq14 = number;
+export type Score1 = number | null;
+export type Version9 = number;
+export type At17 = string | null;
+export type CardId11 = string;
+export type CaseId2 = string;
+export type ComplaintRisk = boolean;
+export type FirstSeq15 = number;
+export type IssueId16 = string | null;
+export type Kind17 = 'case_changed';
+export type LastSeq15 = number;
 export type Owner = string | null;
 export type Priority = 'normal' | 'high';
 export type Reason = string;
@@ -341,7 +352,7 @@ export type Status6 =
   | 'reopened'
   | 'escalated_summary';
 export type UpdatedAt2 = string;
-export type Version9 = number;
+export type Version10 = number;
 export type Timeline = (
   | UserMessageItem
   | ActionItem
@@ -349,6 +360,7 @@ export type Timeline = (
   | ToolItem
   | ProductCardItem
   | StepCardItem
+  | ObservationCardItem
   | ReceiptCardItem
   | EvidenceItemGroup
   | SummaryItem
@@ -359,7 +371,7 @@ export type Timeline = (
   | RatingCardItem
   | CaseStatusItem
 )[];
-export type Version10 = number;
+export type Version11 = number;
 
 export interface SessionSnapshotSchema {
   contract: SessionSnapshot;
@@ -381,7 +393,7 @@ export interface SessionSnapshot {
   stage: Stage;
   substage?: Substage;
   timeline?: Timeline;
-  version: Version10;
+  version: Version11;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -759,21 +771,38 @@ export interface ObservationOption {
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
- * via the `definition` "ReceiptCardItem".
+ * via the `definition` "ObservationCardItem".
  */
-export interface ReceiptCardItem {
+export interface ObservationCardItem {
   at?: At9;
+  attempt: Attempt;
   card_id: CardId4;
-  confidence?: Confidence;
-  confirmed_fields?: ReceiptFields | null;
-  fields: ReceiptFields;
+  chosen_option_id?: ChosenOptionId;
   first_seq?: FirstSeq7;
   issue_id?: IssueId8;
   kind: Kind9;
   last_seq?: LastSeq7;
+  observation: StepObservation;
+  plan_id: PlanId1;
+  version: Version3;
+}
+/**
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "ReceiptCardItem".
+ */
+export interface ReceiptCardItem {
+  at?: At10;
+  card_id: CardId5;
+  confidence?: Confidence;
+  confirmed_fields?: ReceiptFields | null;
+  fields: ReceiptFields;
+  first_seq?: FirstSeq8;
+  issue_id?: IssueId9;
+  kind: Kind10;
+  last_seq?: LastSeq8;
   skipped_reason?: SkippedReason;
   unreadable?: Unreadable;
-  version: Version3;
+  version: Version4;
 }
 export interface Confidence {
   [k: string]: number;
@@ -793,12 +822,12 @@ export interface ReceiptFields {
  * via the `definition` "EvidenceItemGroup".
  */
 export interface EvidenceItemGroup {
-  at?: At10;
-  first_seq?: FirstSeq8;
-  issue_id?: IssueId9;
+  at?: At11;
+  first_seq?: FirstSeq9;
+  issue_id?: IssueId10;
   items: Items;
-  kind: Kind10;
-  last_seq?: LastSeq8;
+  kind: Kind11;
+  last_seq?: LastSeq9;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -819,18 +848,18 @@ export interface EvidenceItem {
  * via the `definition` "ContextCardItem".
  */
 export interface ContextCardItem {
-  at?: At11;
-  card_id: CardId5;
+  at?: At12;
+  card_id: CardId6;
   choices?: Choices;
   confirmed_fields?: ConfirmedFields;
   fields: Fields;
-  first_seq?: FirstSeq9;
-  issue_id?: IssueId10;
-  kind: Kind11;
-  last_seq?: LastSeq9;
+  first_seq?: FirstSeq10;
+  issue_id?: IssueId11;
+  kind: Kind12;
+  last_seq?: LastSeq10;
   prefilled?: Prefilled;
   sources?: Sources;
-  version: Version4;
+  version: Version5;
 }
 export interface Choices {
   [k: string]: string[];
@@ -846,19 +875,19 @@ export interface Sources {
  * via the `definition` "ProposalCardItem".
  */
 export interface ProposalCardItem {
-  at?: At12;
-  card_id: CardId6;
-  chosen_option_id?: ChosenOptionId;
+  at?: At13;
+  card_id: CardId7;
+  chosen_option_id?: ChosenOptionId1;
   decision_summary: DecisionSummary;
   declined_reason?: DeclinedReason;
-  first_seq?: FirstSeq10;
-  issue_id?: IssueId11;
-  kind: Kind12;
-  last_seq?: LastSeq10;
+  first_seq?: FirstSeq11;
+  issue_id?: IssueId12;
+  kind: Kind13;
+  last_seq?: LastSeq11;
   options: Options1;
   policy_version: PolicyVersion1;
   retry?: Retry;
-  version: Version5;
+  version: Version6;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -866,17 +895,17 @@ export interface ProposalCardItem {
  */
 export interface ExecutionCardItem {
   action_kind: ActionKind1;
-  at?: At13;
-  card_id: CardId7;
+  at?: At14;
+  card_id: CardId8;
   execution_id: ExecutionId;
-  first_seq?: FirstSeq11;
+  first_seq?: FirstSeq12;
   idempotency_key: IdempotencyKey;
-  issue_id?: IssueId12;
-  kind: Kind13;
-  last_seq?: LastSeq11;
+  issue_id?: IssueId13;
+  kind: Kind14;
+  last_seq?: LastSeq12;
   receipt: Receipt;
   status: Status5;
-  version: Version6;
+  version: Version7;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -901,52 +930,52 @@ export interface Data {
  * via the `definition` "RetakeCardItem".
  */
 export interface RetakeCardItem {
-  at?: At14;
-  card_id: CardId8;
-  first_seq?: FirstSeq12;
+  at?: At15;
+  card_id: CardId9;
+  first_seq?: FirstSeq13;
   guidance: Guidance;
-  issue_id?: IssueId13;
-  kind: Kind14;
-  last_seq?: LastSeq12;
+  issue_id?: IssueId14;
+  kind: Kind15;
+  last_seq?: LastSeq13;
   reasons: Reasons;
   skipped?: Skipped;
-  version: Version7;
+  version: Version8;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "RatingCardItem".
  */
 export interface RatingCardItem {
-  at?: At15;
-  card_id: CardId9;
+  at?: At16;
+  card_id: CardId10;
   case_id?: CaseId1;
-  first_seq?: FirstSeq13;
-  issue_id?: IssueId14;
-  kind: Kind15;
-  last_seq?: LastSeq13;
+  first_seq?: FirstSeq14;
+  issue_id?: IssueId15;
+  kind: Kind16;
+  last_seq?: LastSeq14;
   score?: Score1;
-  version: Version8;
+  version: Version9;
 }
 /**
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "CaseStatusItem".
  */
 export interface CaseStatusItem {
-  at?: At16;
-  card_id: CardId10;
+  at?: At17;
+  card_id: CardId11;
   case_id: CaseId2;
   complaint_risk?: ComplaintRisk;
   external_refs?: ExternalRefs;
-  first_seq?: FirstSeq14;
-  issue_id?: IssueId15;
-  kind: Kind16;
-  last_seq?: LastSeq14;
+  first_seq?: FirstSeq15;
+  issue_id?: IssueId16;
+  kind: Kind17;
+  last_seq?: LastSeq15;
   owner?: Owner;
   priority?: Priority;
   reason: Reason;
   status: Status6;
   updated_at: UpdatedAt2;
-  version: Version9;
+  version: Version10;
 }
 export interface ExternalRefs {
   [k: string]: string;

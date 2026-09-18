@@ -12,9 +12,9 @@
 
 ## 任务拆解与文档
 
-- 复杂需求用 planning-with-files 拆解，目录 `docs/planning/YYYY-MM-DD-HH_任务名/`（如 `docs/planning/2026-09-03_storage-governance/`）。
+- 复杂需求用 planning-with-files 拆解，目录 `docs/planning/YYYY-MM-DD-HHMM_任务名/`（如 `docs/planning/2026-09-03_storage-governance/`）。
 - 开发开始后 plan.md 保持原样；复评、勘误、每轮回顾写同目录 `addendum.md`，`progress.md` / `task_plan.md` 作为流水记录。
-- 非复杂任务写 spec：Claude 放 `docs/claude/spec_YYYY-MM-DD-HH_xxx.md`，Codex 放 `docs/codex/spec_YYYY-MM-DD_xxx.md`。
+- 非复杂任务写 spec：Claude 放 `docs/claude/spec_YYYY-MM-DD-HHMM_xxx.md`，Codex 放 `docs/codex/spec_YYYY-MM-DD_xxx.md`。
 - 不确定时问我。
 
 ## 数据与密钥

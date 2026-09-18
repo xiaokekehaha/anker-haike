@@ -37,6 +37,7 @@ EscalateSubstage = Literal["collect_receipt", "extract", "confirm_fields", "look
 PendingKind = Literal[
     "select_product",
     "step_feedback",
+    "answer_observation",
     "upload_receipt",
     "confirm_receipt",
     "confirm_context",

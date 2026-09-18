@@ -30,6 +30,8 @@ const WAITING_HINT = {
 };
 // 等待步骤时仍可正常对话，是否更新排障由本轮语义决定。
 export const REDIAGNOSE_HINT = '可以追问原因、回顾记录、补充或纠正情况；完成操作后，也可以直接描述结果。';
+// 判别问题出卡后输入框照旧可用：点选只是更省事的那条路，用自己的话说同样会被接住。
+export const OBSERVATION_HINT = '在上方卡片选一项最快；也可以用自己的话描述看到的情况。';
 let seq = 0;
 function makePreview(file: File): string | null {
   try { return typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : null; }
@@ -67,6 +69,7 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const touchPrimary = useTouchPrimary();
   const receipt = pendingKind === 'upload_receipt';
   const rediagnose = pendingKind === 'step_feedback';
+  const observing = pendingKind === 'answer_observation';
   const cardOnly = false;
   const busy = processing || submitting;
   const inputBlocked = !!offline || runBusy || cardOnly || busy;
@@ -179,6 +182,7 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
 
   const hint = offline ? '可以先填写问题；对话服务暂未接通，目前无法发送。'
     : cardOnly ? WAITING_HINT[pendingKind as keyof typeof WAITING_HINT]
+    : observing ? OBSERVATION_HINT
     : rediagnose ? REDIAGNOSE_HINT
     : receipt ? '请上传订单截图、发票或收据，可附带备注；单张 5 MB 内。也可以跳过，由人工协助核实。'
     : '支持文字与图片（单张 5 MB 内，会自动压缩），说不清楚也没关系。';
@@ -188,8 +192,8 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   return (
     <form className={styles.composer} onSubmit={(e) => { e.preventDefault(); void submit(); }} aria-label={receipt ? '上传购买凭证' : '发送消息'}>
       <div className={styles.heading}>
-        <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : rediagnose ? '补充新情况或纠正' : '描述你的问题'}</label>
-        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : rediagnose ? '可以随时追问，已做的步骤保留' : '直接输入，不用先选产品'}</span>
+        <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : observing ? '回答上方的问题' : rediagnose ? '补充新情况或纠正' : '描述你的问题'}</label>
+        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : observing ? '选项之外的情况也可以直接说' : rediagnose ? '可以随时追问，已做的步骤保留' : '直接输入，不用先选产品'}</span>
       </div>
       <div className={styles.box}>
         <textarea id={inputId} ref={inputRef} className={styles.input} rows={3} maxLength={4000} value={value}

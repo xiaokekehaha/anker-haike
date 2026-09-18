@@ -18,6 +18,7 @@ const UI_TEXT: Record<string, string> = {
 const AWAITING_TEXT: Record<string, string> = {
   confirm_context: '请确认服务信息', confirm_proposal: '请查看政策依据并选择方案', upload_retake: '请补拍照片，或在卡片中跳过', rate_satisfaction: '可以评价本次服务，也可以继续查询进度',
   step_feedback: '请按步骤操作后，在卡片上告诉我结果；有新情况也可以直接补充', upload_receipt: '请上传购买凭证，或选择跳过', confirm_receipt: '请核对凭证信息后确认',
+  answer_observation: '在卡片上选一项就行，也可以直接打字描述',
 };
 
 export function App() {

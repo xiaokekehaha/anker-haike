@@ -281,5 +281,37 @@
     "previous_card_id": "c1",
     "source_through_seq": 20,
     "updated_at": "2026-09-13T00:00:00Z"
+  },
+  {
+    "seq": 20,
+    "run_id": "run-1",
+    "event_id": "fixture-20",
+    "recorded_at": "2026-09-13T00:00:00Z",
+    "type": "observation_card",
+    "card_id": "c3",
+    "version": 5,
+    "observation": {
+      "observation_id": "o1",
+      "question": "指示灯现在是什么状态？",
+      "options": [
+        {
+          "option_id": "blink",
+          "label": "快速闪烁",
+          "kind": "finding"
+        },
+        {
+          "option_id": "off",
+          "label": "不亮",
+          "kind": "finding"
+        },
+        {
+          "option_id": "unknown",
+          "label": "设备不在身边或无法判断",
+          "kind": "unknown"
+        }
+      ]
+    },
+    "plan_id": "p1",
+    "attempt": 1
   }
 ]

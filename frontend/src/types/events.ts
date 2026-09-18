@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 56a2b8661c78b66372af6a96be66ae6680d6e717fb2d47788e78f489191b46fb
+// SHA-256: 8b99031ae575fb58fbb63641a00df4c354861b405c3a6783b88c705d6af3a8f7
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -20,6 +20,7 @@ export type ServerEvent =
   | MessageEnd
   | ProductCard
   | StepCard
+  | ObservationCard
   | Evidence
   | ReceiptCard
   | AwaitingInput
@@ -233,7 +234,20 @@ export type StepNo = number;
 export type Title = string;
 export type Type12 = 'step_card';
 export type Version3 = number;
+export type Attempt = number;
+export type CardId3 = string;
 export type EventId13 = string;
+export type IssueId6 = string | null;
+export type PlanId1 = string;
+export type RecordedAt13 = string;
+export type RunId13 = string;
+/**
+ * 会话内单调递增
+ */
+export type Seq13 = number;
+export type Type13 = 'observation_card';
+export type Version4 = number;
+export type EventId14 = string;
 export type ChunkId = string;
 export type DocId = string;
 export type DocVersion = string;
@@ -243,62 +257,63 @@ export type Snippet = string;
 export type Source = string;
 export type Status3 = 'ok' | 'replay';
 export type Items = EvidenceItem[];
-export type RecordedAt13 = string;
-export type RunId13 = string;
-/**
- * 会话内单调递增
- */
-export type Seq13 = number;
-export type Type13 = 'evidence';
-export type CardId3 = string;
-export type EventId14 = string;
-export type Amount = string | null;
-export type Channel = string | null;
-export type OrderNo = string | null;
-export type PurchaseDate = string | null;
-export type IssueId6 = string | null;
 export type RecordedAt14 = string;
 export type RunId14 = string;
 /**
  * 会话内单调递增
  */
 export type Seq14 = number;
-export type Type14 = 'receipt_card';
-export type Unreadable = string[];
-export type Version4 = number;
+export type Type14 = 'evidence';
 export type CardId4 = string;
 export type EventId15 = string;
-export type InputToken = string;
+export type Amount = string | null;
+export type Channel = string | null;
+export type OrderNo = string | null;
+export type PurchaseDate = string | null;
 export type IssueId7 = string | null;
-export type Kind1 =
-  | 'select_product'
-  | 'step_feedback'
-  | 'upload_receipt'
-  | 'confirm_receipt'
-  | 'confirm_context'
-  | 'confirm_proposal'
-  | 'upload_retake'
-  | 'rate_satisfaction';
 export type RecordedAt15 = string;
 export type RunId15 = string;
 /**
  * 会话内单调递增
  */
 export type Seq15 = number;
-export type Type15 = 'awaiting_input';
+export type Type15 = 'receipt_card';
+export type Unreadable = string[];
 export type Version5 = number;
 export type CardId5 = string;
 export type EventId16 = string;
-export type HandoffStatus = 'prepared' | 'requested' | 'accepted' | 'failed' | 'cancelled';
-export type IssueId8 = string;
-export type PreviousCardId1 = string | null;
+export type InputToken = string;
+export type IssueId8 = string | null;
+export type Kind1 =
+  | 'select_product'
+  | 'step_feedback'
+  | 'answer_observation'
+  | 'upload_receipt'
+  | 'confirm_receipt'
+  | 'confirm_context'
+  | 'confirm_proposal'
+  | 'upload_retake'
+  | 'rate_satisfaction';
 export type RecordedAt16 = string;
-export type Revision1 = number;
 export type RunId16 = string;
 /**
  * 会话内单调递增
  */
 export type Seq16 = number;
+export type Type16 = 'awaiting_input';
+export type Version6 = number;
+export type CardId6 = string;
+export type EventId17 = string;
+export type HandoffStatus = 'prepared' | 'requested' | 'accepted' | 'failed' | 'cancelled';
+export type IssueId9 = string;
+export type PreviousCardId1 = string | null;
+export type RecordedAt17 = string;
+export type Revision1 = number;
+export type RunId17 = string;
+/**
+ * 会话内单调递增
+ */
+export type Seq17 = number;
 export type SourceThroughSeq1 = number;
 export type CaseId = string | null;
 export type DraftReply = string | null;
@@ -375,66 +390,66 @@ export type TaskQueue = {
   [k: string]: unknown;
 }[];
 export type SummaryId1 = string;
-export type Type16 = 'escalation_summary';
+export type Type17 = 'escalation_summary';
 export type UpdatedAt1 = string;
 export type Code = string;
-export type EventId17 = string;
+export type EventId18 = string;
 export type Message1 = string;
-export type RecordedAt17 = string;
+export type RecordedAt18 = string;
 export type Recoverable = boolean;
 export type RetryWithSameAction = boolean;
-export type RunId17 = string;
-/**
- * 会话内单调递增
- */
-export type Seq17 = number;
-export type Type17 = 'error';
-export type EventId18 = string;
-export type Reason1 = 'completed' | 'awaiting_input' | 'error' | 'cancelled';
-export type RecordedAt18 = string;
 export type RunId18 = string;
 /**
  * 会话内单调递增
  */
 export type Seq18 = number;
-export type Type18 = 'done';
-/**
- * 本 run 结束后的会话版本
- */
-export type Version6 = number;
-export type CardId6 = string;
+export type Type18 = 'error';
 export type EventId19 = string;
-export type Fields = string[];
-export type IssueId9 = string | null;
+export type Reason1 = 'completed' | 'awaiting_input' | 'error' | 'cancelled';
 export type RecordedAt19 = string;
 export type RunId19 = string;
 /**
  * 会话内单调递增
  */
 export type Seq19 = number;
-export type Type19 = 'context_card';
+export type Type19 = 'done';
+/**
+ * 本 run 结束后的会话版本
+ */
 export type Version7 = number;
 export type CardId7 = string;
-export type DecisionSummary = string;
 export type EventId20 = string;
+export type Fields = string[];
 export type IssueId10 = string | null;
-export type Options1 = ProposalOption[];
-export type PolicyVersion1 = string;
 export type RecordedAt20 = string;
-export type Retry = boolean;
 export type RunId20 = string;
 /**
  * 会话内单调递增
  */
 export type Seq20 = number;
-export type Type20 = 'proposal_card';
+export type Type20 = 'context_card';
 export type Version8 = number;
-export type ActionKind = string;
 export type CardId8 = string;
+export type DecisionSummary = string;
 export type EventId21 = string;
+export type IssueId11 = string | null;
+export type Options1 = ProposalOption[];
+export type PolicyVersion1 = string;
+export type RecordedAt21 = string;
+export type Retry = boolean;
+export type RunId21 = string;
+/**
+ * 会话内单调递增
+ */
+export type Seq21 = number;
+export type Type21 = 'proposal_card';
+export type Version9 = number;
+export type ActionKind = string;
+export type CardId9 = string;
+export type EventId22 = string;
 export type ExecutionId = string;
 export type IdempotencyKey = string;
-export type IssueId11 = string | null;
+export type IssueId12 = string | null;
 export type EtaDays = number | null;
 export type NextStep1 = string;
 export type OrderNo1 = string | null;
@@ -443,54 +458,54 @@ export type Source2 = string;
 export type Status5 = string;
 export type TrackingNo = string | null;
 export type UpdatedAt2 = string | null;
-export type RecordedAt21 = string;
-export type RunId21 = string;
-/**
- * 会话内单调递增
- */
-export type Seq21 = number;
-export type Status6 = 'succeeded' | 'failed';
-export type Type21 = 'execution_card';
-export type Version9 = number;
-export type CardId9 = string;
-export type EventId22 = string;
-export type Guidance = string[];
-export type IssueId12 = string | null;
-export type Reasons = string[];
 export type RecordedAt22 = string;
 export type RunId22 = string;
 /**
  * 会话内单调递增
  */
 export type Seq22 = number;
-export type Type22 = 'retake_card';
+export type Status6 = 'succeeded' | 'failed';
+export type Type22 = 'execution_card';
 export type Version10 = number;
 export type CardId10 = string;
-export type CaseId1 = string | null;
 export type EventId23 = string;
+export type Guidance = string[];
 export type IssueId13 = string | null;
+export type Reasons = string[];
 export type RecordedAt23 = string;
 export type RunId23 = string;
 /**
  * 会话内单调递增
  */
 export type Seq23 = number;
-export type Type23 = 'rating_card';
+export type Type23 = 'retake_card';
 export type Version11 = number;
 export type CardId11 = string;
-export type CaseId2 = string;
-export type ComplaintRisk = boolean;
+export type CaseId1 = string | null;
 export type EventId24 = string;
 export type IssueId14 = string | null;
-export type Owner = string | null;
-export type Priority = 'normal' | 'high';
-export type Reason2 = string;
 export type RecordedAt24 = string;
 export type RunId24 = string;
 /**
  * 会话内单调递增
  */
 export type Seq24 = number;
+export type Type24 = 'rating_card';
+export type Version12 = number;
+export type CardId12 = string;
+export type CaseId2 = string;
+export type ComplaintRisk = boolean;
+export type EventId25 = string;
+export type IssueId15 = string | null;
+export type Owner = string | null;
+export type Priority = 'normal' | 'high';
+export type Reason2 = string;
+export type RecordedAt25 = string;
+export type RunId25 = string;
+/**
+ * 会话内单调递增
+ */
+export type Seq25 = number;
 export type Status7 =
   | 'open'
   | 'diagnosing'
@@ -506,9 +521,9 @@ export type Status7 =
   | 'closed_unresolved'
   | 'reopened'
   | 'escalated_summary';
-export type Type24 = 'case_changed';
+export type Type25 = 'case_changed';
 export type UpdatedAt3 = string;
-export type Version12 = number;
+export type Version13 = number;
 export type ConflictsWithText = string[];
 export type Cell =
   ('左上' | '上中' | '右上' | '左中' | '中心' | '右中' | '左下' | '下中' | '右下') | null;
@@ -798,16 +813,36 @@ export interface ObservationOption {
   option_id: OptionId;
 }
 /**
+ * 计划级判别问题的卡片。与步骤内 observations 用同一份定义，独立追问时也要能点选 ——
+ * 自由文本回答只能靠字面匹配，两次匹配不上该观察就被记为不可用，依赖它的计划再也解锁不了。
+ *
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
- * via the `definition` "Evidence".
+ * via the `definition` "ObservationCard".
  */
-export interface Evidence {
+export interface ObservationCard {
+  attempt: Attempt;
+  card_id: CardId3;
   event_id: EventId13;
-  items: Items;
+  issue_id?: IssueId6;
+  observation: StepObservation;
+  plan_id: PlanId1;
   recorded_at: RecordedAt13;
   run_id: RunId13;
   seq: Seq13;
   type: Type13;
+  version: Version4;
+}
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "Evidence".
+ */
+export interface Evidence {
+  event_id: EventId14;
+  items: Items;
+  recorded_at: RecordedAt14;
+  run_id: RunId14;
+  seq: Seq14;
+  type: Type14;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -828,17 +863,17 @@ export interface EvidenceItem {
  * via the `definition` "ReceiptCard".
  */
 export interface ReceiptCard {
-  card_id: CardId3;
+  card_id: CardId4;
   confidence?: Confidence;
-  event_id: EventId14;
+  event_id: EventId15;
   fields: ReceiptFields;
-  issue_id?: IssueId6;
-  recorded_at: RecordedAt14;
-  run_id: RunId14;
-  seq: Seq14;
-  type: Type14;
+  issue_id?: IssueId7;
+  recorded_at: RecordedAt15;
+  run_id: RunId15;
+  seq: Seq15;
+  type: Type15;
   unreadable?: Unreadable;
-  version: Version4;
+  version: Version5;
 }
 export interface Confidence {
   [k: string]: number;
@@ -858,35 +893,35 @@ export interface ReceiptFields {
  * via the `definition` "AwaitingInput".
  */
 export interface AwaitingInput {
-  card_id: CardId4;
-  event_id: EventId15;
+  card_id: CardId5;
+  event_id: EventId16;
   input_token: InputToken;
-  issue_id?: IssueId7;
+  issue_id?: IssueId8;
   kind: Kind1;
-  recorded_at: RecordedAt15;
-  run_id: RunId15;
-  seq: Seq15;
-  type: Type15;
-  version: Version5;
+  recorded_at: RecordedAt16;
+  run_id: RunId16;
+  seq: Seq16;
+  type: Type16;
+  version: Version6;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
  * via the `definition` "EscalationSummaryEvent".
  */
 export interface EscalationSummaryEvent {
-  card_id: CardId5;
-  event_id: EventId16;
+  card_id: CardId6;
+  event_id: EventId17;
   handoff_status?: HandoffStatus;
-  issue_id: IssueId8;
+  issue_id: IssueId9;
   previous_card_id?: PreviousCardId1;
-  recorded_at: RecordedAt16;
+  recorded_at: RecordedAt17;
   revision: Revision1;
-  run_id: RunId16;
-  seq: Seq16;
+  run_id: RunId17;
+  seq: Seq17;
   source_through_seq: SourceThroughSeq1;
   summary: EscalationSummary;
   summary_id: SummaryId1;
-  type: Type16;
+  type: Type17;
   updated_at: UpdatedAt1;
 }
 /**
@@ -1041,45 +1076,45 @@ export interface ExecutedStep {
  */
 export interface Error {
   code: Code;
-  event_id: EventId17;
+  event_id: EventId18;
   message: Message1;
-  recorded_at: RecordedAt17;
+  recorded_at: RecordedAt18;
   recoverable: Recoverable;
   retry_with_same_action?: RetryWithSameAction;
-  run_id: RunId17;
-  seq: Seq17;
-  type: Type17;
+  run_id: RunId18;
+  seq: Seq18;
+  type: Type18;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
  * via the `definition` "Done".
  */
 export interface Done {
-  event_id: EventId18;
+  event_id: EventId19;
   reason: Reason1;
-  recorded_at: RecordedAt18;
-  run_id: RunId18;
-  seq: Seq18;
-  type: Type18;
-  version: Version6;
+  recorded_at: RecordedAt19;
+  run_id: RunId19;
+  seq: Seq19;
+  type: Type19;
+  version: Version7;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
  * via the `definition` "ContextCardEvent".
  */
 export interface ContextCardEvent {
-  card_id: CardId6;
+  card_id: CardId7;
   choices?: Choices;
-  event_id: EventId19;
+  event_id: EventId20;
   fields: Fields;
-  issue_id?: IssueId9;
+  issue_id?: IssueId10;
   prefilled?: Prefilled;
-  recorded_at: RecordedAt19;
-  run_id: RunId19;
-  seq: Seq19;
+  recorded_at: RecordedAt20;
+  run_id: RunId20;
+  seq: Seq20;
   sources?: Sources;
-  type: Type19;
-  version: Version7;
+  type: Type20;
+  version: Version8;
 }
 export interface Choices {
   [k: string]: string[];
@@ -1095,18 +1130,18 @@ export interface Sources {
  * via the `definition` "ProposalCardEvent".
  */
 export interface ProposalCardEvent {
-  card_id: CardId7;
+  card_id: CardId8;
   decision_summary: DecisionSummary;
-  event_id: EventId20;
-  issue_id?: IssueId10;
+  event_id: EventId21;
+  issue_id?: IssueId11;
   options: Options1;
   policy_version: PolicyVersion1;
-  recorded_at: RecordedAt20;
+  recorded_at: RecordedAt21;
   retry?: Retry;
-  run_id: RunId20;
-  seq: Seq20;
-  type: Type20;
-  version: Version8;
+  run_id: RunId21;
+  seq: Seq21;
+  type: Type21;
+  version: Version9;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -1114,18 +1149,18 @@ export interface ProposalCardEvent {
  */
 export interface ExecutionCardEvent {
   action_kind: ActionKind;
-  card_id: CardId8;
-  event_id: EventId21;
+  card_id: CardId9;
+  event_id: EventId22;
   execution_id: ExecutionId;
   idempotency_key: IdempotencyKey;
-  issue_id?: IssueId11;
+  issue_id?: IssueId12;
   receipt: Receipt;
-  recorded_at: RecordedAt21;
-  run_id: RunId21;
-  seq: Seq21;
+  recorded_at: RecordedAt22;
+  run_id: RunId22;
+  seq: Seq22;
   status: Status6;
-  type: Type21;
-  version: Version9;
+  type: Type22;
+  version: Version10;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -1150,26 +1185,11 @@ export interface Data {
  * via the `definition` "RetakeCardEvent".
  */
 export interface RetakeCardEvent {
-  card_id: CardId9;
-  event_id: EventId22;
-  guidance: Guidance;
-  issue_id?: IssueId12;
-  reasons: Reasons;
-  recorded_at: RecordedAt22;
-  run_id: RunId22;
-  seq: Seq22;
-  type: Type22;
-  version: Version10;
-}
-/**
- * This interface was referenced by `ServerEventSchema`'s JSON-Schema
- * via the `definition` "RatingCardEvent".
- */
-export interface RatingCardEvent {
   card_id: CardId10;
-  case_id?: CaseId1;
   event_id: EventId23;
+  guidance: Guidance;
   issue_id?: IssueId13;
+  reasons: Reasons;
   recorded_at: RecordedAt23;
   run_id: RunId23;
   seq: Seq23;
@@ -1178,25 +1198,40 @@ export interface RatingCardEvent {
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
- * via the `definition` "CaseStatusEvent".
+ * via the `definition` "RatingCardEvent".
  */
-export interface CaseStatusEvent {
+export interface RatingCardEvent {
   card_id: CardId11;
-  case_id: CaseId2;
-  complaint_risk?: ComplaintRisk;
+  case_id?: CaseId1;
   event_id: EventId24;
-  external_refs?: ExternalRefs;
   issue_id?: IssueId14;
-  owner?: Owner;
-  priority?: Priority;
-  reason: Reason2;
   recorded_at: RecordedAt24;
   run_id: RunId24;
   seq: Seq24;
-  status: Status7;
   type: Type24;
-  updated_at: UpdatedAt3;
   version: Version12;
+}
+/**
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "CaseStatusEvent".
+ */
+export interface CaseStatusEvent {
+  card_id: CardId12;
+  case_id: CaseId2;
+  complaint_risk?: ComplaintRisk;
+  event_id: EventId25;
+  external_refs?: ExternalRefs;
+  issue_id?: IssueId15;
+  owner?: Owner;
+  priority?: Priority;
+  reason: Reason2;
+  recorded_at: RecordedAt25;
+  run_id: RunId25;
+  seq: Seq25;
+  status: Status7;
+  type: Type25;
+  updated_at: UpdatedAt3;
+  version: Version13;
 }
 export interface ExternalRefs {
   [k: string]: string;

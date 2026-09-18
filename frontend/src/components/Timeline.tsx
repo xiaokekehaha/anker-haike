@@ -9,6 +9,7 @@ import type { SessionState } from '../state/types';
 import type { TimelineItem } from '../types/snapshot';
 import { AssistantBubble } from './AssistantBubble';
 import { EvidenceDrawer } from './EvidenceDrawer';
+import { ObservationCard } from './ObservationCard';
 import { ProductCard } from './ProductCard';
 import { ReceiptCard } from './ReceiptCard';
 import { StepCard } from './StepCard';
@@ -20,7 +21,7 @@ import { MessageTime } from './MessageTime';
 
 type Props = {
   state: SessionState;
-  onAction: (kind: 'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'confirm_context' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction', payload: Record<string, unknown>) => void;
+  onAction: (kind: 'select_product' | 'step_feedback' | 'answer_observation' | 'confirm_receipt' | 'skip_receipt' | 'confirm_context' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction', payload: Record<string, unknown>) => void;
   onIssueAction?: (kind: 'new_issue' | 'resume_issue', issueId?: string) => void;
 };
 
@@ -57,6 +58,8 @@ export function Timeline({ state, onAction, onIssueAction }: Props) {
             return <ProductCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onSelect={(sku) => onAction('select_product', { sku })} />;
           case 'step_card':
             return <StepCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onHover={setHover} onFeedback={(feedback, note, observations) => onAction('step_feedback', { feedback, ...(note ? { note } : {}), ...(observations?.length ? { observations } : {}) })} />;
+          case 'observation_card':
+            return <ObservationCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onAnswer={(observation_id, option_id) => onAction('answer_observation', { observation_id, option_id })} />;
           case 'receipt_card':
             return <ReceiptCard key={item.card_id} item={item} active={pendingCard === item.card_id} disabled={busy} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
           case 'context_card':

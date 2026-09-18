@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 import logging
 import operator
 import os
@@ -21,6 +22,7 @@ from langgraph.graph.state import CompiledStateGraph
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
+from app.conversation.reduce import OPEN_OBSERVATION_STATUS
 from app.conversation.reply import acknowledge_current_turn
 from app.diagnose import (
     build_query,
@@ -32,6 +34,7 @@ from app.diagnose import (
 from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches, signature_plans
+from app.diagnose.observations import record_observations
 from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
 from app.emotion.policy import evaluate_emotion
@@ -660,6 +663,15 @@ async def await_input(state: SessionState) -> SessionState:
                 **({"seen": pc["payload"]["seen"]} if pc["payload"].get("seen") else {}),
             }
         )
+    elif pc["kind"] == "answer_observation":
+        writer(
+            {
+                "type": "observation_card",
+                "card_id": pc["card_id"],
+                "version": current_version(),
+                **pc["payload"],
+            }
+        )
     elif pc["kind"] == "confirm_receipt":
         # 票 40：字段确认卡；confidence < 0.7 前端标黄，unreadable 为空字段可手输
         writer(
@@ -750,6 +762,8 @@ async def apply_action(state: SessionState) -> SessionState:
         )
     elif action.get("kind") == "step_feedback":
         update.update(_apply_step_feedback(state, action, pc, results))
+    elif action.get("kind") == "answer_observation":
+        update.update(_apply_observation_answer(state, action, pc, results))
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -784,6 +798,75 @@ def route_after_apply(state: SessionState) -> str:
             return "dialogue"
         return "guide" if verify["outcome"] == "next" else "close"
     return _after_product(state)
+
+
+def _apply_observation_answer(
+    state: SessionState,
+    action: dict[str, Any],
+    pc: dict[str, Any],
+    results: dict[str, dict[str, Any]],
+) -> SessionState:
+    """observation_card 的作答：finding 选项写观察事实，unknown 选项只记「答不上来」。
+
+    两者都把这条追问请求收口，再按更新后的事实重新决定下一动作。选项只接受本张卡声明过的，
+    旧卡与其他观察的选项不能污染当前事实（与 _apply_step_feedback 的 declared 校验同口径）。
+    """
+    payload = action.get("payload") or {}
+    declared = (pc.get("payload") or {}).get("observation") or {}
+    observation_id = declared.get("observation_id")
+    option = next(
+        (o for o in declared.get("options") or [] if o["option_id"] == payload.get("option_id")),
+        None,
+    )
+    if option is None or observation_id != payload.get("observation_id"):
+        return {}
+    is_finding = option.get("kind", "finding") == "finding"
+    results[pc.get("card_id", "")] = {"chosen_option_id": option["option_id"]}
+    update: SessionState = {"stage": "guide", "substage": None, "card_results": results}
+    requests = copy.deepcopy(state.get("observation_requests") or [])
+    open_requests = [
+        r
+        for r in requests
+        if r.get("observation_id") == observation_id and r.get("status") in OPEN_OBSERVATION_STATUS
+    ]
+    for request in open_requests:
+        request.update(
+            status="answered" if is_finding else "unknown",
+            answered_input_id=state["input_id"],
+            option_id=option["option_id"],
+            quote=option["label"],
+        )
+    update["observation_requests"] = requests
+    issues = copy.deepcopy(state.get("issues") or {})
+    issue_id = state.get("active_issue_id")
+    if is_finding and issue_id in issues:
+        issue, patches = record_observations(
+            issues[issue_id],
+            [{"observation_id": observation_id, "option_id": option["option_id"]}],
+            definitions=get_plan_library().observation_definitions(),
+            input_id=state["input_id"],
+            at=state["at"],
+            source_kind="observation_card",
+            binding={
+                "card_id": pc.get("card_id"),
+                "plan_id": (pc.get("payload") or {}).get("plan_id"),
+                "asked_input_id": next((r.get("input_id") for r in open_requests), None),
+            },
+        )
+        if patches:
+            issues[issue_id] = issue
+            update.update(
+                {
+                    "issues": issues,
+                    "observations": list(
+                        dict.fromkeys([*state.get("observations", []), *issue["observations"]])
+                    ),
+                    "context_revision": state.get("context_revision", 0) + 1,
+                }
+            )
+    get_stream_writer()({"type": "progress", "stage": "guide"})
+    update.update(_apply_next_action({**state, **update}))
+    return update
 
 
 def _apply_step_feedback(
@@ -999,13 +1082,9 @@ def route_after_reassess(state: SessionState) -> str:
 
 
 def observation_question_text(question: dict[str, Any]) -> str:
-    labels = "／".join(o["label"] for o in question.get("options", []))
-    if int(question.get("attempt", 1)) > 1:
-        return (
-            f"再确认一下：{question['question']}可以直接回复其中一项：{labels}。"
-            "如果确实无法判断，回复“无法判断”即可，我会按现有信息整理记录。"
-        )
-    return f"{question['question']}请直接回复其中一项：{labels}。这个结果会决定后续排查路径。"
+    """正文只留问题本身：选项与「答不上来」都在卡片上，再在一句话里用 ／ 罗列一遍只会变成一长串。"""
+    prefix = "再确认一下：" if int(question.get("attempt", 1)) > 1 else ""
+    return f"{prefix}{question['question']}"
 
 
 async def ask_observation(state: SessionState) -> SessionState:
@@ -1047,18 +1126,39 @@ async def ask_observation(state: SessionState) -> SessionState:
             "attempt": question.get("attempt", 1),
         },
     ]
+    card_id = stable_id(state.get("input_id"), "observation", question.get("observation_id"))
     return {
         "stage": "guide",
         "substage": "await_observation",
-        "pending_card": None,
+        # 出卡让选项可点：option_id 直达事实写入，绕开只认唯一字面命中的 match_reply。
+        # 自由文本回答仍然受理（输入框不禁用），两条路都通。
+        "pending_card": {
+            "card_id": card_id,
+            "input_token": stable_id(card_id, "token"),
+            "kind": "answer_observation",
+            "payload": {
+                "observation": {
+                    "observation_id": question.get("observation_id"),
+                    "question": question.get("question"),
+                    "options": list(question.get("options") or []),
+                },
+                "plan_id": question.get("plan_id"),
+                "attempt": question.get("attempt", 1),
+            },
+        },
         "plan_cursor": None,
         "visible_messages": msgs,
         "observation_requests": requests,
-        "guide_trace": [{"event": "ask_observation", "observation_id": question.get("observation_id")}],
+        "guide_trace": [{"event": "ask_observation", "observation_id": question.get("observation_id"), "card_id": card_id}],
     }
 
 
 # ---------------- 票 25：范围外 R8 与 request_human ----------------
+
+
+def route_after_ask_observation(state: SessionState) -> str:
+    """观察题出卡；操作条件追问（operation_blocker）没有卡片，直接提交。"""
+    return "await_input" if state.get("pending_card") else "commit_issue"
 
 
 async def understand(state: SessionState) -> SessionState:
@@ -2756,7 +2856,11 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("guide", durable_node(guide))
     g.add_node("reassess", durable_node(reassess))
     g.add_node("ask_observation", durable_node(ask_observation))
-    g.add_edge("ask_observation", "commit_issue")
+    g.add_conditional_edges(
+        "ask_observation",
+        route_after_ask_observation,
+        {"await_input": "await_input", "commit_issue": "commit_issue"},
+    )
     g.add_conditional_edges(
         "reassess", route_after_reassess,
         {"guide": "guide", "ask_observation": "ask_observation", "close": "close", "escalate": "escalate", "dialogue": "dialogue"},

@@ -1147,6 +1147,93 @@
       "title": "ObservationAnswer",
       "type": "object"
     },
+    "ObservationCardItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "attempt": {
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "card_id": {
+          "title": "Card Id",
+          "type": "string"
+        },
+        "chosen_option_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chosen Option Id"
+        },
+        "first_seq": {
+          "default": 0,
+          "title": "First Seq",
+          "type": "integer"
+        },
+        "issue_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issue Id"
+        },
+        "kind": {
+          "const": "observation_card",
+          "title": "Kind",
+          "type": "string"
+        },
+        "last_seq": {
+          "default": 0,
+          "title": "Last Seq",
+          "type": "integer"
+        },
+        "observation": {
+          "$ref": "#/$defs/StepObservation"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "card_id",
+        "version",
+        "observation",
+        "plan_id",
+        "attempt"
+      ],
+      "title": "ObservationCardItem",
+      "type": "object"
+    },
     "ObservationOption": {
       "additionalProperties": false,
       "properties": {
@@ -1202,6 +1289,7 @@
           "enum": [
             "select_product",
             "step_feedback",
+            "answer_observation",
             "upload_receipt",
             "confirm_receipt",
             "confirm_context",
@@ -2640,6 +2728,7 @@
             "escalation_summary": "#/$defs/SummaryItem",
             "evidence": "#/$defs/EvidenceItemGroup",
             "execution_card": "#/$defs/ExecutionCardItem",
+            "observation_card": "#/$defs/ObservationCardItem",
             "product_card": "#/$defs/ProductCardItem",
             "proposal_card": "#/$defs/ProposalCardItem",
             "rating_card": "#/$defs/RatingCardItem",
@@ -2669,6 +2758,9 @@
           },
           {
             "$ref": "#/$defs/StepCardItem"
+          },
+          {
+            "$ref": "#/$defs/ObservationCardItem"
           },
           {
             "$ref": "#/$defs/ReceiptCardItem"
