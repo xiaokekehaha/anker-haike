@@ -6,7 +6,11 @@ import copy
 import uuid
 
 from app.conversation.interpret import TurnInterpretation
-from app.intake.extract import strategy_for
+from app.conversation.operation_conditions import (
+    effective_exhausted,
+    explicit_operation_reply,
+    update_conditions,
+)
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
@@ -45,6 +49,8 @@ ISSUE_FIELDS = {
     "diagnose_outcome": None,
     "plan_cursor": None,
     "steps_executed": [],
+    "step_attempts": [],
+    "operation_conditions": {},
     "counters": {},
     "exhausted_plans": [],
     "observation_requests": [],
@@ -60,6 +66,7 @@ ISSUE_FIELDS = {
     "last_consult_params": {},
     "consult_params": {}, "consult_attempts": 0, "consult_answered": False,
     "emotion_trend": "stable", "emotion_actions": [], "unresolved_turns": 0,
+    "emotion": {"level": None, "strategy": "normal"},
     "human_request_info": False, "human_decision_id": None,
     "task_queue": [], "emotion_track": [], "fault_localization": None,
     "image_quality": None, "retake_skipped": False, "retake_attempts": 0,
@@ -313,6 +320,16 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
         entry=state.get("entry"),
     )
+    operation_proposal = meaning.operation_update or explicit_operation_reply(text)
+    conditions, operation_changed = update_conditions(issue, operation_proposal, text=text, input_id=iid)
+    issue["operation_conditions"] = conditions
+    if operation_changed:
+        issue["exhausted_plans"] = sorted(effective_exhausted(issue))
+        pc = issue.get("pending_card")
+        if pc and pc.get("kind") == "step_feedback":
+            pending_changes.append({"issue_id": target, "pending_id": pc["card_id"], "status": "invalidated", "reason": "operation_conditions_changed"})
+            issue["pending_card"] = None
+            resumed_pending = False
     if basis_changed or symptom_answered:
         issue["diagnostic_decision"] = None
     if issue["symptoms"]:
@@ -442,7 +459,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         mode = "dialogue"
     if observation_answered:
         mode = "diagnose"
-    if applied or open_new or product_corrected or symptom_answered:
+    if applied or open_new or product_corrected or symptom_answered or operation_changed:
         issue["issue_revision"] = issue.get("issue_revision", 0) + 1
     decision = {
         "input_id": iid,
@@ -465,6 +482,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "symptom_answered": symptom_answered,
         "observation_answered": observation_answered,
         "observation_attempted": observation_attempted,
+        "operation_changed": operation_changed,
         "diagnostic_request": bool(meaning.diagnostic_request_quote and meaning.diagnostic_request_quote.strip() and meaning.diagnostic_request_quote in text),
         "normalization_disagreements": normalization_disagreements,
     }
@@ -481,7 +499,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         context_revision=state.get("context_revision", 0)
         + (
             1
-            if applied or open_new or product_corrected or symptom_answered or risks != state.get("risk_cases", [])
+            if applied or open_new or product_corrected or symptom_answered or operation_changed or risks != state.get("risk_cases", [])
             else 0
         ),
         applied_input_ids=[*state.get("applied_input_ids", []), iid],
@@ -489,7 +507,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         escalate_reason=trigger,
         _decision=None,
         _verify=None,
-        emotion={"level": "dissatisfied" if meaning.emotion_level == "anxious" else meaning.emotion_level, "strategy": strategy_for(meaning.emotion_level)},
     )
     return result
 

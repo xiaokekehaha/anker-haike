@@ -432,15 +432,22 @@
       "additionalProperties": false,
       "properties": {
         "level": {
-          "enum": [
-            "calm",
-            "anxious",
-            "dissatisfied",
-            "angry",
-            "complaint_risk"
+          "anyOf": [
+            {
+              "enum": [
+                "calm",
+                "anxious",
+                "dissatisfied",
+                "angry",
+                "complaint_risk"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ],
-          "title": "Level",
-          "type": "string"
+          "title": "Level"
         },
         "strategy": {
           "enum": [

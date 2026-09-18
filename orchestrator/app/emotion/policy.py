@@ -9,10 +9,20 @@ def load_policy():
     return yaml.safe_load((CONFIG_DIR / "emotion_policy.yaml").read_text())
 
 
-def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=False):
+def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=False, prior_emotion=None, cues=None):
     level = "dissatisfied" if level == "anxious" else level
+    grounded = cues is None or any(cue.strip() and cue in text for cue in cues)
     if level not in LEVELS:
-        level = "calm"
+        level, source = None, "no_signal"
+    elif grounded:
+        source = "model"
+    elif level == "calm":
+        # "Calm" without a quote is the schema default, not an observation.
+        level, source = None, "no_signal"
+    else:
+        # The model saw something it could not quote. Dropping it loses the signal
+        # entirely; cap it at the lowest non-calm level instead.
+        level, source = "dissatisfied", "cues_missing"
     terms = yaml.safe_load((CONFIG_DIR / "rules/complaint_terms.yaml").read_text())
     for candidate in ("complaint_risk", "angry", "dissatisfied"):
         hits = []
@@ -23,16 +33,20 @@ def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=F
                 for n in ("不", "不会", "没有", "不用", "不想", "无需", "别")
             ):
                 hits.append(word)
-        if hits and LEVELS[candidate] > LEVELS[level]:
+        if hits and LEVELS[candidate] > LEVELS.get(level, -1):
             level = candidate
+            source = "rules"
     prior = [t for t in track if t["input_id"] != input_id]
-    previous = prior[-1]["level"] if prior else level
+    previous = prior[-1]["level"] if prior else (prior_emotion or {}).get("level")
     previous = "dissatisfied" if previous == "anxious" else previous
+    observed = level is not None
+    if not observed:
+        level = previous
     trend = (
         "rising"
-        if LEVELS[level] > LEVELS.get(previous, 0)
+        if observed and LEVELS.get(level, 0) > LEVELS.get(previous, LEVELS.get(level, 0))
         else "falling"
-        if LEVELS[level] < LEVELS.get(previous, 0)
+        if observed and LEVELS.get(level, 0) < LEVELS.get(previous, LEVELS.get(level, 0))
         else "stable"
     )
     context = {"level": level, "trend": trend, "unresolved_turns": unresolved_turns, "risk": risk}
@@ -49,7 +63,7 @@ def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=F
             break
     return {
         "emotion": {"level": level, "strategy": strategy},
-        "emotion_track": [*prior, {"input_id": input_id, "level": level}][-6:],
+        "emotion_track": ([*prior, {"input_id": input_id, "level": level, "source": source}] if observed else prior)[-6:],
         "emotion_trend": trend,
         "emotion_actions": policy["strategies"][strategy]["actions"],
         "unresolved_turns": unresolved_turns,

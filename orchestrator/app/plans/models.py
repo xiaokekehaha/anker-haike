@@ -45,6 +45,8 @@ class StepObservation(_Strict):
     question: str = Field(min_length=1)
     options: list[ObservationOption] = Field(min_length=2)
     interview_links: list[InterviewLink] = Field(default_factory=list)
+    required_resources: list[str] = Field(default_factory=lambda: ["device"])
+    requires_execution: bool = True
 
     @model_validator(mode="after")
     def _options_consistent(self) -> StepObservation:
@@ -85,6 +87,7 @@ class PlanStep(_Strict):
     stop_conditions: list[str] = Field(default_factory=list)
     next_on: NextOn
     observations: list[StepObservation] = Field(default_factory=list)
+    required_resources: list[str] = Field(default_factory=lambda: ["device"])
 
     @model_validator(mode="after")
     def _observations_unique(self) -> PlanStep:
@@ -110,6 +113,7 @@ class AppliesTo(_Strict):
     scope: Literal["category_generic", "sku"]
     category: str
     sku_list: list[str] = Field(default_factory=list)
+    excluded_skus: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _sku_list_when_sku(self) -> AppliesTo:
@@ -128,6 +132,7 @@ class Plan(_Strict):
     # 观察门槛：requires 全部满足才可用；excluded 任一命中即排除。未知（未观察）时 requires 视为缺失，不视为不满足。
     requires_observations: list[ObservationCondition] = Field(default_factory=list)
     excluded_by_observations: list[ObservationCondition] = Field(default_factory=list)
+    diagnostic_observations: list[StepObservation] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _steps_consistent(self) -> Plan:
@@ -159,14 +164,14 @@ class Plan(_Strict):
         return getattr(self.step(step_id).next_on, feedback)
 
     def applies(self, *, category: str, sku: str | None = None) -> bool:
-        if self.applies_to.category != category:
+        if self.applies_to.category != category or sku in self.applies_to.excluded_skus:
             return False
         return self.applies_to.scope == "category_generic" or (
             sku is not None and sku in self.applies_to.sku_list
         )
 
     def observations(self) -> list[StepObservation]:
-        return [o for s in self.steps for o in s.observations]
+        return [*self.diagnostic_observations, *(o for s in self.steps for o in s.observations)]
 
     def observation_gate(self, known: dict[str, str]) -> tuple[str, list[str]]:
         """按已知观察（observation_id → option_id）判断：("ok"|"excluded"|"missing", 缺失的 observation_id)。

@@ -51,7 +51,9 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     assert len(fake.calls) == 1
     assert fake.calls[0]["kwargs"]["response_format"] == {"type": "json_object"}
     assert context["omitted_entries"] == 0
-    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4000
+    # 护栏按当前实测值设定，留约 40 token 余量；再加解释字段或提示段落会先在这里失败。
+    # 2026-09-18：operation_update 的策略说明使 system 从 2413 升到 2555。
+    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4170
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))
     assert state == before
@@ -115,7 +117,7 @@ async def test_dense_context_preserves_required_state(rounds, objects, input_cha
     assert context["truncation"] is None
     authority = json.loads(context["messages"][1][1].split("\n", 1)[1])
     assert authority["facts"] == issue["facts"]
-    assert authority["steps_executed"] == state["steps_executed"]
+    assert authority["step_attempts"] == state["steps_executed"]
     assert authority["risks"] == state["risk_cases"]
     assert authority["pending"] == issue["pending"]
     assert len(authority["issue_index"]) == objects
@@ -206,7 +208,8 @@ def test_intake_schema_preserves_null_fields_and_limits_fixed_overhead():
     schema = TurnInterpretation.model_json_schema()
     assert schema["properties"]["primary_intent"]["$ref"] == "#/$defs/Intent"
     assert TurnInterpretation.model_validate({"primary_intent": "social", "history_request": None}).history_request is None
-    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2500
+    # 同上：2026-09-18 新增 operation_update（118 token）后由 2462 升到 2519。
+    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2560
     messages = [HumanMessage(content="字" * 8000)]
     spec = load_models_config(CONFIG_DIR / "models.yaml").models["qwen-flash"]
     assert budget_error(messages, spec, task="intake") is None

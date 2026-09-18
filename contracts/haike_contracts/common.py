@@ -82,7 +82,7 @@ class PendingInput(Strict):
 
 
 class Emotion(Strict):
-    level: EmotionLevel
+    level: EmotionLevel | None
     strategy: EmotionStrategy
 
 

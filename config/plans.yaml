@@ -2,10 +2,10 @@
 # next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
 # evidence 段是证据索引：doc_id#chunk_id 与知识库入库元数据保持一致（手册用小节标题里的（cNN）标记；FAQ 用条目 id）。
 # 2026-09-17 起覆盖多品类：plan_id 前缀 rv_ / pb_ / chg_ / eb_ / spk_ / cam_ / bp_ / hd_ 对应品类；未标官方来源的内容仍是人工演示样本。
-# cannot_do 的去向：只有当后续步骤都依赖同一前提（同一部件、同一现场条件）时才直达 EXHAUSTED，否则跳到第一条不依赖该前提的步骤。
+# cannot_do 仅记录暂时阻碍，由选择器重新评估，不沿 next_on 消费步骤或耗尽计划。
 # 安全停用类计划的 solved：电池与电气不可逆风险（鼓包、焦味、过热）固定 EXHAUSTED 转人工；进水等可恢复情形允许 DONE。
 # 引用 official_* 证据的计划必须 applies_to.scope=sku：官方资料按型号发布，品类通用计划不得借用。
-version: 2026-09-17.2
+version: 2026-09-18.1
 
 evidence:
   # ---- 扫地机器人 ----
@@ -29,6 +29,10 @@ evidence:
   faq_pb#q4:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 长按电源键 10 秒以上可以复位充电宝，复位后重新连接设备再试。}
   faq_pb#q7:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 指示灯持续快速闪烁通常表示输入异常或温度保护，请拔掉线材，让充电宝在室温下静置 30 分钟再充。}
   faq_pb#q9:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 掉电快时先确认是否有设备持续连接取电，蓝牙耳机等小电流设备请开启小电流模式。}
+  official_anker737_troubleshooting#c1: {source: kb_manual, doc_version: 2026-09-17.3-fc326dc6345e, snippet: 官方针对该型号给出的复位方式是用同一根线连接自身输入与输出端口3至5秒，直到显示剩余电量，再充放电检查。仍异常应联系售后；该方法不能扩展为所有充电宝的通用操作。}
+  official_anker737_troubleshooting#c2: {source: kb_manual, doc_version: 2026-09-17.3-fc326dc6345e, snippet: 输入输出功率会随设备协商和保护机制变化，应结合实际充电时间及被充设备电量是否增长判断，不能仅凭瞬时屏幕瓦数认定故障。可换一根线和另一台设备交叉测试；无法正常充电时联系售后。}
+  official_anker737_faq#c1: {source: kb_manual, doc_version: 2026-09-17.3-31252647c55c, snippet: USB-C1与笔记本PD口都可双向供电，方向识别可能造成UVP提示；可改用仅输出的USB-C2测试。本条对应笔记本连接场景，不能解释全部UVP故障。}
+  official_anker737_faq#c2: {source: kb_manual, doc_version: 2026-09-17.3-31252647c55c, snippet: 开启小电流模式时USB-A可显示0.1W，双击电源键会启用该模式并出现绿色标记；拔掉USB-A设备后约两分钟仍显示0.1W，也可能是设备检测行为，不应直接判断端口损坏。}
   # ---- 充电器 ----
   manual_chg#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 检查数据线两端是否有折损、外皮开裂，接口内是否有异物；换一根经认证的数据线再试。}
   manual_chg#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 换一个确认有电的插座，并换另一台设备测试，以区分是插座、设备还是充电器的问题。}
@@ -231,27 +235,79 @@ plans:
   # ================= 移动电源 =================
   - plan_id: pb_port_debris
     symptom_codes: [pb_no_output, pb_port_damage]
-    version: 1
+    version: 2
     fault: 输出接口异物 / 线材问题导致无法给设备充电
-    applies_to: {scope: category_generic, category: power_bank}
+    applies_to: {scope: category_generic, category: power_bank, excluded_skus: [ANKER-A1289]}
     steps:
       - {step_id: s1, title: 清理充电宝输出接口, instruction_src: evidence:manual_pb#c12, expected_result: 接口内无灰尘绒毛，插入数据线手感紧实,
+         required_resources: [device, cleaning_tool],
          caution: 清理前关机，不要用金属物伸进接口, next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
       - {step_id: s2, title: 更换数据线和被充设备测试, instruction_src: evidence:manual_pb#c15, expected_result: 换线或换设备后能正常输出,
+         required_resources: [device, spare_cable, spare_device],
          next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
       - {step_id: s3, title: 长按电源键复位, instruction_src: evidence:faq_pb#q4, expected_result: 复位后指示灯正常，重新连接设备能充电,
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: pb_input_check
     symptom_codes: [pb_no_input, pb_indicator_abnormal]
-    version: 1
+    version: 2
     fault: 充电宝自身充不进电或指示灯异常
-    applies_to: {scope: category_generic, category: power_bank}
+    applies_to: {scope: category_generic, category: power_bank, excluded_skus: [ANKER-A1289]}
     steps:
       - {step_id: s1, title: 更换充电器与数据线给充电宝充电, instruction_src: evidence:manual_pb#c21, expected_result: 输入指示灯在 10 秒内亮起并开始充电,
+         required_resources: [device, charger, spare_cable],
          next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
       - {step_id: s2, title: 静置后观察指示灯, instruction_src: evidence:faq_pb#q7, expected_result: 静置 30 分钟后指示灯不再快速闪烁，能正常充入,
          stop_conditions: [充电宝明显发热、外壳鼓包或有异味时，立即停止使用和充电，放到阴凉通风处远离可燃物，并联系售后。],
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_737_output_check
+    symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage]
+    version: 1
+    fault: A1289 显示正常但无法充电或对屏幕功率有疑问
+    applies_to: {scope: sku, category: power_bank, sku_list: [ANKER-A1289]}
+    diagnostic_observations:
+      - observation_id: pb_737_display
+        question: 737 连接设备时，屏幕显示更接近下面哪种情况？
+        requires_execution: false
+        required_resources: [device]
+        options:
+          - {option_id: laptop_uvp, label: 连接笔记本时显示 UVP, phrases: [笔记本显示UVP, 笔记本UVP]}
+          - {option_id: abnormal, label: 屏幕显示异常或无法显示剩余电量, phrases: [屏幕异常, 无法显示剩余电量]}
+          - {option_id: normal, label: 能显示电量，但设备充不上或功率偏低, phrases: [能显示电量, 屏幕正常]}
+          - {option_id: low_current, label: USB-A 空载显示 0.1W 或绿色标记, phrases: [空载0.1W, 绿色标记]}
+          - {option_id: unknown, label: 设备不在身边或无法判断, kind: unknown}
+    requires_observations:
+      - {observation_id: pb_737_display, option_ids: [normal, low_current]}
+    steps:
+      - {step_id: s1, title: 核对实际充电表现并交叉测试, instruction_src: evidence:official_anker737_troubleshooting#c2,
+         required_resources: [device, spare_cable, spare_device], expected_result: 记录被充设备电量是否增长，以及换线换设备后能否正常充电,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_737_display_reset
+    symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage]
+    version: 1
+    fault: A1289 屏幕或工作异常时的型号专用复位
+    applies_to: {scope: sku, category: power_bank, sku_list: [ANKER-A1289]}
+    requires_observations:
+      - {observation_id: pb_737_display, option_ids: [abnormal]}
+    steps:
+      - {step_id: s1, title: 按 A1289 官方方法复位, instruction_src: evidence:official_anker737_troubleshooting#c1,
+         required_resources: [device, spare_cable], expected_result: 重新显示剩余电量，充放电恢复正常,
+         caution: 仅适用于确认型号为 A1289 的设备，其他型号不要使用此方法,
+         stop_conditions: [发现鼓包、冒烟、焦味或异常发热时停止使用和充电],
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_737_laptop_uvp
+    symptom_codes: [pb_no_output, pb_indicator_abnormal, pb_port_damage]
+    version: 1
+    fault: A1289 与笔记本连接时提示 UVP
+    applies_to: {scope: sku, category: power_bank, sku_list: [ANKER-A1289]}
+    requires_observations:
+      - {observation_id: pb_737_display, option_ids: [laptop_uvp]}
+    steps:
+      - {step_id: s1, title: 使用仅输出的 USB-C2 验证笔记本充电, instruction_src: evidence:official_anker737_faq#c1,
+         expected_result: 记录 USB-C2 连接笔记本后是否仍出现 UVP、是否正常充电,
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: pb_drain_calibrate

@@ -8,12 +8,41 @@ import os
 from app.context.budget import context_input_budget
 from app.context.builder import ContextBudgetExceeded, build_context
 from app.conversation.history import ConversationEntry
+from app.conversation.operation_conditions import feedback_history, pause_text
 from app.conversation.reduce import stable_id
+from app.emotion.policy import LEVELS
 from app.models.runtime import get_model_router
+from app.plans.runtime import get_plan_library
 from app.prompts import SIMPLIFIED_LAYER
+from app.rules import get_rules_service
 from app.sessions.streaming import stream_to_writer
 
 log = logging.getLogger("conversation.reply")
+
+
+ACKNOWLEDGEMENT = {
+    "dissatisfied": "抱歉，这次使用体验不好。",
+    "angry": "抱歉，让您花了这么多时间还没解决。",
+    "complaint_risk": "抱歉，这次处理没有达到您的预期。",
+}
+
+
+def acknowledge_current_turn(state: dict, text: str) -> str:
+    """Acknowledge this turn's quoted emotion, but only the first time it appears or worsens.
+
+    Repeating one apology on every unhappy turn reads as a template, not as a reply.
+    """
+    track = state.get("emotion_track") or []
+    current_input = state.get("input_id")
+    observed = next((e for e in track if e.get("input_id") == current_input), {})
+    lead = ACKNOWLEDGEMENT.get(observed.get("level"))
+    if not lead or text.startswith("抱歉"):
+        return text
+    prior = max(
+        (LEVELS.get(e.get("level"), 0) for e in track if e.get("input_id") != current_input),
+        default=0,
+    )
+    return lead + text if LEVELS[observed["level"]] > prior else text
 
 
 def fallback_reply(state: dict) -> str:
@@ -21,6 +50,28 @@ def fallback_reply(state: dict) -> str:
     intent = decision["primary_intent"]
     if decision.get("clarification"):
         return decision["clarification"]
+    action = state.get("next_action") or {}
+    if action.get("kind") == "pause" and action.get("input_id") == state.get("input_id"):
+        prefix = "抱歉，问题还没有解决，我们先减少操作负担。" if intent == "complaint" else ""
+        if action.get("reason") == "explain_blocked_step":
+            trace = action.get("trace") or {}
+            library = get_plan_library()
+            plan = library.get(trace["plan_id"])
+            step = plan.step(trace["step_id"])
+            instruction = library.evidence_snippet(step.instruction_src)
+            check = get_rules_service().check_pre_step(instruction=instruction, title=step.title, caution=step.caution, conditional_notice=instruction in step.stop_conditions)
+            if check.action != "drop":
+                caution = "；".join(filter(None, [step.caution, *step.stop_conditions]))
+                return f"这一步尚未执行。操作说明：{instruction}。预期结果：{step.expected_result}。{caution}。看懂并准备好后，可以回复“重试这一步”；也可以暂停。"
+        return prefix + pause_text(state)
+    if intent == "complaint":
+        if not decision.get("allowed_operations", True):
+            return "抱歉，问题还没有解决。这台设备仍有待核实的安全风险，先暂停使用和充电；我可以整理已知情况供客服核实。"
+        attempts = feedback_history(state)
+        detail = "已记下有步骤无法操作，这些步骤不会算作已经做过。" if any(s.get("feedback") == "cannot_do" for s in attempts) else "我们先不增加操作。"
+        if state.get("case_id"):
+            return f"抱歉，这次处理还没有解决您的问题。{detail}已有服务案件和待办会保留；人工协助的进度以案件记录为准。"
+        return f"抱歉，这次处理还没有解决您的问题。{detail}您可以暂停，或告诉我当前方便回答问题还是操作设备；需要人工协助时，我可以整理摘要，目前没有接入真实转接。"
     if intent == "history_query":
         entries = [
             e
@@ -68,7 +119,7 @@ def fallback_reply(state: dict) -> str:
 async def reply_to_turn(state: dict, writer) -> dict:
     decision = state["turn_decision"]
     mid = stable_id(state["input_id"], "dialogue")
-    text = fallback_reply(state)
+    text = acknowledge_current_turn(state, fallback_reply(state))
     router = get_model_router()
     from app.diagnose.decision import owns_diagnostic_reply
     # Precise clarification and service status must not be rewritten into invented actions.
@@ -76,7 +127,8 @@ async def reply_to_turn(state: dict, writer) -> dict:
         router
         and not owns_diagnostic_reply(state)
         and not decision.get("clarification")
-        and decision["primary_intent"] not in {"handoff_status", "request_human"}
+        and decision["primary_intent"] not in {"handoff_status", "request_human", "complaint"}
+        and (state.get("next_action") or {}).get("kind") != "pause"
     ):
         instruction = """根据带来源和时间的问答与当前事实，直接回答用户本轮问题。不要重复之前的转人工或安全模板。
 只回答回顾、解释、纠正澄清、话题恢复等，不生成新的排障动作，不声称操作已经执行。

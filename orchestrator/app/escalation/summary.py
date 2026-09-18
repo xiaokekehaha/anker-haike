@@ -20,6 +20,7 @@ from haike_contracts.common import (
     ReceiptOutcome,
 )
 
+from app.conversation.operation_conditions import conditions_for, feedback_history
 from app.diagnose.query import category_label
 from app.sessions.receipt import receipt_outcome
 
@@ -91,7 +92,7 @@ def next_action_text(state: dict[str, Any], next_action: dict[str, Any] | None) 
         return None
     steps = _executed_steps_text([
         (step.get("title") or step["step_id"], step["feedback"])
-        for step in state.get("steps_executed") or []
+        for step in feedback_history(state)
         if step.get("feedback") in FEEDBACK_LABELS
     ])
     from app.diagnose.observations import definitions as load_definitions
@@ -208,7 +209,7 @@ def build_summary(
                 and definitions[o["observation_id"]].option(o["option_id"]).kind == "finding"
             ],
         )
-        for s in state.get("steps_executed") or []
+        for s in feedback_history(state)
         if s.get("feedback")
     ]
     trace = [
@@ -240,7 +241,10 @@ def build_summary(
         problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "；".join(
             f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
         ) or "（尚未记录具体故障现象）",
-        observations=list(dict.fromkeys([*list(state.get("observations") or []), *diagnostic_observations])),
+        observations=list(dict.fromkeys([
+            *list(state.get("observations") or []), *diagnostic_observations,
+            *(f"操作限制：{b.quote or '该步骤暂时无法执行，原因未确认'}" for b in conditions_for(state).blockers if not b.cleared),
+        ])),
         hypotheses=list(dict.fromkeys([*candidate_families, *[
             h.get("fault") or h.get("plan_id")
             for h in state.get("plans_ranked") or []
@@ -253,7 +257,7 @@ def build_summary(
             cause=next_action.get("reason") if next_action.get("compat_rule", reason) == reason else None,
         ),
         emotion=Emotion(
-            level=emotion.get("level", "calm"), strategy=emotion.get("strategy", "normal")
+            level=emotion.get("level"), strategy=emotion.get("strategy", "normal")
         ),
         # 票 39：凭证子流程结果从 state.receipt 派生；未进入 / 未收集时为 not_collected
         receipt=ReceiptOutcome(**receipt_outcome(state, reason)),
@@ -294,7 +298,7 @@ def summary_to_text(s: EscalationSummary) -> str:
             or "无"
         ),
         f"【升级原因】{s.reason.rule_id}：{s.reason.text}",
-        f"【情绪】{s.emotion.level} / {s.emotion.strategy}",
+        f"【情绪】{s.emotion.level or '未判断'} / {s.emotion.strategy}",
         f"【凭证】{s.receipt.status}"
         + (f"，下一步：{s.receipt.next_step}" if s.receipt.next_step else ""),
         "【凭证核实事实】" + _receipt_facts_text(s.receipt.verified_facts),
@@ -319,6 +323,6 @@ def reassurance_text(reason: str, state: dict[str, Any] | None = None) -> str:
         }:
             return (
                 f"{detail}。我已整理当前问题和排查记录，您可以复制给人工客服继续处理；"
-                "目前尚未接入真实转接，不会重复建议您已反馈过的相同操作。"
+                "目前尚未接入真实转接。新的观察或操作条件变化后，仍可以结合已有记录继续。"
             )
     return REASSURANCE.get(reason, "我已整理当前问题记录，您可以复制给人工客服继续处理。")

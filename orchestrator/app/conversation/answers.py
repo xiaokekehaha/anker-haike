@@ -8,6 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.conversation.business import BusinessContext
+from app.conversation.operation_conditions import feedback_history
 
 AnswerField = Literal[
     "order_no", "tracking_no", "service_order_no", "sku", "channel", "platform",
@@ -68,7 +69,7 @@ def conversation_view(state, scope="focus"):
         symptoms = [f["value"] for f in issue.get("facts", []) if f.get("kind") == "symptom" and f.get("status") == "active"]
         if symptoms:
             fields["symptoms"] = _fact(symptoms, "user_report")
-        steps = [{"title": s.get("title"), "feedback": s.get("feedback"), "note": s.get("note")} for s in state.get("steps_executed", [])]
+        steps = [{"title": s.get("title"), "feedback": s.get("feedback"), "note": s.get("note")} for s in feedback_history(state)]
         if steps:
             fields["steps_executed"] = _fact(steps, "user_feedback")
         if state.get("case_status"):

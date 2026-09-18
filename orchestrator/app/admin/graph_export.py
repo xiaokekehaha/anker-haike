@@ -24,7 +24,6 @@ NODE_STAGE: dict[str, str] = {
     "understand": "intake",
     "dialogue": "intake",
     "commit_issue": "done",
-    "reassure": "intake",  # 安抚句，不发 progress
     "disambiguate": "disambiguate",
     "prepare_card": "disambiguate",
     "clarify": "disambiguate",

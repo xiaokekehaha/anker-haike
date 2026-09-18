@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: b6bd8f79aa6ae87a6599b770a486fe7b9d34442816697c01f387d2c35274dfa0
+// SHA-256: 2c9ee217ceac7761b68d1e102cdd7f1de6d630c84d4a659e75aaefeb1c2b5488
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -28,7 +28,7 @@ export type Revision = number;
 export type SourceThroughSeq = number;
 export type CaseId = string | null;
 export type DraftReply = string | null;
-export type Level = 'calm' | 'anxious' | 'dissatisfied' | 'angry' | 'complaint_risk';
+export type Level = ('calm' | 'anxious' | 'dissatisfied' | 'angry' | 'complaint_risk') | null;
 export type Strategy =
   | 'normal'
   | 'reassure_first'

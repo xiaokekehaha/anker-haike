@@ -214,7 +214,7 @@ def test_f30_two_unresolved_steps_end_with_explicit_coverage_boundary():
     assert "「检查基站供电与触点」、「放回基站观察充电」" in summary.reason.text
     assert "现有资料没有进一步可执行的排查操作" in summary.reason.text
     text = reassurance_text("R2", state)
-    assert "尚未接入真实转接" in text and "不会重复建议" in text
+    assert "尚未接入真实转接" in text and "条件变化后" in text
     # 没有配置不同处理时，不同观察不能编造出差异
     observed = with_observation(base_state(exhausted_plans=["rv_power_supply"], steps_executed=executed_both()), "charging_indication", "none")
     assert decide_next(observed, library=LIB).reason == "no_supported_followup"

@@ -20,6 +20,8 @@ from langgraph.graph.state import CompiledStateGraph
 
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
+from app.conversation.operation_conditions import conditions_for, effective_exhausted
+from app.conversation.reply import acknowledge_current_turn
 from app.diagnose import (
     build_query,
     get_retrieval_config,
@@ -32,6 +34,7 @@ from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches, signature_plans
 from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
+from app.emotion.policy import evaluate_emotion
 from app.escalation.polish import polish_summary
 from app.escalation.summary import build_summary, reassurance_text
 from app.faultcards import fit_prompt_budget
@@ -47,7 +50,7 @@ from app.knowledge.search import interleave_kbs, search_round
 from app.models.runtime import get_model_router
 from app.observability.runtime import record
 from app.plans.runtime import get_plan_library
-from app.prompts import reassurance_messages, reply_messages
+from app.prompts import reply_messages
 from app.rules import get_rules_service
 from app.sessions import clarify as clarify_mod
 from app.sessions import receipt as receipt_mod
@@ -143,7 +146,7 @@ class SessionState(TypedDict, total=False):
     # 票 39：凭证子流程状态 {status, image_ids, skipped_reason?, fields, confidence, edited, verified_facts, conflicts, next_step}
     receipt: dict[str, Any] | None
     # 票 17：intake 抽取结果；emotion.strategy 注入系统提示第二层；model_trace 累积各 task 命中模型
-    emotion: dict[str, str]
+    emotion: dict[str, str | None]
     product_hints: list[str]
     symptoms: list[str]
     symptom_codes: list[str]
@@ -185,6 +188,8 @@ class SessionState(TypedDict, total=False):
     # card_ready_ms 本 run 首张步骤卡就绪耗时；guide_trace 丢弃 / 改写 / 切换记录（reducer 追加）；
     # _verify 为 apply_action(step_feedback) 的本 run 判定（瞬态：done / next / escalate）
     steps_executed: list[dict[str, Any]]
+    step_attempts: list[dict]
+    operation_conditions: dict
     counters: dict[str, int]
     exhausted_plans: list[str]
     card_ready_ms: int | None
@@ -213,44 +218,6 @@ def _state_summary(state: SessionState) -> dict[str, Any]:
 
 def _lane() -> str:
     return os.environ.get("MODEL_LANE", "domestic")
-
-
-async def reassure(state: SessionState) -> SessionState:
-    """安抚句流式先出（票 18，05 §6）：reply.stream，tag=user_visible，一到两句，不给步骤。"""
-    writer = get_stream_writer()
-    router = get_model_router()
-    strategy = (state.get("emotion") or {}).get("strategy", "reassure_first")
-    primary, fallback = reassurance_messages(
-        state.get("text", ""), strategy=strategy, summary=_state_summary(state)
-    )
-    message_id = uuid.uuid5(
-        uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:reassure"
-    ).hex
-    out = await stream_to_writer(
-        writer,
-        router,
-        "reply.stream",
-        primary,
-        message_id=message_id,
-        budget_ms=8000,
-        session_id=state.get("session_id"),
-        lane=_lane(),
-        fallback_messages=fallback,
-    )
-    msgs = list(state.get("visible_messages") or [])
-    if out.completed:
-        msgs.append(
-            {
-                "message_id": out.message_id,
-                "kind": "reassurance",
-                "text": out.text,
-                "model_tier": out.model_tier,
-            }
-        )
-    return {
-        "visible_messages": msgs,
-        "first_visible_ms": state.get("first_visible_ms") or out.first_visible_ms,
-    }
 
 
 # ---------------- 票 20：消歧 + 三段式等待 ----------------
@@ -322,11 +289,12 @@ async def clarify(state: SessionState) -> SessionState:
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:clarify"
     ).hex
     writer({"type": "message_start", "message_id": message_id})
-    writer({"type": "message", "message_id": message_id, "delta": out.text})
+    reply_text = acknowledge_current_turn(dict(state), out.text)
+    writer({"type": "message", "message_id": message_id, "delta": reply_text})
     writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     msgs = [
         *(state.get("visible_messages") or []),
-        {"message_id": message_id, "kind": "clarify", "text": out.text, "model_tier": None},
+        {"message_id": message_id, "kind": "clarify", "text": reply_text, "model_tier": None},
     ]
     return {
         "clarification": clarify_mod.count_attempt(
@@ -812,6 +780,8 @@ def route_after_apply(state: SessionState) -> str:
         # 票 35：step_feedback 的判定——继续 → guide 出下一张卡；票 36：solved / DONE → close 结束语 → done(completed)
         if verify["outcome"] == "ask":
             return "ask_observation"
+        if verify["outcome"] == "pause":
+            return "dialogue"
         return "guide" if verify["outcome"] == "next" else "close"
     return _after_product(state)
 
@@ -822,8 +792,8 @@ def _apply_step_feedback(
     pc: dict[str, Any],
     results: dict[str, dict[str, Any]],
 ) -> SessionState:
-    """票 35（03 §1.6、09 §3.3–§3.4）：反馈三态写 steps_executed / counters，按 next_on 推进游标，
-    EXHAUSTED 时切换计划或 R2；CP-verify R1 / R1b / R1c。备注先过 CP-in（R4 → 升级）。无 LLM。"""
+    """反馈保存到 step_attempts；真实执行写 steps_executed，无法操作记录可恢复约束并重算。
+    真实执行后按 next_on 推进，保留 CP-verify R1 / R1c；备注先过 CP-in。无 LLM。"""
     payload = action.get("payload") or {}
     feedback = payload["feedback"]
     note = payload.get("note") or None
@@ -908,7 +878,7 @@ def _apply_step_feedback(
         known = known_option_ids(known_observations(issue, state.get("symptom_interview"), get_plan_library()))
         if get_plan_library().get(out.plan_cursor["plan_id"]).observation_gate(known)[0] == "excluded":
             out = exhaust_plan(
-                dict(state), out.plan_cursor["plan_id"], counters=out.counters,
+                {**state, "step_attempts": out.step_attempts}, out.plan_cursor["plan_id"], counters=out.counters,
                 executed=out.steps_executed, exhausted=out.exhausted_plans,
             )
             out.trace = {**out.trace, "rule": "excluded_by_observation"}
@@ -937,6 +907,8 @@ def _apply_step_feedback(
         {
             "safety_flags": flags,
             "steps_executed": out.steps_executed,
+            "step_attempts": out.step_attempts,
+            "operation_conditions": out.operation_conditions,
             "counters": out.counters,
             "exhausted_plans": out.exhausted_plans,
             "plan_cursor": out.plan_cursor,
@@ -975,7 +947,7 @@ def _apply_next_action(state: SessionState, *, feedback: str | None = None) -> S
         extra={"event": "next_action", "session_id": state.get("session_id"), **{k: v for k, v in snapshot.items() if k != "trace"}},
     )
     trace_entry = {"event": "reassess", "feedback": feedback, "kind": action.kind, "reason": action.reason, **action.trace}
-    update: SessionState = {"next_action": snapshot, "guide_trace": [trace_entry]}
+    update: SessionState = {"next_action": snapshot, "guide_trace": [trace_entry], "escalate_reason": None}
     if action.kind == "step":
         update.update(
             {
@@ -997,6 +969,8 @@ def _apply_next_action(state: SessionState, *, feedback: str | None = None) -> S
         update.update({"plan_cursor": None, "_verify": {"outcome": "ask", "rule": action.reason}})
     elif action.kind == "resolved":
         update.update({"plan_cursor": None, "_verify": {"outcome": "done", "rule": action.reason}})
+    elif action.kind == "pause":
+        update.update({"plan_cursor": None, "pending_card": None, "_verify": {"outcome": "pause", "rule": action.reason}})
     else:
         rule = action.compat_rule or "R2"
         update.update(
@@ -1042,11 +1016,22 @@ async def ask_observation(state: SessionState) -> SessionState:
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "guide", "substage": "await_observation"})
     message_id = stable_id(state.get("input_id"), "ask_observation", question.get("observation_id"))
-    text = observation_question_text(question)
+    is_blocker = question.get("kind") == "operation_blocker"
+    text = acknowledge_current_turn(dict(state), question["question"] if is_blocker else observation_question_text(question))
     writer({"type": "message_start", "message_id": message_id, "issue_id": state.get("active_issue_id"), "reply_to_input_id": state.get("input_id")})
     writer({"type": "message", "message_id": message_id, "delta": text})
     writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     msgs = [*(state.get("visible_messages") or []), {"message_id": message_id, "kind": "ask_observation", "text": text, "model_tier": None}]
+    if is_blocker:
+        conditions = conditions_for(state)
+        for blocker in conditions.blockers:
+            if blocker.card_id == question.get("card_id"):
+                blocker.asked = True
+        return {
+            "stage": "guide", "substage": "await_operation_conditions", "pending_card": None,
+            "plan_cursor": None, "visible_messages": msgs, "operation_conditions": conditions.model_dump(),
+            "guide_trace": [{"event": "ask_operation_conditions", "card_id": question.get("card_id")}],
+        }
     requests = [
         *(state.get("observation_requests") or []),
         {
@@ -1153,6 +1138,17 @@ async def understand(state: SessionState) -> SessionState:
     if context.get("source") == "product_question":
         update["turn_decision"]["product_answered"] = True
     update["l3_route"] = None
+    if state.get("entry") == "message":
+        emotion_update = evaluate_emotion(
+            meaning.emotion_level, text, update.get("emotion_track") or [], state["input_id"],
+            unresolved_turns=(update.get("unresolved_turns") or 0) + 1,
+            risk=not update["turn_decision"]["allowed_operations"],
+            prior_emotion=update.get("emotion"), cues=meaning.emotion_cues,
+        )
+        update.update(emotion_update)
+        observed = next((e for e in emotion_update["emotion_track"] if e["input_id"] == state["input_id"]), {})
+        source = observed.get("source") or ("unavailable" if context.get("source") in {"unavailable", "degraded", "context_budget"} else "no_signal")
+        record("emotion_strategy", session_id=state["session_id"], run_id=state["run_id"], level=emotion_update["emotion"]["level"], observed_level=observed.get("level"), source=source, trend=emotion_update["emotion_trend"], strategy=emotion_update["emotion"]["strategy"])
     if update["turn_decision"].get("business_switched") and state.get("requested_remedy") and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"}:
         update["requested_remedy"] = state["requested_remedy"]
     from app.actions.runtime import get_services
@@ -1161,11 +1157,6 @@ async def understand(state: SessionState) -> SessionState:
         update["business_context"] = (requested_business.focused() if update["turn_decision"].get("business_switched") else BusinessContext.restore({**state, **update})).accept(
             text, state["input_id"], meaning.business_reference.model_dump() if meaning.business_reference else None
         ).model_dump(mode="json")
-        from app.emotion.policy import evaluate_emotion
-        emotion_update = evaluate_emotion(meaning.emotion_level, text, update.get("emotion_track") or [], state["input_id"], unresolved_turns=(update.get("unresolved_turns") or 0)+1, risk=not update["turn_decision"]["allowed_operations"])
-        if state.get("entry") == "message":
-            update.update(emotion_update)
-            record("emotion_strategy", session_id=state["session_id"], run_id=state["run_id"], level=emotion_update["emotion"]["level"], trend=emotion_update["emotion_trend"], strategy=emotion_update["emotion"]["strategy"])
         from app.conversation.tasks import enqueue
         from app.sessions.l3 import say
         tasks, notice = enqueue(update.get("task_queue") or [],meaning.primary_intent,meaning.secondary_intents,text,state["input_id"], business=BusinessContext.restore({**state, **update}))
@@ -1175,8 +1166,6 @@ async def understand(state: SessionState) -> SessionState:
         update["task_queue"]=tasks
         if notice:
             say({**state,**update},notice)
-        if state.get("entry") == "message" and "offer_human" in update.get("emotion_actions", []):
-            say({**state, **update}, "很抱歉让您反复处理。您可以选择人工协助；如需补偿，我会将诉求交由人工评估。")
         context_values = dict(update.get("service_context") or {})
         context_sources = dict(update.get("context_sources") or {})
         reported = {fact.context_field: fact.value for fact in meaning.facts if fact.kind == "context" and fact.context_field and fact.quote and fact.quote in text}
@@ -1258,7 +1247,7 @@ async def understand(state: SessionState) -> SessionState:
     if get_services() is not None:
         from app.sessions.l3 import reopening_request
         reopening = await reopening_request({**state, **update}, meaning)
-    if update["turn_decision"].get("symptom_answered"):
+    if update["turn_decision"].get("symptom_answered") or update["turn_decision"].get("operation_changed"):
         update["turn_decision"].update(reply_mode="diagnose", clarification=None)
         command, clarification = None, None
     elif reopening and not reopening.get("clarification"):
@@ -1376,6 +1365,10 @@ def route_entry(state: SessionState) -> str:
         return "escalate"
     if decision.get("observation_answered") or decision.get("observation_attempted"):
         return "reassess"
+    if decision.get("operation_changed"):
+        return "reassess"
+    if decision.get("primary_intent") == "complaint" and state.get("plans_ranked") and not state.get("pending_card") and not state.get("case_id"):
+        return "reassess"
     if decision.get("business_ambiguous"):
         return "dialogue"
     if decision.get("symptom_answered") or decision.get("product_answered"):
@@ -1390,8 +1383,6 @@ def route_entry(state: SessionState) -> str:
         return "apply_action"
     if get_services() is not None:
         intent = decision.get("primary_intent")
-        if state.get("emotion", {}).get("level") == "complaint_risk" and state.get("product_state") == "confirmed_sku" and not state.get("case_id"):
-            return "service_context"
         from app.conversation.answers import FACTUAL_INTENTS
         if decision.get("answer_request") and intent in FACTUAL_INTENTS:
             return "consult"
@@ -1420,10 +1411,6 @@ def route_entry(state: SessionState) -> str:
                 and decision.get("allowed_operations", True) and _new_fault_images(state)):
             return "disambiguate"
         return "dialogue"
-    if (state.get("emotion") or {}).get(
-        "strategy", "normal"
-    ) != "normal" and get_model_router() is not None:
-        return "reassure"
     return "disambiguate"
 
 
@@ -2054,7 +2041,7 @@ async def retrieve(state: SessionState) -> SessionState:
             plans.get("plans_ranked") or [],
             knowledge_status=status,
             fault_card_hits=[e["chunk_id"] for e in fc_evidence],
-            exhausted_plans=state.get("exhausted_plans") or [],
+            exhausted_plans=sorted(effective_exhausted(state)),
         )
     )
     return {
@@ -2178,22 +2165,18 @@ async def guide(state: SessionState) -> SessionState:
     """排障引导（票 34，03 §1.5）：取 plan_cursor 步骤 → 去重 / 证据校验 / CP-pre-step → 已审核原文发布
     → pending_card(kind=step_feedback)；随后 await_input 发 step_card。当前计划剩余步骤全被丢弃 → 标记耗尽，
     由 decide_next 决定切换 / 追问 / 人工出口（design §3.2）。"""
-    if "prefer_proposal_over_more_steps" in state.get("emotion_actions", []) and (state.get("counters") or {}).get("executed",0) >= 2:
-        # 情绪动作：用户不愿继续逐步排查。对外仍映射 R2，真实原因单独记录。
-        return {
-            "escalate_reason": "R2",
-            "pending_card": None,
-            "next_action": {"kind": "handoff_offer", "reason": "burden_prefer_proposal", "compat_rule": "R2",
-                            "issue_id": state.get("active_issue_id"), "input_id": state.get("input_id")},
-        }
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "guide"})
     session_id = state.get("session_id", "")
     remaining = _remaining_ms(state)
     budget = min(GUIDE_BUDGET_MS, remaining - 2000) if remaining >= 3000 else 0
     work = dict(state)
+    selected = _apply_next_action(state)
+    if (selected.get("_verify") or {}).get("outcome") != "next":
+        return {"stage": "guide", **selected}
+    work.update(selected)
     trace: list[dict[str, Any]] = []
-    update: SessionState = {"stage": "guide", "substage": None, "_verify": None}
+    update: SessionState = {"stage": "guide", "substage": None, "_verify": None, "next_action": selected.get("next_action")}
     for _ in range(len(state.get("plans_ranked") or []) + 2):
         prep = await prepare_step(
             state=work,
@@ -2278,6 +2261,8 @@ async def guide(state: SessionState) -> SessionState:
             if prep.model_trace:
                 update["model_trace"] = [*state.get("model_trace", []), prep.model_trace]
             return update
+        if prep.outcome == "blocked":
+            return {**update, **_apply_next_action(work)}
         # exhausted：本计划没有可下发的步骤 → 标记耗尽，依据事实重新决策
         cursor = work.get("plan_cursor") or {}
         out = exhaust_plan(work, cursor.get("plan_id", ""))
@@ -2310,6 +2295,8 @@ async def guide(state: SessionState) -> SessionState:
         if (decided.get("_verify") or {}).get("outcome") == "done":
             update.update({"_verify": decided.get("_verify")})
             return update
+        if (decided.get("_verify") or {}).get("outcome") == "pause":
+            return {**update, **decided}
         # step：换到新计划游标，继续循环准备卡片
     update.update({"escalate_reason": "R2", "plan_cursor": None, "guide_trace": trace,
                    "next_action": {"kind": "handoff_offer", "reason": "no_supported_followup", "compat_rule": "R2",
@@ -2325,6 +2312,8 @@ def route_after_guide(state: SessionState) -> str:
         return "ask_observation"
     if verify.get("outcome") == "done":
         return "close"
+    if verify.get("outcome") == "pause":
+        return "dialogue"
     return "await_input"
 
 
@@ -2512,7 +2501,7 @@ async def summarize(state: SessionState) -> SessionState:
     session_id = state.get("session_id", "")
     run_id = state.get("run_id", "")
     message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:reassure").hex
-    text = reassurance_text(reason, dict(state))
+    text = acknowledge_current_turn(dict(state), reassurance_text(reason, dict(state)))
     if not state.get("summary_refresh"):
         writer({"type": "message_start", "message_id": message_id})
         writer({"type": "message", "message_id": message_id, "delta": text})
@@ -2759,7 +2748,6 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges(
         "vision", route_after_vision, {"disambiguate": "disambiguate", "escalate": "escalate", "prepare_retake":"prepare_retake", "vision_conflict":"vision_conflict"}
     )
-    g.add_node("reassure", durable_node(reassure))
     g.add_node("clarify", durable_node(clarify))
     g.add_node("out_of_scope", durable_node(out_of_scope))
     g.add_node("guide", durable_node(guide))
@@ -2780,7 +2768,6 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         {
             **{name:name for name in ("consult","service_context","track","apply_human_decision","apply_case_command","reopen_case","vision")},
             "disambiguate": "disambiguate",
-            "reassure": "reassure",
             "escalate": "escalate",
             "apply_action": "apply_action",
             "dialogue": "dialogue",
@@ -2789,7 +2776,6 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         },
     )
     g.add_edge("out_of_scope", "escalate")
-    g.add_edge("reassure", "disambiguate")
     g.add_conditional_edges(
         "disambiguate",
         route_after_disambiguate,
@@ -2820,6 +2806,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "guide": "guide",
             "close": "close",
             "ask_observation": "ask_observation",
+            "dialogue": "dialogue",
         },
     )
     g.add_conditional_edges(
@@ -2828,7 +2815,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(
         "guide", route_after_guide,
-        {"await_input": "await_input", "escalate": "escalate", "ask_observation": "ask_observation", "close": "close"},
+        {"await_input": "await_input", "escalate": "escalate", "ask_observation": "ask_observation", "close": "close", "dialogue": "dialogue"},
     )
     g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

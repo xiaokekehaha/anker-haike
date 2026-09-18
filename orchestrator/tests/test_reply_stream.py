@@ -16,7 +16,7 @@ from app.prompts import PROMPT_VERSION, REPLY_PROMPT_VERSION, SIMPLIFIED_LAYER, 
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
-from tests.message_form import message_form, model_task_text
+from tests.message_form import message_form
 from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
@@ -43,15 +43,6 @@ lanes:
     escalate.summary:     {chain: [fast]}
     warranty.receipt_ocr: {chain: [main], needs_vision: true}
 """
-INTAKE_ANXIOUS = json.dumps(
-    {
-        "emotion_level": "anxious",
-        "product_hints": ["S1 Pro"],
-        "symptoms": ["不吸了"],
-        "wants_human": False,
-    },
-    ensure_ascii=False,
-)
 # 票 19 起命中计划的排障轮直接由 guide 出步骤卡，不再走自由回复；
 # 用户可见的流式回复发生在对话轮（app/conversation/reply.py）。
 DIALOGUE_TURN = json.dumps(
@@ -99,32 +90,6 @@ async def run_text(router, text: str):
     finally:
         set_model_router(None)
         set_rules_service(None)
-
-
-async def test_a2_reassurance_arrives_before_card_and_diagnose(mem_runtime, tmp_path):
-    router, fakes = make_router(
-        tmp_path, fast=[INTAKE_ANXIOUS], main=[["别担心", "，我马上帮您处理。"]]
-    )
-    events, snap = await run_text(router, "我的 S1 Pro 不吸了，急死了，明天要用！")
-    for e in events:
-        parse_event(e)
-    types = [e["type"] for e in events]
-    first_delta = types.index("message")
-    assert first_delta < types.index("product_card")
-    assert "progress" not in types[first_delta:] or all(
-        e["stage"] != "diagnose" for e in events[first_delta:] if e["type"] == "progress"
-    )
-    assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "disambiguate"]
-    text = "".join(e["delta"] for e in events if e["type"] == "message")
-    assert text == "别担心，我马上帮您处理。"
-    end = next(e for e in events if e["type"] == "message_end")
-    assert end["status"] == "completed" and end["model_tier"] == "primary"
-    # 安抚 prompt 用了焦急策略层，且用户文本包在 <data>
-    sys_prompt = fakes["main"].calls[0]["messages"][0].content
-    assert "焦急" in sys_prompt and "<data" in model_task_text(fakes["main"].calls[0])
-    assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
-    kinds = [i["kind"] for i in snap["timeline"]]
-    assert kinds.index("assistant_message") < kinds.index("product_card")
 
 
 async def test_internal_tokens_never_enter_events_and_ids_aggregate(mem_runtime, tmp_path):

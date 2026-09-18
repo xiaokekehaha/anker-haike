@@ -17,6 +17,9 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.conversation.operation_conditions import execution_history, step_unavailable
+from app.diagnose.decision import constrain_plans
+from app.diagnose.observations import known_observations, known_option_ids
 from app.knowledge.anchors import match_anchor
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
@@ -33,7 +36,7 @@ def step_card_id(session_id: str, plan_id: str, step_id: str) -> str:
 
 @dataclass
 class StepPrep:
-    outcome: str  # ready | exhausted
+    outcome: str  # ready | exhausted | blocked
     step: dict[str, Any] | None = None  # 契约 TroubleshootStep 形状
     card_id: str | None = None
     plan_cursor: dict[str, Any] | None = None
@@ -87,11 +90,17 @@ async def prepare_step(
     if not cursor.get("plan_id"):
         return StepPrep("exhausted")
     plan = library.get(cursor["plan_id"])
-    from app.diagnose.decision import constrain_plans
     if not constrain_plans(state, [plan]):
         return StepPrep("exhausted", dropped=[{
             "plan_id": plan.plan_id, "reason": "diagnostic_plan_constraint",
         }])
+    product = state.get("product_confirmed") or {}
+    if not plan.applies(category=state.get("category") or product.get("category"), sku=product.get("sku")):
+        return StepPrep("exhausted", dropped=[{"plan_id": plan.plan_id, "reason": "plan_model_mismatch"}])
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    gate, _ = plan.observation_gate(known_option_ids(known_observations(issue, state.get("symptom_interview"), library)))
+    if gate != "ok":
+        return StepPrep("blocked", dropped=[{"plan_id": plan.plan_id, "reason": "observation_gate"}])
     step_id = cursor.get("step_id") or plan.first_step().step_id
     allowed_evidence: dict[str, dict[str, Any]] = dict(state.get("evidence") or {})
     ranked_evidence = next(
@@ -102,10 +111,15 @@ async def prepare_step(
         ),
         [],
     )
-    executed_src = {s.get("instruction_src") for s in state.get("steps_executed") or []}
+    executed_src = {s.get("instruction_src") for s in execution_history(state)}
     dropped: list[dict[str, Any]] = []
     while step_id is not None:
         step = plan.step(step_id)
+        unavailable = step_unavailable(state, plan.plan_id, step)
+        if unavailable:
+            return StepPrep("blocked", dropped=[*dropped, {
+                "plan_id": plan.plan_id, "step_id": step_id, "reason": unavailable,
+            }])
         # 跨计划去重：与已执行步骤 instruction_src 相同 → 跳过（09 §3.4）
         if step.instruction_src in executed_src:
             dropped.append(
@@ -230,8 +244,6 @@ def _open_observations(step: PlanStep, state: dict[str, Any], library: PlanLibra
     """步骤声明的观察中，用户尚未明确提供结果的那些（design §4：用户明确提供的结果不重复问）。"""
     if not step.observations:
         return []
-    from app.diagnose.observations import known_observations
-
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
     known = known_observations(issue, state.get("symptom_interview"), library)
     return [

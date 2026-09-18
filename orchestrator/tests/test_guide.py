@@ -164,6 +164,7 @@ async def test_high_risk_step_without_caution_is_dropped_and_next_taken(tmp_path
     )
     rules = RulesService(RULES, hot_reload=False)
     state = {
+        "category": "robot_vacuum",
         "plan_cursor": {
             "plan_id": "rv_test_risky",
             "version": 1,
@@ -221,6 +222,7 @@ async def test_pre_step_r4_in_step_text_is_dropped(tmp_path):
 """,
     )
     state = {
+        "category": "robot_vacuum",
         "plan_cursor": {"plan_id": "rv_test_smoke", "version": 1, "step_id": "s1"},
         "evidence": {},
     }
@@ -250,6 +252,7 @@ async def test_motor_plan_warning_does_not_become_user_risk(monkeypatch, next_co
     monkeypatch.setattr(graph, "get_model_router", lambda: None)
     state = {
         "session_id": "motor-warning-regression",
+        "category": "robot_vacuum",
         "input_id": "input",
         "active_issue_id": "issue",
         "text": "不能用了",
@@ -273,6 +276,7 @@ async def test_motor_plan_warning_does_not_become_user_risk(monkeypatch, next_co
 async def test_evidence_outside_allowed_set_drops_step():
     """diagnose 给该计划的 evidence_ids 若不在当前允许集合 → 丢弃步骤（09 §2.5）；全部丢弃 → exhausted。"""
     state = {
+        "category": "robot_vacuum",
         "plan_cursor": {"plan_id": "rv_suction_filter_clog", "version": 1, "step_id": "s1"},
         "evidence": {
             "c15": {"evidence_id": "c15", "doc_id": "manual_rv_v1", "source": "kb_manual"}
@@ -450,23 +454,18 @@ async def test_not_solved_advances_to_next_step_and_counts(runtime):
     assert snap.pending_input.card_id == cards[1].card_id
 
 
-async def test_cannot_do_follows_next_on_cannot_do_and_counts_skipped(runtime):
+async def test_cannot_do_asks_for_conditions_without_consuming_steps(runtime):
     s, _ = await runtime(fast=[INTAKE_X9], main=[SYNTH, ["x"]])
     p1 = pending_of(await s.send("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发"))
-    # s1.cannot_do → s2
     ev = await s.feedback(p1, "cannot_do")
-    assert step_card_of(ev[2:])["step"]["step_id"] == "s2"
+    assert not any(e["type"] in {"step_card", "escalation_summary"} for e in ev)
+    assert "设备不在身边" in "".join(e.get("delta", "") for e in ev)
     st = await s.state()
     assert st["counters"] == {"executed": 0, "advanced": 0, "skipped": 1, "plans_exhausted": 0}
-    # s2.cannot_do → s3：清洁滤网做不到不代表检查吸口做不到，先走完本计划里不依赖该前提的步骤
-    ev = await s.feedback(pending_of(ev), "cannot_do")
-    assert step_card_of(ev[2:])["step"]["step_id"] == "s3"
-    # s3.cannot_do → skipped 达到 CP-verify 的 R1b 限额(3)，限额先于计划耗尽生效 → 直接转人工
-    ev = await s.feedback(pending_of(ev), "cannot_do")
-    assert [e for e in ev if e["type"] == "step_card"] == []
-    st = await s.state()
-    assert st["counters"] == {"executed": 0, "advanced": 0, "skipped": 3, "plans_exhausted": 0}
-    assert st["escalate_reason"] == "R1b"
+    assert st["steps_executed"] == [] and st["step_attempts"][0]["feedback"] == "cannot_do"
+    ev = await s.send("现在可以做了")
+    card = step_card_of(ev)
+    assert card["step"]["step_id"] == "s1" and card["card_id"] != p1["card_id"]
 
 
 async def test_first_plan_exhausted_switches_to_second_plan_first_step(runtime):
@@ -563,7 +562,7 @@ def _state(plan="rv_suction_hair_wrap", step="s1", **over):
     return base
 
 
-def test_cp_verify_limits_r1_r1b_r1c(monkeypatch):
+def test_cp_verify_limits_preserve_execution_budget_but_reassess_cannot_do(monkeypatch):
     from app.guide import verify as verify_mod
 
     out = apply_feedback(
@@ -584,20 +583,20 @@ def test_cp_verify_limits_r1_r1b_r1c(monkeypatch):
         library=LIB,
     )
     assert (
-        out.outcome == "escalate" and out.escalate_reason == "R1b" and out.counters["skipped"] == 3
+        out.outcome == "reassess" and out.escalate_reason is None and out.counters["skipped"] == 3
     )
-    # R1c 是硬上限：当前 R1=4 / R1b=3 下 executed+skipped 最多 5 就已被前两条拦下；放宽前两条验证它独立生效
+    # R1c 仍限制实际操作路径；暂时做不了走约束重评。
     monkeypatch.setitem(verify_mod.LIMITS, "R1", 10)
     monkeypatch.setitem(verify_mod.LIMITS, "R1b", 10)
     out = apply_feedback(
         state=_state(counters={"executed": 3, "skipped": 2}),
-        feedback="cannot_do",
+        feedback="not_solved",
         note=None,
         card_id="c",
         library=LIB,
     )
     assert (
-        out.outcome == "escalate" and out.escalate_reason == "R1c" and out.counters["skipped"] == 3
+        out.outcome == "escalate" and out.escalate_reason == "R1c" and out.counters["executed"] == 4
     )
     # 未到上限：继续
     out = apply_feedback(

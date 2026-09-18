@@ -1,5 +1,7 @@
 """Only grounded diagnostic facts can justify quality; default unknown."""
 
+from app.conversation.operation_conditions import feedback_history
+
 DAMAGE_WORDS = ("摔", "进水", "宠物咬", "人为损坏", "跌落")
 
 
@@ -10,7 +12,7 @@ def derive_fault_class(state: dict) -> str:
     if any(r.get("rule_id") == "R4" and r.get("status") == "reported" for r in risks):
         return "safety"
     notes = (
-        " ".join(str(s.get("note", "")) for s in state.get("steps_executed", []))
+        " ".join(str(s.get("note", "")) for s in feedback_history(state))
         + " "
         + " ".join(str(f.get("value", "")) for f in ((state.get("issues") or {}).get(state.get("active_issue_id"), {}).get("facts", [])) if f.get("status") in {"active", "disputed"})
         + " " + " ".join(str(s) for s in state.get("symptoms", []))

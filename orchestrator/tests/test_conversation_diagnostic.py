@@ -203,6 +203,10 @@ async def test_power_flow_finishes_without_inventing_risk(feedback):
             rows = events(await send(client, sid, "还有其他的方案吗"))
             assert not any(e["type"] == "step_card" for e in rows)
             assert "此前已记录问题解决" in "".join(e.get("delta", "") for e in rows)
+        elif feedback == "cannot_do":
+            assert "设备不在身边" in "".join(e.get("delta", "") for e in rows)
+            assert not state.get("steps_executed") and not state.get("exhausted_plans")
+            assert not any(e["type"] in {"step_card", "escalation_summary"} for e in rows)
         else:
             assert any(
                 e["type"] == "escalation_summary" and e["summary"]["reason"]["rule_id"] == "R2"

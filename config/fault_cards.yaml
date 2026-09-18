@@ -1,7 +1,7 @@
 # 故障卡（票 33，07 §7）：产品确认后预加载进 diagnose / guide 上下文的反范式化文本，离线由知识库生成并人工校对。
 # 每张 ≤ 800 token（中文按字计）。faults 的 plan_id 必须是 plans.yaml 中的计划；keywords 用于与症状 / 查询做命中判断。
 # key 为 SKU，或 "category:<category>" 供 category_only 使用。
-version: 2026-09-17.2
+version: 2026-09-18.1
 cards:
   - key: category:robot_vacuum
     doc_version: 2026-09-12.1
@@ -71,6 +71,15 @@ cards:
     safety:
       - 水箱漏水时先检查密封圈；出现焦味、冒烟、过热立即断电停用。
   # ================= 2026-09-17 多品类：品类通用故障卡（人工演示样本，待真实资料替换）=================
+  - key: ANKER-A1289
+    doc_version: 2026-09-18.1
+    title: Anker 737 A1289 故障卡
+    faults:
+      - {fault: 无法充电或功率偏低, plan_id: pb_737_output_check, symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage], keywords: [充不了, 没反应, 没输出, 功率, 充不进], first_step: 先询问屏幕显示；能显示电量时结合实际充电情况交叉检查线材和设备，不凭瞬时瓦数判断故障}
+      - {fault: 屏幕异常或无法显示电量, plan_id: pb_737_display_reset, symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage], keywords: [屏幕异常, 无法显示电量, 黑屏], first_step: 确认屏幕异常后，按 A1289 官方说明连接自身输入输出口复位，再检查充放电}
+      - {fault: 连接笔记本出现 UVP, plan_id: pb_737_laptop_uvp, symptom_codes: [pb_no_output, pb_indicator_abnormal, pb_port_damage], keywords: [UVP, 笔记本, 欠压], first_step: 确认连接笔记本出现 UVP 后，改用 USB-C2 端口测试}
+    safety:
+      - 出现鼓包、异味、冒烟或明显过热时停止使用与充电，不再执行复位。
   - key: category:power_bank
     doc_version: 2026-09-17.1
     title: 移动电源通用故障卡

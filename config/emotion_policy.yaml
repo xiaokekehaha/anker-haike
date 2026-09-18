@@ -1,6 +1,6 @@
-version: '2026-09-14.1'
+version: '2026-09-18.1'
 strategies:
-  normal: {tone: direct, pace: normal, actions: [], prompt: '用户情绪平稳：直接、简洁地回应，每次只给一个可执行动作。'}
+  normal: {tone: direct, pace: normal, actions: [], prompt: '按已有事实直接、简洁地回应，每次只给一个可执行动作；未获得情绪依据时不判断用户情绪。'}
   reassure_first: {tone: warm, pace: normal, actions: [], prompt: '先简短安抚，再说明下一步，不做无法兑现的承诺。'}
   reassure_and_shorten: {tone: warm, pace: fast, actions: [shorten_steps], prompt: '先回应用户的不满，缩短解释，每次只给一个必要步骤。'}
   direct_resolution: {tone: apologetic, pace: fast, actions: [skip_optional_clarify, prefer_proposal_over_more_steps], prompt: '承认用户已经付出的时间，优先提供可执行的解决方案，仅追问必要信息。'}

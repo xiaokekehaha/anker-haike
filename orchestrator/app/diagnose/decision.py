@@ -9,6 +9,14 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
+from app.conversation.operation_conditions import (
+    BURDEN_SKIP_LIMIT,
+    conditions_for,
+    effective_exhausted,
+    execution_history,
+    step_unavailable,
+    support_question,
+)
 from app.conversation.taxonomy import (
     canonical_codes,
     families,
@@ -230,7 +238,7 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
         p
         for p in available_plans
         if p.applies(category=category, sku=product.get("sku"))
-        and p.plan_id not in (state.get("exhausted_plans") or [])
+        and p.plan_id not in effective_exhausted(state)
     ]
     progress = _progress(interview)
 
@@ -374,7 +382,7 @@ HANDOFF_RULE_BY_REASON = {"user_requested_human": "R3", "safety_risk": "R4"}
 class NextAction:
     """同一问题的下一动作。函数只返回决策，不调模型、不写库、不发事件。"""
 
-    kind: Literal["ask", "step", "resolved", "handoff_offer", "safety_stop"]
+    kind: Literal["ask", "step", "resolved", "handoff_offer", "safety_stop", "pause"]
     reason: str
     plan_cursor: dict[str, Any] | None = None
     question: dict[str, Any] | None = None
@@ -409,10 +417,14 @@ def _asks_for(state, observation_id: str) -> list[dict[str, Any]]:
     ]
 
 
-def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str, str]]):
+def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str, str]], state=None):
     """第一个未执行的步骤与途中跳过的步骤（同 instruction_src 已执行 → 不重复建议）。"""
     skipped = []
     for step in plan.steps:
+        unavailable = step_unavailable(state or {}, plan.plan_id, step)
+        if unavailable:
+            skipped.append({"plan_id": plan.plan_id, "step_id": step.step_id, "reason": unavailable})
+            continue
         if (plan.plan_id, step.step_id) in executed_steps:
             skipped.append({"plan_id": plan.plan_id, "step_id": step.step_id, "reason": "already_executed"})
             continue
@@ -435,8 +447,9 @@ def decide_next(state, *, library) -> NextAction:
     raw_interview = state.get("symptom_interview") or issue.get("symptom_interview")
     interview = raw_interview if valid_interview(raw_interview) else None
     decision = state.get("turn_decision") or {}
-    executed = list(state.get("steps_executed") or [])
-    exhausted = set(state.get("exhausted_plans") or [])
+    executed = execution_history(state)
+    exhausted = effective_exhausted(state)
+    conditions = conditions_for(state)
     known = known_observations(issue, interview, library)
     option_ids = known_option_ids(known)
     basis = tuple(
@@ -460,6 +473,19 @@ def decide_next(state, *, library) -> NextAction:
     # 3. 用户确认功能恢复
     if executed and executed[-1].get("feedback") == "solved":
         return result("resolved", "user_confirmed_resolved")
+    if conditions.paused:
+        return result("pause", "user_paused")
+    if decision.get("primary_intent") == "complaint" and not decision.get("diagnostic_request"):
+        return result("pause", "complaint_reduce_burden")
+    blocker_question = support_question(state)
+    if blocker_question:
+        return result("ask", "operation_conditions_missing", question=blocker_question)
+    explaining = next((b for b in reversed(conditions.blockers) if not b.cleared and b.reason == "explain"), None)
+    if explaining:
+        product = state.get("product_confirmed") or {}
+        plan = next((p for p in library.plans if p.plan_id == explaining.plan_id), None)
+        if plan and plan.applies(category=state.get("category") or product.get("category"), sku=product.get("sku")):
+            return result("pause", "explain_blocked_step", trace={"plan_id": explaining.plan_id, "step_id": explaining.step_id})
 
     product = state.get("product_confirmed") or {}
     category = state.get("category") or product.get("category")
@@ -495,6 +521,7 @@ def decide_next(state, *, library) -> NextAction:
 
     trace: dict[str, Any] = {"skipped": [], "known_observations": option_ids}
     pending_ask: tuple[Any, str] | None = None
+    pending_step: NextAction | None = None
     unavailable: list[str] = []
     for plan, entry in candidates:
         gate, missing = plan.observation_gate(option_ids)
@@ -505,19 +532,28 @@ def decide_next(state, *, library) -> NextAction:
             # 4. 只问会改变可用动作的观察；同一问题不反复问
             for obs_id in missing:
                 asks = _asks_for(state, obs_id)
-                if any(a.get("status") == "unknown" for a in asks) or len(asks) >= MAX_OBSERVATION_ASKS:
+                obs = library.observation_definitions()[obs_id]
+                if obs.requires_execution and not any(
+                    (owner.plan_id, step.step_id) in executed_steps
+                    for owner in library.plans for step in owner.steps
+                    if any(o.observation_id == obs_id for o in step.observations)
+                ):
+                    trace["skipped"].append({"observation_id": obs_id, "reason": "observation_requires_execution"})
+                    continue
+                if (any(conditions.resources.get(r) is False for r in obs.required_resources)
+                        or any(a.get("status") == "unknown" for a in asks) or len(asks) >= MAX_OBSERVATION_ASKS):
                     unavailable.append(obs_id)
                     continue
                 if pending_ask is None:
                     pending_ask = (plan, obs_id)
             trace["skipped"].append({"plan_id": plan.plan_id, "reason": "observation_missing", "missing": missing})
             continue
-        step, skipped_steps = _first_open_step(plan, executed_src, executed_steps)
+        step, skipped_steps = _first_open_step(plan, executed_src, executed_steps, state)
         if step is None:
-            trace["skipped"].append({"plan_id": plan.plan_id, "reason": "all_steps_executed"})
+            trace["skipped"].extend(skipped_steps)
             continue
         # 5. 有适用、未执行、有来源支持的动作
-        return result(
+        candidate_step = result(
             "step",
             "ranked_plan" if entry.get("source") != "observation" else "observation_unlocked_plan",
             plan_cursor={
@@ -529,6 +565,8 @@ def decide_next(state, *, library) -> NextAction:
             trace={**trace, "confidence": entry.get("confidence"), "switched_to": plan.plan_id,
                    "skipped_steps": skipped_steps},
         )
+        if pending_step is None:
+            pending_step = candidate_step
     if pending_ask is not None:
         plan, obs_id = pending_ask
         obs = library.observation_definitions()[obs_id]
@@ -544,6 +582,22 @@ def decide_next(state, *, library) -> NextAction:
             },
             trace=trace,
         )
+    blocked = [b for b in conditions.blockers if not b.cleared]
+    unresolved_blocker = any(b.reason == "unknown" for b in blocked) and not (
+        conditions.continue_input_id and conditions.continue_input_id == state.get("input_id")
+    )
+    burden_stop = int((state.get("counters") or {}).get("skipped", 0)) - conditions.skip_baseline >= BURDEN_SKIP_LIMIT
+    # A bare complaint already returned pause above, so only the emotion action is left here.
+    emotion_stop = (
+        "prefer_proposal_over_more_steps" in state.get("emotion_actions", [])
+        and len(executed) + len(blocked) >= 2
+        and conditions.continue_input_id != state.get("input_id")
+        and not decision.get("diagnostic_request")
+    )
+    if pending_step and not (unresolved_blocker or burden_stop or emotion_stop):
+        return pending_step
+    if blocked or any(v is False for v in conditions.resources.values()) or burden_stop or emotion_stop:
+        return result("pause", "operation_conditions_unavailable", trace=trace)
     # 7. 没有支持的下一动作：说明覆盖边界，提供人工选项
     if unavailable:
         reason = "observation_unavailable"

@@ -42,7 +42,7 @@ export function summaryToText(s: EscalationSummary): string {
     `【假设】${s.hypotheses?.join('；') || '无'}`,
     `【排查记录】${s.steps?.map(stepText).join('；') || '无'}`,
     `【升级原因】${s.reason.rule_id}：${s.reason.text}`,
-    `【情绪】${s.emotion.level} / ${s.emotion.strategy}`,
+    `【情绪】${s.emotion.level ?? '未判断'} / ${s.emotion.strategy}`,
     `【凭证】${s.receipt.status}${s.receipt.next_step ? `，下一步：${s.receipt.next_step}` : ''}`,
     `【凭证核实事实】${receiptFacts(s.receipt.verified_facts ?? {}) || '无'}`,
     `【凭证待核实差异】${s.receipt.conflicts?.join('；') || '无'}`,

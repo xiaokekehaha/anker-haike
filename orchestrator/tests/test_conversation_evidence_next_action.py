@@ -298,7 +298,7 @@ async def test_approved_noise_stop_notice_is_publishable_without_creating_risk()
 
     library = get_plans()
     rules = RulesService(REPO_ROOT / "config/rules/safety_terms.yaml", hot_reload=False)
-    result = await prepare_step(state={"plan_cursor": {"plan_id": "rv_suction_motor_fault", "step_id": "s1"}},
+    result = await prepare_step(state={"category": "robot_vacuum", "plan_cursor": {"plan_id": "rv_suction_motor_fault", "step_id": "s1"}},
                                 library=library, rules=rules, router=None, lane="domestic", session_id="noise")
     assert result.outcome == "ready", result.dropped
     assert result.step["instruction"] == library.evidence_snippet("evidence:manual_rv_v1#c30")
