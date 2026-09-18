@@ -23,54 +23,6 @@ def _format(exc: ValidationError) -> list[str]:
     return [f"{'.'.join(str(p) for p in e['loc']) or '<root>'}: {e['msg']}" for e in exc.errors()]
 
 
-def _latest_plans(plans: list[Plan]) -> dict[str, Plan]:
-    latest: dict[str, Plan] = {}
-    for plan in plans:
-        if plan.plan_id not in latest or plan.version > latest[plan.plan_id].version:
-            latest[plan.plan_id] = plan
-    return latest
-
-
-def _routing_problems(plans: list[Plan]) -> list[str]:
-    """路由观察的每个 finding 必须在全部入口型号内有显式承接者。
-
-    承接者包括仍然适用的声明计划自身，以及显式按该观察路由的其他计划。
-    只校验实际生效的版本。明确观察可以跨旧症状分类，因此不要求复制声明方症状码。
-    None 代表型号未确认；枚举配置内所有型号和排除型号即可覆盖通用计划的适用性差异。
-    """
-    consumers: dict[str, list[Plan]] = {}
-    for plan in plans:
-        for obs_id in {c.observation_id for c in [*plan.requires_observations, *plan.excluded_by_observations]}:
-            consumers.setdefault(obs_id, []).append(plan)
-    problems: list[str] = []
-    for declaring in plans:
-        scope = declaring.applies_to
-        skus: list[str | None] = list(scope.sku_list)
-        if scope.scope == "category_generic":
-            skus = [None, *sorted({
-                sku for p in plans if p.applies_to.category == scope.category
-                for sku in [*p.applies_to.sku_list, *p.applies_to.excluded_skus]
-            })]
-        for obs in declaring.observations():
-            if obs.observation_id not in consumers:
-                continue
-            for option in obs.finding_ids():
-                known = {obs.observation_id: option}
-                for sku in skus:
-                    if not declaring.applies(category=scope.category, sku=sku):
-                        continue
-                    if not any(
-                        consumer.applies(category=scope.category, sku=sku)
-                        and consumer.observation_gate(known)[0] != "excluded"
-                        for consumer in [declaring, *consumers[obs.observation_id]]
-                    ):
-                        problems.append(
-                            f"{declaring.plan_id}.{obs.observation_id}={option} "
-                            f"has no applicable route for {scope.category}/{sku or 'category_only'}"
-                        )
-    return problems
-
-
 def load_plans_config(path: str | Path) -> PlansConfig:
     path = Path(path)
     if not path.is_file():
@@ -97,8 +49,7 @@ def load_plans_config(path: str | Path) -> PlansConfig:
                 )
     # 观察条件必须指向某个计划步骤声明过的观察与选项，否则永远无法满足或排除
     declared: dict[str, set[str]] = {}
-    active_plans = list(_latest_plans(cfg.plans).values())
-    for plan in active_plans:
+    for plan in cfg.plans:
         for obs in plan.observations():
             ids = declared.setdefault(obs.observation_id, set())
             if ids and ids != {o.option_id for o in obs.options}:
@@ -106,7 +57,7 @@ def load_plans_config(path: str | Path) -> PlansConfig:
                     f"observation {obs.observation_id} declared with different options in {plan.plan_id}"
                 )
             ids.update(o.option_id for o in obs.options)
-    for plan in active_plans:
+    for plan in cfg.plans:
         for field in ("requires_observations", "excluded_by_observations"):
             for cond in getattr(plan, field):
                 if cond.observation_id not in declared:
@@ -119,7 +70,6 @@ def load_plans_config(path: str | Path) -> PlansConfig:
                     problems.append(
                         f"{plan.plan_id}.{field} -> {cond.observation_id} has no option {unknown}"
                     )
-    problems.extend(_routing_problems(active_plans))
     if problems:
         raise PlansError(path, problems)
     return cfg
@@ -136,7 +86,11 @@ class PlanLibrary:
         self.version = cfg.version
         self.evidence = dict(cfg.evidence)
         # 同一 plan_id 只保留最高版本
-        self._plans = _latest_plans(cfg.plans)
+        latest: dict[str, Plan] = {}
+        for p in cfg.plans:
+            if p.plan_id not in latest or p.version > latest[p.plan_id].version:
+                latest[p.plan_id] = p
+        self._plans = latest
 
     @classmethod
     def from_yaml(cls, path: str | Path) -> PlanLibrary:

@@ -5,7 +5,7 @@
 # cannot_do 仅记录暂时阻碍，由选择器重新评估，不沿 next_on 消费步骤或耗尽计划。
 # 安全停用类计划的 solved：电池与电气不可逆风险（鼓包、焦味、过热）固定 EXHAUSTED 转人工；进水等可恢复情形允许 DONE。
 # 引用 official_* 证据的计划必须 applies_to.scope=sku：官方资料按型号发布，品类通用计划不得借用。
-version: 2026-09-18.2
+version: 2026-09-18.1
 
 evidence:
   # ---- 扫地机器人 ----
@@ -273,10 +273,10 @@ plans:
         required_resources: [device]
         options:
           - {option_id: laptop_uvp, label: 连接笔记本时显示 UVP, phrases: [笔记本显示UVP, 笔记本UVP]}
-          - {option_id: abnormal, label: 屏幕显示异常或无法显示剩余电量, phrases: [屏幕异常, 屏幕显示异常, 无法显示剩余电量]}
+          - {option_id: abnormal, label: 屏幕显示异常或无法显示剩余电量, phrases: [屏幕异常, 无法显示剩余电量]}
           - {option_id: normal, label: 能显示电量，但设备充不上或功率偏低, phrases: [能显示电量, 屏幕正常]}
           - {option_id: low_current, label: USB-A 空载显示 0.1W 或绿色标记, phrases: [空载0.1W, 绿色标记]}
-          - {option_id: unknown, label: 设备不在身边或无法判断, kind: unknown, phrases: [设备不在身边, 设备不在手边, 充电宝不在身边]}
+          - {option_id: unknown, label: 设备不在身边或无法判断, kind: unknown}
     requires_observations:
       - {observation_id: pb_737_display, option_ids: [normal, low_current]}
     steps:

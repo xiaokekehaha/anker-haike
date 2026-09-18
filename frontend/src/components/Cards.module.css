@@ -88,8 +88,3 @@
 .observation label { display: inline-flex; align-items: center; gap: 4px; font-size: 0.92em; }
 .observed { font-size: 0.9em; color: var(--muted, #555); margin: 4px 0 0; }
 .handoffStatus { font-size: 0.9em; color: var(--muted, #555); margin: 2px 0 6px; }
-/* 调整排查入口：与步骤卡反馈按钮同一形状，按卡片的 46px 左边距对齐 */
-.diagnosisActions { margin-left: 46px; display: flex; flex-wrap: wrap; gap: 8px; }
-.diagnosisActions button { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 13px; cursor: pointer; }
-.diagnosisActions button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
-.diagnosisActions button:disabled { opacity: .5; cursor: default; }

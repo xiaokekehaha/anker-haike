@@ -90,19 +90,17 @@ async def prepare_step(
     if not cursor.get("plan_id"):
         return StepPrep("exhausted")
     plan = library.get(cursor["plan_id"])
+    if not constrain_plans(state, [plan]):
+        return StepPrep("exhausted", dropped=[{
+            "plan_id": plan.plan_id, "reason": "diagnostic_plan_constraint",
+        }])
     product = state.get("product_confirmed") or {}
     if not plan.applies(category=state.get("category") or product.get("category"), sku=product.get("sku")):
         return StepPrep("exhausted", dropped=[{"plan_id": plan.plan_id, "reason": "plan_model_mismatch"}])
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-    issue = {**issue, "observation_requests": state.get("observation_requests") or []}
     gate, _ = plan.observation_gate(known_option_ids(known_observations(issue, state.get("symptom_interview"), library)))
     if gate != "ok":
         return StepPrep("blocked", dropped=[{"plan_id": plan.plan_id, "reason": "observation_gate"}])
-    # 与选择器一致：具体观察已满足时，旧问诊分类不能在发布阶段再次封住路径。
-    if not plan.requires_observations and not constrain_plans(state, [plan]):
-        return StepPrep("exhausted", dropped=[{
-            "plan_id": plan.plan_id, "reason": "diagnostic_plan_constraint",
-        }])
     step_id = cursor.get("step_id") or plan.first_step().step_id
     allowed_evidence: dict[str, dict[str, Any]] = dict(state.get("evidence") or {})
     ranked_evidence = next(

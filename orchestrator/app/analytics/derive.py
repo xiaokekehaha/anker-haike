@@ -51,13 +51,6 @@ _SUMMARY_KEYS: dict[str, str] = {
     "retrieval_rounds": "retrieval_rounds",
 }
 
-CANDIDATE_REJECTION_REASONS = frozenset({
-    "plan_missing", "plan_model_mismatch", "plan_exhausted", "confidence_below_threshold",
-    "diagnostic_plan_constraint", "excluded_by_observation", "observation_missing",
-    "observation_requires_execution", "already_executed", "duplicate_instruction_src",
-    "user_paused", "resource_unavailable", "step_blocked",
-})
-
 
 def node_summary(update: Any) -> dict[str, Any] | None:
     """从节点返回的 state 更新里抽白名单字段；没有可记录的返回 None。"""
@@ -89,19 +82,6 @@ def node_summary(update: Any) -> dict[str, Any] | None:
     cursor = update.get("plan_cursor")
     if isinstance(cursor, dict) and cursor.get("plan_id"):
         out["plan_id"] = cursor["plan_id"]
-    action = update.get("next_action")
-    trace = action.get("trace") if isinstance(action, dict) else None
-    level = trace.get("relaxed_level") if isinstance(trace, dict) else None
-    if isinstance(level, str) and level in {"strict", "observation"}:
-        out["relaxed_level"] = level
-        counts: dict[str, int] = {}
-        skipped = trace.get("skipped")
-        for rejection in skipped if isinstance(skipped, list) else []:
-            reason = rejection.get("reason") if isinstance(rejection, dict) else None
-            if isinstance(reason, str) and reason in CANDIDATE_REJECTION_REASONS:
-                counts[reason] = counts.get(reason, 0) + 1
-        if counts:
-            out["candidate_rejection_counts"] = counts
     receipt = update.get("receipt")
     if isinstance(receipt, dict) and receipt.get("status"):
         out["receipt_status"] = receipt["status"]
