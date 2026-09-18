@@ -1,0 +1,32 @@
+# 虚构演示动作；真实系统可替换 BackendClient。
+version: '2026-09-14.2'
+actions:
+  logistics.query:
+    kind: read
+    backend: get_shipment
+    timeout_ms: 3000
+    params:
+      order_no: {type: str}
+      tracking_no: {type: str}
+  warranty.check:
+    kind: read
+    backend: get_order
+    timeout_ms: 3000
+    params:
+      order_no: {type: str, required: true}
+  replacement.create:
+    kind: write
+    backend: create_service_order
+    timeout_ms: 5000
+    estimated_dispatch_working_days: 3
+    params:
+      order_no: {type: str, required: true}
+      sku: {type: str, from_state: product_confirmed.sku, required: true}
+      reason_code: {type: str, from_state: policy_decision.fault_class, required: true}
+      evidence_ids: {from_state: current_evidence_ids}
+    requires:
+      policy_auto_allowed: replace
+      receipt_status: [order_verified]
+      product_state: [confirmed_sku]
+      user_confirmed: true
+    idempotency: '{case_id}:replacement.create:{proposal.chosen_option_id}'
