@@ -16,6 +16,7 @@ from app.conversation.operation_conditions import (
     has_operation_context,
     resolve_operation_reply,
 )
+from app.diagnose.observations import RESELECT_OBSERVATION
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError
 
@@ -179,6 +180,12 @@ async def interpret_turn(router, state: dict, *, lane: str):
             feedback=(action.get("payload") or {}).get("feedback"),
         )
         return meaning, {"source": "validated_action", "source_entry_ids": [state["input_id"]]}
+    if state.get("text", "").strip(" \n。！!，,") == RESELECT_OBSERVATION:
+        return TurnInterpretation(
+            primary_intent="supplement" if state.get("observation_requests") else "correct",
+            device_relation="current",
+            clarification=None if state.get("observation_requests") else "请说明需要更正的设备或现象，以及正确的情况。",
+        ), {"source": "observation_revision"}
     current = next((e for e in state.get("history", []) if e["entry_id"] == state.get("input_id")), {})
     payload = current.get("payload") or {}
     if not state.get("text", "").strip() and payload.get("image_ids") and payload.get("purpose", "fault") == "fault":

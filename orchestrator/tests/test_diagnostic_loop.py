@@ -230,7 +230,7 @@ def test_same_not_solved_with_different_observations_yields_different_paths(tmp_
     indicated = with_observation(base_state(**exhausted), "charging_indication", "indicated")
     skipped = decide_next(indicated, library=lib)
     assert skipped.kind == "handoff_offer" and skipped.reason == "no_supported_followup"
-    assert {"plan_id": "rv_power_no_indication", "reason": "excluded_by_observation"} in skipped.trace["skipped"]
+    assert {"plan_id": "rv_power_no_indication", "level": "observation", "reason": "excluded_by_observation"} in skipped.trace["skipped"]
     # 排除条件命中（电源灯不亮）时即使充电提示为 none 也不复发该计划
     dark = with_observation(with_observation(base_state(**exhausted), "charging_indication", "none"), "dock_power_light", "light_off", input_id="i6")
     assert decide_next(dark, library=lib).kind == "handoff_offer"
