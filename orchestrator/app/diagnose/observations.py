@@ -18,7 +18,6 @@ from app.plans.models import StepObservation
 
 UNKNOWN_REPLIES = ("不知道", "不清楚", "无法判断", "没看", "没注意", "不确定", "没观察")
 NEGATION_PREFIXES = ("不是", "没有", "并非", "不", "没")
-RESELECT_OBSERVATION = "重新选择现象"
 
 
 def stable_id(*parts) -> str:
@@ -74,19 +73,15 @@ def known_observations(
     """当前有效观察：事实优先于问诊折算（事实是用户对具体步骤的明确选择或更正）。"""
     definitions = library.observation_definitions() if library else {}
     known = interview_observations(interview, definitions)
-    revising = {
-        r["observation_id"] for r in issue.get("observation_requests", [])
-        if r.get("revision_input_id") and r.get("status") != "answered"
-    }
     for f in active_observation_facts(issue):
-        if f.get("option_id") and f["observation_id"] not in revising:
+        if f.get("option_id"):
             known[f["observation_id"]] = {
                 "option_id": f["option_id"],
                 "source": "fact",
                 "source_id": f["fact_id"],
                 "quote": f.get("quote"),
             }
-    return {key: value for key, value in known.items() if key not in revising}
+    return known
 
 
 def known_option_ids(known: dict[str, dict[str, Any]]) -> dict[str, str]:
@@ -176,27 +171,15 @@ def match_reply(text: str, obs: StepObservation) -> str | None:
     reply = text.strip().strip("。！!，,、 ")
     if not reply:
         return None
+    lowered = reply.casefold()
     if any(u in reply for u in UNKNOWN_REPLIES):
         return "unknown"
-    if any(reply.casefold() == phrase.casefold()
-           for option in obs.options if option.kind == "unknown"
-           for phrase in [option.label, *option.phrases]):
-        return "unknown"
-    hits = matching_options(reply, obs)
-    return hits[0] if len(hits) == 1 else None
-
-
-def matching_options(text: str, obs: StepObservation, *, exact: bool = False) -> list[str]:
-    """只消除同一文本范围内的包含匹配，不把两段独立现象按字数强行单选。"""
-    lowered = text.strip(" \n。！!，,、").casefold()
-    hits: list[tuple[str, int, int]] = []
+    hits: dict[str, int] = {}
     for option in obs.options:
         if option.kind != "finding":
             continue
         for phrase in [option.label, *option.phrases]:
             needle = phrase.casefold()
-            if exact and lowered != needle:
-                continue
             index = lowered.find(needle)
             if index < 0:
                 continue
@@ -205,12 +188,14 @@ def matching_options(text: str, obs: StepObservation, *, exact: bool = False) ->
                 tuple(n.casefold() for n in NEGATION_PREFIXES)
             ):
                 continue
-            hits.append((option.option_id, index, index + len(needle)))
-    return list(dict.fromkeys(
-        option_id for option_id, start, end in hits
-        if not any(other_start <= start and end <= other_end and (other_start, other_end) != (start, end)
-                   for _, other_start, other_end in hits)
-    ))
+            hits[option.option_id] = max(hits.get(option.option_id, 0), len(needle))
+    if not hits:
+        return None
+    if len(hits) == 1:
+        return next(iter(hits))
+    # 多个选项命中时只有更长的说法明显占优才接受（"没有充电提示" 同时包含 "有充电提示"）
+    ranked = sorted(hits.items(), key=lambda kv: kv[1], reverse=True)
+    return ranked[0][0] if ranked[0][1] > ranked[1][1] else None
 
 
 def option_label(definitions: dict[str, StepObservation], observation_id: str, option_id: str) -> str:

@@ -28,9 +28,6 @@ from app.conversation.taxonomy import (
     taxonomy,
     taxonomy_for,
 )
-from app.diagnose.observations import known_observations, known_option_ids
-from app.plans.library import PlanLibrary
-from app.plans.models import Plan
 
 
 def _active_facts(issue):
@@ -439,61 +436,15 @@ def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str
     return None, skipped
 
 
-def _candidate_plans(
-    state: dict, library: PlanLibrary, codes: list[str], option_ids: dict[str, str], exhausted: set[str],
-) -> tuple[list[tuple[Plan, dict]], list[dict]]:
-    """常规排序后用明确观察重新选路；型号、已耗尽与观察门槛不会被放宽。"""
-    product = state.get("product_confirmed") or {}
-    category, sku = state.get("category") or product.get("category"), product.get("sku")
-    candidates: list[tuple[Plan, dict]] = []
-    skipped: list[dict] = []
-    for entry in state.get("plans_ranked") or []:
-        pid = entry.get("plan_id")
-        try:
-            plan = library.get(pid)
-        except KeyError:
-            skipped.append({"plan_id": pid, "level": "strict", "reason": "plan_missing"})
-            continue
-        reason = (
-            "plan_model_mismatch" if not plan.applies(category=category, sku=sku)
-            else "plan_exhausted" if pid in exhausted
-            else "confidence_below_threshold" if float(entry.get("confidence", 0) or 0) < SWITCH_CONFIDENCE
-            else "diagnostic_plan_constraint" if not constrain_plans(state, [plan])
-            else None
-        )
-        if reason:
-            skipped.append({"plan_id": pid, "level": "strict", "reason": reason})
-        else:
-            candidates.append((plan, {**entry, "level": "strict"}))
-    ranked_ids = {p.plan_id for p, _ in candidates}
-    for plan in library.plans:
-        if (not plan.requires_observations or plan.plan_id in ranked_ids
-                or plan.applies_to.category != category):
-            continue
-        gate, _ = plan.observation_gate(option_ids)
-        if codes and not set(codes).intersection(plan.symptom_codes) and gate != "ok":
-            continue
-        reason = (
-            "plan_model_mismatch" if not plan.applies(category=category, sku=sku)
-            else "plan_exhausted" if plan.plan_id in exhausted
-            else None
-        )
-        if reason:
-            skipped.append({"plan_id": plan.plan_id, "level": "observation", "reason": reason})
-        else:
-            candidates.append((plan, {"plan_id": plan.plan_id, "confidence": None,
-                                      "source": "observation", "level": "observation"}))
-    return candidates, skipped
-
-
 def decide_next(state, *, library) -> NextAction:
     """按 design §3.3 的顺序选下一动作：风险 → 用户意愿 → 已恢复 → 缺失观察 → 可发布步骤 → 人工出口。
 
     候选动作只来自计划库（有来源）：plans_ranked 中 confidence ≥ 0.3 的未耗尽计划按原顺序优先；
     其后是被已知观察解锁（requires_observations 满足）的计划。已排除 / 已执行 / 已耗尽的不复发。
     """
+    from app.diagnose.observations import known_observations, known_option_ids
+
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-    issue = {**issue, "observation_requests": state.get("observation_requests") or []}
     raw_interview = state.get("symptom_interview") or issue.get("symptom_interview")
     interview = raw_interview if valid_interview(raw_interview) else None
     decision = state.get("turn_decision") or {}
@@ -527,24 +478,6 @@ def decide_next(state, *, library) -> NextAction:
         return result("pause", "user_paused")
     if decision.get("primary_intent") == "complaint" and not decision.get("diagnostic_request"):
         return result("pause", "complaint_reduce_burden")
-    revision = next((r for r in reversed(state.get("observation_requests") or [])
-                     if r.get("status") in {"ambiguous", "revising"}
-                     and r.get("issue_id") in {None, state.get("active_issue_id")}), None)
-    if revision:
-        obs = library.observation_definitions().get(revision["observation_id"])
-        if obs:
-            candidates = revision.get("ambiguous_option_ids")
-            return result("ask", "observation_needs_confirmation", question={
-                "observation_id": obs.observation_id, "plan_id": revision.get("plan_id"),
-                "question": ("你提到了多个现象，请先选择这次要排查的一项；其他描述会保留。"
-                             if candidates else
-                             f"现在可以继续观察了。{obs.question}"
-                             if revision.get("revision_reason") == "resource_restored" else
-                             "请重新选择当前现象，确认后我会更新排查路径。"),
-                "options": [{"option_id": o.option_id, "label": o.label, "kind": o.kind}
-                            for o in obs.options if not candidates or o.option_id in candidates],
-                "attempt": 1,
-            })
     blocker_question = support_question(state)
     if blocker_question:
         return result("ask", "operation_conditions_missing", question=blocker_question)
@@ -555,22 +488,46 @@ def decide_next(state, *, library) -> NextAction:
         if plan and plan.applies(category=state.get("category") or product.get("category"), sku=product.get("sku")):
             return result("pause", "explain_blocked_step", trace={"plan_id": explaining.plan_id, "step_id": explaining.step_id})
 
+    product = state.get("product_confirmed") or {}
+    category = state.get("category") or product.get("category")
+    sku = product.get("sku")
     executed_src = {s.get("instruction_src") for s in executed}
     executed_steps = {(s.get("plan_id"), s.get("step_id")) for s in executed}
     codes = symptom_codes({**issue, "symptom_interview": interview}) or list(
         state.get("symptom_codes") or []
     )
 
-    candidates, rejected = _candidate_plans(state, library, codes, option_ids, exhausted)
-    trace = {"skipped": rejected, "known_observations": option_ids,
-             "evaluated_levels": ["strict", "observation"], "relaxed_level": "observation"}
-    pending_ask: tuple[Plan, str, str] | None = None
+    ranked: list[tuple[Any, dict[str, Any]]] = []
+    for entry in state.get("plans_ranked") or []:
+        pid = entry.get("plan_id")
+        if pid in exhausted or float(entry.get("confidence", 0) or 0) < SWITCH_CONFIDENCE:
+            continue
+        try:
+            ranked.append((library.get(pid), entry))
+        except KeyError:
+            continue
+    ranked_ids = {p.plan_id for p, _ in ranked}
+    unlocked = [
+        (p, {"plan_id": p.plan_id, "confidence": None, "source": "observation"})
+        for p in library.allowed_for(category=category, sku=sku, symptom_codes=codes)
+        if p.requires_observations and p.plan_id not in exhausted and p.plan_id not in ranked_ids
+    ] if category else []
+    # 问诊期的计划约束只针对模型排序结果；观察解锁的计划以观察条件 + 症状码为门槛
+    candidates = [
+        (p, entry)
+        for p, entry in [*ranked, *unlocked]
+        if p.applies(category=category, sku=sku)
+        and (entry.get("source") == "observation" or constrain_plans(state, [p]))
+    ]
+
+    trace: dict[str, Any] = {"skipped": [], "known_observations": option_ids}
+    pending_ask: tuple[Any, str] | None = None
     pending_step: NextAction | None = None
     unavailable: list[str] = []
     for plan, entry in candidates:
         gate, missing = plan.observation_gate(option_ids)
         if gate == "excluded":
-            trace["skipped"].append({"plan_id": plan.plan_id, "level": entry["level"], "reason": "excluded_by_observation"})
+            trace["skipped"].append({"plan_id": plan.plan_id, "reason": "excluded_by_observation"})
             continue
         if gate == "missing":
             # 4. 只问会改变可用动作的观察；同一问题不反复问
@@ -589,12 +546,12 @@ def decide_next(state, *, library) -> NextAction:
                     unavailable.append(obs_id)
                     continue
                 if pending_ask is None:
-                    pending_ask = (plan, obs_id, entry["level"])
-            trace["skipped"].append({"plan_id": plan.plan_id, "level": entry["level"], "reason": "observation_missing", "missing": missing})
+                    pending_ask = (plan, obs_id)
+            trace["skipped"].append({"plan_id": plan.plan_id, "reason": "observation_missing", "missing": missing})
             continue
         step, skipped_steps = _first_open_step(plan, executed_src, executed_steps, state)
         if step is None:
-            trace["skipped"].extend({**skipped, "level": entry["level"]} for skipped in skipped_steps)
+            trace["skipped"].extend(skipped_steps)
             continue
         # 5. 有适用、未执行、有来源支持的动作
         candidate_step = result(
@@ -606,13 +563,13 @@ def decide_next(state, *, library) -> NextAction:
                 "step_id": step.step_id,
                 "source": entry.get("source"),
             },
-            trace={**trace, "relaxed_level": entry["level"], "confidence": entry.get("confidence"), "switched_to": plan.plan_id,
+            trace={**trace, "confidence": entry.get("confidence"), "switched_to": plan.plan_id,
                    "skipped_steps": skipped_steps},
         )
         if pending_step is None:
             pending_step = candidate_step
     if pending_ask is not None:
-        plan, obs_id, level = pending_ask
+        plan, obs_id = pending_ask
         obs = library.observation_definitions()[obs_id]
         return result(
             "ask",
@@ -624,7 +581,7 @@ def decide_next(state, *, library) -> NextAction:
                 "plan_id": plan.plan_id,
                 "attempt": len(_asks_for(state, obs_id)) + 1,
             },
-            trace={**trace, "relaxed_level": level},
+            trace=trace,
         )
     blocked = [b for b in conditions.blockers if not b.cleared]
     unresolved_blocker = any(b.reason == "unknown" for b in blocked) and not (

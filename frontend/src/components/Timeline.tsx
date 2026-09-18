@@ -22,18 +22,15 @@ type Props = {
   state: SessionState;
   onAction: (kind: 'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'confirm_context' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction', payload: Record<string, unknown>) => void;
   onIssueAction?: (kind: 'new_issue' | 'resume_issue', issueId?: string) => void;
-  onDiagnosticMessage?: (text: '重新选择现象' | '暂停排查' | '继续排查') => void;
 };
 
 /** 按 timeline 渲染（05 §3）；只有 pendingInput 指向的卡片可交互，其余置为历史。 */
-export function Timeline({ state, onAction, onIssueAction, onDiagnosticMessage }: Props) {
+export function Timeline({ state, onAction, onIssueAction }: Props) {
   const [hover, setHover] = useState<string[]>([]);
   // 抽屉在时间线里排在步骤卡之前，拿不到「下一张卡」，所以按全时间线收集主引用
   const primary = state.timeline.flatMap((t) => (t.kind === 'step_card' && t.step.primary_evidence_id ? [t.step.primary_evidence_id] : []));
   const pendingCard = state.ui === 'awaiting_input' ? state.pendingInput?.card_id ?? null : null;
-  const busy = state.pendingActionId !== null || state.activeRun !== null
-    || state.ui === 'streaming' || state.ui === 'tool_running' || state.ui === 'recovering';
-  const canAdjustDiagnosis = state.activeIssueId && ['diagnose', 'guide', 'escalate'].includes(state.stage ?? '');
+  const busy = state.pendingActionId !== null;
   const evidence = state.timeline.filter((t): t is Extract<TimelineItem, { kind: 'evidence' }> => t.kind === 'evidence').flatMap((t) => t.items);
   return (
     <div className={styles.timeline} aria-live="polite">
@@ -80,11 +77,6 @@ export function Timeline({ state, onAction, onIssueAction, onDiagnosticMessage }
             return null;
         }
       })}
-      {canAdjustDiagnosis && onDiagnosticMessage && <nav aria-label="调整排查" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <button type="button" disabled={busy} onClick={() => onDiagnosticMessage('重新选择现象')}>重新选择现象</button>
-        {state.stage !== 'escalate' && <button type="button" disabled={busy} onClick={() => onDiagnosticMessage('暂停排查')}>暂停排查</button>}
-        <button type="button" disabled={busy} onClick={() => onDiagnosticMessage('继续排查')}>继续排查</button>
-      </nav>}
       {evidence.length === 0 && null}
     </div>
   );
