@@ -1,49 +1,56 @@
-# 巡检报告 2026-09-13T02:31:12.902697+00:00
+# 巡检报告 2026-09-17T12:28:27.496196+00:00
 
-- git `2381a4f` · mode `stub` · 通过 29/29 · 全部通过
-- 延迟（运行器 run_metric 口径）：first_visible_ms p50/p95/max = 4/18/18（n=15）；card_ready_ms p50/p95/max = 6/24/24（n=18）
-- 5 并发：通过率 100%，总墙钟 27 ms，card_ready_ms=[24, 23, 24, 23, 23]
+- git `a460530` · mode `stub` · 通过 27/36 · **失败：cannot_do_x3, safety_mid_text, wrong_device_receipt, low_confidence_order_hit, disconnect_refresh_after_feedback, all_models_down, vague_input, product_ambiguity, two_clarifications_then_r7**
+- 延迟（运行器 run_metric 口径）：first_visible_ms p50/p95/max = 62/62/62（n=1）；card_ready_ms p50/p95/max = 80/412/413（n=15）
+- 5 并发：通过率 100%，总墙钟 416 ms，card_ready_ms=[413, 409, 411, 412, 409]
 
 | 场景 | 组 | 结果 | 耗时 | 说明 |
 | --- | --- | --- | --- | --- |
-| duplicate_action | boundary | ✅ | 63 ms | {"runs": 2, "replayed": true, "version": 9, "card_ready_ms": [17, 0], "first_visible_ms": [4]} |
-| cannot_do_x3 | boundary | ✅ | 51 ms | {"counters": {"executed": 0, "advanced": 0, "skipped": 3, "plans_exhausted": 1}, "escalate_reason": "R1b", "steps_executed": 3} |
-| safety_first_sentence | boundary | ✅ | 35 ms | {"rule": "R4", "model_calls": 0, "elapsed_ms": 3, "first_visible_ms": [2]} |
-| safety_mid_text | boundary | ✅ | 47 ms | {"rule": "R4", "steps_in_summary": 1} |
-| safety_image_observation | boundary | ✅ | 38 ms | {"rule": "R4", "source": "observation", "model_calls": ["intake", "diagnose.vision"]} |
-| wrong_device_receipt | boundary | ✅ | 58 ms | {"receipt_status": "order_product_mismatch", "conflicts": ["订单商品 EUFY-S1-PRO 与当前设备 EUFY-X9-PRO 不一致"]} |
-| low_confidence_order_hit | boundary | ✅ | 57 ms | {"receipt_status": "needs_manual_check", "confidence": 0.5} |
-| disconnect_refresh_after_feedback | boundary | ✅ | 43 ms | {"resumed_events": 5, "counters": {"executed": 1, "advanced": 1, "skipped": 0, "plans_exhausted": 0}, "card_ready_ms": [0]} |
-| restart_recovery | boundary | ✅ | 40 ms | {"orphans_fixed": 1, "last_error": "server_restarted", "continued": true} |
-| weknora_down | boundary | ✅ | 39 ms | {"knowledge_status": "unavailable", "mode": "standard_flow", "first_visible_ms": [4], "card_ready_ms": [6]} |
-| all_models_down | boundary | ✅ | 41 ms | {"model_calls_attempted": 5, "alert_fired": 2, "done": "awaiting_input", "card_ready_ms": [8]} |
-| replay_mismatch | boundary | ✅ | 4 ms | {"case": "a1_hair_wrap", "problems_on_tamper": ["prompt_ver: recorded='2026-09-12.1' current='tampered'"]} |
-| vague_input | routing | ✅ | 34 ms | {"clarification": {"reason": "product", "attempts": 1, "asked_run_id": "0a9ef4b81ec94047a5b0cc953459f28f"}, "question": "为了准确排查，请告诉我设备的品类或型号，例如「扫地机 X10 Pro」或「S1… |
-| product_ambiguity | routing | ✅ | 33 ms | {"candidates": ["EUFY-S1-PRO", "EUFY-BP-S1-PRO"], "card_ready_ms": [2]} |
-| user_correction_and_stale_button | routing | ✅ | 49 ms | {"new_sku": "EUFY-X10-PRO-OMNI", "codes": ["stale_version", "stale_card"]} |
-| request_human_anytime | routing | ✅ | 43 ms | {"rule": "R3", "elapsed_ms": 3} |
-| two_clarifications_then_r7 | routing | ✅ | 39 ms | {"attempts": 2, "rule": "R7"} |
-| rejected_actions_do_not_advance | routing | ✅ | 42 ms | {"codes": [422, 422, "stale_version", "not_allowed_now"], "version": 6} |
-| rewrite_decision_table | rewrite | ✅ | 0 ms | {"normal_no_match": "triggered", "disabled": "disabled", "has_hits": "has_hits", "partial_unavailable": "unavailable", "empty_scope": "empty_scope", "unknown_pr… |
-| rewrite_off_no_call | rewrite | ✅ | 37 ms | {"rewrite_enabled": false, "invokes": 3, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "disable… |
-| rewrite_on_no_match_rescued | rewrite | ✅ | 40 ms | {"rewrite_enabled": true, "invokes": 5, "rewrite_invokes": 1, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
-| rewrite_on_empty_scope | rewrite | ✅ | 38 ms | {"rewrite_enabled": true, "invokes": 3, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "empty_sc… |
-| rewrite_on_partial_unavailable | rewrite | ✅ | 40 ms | {"rewrite_enabled": true, "invokes": 3, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "unavaila… |
-| rewrite_on_invalid_candidate | rewrite | ✅ | 40 ms | {"rewrite_enabled": true, "invokes": 4, "rewrite_invokes": 1, "retrieval_rounds": 1, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
-| rewrite_on_second_round_empty | rewrite | ✅ | 38 ms | {"rewrite_enabled": true, "invokes": 4, "rewrite_invokes": 1, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
-| rewrite_on_budget_insufficient | rewrite | ✅ | 0 ms | {"reason": "budget:7999ms", "min_remaining_ms": 8000} |
-| rewrite_on_image_contention | rewrite | ✅ | 39 ms | {"rewrite_enabled": true, "invokes": 5, "rewrite_invokes": 0, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": false, "reason": "has_hits"… |
-| late_result_after_cancel | rewrite | ✅ | 1556 ms | {"cancel_ms": 2, "events_after_cancel": ["run_started", "progress", "done"], "continued": true} |
-| five_concurrent_a1 | concurrency | ✅ | 60 ms | {"n": 5, "pass_rate": 1.0, "wall_ms": 27, "card_ready_ms": [24, 23, 24, 23, 23], "first_visible_ms": [18, 17, 18, 17, 17]} |
+| duplicate_action | boundary | ✅ | 305 ms | {"runs": 2, "replayed": true, "version": 2, "card_ready_ms": [178, 17]} |
+| cannot_do_x3 | boundary | ❌ | 258 ms | AssertionError: no awaiting_input in ['run_started', 'input_received', 'progress', 'issue_changed', 'pending_changed', 'message_start', 'message', 'message_end', 'escalation_summary', 'summary_updated', 'done'] |
+| safety_first_sentence | boundary | ✅ | 157 ms | {"rule": "R4", "model_calls": 1, "elapsed_ms": 63, "first_visible_ms": [62]} |
+| safety_mid_text | boundary | ❌ | 286 ms | AssertionError: 应走 rediagnose：[('intake', None), ('escalate', 'summarize')] |
+| safety_image_observation | boundary | ✅ | 226 ms | {"rule": "R4", "source": "observation", "model_calls": ["intake", "diagnose.vision"]} |
+| wrong_device_receipt | boundary | ❌ | 228 ms | AssertionError: no awaiting_input in ['run_started', 'input_received', 'progress', 'issue_changed', 'pending_changed', 'message_start', 'message', 'message_end', 'escalation_summary', 'summary_updated', 'done'] |
+| low_confidence_order_hit | boundary | ❌ | 242 ms | AssertionError: no awaiting_input in ['run_started', 'input_received', 'progress', 'issue_changed', 'pending_changed', 'message_start', 'message', 'message_end', 'escalation_summary', 'summary_updated', 'done'] |
+| disconnect_refresh_after_feedback | boundary | ❌ | 236 ms | AssertionError: 重试应重放 |
+| restart_recovery | boundary | ✅ | 187 ms | {"orphans_fixed": 1, "last_error": "server_restarted", "continued": true} |
+| weknora_down | boundary | ✅ | 232 ms | {"knowledge_status": "unavailable", "mode": "standard_flow", "card_ready_ms": [80]} |
+| all_models_down | boundary | ❌ | 111 ms | AssertionError: 产品可由规则查表确认、检索有证据 → 仍应出卡（改写用原文） |
+| replay_mismatch | boundary | ✅ | 18 ms | {"case": "a1_hair_wrap", "problems_on_tamper": ["prompt_ver: recorded='system=2026-09-14.1;interpret=2026-09-14.8;reply=2026-09-12.1;guide=2026-09-12.1;clarify=… |
+| vague_input | routing | ❌ | 113 ms | AssertionError: 我暂时无法完成这次理解，已有信息仍会保留。请指出要查询的信息或要继续的步骤。 |
+| product_ambiguity | routing | ❌ | 113 ms | AssertionError: 应出产品卡：['run_started', 'input_received', 'progress', 'progress', 'issue_changed', 'message_start', 'message', 'message_end', 'done'] |
+| user_correction_and_stale_button | routing | ✅ | 240 ms | {"new_sku": "EUFY-X10-PRO-OMNI", "codes": ["stale_version", "stale_card"]} |
+| request_human_anytime | routing | ✅ | 212 ms | {"rule": "R3", "elapsed_ms": 32} |
+| two_clarifications_then_r7 | routing | ❌ | 139 ms | AssertionError: 应 R7：None clar=None |
+| rejected_actions_do_not_advance | routing | ✅ | 216 ms | {"codes": [422, 422, "stale_version", "not_allowed_now"], "version": 1} |
+| rewrite_decision_table | rewrite | ✅ | 1 ms | {"normal_no_match": "triggered", "disabled": "disabled", "has_hits": "has_hits", "partial_unavailable": "unavailable", "empty_scope": "empty_scope", "unknown_pr… |
+| rewrite_off_no_call | rewrite | ✅ | 161 ms | {"rewrite_enabled": false, "invokes": 1, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "disable… |
+| rewrite_on_no_match_rescued | rewrite | ✅ | 170 ms | {"rewrite_enabled": true, "invokes": 3, "rewrite_invokes": 1, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
+| rewrite_on_empty_scope | rewrite | ✅ | 161 ms | {"rewrite_enabled": true, "invokes": 1, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "empty_sc… |
+| rewrite_on_partial_unavailable | rewrite | ✅ | 160 ms | {"rewrite_enabled": true, "invokes": 1, "rewrite_invokes": 0, "retrieval_rounds": 1, "rewrite_used": false, "decision": {"triggered": false, "reason": "unavaila… |
+| rewrite_on_invalid_candidate | rewrite | ✅ | 161 ms | {"rewrite_enabled": true, "invokes": 2, "rewrite_invokes": 1, "retrieval_rounds": 1, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
+| rewrite_on_second_round_empty | rewrite | ✅ | 164 ms | {"rewrite_enabled": true, "invokes": 2, "rewrite_invokes": 1, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": true, "reason": "eligible"}… |
+| rewrite_on_budget_insufficient | rewrite | ✅ | 1 ms | {"reason": "budget:7999ms", "min_remaining_ms": 8000} |
+| rewrite_on_image_contention | rewrite | ✅ | 225 ms | {"rewrite_enabled": true, "invokes": 3, "rewrite_invokes": 0, "retrieval_rounds": 2, "rewrite_used": true, "decision": {"triggered": false, "reason": "quota_use… |
+| late_result_after_cancel | rewrite | ✅ | 1725 ms | {"cancel_ms": 3, "events_after_cancel": ["input_received", "progress", "done"], "continued": true} |
+| five_concurrent_a1 | concurrency | ✅ | 510 ms | {"n": 5, "pass_rate": 1.0, "wall_ms": 416, "card_ready_ms": [413, 409, 411, 412, 409], "first_visible_ms": []} |
+| l3_forged_authorization | l3 | ✅ | 15 ms | {"unauthorized_writes": 0} |
+| l3_idempotent_execution | l3 | ✅ | 67 ms | {"created": 1, "replayed": 5} |
+| l3_hitl_reject | l3 | ✅ | 0 ms | {"status": "rejected"} |
+| l3_backend_faults | l3 | ✅ | 27 ms | {"statuses": ["failed", "failed"]} |
+| l3_complaint_escalation | l3 | ✅ | 7 ms | {"levels": ["dissatisfied", "angry", "complaint_risk"]} |
+| l3_blurry_image | l3 | ✅ | 3 ms | {"usable": false, "model_accuracy": "not_evaluated"} |
+| l3_task_continuation | l3 | ✅ | 3 ms | {"next": "logistics_query"} |
 
 ## 改写开关巡检（stub 路由测试，不代表改写语义质量）
 
 | 场景 | rewrite_enabled | invoke | rewrite invoke | 检索轮数 | 第二轮延迟 | 回退 | 知识状态 | 决策 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| rewrite_off_no_call | False | 3 | 0 | 1 | 0 ms | standard_flow | no_match | disabled |
-| rewrite_on_no_match_rescued | True | 5 | 1 | 2 | 0 ms | evidence | ok | eligible |
-| rewrite_on_empty_scope | True | 3 | 0 | 1 | 0 ms | standard_flow | no_match | empty_scope |
-| rewrite_on_partial_unavailable | True | 3 | 0 | 1 | 0 ms | standard_flow | no_match | unavailable |
-| rewrite_on_invalid_candidate | True | 4 | 1 | 1 | 0 ms | standard_flow | no_match | eligible |
-| rewrite_on_second_round_empty | True | 4 | 1 | 2 | 0 ms | standard_flow | no_match | eligible |
-| rewrite_on_image_contention | True | 5 | 0 | 2 | 0 ms | evidence | ok | has_hits |
+| rewrite_off_no_call | False | 1 | 0 | 1 | 0 ms | standard_flow | no_match | disabled |
+| rewrite_on_no_match_rescued | True | 3 | 1 | 2 | 0 ms | evidence | ok | eligible |
+| rewrite_on_empty_scope | True | 1 | 0 | 1 | 0 ms | standard_flow | no_match | empty_scope |
+| rewrite_on_partial_unavailable | True | 1 | 0 | 1 | 0 ms | standard_flow | no_match | unavailable |
+| rewrite_on_invalid_candidate | True | 2 | 1 | 1 | 0 ms | standard_flow | no_match | eligible |
+| rewrite_on_second_round_empty | True | 2 | 1 | 2 | 0 ms | standard_flow | no_match | eligible |
+| rewrite_on_image_contention | True | 3 | 0 | 2 | 0 ms | evidence | ok | quota_used |
