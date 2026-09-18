@@ -11,6 +11,15 @@ from app.conversation.operation_conditions import (
     resolve_operation_reply,
     update_conditions,
 )
+from app.diagnose.observations import (
+    RESELECT_OBSERVATION,
+    match_reply,
+    matching_options,
+    record_observations,
+)
+from app.diagnose.observations import (
+    definitions as observation_definitions,
+)
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
@@ -73,8 +82,8 @@ ISSUE_FIELDS = {
 }
 
 
-# 一个观察请求在写出观察事实之前都还接受回答；answered 之后才是终态。
-OPEN_OBSERVATION_STATUS = frozenset({"asked", "unparsed", "unknown"})
+# 未答请求接受补答；answered 请求只由明确改选或完整选项回答重新打开。
+OPEN_OBSERVATION_STATUS = frozenset({"asked", "unparsed", "unknown", "ambiguous", "revising"})
 
 
 def stable_id(*parts) -> str:
@@ -331,16 +340,44 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
             entry=state.get("entry"),
         )
+    changed_ids = {p["fact_id"] for p in applied}
+    observation_changed = any(
+        f.get("observation_id") and f["fact_id"] in changed_ids
+        for f in issue["facts"]
+    ) or any(r.get("revision_input_id") == iid for r in issue.get("observation_requests", []))
+    if observation_changed:
+        pc = issue.get("pending_card")
+        if pc and pc.get("kind") == "step_feedback":
+            pending_changes.append({"issue_id": target, "pending_id": pc["card_id"],
+                                    "status": "invalidated", "reason": "observation_changed"})
+            issue["pending_card"] = None
+            resumed_pending = False
+        issue["plan_cursor"] = None
+        issue["next_action"] = None
     conditions, operation_changed = update_conditions(issue, operation_proposal, text=text, input_id=iid)
     issue["operation_conditions"] = conditions
     if operation_changed:
+        definitions = observation_definitions()
+        for request in issue.get("observation_requests", []):
+            obs = definitions.get(request["observation_id"])
+            if request.get("status") != "unknown" or obs is None:
+                continue
+            if request.get("answered_input_id") == iid:
+                request["deferred_resources"] = [
+                    r for r in obs.required_resources if conditions["resources"].get(r) is False
+                ]
+            deferred = request.get("deferred_resources") or []
+            if deferred and all(conditions["resources"].get(r) is True for r in deferred):
+                request.update(status="revising", revision_input_id=iid, revision_reason="resource_restored")
+                request.pop("deferred_resources", None)
+                observation_changed = True
         issue["exhausted_plans"] = sorted(effective_exhausted(issue))
         pc = issue.get("pending_card")
         if pc and pc.get("kind") == "step_feedback":
             pending_changes.append({"issue_id": target, "pending_id": pc["card_id"], "status": "invalidated", "reason": "operation_conditions_changed"})
             issue["pending_card"] = None
             resumed_pending = False
-    if basis_changed or symptom_answered:
+    if basis_changed or symptom_answered or observation_changed:
         issue["diagnostic_decision"] = None
     if issue["symptoms"]:
         issue["status"] = "open"
@@ -469,7 +506,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         mode = "dialogue"
     if observation_answered:
         mode = "diagnose"
-    if applied or open_new or product_corrected or symptom_answered or operation_changed:
+    if applied or open_new or product_corrected or symptom_answered or operation_changed or observation_changed:
         issue["issue_revision"] = issue.get("issue_revision", 0) + 1
     decision = {
         "input_id": iid,
@@ -509,7 +546,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         context_revision=state.get("context_revision", 0)
         + (
             1
-            if applied or open_new or product_corrected or symptom_answered or operation_changed or risks != state.get("risk_cases", [])
+            if applied or open_new or product_corrected or symptom_answered or operation_changed or observation_changed or risks != state.get("risk_cases", [])
             else 0
         ),
         applied_input_ids=[*state.get("applied_input_ids", []), iid],
@@ -522,9 +559,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
 
 
 def _rematch_option(observation_id, text):
-    from app.diagnose.observations import definitions, match_reply
-
-    obs = definitions().get(observation_id)
+    obs = observation_definitions().get(observation_id)
     if obs is None:
         return None
     matched = match_reply(text, obs)
@@ -532,7 +567,7 @@ def _rematch_option(observation_id, text):
 
 
 def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
-    """把自由文本回答接到尚未回答的观察问题上（design §3.1）。
+    """把自由文本回答或明确改选接到观察问题上（design §3.1）。
 
     请求在写出观察事实之前一直开着：匹配唯一选项 → 写观察事实，明确说不知道 → 记为 unknown
     （decide_next 不再追问），其他文本按一次未解析尝试计数。unparsed / unknown 都不是终态——
@@ -543,17 +578,24 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
     if (entry != "message" or not text.strip()
             or intent not in {"answer_pending", "unknown", "supplement", "report_problem"}):
         return False, False
-    open_requests = [
-        r for r in issue.get("observation_requests") or [] if r.get("status") in OPEN_OBSERVATION_STATUS
-    ]
-    if not open_requests:
-        return False, False
-    from app.diagnose.observations import definitions as load_definitions
-    from app.diagnose.observations import match_reply, record_observations
-
-    definitions = load_definitions()
+    requests = [r for r in issue.get("observation_requests") or []
+                if r.get("issue_id") in {None, issue.get("issue_id")}]
+    definitions = observation_definitions()
     if not definitions:  # 计划库不可用是系统问题，不把用户回答当作未回答
         return False, False
+    if text.strip(" \n。！!，,") == RESELECT_OBSERVATION and requests:
+        request = requests[-1]
+        request.update(status="revising", revision_input_id=iid)
+        request.pop("ambiguous_option_ids", None)
+        request.pop("revision_reason", None)
+        return False, True
+    open_requests = [r for r in requests if r.get("status") in OPEN_OBSERVATION_STATUS]
+    if not open_requests and requests:
+        last = requests[-1]
+        obs = definitions.get(last["observation_id"])
+        # 已答问题只接受完整选项改选，解释、历史查询已在入口排除。
+        if obs and (matching_options(text, obs, exact=True) or len(matching_options(text, obs)) > 1):
+            open_requests = [last]
 
     answered = attempted = False
     for request in open_requests:
@@ -562,6 +604,12 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
             continue
         matched = match_reply(text, obs)
         if matched is None:
+            candidates = matching_options(text, obs)
+            if len(candidates) > 1 and intent != "unknown":
+                request.update(status="ambiguous", ambiguous_option_ids=candidates,
+                               quote=text, revision_input_id=iid)
+                attempted = True
+                continue
             # 只有刚问过的那一轮记未解析：之后每条无关消息都改写记录会掩盖真正的回答
             if request["status"] == "asked":
                 request["status"] = "unparsed"
@@ -593,7 +641,8 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
         issue.update(updated)
         applied.extend(patches)
         for r in issue.get("observation_requests") or []:
-            if r.get("observation_id") == obs.observation_id and r.get("status") in OPEN_OBSERVATION_STATUS:
+            if (r.get("observation_id") == obs.observation_id
+                    and (r.get("status") in OPEN_OBSERVATION_STATUS or r == request)):
                 r.update(status="answered", answered_input_id=iid, option_id=matched, quote=text)
         answered = True
     return answered, attempted

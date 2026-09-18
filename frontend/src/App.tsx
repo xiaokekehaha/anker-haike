@@ -78,7 +78,8 @@ export function App() {
           <ProgressBar stage={state.stage} timeline={state.timeline} activeIssueId={state.activeIssueId} />
           <ChatPane onPick={pickPrompt} disabled={busy} showStarters={!hasHistory}>
             <Timeline state={state} onAction={(kind, payload) => void session.act({ kind, payload })}
-              onIssueAction={(kind, target_issue_id) => void session.act({ kind, target_issue_id })} />
+              onIssueAction={(kind, target_issue_id) => void session.act({ kind, target_issue_id })}
+              onDiagnosticMessage={(text) => void session.send(text)} />
             {state.stalled && busy && <p className={cardStyles.stallNote} role="status">仍在处理，请稍候…</p>}
             <p className={styles.uiState} data-ui={state.ui} role="status">{state.ui === 'awaiting_input' ? (AWAITING_TEXT[pendingKind ?? ''] ?? UI_TEXT.awaiting_input) : UI_TEXT[state.ui]}</p>
             {state.ui === 'failed' && state.id && <button onClick={() => void session.recover()}>恢复连接</button>}

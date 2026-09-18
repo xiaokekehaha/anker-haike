@@ -58,14 +58,14 @@ def test_default_conditions_are_not_an_operation_context():
     assert has_operation_context({"steps_executed": [{"plan_id": "p", "step_id": "s1"}]})
 
 
-def test_unparsed_observation_reply_is_reopened_by_a_later_option_label():
+def test_unavailable_observation_reply_is_reopened_by_a_later_option_label():
     state = power_bank_state()
     action = decide_next(state, library=LIB)
     assert action.kind == "ask" and action.question["observation_id"] == "pb_737_display"
     state["observation_requests"] = asked(state, action)
 
     state = supplement(state, "设备不在身边", "miss")
-    assert state["observation_requests"][0]["status"] == "unparsed"
+    assert state["observation_requests"][0]["status"] == "unknown"
     assert conditions_for(state).resources == {"device": False}
 
     # 隔一轮逐字给出选项标签：请求还开着，答案接得住（原会话在这里把回答整条丢掉）
@@ -87,7 +87,7 @@ def test_unrelated_turns_do_not_overwrite_the_pending_observation_record():
     state = supplement(state, "设备不在身边", "miss")
     state = supplement(state, "这产品太差了", "rant")
     assert state["observation_requests"][0]["quote"] == "设备不在身边"
-    assert state["observation_requests"][0]["status"] == "unparsed"
+    assert state["observation_requests"][0]["status"] == "unknown"
 
 
 async def test_http_answer_after_missing_device_never_repeats_the_same_pause(conversation):
