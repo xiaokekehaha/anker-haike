@@ -1,0 +1,58 @@
+# 检索编排开关（票 32，03 §1.4.1 / §1.4.2、09 §4.1）。
+version: 2026-09-18.1
+query_rewrite:
+  enabled: false            # 启用后先评估已有证据，空结果/不足/评估未知可受控补查一次；待真实标注对照后启用
+  max_query_chars: 200
+  budget_ms: 3000           # rewrite invoke 上限；Router 内部尝试共用
+  min_remaining_ms: 8000    # run 剩余不足 8 s 跳过补救（08 §8）
+  strict_terms: false       # 早期严格模式（整句须由原文切出）；阶段 6 实测拒掉 6/8 合理改写，默认关
+  # 已审核的同义表达映射：改写里出现左侧词视为与右侧原词等价，不算「新增部件 / 原因」
+  synonyms:
+    碎屑: [渣, 垃圾, 灰, 碎渣]
+    残留: [还是有, 还是, 没扫干净, 扫不干净, 留下]
+    清扫后: [跑完了, 扫完, 扫完了, 跑完]
+    清扫: [扫, 跑]
+    清洁效果差: [扫不干净, 扫完还脏, 还是一堆, 一堆渣, 没扫干净]
+    吸力下降: [不吸, 吸不起, 吸力小, 吸力弱, 吸力变小, 吸力不足, 吸不起来]
+    滚刷: [主刷]
+    边刷: [侧刷]
+    滤网: [过滤网, 滤芯]
+    尘盒: [垃圾盒, 集尘盒]
+    扫地机器人: [扫地机, 扫拖机器人, 机器人]
+# ---- 阶段 3（docs/planning/2026-09-13_bounded-agentic-rag）：默认全部关闭，凭评测报告逐项开启 ----
+multi_query:
+  enabled: false            # 用上面的 synonyms 做确定性变体（不调模型），变体 × 两库并发，本地 RRF 合并
+  categories: [robot_vacuum] # 当前词表只适用于扫地机；歧义部件「刷子」不自动替换
+  max_variants: 2           # 不含原 query
+  max_requests_per_round: 6
+  rrf_k: 60
+faq:
+  enabled: false            # 本地 FAQ 索引（faq_rv.yaml）进入首轮；WeKnora FAQ 检索接口在 v0.8.0 返回空
+  top_k: 3
+  threshold: 0.3
+rerank:
+  enabled: false            # 适配器侧调百炼 gte-rerank-v2；WeKnora hybrid-search 只做 RRF 不重排
+  model: gte-rerank-v2
+  timeout_ms: 2000
+  min_remaining_ms: 5000
+parent_expand:
+  enabled: false            # 手册命中的同父子块拼接成父块正文给 synthesize（父块无读取接口，子块列表还原）
+  max_items: 3
+  max_chars: 800
+grade:
+  enabled: false            # 单独启用质量观测；query_rewrite 开启时也会评估充分性，均不删除候选
+  budget_ms: 4000             # qwen-flash 评 8 条约 2 s，2500 会大量超时（阶段 5 实测）
+  min_remaining_ms: 6000
+  max_items: 12             # 按来源/轮次选择代表性证据，包含故障卡；trace 记录实际评估 ID
+  max_chars: 500
+  second_round: false       # 第二轮新增命中是否再评一次（多一次模型调用）
+retrieval:
+  candidate_k: 15           # 每库每查询的候选数；重排前保留，不受展示摘要预算裁剪
+  final_k: 12               # 两轮及故障卡联合选择后进入诊断的最大条数
+  context_chars: 5000       # 最终证据块总字符预算（包含标题、来源等标签）
+  item_chars: 800           # 单条正文上限；展示摘要仍为400字符
+  second_round_budget_ms: 3000   # 补检索整轮上限
+  min_remaining_for_second_round_ms: 3000  # 剩余不足 3 s 跳过第二轮并记录（08 §8）
+synthesize:
+  budget_ms: 8000
+  max_hypotheses: 3
