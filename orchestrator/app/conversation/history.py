@@ -47,6 +47,21 @@ ACTION_LABELS = {
 }
 
 
+def action_text(payload: dict) -> str:
+    """动作在时间线上的那一行。判别问题回的是具体选项，要写出选了什么——
+    只显示「操作」等于把用户刚说过的话吞掉，事后也看不出这条路径是依据什么走的。"""
+    if payload.get("kind") == "answer_observation":
+        # app.diagnose 经 app.context.builder 回指本模块，顶层导入会成环，只能在这里取
+        from app.diagnose.observations import definitions, option_label
+
+        inner = payload.get("payload") or {}
+        label = option_label(
+            definitions(), inner.get("observation_id", ""), inner.get("option_id", "")
+        )
+        return f"回答：{label}"
+    return ACTION_LABELS.get(payload.get("kind"), "操作")
+
+
 def fold_history(
     session_id: str, records: list, *, through_seq: int | None = None
 ) -> list[ConversationEntry]:
@@ -83,7 +98,7 @@ def fold_history(
                     received_at=at,
                     text=payload.get("text", "")
                     if is_message
-                    else ("人工案件操作" if is_admin else ACTION_LABELS.get(payload.get("kind"), "操作")),
+                    else ("人工案件操作" if is_admin else action_text(payload)),
                     payload=payload,
                     attachments=list(payload.get("image_ids") or []),
                     issue_id=e.get("issue_id"),
@@ -141,7 +156,7 @@ def fold_history(
             ]
             if e["status"] != "started":
                 entry.completed_at = at
-        elif kind in {"product_card", "step_card", "receipt_card", "escalation_summary", "context_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
+        elif kind in {"product_card", "step_card", "observation_card", "receipt_card", "escalation_summary", "context_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
             entry = entries.get(e["card_id"]) or ConversationEntry(
                 **base,
                 entry_id=e["card_id"],

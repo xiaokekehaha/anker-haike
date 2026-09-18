@@ -507,10 +507,20 @@ def decide_next(state, *, library) -> NextAction:
         except KeyError:
             continue
     ranked_ids = {p.plan_id for p, _ in ranked}
+    by_codes = (
+        {p.plan_id for p in library.allowed_for(category=category, sku=sku, symptom_codes=codes)}
+        if category
+        else set()
+    )
     unlocked = [
         (p, {"plan_id": p.plan_id, "confidence": None, "source": "observation"})
-        for p in library.allowed_for(category=category, sku=sku, symptom_codes=codes)
+        for p in library.allowed_for(category=category, sku=sku)
         if p.requires_observations and p.plan_id not in exhausted and p.plan_id not in ranked_ids
+        # 症状码是对自由文本的早期粗分类，观察是用户对本机的直接回答：门槛已满足就不再由症状码否决，
+        # 否则会出现问了又不用答案（A1289 答「连接笔记本显示 UVP」，pb_737_laptop_uvp 却因缺
+        # pb_no_input 而不可用）。尚缺观察的计划仍要症状码支持——ask 先于 step 返回，
+        # 放开会让无关问题抢在可执行步骤前面（design §3.4：不因 taxonomy 里有这道题就强行补问）。
+        and (p.plan_id in by_codes or p.observation_gate(option_ids)[0] == "ok")
     ] if category else []
     # 问诊期的计划约束只针对模型排序结果；观察解锁的计划以观察条件 + 症状码为门槛
     candidates = [

@@ -29,9 +29,10 @@ export function ObservationCard({ item, active, disabled, onAnswer }: Props) {
   }
   return (
     <section className={styles.card} data-kind="observation_card" aria-label="排查判别问题">
+      {/* 问题已由上一条消息问出，卡片头不再重复；折叠态才需要它自带问题 */}
       <header className={styles.cardHead}>
-        <strong>{item.observation.question}</strong>
-        {chosen ? <span className={styles.doneTag}>已选择</span> : <span className={styles.sourceTag}>选一项，或直接打字描述</span>}
+        <strong>选择最接近的情况</strong>
+        {chosen ? <span className={styles.doneTag}>已选择</span> : <span className={styles.sourceTag}>也可以直接打字描述</span>}
       </header>
       <ul className={styles.candidates}>
         {findings.map((o) => (

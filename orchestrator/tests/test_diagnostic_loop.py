@@ -242,6 +242,39 @@ def test_same_not_solved_with_different_observations_yields_different_paths(tmp_
     assert decide_next(done, library=lib).reason == "no_supported_followup"
 
 
+def library_with_mismatched_codes(tmp_path) -> PlanLibrary:
+    """第三条路径的症状码与本次会话不相交（真实配置里 pb_737_laptop_uvp 少写了 pb_no_input 即此形）。"""
+    base = (REPO_ROOT / "config" / "plans.yaml").read_text(encoding="utf-8")
+    third = THIRD_PLAN.replace("symptom_codes: [power_failure, charging_failure]", "symptom_codes: [noise]")
+    path = tmp_path / "mismatched.yaml"
+    path.write_text(base.replace("evidence:\n", f"evidence:\n{THIRD_EVIDENCE}", 1) + third, encoding="utf-8")
+    return PlanLibrary.from_yaml(path)
+
+
+def test_satisfied_observation_unlocks_a_plan_whose_symptom_codes_do_not_match(tmp_path):
+    """症状码是对自由文本的早期粗分类，观察是用户对本机的直接回答：门槛已满足就不该再被症状码否决，
+    否则会出现问了又不用答案（会话 1db3017：答「连接笔记本显示 UVP」仍直接转人工）。"""
+    lib = library_with_mismatched_codes(tmp_path)
+    exhausted = {"exhausted_plans": ["rv_power_supply"], "steps_executed": executed_both()}
+    seen = with_observation(base_state(**exhausted), "charging_indication", "none")
+    action = decide_next(seen, library=lib)
+    assert action.kind == "step" and action.reason == "observation_unlocked_plan"
+    assert action.plan_cursor["plan_id"] == "rv_power_no_indication"
+    # 相反观察仍然排除该计划：放开的只是症状码否决，不是观察门槛本身
+    indicated = with_observation(base_state(**exhausted), "charging_indication", "indicated")
+    assert decide_next(indicated, library=lib).kind == "handoff_offer"
+
+
+def test_unmatched_codes_do_not_create_new_questions_while_the_observation_is_unknown(tmp_path):
+    """尚缺观察的计划仍要症状码支持：ask 先于 step 返回，放开会让无关问题抢在可执行步骤前面。"""
+    lib = library_with_mismatched_codes(tmp_path)
+    state = base_state(exhausted_plans=["rv_power_supply"], steps_executed=executed_both())
+    action = decide_next(state, library=lib)
+    assert action.kind == "handoff_offer" and action.reason == "no_supported_followup"
+    # 症状码相交时才提问（同一状态换回相交的计划库）
+    assert decide_next(state, library=library_with_third_plan(tmp_path)).kind == "ask"
+
+
 def test_missing_observation_is_asked_once_per_attempt_then_declared_unavailable(tmp_path):
     lib = library_with_third_plan(tmp_path)
     state = base_state(exhausted_plans=["rv_power_supply"], steps_executed=executed_both())
@@ -402,6 +435,10 @@ async def test_missing_observation_is_asked_and_free_text_answer_reenters_the_lo
         card = next(e for e in rows if e["type"] == "observation_card")
         assert card["observation"]["observation_id"] == "charging_indication"
         assert "没有充电提示" in [o["label"] for o in card["observation"]["options"]]
+        # 卡片是持久化效果：跟着状态提交一起发，排在提问消息之后并带上 issue_id
+        types = [e["type"] for e in rows]
+        assert types.index("observation_card") > types.index("message_end")
+        assert card["issue_id"] == (await graph_state(sid))["active_issue_id"]
         state = await graph_state(sid)
         assert state["observation_requests"][-1]["status"] == "asked"
         assert state["pending_card"]["kind"] == "answer_observation"
@@ -459,6 +496,9 @@ async def test_observation_card_selection_records_the_fact_and_advances():
         snap = (await client.get(f"/sessions/{sid}")).json()
         item = next(t for t in snap["timeline"] if t["kind"] == "observation_card")
         assert item["chosen_option_id"] == "none"
+        # 时间线要写出选了什么，只显示「操作」等于把用户刚说过的话吞掉
+        action_item = next(t for t in snap["timeline"] if t.get("action_kind") == "answer_observation")
+        assert action_item["label"] == "回答：没有充电提示"
 
 
 @pytest.mark.usefixtures("l3_runtime", "third_plan_library")
