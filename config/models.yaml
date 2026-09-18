@@ -31,7 +31,8 @@
 #   前提没了，主位回到 deepseek。qwen-vl 必须留在第二位：它不依赖复看就能读出铭牌，复看失败时更稳。
 # 旧的 2026-09-13.5 排序基于合成大字示意图，对分辨率与小字是盲的，不再作为该 task 的裁决依据。
 # 2026-09-18.1：充分性评估最多12条证据及缺口列表，输出预算调至1024，避免旧256截断JSON；模型顺序不变。
-version: 2026-09-18.1
+# 2026-09-18.2：会话1ad8的intake在512 token触发LengthFinishReasonError，默认通道提高至1536，与其他通道一致。
+version: 2026-09-18.2
 default_lane: domestic
 
 providers:
@@ -67,7 +68,7 @@ lanes:
     # 的 schema/准确率、P50、成本，顺序同 chain。裁决口径同 runner.judge：准确率只作门槛，达标后按 延迟/上限 + 成本×100 排序；
     # 智谱位一律用 glm-4.7 不用 glm-4.5-flash（免费档排队：reply.stream P50 12.1 s、67%/65%）。
     # 注意 repeats=3 在门槛线附近抖动可达 ±5 点，边界候选的裁决以 findings §「三家全量」的多轮记录为准。
-    intake:                {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 512}    # 100/98 1051 ms ¥0.0002 | 100/100 953 ms ¥0.0016 | 100/97 1364 ms
+    intake:                {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 1536}   # 100/98 1051 ms ¥0.0002 | 100/100 953 ms ¥0.0016 | 100/97 1364 ms
     disambiguate.clarify:  {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 256}    # 100/100 752 ms ¥0.0001 | 100/100 990 ms ¥0.0010 | 100/100 965 ms
     diagnose.vision:       {chain: [deepseek, qwen-vl, glm-v],    effort: medium, needs_vision: true} # 2026-09-15 阶段 1 后 repeats=2：deepseek 93% 1377 ms | qwen-vl 88% 4939 ms | glm-v 82% 3390 ms；三家铭牌读出率 100/100/67。deepseek 只收 4 张图，qwen-vl / glm-v 收 10 张
     diagnose.synthesize:   {chain: [deepseek, qwen-max, glm-v],   effort: high}                       # 100/100 1162 ms ¥0.0023 | 100/100 2179 ms ¥0.0094 | 100/88 2320 ms

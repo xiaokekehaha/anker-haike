@@ -1,0 +1,35 @@
+[
+  {
+    "event": "model_call",
+    "session_id": "1ad8e1eb148f4e88a3fba20f5c7f6689",
+    "run_id": "0ed4ca9c80354e83a1f9b82eaaff6972",
+    "task": "intake",
+    "status": "error",
+    "model_used": "deepseek/deepseek-flash",
+    "latency_ms": 8004,
+    "attempts": [
+      {
+        "alias": "qwen-flash",
+        "model_used": "dashscope/qwen3.7-flash",
+        "lane": "domestic",
+        "method": "json_object",
+        "outcome": "error",
+        "latency_ms": 5687,
+        "error": "LengthFinishReasonError: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=512, prompt_tokens=4986, total_tokens=5498, completion_tokens_details=None, prompt_tokens_details=PromptTokensDetails(audio_tokens=None, cache_write_tokens=None, cached_token",
+        "estimated_input_tokens": 6409,
+        "input_budget": 16000
+      },
+      {
+        "alias": "deepseek",
+        "model_used": "deepseek/deepseek-flash",
+        "lane": "domestic",
+        "method": "json_object",
+        "outcome": "timeout",
+        "latency_ms": 2268,
+        "error": "TimeoutError: ",
+        "estimated_input_tokens": 6409,
+        "input_budget": 16000
+      }
+    ]
+  }
+]

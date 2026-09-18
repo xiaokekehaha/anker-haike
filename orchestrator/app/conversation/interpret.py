@@ -238,7 +238,7 @@ async def interpret_turn(router, state: dict, *, lane: str):
             "intake",
             bundle.messages,
             TurnInterpretation,
-            budget_ms=8000,
+            budget_ms=15000,
             session_id=state.get("session_id"),
             lane=lane,
         )
