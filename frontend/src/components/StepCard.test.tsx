@@ -23,7 +23,7 @@ describe('StepCard（票 34）', () => {
     expect(screen.getByText('把主机翻过来，取出滚刷，割断毛发后装回。')).toBeVisible();
     expect(screen.getByText('滚刷无缠绕物，转动顺畅')).toBeVisible();
     expect(screen.getByRole('note')).toHaveTextContent('拆装前请先关机');
-    expect(screen.getByText('来源 2')).toBeVisible();
+    expect(screen.getByText('依据 2')).toBeVisible();
     fireEvent.change(screen.getByLabelText('补充说明'), { target: { value: ' 还是没吸力 ' } });
     fireEvent.click(screen.getByRole('button', { name: '还没解决' }));
     expect(onFeedback).toHaveBeenCalledWith('not_solved', '还是没吸力');

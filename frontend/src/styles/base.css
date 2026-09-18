@@ -1,5 +1,7 @@
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background: var(--page); color: var(--text); }
+html, body { height: 100%; }
+body { margin: 0; min-width: 320px; background: var(--page); color: var(--text); font-size: 15px; line-height: 1.7; overflow: hidden; }
+#root { height: 100%; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: wait; opacity: .6; }

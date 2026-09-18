@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { HeaderBar } from './HeaderBar';
 
@@ -10,6 +10,9 @@ describe('health indicators', () => {
         domestic: { status: 'ok' }, overseas: { status: 'unconfigured' },
       } },
     }} error={null} refreshing={false} checkedAt={new Date()} refresh={vi.fn()} />);
+    // 组件明细收在状态点的弹层里，客户默认只看到一句总状态
+    expect(screen.getByText('服务部分不可用')).toBeVisible();
+    fireEvent.click(screen.getByText('服务部分不可用'));
     expect(screen.getByRole('button', { name: /模型/ })).toHaveAttribute('aria-haspopup', 'dialog');
     expect(screen.queryByText('未配置')).not.toBeInTheDocument();
     expect(screen.getByText('不可用')).toBeVisible();
@@ -19,6 +22,8 @@ describe('health indicators', () => {
 
   it('shows connection failures for all indicators when the health endpoint is unreachable', () => {
     render(<HeaderBar snapshot={null} error="unreachable" refreshing={false} checkedAt={new Date()} refresh={vi.fn()} />);
+    expect(screen.getByText('服务连接异常')).toBeVisible();
+    fireEvent.click(screen.getByText('服务连接异常'));
     expect(screen.getAllByText('连接异常')).toHaveLength(2);
     expect(screen.getByRole('button', { name: /模型/ })).toBeEnabled();
   });

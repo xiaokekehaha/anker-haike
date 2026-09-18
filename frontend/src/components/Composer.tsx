@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import type { ClipboardEvent as ReactClipboardEvent, KeyboardEvent as ReactKeyboardEvent, Ref } from 'react';
+import type { ClipboardEvent as ReactClipboardEvent, KeyboardEvent as ReactKeyboardEvent, Ref, RefObject } from 'react';
 import { clipboardImages, isTouchPrimary, TOUCH_PRIMARY_QUERY } from '../lib/device';
 import { prepareImage } from '../lib/image';
 import type { ImagePurpose } from '../lib/image';
@@ -24,10 +24,6 @@ type Props = {
   onCancel?: () => void;
 };
 
-const WAITING_HINT = {
-  select_product: '请先在上方卡片选择产品。',
-  confirm_receipt: '请在上方核对订单号、购买渠道等信息，确认或跳过。',
-};
 // 等待步骤时仍可正常对话，是否更新排障由本轮语义决定。
 export const REDIAGNOSE_HINT = '可以追问原因、回顾记录、补充或纠正情况；完成操作后，也可以直接描述结果。';
 // 判别问题出卡后输入框照旧可用：点选只是更省事的那条路，用自己的话说同样会被接住。
@@ -54,9 +50,17 @@ function release(items: Attachment[]) {
   for (const item of items) if (item.previewUrl && typeof URL.revokeObjectURL === 'function') URL.revokeObjectURL(item.previewUrl);
 }
 
+/** 单行起步、随内容长高到约 6 行的输入框：卡片在场时它只是「补一句」的位置，不该是 100 px 的大文本域。 */
+function autoGrow(el: HTMLTextAreaElement | null) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+}
+
 export function Composer({ value, onChange, offline, inputRef, onSend, onRequestHuman, onSkipReceipt, pendingKind = null, purpose = 'fault', maxImages = 3, busy: runBusy = false, onCancel }: Props) {
   const inputId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
+  const localRef = useRef<HTMLTextAreaElement>(null);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const attachmentsRef = useRef<Attachment[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -70,11 +74,12 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const receipt = pendingKind === 'upload_receipt';
   const rediagnose = pendingKind === 'step_feedback';
   const observing = pendingKind === 'answer_observation';
-  const cardOnly = false;
   const busy = processing || submitting;
-  const inputBlocked = !!offline || runBusy || cardOnly || busy;
+  const inputBlocked = !!offline || runBusy || busy;
   const hasContent = value.trim().length > 0 || attachments.length > 0;
   const canSend = !inputBlocked && !!onSend && hasContent;
+
+  useEffect(() => { autoGrow(localRef.current); }, [value]);
 
   useEffect(() => {
     generation.current++;
@@ -90,6 +95,12 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
       attachmentsRef.current = [];
     };
   }, [purpose, pendingKind]);
+
+  function setRefs(el: HTMLTextAreaElement | null) {
+    localRef.current = el;
+    if (typeof inputRef === 'function') inputRef(el);
+    else if (inputRef) (inputRef as RefObject<HTMLTextAreaElement | null>).current = el;
+  }
 
   function updateAttachments(items: Attachment[]) {
     attachmentsRef.current = items;
@@ -181,27 +192,22 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   }
 
   const hint = offline ? '可以先填写问题；对话服务暂未接通，目前无法发送。'
-    : cardOnly ? WAITING_HINT[pendingKind as keyof typeof WAITING_HINT]
     : observing ? OBSERVATION_HINT
     : rediagnose ? REDIAGNOSE_HINT
     : receipt ? '请上传订单截图、发票或收据，可附带备注；单张 5 MB 内。也可以跳过，由人工协助核实。'
     : '支持文字与图片（单张 5 MB 内，会自动压缩），说不清楚也没关系。';
   // 键盘用法只在能用上的设备提示；离线时发不出去，不提发送键。
-  const keyHint = offline || cardOnly || touchPrimary ? null : 'Enter 发送，Shift+Enter 换行，截图可直接粘贴到输入框。';
+  const keyHint = offline || touchPrimary ? null : 'Enter 发送，Shift+Enter 换行，截图可直接粘贴到输入框。';
+  const label = receipt ? '凭证备注（选填）' : observing ? '回答上方的问题' : rediagnose ? '补充新情况或纠正' : '描述你的问题';
+  const placeholder = receipt ? '可补充购买平台、店铺或其他需要说明的信息…'
+    : rediagnose ? '也可以直接描述结果，例如：其实还有异响 / 说错了，我的是 X10…'
+    : observing ? '选项之外的情况，用自己的话说…'
+    : '一句话说说设备型号和遇到的问题，例如：我的耳机只有一边有声音，重置后还是不行…';
 
   return (
     <form className={styles.composer} onSubmit={(e) => { e.preventDefault(); void submit(); }} aria-label={receipt ? '上传购买凭证' : '发送消息'}>
-      <div className={styles.heading}>
-        <label htmlFor={inputId}>{receipt ? '凭证备注（选填）' : observing ? '回答上方的问题' : rediagnose ? '补充新情况或纠正' : '描述你的问题'}</label>
-        <span>{receipt ? '订单截图、发票或收据均可' : cardOnly ? '请先完成上方卡片' : observing ? '选项之外的情况也可以直接说' : rediagnose ? '可以随时追问，已做的步骤保留' : '直接输入，不用先选产品'}</span>
-      </div>
-      <div className={styles.box}>
-        <textarea id={inputId} ref={inputRef} className={styles.input} rows={3} maxLength={4000} value={value}
-          disabled={cardOnly || runBusy || submitting} onChange={(e) => onChange(e.target.value)}
-          onKeyDown={onKeyDown} onPaste={onPaste}
-          onCompositionStart={() => { composingRef.current = true; }} onCompositionEnd={() => { composingRef.current = false; }}
-          placeholder={receipt ? '可补充购买平台、店铺或其他需要说明的信息…' : rediagnose ? '例如：其实还有异响 / 说错了，我的是 X10…' : '点击这里输入，例如：我的耳机只有一边有声音，重置后还是不行…'}
-          aria-describedby={keyHint ? `${inputId}-hint ${inputId}-keys` : `${inputId}-hint`} />
+      <label htmlFor={inputId} className={styles.label}>{label}</label>
+      <div className={styles.box} data-receipt={receipt || undefined}>
         {attachments.length > 0 && (
           <ul className={styles.attachments} aria-label="待发送图片">
             {attachments.map((item, i) => (
@@ -213,15 +219,20 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
             ))}
           </ul>
         )}
-        <div className={styles.tools}>
+        <div className={styles.row}>
           <input ref={fileRef} type="file" accept="image/*" multiple hidden disabled={inputBlocked} data-testid="image-input"
             onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
-          <button type="button" className={styles.tool} disabled={inputBlocked} title={receipt ? '选择购买凭证图片' : '上传故障照片'} onClick={() => fileRef.current?.click()}>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="10" r="2" /><path d="m21 16-5-5-9 8" /></svg>
-            <span>{processing ? '处理中…' : receipt ? '选择凭证图片' : '照片'}</span>
+          <button type="button" className={styles.tool} disabled={inputBlocked} aria-label={processing ? '图片处理中' : receipt ? '选择凭证图片' : '上传故障照片'} title={receipt ? '选择购买凭证图片' : '上传故障照片'} onClick={() => fileRef.current?.click()}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="10" r="2" /><path d="m21 16-5-5-9 8" /></svg>
           </button>
-          <button type="button" className={styles.human} disabled={offline || !onRequestHuman} onClick={onRequestHuman}>请求人工</button>
-          {runBusy && onCancel && <button type="button" className={styles.human} onClick={onCancel}>取消</button>}
+          <textarea id={inputId} ref={setRefs} className={styles.input} rows={1} maxLength={4000} value={value}
+            disabled={runBusy || submitting} onChange={(e) => onChange(e.target.value)}
+            onKeyDown={onKeyDown} onPaste={onPaste}
+            onCompositionStart={() => { composingRef.current = true; }} onCompositionEnd={() => { composingRef.current = false; }}
+            placeholder={placeholder}
+            aria-describedby={keyHint ? `${inputId}-hint ${inputId}-keys` : `${inputId}-hint`} />
+          {runBusy && onCancel && <button type="button" className={styles.ghost} onClick={onCancel}>取消</button>}
+          {onRequestHuman && <button type="button" className={styles.ghost} disabled={offline} onClick={onRequestHuman}>请求人工</button>}
           <button type="submit" className={styles.send} disabled={!canSend}>{submitting ? '提交中…' : receipt ? '上传凭证' : '发送'}</button>
         </div>
       </div>

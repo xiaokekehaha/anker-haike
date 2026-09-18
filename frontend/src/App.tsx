@@ -1,38 +1,41 @@
 import { useEffect, useRef, useState } from 'react';
 import { HeaderBar } from './components/HeaderBar';
-import { ProgressBar } from './components/ProgressBar';
 import { ChatPane } from './components/ChatPane';
 import { Composer } from './components/Composer';
-import { Timeline } from './components/Timeline';
+import { PendingCard, Timeline } from './components/Timeline';
+import { RecordPanel } from './components/RecordPanel';
 import { Toast } from './components/Toast';
 import { SessionSwitcher } from './components/SessionSwitcher';
 import { useHealth } from './state/useHealth';
 import { useSession } from './state/useSession';
+import { deriveRecord } from './state/record';
 import cardStyles from './components/Cards.module.css';
 import styles from './App.module.css';
 
-const UI_TEXT: Record<string, string> = {
-  idle: '', streaming: '正在处理…', tool_running: '正在检索知识库…', awaiting_input: '请在上方卡片中选择', failed: '这一轮没有完成', recovering: '正在恢复连接…',
-};
-// awaiting_input 按 pending kind 细分提示（票 34：步骤卡等待反馈）
-const AWAITING_TEXT: Record<string, string> = {
-  confirm_context: '请确认服务信息', confirm_proposal: '请查看政策依据并选择方案', upload_retake: '请补拍照片，或在卡片中跳过', rate_satisfaction: '可以评价本次服务，也可以继续查询进度',
-  step_feedback: '请按步骤操作后，在卡片上告诉我结果；有新情况也可以直接补充', upload_receipt: '请上传购买凭证，或选择跳过', confirm_receipt: '请核对凭证信息后确认',
-  answer_observation: '在卡片上选一项就行，也可以直接打字描述',
-};
-
+/** 方案 A「服务台」：左对话（流 + 停靠待办）、右服务记录；手机端记录折成一条可展开的记录条。 */
 export function App() {
   const health = useHealth();
   const session = useSession();
   const { state } = session;
   const [draft, setDraft] = useState('');
+  const [hover, setHover] = useState<string[]>([]);
+  const [recordOpen, setRecordOpen] = useState(false);
   const composerRef = useRef<HTMLTextAreaElement>(null);
+  const streamRef = useRef<HTMLDivElement>(null);
   const busy = state.ui === 'streaming' || state.ui === 'tool_running' || state.ui === 'recovering';
   const hasHistory = state.timeline.length > 0;
   const pendingKind = state.pendingInput?.kind ?? null;
+  const pendingCard = state.ui === 'awaiting_input' ? state.pendingInput?.card_id ?? null : null;
   const receiptUpload = pendingKind === 'upload_receipt';
   const composerContext = state.pendingInput?.card_id ?? 'message';
   useEffect(() => { setDraft(''); }, [composerContext]);
+
+  // 新内容在下方：时间线变化时把流滚到底，待办卡本身在 dock 里不需要滚动去找
+  const lastKey = state.timeline.length ? `${state.timeline.length}:${state.timeline[state.timeline.length - 1]?.kind}` : '';
+  useEffect(() => {
+    const el = streamRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [lastKey, state.ui]);
 
   function pickPrompt(text: string) {
     setDraft(text);
@@ -41,48 +44,54 @@ export function App() {
       const input = composerRef.current;
       if (!input) return;
       input.setSelectionRange(input.value.length, input.value.length);
-      const bounds = input.getBoundingClientRect();
-      if (bounds.top < 0 || bounds.bottom > window.innerHeight) input.scrollIntoView({ block: 'center', behavior: 'auto' });
     });
   }
 
-  return (
-    <div className={styles.app}>
-      <a href="#main" className={styles.skip}>跳到主要内容</a>
-      <HeaderBar {...health} />
-      <main id="main" className={styles.main}>
-        {!hasHistory && (
-          <section className={styles.welcome} aria-labelledby="welcome-title">
-            <p className={styles.eyebrow}>ANKER 全线智能硬件 · 售后服务</p>
-            <h1 id="welcome-title">真正听懂，真正<span>解决。</span></h1>
-            <p className={styles.description}>说说你的设备遇到了什么问题，或需要哪方面的售后帮助。我们会陪你一步步解决。</p>
-            <ul className={styles.promises} aria-label="服务承诺">
-              <li><span aria-hidden="true">✓</span>先安抚，再排查</li>
-              <li><span aria-hidden="true">✓</span>每一步都有依据</li>
-              <li><span aria-hidden="true">✓</span>整理问题记录，方便人工客服接续</li>
-            </ul>
-          </section>
-        )}
+  const onAction = (kind: Parameters<typeof session.act>[0]['kind'], payload: Record<string, unknown>) => void session.act({ kind, payload });
+  const onIssueAction = (kind: 'new_issue' | 'resume_issue', target_issue_id?: string) => void session.act({ kind, target_issue_id });
+  const record = deriveRecord(state);
+  const tried = record.steps.filter((s) => s.feedback).length;
+  const stripText = [record.product?.name ?? (record.problem ? record.problem.slice(0, 24) : '新会话'), record.route.active >= 0 ? record.route.steps[record.route.active]?.label : null, record.steps.length ? `已试 ${tried} 步` : null].filter(Boolean).join(' · ');
 
-        <section className={styles.workspace} aria-labelledby="workspace-title">
-          <div className={styles.workspaceHeading}>
-            <h2 id="workspace-title">智能售后对话</h2>
-            <SessionSwitcher
-              currentId={state.id}
-              recent={session.recent}
-              interruptible={busy || state.pendingInput !== null || state.activeRun !== null}
-              busy={busy}
-              onNew={() => void session.startNew()}
-              onSwitch={(id) => void session.switchTo(id)}
-            />
-          </div>
-          <ProgressBar stage={state.stage} timeline={state.timeline} activeIssueId={state.activeIssueId} />
-          <ChatPane onPick={pickPrompt} disabled={busy} showStarters={!hasHistory}>
-            <Timeline state={state} onAction={(kind, payload) => void session.act({ kind, payload })}
-              onIssueAction={(kind, target_issue_id) => void session.act({ kind, target_issue_id })} />
+  const panel = (
+    <RecordPanel state={state} highlight={hover} busy={state.pendingActionId !== null}
+      onRequestHuman={() => void session.requestHuman()}
+      onNewIssue={state.id ? () => onIssueAction('new_issue') : undefined}
+      onResumeIssue={(id) => onIssueAction('resume_issue', id)} />
+  );
+
+  return (
+    <div className={styles.app} data-ui={state.ui}>
+      <a href="#main" className={styles.skip}>跳到主要内容</a>
+      <HeaderBar {...health}>
+        <SessionSwitcher
+          currentId={state.id}
+          recent={session.recent}
+          interruptible={busy || state.pendingInput !== null || state.activeRun !== null}
+          busy={busy}
+          onNew={() => void session.startNew()}
+          onSwitch={(id) => void session.switchTo(id)}
+        />
+      </HeaderBar>
+      {hasHistory && (
+        <div className={styles.strip}>
+          <span className={styles.stripText}>{stripText}</span>
+          <button type="button" className={styles.stripButton} onClick={() => setRecordOpen(true)} aria-expanded={recordOpen}>查看记录</button>
+        </div>
+      )}
+      <main id="main" className={styles.layout}>
+        <section className={styles.conv} aria-label="智能售后对话">
+          <div className={styles.stream} ref={streamRef}>
+            {!hasHistory && <ChatPane onPick={pickPrompt} disabled={busy} />}
+            <Timeline state={state} onAction={onAction} onHover={setHover} dockPending />
             {state.stalled && busy && <p className={cardStyles.stallNote} role="status">仍在处理，请稍候…</p>}
-            <p className={styles.uiState} data-ui={state.ui} role="status">{state.ui === 'awaiting_input' ? (AWAITING_TEXT[pendingKind ?? ''] ?? UI_TEXT.awaiting_input) : UI_TEXT[state.ui]}</p>
-            {state.ui === 'failed' && state.id && <button onClick={() => void session.recover()}>恢复连接</button>}
+            {busy && !state.stalled && <p className={cardStyles.sysRow} role="status">{state.ui === 'tool_running' ? '正在检索知识库…' : state.ui === 'recovering' ? '正在恢复连接…' : '正在处理…'}</p>}
+            {state.ui === 'failed' && (
+              <p className={styles.failed} role="status">这一轮没有完成。{state.id && <button type="button" onClick={() => void session.recover()}>恢复连接</button>}</p>
+            )}
+          </div>
+          <div className={styles.dock}>
+            {pendingCard && <PendingCard state={state} onAction={onAction} onHover={setHover} />}
             <Composer
               key={composerContext}
               pendingKind={pendingKind}
@@ -94,13 +103,19 @@ export function App() {
               offline={false}
               busy={busy || state.pendingActionId !== null}
               onSend={(text, files, purpose) => session.send(text, { files, purpose })}
-              onRequestHuman={() => void session.requestHuman()}
+              onRequestHuman={hasHistory ? undefined : () => void session.requestHuman()}
               onCancel={state.activeRun ? () => void session.cancel() : undefined}
             />
-          </ChatPane>
+          </div>
         </section>
-        <footer className={styles.footer}><span>听懂需求 · 分清产品 · 一步一步解决</span><span>ANKER SMART CARE</span></footer>
+        <aside className={styles.record} aria-label="服务记录">{panel}</aside>
       </main>
+      {recordOpen && (
+        <div className={styles.overlay} role="dialog" aria-label="服务记录">
+          <div className={styles.overlayHead}><strong>服务记录</strong><button type="button" onClick={() => setRecordOpen(false)} aria-label="关闭服务记录">×</button></div>
+          {panel}
+        </div>
+      )}
       {state.error && <Toast message={state.error.message || '出现了一个错误'} recoverable={state.error.recoverable} onClose={session.clearError} />}
     </div>
   );

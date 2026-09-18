@@ -20,9 +20,9 @@ describe('ObservationCard', () => {
   it('每个选项点一次即提交，unknown 与现象选项分开', () => {
     const onAnswer = vi.fn();
     const { container } = render(<ObservationCard item={item()} active onAnswer={onAnswer} />);
-    // 问题由上一条助手消息问出，卡片头不重复
-    expect(screen.queryByText('737 连接设备时，屏幕显示更接近下面哪种情况？')).toBeNull();
-    expect(screen.getByText('选择最接近的情况')).toBeVisible();
+    // 快捷回复 chip 紧跟问题，卡片头复述问题本身，不再有「选择最接近的情况」这类模板标题
+    expect(screen.getByText('737 连接设备时，屏幕显示更接近下面哪种情况？')).toBeVisible();
+    expect(screen.queryByText('选择最接近的情况')).toBeNull();
     // unknown 不在候选网格里：它是「答不上来」，不是一种现象
     expect(container.querySelectorAll('ul button')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '连接笔记本时显示 UVP' }));

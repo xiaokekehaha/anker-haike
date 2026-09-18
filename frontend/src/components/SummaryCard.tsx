@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import type { EscalationSummary, ExecutedStep, Feedback } from '../types/snapshot';
 import styles from './Cards.module.css';
-import { MessageTime } from './MessageTime';
+import { HANDOFF_LABELS } from '../state/record';
 
 const STATUS: Record<string, string> = {
   not_collected: '未收集', insufficient: '信息不足', order_verified: '订单已核实', order_product_mismatch: '订单与设备不一致',
   needs_manual_check: '需人工核实', channel_in_directory: '经销商在名录内', channel_unknown: '渠道未知',
-};
-
-/** 人工处理的真实状态：prepared 只是整理好了记录，不能显示成「已接入」。 */
-const HANDOFF: Record<string, string> = {
-  prepared: '已整理记录，尚未接入人工', requested: '已发起人工请求，等待接单', accepted: '人工已接单',
-  failed: '人工接入失败', cancelled: '人工请求已取消',
 };
 
 const FEEDBACK_LABELS: Record<Feedback, string> = {
@@ -63,9 +57,9 @@ export function SummaryCard({ summary, updatedAt, revision, handoffStatus = 'pre
   return (
     <section className={styles.card} data-kind="escalation_summary" aria-label="转人工摘要">
       <header className={styles.cardHead}><strong>问题摘要已整理，可复制给人工客服</strong><button type="button" onClick={copy} className={styles.copyBtn}>{copied ? '已复制' : '一键复制'}</button></header>
-      <p className={styles.handoffStatus} data-kind="handoff-status" data-status={handoffStatus}>人工处理：{HANDOFF[handoffStatus] ?? handoffStatus}</p>
+      <p className={styles.handoffStatus} data-kind="handoff-status" data-status={handoffStatus}>人工处理：{HANDOFF_LABELS[handoffStatus as keyof typeof HANDOFF_LABELS] ?? handoffStatus}</p>
       {revision && <small>第 {revision} 版{outdated ? ' · 此为当时记录，已有更新' : ''}</small>}
-      <MessageTime at={updatedAt} />
+      {updatedAt && <small className={styles.answered}>{new Date(updatedAt).toLocaleString('zh-CN')}</small>}
       <dl className={styles.summary}>
         <div><dt>产品</dt><dd>{summary.product}</dd></div>
         <div><dt>问题</dt><dd>{summary.problem}</dd></div>

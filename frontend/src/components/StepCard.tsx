@@ -48,10 +48,10 @@ export function StepCard({ item, active, disabled, onFeedback, onHover }: Props)
     else onFeedback(feedback, note.trim() || undefined);
   };
   return (
-    <section className={styles.card} data-kind="step_card" aria-label={`排障步骤 ${item.step.step_no}`} onMouseEnter={() => onHover?.(item.step.evidence_ids ?? [])} onMouseLeave={() => onHover?.([])}>
+    <section className={styles.card} data-kind="step_card" data-pending={active && !answered ? true : undefined} aria-label={`排障步骤 ${item.step.step_no}`} onMouseEnter={() => onHover?.(item.step.evidence_ids ?? [])} onMouseLeave={() => onHover?.([])}>
       <header className={styles.cardHead}>
         <strong>步骤 {item.step.step_no}：{item.step.title}</strong>
-        {(item.step.evidence_ids?.length ?? 0) > 0 && <span className={styles.sourceTag} title="来源见下方抽屉">来源 {item.step.evidence_ids?.length}</span>}
+        {(item.step.evidence_ids?.length ?? 0) > 0 && <span className={styles.sourceTag} title="依据见右侧服务记录">依据 {item.step.evidence_ids?.length}</span>}
       </header>
       {item.seen && <p className={styles.seen} data-kind="vision-echo">{item.seen}</p>}
       <p className={styles.instruction}>{item.step.instruction}</p>

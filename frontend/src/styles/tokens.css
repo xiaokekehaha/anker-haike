@@ -21,6 +21,11 @@
   --art-body: #ffffff;
   --art-body-side: #e7eee9;
   --art-stroke: #89a498;
+  /* 「当前待办」专用色：品牌绿已承担品牌 / 成功 / 选中，待办要一眼区分 */
+  --task: #0b5fb8;
+  --task-soft: #e9f1fc;
+  --user-bubble: #e6eef8;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -45,5 +50,8 @@
     --art-body: #2e493d;
     --art-body-side: #20382d;
     --art-stroke: #6c9380;
+    --task: #8ab8f0;
+    --task-soft: #1b2b40;
+    --user-bubble: #22334a;
   }
 }

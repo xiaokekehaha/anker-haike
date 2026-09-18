@@ -17,14 +17,14 @@ function Item({ e, highlighted, primary }: { e: EvidenceItem; highlighted: boole
  *  primary 是各步骤的主引用——步骤引用的是同 doc 的宽集合，一步「清理滚刷」会把滤网、尘盒的
  *  命中一起带上，全部平铺会让「来源 5 条」里真正支撑这一步的那 1 条淹掉。所以主引用直接展开，
  *  其余折叠一层。 */
-export function EvidenceDrawer({ items, highlight = [], primary = [] }: { items: EvidenceItem[]; highlight?: string[]; primary?: string[] }) {
+export function EvidenceDrawer({ items, highlight = [], primary = [], open = false }: { items: EvidenceItem[]; highlight?: string[]; primary?: string[]; open?: boolean }) {
   if (items.length === 0) return null;
   const hl = new Set(highlight);
   const pr = new Set(primary);
   const main = items.filter((i) => pr.has(i.evidence_id));
   const others = items.filter((i) => !pr.has(i.evidence_id));
   return (
-    <details className={styles.drawer} data-testid="evidence-drawer">
+    <details className={styles.drawer} data-testid="evidence-drawer" open={open || undefined}>
       <summary>来源 {items.length} 条{hl.size > 0 && <span className={styles.drawerHint}>（当前步骤引用 {items.filter((i) => hl.has(i.evidence_id)).length} 条）</span>}</summary>
       {main.length > 0 && (
         <ol className={styles.evidenceList} data-testid="evidence-primary">
