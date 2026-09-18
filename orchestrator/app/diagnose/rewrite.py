@@ -1,4 +1,4 @@
-"""无命中时的一次查询改写（默认关闭；03 §1.4.2、09 §4.1）。
+"""证据不足时的一次受控查询改写（默认关闭）。
 
 只改检索表达，不产生业务事实：Schema 仅 {query}，校验拒绝空 / 超长 / 与原 query 相同 / 改变否定 /
 新增型号、错误码、数值、未经输入支持的部件或原因（已审核同义映射放行）。校验失败不另调模型裁判。
@@ -14,6 +14,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.diagnose.config import QueryRewriteConfig
+from app.diagnose.grade import Coverage
 from app.diagnose.query import normalize_query
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
@@ -56,7 +57,7 @@ PARTS = (
     "轴承",
 )
 # 「不是 X，是 Y」纠正句式：X 上的否定词属于被纠正掉的旧事实，计否定时先剥掉
-_CORRECTION = re.compile(r"不是[^，,。！？；;]{0,30}?[，,]?\s*(?:而)?是")
+_CORRECTION = re.compile(r"不是(?P<old>[^，,。！？；;]{0,30}?)[，,]?\s*(?:而)?是")
 # 与原因 / 维修动作相关、不允许无中生有的词
 FORBIDDEN_NEW = (
     "电机",
@@ -96,6 +97,7 @@ def should_rewrite(
     per_kb_status: dict[str, str],
     allowed_counts: dict[str, int],
     has_hits: bool,
+    coverage: Coverage | None = None,
     remaining_ms: int,
     quota_used: bool,
     product_state: str | None,
@@ -104,7 +106,7 @@ def should_rewrite(
     replay: bool = False,
     cancelled: bool = False,
 ) -> RewriteDecision:
-    """09 §4.1 决策表：只有「允许集合非空的库全部真实 no_match」且开关 / 名额 / 预算允许时才触发一次。"""
+    """服务状态与充分性分开；有效范围内空结果、证据不足或评估未知可补查一次。"""
     if not cfg.enabled:
         return RewriteDecision(False, "disabled")
     if product_state not in ("confirmed_sku", "category_only"):
@@ -113,22 +115,28 @@ def should_rewrite(
         return RewriteDecision(
             False, "state:" + ("clarify" if in_clarify else "replay" if replay else "cancelled")
         )
-    if has_hits:
-        return RewriteDecision(False, "has_hits")
     requested = {kb: s for kb, s in per_kb_status.items() if allowed_counts.get(kb, 0) > 0}
     if not requested:
         return RewriteDecision(False, "empty_scope")
     if any(s == "unavailable" for s in requested.values()):
         return RewriteDecision(False, "unavailable")  # 部分故障不能算正常无命中
-    if any(s != "no_match" for s in requested.values()):
-        return RewriteDecision(False, "not_all_no_match")
+    if any(s == "replay" for s in requested.values()):
+        return RewriteDecision(False, "state:replay")
+    if has_hits and coverage == "sufficient":
+        return RewriteDecision(False, "sufficient")
+    if any(s not in ("ok", "no_match") for s in requested.values()):
+        return RewriteDecision(False, "invalid_status")
     if quota_used:
         return RewriteDecision(False, "quota_used")
     if remaining_ms < cfg.min_remaining_ms:
         return RewriteDecision(False, f"budget:{remaining_ms}ms")
     if not router_available:
         return RewriteDecision(False, "router_unavailable")
-    return RewriteDecision(True, "eligible")
+    reason = {
+        "insufficient": "insufficient_evidence",
+        "none": "no_relevant_evidence",
+    }.get(coverage, "assessment_unknown") if has_hits else "no_match"
+    return RewriteDecision(True, reason)
 
 
 def _tokens(pattern: re.Pattern[str], text: str) -> set[str]:
@@ -185,6 +193,11 @@ def validate_rewrite(
     if re.search(r"[{}\[\]\"':]|sku|scope|knowledge", cand, re.IGNORECASE):
         return "contains_filter_or_structure"
     src = f"{original} {inputs}"
+    corrected = strip_corrected_clause(src)
+    for correction in _CORRECTION.finditer(src):
+        old = correction.group("old").strip()
+        if len(old) >= 2 and old in cand and old not in corrected:
+            return "corrected_fact_reintroduced"
     if _tokens(_ERROR_CODE, cand) - _tokens(_ERROR_CODE, src):
         return "new_error_code"
     err_tokens = _tokens(_ERROR_CODE, cand)
@@ -199,6 +212,10 @@ def validate_rewrite(
         return "negation_changed"
     if not neg_cand and sum(strip_corrected_clause(src).count(n) for n in NEGATIONS):
         return "negation_changed"
+    # 别的症状仍有“不”不能掩盖局部否定丢失，例如“没缠头发但不吸”变成“缠头发不吸”。
+    for predicate in re.findall(r"(?:没(?:有)?|未)([^，,。！？；;但\s]{2,12})", corrected):
+        if predicate in cand and not re.search(r"(?:没(?:有)?|未)" + re.escape(predicate), cand):
+            return "negation_changed"
     for word in FORBIDDEN_NEW:
         if word in cand and word not in src:
             return f"new_cause_or_action:{word}"
@@ -233,9 +250,10 @@ def _segmentable(run: str, src: str, approved: set[str]) -> bool:
 
 
 INSTRUCTION = (
-    "首轮检索没有找到匹配的知识。请把用户的口语描述改写成更接近说明书 / 工单用语的一句检索查询：\n"
+    "首轮证据不足以支持当前排障方向。请把当前有效症状改写成更接近说明书 / 工单用语的一句检索查询：\n"
     "- 保留原意与否定词，不要猜测型号、部件、故障原因或维修动作；\n"
     "- 不要加入产品型号或过滤条件，产品范围由系统控制；\n"
+    "- 当前有效症状优先于原话中被明确纠正的旧描述；待补查症状只是检索重点，不能添加为新事实；\n"
     '- 只输出 JSON：{"query": "..."}，不超过 60 字。'
 )
 
@@ -252,6 +270,7 @@ async def rewrite_query(
     session_id: str | None,
     lane: str,
     budget_ms: int | None = None,
+    missing_symptoms: list[str] | None = None,
 ) -> RewriteDecision:
     inputs = " ".join([product, category_label or "", *symptoms, user_text])
     anchors = " ".join([*symptoms, user_text])  # 不含产品词：产品词不能充当「保留了原症状」的凭据
@@ -262,7 +281,14 @@ async def rewrite_query(
                 "normal", {"stage": "diagnose", "product": product or None, "symptoms": symptoms}
             ),
         ),
-        ("human", f"{INSTRUCTION}\n首次查询：{original}\n{wrap_data(user_text)}"),
+        (
+            "human",
+            f"{INSTRUCTION}\n首次查询：{original}\n"
+            + wrap_data(user_text, kind="user_message")
+            + "\n当前有效症状：\n" + wrap_data("\n".join(symptoms), kind="active_symptoms")
+            + "\n待补查症状：\n"
+            + wrap_data("\n".join(s for s in (missing_symptoms or []) if s in symptoms), kind="missing_symptoms"),
+        ),
     ]
     try:
         res = await router.invoke(

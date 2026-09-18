@@ -279,12 +279,16 @@ async def test_rewrite_failure_paths_with_and_without_plans(mem_runtime, tmp_pat
     assert values3["diagnose_outcome"]["mode"] == "standard_flow"
 
 
-async def test_fault_card_hit_without_kb_hits_does_not_trigger_rewrite(
+async def test_sufficient_fault_card_without_kb_hits_does_not_trigger_rewrite(
     mem_runtime, tmp_path, cards
 ):
     router, fakes = make_router(
         tmp_path,
-        fast=[INTAKE_X9, json.dumps({"query": "should not run"})],
+        fast=[INTAKE_X9, json.dumps({
+            "coverage": "sufficient", "items": [{
+                "evidence_id": "fc:EUFY-X9-PRO:2026-09-12.1:rv_suction_hair_wrap", "verdict": "relevant",
+            }],
+        })],
         main=[
             json.dumps(
                 {
@@ -303,8 +307,9 @@ async def test_fault_card_hit_without_kb_hits_does_not_trigger_rewrite(
     adapter = ScriptedAdapter({"kb_manual": [NO_MATCH()], "kb_tickets": [NO_MATCH()]})
     _, values = await run(router, adapter, "eufy X9 Pro 不吸了 滚刷缠头发", rcfg=_rcfg())
     dec = next(t for t in values["retrieval_trace"] if t.get("event") == "rewrite_decision")
-    assert dec["triggered"] is False and dec["reason"] == "has_hits"
-    assert len(fakes["fast"].calls) == 1 and values["retrieval_rounds"] == 1
+    assert dec["triggered"] is False and dec["reason"] == "sufficient"
+    assert [c["metadata"]["task"] for c in fakes["fast"].calls] == ["intake", "retrieve.grade"]
+    assert values["retrieval_rounds"] == 1
     assert values["plans_ranked"][0]["evidence_ids"] == [
         "fc:EUFY-X9-PRO:2026-09-12.1:rv_suction_hair_wrap"
     ]

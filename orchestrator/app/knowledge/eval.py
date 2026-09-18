@@ -1,6 +1,6 @@
 """检索评测（有界 Agentic RAG 阶段 2，design.md §9）：用 data/eval/retrieval/cases.yaml 直接打 KnowledgeAdapter。
 
-只评检索层（query 规范化 → 两库 hybrid_search），不跑模型：
+单轮检索与上下文评测；--with-synthesize 可调用评分/诊断模型，不覆盖 intake 和补查编排：
 - hit@k：expected_doc_ids 任一出现在合并后 top-k 的 doc_id 中（expected 为空的样例不计入，另算泄漏）
 - precision@k：top-k 中 doc_id ∈ expected_doc_ids 的比例（expected 为空的样例不计入）
 - leak：expected 为空（无知识）却返回命中的样例数；scope_leak：命中了当前 scope 不该看见的文档
@@ -23,17 +23,24 @@ from typing import Any
 import yaml
 
 from app.diagnose.config import RetrievalConfig, get_retrieval_config
+from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.query import build_query
-from app.knowledge.adapter import KnowledgeScope, WeKnoraKnowledgeAdapter
+from app.diagnose.synthesize import synthesize
+from app.knowledge.adapter import Hit, KnowledgeScope, ToolResult, WeKnoraKnowledgeAdapter
+from app.knowledge.context import evidence_text, pack_hits, select_hits
 from app.knowledge.faq import get_faq_index
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.search import interleave_kbs, search_round
 from app.knowledge.weknora_client import WeKnoraClient
+from app.models.runtime import get_model_router
+from app.plans.runtime import get_plan_library
+from app.sessions.cards import get_catalog
 
 
 def case_state(case: dict[str, Any]) -> dict[str, Any]:
     """把评测样例还原成 build_query / KnowledgeScope 需要的最小 state。"""
     ps = case["product_state"]
+    scope = case_scope(case)
     state: dict[str, Any] = {
         "product_state": ps,
         "text": case.get("text", ""),
@@ -43,25 +50,33 @@ def case_state(case: dict[str, Any]) -> dict[str, Any]:
         state["product_confirmed"] = {
             "sku": case["sku"],
             "name": case.get("product_name") or case["sku"],
-            "category": case["category"],
+            "category": scope.category,
         }
     else:
-        state["category"] = case["category"]
+        state["category"] = scope.category
     return state
 
 
 def case_scope(case: dict[str, Any]) -> KnowledgeScope:
     ps = case["product_state"]
+    category = case.get("category")
+    if not category and ps == "confirmed_sku":
+        product = next(
+            (p for p in get_catalog().lookup_product(case["sku"]) if p.sku == case["sku"]), None
+        )
+        category = product.category if product else None
+    if not category:
+        raise ValueError(f"评测样例 {case.get('id')} 缺少可确定的品类")
     return KnowledgeScope(
         ps,
-        case["category"],
+        category,
         case.get("sku") if ps == "confirmed_sku" else None,
     )
 
 
-def merge_top_k(results: dict[str, Any], top_k: int) -> list[Any]:
-    """与图内 retrieve 相同的跨库合并（search.interleave_kbs）。"""
-    return interleave_kbs(results, top_k=top_k)
+def merge_top_k(results: dict[str, ToolResult], top_k: int) -> list[Hit]:
+    """与图内相同的来源/轮次代表选择。"""
+    return select_hits(interleave_kbs(results), top_k)
 
 
 _CHUNK_TOKEN = re.compile(r"c\d+|faq q\d+|第3章表|\b[A-E]\b|\b[1-5]\b")
@@ -85,8 +100,8 @@ def chunk_markers(hint: str | None) -> list[str]:
     return out
 
 
-def _hit_text(h: Any) -> str:
-    return f"{h.evidence_id}\n{h.full_text or ''}\n{h.snippet}"
+def _hit_text(h: Hit) -> str:
+    return f"{h.evidence_id}\n{evidence_text(h.as_internal_item())}"
 
 
 def is_gold(h: Any, case: dict[str, Any]) -> bool:
@@ -110,9 +125,9 @@ def score_case(case: dict[str, Any], hits: list[Any]) -> dict[str, Any]:
         markers = chunk_markers(case.get("expected_chunk_hint"))
         if markers:
             texts = [_hit_text(h) for h in hits]
-            out["chunk_hit"] = any(m in t for m in markers for t in texts)
+            out["chunk_hit"] = any(g and any(m in t for m in markers) for g, t in zip(gold, texts, strict=True))
             out["chunk_rank"] = next(
-                (i + 1 for i, t in enumerate(texts) if any(m in t for m in markers)), None
+                (i + 1 for i, (g, t) in enumerate(zip(gold, texts, strict=True)) if g and any(m in t for m in markers)), None
             )
     else:
         out["leak"] = bool(docs)
@@ -123,10 +138,6 @@ async def _model_side(
     case: dict[str, Any], hits: list[Any], *, cfg: RetrievalConfig, router: Any, lane: str
 ) -> dict[str, Any]:
     """--with-synthesize：真实模型跑 grade（若开）+ synthesize，比较 expected_plan / expected_outcome。"""
-    from app.diagnose.grade import apply_assessment, grade_hits
-    from app.diagnose.synthesize import synthesize
-    from app.plans.runtime import get_plan_library
-
     state = case_state(case)
     out: dict[str, Any] = {}
     kept = hits
@@ -138,19 +149,20 @@ async def _model_side(
             symptoms=state["symptoms"],
             product=(state.get("product_confirmed") or {}).get("name"),
             cfg=cfg.grade,
+            retrieval=cfg.retrieval,
             budget_ms=cfg.grade.budget_ms,
             session_id=f"eval-{case['id']}",
             lane=lane,
         )
-        kept = apply_assessment(list(hits), a, keep_min=cfg.grade.keep_min)
+        kept = apply_assessment(list(hits), a)
         out["grade"] = {
             "status": a.status,
             "reason": a.reason,
             "coverage": a.coverage,
             "model": a.model_used,
             "ms": a.latency_ms,
-            "filtered": a.filtered_ids,
-            "kept_min": a.kept_min_ids,
+            "evaluated_ids": a.evaluated_ids,
+            "missing_symptoms": a.missing_symptoms,
             # 金标文档被判 irrelevant = 评分假阴性；非金标被判 relevant 只作参考（金标是文档级）
             "false_negative": [
                 h.evidence_id for h in hits if is_gold(h, case) and h.grade == "irrelevant"
@@ -209,10 +221,10 @@ async def evaluate(
     """每条样例跑一轮线上同款 search_round（含 multi_query / faq / rerank 开关），只评检索层；
     with_synthesize 时再用真实模型跑 grade + synthesize，比较 expected_plan / expected_outcome。"""
     cfg = cfg or get_retrieval_config()
+    if cfg.query_rewrite.enabled:
+        raise ValueError("单轮检索评测不覆盖充分性补查；请通过会话编排评测，或关闭 query_rewrite 做单项对照")
     router = None
     if with_synthesize:
-        from app.models.runtime import get_model_router
-
         router = get_model_router()
         if router is None:
             raise RuntimeError("--with-synthesize 需要模型路由（HAIKE_LLM=on 且有厂商 key）")
@@ -246,7 +258,7 @@ async def evaluate(
             adapter,
             query,
             scope,
-            top_k,
+            cfg.retrieval.candidate_k,
             cfg=cfg,
             round_no=1,
             session_id="eval",
@@ -260,7 +272,7 @@ async def evaluate(
             if adapter.chunks_loaded_at is None:
                 await adapter.refresh_chunks()
             row["expanded"] = adapter.expand_parents(
-                hits_all,
+                select_hits(hits_all, cfg.retrieval.final_k),
                 max_items=cfg.parent_expand.max_items,
                 max_chars=cfg.parent_expand.max_chars,
             )
@@ -286,8 +298,16 @@ async def evaluate(
             if all(s == "unavailable" for s in statuses)
             else ("ok" if any(r.hits for r in results.values()) else "no_match")
         )
-        hits = merge_top_k(results, top_k)
-        row.update(score_case(case, hits))
+        selection = pack_hits(
+            hits_all, max_items=cfg.retrieval.final_k,
+            max_chars=cfg.retrieval.context_chars, item_chars=cfg.retrieval.item_chars,
+        )
+        hits = selection.hits
+        row["candidate_count"] = len(hits_all)
+        row["candidate_hit"] = any(is_gold(h, case) for h in hits_all)
+        row["context_ids"] = [h.evidence_id for h in hits]
+        row["context_excluded"] = selection.excluded
+        row.update(score_case(case, hits[:top_k]))
         if router is not None:
             row.update(await _model_side(case, hits, cfg=cfg, router=router, lane=lane))
         row["hits"] = [
@@ -339,11 +359,10 @@ def _model_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
             sorted(
                 {
                     c: sum(g.get("coverage") == c for g in gr)
-                    for c in ("sufficient", "insufficient", "none")
+                    for c in ("sufficient", "insufficient", "none", "unknown")
                 }.items()
             )
         )
-        out["grade_filtered_total"] = sum(len(g["filtered"]) for g in gr)
         out["grade_false_negative"] = sum(len(g["false_negative"]) for g in gr)
         out["grade_p50_ms"] = _p([g["ms"] for g in gr if g["ms"]], 0.5)
     return out
@@ -412,7 +431,8 @@ def render_markdown(
         (
             f"评测集 version={cases_meta.get('version')}，"
             f"annotated_count={cases_meta.get('annotated_count', 0)}。"
-            "只评检索层（不跑模型）；未标注样例的结果只用于回归对比。"
+            "单轮检索评测，可选评分/诊断模型；不覆盖 intake、故障卡与第二轮补查。"
+            "latency 仅含检索/扩展，模型耗时单列；未标注样例只用于回归对比。"
         ),
         "",
         "## 汇总",
@@ -476,6 +496,8 @@ async def run_eval(
         )
     summary = summarize(rows, top_k=top_k)
     summary["kb_ver"] = manifest.get("kb_ver")
+    summary["retrieval_config"] = cfg.model_dump(mode="json")
+    summary["evaluation_scope"] = "single_round"
     summary["flags"] = {
         "multi_query": cfg.multi_query.enabled,
         "faq": cfg.faq.enabled,

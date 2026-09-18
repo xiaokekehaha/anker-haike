@@ -38,7 +38,8 @@ from app.faultcards import fit_prompt_budget
 from app.faultcards.runtime import get_fault_card_library
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
 from app.images.runtime import current_image_store
-from app.knowledge.adapter import KnowledgeScope
+from app.knowledge.adapter import Hit, KnowledgeScope
+from app.knowledge.context import pack_hits, select_hits
 from app.knowledge.faq import get_faq_index
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
@@ -172,7 +173,7 @@ class SessionState(TypedDict, total=False):
     rewrite_used: bool
     evidence_quality: (
         str | None
-    )  # 阶段 5：grade 的 coverage（sufficient / insufficient / none），未评分为 None
+    )  # grade 的 coverage（sufficient / insufficient / none / unknown），未评分为 None
     query: str | None
     # 票 33：故障卡预加载 {key, doc_version, tokens, text} 与本 run 命中的 plan_id；diagnose_outcome ∈ evidence|standard_flow|escalate
     fault_card: dict[str, Any] | None
@@ -1534,42 +1535,32 @@ async def _search_round(
 
 
 async def _grade_second_round(
-    hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+    hits, local_hits, assessment, rcfg, state, lane, trace, session_id, run_id
 ):
-    """第二轮新增命中的评分：grade.second_round 开且预算够时再评一次（第 2 次 grade 调用），否则标 unsure。"""
-    fresh = [h for h in hits if h.grade is None]
-    if not fresh or not rcfg.grade.enabled or assessment is None or assessment.status != "graded":
+    """可选重评两轮与故障卡的代表集合；仅更新质量，不过滤候选、不再开启第三轮。"""
+    if not rcfg.grade.second_round or not (rcfg.grade.enabled or rcfg.query_rewrite.enabled):
         return hits, assessment
     router = get_model_router()
     remaining = _remaining_ms(state)
-    if not rcfg.grade.second_round or router is None or remaining < rcfg.grade.min_remaining_ms:
-        for h in fresh:
-            h.grade = "unsure"
+    if router is None or remaining < rcfg.grade.min_remaining_ms:
         return hits, assessment
     second = await grade_hits(
         router,
-        hits=fresh,
+        hits=[*hits, *local_hits],
         user_text=state.get("text", ""),
         symptoms=[str(s) for s in state.get("symptoms") or []],
         product=product_term(dict(state)) or None,
         cfg=rcfg.grade,
+        retrieval=rcfg.retrieval,
         budget_ms=min(rcfg.grade.budget_ms, max(500, remaining - 2000)),
         session_id=session_id,
         lane=lane,
     )
     if second.status == "graded":
-        kept_fresh = apply_assessment(fresh, second, keep_min=0)
-        dropped = {h.evidence_id for h in fresh} - {h.evidence_id for h in kept_fresh}
-        graded_out.extend(h for h in hits if h.evidence_id in dropped)
-        hits = [h for h in hits if h.evidence_id not in dropped]
-        assessment.verdicts.update(second.verdicts)
-        assessment.filtered_ids += second.filtered_ids
-        if second.coverage == "sufficient" or (
-            second.coverage == "insufficient" and assessment.coverage == "none"
-        ):
-            assessment.coverage = second.coverage
+        apply_assessment([*hits, *local_hits], second)
     trace.append(second.as_trace(round=2, kb="*", session_id=session_id, run_id=run_id))
-    return hits, assessment
+    # 第二次调用失败（阶段 5 实测 7/56）不能把第一次已成立的结论降级成 unknown
+    return hits, second if second.status == "graded" else assessment
 
 
 async def _expand_parents(adapter, hits, rcfg) -> list[str] | None:
@@ -1646,14 +1637,17 @@ async def _second_round(
 
 
 def _merge_rounds(hits, results, results2):
-    """P0-3：两轮命中按 evidence_id 合并去重（首轮优先，第二轮新命中追加）；每库状态取两轮中较好者。"""
-    seen = {h.evidence_id for h in hits}
+    """保留首轮候选正文，重复命中合并查询来源；最终上下文另行联合选择。"""
+    seen = {h.evidence_id: h for h in hits}
     merged = list(hits)
     for r in results2.values():
         for h in r.hits:
             if h.evidence_id not in seen:
-                seen.add(h.evidence_id)
+                seen[h.evidence_id] = h
                 merged.append(h)
+            else:
+                first = seen[h.evidence_id]
+                first.source_queries = tuple(dict.fromkeys((*first.source_queries, *h.source_queries)))
     rank = {"ok": 0, "replay": 0, "no_match": 1, "unavailable": 2}
     status = {
         kb: min(
@@ -1667,7 +1661,7 @@ def _merge_rounds(hits, results, results2):
 
 
 async def retrieve(state: SessionState) -> SessionState:
-    """diagnose 流水线（票 28 / 32）：规范化 query → 首轮检索（两库）→ 可选一次补检索（图片新增或无命中改写，共享名额）
+    """diagnose 流水线：候选召回 → 充分性评估 → 至多一次补查 → 两轮证据联合选择
     → synthesize 假设汇总。事件：tool_call started/finished/failed + evidence；query 只进 retrieval_trace（内部）。
     """
     writer = get_stream_writer()
@@ -1719,6 +1713,15 @@ async def retrieve(state: SessionState) -> SessionState:
             "text": card.render(fc_hits),
         }
         fc_evidence = card.evidence_items(fc_hits)
+    local_hits = [
+        Hit(
+            evidence_id=it["evidence_id"], knowledge_id=it["doc_id"], chunk_id=it["chunk_id"],
+            doc_id=it["doc_id"], doc_version=it["doc_version"], source=it["source"],
+            snippet=it["snippet"], score=it["score"], content=it["snippet"],
+            knowledge_title=f"故障卡 {it['doc_id']}",
+        )
+        for it in fc_evidence
+    ]
     writer(
         {
             "type": "tool_call",
@@ -1741,15 +1744,19 @@ async def retrieve(state: SessionState) -> SessionState:
         )
         for it in fc_evidence:
             evidence[it["evidence_id"]] = it
-        plans = await _synthesize_step(
-            state, {e["evidence_id"]: e for e in fc_evidence}, lane, rcfg
+        selection = pack_hits(
+            local_hits, max_items=rcfg.retrieval.final_k,
+            max_chars=rcfg.retrieval.context_chars, item_chars=rcfg.retrieval.item_chars,
         )
+        round_evidence = {h.evidence_id: h.as_internal_item() for h in selection.hits}
+        plans = await _synthesize_step(state, round_evidence, lane, rcfg)
+        synth_trace = plans.pop("retrieval_trace", [])
         plans.update(
             _diagnose_outcome(
                 plans.get("plans_ranked") or [],
                 knowledge_status="unavailable",
                 fault_card_hits=[e["chunk_id"] for e in fc_evidence],
-            exhausted_plans=state.get("exhausted_plans") or [],
+                exhausted_plans=state.get("exhausted_plans") or [],
             )
         )
         return {
@@ -1757,7 +1764,7 @@ async def retrieve(state: SessionState) -> SessionState:
             "substage": "retrieve",
             "knowledge_status": "unavailable",
             "evidence": evidence,
-            "current_evidence_ids": [e["evidence_id"] for e in fc_evidence],
+            "current_evidence_ids": list(round_evidence),
             "fault_card": fault_card_state,
             "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
             "query": query,
@@ -1769,12 +1776,20 @@ async def retrieve(state: SessionState) -> SessionState:
                     "query": query,
                     "session_id": session_id,
                     "run_id": run_id,
-                }
+                },
+                {
+                    "event": "context_selected", "candidate_count": len(local_hits),
+                    "selected_ids": list(round_evidence), "excluded": selection.excluded,
+                    "shortened_ids": selection.shortened_ids, "context_chars": selection.chars,
+                    "rounds": {h.evidence_id: h.round for h in selection.hits},
+                    "session_id": session_id, "run_id": run_id,
+                },
+                *synth_trace,
             ],
             **plans,
         }
     await ensure_index(adapter)
-    top_k = rcfg.retrieval.top_k
+    top_k = rcfg.retrieval.candidate_k
     results, trace = await _search_round(
         adapter,
         query,
@@ -1797,22 +1812,24 @@ async def retrieve(state: SessionState) -> SessionState:
     truncated_any = any(r.truncated for r in results.values())
     remaining = _remaining_ms(state)
     router = get_model_router()
-    # ---- 阶段 5 S2：一次相关性评分（评分不是证据，只剔除 irrelevant、给 coverage）----
+    # 有证据时先评估是否足够；故障卡与检索候选使用同一代表选择规则，评分不删除候选。
     assessment = None
-    graded_out: list = []
+    assessment_hits = [*hits, *local_hits]
+    grade_enabled = rcfg.grade.enabled or rcfg.query_rewrite.enabled
     if (
-        rcfg.grade.enabled
-        and hits
+        grade_enabled
+        and assessment_hits
         and router is not None
         and remaining >= rcfg.grade.min_remaining_ms
     ):
         assessment = await grade_hits(
             router,
-            hits=hits,
+            hits=assessment_hits,
             user_text=state.get("text", ""),
             symptoms=[str(s) for s in state.get("symptoms") or []],
             product=product_term(dict(state)) or None,
             cfg=rcfg.grade,
+            retrieval=rcfg.retrieval,
             budget_ms=min(
                 rcfg.grade.budget_ms,
                 max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),
@@ -1821,14 +1838,10 @@ async def retrieve(state: SessionState) -> SessionState:
             lane=lane,
             strategy=(state.get("emotion") or {}).get("strategy", "normal"),
         )
-        before = list(hits)
-        hits = apply_assessment(hits, assessment, keep_min=rcfg.grade.keep_min)
-        graded_out = [
-            h for h in before if h not in hits
-        ]  # 被剔除的仍作为「检索到的来源」发 evidence 事件
+        apply_assessment(assessment_hits, assessment)
         trace.append(assessment.as_trace(round=1, kb="*", session_id=session_id, run_id=run_id))
         remaining = _remaining_ms(state)
-    elif rcfg.grade.enabled and hits:
+    elif grade_enabled and assessment_hits:
         trace.append(
             {
                 "round": 1,
@@ -1840,19 +1853,16 @@ async def retrieve(state: SessionState) -> SessionState:
                 "run_id": run_id,
             }
         )
-    # graded 且没有一条 relevant → 视同无相关证据（S3：允许一次补检索），但 knowledge_status 仍按实际检索结果
-    no_relevant = (
-        assessment is not None and assessment.status == "graded" and not assessment.relevant_ids
-    )
-    has_relevant_hits = bool(hits) and not no_relevant
-    # 改写决策表（09 §4.1）看的是「实际请求的库全部 no_match」；graded 全不相关时把 ok 视作 no_match 参与决策，
-    # 只影响是否补检索，不改写给前端的 knowledge_status
-    decision_status = {
-        kb: ("no_match" if (st == "ok" and no_relevant) else st) for kb, st in per_kb_status.items()
-    }
-    # ---- 至多一次补检索：图片新增观察优先（票 30 接入），否则无命中改写（默认关闭）----
+    coverage = assessment.coverage if assessment is not None else None
+    requested_statuses = [
+        per_kb_status[kb] for kb, count in allowed_counts.items() if count > 0
+    ]
+    can_search = bool(requested_statuses) and all(s in ("ok", "no_match") for s in requested_statuses)
+    # 图片和文本共享名额；真实服务故障/空范围不靠语义补查恢复。
     if (
         observations
+        and can_search
+        and coverage != "sufficient"
         and not rewrite_used
         and remaining >= rcfg.retrieval.min_remaining_for_second_round_ms
     ):
@@ -1873,15 +1883,15 @@ async def retrieve(state: SessionState) -> SessionState:
         if results2 is not None:
             hits, per_kb_status, truncated_any = _merge_rounds(hits, results, results2)
             hits, assessment = await _grade_second_round(
-                hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+                hits, local_hits, assessment, rcfg, state, lane, trace, session_id, run_id
             )
         rounds = 2
     decision = should_rewrite(
         cfg=rcfg.query_rewrite,
-        per_kb_status=decision_status,
+        per_kb_status=per_kb_status,
         allowed_counts=allowed_counts,
-        has_hits=has_relevant_hits
-        or bool(fc_evidence),  # 故障卡直接命中也不触发改写（票 33）；graded 全不相关视同无命中
+        has_hits=bool(assessment_hits),
+        coverage=coverage,
         remaining_ms=remaining,
         quota_used=rewrite_used,
         product_state=state.get("product_state"),
@@ -1895,6 +1905,7 @@ async def retrieve(state: SessionState) -> SessionState:
             "event": "rewrite_decision",
             "triggered": decision.triggered,
             "reason": decision.reason,
+            "coverage": coverage or "unknown",
             "remaining_ms": remaining,
             "session_id": session_id,
             "run_id": run_id,
@@ -1912,6 +1923,7 @@ async def retrieve(state: SessionState) -> SessionState:
             session_id=session_id,
             lane=lane,
             category_label=category_label(scope.category),
+            missing_symptoms=assessment.missing_symptoms if assessment is not None else [],
             budget_ms=min(
                 rcfg.query_rewrite.budget_ms,
                 max(500, remaining - rcfg.retrieval.min_remaining_for_second_round_ms),
@@ -1952,7 +1964,7 @@ async def retrieve(state: SessionState) -> SessionState:
             if results2 is not None:
                 hits, per_kb_status, truncated_any = _merge_rounds(hits, results, results2)
                 hits, assessment = await _grade_second_round(
-                    hits, assessment, rcfg, state, lane, trace, session_id, run_id, graded_out
+                    hits, local_hits, assessment, rcfg, state, lane, trace, session_id, run_id
                 )
         elif rw.query:
             trace.append(
@@ -1983,7 +1995,7 @@ async def retrieve(state: SessionState) -> SessionState:
             }
         )
     else:
-        items = [h.as_evidence_item() for h in (*hits, *graded_out)]  # 评分剔除的仍是检索到的来源
+        items = [h.as_evidence_item() for h in hits]
         for it in items:
             evidence[it["evidence_id"]] = it
         if items:
@@ -2005,9 +2017,11 @@ async def retrieve(state: SessionState) -> SessionState:
         )
         if items:
             writer({"type": "evidence", "items": items})
-    # 阶段 4：父块扩展（只改 synthesize 输入，SSE evidence 已按子块 snippet 发出）
-    if hits and rcfg.parent_expand.enabled:
-        expanded = await _expand_parents(adapter, hits, rcfg)
+    candidates = [*hits, *local_hits]
+    selected = select_hits(candidates, rcfg.retrieval.final_k)
+    # 只扩展已选中的代表，按命中位置保留上下文；SSE 仍发布命中子块摘要。
+    if selected and rcfg.parent_expand.enabled:
+        expanded = await _expand_parents(adapter, selected, rcfg)
         if expanded is not None:
             trace.append(
                 {
@@ -2019,9 +2033,19 @@ async def retrieve(state: SessionState) -> SessionState:
                     "run_id": run_id,
                 }
             )
-    round_evidence = {h.evidence_id: h.as_internal_item() for h in hits} if hits else {}
+    selection = pack_hits(
+        candidates, max_items=rcfg.retrieval.final_k,
+        max_chars=rcfg.retrieval.context_chars, item_chars=rcfg.retrieval.item_chars,
+    )
+    round_evidence = {h.evidence_id: h.as_internal_item() for h in selection.hits}
+    trace.append({
+        "event": "context_selected", "candidate_count": len(candidates),
+        "selected_ids": list(round_evidence), "excluded": selection.excluded,
+        "shortened_ids": selection.shortened_ids, "context_chars": selection.chars,
+        "rounds": {h.evidence_id: h.round for h in selection.hits},
+        "session_id": session_id, "run_id": run_id,
+    })
     for it in fc_evidence:
-        round_evidence.setdefault(it["evidence_id"], it)
         evidence.setdefault(it["evidence_id"], it)
     plans = await _synthesize_step(state, round_evidence, lane, rcfg)
     trace += plans.pop("retrieval_trace", [])
@@ -2044,7 +2068,7 @@ async def retrieve(state: SessionState) -> SessionState:
         "retrieval_rounds": rounds,
         "rewrite_used": rewrite_used,
         "evidence_quality": (
-            assessment.coverage
+            (assessment.coverage if all(h.evidence_id in assessment.evaluated_ids for h in selection.hits) else "unknown")
             if assessment is not None and assessment.status == "graded"
             else None
         ),

@@ -30,7 +30,8 @@
 #   三家铭牌读出率变成 100/100/67，deepseek 综合 65%→93%、延迟 1377 ms、成本最低（reports/bakeoff-stage1）。
 #   前提没了，主位回到 deepseek。qwen-vl 必须留在第二位：它不依赖复看就能读出铭牌，复看失败时更稳。
 # 旧的 2026-09-13.5 排序基于合成大字示意图，对分辨率与小字是盲的，不再作为该 task 的裁决依据。
-version: 2026-09-15.2
+# 2026-09-18.1：充分性评估最多12条证据及缺口列表，输出预算调至1024，避免旧256截断JSON；模型顺序不变。
+version: 2026-09-18.1
 default_lane: domestic
 
 providers:
@@ -75,7 +76,7 @@ lanes:
     escalate.summary:      {chain: [qwen-flash, deepseek, glm-v], effort: low}                        # 100/100 648 ms ¥0.0001 | 100/100 899 ms ¥0.0006 | 100/100 723 ms
     warranty.receipt_ocr:  {chain: [deepseek, qwen-vl, glm-v],    effort: low,    needs_vision: true} # 100/100 1218 ms ¥0.0027 | 100/100 3355 ms ¥0.0029 | 100/100 2958 ms（票 40 真实凭证四字段全对）
     query.rewrite:         {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 128}    # 100/75 535 ms | 100/75 915 ms | 100/62 851 ms —— 三家全未达标且轮间摆动大（上一轮 qwen-flash 还是 100%），票 32 词表问题未解，默认关闭（config/retrieval.yaml）
-    retrieve.grade:        {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 256}    # 100/92 1193 ms ¥0.0002 | 100/100 1105 ms ¥0.0018 | 100/100 2135 ms。有界 RAG 阶段 5，默认关闭（retrieval.yaml grade.enabled）
+    retrieve.grade:        {chain: [qwen-flash, deepseek, glm],   effort: low,    max_tokens: 1024}   # 旧评分报告仅作历史记录；新充分性语义需重新评测。grade或query_rewrite启用时调用
   overseas:
     intake:                {chain: [haiku, sonnet],                     effort: low,    max_tokens: 1536}
     disambiguate.clarify:  {chain: [haiku, sonnet],                     effort: low}
@@ -86,7 +87,7 @@ lanes:
     escalate.summary:      {chain: [haiku, sonnet],                     effort: low}
     warranty.receipt_ocr:  {chain: [sonnet, gemini-flash],              effort: low,    needs_vision: true}
     query.rewrite:         {chain: [haiku, sonnet],                     effort: low,    max_tokens: 128}
-    retrieve.grade:        {chain: [haiku, sonnet],                     effort: low,    max_tokens: 256}
+    retrieve.grade:        {chain: [haiku, sonnet],                     effort: low,    max_tokens: 1024}
 
   zhipu:
     intake:                {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 1536}
@@ -98,7 +99,7 @@ lanes:
     escalate.summary:      {chain: [glm-v, deepseek, qwen-flash],      effort: low}
     warranty.receipt_ocr:  {chain: [glm-v, qwen-vl, deepseek],         effort: low,    needs_vision: true}
     query.rewrite:         {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 128}
-    retrieve.grade:        {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 256}
+    retrieve.grade:        {chain: [glm, deepseek, qwen-flash],        effort: low,    max_tokens: 1024}
 
 # same_model_max：超时 / 5xx / schema 失败的同模型重试；rate_limit_max：429 专用（退避 1 / 2 / 4 s + 抖动）
 retry: {same_model_max: 1, rate_limit_max: 3, chain_max: 3, sdk_max_retries: 0}

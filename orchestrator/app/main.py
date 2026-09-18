@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from app.admin.router import router as admin_router
 from app.analytics.runtime import close_analytics, open_analytics
 from app.catalog import ProductCatalog
+from app.diagnose.config import get_retrieval_config
 from app.faultcards.runtime import get_fault_card_library
 from app.health.router import router as health_router
 from app.images.runtime import close_image_store, open_image_store
@@ -65,6 +66,9 @@ async def _lifespan(app: FastAPI):
     app.state.fault_cards = (
         get_fault_card_library()
     )  # 票 33：故障卡 ≤ 800 token、plan_id 合法，否则启动失败
+    # 检索编排配置同样在启动期校验：retrieval.yaml 与镜像内代码不成对时（典型是 make rollback
+    # 只换 config 不换镜像）进程直接起不来，而不是 /health 200、走到诊断节点才 node_failed
+    get_retrieval_config()
     log.info(
         "catalog v%s products=%d; plans v%s ids=%s",
         app.state.catalog.version,

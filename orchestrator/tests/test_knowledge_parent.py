@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from app.diagnose.synthesize import _evidence_text
 from app.knowledge.adapter import Hit, ToolResult, WeKnoraKnowledgeAdapter, merge_overlapping
+from app.knowledge.context import evidence_text
 from tests.test_diagnose import NO_MATCH, ScriptedAdapter, _rcfg, hit, make_router, run_text
 
 
@@ -113,9 +113,19 @@ def test_expand_skips_when_parent_not_longer_than_snippet():
     assert ad.expand_parents([h], max_items=3, max_chars=800) == [] and h.full_text is None
 
 
-def test_synthesize_prefers_full_text_with_800_cap():
-    assert _evidence_text({"snippet": "x" * 500}) == "x" * 300
-    assert _evidence_text({"snippet": "x", "full_text": "y" * 1000}) == "y" * 800
+def test_model_text_preserves_selected_context_and_caps_unpacked_content():
+    assert evidence_text({"snippet": "x" * 1000}) == "x" * 800
+    assert evidence_text({"snippet": "x", "full_text": "y" * 1000}) == "y" * 800
+    assert evidence_text({"snippet": "x", "context_text": "已选择的关键步骤"}) == "已选择的关键步骤"
+
+
+def test_parent_window_keeps_late_matching_child():
+    ad = _adapter_with_chunks()
+    ad.chunks["K"][0]["content"] = "无关前言。" * 250
+    match = ad.chunks["K"][2]["content"]
+    h = _mhit("k2", match)
+    ad.expand_parents([h], max_items=1, max_chars=100)
+    assert match in h.full_text and len(h.full_text) <= 100
 
 
 class ExpandingAdapter(ScriptedAdapter):

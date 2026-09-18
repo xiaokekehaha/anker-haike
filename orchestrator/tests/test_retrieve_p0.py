@@ -7,8 +7,9 @@ import asyncio
 import json
 import time
 
-from app.diagnose.synthesize import OUTCOME_LABELS, synthesize
+from app.diagnose.synthesize import synthesize
 from app.knowledge.adapter import HINTS, Hit, KnowledgeScope, ToolResult, case_outcome_of
+from app.knowledge.context import OUTCOME_LABELS
 from app.plans.library import PlanLibrary, load_plans_config
 from app.sessions.graph import _merge_rounds, _search_round
 from app.settings import REPO_ROOT

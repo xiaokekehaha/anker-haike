@@ -61,8 +61,26 @@ def test_merge_top_k_puts_counter_evidence_last_and_caps():
         ),
     }
     top = merge_top_k(results, 3)
-    # 跨库按库内名次交错（手册优先破平），反证 T1 虽分高仍排最后并被截掉
-    assert [h.evidence_id for h in top] == ["c12", "c15", "T2"]
+    # 正证按来源交错；反证留一个代表且仍排最后，分值不与其他库混比。
+    assert [h.evidence_id for h in top] == ["c12", "T2", "T1"]
+
+
+def test_case_without_category_resolves_confirmed_sku_from_catalog():
+    case = {"id": "sku-only", "product_state": "confirmed_sku", "sku": "EUFY-X9-PRO"}
+    assert case_scope(case).category == "robot_vacuum"
+    assert case_state(case)["product_confirmed"]["category"] == "robot_vacuum"
+
+
+def test_chunk_marker_must_belong_to_gold_document_and_visible_context():
+    unrelated = _hit("a", "wrong", 0.9)
+    unrelated.snippet = "正确标记（c12）放在无关文档"
+    gold = _hit("b", "manual", 0.8)
+    gold.content = "前言。" * 300 + "（c12）关键步骤"
+    gold.context_text = "当前模型只看到前言"
+    case = {"expected_doc_ids": ["manual"], "expected_chunk_hint": "c12"}
+    assert score_case(case, [unrelated, gold])["chunk_hit"] is False
+    gold.context_text = "（c12）关键步骤"
+    assert score_case(case, [unrelated, gold])["chunk_rank"] == 2
 
 
 def test_score_case_hit_precision_rank_and_leak():

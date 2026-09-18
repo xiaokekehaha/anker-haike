@@ -3,10 +3,10 @@
 IV-1 核对结论（2026-09-12，WeKnora v0.8.0 本机实测，见 findings）：
 - `POST /knowledge-search` 忽略 `knowledge_ids`（传不存在的 id 仍返回全部命中）→ 不用。
 - `POST /knowledge-bases/{id}/hybrid-search` 遵守 `knowledge_ids`；但空列表等于不过滤 → 允许集合为空时必须在本地直接 no_match。
-- 命中带 `knowledge_custom_metadata`（YAML 文本）、`parent_chunk_id`、`match_type`；适配器再按 knowledge_id 后过滤一次兜底，match_count 放大 3 倍。
+- 命中带 `knowledge_custom_metadata`（YAML 文本）、`parent_chunk_id`、`match_type`；适配器再按 knowledge_id 后过滤一次兜底。
 
 四态：ok / no_match / unavailable（/ replay 由票 43 的 ReplayKnowledgeAdapter 提供）。hint 面向模型可读。
-单次返回 ≤ 2k token（按 2000 字符近似），超出取前若干命中并标 truncated。
+top_k 是候选预算；排序正文与展示摘要分开，最终模型预算由上下文选择层控制。
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ ProductState = Literal["confirmed_sku", "category_only", "unknown"]
 Status = Literal["ok", "no_match", "unavailable", "replay"]
 KbName = Literal["kb_manual", "kb_tickets"]
 
-MAX_CHARS = 2000  # ≈ 2k token（中文近似 1 字 1 token）
+CANDIDATE_CHARS = 4000  # 单条候选正文上限，不按展示摘要总字数删除候选
 SNIPPET_CHARS = 400
 HINTS = {
     "no_match": "当前产品范围内没有匹配内容；若有适用的预写排障计划请按计划默认顺序执行，否则升级（R5）。",
@@ -83,6 +83,8 @@ class Hit:
     expanded_from: str | None = None  # 阶段 4：被扩展的子块 id
     context_chunk_ids: tuple[str, ...] = ()  # 阶段 4：拼接用到的子块 id（按 chunk_index）
     grade: Literal["relevant", "irrelevant", "unsure"] | None = None  # 阶段 5：相关性评分结论
+    content: str = ""  # 命中的子块正文，供重排/上下文选择；不进入 SSE
+    context_text: str | None = None  # 已按最终预算选择的模型正文
 
     def as_evidence_item(self) -> dict[str, Any]:
         """契约 evidence.items[] 形状（status：真实检索 ok，回放命中 replay）。"""
@@ -100,6 +102,12 @@ class Hit:
     def as_internal_item(self) -> dict[str, Any]:
         """给 synthesize 看的形状：契约字段 + 工单结果、轮次、父块正文（不进 SSE / 快照）。"""
         out = {**self.as_evidence_item(), "case_outcome": self.case_outcome, "round": self.round}
+        if self.knowledge_title:
+            out["knowledge_title"] = self.knowledge_title
+        if self.content:
+            out["content"] = self.content
+        if self.context_text is not None:
+            out["context_text"] = self.context_text
         if self.full_text:
             out["full_text"] = self.full_text
             out["expanded_from"] = self.expanded_from
@@ -126,6 +134,7 @@ class ToolResult:
     allowed_count: int = 0
     latency_ms: int = 0
     detail: str | None = None
+    raw_hits: int = 0  # API 返回数；total_hits 为范围过滤后、候选条数裁剪前的数量
 
     def for_model(self) -> dict[str, Any]:
         """给模型看的紧凑形状（07 §14：错误面向模型可读，不暴露 HTTP 细节）。"""
@@ -166,6 +175,22 @@ def merge_overlapping(parts: list[str], *, max_overlap: int = 120) -> str:
         ov = next((n for n in range(limit, 0, -1) if out.endswith(part[:n])), 0)
         out += part[ov:]
     return out
+
+
+def context_window(text: str, anchor: str, max_chars: int) -> str:
+    """长父块围绕命中子块取窗口，避免只截父块开头而丢失真正命中的段落。"""
+    if len(text) <= max_chars:
+        return text
+    position = text.find(anchor) if anchor else -1
+    start = 0
+    if position >= 0:
+        padding = max(0, (max_chars - len(anchor)) // 2)
+        start = max(0, min(position - padding, len(text) - max_chars))
+    window = text[start : start + max_chars]
+    # 只在窗口后半段寻找语义边界，避免截掉大半条证据。
+    end = max(window.rfind(mark) for mark in ("。", "\n", "；")) + 1
+    anchor_end = min(len(window), position - start + len(anchor)) if position >= 0 else 0
+    return window[:end] if end >= max(len(window) * 0.8, anchor_end) else window
 
 
 def parse_custom_metadata(raw: Any) -> dict[str, Any]:
@@ -223,12 +248,10 @@ class WeKnoraKnowledgeAdapter:
         client: WeKnoraClient,
         kb_ids: dict[str, str],
         *,
-        max_chars: int = MAX_CHARS,
         snippet_chars: int = SNIPPET_CHARS,
     ):
         self.client = client
         self.kb_ids = {k: v for k, v in kb_ids.items() if k in (KB_ALIASES)}
-        self.max_chars = max_chars
         self.snippet_chars = snippet_chars
         self.index: dict[KbName, list[IndexEntry]] = {"kb_manual": [], "kb_tickets": []}
         self.index_loaded_at: float | None = None
@@ -272,7 +295,7 @@ class WeKnoraKnowledgeAdapter:
         """small-to-big（design §3.2 S4）：对前 max_items 条手册命中，把同一 parent_chunk_id 的子块按 chunk_index
         拼接（去重叠）当作父块正文写入 full_text；无父（越界尾块）用前后相邻块。返回被扩展的 evidence_id。"""
         done: list[str] = []
-        used_groups: set[tuple[str, ...]] = set()
+        used_groups: dict[tuple[str, ...], str] = {}
         for h in hits:
             if len(done) >= max_items:
                 break
@@ -294,13 +317,13 @@ class WeKnoraKnowledgeAdapter:
             group.sort(key=lambda c: c.get("chunk_index", 0))
             key = tuple(c["id"] for c in group)
             if key in used_groups:  # 同一父块只带一份正文进 synthesize，其余命中保留子块 snippet
-                h.expanded_from = done[-1] if done else None
+                h.expanded_from = used_groups[key]
                 continue
             text = merge_overlapping([c.get("content") or "" for c in group])
             if len(text) <= len(h.snippet):
                 continue
-            used_groups.add(key)
-            h.full_text = text[:max_chars]
+            used_groups[key] = h.chunk_id
+            h.full_text = context_window(text, me.get("content") or h.snippet, max_chars)
             h.expanded_from = h.chunk_id
             h.context_chunk_ids = tuple(c["id"] for c in group)
             done.append(h.evidence_id)
@@ -331,7 +354,7 @@ class WeKnoraKnowledgeAdapter:
             )
         try:
             raw = await self.client.hybrid_search(
-                kb_id, query, match_count=max(top_k * 3, top_k), knowledge_ids=list(allowed)
+                kb_id, query, match_count=top_k, knowledge_ids=list(allowed)
             )
         except (httpx.TransportError, TimeoutError) as exc:
             return self._unavailable(kb, query, len(allowed), start, f"{type(exc).__name__}: {exc}")
@@ -357,6 +380,7 @@ class WeKnoraKnowledgeAdapter:
                     doc_version=str(meta.get("doc_version") or entry.doc_version),
                     source=kb,
                     snippet=snippet[: self.snippet_chars],
+                    content=snippet[:CANDIDATE_CHARS],
                     score=float(r.get("score") or 0.0),
                     counter_evidence=bool(
                         kb == "kb_tickets"
@@ -368,6 +392,7 @@ class WeKnoraKnowledgeAdapter:
                 )
             )
         hits.sort(key=lambda h: (h.counter_evidence, -h.score))
+        total = len(hits)
         hits = hits[:top_k]
         ms = int((time.perf_counter() - start) * 1000)
         if not hits:
@@ -378,34 +403,19 @@ class WeKnoraKnowledgeAdapter:
                 query=query,
                 allowed_count=len(allowed),
                 latency_ms=ms,
+                raw_hits=len(raw),
             )
-        total = len(hits)
-        hits, truncated = self._truncate(hits)
         return ToolResult(
             "ok",
             hits,
             kb=kb,
             query=query,
-            truncated=truncated,
+            truncated=total > len(hits),
             total_hits=total,
             allowed_count=len(allowed),
             latency_ms=ms,
+            raw_hits=len(raw),
         )
-
-    def _truncate(self, hits: list[Hit]) -> tuple[list[Hit], bool]:
-        used = 0
-        kept: list[Hit] = []
-        for h in hits:
-            if used + len(h.snippet) > self.max_chars:
-                if not kept:  # 至少保留一条，截断其正文
-                    h.snippet = h.snippet[: max(0, self.max_chars - used)]
-                    kept.append(h)
-                return kept, True
-            used += len(h.snippet)
-            kept.append(h)
-        return kept, False
-
-
 
     def _unavailable(
         self, kb: str, query: str, allowed: int, start: float, detail: str

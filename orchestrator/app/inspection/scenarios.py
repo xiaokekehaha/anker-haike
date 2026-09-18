@@ -459,7 +459,9 @@ def _decision_table() -> dict[str, str]:
     rows = {
         "normal_no_match": {},
         "disabled": {"cfg": cfg_on.model_copy(update={"enabled": False})},
-        "has_hits": {"has_hits": True},
+        "hits_sufficient": {"has_hits": True, "coverage": "sufficient"},
+        "hits_insufficient": {"has_hits": True, "coverage": "insufficient"},
+        "hits_assessment_unknown": {"has_hits": True},
         "partial_unavailable": {"per_kb_status": {"kb_manual": "no_match", "kb_tickets": "unavailable"}},
         "empty_scope": {"allowed_counts": {"kb_manual": 0, "kb_tickets": 0}},
         "unknown_product": {"product_state": "unknown"},
@@ -504,11 +506,13 @@ REWRITE_BAD = {"query": "扫地机器人 清扫后残留碎屑 电机损坏"}  #
 SYNTH_ONE = {"hypotheses": [{"plan_id": "rv_suction_hair_wrap", "confidence": 0.7, "evidence_ids": ["c12"]}]}
 
 
-@scenario("rewrite_decision_table", "rewrite", "改写决策表（09 §4.1）：九种上下文的触发 / 跳过原因", "09 §4.1；票 32")
+@scenario("rewrite_decision_table", "rewrite", "改写决策表：十一种上下文的触发 / 跳过原因（充分性取代「有命中即不改写」）", "09 §4.1；票 32")
 async def scn_rewrite_table(ctx: Ctx):
     table = _decision_table()
-    expect = {"normal_no_match": "triggered", "disabled": "disabled", "has_hits": "has_hits", "partial_unavailable": "unavailable",
-              "empty_scope": "empty_scope", "unknown_product": "product_state", "quota_used": "quota_used", "router_unavailable": "router_unavailable"}
+    expect = {"normal_no_match": "triggered", "disabled": "disabled", "hits_sufficient": "sufficient",
+              "hits_insufficient": "triggered", "hits_assessment_unknown": "triggered",
+              "partial_unavailable": "unavailable", "empty_scope": "empty_scope",
+              "unknown_product": "product_state", "quota_used": "quota_used", "router_unavailable": "router_unavailable"}
     for k, v in expect.items():
         _check(table[k] == v, f"{k}: {table[k]} != {v}")
     _check(table["budget_insufficient"].startswith("budget"), table["budget_insufficient"])

@@ -103,6 +103,9 @@ def _kb_trace(
         "hit_ids": [h.evidence_id for h in r.hits],
         "scores": [round(h.score, 4) for h in r.hits],
         "truncated": r.truncated,
+        "returned_count": r.raw_hits,
+        "allowed_hit_count": r.total_hits,
+        "candidate_count": len(r.hits),
         "latency_ms": r.latency_ms,
         "session_id": session_id,
         "run_id": run_id,
@@ -125,7 +128,7 @@ async def search_round(
 ) -> RoundOutcome:
     queries = [query]
     trace: list[dict[str, Any]] = []
-    if cfg.multi_query.enabled:
+    if cfg.multi_query.enabled and scope.category in cfg.multi_query.categories:
         variants = expand_queries(query, cfg.query_rewrite.synonyms, cfg.multi_query.max_variants)
         # 请求数上限：变体数 × 库数 ≤ max_requests_per_round
         max_variants = max(0, cfg.multi_query.max_requests_per_round // len(WEKNORA_KBS) - 1)

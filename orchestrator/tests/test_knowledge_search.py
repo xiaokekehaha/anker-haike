@@ -149,6 +149,16 @@ async def test_multi_query_expands_concurrently_and_fuses_with_request_cap():
     assert [t["variant_idx"] for t in kb_traces] == [0, 1]
 
 
+async def test_vacuum_synonyms_do_not_expand_other_categories():
+    cfg = _cfg(multi_query={"enabled": True}, query_rewrite={"synonyms": {"吸力下降": ["不吸"]}})
+    adapter = RecordingAdapter({})
+    out = await search_round(
+        adapter, "吸奶器 不吸", KnowledgeScope("category_only", "breast_pump"), 15,
+        cfg=cfg, round_no=1, session_id="s", run_id="r",
+    )
+    assert out.queries == ["吸奶器 不吸"] and len(adapter.calls) == 2
+
+
 async def test_faq_index_added_as_third_kb_when_enabled():
     from app.knowledge.faq import FaqEntry
 

@@ -82,7 +82,10 @@ class DashScopeReranker:
             )
         start = time.perf_counter()
         try:
-            scores = await self.scores(query, [h.snippet for h in hits])
+            scores = await self.scores(
+                query,
+                [f"{h.knowledge_title or ''}\n{h.content or h.snippet}".strip() for h in hits],
+            )
         except (httpx.HTTPError, ValueError, KeyError) as exc:
             log.warning("rerank failed: %s", str(exc)[:200])
             return hits, RerankOutcome(

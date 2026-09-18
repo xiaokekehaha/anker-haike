@@ -157,14 +157,14 @@ async def test_counter_evidence_for_unsolved_tickets(adapter):
     assert "case_outcome" not in res.hits[-1].as_evidence_item()
 
 
-async def test_truncation_marks_result(adapter):
+async def test_candidate_content_is_independent_of_display_snippets(adapter):
     ad, _ = adapter
-    ad.max_chars = 300
+    ad.snippet_chars = 30
     res = await ad.hybrid_search("kb_manual", "滚刷", 5, X10)
-    assert res.truncated is True and sum(len(h.snippet) for h in res.hits) <= 300 and res.hits
-    # 回执要能让 rewrite 区分「一共就这么多」和「还有更多没给」
-    receipt = res.for_model()["truncated"]
-    assert receipt["kept"] == len(res.hits) and receipt["total"] > receipt["kept"]
+    assert len(res.hits) == res.total_hits == res.raw_hits and len(res.hits) > 1
+    assert all(len(h.snippet) <= 30 for h in res.hits)
+    assert any(len(h.content) > 400 for h in res.hits)
+    assert all("content" not in h.as_evidence_item() for h in res.hits)
 
 
 async def test_post_filter_drops_hits_outside_allowed(adapter):

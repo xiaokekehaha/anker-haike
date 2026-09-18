@@ -52,9 +52,9 @@ def test_repo_synonyms_expand_eval_style_queries():
     assert expand_queries("EUFY-X10-PRO-OMNI 不吸", syn, 2) == ["EUFY-X10-PRO-OMNI 吸力下降"]
     v = expand_queries("EUFY-X10-PRO-OMNI 侧刷不动", syn, 2)
     assert v == ["EUFY-X10-PRO-OMNI 边刷不动"]
-    # 子串替换的已知副作用：「刷子」→「滚刷」会把「小刷子」改成「小滚刷」；靠 RRF 融合吸收，词表治理见 findings
+    # 歧义的「刷子」不能被自动定位到滚刷，保留给理解/澄清层处理。
     v2 = expand_queries("EUFY-X10-PRO-OMNI 侧面那个小刷子不动了", syn, 2)
-    assert v2 == ["EUFY-X10-PRO-OMNI 侧面那个小滚刷不动了"]
+    assert v2 == []
 
 
 def test_single_char_synonyms_are_ignored_for_expansion():

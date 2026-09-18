@@ -8,6 +8,8 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.settings import CONFIG_DIR
+
 
 class _Strict(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -24,7 +26,10 @@ class QueryRewriteConfig(_Strict):
 
 
 class RetrievalRounds(_Strict):
-    top_k: int = Field(default=5, ge=1, le=20)
+    candidate_k: int = Field(default=15, ge=1, le=100)
+    final_k: int = Field(default=12, ge=1, le=20)
+    context_chars: int = Field(default=5000, ge=200, le=12000)
+    item_chars: int = Field(default=800, ge=200, le=3000)
     second_round_budget_ms: int = Field(default=3000, ge=500)
     min_remaining_for_second_round_ms: int = Field(default=3000, ge=0)
 
@@ -33,6 +38,7 @@ class MultiQueryConfig(_Strict):
     """S0/S1：已审核同义词表的确定性多查询 + 本地 RRF 合并（design.md §3.2）。"""
 
     enabled: bool = False
+    categories: list[str] = Field(default_factory=lambda: ["robot_vacuum"])
     max_variants: int = Field(default=2, ge=0, le=4)  # 不含原 query
     max_requests_per_round: int = Field(default=6, ge=2, le=12)
     rrf_k: int = Field(default=60, ge=1)
@@ -56,13 +62,13 @@ class RerankConfig(_Strict):
 
 
 class GradeConfig(_Strict):
-    """S2 相关性评分（design.md §3.2）：一次轻量模型调用，只剔除 irrelevant，coverage 供 S3 决策。"""
+    """充分性评估；仅标记质量，不删除候选。启用改写时自动评估已有证据。"""
 
     enabled: bool = False
     budget_ms: int = Field(default=4000, ge=500)
     min_remaining_ms: int = Field(default=6000, ge=0)
-    max_items: int = Field(default=8, ge=1, le=20)
-    keep_min: int = Field(default=1, ge=0, le=5)
+    max_items: int = Field(default=12, ge=1, le=20)
+    max_chars: int = Field(default=500, ge=200, le=1000)
     second_round: bool = False
 
 
@@ -93,8 +99,6 @@ class RetrievalConfig(_Strict):
 
 def load_retrieval_config(path: str | Path | None = None) -> RetrievalConfig:
     if path is None:
-        from app.settings import CONFIG_DIR
-
         path = os.environ.get("RETRIEVAL_CONFIG_PATH") or CONFIG_DIR / "retrieval.yaml"
     path = Path(path)
     if not path.is_file():

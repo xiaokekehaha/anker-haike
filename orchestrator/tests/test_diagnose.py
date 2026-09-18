@@ -119,7 +119,9 @@ def _decide(**kw):
 def test_rewrite_decision_table():
     assert _decide().triggered is True
     assert _decide(cfg=CFG_RW).reason == "disabled"  # 默认关闭
-    assert _decide(has_hits=True).reason == "has_hits"
+    assert _decide(has_hits=True, coverage="sufficient").reason == "sufficient"
+    assert _decide(has_hits=True, coverage="insufficient").triggered
+    assert _decide(has_hits=True, coverage="unknown").triggered
     assert (
         _decide(per_kb_status={"kb_manual": "no_match", "kb_tickets": "unavailable"}).reason
         == "unavailable"
@@ -219,6 +221,15 @@ def test_rewrite_validation_accepts_synonym_mapping():
         )
         is None
     )
+
+
+@pytest.mark.parametrize(("source", "candidate", "reason"), [
+    ("滚刷没缠头发，但还是不吸", "滚刷缠头发 不吸", "negation_changed"),
+    ("不是吸力小，是有异响", "扫地机器人 吸力小 异响", "corrected_fact_reintroduced"),
+    ("刷子不转", "滚刷不转", "new_part:滚刷"),
+])
+def test_rewrite_preserves_local_negation_corrections_and_ambiguous_parts(source, candidate, reason):
+    assert validate_rewrite(source, candidate, inputs=source, cfg=CFG_RW) == reason
 
 
 # ---- synthesize 过滤 ----
@@ -511,7 +522,7 @@ async def test_rewrite_enabled_triggers_once_and_second_round_finds_plan(mem_run
     assert "已补检索" in tool[-1]["summary"]
 
 
-async def test_rewrite_not_triggered_when_partial_unavailable_or_has_hits(mem_runtime, tmp_path):
+async def test_rewrite_not_triggered_when_partial_unavailable_or_sufficient(mem_runtime, tmp_path):
     intake = json.dumps(
         {
             "emotion_level": "calm",
@@ -534,7 +545,7 @@ async def test_rewrite_not_triggered_when_partial_unavailable_or_has_hits(mem_ru
     assert values["knowledge_status"] == "no_match"  # 部分故障：不算全库不可用，也不算可改写
     router2, fakes2 = make_router(
         tmp_path,
-        fast=[intake, json.dumps({"query": "nope"})],
+        fast=[intake, json.dumps({"coverage": "sufficient", "items": [{"evidence_id": "c12", "verdict": "relevant"}]})],
         main=[json.dumps({"hypotheses": []}), ["x"]],
     )
     adapter2 = ScriptedAdapter({"kb_manual": [OK_HAIR()], "kb_tickets": [NO_MATCH()]})
@@ -543,9 +554,9 @@ async def test_rewrite_not_triggered_when_partial_unavailable_or_has_hits(mem_ru
         next(t for t in values2["retrieval_trace"] if t.get("event") == "rewrite_decision")[
             "reason"
         ]
-        == "has_hits"
+        == "sufficient"
     )
-    assert len(fakes2["fast"].calls) == 1
+    assert [call["metadata"]["task"] for call in fakes2["fast"].calls] == ["intake", "retrieve.grade"]
 
 
 async def test_rewrite_rejected_candidate_is_discarded_and_no_third_round(mem_runtime, tmp_path):

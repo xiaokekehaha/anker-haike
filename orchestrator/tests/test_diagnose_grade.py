@@ -1,4 +1,4 @@
-"""阶段 5 相关性评分：结果规范化、过滤与保底、图内 S2/S3（全不相关 → 视同无命中触发改写）、失败不阻断、开关关无调用。"""
+"""充分性评估：白名单、评分不删除候选、补查决策与失败回退。"""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from app.diagnose.grade import (
     GradeItem,
     GradeResult,
     apply_assessment,
-    apply_grade,
     normalize_result,
 )
 from app.knowledge.adapter import Hit, ToolResult
@@ -42,32 +41,20 @@ def test_normalize_whitelists_ids_and_falls_back_on_bad_enums():
     )
     verdicts, cov = normalize_result(raw, ["a", "b", "c"])
     assert verdicts == {"a": "relevant", "b": "unsure", "c": "unsure"} and cov == "sufficient"
-    # 无 relevant 却说 sufficient → 保守降级；非法 coverage → insufficient
+    # 无 relevant 却说 sufficient → 保守降级；非法 coverage → unknown
     v2, c2 = normalize_result(GradeResult(items=[], coverage="sufficient"), ["a"])
     assert v2 == {"a": "unsure"} and c2 == "insufficient"
-    assert normalize_result(GradeResult(items=[], coverage="???"), ["a"])[1] == "insufficient"
+    assert normalize_result(GradeResult(items=[], coverage="???"), ["a"])[1] == "unknown"
 
 
-def test_apply_grade_filters_irrelevant_keeps_min_and_order():
+def test_assessment_keeps_misclassified_candidates_and_counter_evidence():
     hits = [_h("a", 0.9), _h("b", 0.8), _h("t", 0.95, counter=True), _h("c", 0.1)]
-    kept, filtered, kept_min = apply_grade(
-        hits, {"a": "irrelevant", "b": "relevant", "t": "unsure", "c": "irrelevant"}, keep_min=1
+    kept = apply_assessment(
+        hits, EvidenceAssessment("graded", verdicts={"a": "irrelevant", "b": "relevant", "t": "unsure"})
     )
-    assert [h.evidence_id for h in kept] == ["b", "t"] and filtered == ["a", "c"] and kept_min == []
+    assert [h.evidence_id for h in kept] == ["a", "b", "t", "c"]
     assert hits[0].grade == "irrelevant" and hits[1].grade == "relevant"
-    # 全部 irrelevant → 保底原始分最高一条（反证排后），保持原顺序
-    hits2 = [_h("t", 0.99, counter=True), _h("a", 0.5), _h("b", 0.7)]
-    kept2, filtered2, kept_min2 = apply_grade(
-        hits2, {"t": "irrelevant", "a": "irrelevant", "b": "irrelevant"}, keep_min=1
-    )
-    assert (
-        [h.evidence_id for h in kept2] == ["b"]
-        and kept_min2 == ["b"]
-        and set(filtered2) == {"t", "a"}
-    )
-    assert (
-        apply_assessment(hits2, EvidenceAssessment("ungraded"), keep_min=1) == hits2
-    )  # 未评分不过滤
+    assert apply_assessment(hits, EvidenceAssessment("ungraded")) == hits
 
 
 GRADE_ALL_IRRELEVANT = json.dumps(
@@ -112,7 +99,7 @@ def _cfg(**grade):
     return cfg
 
 
-async def test_grade_filters_irrelevant_before_synthesize_and_records_trace(mem_runtime, tmp_path):
+async def test_grade_keeps_irrelevant_in_synthesize_and_records_assessed_ids(mem_runtime, tmp_path):
     router, fakes = make_router(
         tmp_path, fast=[INTAKE, GRADE_PARTIAL], main=[SYNTH, ["清理滚刷。"]]
     )
@@ -122,13 +109,13 @@ async def test_grade_filters_irrelevant_before_synthesize_and_records_trace(mem_
     assert (
         tr["status"] == "graded"
         and tr["coverage"] == "sufficient"
-        and tr["filtered_ids"] == ["c15"]
+        and tr["evaluated_ids"] == ["c12", "c15"]
     )
     assert values["evidence_quality"] == "sufficient" and values["knowledge_status"] == "ok"
     assert values["retrieval_rounds"] == 1  # 有相关证据，不补检索
     scall = next(c for c in fakes["main"].calls if c["metadata"]["task"] == "diagnose.synthesize")
     human = next(m for m in scall["messages"] if getattr(m, "type", "") == "human").content
-    assert "[c12]" in human and "[c15]" not in human  # 被剔除的不进 synthesize
+    assert "[c12]" in human and "[c15]" in human  # 误评的候选仍可参与综合判断
     ev = next(e for e in events if e["type"] == "evidence")
     assert {i["evidence_id"] for i in ev["items"]} == {
         "c12",
@@ -176,7 +163,7 @@ async def test_all_irrelevant_counts_as_no_relevant_and_triggers_rewrite(mem_run
     tasks = [c["metadata"]["task"] for c in fakes["fast"].calls]
     assert tasks == ["intake", "retrieve.grade", "query.rewrite"]  # 第二轮默认不再评分
     grades = [t for t in values["retrieval_trace"] if t.get("event") == "grade_result"]
-    assert len(grades) == 1 and grades[0]["kept_min_ids"] == ["c15"]  # 保底原始分最高一条
+    assert len(grades) == 1 and grades[0]["evaluated_ids"] == ["c15", "c12"]
 
 
 async def test_grade_model_failure_is_ungraded_and_flow_continues(mem_runtime, tmp_path):

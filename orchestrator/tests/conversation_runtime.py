@@ -9,7 +9,7 @@ import pytest
 from app.knowledge.adapter import Hit, ToolResult
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
-from app.models.config import KNOWN_TASKS, ModelsConfig
+from app.models.config import KNOWN_TASKS, OPTIONAL_TASKS, ModelsConfig
 from app.models.fake import FakeChatModel
 from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
@@ -112,7 +112,8 @@ REPORT_TEXT = "X9 Pro不吸了，滚刷缠了头发"
 
 @pytest.fixture
 async def conversation(mem_runtime):
-    models = {task: FakeChatModel(name_for_trace=task) for task in KNOWN_TASKS}
+    tasks = (*KNOWN_TASKS, *OPTIONAL_TASKS)
+    models = {task: FakeChatModel(name_for_trace=task) for task in tasks}
     models["diagnose.synthesize"].script = [
         {
             "hypotheses": [
@@ -133,12 +134,12 @@ async def conversation(mem_runtime):
             "providers": {"test": {"sdk": "openai", "api_key_env": "TEST_KEY"}},
             "models": {
                 task: {"provider": "test", "id": task, "structured": "native", "vision": True}
-                for task in KNOWN_TASKS
+                for task in tasks
             },
             "lanes": {
                 "domestic": {
                     task: {"chain": [task], "stream": task == "reply.stream"}
-                    for task in KNOWN_TASKS
+                    for task in tasks
                 }
             },
             "retry": {"same_model_max": 0, "rate_limit_max": 0, "chain_max": 1},
