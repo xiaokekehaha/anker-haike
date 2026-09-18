@@ -1027,10 +1027,13 @@ async def ask_observation(state: SessionState) -> SessionState:
         for blocker in conditions.blockers:
             if blocker.card_id == question.get("card_id"):
                 blocker.asked = True
+        if question.get("resource"):
+            conditions.resource_asks[question["resource"]] = state.get("input_id")
         return {
             "stage": "guide", "substage": "await_operation_conditions", "pending_card": None,
             "plan_cursor": None, "visible_messages": msgs, "operation_conditions": conditions.model_dump(),
-            "guide_trace": [{"event": "ask_operation_conditions", "card_id": question.get("card_id")}],
+            "guide_trace": [{"event": "ask_operation_conditions", "card_id": question.get("card_id"),
+                             "resource": question.get("resource")}],
         }
     requests = [
         *(state.get("observation_requests") or []),

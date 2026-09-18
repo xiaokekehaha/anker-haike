@@ -73,6 +73,10 @@ ISSUE_FIELDS = {
 }
 
 
+# 一个观察请求在写出观察事实之前都还接受回答；answered 之后才是终态。
+OPEN_OBSERVATION_STATUS = frozenset({"asked", "unparsed", "unknown"})
+
+
 def stable_id(*parts) -> str:
     return uuid.uuid5(uuid.NAMESPACE_URL, ":".join(map(str, parts))).hex
 
@@ -524,13 +528,16 @@ def _rematch_option(observation_id, text):
 def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
     """把自由文本回答接到尚未回答的观察问题上（design §3.1）。
 
-    只在有 status=asked 的 observation_requests 时生效；匹配唯一选项 → 写观察事实，
-    明确说不知道 → 请求记为 unknown（不再追问），其他文本按一次未解析尝试计数。
+    请求在写出观察事实之前一直开着：匹配唯一选项 → 写观察事实，明确说不知道 → 记为 unknown
+    （decide_next 不再追问），其他文本按一次未解析尝试计数。unparsed / unknown 都不是终态——
+    会话 0f8809 里用户隔一轮逐字给出了选项标签，只认 asked 会把它整条丢掉。
     返回 (observation_answered, observation_attempted)。
     """
     if entry != "message" or not text.strip():
         return False, False
-    open_requests = [r for r in issue.get("observation_requests") or [] if r.get("status") == "asked"]
+    open_requests = [
+        r for r in issue.get("observation_requests") or [] if r.get("status") in OPEN_OBSERVATION_STATUS
+    ]
     if not open_requests:
         return False, False
     from app.diagnose.observations import definitions as load_definitions
@@ -547,16 +554,16 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
             continue
         matched = match_reply(text, obs)
         if matched is None:
-            if intent in {"answer_pending", "unknown", "supplement", "report_problem"}:
+            # 只有刚问过的那一轮记未解析：之后每条无关消息都改写记录会掩盖真正的回答
+            if request["status"] == "asked" and intent in {"answer_pending", "unknown", "supplement", "report_problem"}:
                 request["status"] = "unparsed"
                 request["quote"] = text
                 attempted = True
             continue
         if matched == "unknown":
-            request["status"] = "unknown"
-            request["quote"] = text
-            request["answered_input_id"] = iid
-            attempted = True
+            if request["status"] != "unknown":
+                request.update(status="unknown", quote=text, answered_input_id=iid)
+                attempted = True
             continue
         updated, patches = record_observations(
             issue,
@@ -571,7 +578,7 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
         issue.update(updated)
         applied.extend(patches)
         for r in issue.get("observation_requests") or []:
-            if r.get("observation_id") == obs.observation_id and r.get("status") == "asked":
+            if r.get("observation_id") == obs.observation_id and r.get("status") in OPEN_OBSERVATION_STATUS:
                 r.update(status="answered", answered_input_id=iid, option_id=matched, quote=text)
         answered = True
     return answered, attempted

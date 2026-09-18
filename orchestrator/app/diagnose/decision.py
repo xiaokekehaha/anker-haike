@@ -14,6 +14,7 @@ from app.conversation.operation_conditions import (
     conditions_for,
     effective_exhausted,
     execution_history,
+    resource_recheck,
     step_unavailable,
     support_question,
 )
@@ -597,6 +598,9 @@ def decide_next(state, *, library) -> NextAction:
     if pending_step and not (unresolved_blocker or burden_stop or emotion_stop):
         return pending_step
     if blocked or any(v is False for v in conditions.resources.values()) or burden_stop or emotion_stop:
+        recheck = resource_recheck(state)
+        if recheck:
+            return result("ask", "operation_conditions_recheck", question=recheck, trace=trace)
         return result("pause", "operation_conditions_unavailable", trace=trace)
     # 7. 没有支持的下一动作：说明覆盖边界，提供人工选项
     if unavailable:

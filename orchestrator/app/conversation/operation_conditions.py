@@ -54,6 +54,8 @@ class OperationConditions(BaseModel):
     paused: bool = False
     resources: dict[str, bool] = Field(default_factory=dict)
     resource_sources: dict[str, str] = Field(default_factory=dict)
+    # 就该资源追问过的那一轮 input_id：资源恢复时清掉，同一次缺失不反复追问。
+    resource_asks: dict[str, str] = Field(default_factory=dict)
     blockers: list[StepBlocker] = Field(default_factory=list)
     # A burden stop is reversible by an explicit request, without deleting historical counters.
     skip_baseline: int = 0
@@ -84,15 +86,37 @@ def conditions_for(state: dict) -> OperationConditions:
     return conditions
 
 
+def has_operation_context(state: dict) -> bool:
+    """真的处在操作过程中才让确定性的操作短语抢在语义理解之前。
+
+    issue 每轮都会写回完整的 operation_conditions，所以"字典非空"恒为真，不能当作判据：
+    会话 0f8809 里它让「设备不在身边」这句判别题的答案永远走不到问题受理。
+    """
+    conditions = conditions_for(state)
+    return bool(
+        conditions.paused
+        or conditions.resources
+        or conditions.blockers
+        or state.get("plan_cursor")
+        or state.get("steps_executed")
+    )
+
+
 def explicit_operation_reply(text: str) -> OperationUpdate | None:
     """Exact choices work without a model. Other wording uses quoted semantic extraction."""
     phrase = text.strip(" \n。！!，,")
     resource_choices = {
         "设备不在身边": "device_missing", "充电宝不在身边": "device_missing",
-        "设备不在手边": "device_missing", "设备现在在身边": "device_ready",
+        "设备不在手边": "device_missing",
+        # pause_text / resource_recheck 邀请用户"拿到设备后告诉我"，这些说法必须真的能解除限制
+        "设备现在在身边": "device_ready", "设备在身边了": "device_ready",
+        "拿到了": "device_ready", "已经拿到了": "device_ready", "设备拿到了": "device_ready",
+        "拿到设备了": "device_ready", "设备到手了": "device_ready", "设备在手边了": "device_ready",
         "没有刷子": "tool_missing", "没有工具": "tool_missing",
         "缺少工具": "tool_missing", "工具准备好了": "tool_ready",
         "没有备用线": "cable_missing", "没有另一台设备": "spare_missing",
+        "有备用线了": "cable_ready", "买到线了": "cable_ready",
+        "有另一台设备了": "spare_ready", "有充电器了": "charger_ready",
     }
     if phrase in resource_choices:
         return OperationUpdate(signal=resource_choices[phrase], quote=text)
@@ -120,6 +144,9 @@ def update_conditions(state: dict, proposal: OperationUpdate | None, *, text: st
         resource, available = RESOURCE_SIGNALS[proposal.signal]
         conditions.resources[resource] = available
         conditions.resource_sources[resource] = input_id
+        if available:
+            # 资源回来了：下次再缺同一件东西时仍然可以追问一次
+            conditions.resource_asks.pop(resource, None)
         if not available and current:
             current.reason = "resource"
             current.quote = proposal.quote
@@ -185,10 +212,46 @@ def support_question(state: dict) -> dict | None:
     }
 
 
+# 资源缺失导致暂停时的复核问题。每句都给出一个 explicit_operation_reply 真的认得的回复说法：
+# 邀请用户"拿到设备后告诉我"却听不懂他的回答，会话就再也走不出去（会话 0f8809）。
+RESOURCE_RECHECK = {
+    "device": "设备现在在身边了吗？拿到了回复“设备现在在身边”，我按已有记录接着排查；还不在也可以先整理问题摘要。",
+    "cleaning_tool": "清洁工具准备好了吗？准备好了回复“工具准备好了”，我接着给下一步；暂时没有也可以先整理问题摘要。",
+    "spare_cable": "有可以替换的线了吗？有了回复“有备用线了”，我接着给下一步；暂时没有也可以先整理问题摘要。",
+    "spare_device": "有另一台设备可以交叉测试了吗？有了回复“有另一台设备了”；暂时没有也可以先整理问题摘要。",
+    "charger": "有可以替换的充电器了吗？有了回复“有充电器了”；暂时没有也可以先整理问题摘要。",
+}
+
+
+def resource_recheck(state: dict) -> dict | None:
+    """资源缺失挡住全部动作时再问一次，而不是逐轮重复同一段暂停文案。
+
+    声明当轮先如实答复（那一轮 resource_sources 记的就是当前 input_id），之后才追问；
+    同一次缺失只追问一次；来源未知的历史状态不追问——无法判断用户是否已经被告知过。
+    """
+    conditions = conditions_for(state)
+    if conditions.paused:
+        return None
+    resource = next(
+        (
+            name
+            for name, available in conditions.resources.items()
+            if available is False
+            and name in RESOURCE_RECHECK
+            and name not in conditions.resource_asks
+            and conditions.resource_sources.get(name) not in {None, state.get("input_id")}
+        ),
+        None,
+    )
+    if resource is None:
+        return None
+    return {"kind": "operation_blocker", "resource": resource, "question": RESOURCE_RECHECK[resource]}
+
+
 def pause_text(state: dict) -> str:
     conditions = conditions_for(state)
     if conditions.paused:
         return "已暂停排查，已有现象和操作记录会保留。准备好后可以要求继续；需要联系人工客服时，我可以整理问题摘要。"
     if conditions.resources.get("device") is False:
-        return "已记下设备不在身边，先不安排读屏或动手操作。拿到设备后告诉我，再结合已有记录继续；也可以先整理问题摘要。"
+        return "已记下设备不在身边，先不安排读屏或动手操作。拿到设备后回复“设备现在在身边”，我再结合已有记录继续；也可以先整理问题摘要。"
     return "目前还不能确认故障原因，先不继续增加操作。已有现象和未执行的步骤都已保留；条件具备后可以继续，或要求整理给客服的问题摘要。"

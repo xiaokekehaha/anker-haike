@@ -11,7 +11,11 @@ from app.context.budget import context_input_budget
 from app.context.builder import ContextBudgetExceeded, build_context
 from app.conversation.answers import AnswerRequest
 from app.conversation.history import ConversationEntry
-from app.conversation.operation_conditions import OperationUpdate, explicit_operation_reply
+from app.conversation.operation_conditions import (
+    OperationUpdate,
+    explicit_operation_reply,
+    has_operation_context,
+)
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError
 
@@ -126,10 +130,11 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-09-18.1"
+INTERPRET_PROMPT_VERSION = "2026-09-18.2"
 
 INSTRUCTION = """你是售后会话语义解释器，输出符合 schema 的 JSON。
 operation_update 只在用户本轮明确声明操作条件或意愿时填写：signal 取一个，quote 引用当前原话，其余情况留空。资源缺失不表示故障，也不表示已操作；不能从“做不了”推断缺哪一项。step_attempts 是原始反馈，cannot_do 不是已执行。
+resources 里为 false 的资源本轮说已到位（“拿到了”），必须给对应 *_ready 信号并引用原话。
 emotion_level 需要 emotion_cues 里的原话支撑，calm 也一样；短答复、型号和理解失败都不算依据，此时 emotion_level=null。
 business_subject.active_subject 是最近选择或查询的业务对象，active_subject_id 是其 ID。「这笔订单、上面的订单」及普通短追问沿用该焦点，business_reference 用 current 且 subject_id 留空；不要因为本轮省略编号要求重填。service_case 是正在办理的案件，可以属于另一笔订单；不能用案件订单覆盖聊天焦点。业务缺参和不同订单的案件隔离由服务端处理，clarification 只用于意图或对象确实歧义。
 business_reference 是唯一的对象选择：问正在办理的案件/退款/换货订单用 relation=case（服务端绑定 service_case.order_no）；问正在排障的设备用 issue；这两种不填写 subject_id。明确换查另一笔尚无编号的订单用 other 且 subject_id 留空；只有用户明确回指其他已知对象时才从 business_subject.subjects 选择 subject_id；无法确定对象用 ambiguous。quote 必须是本条逐字原话，模型不输出或编造订单/运单编号。
@@ -174,9 +179,6 @@ async def interpret_turn(router, state: dict, *, lane: str):
             feedback=(action.get("payload") or {}).get("feedback"),
         )
         return meaning, {"source": "validated_action", "source_entry_ids": [state["input_id"]]}
-    operation_update = explicit_operation_reply(state.get("text", ""))
-    if operation_update is not None and (state.get("operation_conditions") or state.get("plan_cursor") or state.get("steps_executed")):
-        return TurnInterpretation(primary_intent="supplement", device_relation="current", operation_update=operation_update), {"source": "operation_conditions"}
     current = next((e for e in state.get("history", []) if e["entry_id"] == state.get("input_id")), {})
     payload = current.get("payload") or {}
     if not state.get("text", "").strip() and payload.get("image_ids") and payload.get("purpose", "fault") == "fault":
@@ -190,6 +192,11 @@ async def interpret_turn(router, state: dict, *, lane: str):
     answer = symptom_question_answer(state)
     if answer is not None:
         return answer, {"source": "symptom_question", "source_entry_ids": [state["input_id"]]}
+    # 操作条件短语排在待答问题之后：判别题选项与资源说法会重合（「设备不在身边」既是选项
+    # 也是资源声明），先当成对问题的回答，问题受理不了才算操作条件。
+    operation_update = explicit_operation_reply(state.get("text", ""))
+    if operation_update is not None and has_operation_context(state):
+        return TurnInterpretation(primary_intent="supplement", device_relation="current", operation_update=operation_update), {"source": "operation_conditions"}
     from app.diagnose.decision import owns_diagnostic_reply
     if owns_diagnostic_reply(state) and state.get("text", "").strip("。？！?! ") in {
         "还有其他的方案吗", "还有其他方案吗", "继续排查", "继续排障", "还有别的办法吗",
