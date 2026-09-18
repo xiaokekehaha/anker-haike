@@ -8,7 +8,7 @@ import uuid
 from app.conversation.interpret import TurnInterpretation
 from app.conversation.operation_conditions import (
     effective_exhausted,
-    explicit_operation_reply,
+    resolve_operation_reply,
     update_conditions,
 )
 
@@ -320,11 +320,17 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         answer_expected=meaning.primary_intent in {"answer_pending", "unknown"},
     )
     issue.update(symptom_update)
-    observation_answered, observation_attempted = _accept_observation_reply(
-        issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
-        entry=state.get("entry"),
-    )
-    operation_proposal = meaning.operation_update or explicit_operation_reply(text)
+    operation_proposal, operation_clarification = resolve_operation_reply(text, issue)
+    operation_proposal = operation_proposal or meaning.operation_update
+    if operation_clarification:
+        operation_proposal = None
+        clarify = operation_clarification
+    observation_answered = observation_attempted = False
+    if not operation_clarification:
+        observation_answered, observation_attempted = _accept_observation_reply(
+            issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
+            entry=state.get("entry"),
+        )
     conditions, operation_changed = update_conditions(issue, operation_proposal, text=text, input_id=iid)
     issue["operation_conditions"] = conditions
     if operation_changed:
@@ -533,7 +539,9 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
     会话 0f8809 里用户隔一轮逐字给出了选项标签，只认 asked 会把它整条丢掉。
     返回 (observation_answered, observation_attempted)。
     """
-    if entry != "message" or not text.strip():
+    # 提到选项不等于确认现象；解释、历史和业务查询不能消费待答观察。
+    if (entry != "message" or not text.strip()
+            or intent not in {"answer_pending", "unknown", "supplement", "report_problem"}):
         return False, False
     open_requests = [
         r for r in issue.get("observation_requests") or [] if r.get("status") in OPEN_OBSERVATION_STATUS
@@ -555,7 +563,7 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
         matched = match_reply(text, obs)
         if matched is None:
             # 只有刚问过的那一轮记未解析：之后每条无关消息都改写记录会掩盖真正的回答
-            if request["status"] == "asked" and intent in {"answer_pending", "unknown", "supplement", "report_problem"}:
+            if request["status"] == "asked":
                 request["status"] = "unparsed"
                 request["quote"] = text
                 attempted = True
@@ -565,6 +573,13 @@ def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
                 request.update(status="unknown", quote=text, answered_input_id=iid)
                 attempted = True
             continue
+        if intent == "unknown":
+            # 理解不可用时仍接受完整选项短答，但不从引用或提问中的子串推断设备事实。
+            option = obs.option(matched)
+            if option is None or text.strip(" \n。！!，,、").casefold() not in {
+                phrase.casefold() for phrase in [option.label, *option.phrases]
+            }:
+                continue
         updated, patches = record_observations(
             issue,
             [{"observation_id": obs.observation_id, "option_id": matched}],

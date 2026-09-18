@@ -47,14 +47,18 @@
 
 | 文件 | 改动 |
 | --- | --- |
-| `conversation/reduce.py` | `OPEN_OBSERVATION_STATUS = {asked, unparsed, unknown}`：请求在写出观察事实之前一直可以被回答接住；非匹配文本只在 `asked` 那一轮记未解析，不再逐轮改写记录 |
-| `conversation/interpret.py` | 操作条件短语移到待答问题受理之后；gate 换成 `has_operation_context`；提示词补一条「resources 中为 false 的资源本轮到位必须给 *_ready 信号」；`INTERPRET_PROMPT_VERSION` → `2026-09-18.2` |
-| `conversation/operation_conditions.py` | 新增 `has_operation_context`、`resource_recheck` / `RESOURCE_RECHECK`、`OperationConditions.resource_asks`；资源恢复时清掉追问记录；`explicit_operation_reply` 纳入「拿到了」等到位说法；`pause_text` 给出真的认得的解除说法 |
+| `conversation/reduce.py` | `OPEN_OBSERVATION_STATUS = {asked, unparsed, unknown}`：请求在写出观察事实之前一直可以被回答接住；非匹配文本只在 `asked` 那一轮记未解析，不再逐轮改写记录。受理限定在 `answer_pending / unknown / supplement / report_problem`——解释、历史与业务查询里提到选项不等于确认现象；理解不可用（intent=unknown）时只接受与选项标签或别名完全相同的短答，不按子串推断 |
+| `conversation/interpret.py` | 操作条件短语移到待答问题受理之后；gate 换成 `has_operation_context`；省略对象的资源短答走 `resolve_operation_reply`，绑不定时返回澄清而不是猜一个资源；提示词补一条「resources 中为 false 的资源本轮到位必须给 *_ready 信号」；`INTERPRET_PROMPT_VERSION` → `2026-09-18.2` |
+| `conversation/operation_conditions.py` | 新增 `has_operation_context`、`resolve_operation_reply`、`resource_recheck` / `RESOURCE_RECHECK`、`OperationConditions.resource_asks`；资源恢复时清掉追问记录；`pause_text` 给出真的认得的解除说法 |
 | `diagnose/decision.py` | 资源缺失导致暂停时先发一次复核追问（`operation_conditions_recheck`），没有可追问的才 `pause` |
 | `sessions/graph.py` | `ask_observation` 记录该资源已追问过 |
 
 复核追问的约束：声明当轮先如实答复（那一轮 `resource_sources` 就是当前 `input_id`），之后才追问；
 同一次缺失只追问一次；来源未知的历史状态不追问。
+
+「拿到了」这类省略对象的短答不写死成设备：先看本轮之前问的是哪件资源，其次看当前是否只缺一件，
+两者都定不下来就问「您拿到的是设备、清洁工具、备用线、另一台设备，还是充电器？」，
+并且这一轮不消费待答的观察问题。模型给出的 `operation_update` 不能越过这个澄清。
 
 修完后的序列：
 
@@ -66,8 +70,10 @@
 
 ## 测试
 
-`orchestrator/tests/test_conversation_observation_deadlock.py`，5 个用例。把
-`OPEN_OBSERVATION_STATUS` 临时改回 `{asked}` 时，其中 2 个（含端到端那个）失败。
+`orchestrator/tests/test_conversation_observation_deadlock.py`。把 `OPEN_OBSERVATION_STATUS`
+临时改回 `{asked}` 时，补答用例（含端到端那个）失败。覆盖：未解析 / unknown 的请求被后来的
+选项标签接住；解释、历史、业务查询里引用选项不产生设备事实且不消耗待答问题；省略对象的
+「拿到了」按被追问的资源或唯一缺失项落位，多件缺失时澄清且模型提案不能越过。
 
 ## 未做
 

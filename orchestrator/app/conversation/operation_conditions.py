@@ -18,7 +18,7 @@ OperationSignal = Literal[
     "charger_missing", "charger_ready",
     "pause", "continue", "explain", "skip", "retry",
 ]
-RESOURCE_SIGNALS: dict[str, tuple[str, bool]] = {
+RESOURCE_SIGNALS: dict[OperationSignal, tuple[str, bool]] = {
     "device_missing": ("device", False), "device_ready": ("device", True),
     "tool_missing": ("cleaning_tool", False), "tool_ready": ("cleaning_tool", True),
     "cable_missing": ("spare_cable", False), "cable_ready": ("spare_cable", True),
@@ -110,7 +110,7 @@ def explicit_operation_reply(text: str) -> OperationUpdate | None:
         "设备不在手边": "device_missing",
         # pause_text / resource_recheck 邀请用户"拿到设备后告诉我"，这些说法必须真的能解除限制
         "设备现在在身边": "device_ready", "设备在身边了": "device_ready",
-        "拿到了": "device_ready", "已经拿到了": "device_ready", "设备拿到了": "device_ready",
+        "设备拿到了": "device_ready",
         "拿到设备了": "device_ready", "设备到手了": "device_ready", "设备在手边了": "device_ready",
         "没有刷子": "tool_missing", "没有工具": "tool_missing",
         "缺少工具": "tool_missing", "工具准备好了": "tool_ready",
@@ -131,6 +131,30 @@ def explicit_operation_reply(text: str) -> OperationUpdate | None:
     if phrase in {"跳过这步", "只跳过这一步"}:
         return OperationUpdate(signal="skip", quote=text)
     return None
+
+
+def resolve_operation_reply(text: str, state: dict) -> tuple[OperationUpdate | None, str | None]:
+    """把省略对象的资源短答绑定到当前问题；没有唯一对象时返回澄清。"""
+    explicit = explicit_operation_reply(text)
+    if explicit is not None or text.strip(" \n。！!，,") not in {"拿到了", "已经拿到了"}:
+        return explicit, None
+    if not has_operation_context(state):
+        return None, None
+    conditions = conditions_for(state)
+    action = state.get("next_action") or {}
+    question = action.get("question") or {}
+    resource = None
+    if (action.get("kind") == "ask" and question.get("kind") == "operation_blocker"
+            and action.get("issue_id") in {None, state.get("active_issue_id") or state.get("issue_id")}):
+        resource = question.get("resource")
+    if resource is None:
+        missing = [name for name, available in conditions.resources.items() if available is False]
+        if len(missing) == 1:
+            resource = missing[0]
+    for signal, (name, available) in RESOURCE_SIGNALS.items():
+        if name == resource and available:
+            return OperationUpdate(signal=signal, quote=text), None
+    return None, "您拿到的是设备、清洁工具、备用线、另一台设备，还是充电器？"
 
 
 def update_conditions(state: dict, proposal: OperationUpdate | None, *, text: str, input_id: str) -> tuple[dict, bool]:

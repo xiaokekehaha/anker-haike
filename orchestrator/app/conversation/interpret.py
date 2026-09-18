@@ -13,8 +13,8 @@ from app.conversation.answers import AnswerRequest
 from app.conversation.history import ConversationEntry
 from app.conversation.operation_conditions import (
     OperationUpdate,
-    explicit_operation_reply,
     has_operation_context,
+    resolve_operation_reply,
 )
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError
@@ -194,9 +194,12 @@ async def interpret_turn(router, state: dict, *, lane: str):
         return answer, {"source": "symptom_question", "source_entry_ids": [state["input_id"]]}
     # 操作条件短语排在待答问题之后：判别题选项与资源说法会重合（「设备不在身边」既是选项
     # 也是资源声明），先当成对问题的回答，问题受理不了才算操作条件。
-    operation_update = explicit_operation_reply(state.get("text", ""))
-    if operation_update is not None and has_operation_context(state):
-        return TurnInterpretation(primary_intent="supplement", device_relation="current", operation_update=operation_update), {"source": "operation_conditions"}
+    operation_update, operation_clarification = resolve_operation_reply(state.get("text", ""), state)
+    if has_operation_context(state) and (operation_update is not None or operation_clarification):
+        return TurnInterpretation(
+            primary_intent="unknown" if operation_clarification else "supplement",
+            device_relation="current", operation_update=operation_update, clarification=operation_clarification,
+        ), {"source": "operation_conditions"}
     from app.diagnose.decision import owns_diagnostic_reply
     if owns_diagnostic_reply(state) and state.get("text", "").strip("。？！?! ") in {
         "还有其他的方案吗", "还有其他方案吗", "继续排查", "继续排障", "还有别的办法吗",
