@@ -31,12 +31,19 @@ export function Journey() {
   const retrievals: RetrievalCall[] = run?.retrieval_calls ?? [];
   const path = useMemo(() => nodes.map((n) => n.node), [nodes]);
   const selected = nodes.find((n) => n.idx === nodeIdx) ?? null;
+  const candidateLevel = nodes.flatMap(node => {
+    const level = node.summary?.relaxed_level;
+    return level === 'strict' || level === 'observation' ? [level] : [];
+  }).at(-1);
 
   if (journey.error) {
     return <p className="empty">读取失败：{journey.error} <Link className="link" to="/sessions">返回列表</Link></p>;
   }
   if (!journey.data) return <p className="empty">加载中…</p>;
   const session = journey.data.session;
+  const latestSummary = journey.data.snapshot?.timeline.filter(item => item.kind === 'escalation_summary').at(-1);
+  const outcomeReason = session.outcome === 'escalated' && latestSummary?.summary.reason.rule_id === session.outcome_reason
+    ? latestSummary.summary.reason.text : reasonText(session.outcome_reason);
 
   return (
     <>
@@ -47,7 +54,7 @@ export function Journey() {
             <p className="sub mono">{id}</p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 12.5 }}>
               <Badge outcome={session.outcome} />
-              <span className="muted">原因 {reasonText(session.outcome_reason)}</span>
+              <span className="muted">原因 {outcomeReason}</span>
               <span className="muted">产品 {session.sku ?? session.category ?? '未识别'}</span>
               <span className="muted">{session.runs} 轮 · {session.steps_executed} 个步骤</span>
               <span className="muted">{when(session.last_run_at)}</span>
@@ -84,6 +91,7 @@ export function Journey() {
         </div>
 
         <div className="card">
+          {candidateLevel && <p className="sub">本轮候选评估：{candidateLevel === 'observation' ? '依据观察重选' : '常规候选'}</p>}
           <div className="tabs">
             <button aria-pressed={view === 'chat'} onClick={() => setView('chat')}>对话</button>
             <button aria-pressed={view === 'waterfall'} onClick={() => setView('waterfall')}>节点瀑布</button>
