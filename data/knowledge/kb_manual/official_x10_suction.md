@@ -14,7 +14,7 @@ language: zh-CN
 region_list: []
 source_sha256: 5950d4a18d73a794b221254aad9004c93bcaadbd717eeb8a47b620f880f553ba
 content_sha256: bcead0f6cf5df3de1d0b925588d2c74690e7b105e4c0db7b221ea7d9a4466c1c
-fetched_at: '2026-09-17T07:36:04.243198+00:00'
+fetched_at: '2026-09-17T10:55:12.757402+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -23,7 +23,7 @@ section_ids:
 - c1
 - c2
 - c3
-doc_version: 2026-09-17.2-9472e4059e3d
+doc_version: 2026-09-17.3-9472e4059e3d
 ---
 
 ## X10 Pro Omni：吸力弱时检查滤网和尘盒（c1）

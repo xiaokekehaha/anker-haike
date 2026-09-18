@@ -200,7 +200,8 @@ async def test_effect_question_accepts_single_and_multiple_answers(mem_runtime, 
         await _send(client, sid, "eufy X10 Pro Omni")
         assert (await _state(sid))["symptom_interview"]["question"]["question"] == "设备按电源后能正常启动吗？"
         await _send(client, sid, "可以")
-        assert len((await _state(sid))["symptom_interview"]["candidates"]) == 6, (await _state(sid))["symptom_interview"]
+        # 能启动 → 剩下 7 个故障族（吸力 / 异响 / 漏水 / 导航 / 地图丢失 / 拖地 / App）
+        assert len((await _state(sid))["symptom_interview"]["candidates"]) == 7, (await _state(sid))["symptom_interview"]
         rows = await _send(client, sid, "效果不好")
         assert "可多选" in _message_text(rows)
         assert not any(e["type"] == "escalation_summary" for e in rows)

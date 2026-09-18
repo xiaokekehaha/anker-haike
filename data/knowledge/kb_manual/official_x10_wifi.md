@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 6ee8efaacf3085145c0596e47c4802e508bffd9911de8ba7f7ce9aaf0d40a49c
 content_sha256: 1cf9ce17e27adc23184fcebc2beb1e13d3eb4f857973ebc3ea01a3103c9709f8
-fetched_at: '2026-09-17T07:36:06.965556+00:00'
+fetched_at: '2026-09-17T10:55:14.426946+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-c9ca0d806b89
+doc_version: 2026-09-17.3-c9ca0d806b89
 ---
 
 ## X10 Pro Omni：WiFi连接失败的准备检查（c1）

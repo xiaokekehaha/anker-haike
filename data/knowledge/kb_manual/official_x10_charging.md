@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 03ac6012c17add9305ba2108892cf3a7f23a3e54941f876ae5b4b6950449b682
 content_sha256: 98641e90a42e5047fd6947be02f8166a594f9b5919f43abaf5d0e0bdd01f1476
-fetched_at: '2026-09-17T07:36:05.332195+00:00'
+fetched_at: '2026-09-17T10:55:13.551328+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-0389f914e5e8
+doc_version: 2026-09-17.3-0389f914e5e8
 ---
 
 ## X10 Pro Omni：无法充电或开机的电源检查（c1）

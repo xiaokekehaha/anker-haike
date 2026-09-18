@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 97adf00cf5566b7b70d09cab9bb547ac8271447764a2ab357981018b8c644ba2
 content_sha256: d79b06dde33fc52cecce449ee3a1e28c38b15122e1927c9b5a9415313adab819
-fetched_at: '2026-09-17T07:36:11.925299+00:00'
+fetched_at: '2026-09-17T10:55:22.479889+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -22,7 +22,7 @@ section_ids:
 - c1
 - c2
 - c3
-doc_version: 2026-09-17.2-31252647c55c
+doc_version: 2026-09-17.3-31252647c55c
 ---
 
 ## Anker 737 A1289：笔记本充电出现UVP提示（c1）

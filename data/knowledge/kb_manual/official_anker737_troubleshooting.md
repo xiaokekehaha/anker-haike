@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 678f44304943eb554341f23948aa05df991b4d8e53f280fc5998500bb6c3e272
 content_sha256: 1650317b7ce8ed556adf4b9f118abfb5c83a6b95231c6d68d03ffbc36a8eb782
-fetched_at: '2026-09-17T07:36:11.200453+00:00'
+fetched_at: '2026-09-17T10:55:21.705078+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-fc326dc6345e
+doc_version: 2026-09-17.3-fc326dc6345e
 ---
 
 ## Anker 737 A1289：屏幕或工作异常时的复位（c1）

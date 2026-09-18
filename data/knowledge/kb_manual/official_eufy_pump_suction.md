@@ -14,7 +14,7 @@ language: zh-CN
 region_list: []
 source_sha256: 027e68bb5bc9f5af73f2fa54b8921cc331a131a21d7d983dd77a04b1b6ac03e8
 content_sha256: 811bb5f7d7efc49dab4d743c2d089ef58ea88455395f9243e5f9f9bcf7f81862
-fetched_at: '2026-09-17T07:36:12.745638+00:00'
+fetched_at: '2026-09-17T10:55:24.403811+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -22,7 +22,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-de5427abba87
+doc_version: 2026-09-17.3-de5427abba87
 ---
 
 ## eufy 吸奶器：无吸力时检查阀片和密封（c1）

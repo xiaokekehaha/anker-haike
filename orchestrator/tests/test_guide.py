@@ -458,23 +458,15 @@ async def test_cannot_do_follows_next_on_cannot_do_and_counts_skipped(runtime):
     assert step_card_of(ev[2:])["step"]["step_id"] == "s2"
     st = await s.state()
     assert st["counters"] == {"executed": 0, "advanced": 0, "skipped": 1, "plans_exhausted": 0}
-    # s2.cannot_do → EXHAUSTED → 第二计划 filter_clog(0.4 ≥ 0.3)；其 s1 与已执行的 s2 同 instruction_src(c15) → 跳过 → s2(q9)
+    # s2.cannot_do → s3：清洁滤网做不到不代表检查吸口做不到，先走完本计划里不依赖该前提的步骤
     ev = await s.feedback(pending_of(ev), "cannot_do")
-    card = step_card_of(ev[2:])
-    assert card["step"]["plan_id"] == "rv_suction_filter_clog" and card["step"]["step_id"] == "s2"
+    assert step_card_of(ev[2:])["step"]["step_id"] == "s3"
+    # s3.cannot_do → skipped 达到 CP-verify 的 R1b 限额(3)，限额先于计划耗尽生效 → 直接转人工
+    ev = await s.feedback(pending_of(ev), "cannot_do")
+    assert [e for e in ev if e["type"] == "step_card"] == []
     st = await s.state()
-    assert st["counters"] == {"executed": 0, "advanced": 0, "skipped": 2, "plans_exhausted": 1}
-    assert st["exhausted_plans"] == ["rv_suction_hair_wrap"]
-    dropped = [t for t in st["guide_trace"] if t["event"] == "step_dropped"]
-    assert dropped == [
-        {
-            "event": "step_dropped",
-            "plan_id": "rv_suction_filter_clog",
-            "step_id": "s1",
-            "reason": "duplicate_instruction_src",
-        }
-    ]
-    assert any(t["event"] == "verify" and t.get("rule") == "switch_plan" for t in st["guide_trace"])
+    assert st["counters"] == {"executed": 0, "advanced": 0, "skipped": 3, "plans_exhausted": 0}
+    assert st["escalate_reason"] == "R1b"
 
 
 async def test_first_plan_exhausted_switches_to_second_plan_first_step(runtime):

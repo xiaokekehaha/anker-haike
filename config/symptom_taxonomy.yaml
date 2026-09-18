@@ -4,7 +4,7 @@
 # - selection_label：多选题里给用户看的说法（不写就用 fault_family）。
 # - symptom_code 与 plans.yaml 的 symptom_codes 对应，按品类加前缀（rv_ 系列为历史沿用未加前缀）。
 # 没有登记的品类（目录级品类）在 decide_symptoms 里走 question_coverage_missing → R5，不借用其他品类的问题。
-version: 2026-09-17.1
+version: 2026-09-17.2
 source: 人工演示样本，待真实工单替换
 categories:
   robot_vacuum:
@@ -39,7 +39,11 @@ categories:
       expressions: [漏水, 底下有水, 水箱往外滴, 地上都是水, 往外渗水]
     - fault_family: 导航异常
       symptom_code: navigation_failure
-      expressions: [乱跑, 撞来撞去, 地图乱了, 找不到基站, 回不去基站]
+      expressions: [乱跑, 撞来撞去, 到处乱撞, 地图乱了, 找不到基站, 回不去基站]
+    - fault_family: 地图丢失
+      symptom_code: map_lost
+      selection_label: App 里看不到已保存的地图
+      expressions: [地图没了, 地图丢了, 地图不见, 地图没保存, 地图被删]
     - fault_family: 拖地异常
       symptom_code: mop_failure
       selection_label: 拖地后仍有污渍或拖布异常
@@ -50,7 +54,7 @@ categories:
     discriminators:
     - question: 设备按电源后能正常启动吗？
       splits:
-        'yes': [吸力下降, 异响, 漏水, 导航异常, 拖地异常, App 连接]
+        'yes': [吸力下降, 异响, 漏水, 导航异常, 地图丢失, 拖地异常, App 连接]
         'no': [不开机, 不充电]
     - question: 放回基站后，设备有正常的充电指示或充电语音吗？
       splits:
@@ -59,7 +63,7 @@ categories:
     - question: 是清扫或拖地的效果不好吗？
       splits:
         'yes': [吸力下降, 拖地异常]
-        'no': [不开机, 不充电, 异响, 漏水, 导航异常, App 连接]
+        'no': [不开机, 不充电, 异响, 漏水, 导航异常, 地图丢失, App 连接]
 
   power_bank:
     families:
@@ -242,3 +246,43 @@ categories:
       splits:
         'yes': [吸力不足, 漏奶或漏气]
         'no': [异响, App 连接]
+
+  headphones:
+    families:
+    - fault_family: 无法开机或充电
+      symptom_code: hd_power_failure
+      expressions: [开不了机, 不开机, 充不进电, 没电, 按了没反应, 不充电, 开不起来]
+    - fault_family: 连不上或频繁断连
+      symptom_code: hd_pairing_failure
+      expressions: [连不上, 配对失败, 搜不到, 蓝牙连不上, 断连, 老是断, 连接不上, 总掉线]
+    - fault_family: 单边无声或左右不平衡
+      symptom_code: hd_one_side_silent
+      selection_label: 一边没声音，或左右音量不一样
+      expressions: [一边没声, 只有一边, 单边, 左耳没声, 右耳没声, 一只没声音, 左右声音不一样, 声音偏一边]
+    - fault_family: 杂音或底噪
+      symptom_code: hd_noise
+      selection_label: 有杂音、底噪或电流声
+      expressions: [杂音, 底噪, 电流声, 滋滋, 嗡嗡, 啸叫, 噼啪, 爆音]
+    - fault_family: 通话麦克风异常
+      symptom_code: hd_mic_failure
+      selection_label: 打电话时对方听不到或听不清
+      expressions: [对方听不到, 对方听不清, 麦克风没声, 麦克风不行, 通话听不见, 收音差]
+    - fault_family: 续航短
+      symptom_code: hd_battery_drain
+      expressions: [续航短, 掉电快, 用一会就没电, 不耐用, 电量掉得快]
+    - fault_family: 降噪效果差
+      symptom_code: hd_anc_failure
+      expressions: [降噪没效果, 降噪不行, 降噪失效, 降噪没用, 隔音不好]
+    discriminators:
+    - question: 耳机能正常开机并连上手机或电脑吗？
+      splits:
+        'yes': [单边无声或左右不平衡, 杂音或底噪, 通话麦克风异常, 续航短, 降噪效果差]
+        'no': [无法开机或充电, 连不上或频繁断连]
+    - question: 问题只出现在打电话或语音通话的时候吗？
+      splits:
+        'yes': [通话麦克风异常]
+        'no': [单边无声或左右不平衡, 杂音或底噪, 续航短, 降噪效果差]
+    - question: 是听音乐时声音本身不对吗（单边、杂音或降噪）？
+      splits:
+        'yes': [单边无声或左右不平衡, 杂音或底噪, 降噪效果差]
+        'no': [通话麦克风异常, 续航短]

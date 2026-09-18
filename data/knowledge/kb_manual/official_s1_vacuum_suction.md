@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 7a8be54f98e70b04b959f8ec72933a589d45a9c8299d1d2b2186f7cbd4d35998
 content_sha256: 535e65b24e8d74de2be5a2620cf2719fdc65d6a12c39261cf0f9376276b9b29f
-fetched_at: '2026-09-17T07:36:08.469648+00:00'
+fetched_at: '2026-09-17T10:55:15.748093+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-1feee5e349bf
+doc_version: 2026-09-17.3-1feee5e349bf
 ---
 
 ## S1 Pro 扫地机器人：吸力降低的堵塞检查（c1）

@@ -625,7 +625,11 @@ async def test_category_only_query_and_scope_exclude_sku(mem_runtime, tmp_path):
     assert retrieval_query(state) == "扫地机器人 不吸了"
     scope = knowledge_scope_of(state)
     assert scope.product_state == "category_only" and scope.sku is None
-    # 品类级只放出本品类的计划；多品类后计划库里还有 pb_ / chg_ / eb_ … 其他品类的计划
-    assert {p.plan_id for p in LIB.allowed_for(category=scope.category, sku=scope.sku)} == {
-        p for p in LIB.plan_ids if p.startswith("rv_")
+    # 品类级只放出本品类且品类通用的计划：官方资料计划按型号开放，category_only 拿不到
+    allowed = {p.plan_id for p in LIB.allowed_for(category=scope.category, sku=scope.sku)}
+    assert allowed == {
+        p.plan_id
+        for p in LIB.plans
+        if p.applies_to.category == "robot_vacuum" and p.applies_to.scope == "category_generic"
     }
+    assert not [p for p in allowed if p.startswith("rv_x10_")]

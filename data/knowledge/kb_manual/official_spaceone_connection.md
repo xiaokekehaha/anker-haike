@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 6f7cabcd95bacf1c201a40351cec96499b3eb1498c49bd2576d75b00286cdfdd
 content_sha256: 18b25626c80cb4c5912cda6b5cbdaa1c6b62fcdc507c9f5242ff6f1c3d1181c0
-fetched_at: '2026-09-17T07:36:15.018838+00:00'
+fetched_at: '2026-09-17T10:55:26.430388+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-68d6de46c886
+doc_version: 2026-09-17.3-68d6de46c886
 ---
 
 ## Space One A3035：蓝牙配对与重新连接（c1）

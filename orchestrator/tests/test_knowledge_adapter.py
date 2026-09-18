@@ -25,6 +25,12 @@ X10 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X10-PRO-OMNI")
 # manual_rv_v1 已降为品类级（通用维护流程），机型级手册只剩 v2，范围控制改由它来体现
 L60 = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-L60-HYBRID")
 CAT_ONLY = KnowledgeScope("category_only", "robot_vacuum")
+# 该型号的官方资料摘要（data/knowledge/sources/anker_official.yaml 里 sku_list 含 X10 的那些）
+X10_OFFICIAL = {
+    "official_x10_suction", "official_x10_charging", "official_x10_wifi", "official_x10_voice",
+    "official_x10_station_leak", "official_x10_mop_water", "official_x10_dock_return",
+    "official_x10_map_lost", "official_x10_loud_noise",
+}
 UNKNOWN = KnowledgeScope("unknown", "robot_vacuum")
 
 
@@ -65,9 +71,7 @@ async def test_allowed_sets_follow_product_state(adapter):
     generic = {"troubleshooting_rv", "manual_rv_v1"}
     assert {e.doc_id for e in allowed_entries(manual, CAT_ONLY)} == generic
     # 官方资料必须确认到 X10 型号后才可见；其他机型的官方资料仍被隔离。
-    assert {e.doc_id for e in allowed_entries(manual, X10)} == generic | {
-        "official_x10_suction", "official_x10_charging", "official_x10_wifi", "official_x10_voice",
-    }
+    assert {e.doc_id for e in allowed_entries(manual, X10)} == generic | X10_OFFICIAL
     # 机型专属手册仍然只对自己的 sku 可见
     assert {e.doc_id for e in allowed_entries(manual, L60)} == generic | {"manual_rv_v2"}
     assert allowed_entries(manual, UNKNOWN) == []
@@ -119,7 +123,8 @@ async def test_empty_allowed_set_sends_no_request(adapter):
 async def test_no_hit_is_no_match_with_hint(adapter):
     ad, _ = adapter
     res = await ad.hybrid_search("kb_manual", "量子纠缠", 5, X10)
-    assert res.status == "no_match" and res.hint == HINTS["no_match"] and res.allowed_count == 6
+    assert res.status == "no_match" and res.hint == HINTS["no_match"]
+    assert res.allowed_count == len(X10_OFFICIAL) + 2  # 两条品类通用手册
     assert res.for_model() == {"status": "no_match", "hint": HINTS["no_match"]}
 
 

@@ -1,7 +1,7 @@
 # 故障卡（票 33，07 §7）：产品确认后预加载进 diagnose / guide 上下文的反范式化文本，离线由知识库生成并人工校对。
 # 每张 ≤ 800 token（中文按字计）。faults 的 plan_id 必须是 plans.yaml 中的计划；keywords 用于与症状 / 查询做命中判断。
 # key 为 SKU，或 "category:<category>" 供 category_only 使用。
-version: 2026-09-17.1
+version: 2026-09-17.2
 cards:
   - key: category:robot_vacuum
     doc_version: 2026-09-12.1
@@ -11,7 +11,8 @@ cards:
       - {fault: 滤网堵塞, plan_id: rv_suction_filter_clog, signatures: [{part: 滤网, phenomenon: 堵塞}], symptom_codes: [filter_clog], keywords: [滤网, 滤芯, 灰尘多, 尘盒很快满], first_step: 取出滤网轻拍去尘并清水冲洗，晾干 24 小时装回}
       - {fault: 尘盒满或未装到位, plan_id: rv_suction_dustbin_full, signatures: [{part: 尘盒, phenomenon: 堵塞}], symptom_codes: [dustbin_full], keywords: [尘盒, 请检查尘盒, 漏灰], first_step: 倒空尘盒并重新安装到听到咔哒声}
       - {fault: 边刷缠绕或不转, plan_id: rv_suction_side_brush, signatures: [{part: 边刷, phenomenon: 缠绕}], symptom_codes: [side_brush_stuck], keywords: [边刷, 侧刷, 不转, 墙边], first_step: 关机后拆下边刷清理缠绕物}
-      - {fault: 异响 / 焦味 / 过热, plan_id: rv_suction_motor_fault, keywords: [异响, 焦味, 过热, 发烫, 冒烟], first_step: 立即关机停止使用，等待人工处理}
+      - {fault: 焦味 / 过热 / 冒烟（安全停用）, plan_id: rv_suction_motor_fault, keywords: [焦味, 过热, 发烫, 冒烟, 烧焦], first_step: 立即关机停止使用，等待人工处理}
+      - {fault: 噪音变大（异物或缠绕）, plan_id: rv_noise_obstruction, symptom_codes: [abnormal_noise], keywords: [异响, 声音很大, 噪音大, 咔咔, 吱吱], first_step: 关机后检查吸口异物，再清理滚刷与边刷}
     safety:
       - 拆装滚刷、边刷、滤网前先关机。
       - 出现焦味、冒烟、机身过热或电池鼓包时立即断电停用并联系售后，不再自行排查。
@@ -24,7 +25,10 @@ cards:
       - {fault: 滤网堵塞, plan_id: rv_suction_filter_clog, signatures: [{part: 滤网, phenomenon: 堵塞}], symptom_codes: [filter_clog], keywords: [滤网, 灰], first_step: 打开尘盒盖取出滤网清洗，晾干 24 小时}
       - {fault: 「请检查尘盒」提示, plan_id: rv_suction_dustbin_full, signatures: [{part: 尘盒, phenomenon: 堵塞}], symptom_codes: [dustbin_full], keywords: [尘盒, 提示], first_step: 按尘盒释放键抽出尘盒倒空，检查进风口后装回到位}
       - {fault: 边刷不转, plan_id: rv_suction_side_brush, signatures: [{part: 边刷, phenomenon: 缠绕}], symptom_codes: [side_brush_stuck], keywords: [边刷, 不转], first_step: 拆下边刷螺丝清理缠绕物，刷毛变形则更换}
-      - {fault: 异响 / 焦味 / 过热, plan_id: rv_suction_motor_fault, keywords: [异响, 焦味, 过热, 冒烟], first_step: 立即关机停用并联系售后}
+      - {fault: 焦味 / 过热 / 冒烟（安全停用）, plan_id: rv_suction_motor_fault, keywords: [焦味, 过热, 冒烟, 烧焦], first_step: 立即关机停用并联系售后}
+      - {fault: 噪音变大（异物或缠绕）, plan_id: rv_x10_loud_noise, symptom_codes: [abnormal_noise], keywords: [异响, 声音很大, 噪音大, 咔咔, 吱吱], first_step: 关机后取下滚刷与护罩试运行，再排查边刷、吸力档位与滤网}
+      - {fault: 基站漏水, plan_id: rv_x10_station_leak, signatures: [{part: 水箱, phenomenon: 破损}], symptom_codes: [water_leak], keywords: [漏水, 渗水, 底下有水, 积水], first_step: 断电后依次检查清水箱与污水箱密封圈、清洁托盘浮子}
+      - {fault: 回不去基站, plan_id: rv_x10_dock_return, symptom_codes: [navigation_failure], keywords: [回不去, 找不到基站, 回充失败, 上不去基站], first_step: 确认基站白灯常亮，再清理万向轮并检查延长板与摆放}
     safety:
       - 基站清洗拖布时勿伸手进入基站底部。
       - 出现焦味、冒烟、过热或电池鼓包立即断电停用，不要继续充电。
@@ -36,7 +40,9 @@ cards:
       - {fault: 滤网堵塞, plan_id: rv_suction_filter_clog, signatures: [{part: 滤网, phenomenon: 堵塞}], symptom_codes: [filter_clog], keywords: [滤网, 灰], first_step: 取出滤网清洗并晾干 24 小时}
       - {fault: 尘盒未装到位, plan_id: rv_suction_dustbin_full, signatures: [{part: 尘盒, phenomenon: 堵塞}], symptom_codes: [dustbin_full], keywords: [尘盒, 提示], first_step: 倒空尘盒并重新安装到位}
       - {fault: 边刷不转, plan_id: rv_suction_side_brush, signatures: [{part: 边刷, phenomenon: 缠绕}], symptom_codes: [side_brush_stuck], keywords: [边刷, 不转], first_step: 拆下边刷清理缠绕物}
-      - {fault: 异响 / 焦味 / 过热, plan_id: rv_suction_motor_fault, keywords: [异响, 焦味, 过热, 冒烟], first_step: 立即关机停用并联系售后}
+      - {fault: 焦味 / 过热 / 冒烟（安全停用）, plan_id: rv_suction_motor_fault, keywords: [焦味, 过热, 冒烟, 烧焦], first_step: 立即关机停用并联系售后}
+      - {fault: 噪音变大（异物或缠绕）, plan_id: rv_noise_obstruction, symptom_codes: [abnormal_noise], keywords: [异响, 声音很大, 噪音大, 咔咔, 吱吱], first_step: 关机后检查吸口异物，再清理滚刷与边刷}
+      - {fault: 地图丢失, plan_id: rv_map_lost, symptom_codes: [map_lost], keywords: [地图没了, 地图丢, 地图不见, 地图乱了], first_step: 确认是否为有效地图或被误删，再开启多地图保存后查看}
     safety:
       - 拖布模块拆装前先关机；水箱勿加清洁剂以外的液体。
       - 出现焦味、冒烟、过热或电池鼓包立即断电停用。
@@ -48,7 +54,8 @@ cards:
       - {fault: 滤网堵塞, plan_id: rv_suction_filter_clog, signatures: [{part: 滤网, phenomenon: 堵塞}], symptom_codes: [filter_clog], keywords: [滤网], first_step: 取出滤网清洗并完全晾干}
       - {fault: 尘盒满或未装到位, plan_id: rv_suction_dustbin_full, signatures: [{part: 尘盒, phenomenon: 堵塞}], symptom_codes: [dustbin_full], keywords: [尘盒], first_step: 倒空尘盒并装回到位}
       - {fault: 边刷不转, plan_id: rv_suction_side_brush, signatures: [{part: 边刷, phenomenon: 缠绕}], symptom_codes: [side_brush_stuck], keywords: [边刷, 不转], first_step: 关机拆下边刷清理}
-      - {fault: 异响 / 焦味 / 过热, plan_id: rv_suction_motor_fault, keywords: [异响, 焦味, 过热, 冒烟], first_step: 立即关机停用并联系售后}
+      - {fault: 焦味 / 过热 / 冒烟（安全停用）, plan_id: rv_suction_motor_fault, keywords: [焦味, 过热, 冒烟, 烧焦], first_step: 立即关机停用并联系售后}
+      - {fault: 噪音变大（异物或缠绕）, plan_id: rv_noise_obstruction, symptom_codes: [abnormal_noise], keywords: [异响, 声音很大, 噪音大, 咔咔, 吱吱], first_step: 关机后检查吸口异物，再清理滚刷与边刷}
     safety:
       - 基站工作时勿移动主机；出现焦味、冒烟、过热立即断电停用。
   - key: EUFY-L60-HYBRID
@@ -59,7 +66,8 @@ cards:
       - {fault: 滤网堵塞, plan_id: rv_suction_filter_clog, signatures: [{part: 滤网, phenomenon: 堵塞}], symptom_codes: [filter_clog], keywords: [滤网], first_step: 取出可水洗滤网冲洗并完全晾干}
       - {fault: 尘盒盖未扣紧 / 已满, plan_id: rv_suction_dustbin_full, signatures: [{part: 尘盒, phenomenon: 堵塞}], symptom_codes: [dustbin_full], keywords: [尘盒, 漏灰], first_step: 倒空尘盒并扣紧尘盒盖}
       - {fault: 边刷不转, plan_id: rv_suction_side_brush, signatures: [{part: 边刷, phenomenon: 缠绕}], symptom_codes: [side_brush_stuck], keywords: [边刷, 不转], first_step: 关机拆下边刷清理}
-      - {fault: 异响 / 焦味 / 过热, plan_id: rv_suction_motor_fault, keywords: [异响, 焦味, 过热, 冒烟], first_step: 立即关机停用并联系售后}
+      - {fault: 焦味 / 过热 / 冒烟（安全停用）, plan_id: rv_suction_motor_fault, keywords: [焦味, 过热, 冒烟, 烧焦], first_step: 立即关机停用并联系售后}
+      - {fault: 噪音变大（异物或缠绕）, plan_id: rv_noise_obstruction, symptom_codes: [abnormal_noise], keywords: [异响, 声音很大, 噪音大, 咔咔, 吱吱], first_step: 关机后检查吸口异物，再清理滚刷与边刷}
     safety:
       - 水箱漏水时先检查密封圈；出现焦味、冒烟、过热立即断电停用。
   # ================= 2026-09-17 多品类：品类通用故障卡（人工演示样本，待真实资料替换）=================
@@ -112,7 +120,8 @@ cards:
     faults:
       - {fault: 离线 / 连不上网, plan_id: cam_offline_reconnect, symptom_codes: [cam_offline], keywords: [离线, 掉线, 连不上, 配网], first_step: 检查 2.4GHz 与距离，重启 HomeBase 或设备}
       - {fault: 画面模糊 / 夜视发白, plan_id: cam_lens_clean, signatures: [{part: 镜头, phenomenon: 污渍}], symptom_codes: [cam_blurry], keywords: [模糊, 看不清, 夜视, 起雾], first_step: 清洁镜头撕掉保护膜，排除夜视反光}
-      - {fault: 不录像 / 无推送 / 误报, plan_id: cam_detection_tune, symptom_codes: [cam_no_recording, cam_false_alarm], keywords: [不录像, 没推送, 误报, 通知], first_step: 调整活动区域与灵敏度，检查通知权限}
+      - {fault: 不录像 / 收不到推送, plan_id: cam_detection_tune, symptom_codes: [cam_no_recording], keywords: [不录像, 没推送, 收不到通知], first_step: 调整活动区域与灵敏度，检查通知权限}
+      - {fault: 误报频繁, plan_id: cam_false_alarm_tune, symptom_codes: [cam_false_alarm], keywords: [误报, 老是报警, 乱报, 误触发], first_step: 缩小活动区域并降低灵敏度，让常动物体不在区域内}
       - {fault: 续航短, plan_id: cam_battery_check, symptom_codes: [cam_battery_drain], keywords: [掉电快, 续航, 没电], first_step: 降低触发频率，用原装线充满一次}
       - {fault: 门铃不响, plan_id: cam_doorbell_chime, symptom_codes: [cam_doorbell_silent], keywords: [门铃不响, 不响], first_step: 检查室内机音量与配对}
     safety:
@@ -128,3 +137,31 @@ cards:
     safety:
       - 接触奶液的配件每次使用后清洗并完全晾干；主机不可水洗。
       - 使用中感到疼痛请立即停止并降低吸力档位。
+  # ---- 头戴式耳机：按型号的官方资料计划（本品类没有品类通用卡，未确认型号时按 R5 如实结束）----
+  - key: SOUNDCORE-A3035
+    doc_version: 2026-09-17.3
+    title: soundcore Space One 故障卡
+    faults:
+      - {fault: 无法开机 / 充不进电, plan_id: hd_so_power_failure, symptom_codes: [hd_power_failure], keywords: [开不了机, 不开机, 充不进, 没反应, 没电], first_step: 长按电源键 3 秒确认开机音，再按红灯状态判断充电并检查充电口与线材}
+      - {fault: 连不上 / 频繁断连, plan_id: hd_so_connect_drop, symptom_codes: [hd_pairing_failure], keywords: [连不上, 断连, 搜不到, 配对, 掉线], first_step: 充满电并靠近设备，再排除干扰、升级固件，必要时重新进配对模式}
+      - {fault: 单边无声 / 左右不平衡, plan_id: hd_so_one_side, symptom_codes: [hd_one_side_silent], keywords: [一边没声, 单边, 左耳, 右耳, 左右声音], first_step: 确认左右戴对且耳罩密合，再检查左耳佩戴检测传感器}
+      - {fault: 底噪 / 电流声 / 杂音, plan_id: hd_so_noise, symptom_codes: [hd_noise], keywords: [底噪, 嗡嗡, 电流声, 杂音, 滋滋], first_step: 降噪底噪先降档位并清理降噪麦克风孔；AUX 电流声先拔掉所连设备的充电线}
+      - {fault: 通话麦克风异常, plan_id: hd_so_mic, symptom_codes: [hd_mic_failure], keywords: [对方听不到, 麦克风, 通话, 收音], first_step: 检查静音状态与输入设备选择，并确认有线通话用的是所连设备的麦克风}
+      - {fault: 续航短, plan_id: hd_so_battery_drain, symptom_codes: [hd_battery_drain], keywords: [续航短, 掉电快, 不耐用], first_step: 确认使用 5V/1A 以上认证充电器与合适温度，并按电池保养建议使用}
+    safety:
+      - 充电口进过液体要先晾 24 小时再充电。
+      - 清理麦克风孔和佩戴检测镜面只用干布、蓝丁胶或酒精棉签，不要用液体清洁剂冲洗。
+  - key: SOUNDCORE-A3040
+    doc_version: 2026-09-17.3
+    title: soundcore Space Q45 故障卡
+    faults:
+      - {fault: 无法开机 / 充不进电, plan_id: hd_q45_power_failure, symptom_codes: [hd_power_failure], keywords: [开不了机, 不开机, 充不进, 没反应, 没电], first_step: 换 5V 充电器与另一根线连续充电 24 小时，必要时长按电源键与音量加 5 秒重置}
+      - {fault: 搜不到 / 连不上, plan_id: hd_q45_pairing, symptom_codes: [hd_pairing_failure], keywords: [连不上, 搜不到, 配对, 断连, 掉线], first_step: 删除设备侧全部配对记录并重启设备，再重置耳机后重新配对}
+      - {fault: 单边无声, plan_id: hd_q45_one_side, symptom_codes: [hd_one_side_silent], keywords: [一边没声, 单边, 左耳, 右耳, 一只没声音], first_step: 先确认设备声道未偏向一侧，再充满并重置耳机}
+      - {fault: 杂音 / 啸叫, plan_id: hd_q45_noise, symptom_codes: [hd_noise], keywords: [杂音, 啸叫, 电流声, 噼啪, 滋滋], first_step: 删除配对记录并重置耳机，再换设备、换模式、换环境验证}
+      - {fault: 通话麦克风收音差, plan_id: hd_q45_mic, symptom_codes: [hd_mic_failure], keywords: [对方听不清, 麦克风, 通话, 收音], first_step: 重置耳机后重试，通话时切到降噪模式并换设备验证}
+      - {fault: 降噪效果差, plan_id: hd_q45_anc, symptom_codes: [hd_anc_failure], keywords: [降噪, 隔音, 降噪没用], first_step: 确认佩戴方式并把降噪调到第 5 档，再换环境测试}
+      - {fault: 续航短, plan_id: hd_q45_battery_drain, symptom_codes: [hd_battery_drain], keywords: [续航短, 掉电快, 不耐用], first_step: 充满后在 60% 音量重测播放时长，排除未关机、多设备连接与开降噪}
+    safety:
+      - 充电口进过液体要先晾干再充电。
+      - 降噪只能减弱中低频噪声和人声，不能作为听力防护设备使用。

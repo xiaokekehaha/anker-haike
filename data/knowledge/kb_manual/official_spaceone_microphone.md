@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 9dcf621751f3a52571e913f0bd45550f2fb78b5b21bc0eb317158e539b2c5af9
 content_sha256: 370855c40ca68b2030db22393e8033164797302f5c6ba6e4064a205c28035bca
-fetched_at: '2026-09-17T07:36:15.797949+00:00'
+fetched_at: '2026-09-17T10:55:27.157933+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-773b64909bbd
+doc_version: 2026-09-17.3-773b64909bbd
 ---
 
 ## Space One A3035：通话麦克风无声检查（c1）

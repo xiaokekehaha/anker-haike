@@ -33,7 +33,7 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
         data={"input_id": "no-output", "expected_version": before["version"], "text": "没有"},
     )
     rows = conversation.check(response)
-    for step_id in ("s1", "s2"):
+    for step_id in ("s1", "s2", "s3"):
         card = next(e for e in rows if e["type"] == "step_card")
         assert card["step"]["plan_id"] == "pb_port_debris"
         assert card["step"]["step_id"] == step_id
@@ -58,12 +58,13 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
     event = next(e for e in rows if e["type"] == "escalation_summary")
     summary = EscalationSummary.model_validate(event["summary"])
     assert summary.product == "移动电源（型号未确认）"
-    assert [step.feedback for step in summary.steps] == ["cannot_do", "cannot_do"]
-    assert summary.reason.rule_id == "R2" and summary.reason.cause == "no_supported_followup"
-    assert summary.reason.text.startswith("无法操作「清理充电宝输出接口」、「更换数据线和被充设备测试」")
+    assert [step.feedback for step in summary.steps] == ["cannot_do"] * 3
+    # 连续三步都做不到先触发 CP-verify 的 R1b 限额（跳过 ≥ 3），不再等到计划耗尽
+    assert summary.reason.rule_id == "R1b"
+    assert summary.reason.text == "用户连续无法操作（skipped ≥ 3）"
     assert any("用户回答：没有" in observation for observation in summary.observations)
     reply = "".join(e.get("delta", "") for e in rows)
-    assert "排查记录" in reply
+    assert "复制给人工客服" in reply
     copied = summary_to_text(summary)
     assert "【排查记录】清理充电宝输出接口（无法操作）" in copied
     assert not any(word in reply + copied for word in ("扫地机器人", "已完成", "已试步骤", "已经做过", "cannot_do"))

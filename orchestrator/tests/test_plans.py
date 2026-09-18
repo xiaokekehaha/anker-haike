@@ -11,7 +11,9 @@ from app.plans import PlanLibrary, PlansError, load_plans_config, plan_json_sche
 from app.settings import REPO_ROOT
 
 REAL = REPO_ROOT / "config" / "plans.yaml"
-EXPECTED_IDS = [
+# 品类通用（category_only 也能用）的扫地机计划
+RV_CATEGORY_IDS = [
+    "rv_noise_obstruction",
     "rv_power_supply",
     "rv_suction_dustbin_full",
     "rv_suction_filter_clog",
@@ -19,6 +21,16 @@ EXPECTED_IDS = [
     "rv_suction_motor_fault",
     "rv_suction_side_brush",
 ]
+# 引用官方资料、只对清单内型号开放的扫地机计划
+RV_SKU_IDS = [
+    "rv_map_lost",
+    "rv_x10_dock_return",
+    "rv_x10_loud_noise",
+    "rv_x10_mop_no_water",
+    "rv_x10_station_leak",
+    "rv_x10_wifi_connect",
+]
+EXPECTED_IDS = sorted(RV_CATEGORY_IDS + RV_SKU_IDS)
 
 
 @pytest.fixture(scope="module")
@@ -56,13 +68,25 @@ def test_next_on_rule_advance(library):
     assert p.first_step().step_id == "s1"
     assert p.next_step_id("s1", "not_solved") == "s2"
     assert p.next_step_id("s1", "solved") == "DONE"
-    assert p.next_step_id("s2", "cannot_do") == "EXHAUSTED"
+    # 做不到清洁滤网不代表做不到检查吸口：cannot_do 只在后续步骤依赖同一前提时才直达 EXHAUSTED
+    assert p.next_step_id("s2", "cannot_do") == "s3"
+    assert p.next_step_id("s3", "cannot_do") == "EXHAUSTED"
     assert p.next_step_id("s3", "not_solved") == "EXHAUSTED"
 
 
 def test_allowed_for_product_state(library):
-    assert len(library.allowed_for(category="robot_vacuum")) == 6  # category_only
-    assert len(library.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO")) == 6
+    assert sorted(p.plan_id for p in library.allowed_for(category="robot_vacuum")) == RV_CATEGORY_IDS
+    # X9 只额外拿到型号清单里包含它的那条官方计划，X10 拿到全部型号计划
+    assert sorted(p.plan_id for p in library.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO")) == sorted(
+        [*RV_CATEGORY_IDS, "rv_map_lost"]
+    )
+    assert sorted(p.plan_id for p in library.allowed_for(category="robot_vacuum", sku="EUFY-X10-PRO-OMNI")) == EXPECTED_IDS
+    # 头戴耳机只有型号级计划：未确认型号时没有可用计划，调用方据此走 R5
+    assert library.allowed_for(category="headphones") == []
+    assert {p.plan_id for p in library.allowed_for(category="headphones", sku="SOUNDCORE-A3035")} == {
+        "hd_so_power_failure", "hd_so_battery_drain", "hd_so_connect_drop",
+        "hd_so_one_side", "hd_so_noise", "hd_so_mic",
+    }
     assert {p.plan_id for p in library.allowed_for(category="breast_pump")} == {"bp_valve_membrane", "bp_power_check", "bp_noise_check", "bp_app_pair"}; assert library.allowed_for(category="hub") == []  # 目录级品类没有计划
 
 
@@ -138,7 +162,8 @@ def test_latest_version_wins(tmp_path, data):
     v2["fault"] = "v2"
     data["plans"].append(v2)
     lib = PlanLibrary.from_yaml(_write(tmp_path, data))
-    assert lib.get("rv_suction_hair_wrap").version == 2 and len(lib.plan_ids) == 32
+    assert lib.get("rv_suction_hair_wrap").version == 2
+    assert len(lib.plan_ids) == len({p["plan_id"] for p in data["plans"]})
 
 
 def test_plan_json_schema(library):
@@ -146,7 +171,7 @@ def test_plan_json_schema(library):
     assert schema["title"] == "TroubleshootPlan" and "steps" in schema["properties"]
     assert set(schema["required"]) >= {"plan_id", "version", "fault", "applies_to", "steps"}
     narrowed = library.schema_for(category="robot_vacuum")
-    assert narrowed["properties"]["plan_id"] == {"type": "string", "enum": EXPECTED_IDS}
+    assert narrowed["properties"]["plan_id"] == {"type": "string", "enum": RV_CATEGORY_IDS}
     assert library.schema_for(category="hub")["properties"]["plan_id"]["enum"] == []
     import jsonschema
 
@@ -167,7 +192,8 @@ async def test_seed_plans_is_idempotent(library):
     try:
         a = await store.seed_plans(pool, library)
         b = await store.seed_plans(pool, library)
-        assert a["upserted"] == b["upserted"] == 32 and b["total"] >= 32
+        total = len(library.plan_ids)
+        assert a["upserted"] == b["upserted"] == total and b["total"] >= total
         async with pool.connection() as conn:
             cur = await conn.execute(
                 "select plan_id, steps from plans where plan_id = 'rv_suction_motor_fault'"
@@ -176,3 +202,43 @@ async def test_seed_plans_is_idempotent(library):
         assert len(row["steps"]) == 1 and row["steps"][0]["next_on"]["solved"] == "EXHAUSTED"
     finally:
         await pool.close()
+
+
+def test_every_registered_symptom_code_has_a_plan(library):
+    """词表登记了症状码却没有任何计划，用户答完问诊仍然只能 R5。品类级缺口必须为零。"""
+    from app.conversation.taxonomy import taxonomy
+
+    missing = {}
+    for category, spec in (taxonomy()["categories"] or {}).items():
+        codes = {f["symptom_code"] for f in spec["families"]}
+        covered = {
+            code
+            for p in library.plans
+            if p.applies_to.category == category
+            for code in p.symptom_codes
+        }
+        if codes - covered:
+            missing[category] = sorted(codes - covered)
+    assert missing == {}
+
+
+def test_official_evidence_plans_stay_within_the_source_sku_list(library):
+    """官方资料按型号发布：引用它的计划必须是型号级，且型号不能超出该资料的适用清单。"""
+    import yaml as _yaml
+
+    from app.settings import REPO_ROOT
+
+    kb = REPO_ROOT / "data/knowledge/kb_manual"
+    for plan in library.plans:
+        docs = {
+            s.evidence_key.split("#", 1)[0]
+            for s in plan.steps
+            if s.evidence_key.startswith("official_")
+        }
+        if not docs:
+            continue
+        assert plan.applies_to.scope == "sku", plan.plan_id
+        for doc_id in docs:
+            front = (kb / f"{doc_id}.md").read_text(encoding="utf-8").split("---\n")[1]
+            allowed = set(_yaml.safe_load(front)["sku_list"])
+            assert set(plan.applies_to.sku_list) <= allowed, (plan.plan_id, doc_id)

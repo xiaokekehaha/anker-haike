@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 9c098321c9bfb9f71b7d44736bfd9e4361d3bb7d69f65fcd18e93ad335cb164e
 content_sha256: bf6e1e88c1111d984972276a8c40c00feeede9bb000753b94dc98de64fbf1f9e
-fetched_at: '2026-09-17T07:36:07.739034+00:00'
+fetched_at: '2026-09-17T10:55:15.089384+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-93a8919ce917
+doc_version: 2026-09-17.3-93a8919ce917
 ---
 
 ## X10 Pro Omni：充电连接失败提示（c1）

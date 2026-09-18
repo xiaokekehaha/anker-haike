@@ -108,11 +108,11 @@
 
 <!-- inspection:start -->
 ## 巡检结果（票 45，自动回填，最近一次）
-- 时间 2026-09-13T02:31:12.902697+00:00，git `2381a4f`，模式 `stub`，报告 `reports/inspection/inspection-20260913T023112Z.md`
-- 场景 29/29 通过；失败：无
-- 延迟（stub 模型，运行器口径）：first_visible_ms p95 18 ms，card_ready_ms p95 24 ms
-- 5 并发通过率 100%（墙钟 27 ms）
+- 时间 2026-09-17T12:28:27.496196+00:00，git `a460530`，模式 `stub`，报告 `reports/inspection/inspection-20260917T122827Z.md`
+- 场景 27/36 通过；失败：cannot_do_x3, safety_mid_text, wrong_device_receipt, low_confidence_order_hit, disconnect_refresh_after_feedback, all_models_down, vague_input, product_ambiguity, two_clarifications_then_r7
+- 延迟（stub 模型，运行器口径）：first_visible_ms p95 62 ms，card_ready_ms p95 412 ms
+- 5 并发通过率 100%（墙钟 416 ms）
 - 改写开关：rewrite_off_no_call=1 轮/0 次改写/standard_flow；rewrite_on_no_match_rescued=2 轮/1 次改写/evidence；rewrite_on_empty_scope=1 轮/0 次改写/standard_flow；rewrite_on_partial_unavailable=1 轮/0 次改写/standard_flow；rewrite_on_invalid_candidate=1 轮/1 次改写/standard_flow；rewrite_on_second_round_empty=2 轮/1 次改写/standard_flow；rewrite_on_image_contention=2 轮/0 次改写/evidence
 - 真实模型语义样例：未运行（加 --live URL）；stub 路由测试通过不代表改写 / 回复语义达标
-- 冻结判定：**可冻结**（全部场景通过）
+- 冻结判定：**不可冻结**，先修失败场景
 <!-- inspection:end -->

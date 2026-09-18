@@ -13,7 +13,7 @@ language: zh-CN
 region_list: []
 source_sha256: 6edd3ebd424c78eba5fea5c8b39485637e6de4f11ae486c0b9134887f232ea8a
 content_sha256: 16c3b988bd6995d0e28cb9106aa30022a7577babba4fcaa4bc811bab9bcb4eb2
-fetched_at: '2026-09-17T07:36:10.481418+00:00'
+fetched_at: '2026-09-17T10:55:21.015760+00:00'
 batch_id: anker-official-2026-09-17
 publish_state: published
 review_status: agent_source_checked
@@ -21,7 +21,7 @@ scope_note: 型号技术支持摘要；不包含地区质保、召回、航空�
 section_ids:
 - c1
 - c2
-doc_version: 2026-09-17.2-b4fc024bee51
+doc_version: 2026-09-17.3-b4fc024bee51
 ---
 
 ## Anker 737 A1289：输入输出端口与功率分配（c1）

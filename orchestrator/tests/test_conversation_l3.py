@@ -92,7 +92,7 @@ async def test_symptom_interview_stops_when_actions_are_known_or_answers_unavail
         assert "能正常启动" in "".join(e.get("delta", "") for e in first)
         second = events(await send(client, sid, "不能" if answer == "no" else "不知道"))
         state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
-        assert len(state["symptom_interview"]["candidates"]) == (2 if answer == "no" else 8)
+        assert len(state["symptom_interview"]["candidates"]) == (2 if answer == "no" else 9)
         if answer == "no":
             assert set(state["symptom_codes"]) == {"power_failure", "charging_failure"}
             assert state["diagnostic_decision"]["reason"] == "same_applicable_plans"
