@@ -1,0 +1,773 @@
+# 预写排障计划（票 31，09 §3.1）。下一步由规则按 next_on[feedback] 决定，操作原样发布 instruction_src，停止条件独立展示。
+# next_on 的值只能是本计划内的 step_id、DONE 或 EXHAUSTED；instruction_src 必须指向 evidence 段里登记的证据。
+# evidence 段是证据索引：doc_id#chunk_id 与知识库入库元数据保持一致（手册用小节标题里的（cNN）标记；FAQ 用条目 id）。
+# 2026-09-17 起覆盖多品类：plan_id 前缀 rv_ / pb_ / chg_ / eb_ / spk_ / cam_ / bp_ / hd_ 对应品类；未标官方来源的内容仍是人工演示样本。
+# cannot_do 的去向：只有当后续步骤都依赖同一前提（同一部件、同一现场条件）时才直达 EXHAUSTED，否则跳到第一条不依赖该前提的步骤。
+# 安全停用类计划的 solved：电池与电气不可逆风险（鼓包、焦味、过热）固定 EXHAUSTED 转人工；进水等可恢复情形允许 DONE。
+# 引用 official_* 证据的计划必须 applies_to.scope=sku：官方资料按型号发布，品类通用计划不得借用。
+version: 2026-09-17.2
+
+evidence:
+  # ---- 扫地机器人 ----
+  troubleshooting_rv#e1: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 确认基站电源灯亮，触点无灰尘。}
+  troubleshooting_rv#e2: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 手动放回基站，观察 5 分钟内是否开始充电。}
+  manual_rv_v1#c12: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。}
+  manual_rv_v1#c15: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 打开尘盒盖取出滤网，轻拍去尘并用清水冲洗，晾干 24 小时后装回。}
+  manual_rv_v1#c18: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 按下尘盒释放键抽出尘盒，倒空并检查进风口是否被堵塞。}
+  manual_rv_v1#c21: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 边刷用螺丝固定，拆下后清理缠绕物，若刷毛变形请更换。}
+  manual_rv_v1#c30: {source: kb_manual, doc_version: 2026-09-12.1, snippet: 若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。}
+  faq_rv#q7:        {source: kb_manual, doc_version: 2026-09-12.1, snippet: 吸口被异物卡住时清扫声音会变大、吸力明显下降，请检查吸口并取出异物。}
+  faq_rv#q9:        {source: kb_manual, doc_version: 2026-09-12.1, snippet: 滤网建议每两周清洁一次、每 3–6 个月更换一次。}
+  faq_rv#q12:       {source: kb_manual, doc_version: 2026-09-12.1, snippet: 尘盒满或未装到位会触发「请检查尘盒」提示，重新安装到听到咔哒声。}
+  faq_rv#q15:       {source: kb_manual, doc_version: 2026-09-12.1, snippet: 边刷不转多为毛发缠绕或电机进水，先清理再试。}
+  # ---- 移动电源 ----
+  manual_pb#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 关机状态下用干燥的软毛刷或木质牙签轻轻清理输出接口内的灰尘和绒毛，不要使用金属物。}
+  manual_pb#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 换一根确认可用的数据线和另一台设备测试，以排除线材或被充设备本身的问题。}
+  manual_pb#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用支持 PD 快充的充电器和原装或经认证的数据线给充电宝充电，输入指示灯应在 10 秒内亮起。}
+  manual_pb#c24: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 将充电宝完整充满后再放电至自动关机，完成一次完整充放电循环以校准电量显示。}
+  manual_pb#c30: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 充电宝明显发热、外壳鼓包或有异味时，立即停止使用和充电，放到阴凉通风处远离可燃物，并联系售后。}
+  faq_pb#q4:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 长按电源键 10 秒以上可以复位充电宝，复位后重新连接设备再试。}
+  faq_pb#q7:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 指示灯持续快速闪烁通常表示输入异常或温度保护，请拔掉线材，让充电宝在室温下静置 30 分钟再充。}
+  faq_pb#q9:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 掉电快时先确认是否有设备持续连接取电，蓝牙耳机等小电流设备请开启小电流模式。}
+  # ---- 充电器 ----
+  manual_chg#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 检查数据线两端是否有折损、外皮开裂，接口内是否有异物；换一根经认证的数据线再试。}
+  manual_chg#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 换一个确认有电的插座，并换另一台设备测试，以区分是插座、设备还是充电器的问题。}
+  manual_chg#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 快充需要充电器、数据线和被充设备三者都支持相同的快充协议，任一环节不支持都会降为普通充电。}
+  manual_chg#c30: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 充电器出现焦味、异响、外壳变形或烫到无法触碰时，立即从插座拔下停止使用，并联系售后。}
+  faq_chg#q3:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 插脚松动或插座接触不良会导致时断时续，请把充电器完全插入插座，避免使用松动的插线板。}
+  faq_chg#q6:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 多口充电器同时使用时功率会在各口之间分配，请只插一个设备测试是否恢复快充。}
+  faq_chg#q8:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 指示灯不亮先确认插座有电并更换插座；仍不亮但能正常充电属于指示灯故障，可联系售后。}
+  # ---- 无线耳机 ----
+  manual_eb#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用干燥棉签轻擦耳机尾部和充电盒内的金属充电触点，去除耳垢、汗渍和氧化层。}
+  manual_eb#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 把两只耳机重新放入充电盒并合上盒盖，确认耳机指示灯亮起表示正在充电。}
+  manual_eb#c18: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 取下耳塞套，用干燥软刷清理出音孔网罩上的耳垢和灰尘，清理后装回耳塞套。}
+  manual_eb#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 先在手机蓝牙列表中删除该耳机，再把耳机放回充电盒，长按盒上按键 10 秒直到指示灯闪烁完成重置。}
+  manual_eb#c24: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 打开充电盒盖，在手机蓝牙列表中重新选择耳机名称完成配对，配对时两只耳机都留在盒内。}
+  faq_eb#q5:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 充电盒本身没电时耳机也充不进电，请先用数据线给充电盒充电 30 分钟。}
+  faq_eb#q9:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 在 soundcore App 里检查均衡器是否被调低、是否开启了音量限制，恢复默认后再听。}
+  faq_eb#q11:    {source: kb_manual, doc_version: 2026-09-17.1, snippet: 降噪或触控异常时先在 App 里更新固件并恢复默认设置，更新期间保持耳机在盒内。}
+  faq_eb#q12:    {source: kb_manual, doc_version: 2026-09-17.1, snippet: 降噪效果依赖佩戴密合，请更换合适尺寸的耳塞套并在 App 里重新做佩戴检测。}
+  # ---- 音箱 ----
+  manual_spk#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用原装数据线连接充电器给音箱充电 30 分钟以上，再长按电源键开机。}
+  manual_spk#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 长按电源键 10 秒强制重启音箱，重启后所有配对记录保留。}
+  manual_spk#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 在手机蓝牙列表中删除音箱，长按音箱蓝牙键进入配对模式后重新连接。}
+  manual_spk#c24: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 换另一台手机或改用有线输入播放同一段音频，判断杂音来自音源还是音箱本身。}
+  manual_spk#c30: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 音箱进水后请勿充电，立即关机擦干，开口朝下放在通风处至少 48 小时，仍异常请联系售后。}
+  faq_spk#q4:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 没声音时先检查手机媒体音量、是否静音，以及音频输出是否被切到了其他设备。}
+  faq_spk#q6:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 音源本身过载会导致破音，请把手机音量降到 80% 以下并在 App 里关闭低音增强再试。}
+  faq_spk#q8:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 关闭灯效、降低音量并更新固件可以明显延长续航；长期不用请每三个月充一次电。}
+  # ---- 家庭安防摄像头 ----
+  manual_cam#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 确认路由器 2.4GHz 频段已开启，设备与路由器之间不超过两道墙，手机在同一 Wi-Fi 下能正常上网。}
+  manual_cam#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 拔掉 HomeBase 或设备电源等待 30 秒后重新上电，等待指示灯变为常亮。}
+  manual_cam#c18: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 在 App 里删除该设备后按住同步键 5 秒进入配网模式，按提示重新添加。}
+  manual_cam#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用干燥超细纤维布轻擦镜头和红外灯窗口，确认出厂保护膜已经撕掉。}
+  manual_cam#c24: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 在 App 的检测设置里调整活动区域和灵敏度，让车道、树木等经常移动的物体不在区域内。}
+  manual_cam#c27: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用原装数据线和 5V 2A 以上的充电器把电池充满一次，充满后再放回安装位置。}
+  faq_cam#q5:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 夜视画面发白、起雾多因镜头前有反光物或玻璃，请让镜头前 1 米内没有墙面、玻璃或树叶。}
+  faq_cam#q7:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 收不到推送时检查手机系统里 eufy Security 的通知权限，并把它加入电池优化白名单。}
+  faq_cam#q9:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 掉电快通常是触发次数过多，请降低灵敏度、缩小活动区域并缩短录像时长。}
+  faq_cam#q11:    {source: kb_manual, doc_version: 2026-09-17.1, snippet: 门铃不响时在 App 里检查室内机音量是否为零，并确认室内机与门铃已配对且在线。}
+  # ---- 吸奶器 ----
+  manual_bp#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 取下鸭嘴阀和硅胶隔膜，检查有无破损、变形或残留，装回时确认隔膜边缘完全压入卡槽。}
+  manual_bp#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 确认喇叭罩尺寸合适并与乳房完全贴合，罩杯边缘有缝隙会导致漏气和吸力下降。}
+  manual_bp#c21: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 用原装线充电 30 分钟后，长按电源键 3 秒开机，观察屏幕或指示灯是否亮起。}
+  manual_bp#c24: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 在 eufy Baby App 里删除设备，长按吸奶器电源键 5 秒进入配对模式后重新添加。}
+  faq_bp#q3:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 每次使用后拆开所有接触奶液的配件清洗并完全晾干，潮湿的隔膜会贴住导致吸力异常。}
+  faq_bp#q6:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 充不进电先检查充电口是否有奶渍或异物，用干棉签清理后换一根数据线再试。}
+  faq_bp#q8:     {source: kb_manual, doc_version: 2026-09-17.1, snippet: 运转声音突然变大多为隔膜未装到位或机器未放平，请重新安装隔膜并把主机放在平稳处。}
+
+  # ---- 官方支持资料摘要（data/knowledge/sources/anker_official.yaml，scope=sku）----
+  # 这些锚点只对清单里的型号可见，引用它们的计划必须是 applies_to.scope=sku。
+  official_x10_station_leak#c1: {source: kb_manual, doc_version: 2026-09-17.3-40015e2938ef, snippet: 基站漏水先检查清水箱周围的橡胶密封圈，长期使用会老化。发现裂纹、破损或缝隙等物理损伤时，拍下清水箱及其密封圈的照片联系售后，不要自行改装。}
+  official_x10_station_leak#c2: {source: kb_manual, doc_version: 2026-09-17.3-40015e2938ef, snippet: 同样检查污水箱周围的橡胶密封圈有无裂纹或缝隙。清洁托盘浮子被碎屑卡住无法自由浮动会导致积水外溢，清理浮子周围异物后再运行一次确认是否还漏。}
+  official_x10_station_leak#c3: {source: kb_manual, doc_version: 2026-09-17.3-40015e2938ef, snippet: 密封圈和清洁托盘都正常时，可能是清水箱单向阀渗漏：取下清水箱、倒空并暂停加清水，换一个新清水箱验证。更换后仍漏多为内部水管松动，需要更换基站。}
+  official_x10_mop_water#c1: {source: kb_manual, doc_version: 2026-09-17.3-d379f424d315, snippet: 拖地时地面不湿，先确认基站清水箱里的水量是否充足；水位低时加满清水，机器才能有效完成拖地。}
+  official_x10_mop_water#c2: {source: kb_manual, doc_version: 2026-09-17.3-d379f424d315, snippet: 拖布长期使用会磨损，洗过之后也无法充分吸饱水。看到明显磨损，或洗完仍然不够湿时，应更换新的拖布。}
+  official_x10_mop_water#c3: {source: kb_manual, doc_version: 2026-09-17.3-d379f424d315, snippet: 若按房间设置自动洗拖频率，而单个房间或区域超过 20 平方米，一次运行的拖布水量覆盖不了整片区域。官方建议改选按时间的自动洗拖频率，保证拖地水量充足。}
+  official_x10_dock_return#c1: {source: kb_manual, doc_version: 2026-09-17.3-e4d1d2743729, snippet: 第一步检查基站指示灯是否白灯常亮。不是白灯常亮说明电源线可能没接好，确认电源线牢固插在基站和一个可用插座上。}
+  official_x10_dock_return#c2: {source: kb_manual, doc_version: 2026-09-17.3-e4d1d2743729, snippet: 碎屑卡进万向轮会让机器无法导航回基站。取下万向轮，清理里面缠绕的毛发和碎屑，装回后再让机器回基站验证。}
+  official_x10_dock_return#c3: {source: kb_manual, doc_version: 2026-09-17.3-e4d1d2743729, snippet: 确认基站延长板已正确安装，缺少延长板机器爬不上基站充电。基站周围不能有积水、油污等污渍，必要时按说明书要求换到开阔、不打滑的位置。}
+  official_x10_dock_return#c4: {source: kb_manual, doc_version: 2026-09-17.3-e4d1d2743729, snippet: 充电触点和信号模块积灰会干扰对接充电。清洁机器人上的充电触点和信号接收模块镜片，以及基站上的充电极片和信号发射模块镜片。}
+  official_x10_map_lost#c1: {source: kb_manual, doc_version: 2026-09-17.3-f19e06fdcac2, snippet: 主页看不到已保存地图时，先确认它是自动分好房间的彩色有效地图、是否被人误删，以及机器或基站是否被挪到了与原地图房间布局不符的位置。}
+  official_x10_map_lost#c2: {source: kb_manual, doc_version: 2026-09-17.3-f19e06fdcac2, snippet: 只保存了一张地图且未开启多地图保存时，开启该功能后等待约两分钟，看主页是否出现地图并选中使用。仍然没有可开启日志上传并多跑几次，交由工程师定位原因。}
+  official_x10_loud_noise#c1: {source: kb_manual, doc_version: 2026-09-17.3-462e93192544, snippet: 先关机，取下滚刷和滚刷护罩，检查吸口和护罩上的梳齿结构是否卡住碎屑。再不装这两个部件开机试运行，噪音消失说明问题就出在滚刷或护罩上。}
+  official_x10_loud_noise#c2: {source: kb_manual, doc_version: 2026-09-17.3-462e93192544, snippet: 取下边刷后试运行，噪音停止说明来自边刷。再切换机器的吸力档位，噪音随档位明显变化说明与风机吸力有关。}
+  official_x10_loud_noise#c3: {source: kb_manual, doc_version: 2026-09-17.3-462e93192544, snippet: 滤网严重堵塞会让机器更费力、噪音更大，按需清洗或更换以保证进风。再检查轮子里有没有卡住异物，手动转动轮子确认。任何维护前都要先关机。}
+  official_x10_wifi#c1: {source: kb_manual, doc_version: 2026-09-17.3-c9ca0d806b89, snippet: 核对区分大小写的WiFi密码，让手机和机器人靠近路由器并使用2.4GHz网络。允许 eufy Clean 使用定位、精确位置、本地网络和蓝牙权限；双频路由可临时关闭5GHz后重试。}
+  official_x10_wifi#c2: {source: kb_manual, doc_version: 2026-09-17.3-c9ca0d806b89, snippet: 同时按住回充键和局部清扫键3秒，听到提示后重新配网。WiFi灯慢闪表示待连接、快闪表示连接中，蓝灯常亮才表示已连接；仍失败可用另一部手机或平板配合手机热点验证。}
+  official_spaceone_power#c1: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 长按电源键 3 秒开机，会听到开机音和电量语音提示、指示灯白闪三次；短于 3 秒不算开机指令。未佩戴且没有音频播放时，降噪模式待机 1 小时、普通模式待机 30 分钟会自动关机，属正常行为。}
+  official_spaceone_power#c2: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 红灯常亮表示正在正常充电，至少充 15 分钟再尝试开机；红灯不亮表示已充满或充电器没有供电；红灯每 20 秒闪一次表示电量极低，至少再充 30 分钟。}
+  official_spaceone_power#c3: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 耳机充电电流为 530 至 560mA，应使用 5V/1A 及以上的认证充电器，功率不足会充不进电；用电脑 USB 口充电会明显更慢，满充约需 2 小时。充电环境温度须在 0 至 45°C 之间。}
+  official_spaceone_power#c4: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 检查 USB-C 充电口内有无灰尘、碎屑或异物，用干燥软毛刷或尖头棉签小心清理；进过液体的要先晾 24 小时再充电。再换一根线和另一个确认可用的充电器交叉测试。}
+  official_spaceone_power#c5: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 充过电仍开不了机时，接 5V/1A 充电器充 5 秒后拔线，再手动按电源键开机。仍异常可在开机状态下同时长按电源键和音量加键 5 秒恢复出厂，指示灯红色慢闪三次表示已开始；恢复出厂后佩戴检测等设置会回到默认。}
+  official_spaceone_power#c6: {source: kb_manual, doc_version: 2026-09-17.3-6d4c3cd45f80, snippet: 建议至少每月使用一次，长期保持零电量会造成过放并永久损伤电池容量；尽量在电量低于 20% 之前就充电；长期存放时每 6 个月充到 50% 至 70%。}
+  official_spaceone_disconnect#c1: {source: kb_manual, doc_version: 2026-09-17.3-7d7e466f155d, snippet: 断连可能来自其他设备干扰、电量过低或所连设备本身的问题。先把耳机充满电，再缩短耳机与设备的距离，避免中间隔着墙体或其他障碍物。}
+  official_spaceone_disconnect#c2: {source: kb_manual, doc_version: 2026-09-17.3-7d7e466f155d, snippet: 排除网络速度差和环境强干扰的影响：换一个网络或换个环境，远离大功率干扰源。再排除固件和系统版本过旧的影响，把耳机固件和设备系统都升级到最新版本。}
+  official_spaceone_connection#c1: {source: kb_manual, doc_version: 2026-09-17.3-68d6de46c886, snippet: 首次使用会进入配对模式，在设备蓝牙列表选择 soundcore Space One；曾配对设备可自动重连。耳机关机时按住电源键5秒，可开机并进入配对模式。}
+  official_spaceone_noise#c1: {source: kb_manual, doc_version: 2026-09-17.3-47b4e878d2b4, snippet: 安静环境下只在开降噪时听到的低频嗡嗡或嘶声，可在 App 里把降噪档位降低一到两级；再调整头梁和耳罩位置让耳垫完全贴合，密封不好会在低频环境噪声下产生嗡鸣；并用柔软干布或蓝丁胶清理耳罩外侧的降噪麦克风孔，不要用液体清洁剂。}
+  official_spaceone_noise#c2: {source: kb_manual, doc_version: 2026-09-17.3-47b4e878d2b4, snippet: 用 3.5mm AUX 线且所连设备同时在充电时出现持续电流声，最常见原因是充电回路把地环路干扰引入音频通路。拔掉该设备的充电线只用电池供电；必须边充边听时改用三脚接地插头。}
+  official_spaceone_noise#c3: {source: kb_manual, doc_version: 2026-09-17.3-47b4e878d2b4, snippet: 音质突然变差并伴随杂音，多是蓝牙从立体声切到了免提模式。Windows 上把播放设备选为 soundcore Space One Stereo，不要选 Hands-Free；macOS 上不要停留在声音输入设置页面，否则会强制进入免提模式。}
+  official_spaceone_noise#c5: {source: kb_manual, doc_version: 2026-09-17.3-47b4e878d2b4, snippet: 杂音在多个场景零星出现、对不上具体原因时，先在开机状态同时长按电源键和音量加键 5 秒恢复出厂；再换另一台手机或电脑测试，杂音消失说明问题在原设备；最后在 App 里检查固件更新。}
+  official_spaceone_balance#c1: {source: kb_manual, doc_version: 2026-09-17.3-a62c10430329, snippet: 左右声音不平衡先确认耳罩戴在正确一侧（L 左 R 右），并调整头梁让耳罩完全罩住双耳。密封不好会影响声音表现，两侧漏音程度不同会让不平衡感更明显。}
+  official_spaceone_balance#c2: {source: kb_manual, doc_version: 2026-09-17.3-a62c10430329, snippet: 佩戴检测传感器在左耳罩内侧，被头发或衣物遮挡会导致左侧异常，包括误触发自动暂停，感觉像左耳不工作。传感器镜面脏污或起雾时用蘸酒精的棉签轻擦，不要用力以免划伤，也可在 App 里做佩戴校准。}
+  official_spaceone_balance#c3: {source: kb_manual, doc_version: 2026-09-17.3-a62c10430329, snippet: 部分安卓手机默认不同步耳机音量，会造成左右音量不一致的感觉：进开发者选项开启绝对音量；鸿蒙手机在蓝牙设置里打开音量同步。媒体音量与通话音量本来就互相独立，不算故障。}
+  official_spaceone_balance#c4: {source: kb_manual, doc_version: 2026-09-17.3-a62c10430329, snippet: 换另一台手机、平板或电脑播放同一段音频：问题消失说明在原设备的声道平衡或音频路由设置；问题依旧则在开机状态同时长按电源键和音量加键 5 秒恢复出厂，并检查固件是否为最新。}
+  official_spaceone_microphone#c1: {source: kb_manual, doc_version: 2026-09-17.3-773b64909bbd, snippet: 检查耳机与通话软件是否静音、输入设备是否选对，并使用软件麦克风检测。可先将电脑输入输出切到电脑再切回耳机，或重启耳机、退出通话后重新进入。}
+  official_spaceone_microphone#c2: {source: kb_manual, doc_version: 2026-09-17.3-773b64909bbd, snippet: AUX音频线本身没有麦克风；有线连接时，通话使用所连接设备自身的麦克风。应检查电脑或手机的麦克风输入，不能据此认定耳机蓝牙麦克风故障。}
+  official_q45_battery#c1: {source: kb_manual, doc_version: 2026-09-17.3-831b19a5c7f9, snippet: 换一个 5V 充电器和另一根数据线，不论指示灯亮不亮都先连续充至少 24 小时，并确认线两端分别插牢在耳机和充电器上；再确认这套充电器和线在别的设备上能正常工作。仍无效可同时长按电源键和音量加键 5 秒重置。}
+  official_q45_battery#c2: {source: kb_manual, doc_version: 2026-09-17.3-831b19a5c7f9, snippet: 觉得掉电快时，先把耳机完全充满再测续航，并在 60% 音量下重新测播放时长。不用时没关机、音量过高、同时连接多台设备、开着降噪，或者没有正确充满，都会让续航短于预期。}
+  official_q45_pairing#c1: {source: kb_manual, doc_version: 2026-09-17.3-70498ae930b2, snippet: 连不上、重连失败或手机蓝牙列表里搜不到耳机时，先重启手机等蓝牙设备，删除全部配对记录，然后关闭蓝牙。}
+  official_q45_pairing#c2: {source: kb_manual, doc_version: 2026-09-17.3-70498ae930b2, snippet: 同时长按电源键和音量加键 5 秒重置耳机，指示灯红闪三次表示重置成功，没有红闪就再重置一次。再打开设备蓝牙搜索 soundcore Space Q45 完成配对；必要时换另一台蓝牙设备验证。}
+  official_q45_one_side#c1: {source: kb_manual, doc_version: 2026-09-17.3-59dcd580ae5f, snippet: 只有一边出声或一边音量偏低时，先确认蓝牙设备本身的声音设置没有偏向某一侧；再把耳机完全充满、重启蓝牙设备，并同时长按电源键和音量加键 5 秒重置耳机。}
+  official_q45_one_side#c2: {source: kb_manual, doc_version: 2026-09-17.3-59dcd580ae5f, snippet: 按 NC 键在降噪、普通、通透模式之间切换，看问题是否依旧；再换另一台设备测试，并改用有线模式播放，判断问题出在耳机还是原来的设备上。}
+  official_q45_noise#c1: {source: kb_manual, doc_version: 2026-09-17.3-d9156eb4054c, snippet: 出现杂音或啸叫时，先在设备的蓝牙记录里删除 Space Q45 并重启设备；再同时长按电源键和音量加键 5 秒重置耳机，指示灯红闪三次表示成功，没有红闪就再重置一次。}
+  official_q45_noise#c2: {source: kb_manual, doc_version: 2026-09-17.3-d9156eb4054c, snippet: 换另一台蓝牙设备和另一个音源测试；按 NC 键切换降噪、普通、通透模式看问题是否依旧；再换一个环境（嘈杂街道与安静房间）对比，并通过 soundcore App 升级到最新固件。}
+  official_q45_mic#c1: {source: kb_manual, doc_version: 2026-09-17.3-e2474896ee08, snippet: 麦克风收音效果不好、对方听不清时，先在设备的蓝牙记录里删除 Space Q45 并重启蓝牙设备，再同时长按电源键和音量加键 5 秒重置耳机。}
+  official_q45_mic#c2: {source: kb_manual, doc_version: 2026-09-17.3-e2474896ee08, snippet: 通话过程中切换到降噪模式，看收音是否改善；再换另一台蓝牙设备、换个环境测试，并通过 soundcore App 把固件升级到最新版本。}
+  official_q45_anc#c1: {source: kb_manual, doc_version: 2026-09-17.3-af506e7b864c, snippet: 降噪效果不理想时，先确认左右耳罩戴在正确一侧，调整头梁滑块让耳罩罩住耳朵、头发不要夹在中间；再确认处于降噪模式，并在 soundcore App 里选到最强的第 5 档。}
+  official_q45_anc#c2: {source: kb_manual, doc_version: 2026-09-17.3-af506e7b864c, snippet: 在不同环境里测试降噪表现。该型号主要检测并消除汽车、飞机引擎这类中低频噪声，不能消除所有噪声；人声只能被减弱，不能被完全消除。}
+
+plans:
+  # ================= 扫地机器人 =================
+  - plan_id: rv_suction_hair_wrap
+    symptom_codes: [suction_low]
+    version: 1
+    fault: 滚刷毛发缠绕导致吸力下降
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 检查并清理滚刷, instruction_src: evidence:manual_rv_v1#c12, expected_result: 滚刷无缠绕物，转动顺畅, caution: null,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 取出并清洁滤网, instruction_src: evidence:manual_rv_v1#c15, expected_result: 滤网无堵塞,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 检查吸口是否有异物, instruction_src: evidence:faq_rv#q7, expected_result: 吸口通畅，噪音恢复正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_suction_filter_clog
+    symptom_codes: [suction_low, filter_clog]
+    version: 1
+    fault: 滤网堵塞导致吸力下降
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 取出并清洁滤网, instruction_src: evidence:manual_rv_v1#c15, expected_result: 滤网无堵塞、无明显积灰,
+         caution: 滤网必须完全晾干后再装回，潮湿会损坏电机, next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}}
+      - {step_id: s2, title: 检查滤网是否需要更换, instruction_src: evidence:faq_rv#q9, expected_result: 滤网无破损变形，已按周期更换,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_suction_dustbin_full
+    symptom_codes: [suction_low, dustbin_full]
+    version: 1
+    fault: 尘盒满或未装到位
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 倒空尘盒并检查进风口, instruction_src: evidence:manual_rv_v1#c18, expected_result: 尘盒清空，进风口无堵塞,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}}
+      - {step_id: s2, title: 重新安装尘盒到位, instruction_src: evidence:faq_rv#q12, expected_result: 听到咔哒声，提示消失,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_suction_side_brush
+    symptom_codes: [suction_low, side_brush_stuck]
+    version: 1
+    fault: 边刷缠绕或不转
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 拆下边刷清理缠绕物, instruction_src: evidence:manual_rv_v1#c21, expected_result: 边刷转动顺畅，刷毛无变形,
+         caution: 拆装边刷前请先关机, next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}}
+      - {step_id: s2, title: 检查边刷电机是否受潮, instruction_src: evidence:faq_rv#q15, expected_result: 清理后边刷恢复转动,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_suction_motor_fault
+    symptom_codes: [abnormal_noise]
+    version: 2
+    fault: 风机 / 电机故障（异响、焦味或过热）
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 确认是否有异响或过热, instruction_src: evidence:manual_rv_v1#c30, expected_result: 确认现象后停止使用，等待人工处理,
+         stop_conditions: [若运行时出现持续异响、焦味或机身过热，请立即关机停止使用并联系售后。],
+         caution: 有焦味或过热时请立即关机，不要继续排查, next_on: {solved: EXHAUSTED, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_power_supply
+    symptom_codes: [power_failure, charging_failure]
+    version: 2
+    fault: 无法启动或充电时的基站供电与充电检查
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - step_id: s1
+        title: 检查基站供电与触点
+        instruction_src: evidence:troubleshooting_rv#e1
+        expected_result: 得到基站电源灯与触点的状态；检查正常不等于整机已恢复，设备恢复正常时可直接反馈已解决
+        caution: 只观察外部状态，不拆开设备或处理带电接线
+        stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
+        next_on: {solved: DONE, not_solved: s2, cannot_do: EXHAUSTED}
+        observations:
+          - observation_id: dock_power_light
+            question: 基站电源灯亮吗？
+            options:
+              - {option_id: light_on, label: 电源灯亮, phrases: [灯亮, 灯是亮的, 电源灯亮着, 有亮]}
+              - {option_id: light_off, label: 电源灯不亮, phrases: [灯不亮, 不亮, 没亮, 电源灯没亮]}
+              - {option_id: unknown, label: 还没观察 / 无法判断, kind: unknown}
+          - observation_id: dock_contacts
+            question: 基站与主机的充电触点状态如何？
+            options:
+              - {option_id: clean, label: 触点干净, phrases: [触点干净, 触点没灰, 触点正常]}
+              - {option_id: dirty_cleaned, label: 触点有灰尘或异物，已清理, phrases: [有灰, 有灰尘, 已清理, 擦干净了]}
+              - {option_id: unknown, label: 还没观察 / 无法判断, kind: unknown}
+      - step_id: s2
+        title: 放回基站观察充电
+        instruction_src: evidence:troubleshooting_rv#e2
+        expected_result: 记录 5 分钟内是否出现充电提示；设备恢复正常充电和启动时反馈已解决
+        stop_conditions: [出现冒烟、焦味、鼓包或漏液时停止使用和充电，联系售后]
+        next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}
+        observations:
+          - observation_id: charging_indication
+            question: 放回基站后有充电提示（指示灯或语音）吗？
+            options:
+              - {option_id: indicated, label: 有充电提示，但仍无法启动, phrases: [有充电提示, 有提示, 在充电, 显示充电, 亮了充电灯]}
+              - {option_id: none, label: 没有充电提示, phrases: [没有充电提示, 没提示, 没有提示, 不充电, 没充上, 没反应]}
+              - {option_id: unknown, label: 还没观察完 / 无法判断, kind: unknown}
+            interview_links:
+              - question: 放回基站后，设备有正常的充电指示或充电语音吗？
+                answers: {'yes': indicated, 'no': none}
+
+  # ================= 移动电源 =================
+  - plan_id: pb_port_debris
+    symptom_codes: [pb_no_output, pb_port_damage]
+    version: 1
+    fault: 输出接口异物 / 线材问题导致无法给设备充电
+    applies_to: {scope: category_generic, category: power_bank}
+    steps:
+      - {step_id: s1, title: 清理充电宝输出接口, instruction_src: evidence:manual_pb#c12, expected_result: 接口内无灰尘绒毛，插入数据线手感紧实,
+         caution: 清理前关机，不要用金属物伸进接口, next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 更换数据线和被充设备测试, instruction_src: evidence:manual_pb#c15, expected_result: 换线或换设备后能正常输出,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 长按电源键复位, instruction_src: evidence:faq_pb#q4, expected_result: 复位后指示灯正常，重新连接设备能充电,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_input_check
+    symptom_codes: [pb_no_input, pb_indicator_abnormal]
+    version: 1
+    fault: 充电宝自身充不进电或指示灯异常
+    applies_to: {scope: category_generic, category: power_bank}
+    steps:
+      - {step_id: s1, title: 更换充电器与数据线给充电宝充电, instruction_src: evidence:manual_pb#c21, expected_result: 输入指示灯在 10 秒内亮起并开始充电,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 静置后观察指示灯, instruction_src: evidence:faq_pb#q7, expected_result: 静置 30 分钟后指示灯不再快速闪烁，能正常充入,
+         stop_conditions: [充电宝明显发热、外壳鼓包或有异味时，立即停止使用和充电，放到阴凉通风处远离可燃物，并联系售后。],
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_drain_calibrate
+    symptom_codes: [pb_battery_drain]
+    version: 1
+    fault: 掉电快 / 电量显示不准
+    applies_to: {scope: category_generic, category: power_bank}
+    steps:
+      - {step_id: s1, title: 检查是否有设备持续取电, instruction_src: evidence:faq_pb#q9, expected_result: 无设备静默取电，小电流设备已开启小电流模式,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 做一次完整充放电校准, instruction_src: evidence:manual_pb#c24, expected_result: 完整循环后电量显示与实际使用时长一致,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: pb_overheat_stop
+    symptom_codes: [pb_overheat]
+    version: 1
+    fault: 发热异常 / 鼓包 / 异味（安全停用）
+    applies_to: {scope: category_generic, category: power_bank}
+    steps:
+      - {step_id: s1, title: 停止使用并安全放置, instruction_src: evidence:manual_pb#c30, expected_result: 已停止使用与充电并放到安全位置，等待人工处理,
+         stop_conditions: [充电宝明显发热、外壳鼓包或有异味时，立即停止使用和充电，放到阴凉通风处远离可燃物，并联系售后。],
+         caution: 不要继续充电、拆解或按压外壳, next_on: {solved: EXHAUSTED, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 充电器 =================
+  - plan_id: chg_cable_port_check
+    symptom_codes: [chg_no_output, chg_intermittent]
+    version: 1
+    fault: 线材 / 接口 / 插座接触问题导致不充电或时断时续
+    applies_to: {scope: category_generic, category: charger}
+    steps:
+      - {step_id: s1, title: 检查数据线与接口, instruction_src: evidence:manual_chg#c12, expected_result: 线材无折损、接口无异物，换线后能充电,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 换插座与被充设备测试, instruction_src: evidence:manual_chg#c15, expected_result: 换插座或换设备后恢复充电,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 确认插脚完全插入, instruction_src: evidence:faq_chg#q3, expected_result: 插脚插紧后不再断续,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: chg_slow_check
+    symptom_codes: [chg_slow_charging]
+    version: 1
+    fault: 未进入快充 / 充电慢
+    applies_to: {scope: category_generic, category: charger}
+    steps:
+      - {step_id: s1, title: 确认快充协议三方匹配, instruction_src: evidence:manual_chg#c21, expected_result: 线材与设备均支持对应协议，设备显示快充,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 只插一个设备测试, instruction_src: evidence:faq_chg#q6, expected_result: 单设备下恢复快充功率,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: chg_indicator_check
+    symptom_codes: [chg_indicator_abnormal]
+    version: 1
+    fault: 指示灯不亮或异常
+    applies_to: {scope: category_generic, category: charger}
+    steps:
+      - {step_id: s1, title: 确认插座供电并更换插座, instruction_src: evidence:faq_chg#q8, expected_result: 指示灯恢复正常；能充电但灯不亮属指示灯故障,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: chg_overheat_stop
+    symptom_codes: [chg_overheat, chg_noise_smell]
+    version: 1
+    fault: 发热异常 / 异响 / 焦味（安全停用）
+    applies_to: {scope: category_generic, category: charger}
+    steps:
+      - {step_id: s1, title: 拔下充电器停止使用, instruction_src: evidence:manual_chg#c30, expected_result: 已从插座拔下并停止使用，等待人工处理,
+         stop_conditions: [充电器出现焦味、异响、外壳变形或烫到无法触碰时，立即从插座拔下停止使用，并联系售后。],
+         caution: 拔插头时握住插头本体，不要碰烫的外壳, next_on: {solved: EXHAUSTED, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 无线耳机 =================
+  - plan_id: eb_charging_contacts
+    symptom_codes: [eb_charging_failure, eb_one_side_silent]
+    version: 1
+    fault: 充电触点脏污 / 充电盒没电导致不充电或单边无声
+    applies_to: {scope: category_generic, category: earbuds}
+    steps:
+      - {step_id: s1, title: 清洁耳机与充电盒触点, instruction_src: evidence:manual_eb#c12, expected_result: 触点干净无氧化,
+         caution: 用干燥棉签，不要用液体, next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 重新放入充电盒确认充电, instruction_src: evidence:manual_eb#c15, expected_result: 两只耳机放回后指示灯亮起,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 先给充电盒充电 30 分钟, instruction_src: evidence:faq_eb#q5, expected_result: 充电盒有电后耳机恢复充电与出声,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: eb_reset_pair
+    symptom_codes: [eb_pairing_failure, eb_one_side_silent]
+    version: 1
+    fault: 配对记录异常导致连不上或单边无声
+    applies_to: {scope: category_generic, category: earbuds}
+    steps:
+      - {step_id: s1, title: 删除蓝牙记录并重置耳机, instruction_src: evidence:manual_eb#c21, expected_result: 耳机指示灯闪烁，重置完成,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 重新配对, instruction_src: evidence:manual_eb#c24, expected_result: 两只耳机同时连接并出声,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: eb_low_volume_clean
+    symptom_codes: [eb_low_volume]
+    version: 1
+    fault: 出音孔堵塞或音效设置导致音量小、声音闷
+    applies_to: {scope: category_generic, category: earbuds}
+    steps:
+      - {step_id: s1, title: 清洁耳塞套与出音孔, instruction_src: evidence:manual_eb#c18, expected_result: 网罩干净，音量恢复,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查 App 均衡器与音量限制, instruction_src: evidence:faq_eb#q9, expected_result: 恢复默认后音量与音质正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: eb_anc_touch_app
+    symptom_codes: [eb_anc_failure, eb_touch_failure]
+    version: 1
+    fault: 降噪或触控异常
+    applies_to: {scope: category_generic, category: earbuds}
+    steps:
+      - {step_id: s1, title: 更新固件并恢复默认设置, instruction_src: evidence:faq_eb#q11, expected_result: 固件为最新，触控与降噪恢复,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 更换耳塞套并重做佩戴检测, instruction_src: evidence:faq_eb#q12, expected_result: 佩戴密合后降噪效果正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 音箱 =================
+  - plan_id: spk_power_reset
+    symptom_codes: [spk_power_failure]
+    version: 1
+    fault: 无法开机 / 不充电
+    applies_to: {scope: category_generic, category: speaker}
+    steps:
+      - {step_id: s1, title: 用原装线充电 30 分钟再开机, instruction_src: evidence:manual_spk#c12, expected_result: 充电指示灯亮起，能开机,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 长按电源键强制重启, instruction_src: evidence:manual_spk#c15, expected_result: 重启后正常开机,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: spk_bt_repair
+    symptom_codes: [spk_pairing_failure, spk_no_sound]
+    version: 1
+    fault: 蓝牙连不上或连上无声
+    applies_to: {scope: category_generic, category: speaker}
+    steps:
+      - {step_id: s1, title: 检查手机音量与输出设备, instruction_src: evidence:faq_spk#q4, expected_result: 手机媒体音量正常且输出到音箱,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 删除配对后重新连接, instruction_src: evidence:manual_spk#c21, expected_result: 重新配对后能连接并出声,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: spk_distortion_check
+    symptom_codes: [spk_distortion]
+    version: 1
+    fault: 杂音 / 破音
+    applies_to: {scope: category_generic, category: speaker}
+    steps:
+      - {step_id: s1, title: 降低音源音量并关闭低音增强, instruction_src: evidence:faq_spk#q6, expected_result: 破音消失,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 换音源或有线输入测试, instruction_src: evidence:manual_spk#c24, expected_result: 判断出杂音来自音源还是音箱,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: spk_battery_tune
+    symptom_codes: [spk_battery_drain]
+    version: 1
+    fault: 续航短
+    applies_to: {scope: category_generic, category: speaker}
+    steps:
+      - {step_id: s1, title: 关闭灯效、降低音量并更新固件, instruction_src: evidence:faq_spk#q8, expected_result: 续航明显改善,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: spk_water_stop
+    symptom_codes: [spk_water_damage]
+    version: 1
+    fault: 进水（停止充电、晾干）
+    applies_to: {scope: category_generic, category: speaker}
+    steps:
+      - {step_id: s1, title: 关机晾干，不要充电, instruction_src: evidence:manual_spk#c30, expected_result: 晾干 48 小时后再试；仍异常等待人工处理,
+         stop_conditions: [音箱进水后请勿充电，立即关机擦干，开口朝下放在通风处至少 48 小时，仍异常请联系售后。],
+         caution: 进水后 48 小时内不要充电, next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 家庭安防摄像头 =================
+  - plan_id: cam_offline_reconnect
+    symptom_codes: [cam_offline]
+    version: 1
+    fault: 设备离线 / 连不上网
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 检查 Wi-Fi 频段与距离, instruction_src: evidence:manual_cam#c12, expected_result: 2.4GHz 可用，设备在信号覆盖内,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 重启 HomeBase 或设备, instruction_src: evidence:manual_cam#c15, expected_result: 指示灯常亮，App 显示在线,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: EXHAUSTED}}
+      - {step_id: s3, title: 重新配网, instruction_src: evidence:manual_cam#c18, expected_result: 重新添加成功并在线,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: cam_lens_clean
+    symptom_codes: [cam_blurry]
+    version: 1
+    fault: 画面模糊 / 夜视发白
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 清洁镜头并撕掉保护膜, instruction_src: evidence:manual_cam#c21, expected_result: 白天画面清晰,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 排除夜视反光, instruction_src: evidence:faq_cam#q5, expected_result: 夜视画面不再发白起雾,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: cam_detection_tune
+    symptom_codes: [cam_no_recording]
+    version: 2
+    fault: 不录像 / 收不到推送
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 调整活动区域与灵敏度, instruction_src: evidence:manual_cam#c24, expected_result: 正常触发录像，误报减少,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查手机通知权限, instruction_src: evidence:faq_cam#q7, expected_result: 能收到推送,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: cam_false_alarm_tune
+    symptom_codes: [cam_false_alarm]
+    version: 1
+    fault: 误报频繁
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 缩小活动区域并降低灵敏度, instruction_src: evidence:manual_cam#c24, expected_result: 车道、树木等经常移动的物体不在检测区域内，误报减少,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: cam_battery_check
+    symptom_codes: [cam_battery_drain]
+    version: 1
+    fault: 续航短 / 掉电快
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 降低触发频率, instruction_src: evidence:faq_cam#q9, expected_result: 每日触发次数下降，续航改善,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 用原装线充满一次, instruction_src: evidence:manual_cam#c27, expected_result: 充满后续航恢复正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: cam_doorbell_chime
+    symptom_codes: [cam_doorbell_silent]
+    version: 1
+    fault: 门铃不响
+    applies_to: {scope: category_generic, category: security_cam}
+    steps:
+      - {step_id: s1, title: 检查室内机音量与配对, instruction_src: evidence:faq_cam#q11, expected_result: 室内机响铃,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 吸奶器 =================
+  - plan_id: bp_valve_membrane
+    symptom_codes: [bp_suction_weak, bp_leak]
+    version: 1
+    fault: 鸭嘴阀 / 隔膜 / 喇叭罩问题导致吸力不足或漏
+    applies_to: {scope: category_generic, category: breast_pump}
+    steps:
+      - {step_id: s1, title: 检查鸭嘴阀与隔膜, instruction_src: evidence:manual_bp#c12, expected_result: 配件无破损变形，隔膜完全压入卡槽,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查喇叭罩贴合与尺寸, instruction_src: evidence:manual_bp#c15, expected_result: 罩杯边缘无缝隙，吸力恢复,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 清洗晾干后重新组装, instruction_src: evidence:faq_bp#q3, expected_result: 配件干燥后组装，吸力正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: bp_power_check
+    symptom_codes: [bp_power_failure]
+    version: 1
+    fault: 无法开机 / 充不进电
+    applies_to: {scope: category_generic, category: breast_pump}
+    steps:
+      - {step_id: s1, title: 充电 30 分钟后开机, instruction_src: evidence:manual_bp#c21, expected_result: 屏幕或指示灯亮起,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查充电口与线材, instruction_src: evidence:faq_bp#q6, expected_result: 充电口干净，换线后能充电,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: bp_noise_check
+    symptom_codes: [bp_abnormal_noise]
+    version: 1
+    fault: 运转声音变大
+    applies_to: {scope: category_generic, category: breast_pump}
+    steps:
+      - {step_id: s1, title: 重装隔膜并放平主机, instruction_src: evidence:faq_bp#q8, expected_result: 声音恢复正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: bp_app_pair
+    symptom_codes: [bp_app_connection]
+    version: 1
+    fault: App 连不上
+    applies_to: {scope: category_generic, category: breast_pump}
+    steps:
+      - {step_id: s1, title: 重新配对, instruction_src: evidence:manual_bp#c24, expected_result: App 显示已连接,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 扫地机器人：官方资料计划（X10 Pro Omni，scope=sku）=================
+  - plan_id: rv_x10_station_leak
+    symptom_codes: [water_leak]
+    version: 1
+    fault: 基站漏水：密封圈老化 / 清洁托盘浮子卡住 / 清水箱单向阀渗漏
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI]}
+    steps:
+      - {step_id: s1, title: 检查清水箱密封圈, instruction_src: evidence:official_x10_station_leak#c1, expected_result: 清水箱密封圈无裂纹、破损或缝隙,
+         caution: 处理基站积水前先断开基站电源, next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查污水箱密封圈与清洁托盘浮子, instruction_src: evidence:official_x10_station_leak#c2, expected_result: 污水箱密封圈完好、浮子能自由浮动，运行后不再外溢,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 换一个清水箱验证单向阀, instruction_src: evidence:official_x10_station_leak#c3, expected_result: 换清水箱后不再渗漏；仍漏说明是内部水管问题，等待人工处理,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_x10_mop_no_water
+    symptom_codes: [mop_failure]
+    version: 1
+    fault: 拖地时地面不湿
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI]}
+    steps:
+      - {step_id: s1, title: 确认基站清水箱水位, instruction_src: evidence:official_x10_mop_water#c1, expected_result: 清水箱已加满清水，拖地时地面变湿,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查拖布是否磨损, instruction_src: evidence:official_x10_mop_water#c2, expected_result: 拖布无明显磨损，洗后能吸饱水,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 改用按时间的自动洗拖频率, instruction_src: evidence:official_x10_mop_water#c3, expected_result: 大面积房间后半程仍有足够水量,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_x10_dock_return
+    symptom_codes: [navigation_failure]
+    version: 1
+    fault: 无法回到基站
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI]}
+    steps:
+      - {step_id: s1, title: 检查基站指示灯与供电, instruction_src: evidence:official_x10_dock_return#c1, expected_result: 基站白灯常亮，电源线插牢在基站与可用插座上,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 清理万向轮, instruction_src: evidence:official_x10_dock_return#c2, expected_result: 万向轮无缠绕物，装回后能正常回基站,
+         caution: 拆装万向轮前先关机, next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 确认延长板安装与基站摆放, instruction_src: evidence:official_x10_dock_return#c3, expected_result: 延长板已装好，基站周围开阔、不打滑、无积水油污,
+         next_on: {solved: DONE, not_solved: s4, cannot_do: s4}}
+      - {step_id: s4, title: 清洁充电触点与信号模块, instruction_src: evidence:official_x10_dock_return#c4, expected_result: 触点与镜片干净，能正常对接充电,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_map_lost
+    symptom_codes: [map_lost]
+    version: 1
+    fault: 首页看不到已保存的地图
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI, EUFY-X9-PRO]}
+    steps:
+      - {step_id: s1, title: 确认地图丢失的原因, instruction_src: evidence:official_x10_map_lost#c1, expected_result: 确认是否为有效地图、是否被误删、机器或基站是否被挪动,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 开启多地图保存后重新查看, instruction_src: evidence:official_x10_map_lost#c2, expected_result: 开启后约两分钟主页出现地图并可选中使用,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_x10_loud_noise
+    symptom_codes: [abnormal_noise]
+    version: 1
+    fault: 运行噪音明显变大（部件排查）
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI]}
+    steps:
+      - {step_id: s1, title: 排查滚刷与滚刷护罩, instruction_src: evidence:official_x10_loud_noise#c1, expected_result: 不装滚刷与护罩试运行时噪音消失，说明来自这两个部件,
+         caution: 拆装部件前先关机, next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 排查边刷与吸力档位, instruction_src: evidence:official_x10_loud_noise#c2, expected_result: 判断噪音是否来自边刷，或是否随吸力档位变化,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 检查滤网堵塞与轮子异物, instruction_src: evidence:official_x10_loud_noise#c3, expected_result: 滤网通畅、轮子无异物，噪音恢复正常,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_x10_wifi_connect
+    symptom_codes: [app_connection]
+    version: 1
+    fault: 连不上 WiFi / App 显示离线
+    applies_to: {scope: sku, category: robot_vacuum, sku_list: [EUFY-X10-PRO-OMNI]}
+    steps:
+      - {step_id: s1, title: 核对密码、频段与 App 权限, instruction_src: evidence:official_x10_wifi#c1, expected_result: 使用 2.4GHz 网络、密码正确、App 权限已允许,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 重置网络后重新配网, instruction_src: evidence:official_x10_wifi#c2, expected_result: 重置后完成配网，WiFi 灯蓝色常亮,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: rv_noise_obstruction
+    symptom_codes: [abnormal_noise]
+    version: 1
+    fault: 异物或缠绕导致噪音变大（非安全停用场景）
+    applies_to: {scope: category_generic, category: robot_vacuum}
+    steps:
+      - {step_id: s1, title: 检查吸口是否有异物, instruction_src: evidence:faq_rv#q7, expected_result: 吸口通畅，噪音恢复正常,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查并清理滚刷, instruction_src: evidence:manual_rv_v1#c12, expected_result: 滚刷无缠绕物，转动顺畅,
+         caution: 拆装滚刷前先关机, next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 拆下边刷清理缠绕物, instruction_src: evidence:manual_rv_v1#c21, expected_result: 边刷转动顺畅，刷毛无变形,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # ================= 头戴式耳机：官方资料计划（scope=sku）=================
+  # 官方资料按型号发布，因此本品类没有品类通用计划；未确认型号或型号无对应资料时按 R5 如实结束。
+  - plan_id: hd_so_power_failure
+    symptom_codes: [hd_power_failure]
+    version: 1
+    fault: Space One 无法开机或充不进电
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 确认开机按法与自动关机行为, instruction_src: evidence:official_spaceone_power#c1, expected_result: 长按电源键 3 秒后听到开机音；或确认是待机自动关机,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 按指示灯判断充电状态, instruction_src: evidence:official_spaceone_power#c2, expected_result: 按红灯常亮、不亮、每 20 秒闪一次判断电量，并充够对应时间,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 检查充电口与线材, instruction_src: evidence:official_spaceone_power#c4, expected_result: 充电口无异物，换线换充电器后能充进电,
+         next_on: {solved: DONE, not_solved: s4, cannot_do: s4}}
+      - {step_id: s4, title: 充电激活或恢复出厂设置, instruction_src: evidence:official_spaceone_power#c5, expected_result: 充电 5 秒后拔线能开机，或恢复出厂后恢复正常,
+         caution: 恢复出厂后佩戴检测等设置会回到默认，需要重新设置, next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_so_battery_drain
+    symptom_codes: [hd_battery_drain]
+    version: 1
+    fault: Space One 续航短
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 确认充电器功率与环境温度, instruction_src: evidence:official_spaceone_power#c3, expected_result: 使用 5V/1A 以上认证充电器、温度在 0 至 45°C 之间，能正常充满,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 按电池保养建议使用, instruction_src: evidence:official_spaceone_power#c6, expected_result: 按每月使用、低于 20% 前充电的方式使用后续航改善,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_so_connect_drop
+    symptom_codes: [hd_pairing_failure]
+    version: 1
+    fault: Space One 连不上或频繁断连
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 充满电并缩短连接距离, instruction_src: evidence:official_spaceone_disconnect#c1, expected_result: 电量充足且靠近设备后不再断连,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 排除干扰并升级固件, instruction_src: evidence:official_spaceone_disconnect#c2, expected_result: 换环境或升级固件与系统后连接稳定,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 重新进入配对模式配对, instruction_src: evidence:official_spaceone_connection#c1, expected_result: 关机状态长按电源键 5 秒进入配对模式并配对成功,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_so_one_side
+    symptom_codes: [hd_one_side_silent]
+    version: 1
+    fault: Space One 单边无声或左右不平衡
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 确认佩戴方向与耳罩密合, instruction_src: evidence:official_spaceone_balance#c1, expected_result: 左右戴对且耳罩完全罩住双耳，不平衡感消失,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 检查左耳佩戴检测传感器, instruction_src: evidence:official_spaceone_balance#c2, expected_result: 传感器无遮挡、镜面干净，左侧不再异常暂停,
+         caution: 擦拭传感器镜面时不要用力，以免划伤, next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 开启设备侧音量同步, instruction_src: evidence:official_spaceone_balance#c3, expected_result: 安卓开启绝对音量或鸿蒙开启音量同步后音量一致,
+         next_on: {solved: DONE, not_solved: s4, cannot_do: s4}}
+      - {step_id: s4, title: 换设备验证并恢复出厂, instruction_src: evidence:official_spaceone_balance#c4, expected_result: 判断问题在原设备还是耳机；恢复出厂并确认固件为最新,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_so_noise
+    symptom_codes: [hd_noise]
+    version: 1
+    fault: Space One 底噪、电流声或杂音
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 处理只在开降噪时出现的底噪, instruction_src: evidence:official_spaceone_noise#c1, expected_result: 降低降噪档位、调整耳罩密合并清洁降噪麦克风后底噪减小,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 处理 AUX 线连接时的电流声, instruction_src: evidence:official_spaceone_noise#c2, expected_result: 拔掉所连设备充电线或改用三脚接地插头后电流声消失,
+         next_on: {solved: DONE, not_solved: s3, cannot_do: s3}}
+      - {step_id: s3, title: 确认蓝牙音频模式, instruction_src: evidence:official_spaceone_noise#c3, expected_result: 播放设备选为立体声而非免提模式后音质恢复,
+         next_on: {solved: DONE, not_solved: s4, cannot_do: s4}}
+      - {step_id: s4, title: 恢复出厂并换设备验证, instruction_src: evidence:official_spaceone_noise#c5, expected_result: 恢复出厂、换设备、更新固件后判断杂音来源,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_so_mic
+    symptom_codes: [hd_mic_failure]
+    version: 1
+    fault: Space One 通话麦克风异常
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3035]}
+    steps:
+      - {step_id: s1, title: 检查静音状态与输入设备, instruction_src: evidence:official_spaceone_microphone#c1, expected_result: 未静音、输入设备选对，通话软件麦克风检测正常,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 确认有线通话用的是哪个麦克风, instruction_src: evidence:official_spaceone_microphone#c2, expected_result: 明确有线连接时用的是所连设备的麦克风，据此检查该设备,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_power_failure
+    symptom_codes: [hd_power_failure]
+    version: 1
+    fault: Space Q45 无法开机或充不进电
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 换充电器与线长时间充电后重置, instruction_src: evidence:official_q45_battery#c1, expected_result: 换 5V 充电器与线充够 24 小时后能开机；必要时长按电源键与音量加 5 秒重置,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_battery_drain
+    symptom_codes: [hd_battery_drain]
+    version: 1
+    fault: Space Q45 续航短
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 充满后在 60% 音量重测续航, instruction_src: evidence:official_q45_battery#c2, expected_result: 充满后按 60% 音量实测播放时长，并排除未关机、多设备连接、开降噪等因素,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_pairing
+    symptom_codes: [hd_pairing_failure]
+    version: 1
+    fault: Space Q45 搜不到或连不上
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 清除设备侧配对记录, instruction_src: evidence:official_q45_pairing#c1, expected_result: 重启设备、删除全部配对记录并关闭蓝牙,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 重置耳机后重新配对, instruction_src: evidence:official_q45_pairing#c2, expected_result: 指示灯红闪三次表示重置成功，重新搜索并配对成功,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_one_side
+    symptom_codes: [hd_one_side_silent]
+    version: 1
+    fault: Space Q45 单边无声或一边音量偏低
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 检查设备声道设置并重置耳机, instruction_src: evidence:official_q45_one_side#c1, expected_result: 设备声道未偏向一侧，充满并重置后两侧都有声,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 换模式与换设备交叉验证, instruction_src: evidence:official_q45_one_side#c2, expected_result: 通过切换降噪模式、换设备、有线模式判断问题来源,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_noise
+    symptom_codes: [hd_noise]
+    version: 1
+    fault: Space Q45 杂音或啸叫
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 清除配对记录并重置耳机, instruction_src: evidence:official_q45_noise#c1, expected_result: 删除记录、重启设备并重置耳机后杂音消失,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 换设备、换模式、换环境验证, instruction_src: evidence:official_q45_noise#c2, expected_result: 判断杂音来自音源、模式还是环境，并升级到最新固件,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_mic
+    symptom_codes: [hd_mic_failure]
+    version: 1
+    fault: Space Q45 通话麦克风收音差
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 清除配对记录并重置耳机, instruction_src: evidence:official_q45_mic#c1, expected_result: 删除记录、重启设备并重置耳机后对方能听清,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 通话时切降噪模式并交叉验证, instruction_src: evidence:official_q45_mic#c2, expected_result: 切降噪模式、换设备换环境、升级固件后收音改善,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  - plan_id: hd_q45_anc
+    symptom_codes: [hd_anc_failure]
+    version: 1
+    fault: Space Q45 降噪效果不理想
+    applies_to: {scope: sku, category: headphones, sku_list: [SOUNDCORE-A3040]}
+    steps:
+      - {step_id: s1, title: 确认佩戴方式与降噪档位, instruction_src: evidence:official_q45_anc#c1, expected_result: 左右戴对、耳罩罩住耳朵，降噪模式选到第 5 档,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 换环境测试并确认降噪边界, instruction_src: evidence:official_q45_anc#c2, expected_result: 明确该型号主要消除中低频噪声、人声只能减弱,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
