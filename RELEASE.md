@@ -1,26 +1,26 @@
-# RELEASE 20260918-a4c9d63
+# RELEASE 20260919-3209ccc
 
-生成时间：2026-09-18T15:29:05Z　Git：a4c9d63（feat/candidate-relaxation）
+生成时间：2026-09-19T02:15:14Z　Git：3209ccc（feat/candidate-relaxation）
 
 ## 冻结版本（04 §4）
 
 | 项 | 值 |
 | --- | --- |
-| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:20260918-a4c9d63`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
+| 镜像 tag | `ghcr.io/xiaoke12345678/haike-orchestrator:20260919-3209ccc`（CI 构建；本机 `make up` 为 haike/orchestrator:dev） |
 | prompt_ver | system 2026-09-14.1 / reply 2026-09-12.1 |
 | models.yaml | 2026-09-18.2（TBD / TODO 计数：0，须为 0 才能冻结，票 42） |
 | bake-off | models.yaml 2026-09-13.5，bakeoff.yaml 2026-09-12.1，repeats=3（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | 2026-09-12.1 |
 | policy_version | 2026-09-17.1 |
 | actions_version | 2026-09-14.2 |
-| emotion_policy / symptom_taxonomy / vision_vocab | 2026-09-18.1 / 2026-09-17.2 / 2026-09-17.2 |
+| emotion_policy / symptom_taxonomy / vision_vocab | 2026-09-18.1 / 2026-09-19.1 / 2026-09-17.2 |
 | backends_mock seed | 2026-09-17.1 |
-| products / plans | 2026-09-17.2 / 2026-09-18.1 |
+| products / plans | 2026-09-17.2 / 2026-09-19.1 |
 | kb_ver | 2026-09-17.3-fc326dc6345e+text-embedding-v4 |
 | WeKnora 镜像 tag | v0.8.0 |
 | 回放包清单 | a1_hair_wrap,a2_disambiguate,a3_receipt_channel,a4_logistics,a5_replacement,a6_human_approval,a7_multi_intent,a8_emotion |
 | 业务表迁移 head | 0007 |
-| config 快照 | `releases/20260918-a4c9d63/config/`（回滚用：`make rollback REL=<上一版>`） |
+| config 快照 | `releases/20260919-3209ccc/config/`（回滚用：`make rollback REL=<上一版>`） |
 
 ## 灰度验证顺序（04 §4）
 

@@ -1,0 +1,116 @@
+# 读图受控词表（票 62；2026-09-15 阶段 1 起区分「其他」与「不可辨」；2026-09-17 起覆盖多品类部件）。
+# 其他   = 看清楚了，但不属于本表任何一项（是个没见过的部件 / 没见过的现象）
+# 不可辨 = 根本看不出来（模糊、被遮挡、画面里没有）
+# 两者必须分开：合在一起会让「未知」被当成「已知的异常」，违反「宁可不知道，不可知道错」。
+version: '2026-09-17.2'
+# parts 是全部品类部件的并集，提示词整表给模型；品类归属见 category_parts。
+parts: [滚刷, 边刷, 滤网, 尘盒, 吸口, 轮组, 传感器, 充电触点, 电池仓, 基站,
+        接口, 数据线, 插脚, 电池, 外壳, 指示灯,
+        耳机, 充电盒, 耳塞套,
+        镜头, 支架, 太阳能板,
+        喇叭罩, 鸭嘴阀, 隔膜, 导管, 奶瓶,
+        其他, 不可辨]
+# 「满」是 2026-09-15 字段级评测补进来的：三家模型一致把装满的尘盒描述成「正常 / 污渍」而不是「堵塞」，
+# 而 plan 就叫 rv_suction_dustbin_full —— 缺词的是词表，不是模型。
+# 「弯折」「锈蚀」是 2026-09-17 多品类补入：数据线折损、充电触点氧化是充电与耳机品类的常见可见现象。
+phenomena: [缠绕, 堵塞, 满, 破损, 变形, 弯折, 烧焦, 漏液, 鼓包, 污渍, 锈蚀, 松脱, 缺失, 正常, 其他, 不可辨]
+unknown: 不可辨
+# 粗定位九宫格：模型无关的最小公分母，供裁剪复看定位（见 contracts Cell）
+cells: [左上, 上中, 右上, 左中, 中心, 右中, 左下, 下中, 右下]
+# 用户在文字里会怎么称呼这些部件与现象。只用于「代码层冲突检测」把用户说法映射回词表，
+# 不进任何提示词 —— 视觉调用看不到用户文字，这是阶段 2 的前提。
+text_aliases:
+  parts:
+    滚刷: [滚刷, 主刷, 刷子, 毛刷, 滚筒刷]
+    边刷: [边刷, 侧刷]
+    滤网: [滤网, 滤芯, 过滤网, 滤棉, haipa, HEPA]
+    尘盒: [尘盒, 集尘盒, 垃圾盒, 灰盒]
+    吸口: [吸口, 吸尘口, 进风口]
+    轮组: [轮子, 轮组, 万向轮, 驱动轮]
+    传感器: [传感器, 感应器, 探头]
+    充电触点: [充电触点, 触点, 充电片, 金属片]
+    电池仓: [电池仓]
+    基站: [基站, 充电座, 底座, 集尘座]
+    接口: [接口, 充电口, 插口, USB口, Type-C口, C口]
+    数据线: [数据线, 充电线, 线材, 线]
+    插脚: [插脚, 插头, 插片]
+    电池: [电池, 电芯]
+    外壳: [外壳, 机身, 壳子]
+    指示灯: [指示灯, 灯, 灯光]
+    耳机: [耳机, 耳机本体, 耳塞本体]
+    充电盒: [充电盒, 充电仓, 耳机盒]
+    耳塞套: [耳塞套, 耳套, 硅胶套, 耳帽]
+    镜头: [镜头, 摄像头镜头, 镜面]
+    支架: [支架, 底座支架, 安装座]
+    太阳能板: [太阳能板, 光伏板, 太阳能]
+    喇叭罩: [喇叭罩, 吸乳罩, 罩杯]
+    鸭嘴阀: [鸭嘴阀, 阀门, 单向阀]
+    隔膜: [隔膜, 硅胶膜, 膜]
+    导管: [导管, 软管, 管子]
+    奶瓶: [奶瓶, 储奶瓶, 瓶子]
+  phenomena:
+    缠绕: [缠绕, 缠, 绕住, 卷住, 卷进, 缠住]
+    堵塞: [堵塞, 堵住, 堵了, 堵, 塞住, 不通]
+    满: [满了, 装满, 塞满, 满]
+    破损: [破损, 破了, 裂, 断了, 坏了, 开裂]
+    变形: [变形, 歪了, 弯了]
+    弯折: [弯折, 折了, 打折, 折痕, 拧了]
+    烧焦: [烧焦, 焦了, 烧黑, 糊了]
+    漏液: [漏液, 漏水, 渗液]
+    鼓包: [鼓包, 鼓起, 膨胀]
+    污渍: [污渍, 脏, 脏了, 灰, 积灰]
+    锈蚀: [锈蚀, 生锈, 氧化, 发绿, 发黑]
+    松脱: [松脱, 松了, 掉了, 脱落]
+    缺失: [缺失, 少了, 没有了, 丢了]
+    正常: [正常, 没问题, 好的]
+# 像素层画质门控阈值（阶段 3）。reject = 硬阈值，直接发补拍卡且一次模型都不调；
+# marginal = 软阈值，只在模型也说看不清时才判不可用。reject 写 null 表示该指标不允许单独拦人。
+# 标定：2026-09-15 用合成图做亮度 / 模糊 / 尺寸退化扫描（脚本见 docs/planning/2026-09-15_vision-measurement-redesign/probes）。
+# **待真实照片复标定** —— 合成图的梯度统计是病态的，blurry 尤其不可信，故其 reject 为 null。
+quality:
+  too_dark:   {reject: 60,   marginal: 110}   # 灰度 95 分位（不是中位数，见 quality.py 注释）。曝光正常的深色机身图 ≈205，亮度 ×0.2 时 ≈41–47
+  too_far:    {reject: 300,  marginal: 480}   # 短边像素。手机随手拍普遍 ≥1000，低于 300 基本是截图裁剪或极远拍
+  too_bright: {reject: 0.5,  marginal: 0.3}   # 亮度 ≥250 的像素占比，过半即严重过曝
+  blurry:     {reject: null, marginal: 12}    # 梯度 99.5 分位。合成图上清晰 ≥96、模糊半径 4 约 12，但该阈值不迁移，见上
+retake_guidance:
+  blurry: 请擦净镜头，对焦后拍摄故障部件。
+  too_dark: 请在光线充足处拍摄。
+  too_far: 请靠近拍摄，让部件占据画面中心。
+  wrong_subject: 请拍摄当前设备的故障部件或铭牌。
+  occluded: 请移开遮挡物，保持安全距离。
+  too_bright: 请避开强光直射或反光，换个角度拍摄。
+# 部件 → 品类线索：照片里认出这些部件，就把该品类作为**待用户确认**的线索
+# （走 clarify 的 expected_category 「是 / 不是」，不静默锁定）。只列品类特有部件：
+# 接口 / 电池 / 外壳 / 指示灯 / 传感器 / 充电触点 各类设备都有，认出它们说明不了是什么设备。
+category_parts:
+  robot_vacuum: [滚刷, 边刷, 尘盒, 吸口, 基站]
+  charger: [插脚]
+  earbuds: [充电盒, 耳塞套]
+  security_cam: [镜头, 支架, 太阳能板]
+  breast_pump: [喇叭罩, 鸭嘴阀, 隔膜, 导管, 奶瓶]
+# 签名 (部件, 现象) → plan。plan 属于某个品类，进入候选时仍受会话品类过滤（plans.yaml applies_to）。
+signatures:
+  - {part: 滚刷, phenomenon: 缠绕, plan_id: rv_suction_hair_wrap}
+  # 满 / 堵塞 对同一部件描述的是同一个可执行故障，指向同一个 plan：
+  # 让模型在两个近义词之间二选一，赌的是措辞而不是判断。
+  - {part: 滤网, phenomenon: 堵塞, plan_id: rv_suction_filter_clog}
+  - {part: 滤网, phenomenon: 满,   plan_id: rv_suction_filter_clog}
+  - {part: 尘盒, phenomenon: 堵塞, plan_id: rv_suction_dustbin_full}
+  - {part: 尘盒, phenomenon: 满,   plan_id: rv_suction_dustbin_full}
+  - {part: 边刷, phenomenon: 缠绕, plan_id: rv_suction_side_brush}
+  # 充电类：线材折损 / 接口异物
+  - {part: 数据线, phenomenon: 破损, plan_id: chg_cable_port_check}
+  - {part: 数据线, phenomenon: 弯折, plan_id: chg_cable_port_check}
+  - {part: 接口, phenomenon: 堵塞, plan_id: pb_port_debris}
+  - {part: 接口, phenomenon: 污渍, plan_id: pb_port_debris}
+  # 耳机：耳塞套堵塞 → 音量小；触点脏 / 氧化 → 不充电
+  - {part: 耳塞套, phenomenon: 堵塞, plan_id: eb_low_volume_clean}
+  - {part: 耳塞套, phenomenon: 污渍, plan_id: eb_low_volume_clean}
+  - {part: 充电触点, phenomenon: 污渍, plan_id: eb_charging_contacts}
+  - {part: 充电触点, phenomenon: 锈蚀, plan_id: eb_charging_contacts}
+  # 摄像头：镜头脏 → 画面模糊
+  - {part: 镜头, phenomenon: 污渍, plan_id: cam_lens_clean}
+  # 吸奶器：鸭嘴阀 / 隔膜破损变形 → 吸力不足
+  - {part: 鸭嘴阀, phenomenon: 破损, plan_id: bp_valve_membrane}
+  - {part: 鸭嘴阀, phenomenon: 变形, plan_id: bp_valve_membrane}
+  - {part: 隔膜, phenomenon: 破损, plan_id: bp_valve_membrane}
