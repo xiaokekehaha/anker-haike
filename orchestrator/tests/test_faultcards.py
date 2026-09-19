@@ -322,4 +322,4 @@ def test_no_common_sense_hypothesis_path():
 
     mod = importlib.import_module("app.diagnose.synthesize")
     src = inspect.getsource(mod.synthesize)
-    assert "if not evidence or router is None" in src and "default_plans_ranked(allowed)" in src
+    assert "if not evidence or router is None" in src and "default_plans_ranked(allowed" in src

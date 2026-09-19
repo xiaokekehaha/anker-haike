@@ -40,6 +40,7 @@ ISSUE_FIELDS = {
     "image_observations": [],
     "knowledge_status": None,
     "plans_ranked": [],
+    "retrieval_basis": None,
     "retrieval_rounds": 0,
     "rewrite_used": False,
     "evidence_quality": None,

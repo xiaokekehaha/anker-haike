@@ -5,7 +5,7 @@
 # cannot_do 仅记录暂时阻碍，由选择器重新评估，不沿 next_on 消费步骤或耗尽计划。
 # 安全停用类计划的 solved：电池与电气不可逆风险（鼓包、焦味、过热）固定 EXHAUSTED 转人工；进水等可恢复情形允许 DONE。
 # 引用 official_* 证据的计划必须 applies_to.scope=sku：官方资料按型号发布，品类通用计划不得借用。
-version: 2026-09-18.1
+version: 2026-09-19.1
 
 evidence:
   # ---- 扫地机器人 ----
@@ -33,6 +33,8 @@ evidence:
   official_anker737_troubleshooting#c2: {source: kb_manual, doc_version: 2026-09-17.3-fc326dc6345e, snippet: 输入输出功率会随设备协商和保护机制变化，应结合实际充电时间及被充设备电量是否增长判断，不能仅凭瞬时屏幕瓦数认定故障。可换一根线和另一台设备交叉测试；无法正常充电时联系售后。}
   official_anker737_faq#c1: {source: kb_manual, doc_version: 2026-09-17.3-31252647c55c, snippet: USB-C1与笔记本PD口都可双向供电，方向识别可能造成UVP提示；可改用仅输出的USB-C2测试。本条对应笔记本连接场景，不能解释全部UVP故障。}
   official_anker737_faq#c2: {source: kb_manual, doc_version: 2026-09-17.3-31252647c55c, snippet: 开启小电流模式时USB-A可显示0.1W，双击电源键会启用该模式并出现绿色标记；拔掉USB-A设备后约两分钟仍显示0.1W，也可能是设备检测行为，不应直接判断端口损坏。}
+  official_anker737_ports#c1: {source: kb_manual, doc_version: 2026-09-17.3-b4fc024bee51, snippet: USB-C1支持输入和输出，USB-C2用于输出；两USB-C口单口最高140W，USB-A最高18W，总输出上限140W。多设备同时使用时按需分配总功率，不是每个USB-C口都同时输出140W。}
+  official_anker737_ports#c2: {source: kb_manual, doc_version: 2026-09-17.3-b4fc024bee51, snippet: 回充速度取决于充电器PD能力和输出功率；官方给出的140W PD条件下约1小时，96W PD条件下约1.5至2小时。该时间是特定条件下参考值，不能承诺所有充电器都一样快。}
   # ---- 充电器 ----
   manual_chg#c12: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 检查数据线两端是否有折损、外皮开裂，接口内是否有异物；换一根经认证的数据线再试。}
   manual_chg#c15: {source: kb_manual, doc_version: 2026-09-17.1, snippet: 换一个确认有电的插座，并换另一台设备测试，以区分是插座、设备还是充电器的问题。}
@@ -249,8 +251,8 @@ plans:
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: pb_input_check
-    symptom_codes: [pb_no_input, pb_indicator_abnormal]
-    version: 2
+    symptom_codes: [pb_no_input, pb_slow_input, pb_indicator_abnormal]
+    version: 3
     fault: 充电宝自身充不进电或指示灯异常
     applies_to: {scope: category_generic, category: power_bank, excluded_skus: [ANKER-A1289]}
     steps:
@@ -308,6 +310,22 @@ plans:
     steps:
       - {step_id: s1, title: 使用仅输出的 USB-C2 验证笔记本充电, instruction_src: evidence:official_anker737_faq#c1,
          expected_result: 记录 USB-C2 连接笔记本后是否仍出现 UVP、是否正常充电,
+         next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
+
+  # 自身回充慢 / 充不进：通用 pb_input_check 因复位方式不同整体排除了 A1289，官方资料里回充口与回充时间条件
+  # 单独成篇（会话 37cea3 第 3 轮已检索到，却没有计划承接）。第一步是操作，第二步是官方参考值的核对。
+  - plan_id: pb_737_recharge_slow
+    symptom_codes: [pb_slow_input, pb_no_input]
+    version: 1
+    fault: A1289 自身回充慢或充不进电
+    applies_to: {scope: sku, category: power_bank, sku_list: [ANKER-A1289]}
+    steps:
+      - {step_id: s1, title: 用 PD 快充充电器和认证线材从 USB-C1 回充, instruction_src: evidence:official_anker737_ports#c1,
+         required_resources: [device, charger],
+         expected_result: 充电宝开始充电并显示输入功率；用电脑 USB 口或 5V 1A 老充电器回充很慢不代表故障,
+         next_on: {solved: DONE, not_solved: s2, cannot_do: s2}}
+      - {step_id: s2, title: 核对回充时间是否在官方参考范围内, instruction_src: evidence:official_anker737_ports#c2,
+         expected_result: 140W PD 约 1 小时、96W PD 约 1.5 至 2 小时充满；换线换充电器后仍明显超出再联系售后,
          next_on: {solved: DONE, not_solved: EXHAUSTED, cannot_do: EXHAUSTED}}
 
   - plan_id: pb_drain_calibrate

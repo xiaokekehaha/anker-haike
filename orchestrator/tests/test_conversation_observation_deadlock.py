@@ -92,12 +92,16 @@ def test_unrelated_turns_do_not_overwrite_the_pending_observation_record():
 
 async def test_http_answer_after_missing_device_never_repeats_the_same_pause(conversation):
     """会话 0f8809 的用户可见序列：第 4 轮之后不再逐字重复同一句暂停文案。"""
-    await conversation.send("Anker 737 充电宝型号 A1289，怎么这么难用", {
+    rows = await conversation.send("Anker 737 充电宝型号 A1289，怎么这么难用", {
         "primary_intent": "report_problem", "device_relation": "other", "device_category": "power_bank",
         "product_hints": ["Anker 737", "A1289"], "facts": [{"value": "难用", "quote": "难用"}],
     })
     set_model_router(None)
     client, sid = conversation.client, conversation.sid
+    # 问诊先问充电方向，再问输出反应；两个「没有」收敛到输出侧的两个故障族
+    assert "给充电宝本身充电的时候吗" in messages_of(rows)
+    rows = events(await send(client, sid, "没有"))
+    assert "有输出反应吗" in messages_of(rows)
     rows = events(await send(client, sid, "没有"))
     assert "屏幕" in messages_of(rows)
 

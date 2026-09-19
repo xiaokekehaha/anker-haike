@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, create_model
@@ -57,9 +58,14 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
 
 
 def default_plans_ranked(
-    allowed: list[Plan], *, source: str = "standard_flow"
+    allowed: list[Plan], *, source: str = "standard_flow", symptom_codes: Sequence[str] = ()
 ) -> list[dict[str, Any]]:
-    """无证据 / 模型不可用时的降级：适用预写计划默认顺序，置信度统一 0.3，标注来源。"""
+    """无证据 / 模型不可用时的降级：适用预写计划默认顺序，置信度统一 0.3，标注来源。
+
+    没有证据时唯一的线索就是症状码，所以这里仍按码过滤（票 19：不下发与已记录现象无关的计划）；
+    有模型和证据时允许集合不按码过滤，由模型依据原话与片段排序。观察解锁的计划不经过这里。
+    """
+    codes = set(symptom_codes)
     return [
         {
             "plan_id": p.plan_id,
@@ -69,6 +75,7 @@ def default_plans_ranked(
             "source": source,
         }
         for p in allowed
+        if not codes or codes.intersection(p.symptom_codes)
     ]
 
 
@@ -127,6 +134,7 @@ async def synthesize(
     max_hypotheses: int,
     session_id: str | None,
     lane: str,
+    symptom_codes: Sequence[str] = (),
 ) -> dict[str, Any]:
     """evidence 由检索上下文层选择并预算；输入、引用白名单与模型实际可见集合一致。"""
     allowed_by_id = {p.plan_id: p for p in allowed}
@@ -140,7 +148,7 @@ async def synthesize(
     if not evidence or router is None:
         reason = "no_evidence" if not evidence else "router_unavailable"
         return {
-            "plans_ranked": default_plans_ranked(allowed),
+            "plans_ranked": default_plans_ranked(allowed, symptom_codes=symptom_codes),
             "dropped": [],
             "model_trace": {
                 "task": "diagnose.synthesize",
@@ -207,7 +215,7 @@ async def synthesize(
             "synthesize degraded session=%s: %s attempts=%s", session_id, str(exc)[:200], attempts
         )
         return {
-            "plans_ranked": default_plans_ranked(allowed),
+            "plans_ranked": default_plans_ranked(allowed, symptom_codes=symptom_codes),
             "dropped": [],
             "attempts": attempts,
             "model_trace": {
@@ -233,7 +241,7 @@ async def synthesize(
         )
     if not kept:
         return {
-            "plans_ranked": default_plans_ranked(allowed),
+            "plans_ranked": default_plans_ranked(allowed, symptom_codes=symptom_codes),
             "dropped": dropped,
             "model_trace": trace,
             "degraded": "all_dropped",

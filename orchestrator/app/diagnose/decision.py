@@ -6,6 +6,7 @@ never independent evidence capable of overruling an accepted answer.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
@@ -436,11 +437,58 @@ def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str
     return None, skipped
 
 
+def scope_question(category, codes, plan, option_ids, interview, library):
+    """观察把码外计划解锁时，问一次现象范围；选项是词表故障族，答案沿用问诊 symptom_selection 的受理路径。
+
+    用户选了新故障族 → 症状码扩展，该计划按正常候选进入；只选原范围 → 计划按 outside_confirmed_scope 跳过。
+    题目文本决定 key，同一冲突不重复问。词表里找不到对应故障族时返回 None，调用方按原逻辑放行。
+    """
+    by_code = {f["symptom_code"]: f for f in families(category)}
+    recorded = [by_code[c] for c in codes if c in by_code]
+    added = next((by_code[c] for c in plan.symptom_codes if c in by_code and c not in codes), None)
+    if not recorded or added is None:
+        return None
+    cond = next((c for c in plan.requires_observations if option_ids.get(c.observation_id) in c.option_ids), None)
+    obs = library.observation_definitions().get(cond.observation_id) if cond else None
+    option = obs.option(option_ids[cond.observation_id]) if obs is not None and cond else None
+    answer_label = option.label if option else plan.fault
+
+    def label(family):
+        return family.get("selection_label") or family["fault_family"]
+
+    options = [{"value": f["fault_family"], "label": label(f)} for f in recorded]
+    options.append({"value": added["fault_family"], "label": f"{answer_label}（{label(added)}）"})
+    text = (
+        "之前记录的现象是" + "、".join(f"「{label(f)}」" for f in recorded)
+        + f"，你刚回答的「{answer_label}」对应另一类现象。这些情况都有吗？可以回复「都有」，或只回复其中一项："
+        + "；".join(f"{i}．{o['label']}" for i, o in enumerate(options, 1)) + "。"
+    )
+    key = hashlib.sha256(text.encode()).hexdigest()[:12]
+    base = dict(interview) if interview else {"answers": []}
+    return {
+        "kind": "scope_conflict",
+        "question": text,
+        "key": key,
+        "plan_id": plan.plan_id,
+        "observation_id": cond.observation_id if cond else None,
+        "option_id": option_ids.get(cond.observation_id) if cond else None,
+        "interview": {
+            **base,
+            "taxonomy_version": taxonomy()["version"],
+            "category": category,
+            "candidates": [o["value"] for o in options],
+            "status": "asking",
+            "question": {"kind": "symptom_selection", "question": text, "options": options, "key": key},
+        },
+    }
+
+
 def decide_next(state, *, library) -> NextAction:
     """按 design §3.3 的顺序选下一动作：风险 → 用户意愿 → 已恢复 → 缺失观察 → 可发布步骤 → 人工出口。
 
     候选动作只来自计划库（有来源）：plans_ranked 中 confidence ≥ 0.3 的未耗尽计划按原顺序优先；
     其后是被已知观察解锁（requires_observations 满足）的计划。已排除 / 已执行 / 已耗尽的不复发。
+    候选按顺序取第一个可行动作：排在前面的可执行步骤不被后面计划的问题抢先，反之亦然。
     """
     from app.diagnose.observations import known_observations, known_option_ids
 
@@ -531,10 +579,12 @@ def decide_next(state, *, library) -> NextAction:
     ]
 
     trace: dict[str, Any] = {"skipped": [], "known_observations": option_ids}
-    pending_ask: tuple[Any, str] | None = None
-    pending_step: NextAction | None = None
+    pending_ask: tuple[int, Any, str] | None = None
+    pending_scope: tuple[int, NextAction] | None = None
+    pending_step: tuple[int, NextAction] | None = None
     unavailable: list[str] = []
-    for plan, entry in candidates:
+    answered_keys = {a.get("key") for a in (interview or {}).get("answers", [])}
+    for index, (plan, entry) in enumerate(candidates):
         gate, missing = plan.observation_gate(option_ids)
         if gate == "excluded":
             trace["skipped"].append({"plan_id": plan.plan_id, "reason": "excluded_by_observation"})
@@ -556,13 +606,28 @@ def decide_next(state, *, library) -> NextAction:
                     unavailable.append(obs_id)
                     continue
                 if pending_ask is None:
-                    pending_ask = (plan, obs_id)
+                    pending_ask = (index, plan, obs_id)
             trace["skipped"].append({"plan_id": plan.plan_id, "reason": "observation_missing", "missing": missing})
             continue
         step, skipped_steps = _first_open_step(plan, executed_src, executed_steps, state)
         if step is None:
             trace["skipped"].extend(skipped_steps)
             continue
+        if plan.requires_observations and codes and not set(codes).intersection(plan.symptom_codes):
+            # 观察把这个计划解锁了，但它处理的是已记录范围之外的现象（A1289：主诉自身回充，判别题答「接笔记本
+            # 显示 UVP」）。不静默换题：先问一次「这些情况都有吗」。用户只确认原范围后该计划不再复发。
+            question = scope_question(category, codes, plan, option_ids, interview, library)
+            if question is not None:
+                if question["key"] in answered_keys:
+                    trace["skipped"].append({"plan_id": plan.plan_id, "reason": "outside_confirmed_scope"})
+                    continue
+                if pending_scope is None:
+                    pending_scope = (index, result(
+                        "ask", "scope_conflict", question=question,
+                        trace={**trace, "scope_conflict": {"plan_id": plan.plan_id, "codes": list(codes),
+                                                           "plan_codes": list(plan.symptom_codes)}},
+                    ))
+                continue
         # 5. 有适用、未执行、有来源支持的动作
         candidate_step = result(
             "step",
@@ -577,9 +642,25 @@ def decide_next(state, *, library) -> NextAction:
                    "skipped_steps": skipped_steps},
         )
         if pending_step is None:
-            pending_step = candidate_step
-    if pending_ask is not None:
-        plan, obs_id = pending_ask
+            pending_step = (index, candidate_step)
+    blocked = [b for b in conditions.blockers if not b.cleared]
+    unresolved_blocker = any(b.reason == "unknown" for b in blocked) and not (
+        conditions.continue_input_id and conditions.continue_input_id == state.get("input_id")
+    )
+    burden_stop = int((state.get("counters") or {}).get("skipped", 0)) - conditions.skip_baseline >= BURDEN_SKIP_LIMIT
+    # A bare complaint already returned pause above, so only the emotion action is left here.
+    emotion_stop = (
+        "prefer_proposal_over_more_steps" in state.get("emotion_actions", [])
+        and len(executed) + len(blocked) >= 2
+        and conditions.continue_input_id != state.get("input_id")
+        and not decision.get("diagnostic_request")
+    )
+    step_ok = pending_step is not None and not (unresolved_blocker or burden_stop or emotion_stop)
+    asks = [item for item in (pending_ask, pending_scope) if item is not None]
+    if step_ok and all(pending_step[0] < item[0] for item in asks):
+        return pending_step[1]
+    if pending_ask is not None and (pending_scope is None or pending_ask[0] < pending_scope[0]):
+        _, plan, obs_id = pending_ask
         obs = library.observation_definitions()[obs_id]
         return result(
             "ask",
@@ -593,20 +674,10 @@ def decide_next(state, *, library) -> NextAction:
             },
             trace=trace,
         )
-    blocked = [b for b in conditions.blockers if not b.cleared]
-    unresolved_blocker = any(b.reason == "unknown" for b in blocked) and not (
-        conditions.continue_input_id and conditions.continue_input_id == state.get("input_id")
-    )
-    burden_stop = int((state.get("counters") or {}).get("skipped", 0)) - conditions.skip_baseline >= BURDEN_SKIP_LIMIT
-    # A bare complaint already returned pause above, so only the emotion action is left here.
-    emotion_stop = (
-        "prefer_proposal_over_more_steps" in state.get("emotion_actions", [])
-        and len(executed) + len(blocked) >= 2
-        and conditions.continue_input_id != state.get("input_id")
-        and not decision.get("diagnostic_request")
-    )
-    if pending_step and not (unresolved_blocker or burden_stop or emotion_stop):
-        return pending_step
+    if pending_scope is not None:
+        return pending_scope[1]
+    if step_ok:
+        return pending_step[1]
     if blocked or any(v is False for v in conditions.resources.values()) or burden_stop or emotion_stop:
         recheck = resource_recheck(state)
         if recheck:

@@ -451,7 +451,7 @@ async def test_no_evidence_uses_standard_flow_plans_without_model_call(mem_runti
     adapter = ScriptedAdapter({"kb_manual": [NO_MATCH()], "kb_tickets": [NO_MATCH()]})
     _events, values = await run_text(router, adapter, "eufy X9 Pro 不吸了")
     pr = values["plans_ranked"]
-    # 票 19：降级计划也按产品与症状过滤，不再下发与当前症状无关的计划
+    # 票 19：没有证据时唯一的线索是症状码，降级计划仍按症状过滤，不下发与当前症状无关的计划
     expected = LIB.allowed_for(category="robot_vacuum", sku="EUFY-X9-PRO", symptom_codes=["suction_low"])
     assert expected and [p["plan_id"] for p in pr] == [x.plan_id for x in expected] and all(
         p["source"] == "standard_flow" and p["confidence"] == 0.3 for p in pr

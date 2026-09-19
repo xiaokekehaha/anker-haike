@@ -245,24 +245,68 @@ def test_same_not_solved_with_different_observations_yields_different_paths(tmp_
 def library_with_mismatched_codes(tmp_path) -> PlanLibrary:
     """第三条路径的症状码与本次会话不相交（真实配置里 pb_737_laptop_uvp 少写了 pb_no_input 即此形）。"""
     base = (REPO_ROOT / "config" / "plans.yaml").read_text(encoding="utf-8")
-    third = THIRD_PLAN.replace("symptom_codes: [power_failure, charging_failure]", "symptom_codes: [noise]")
+    third = THIRD_PLAN.replace("symptom_codes: [power_failure, charging_failure]", "symptom_codes: [abnormal_noise]")
     path = tmp_path / "mismatched.yaml"
     path.write_text(base.replace("evidence:\n", f"evidence:\n{THIRD_EVIDENCE}", 1) + third, encoding="utf-8")
     return PlanLibrary.from_yaml(path)
 
 
-def test_satisfied_observation_unlocks_a_plan_whose_symptom_codes_do_not_match(tmp_path):
-    """症状码是对自由文本的早期粗分类，观察是用户对本机的直接回答：门槛已满足就不该再被症状码否决，
-    否则会出现问了又不用答案（会话 1db3017：答「连接笔记本显示 UVP」仍直接转人工）。"""
+def scope_answered(state, question, selected, input_id="i10"):
+    """模拟 ask_observation 写入范围问题、用户下一轮作答并被 reduce 受理后的状态。"""
+    from app.conversation.interpret import SymptomAnswer
+    from app.conversation.taxonomy import interview_answer
+
+    interview = dict(question["interview"])
+    interview["question"] = {**interview["question"], "asked_input_id": "i9", "question_id": f"{ISSUE}:i9:{question['key']}"}
+    answer = SymptomAnswer(question_id=interview["question"]["question_id"], answer="selection",
+                           selected_families=selected, quote="都有")
+    interview, accepted = interview_answer(interview, answer, "都有", input_id)
+    assert accepted
+    state = dict(state, symptom_interview=interview)
+    state["issues"][ISSUE] = {**state["issues"][ISSUE], "symptom_interview": interview}
+    return state
+
+
+def test_observation_outside_recorded_scope_asks_once_before_unlocking(tmp_path):
+    """观察满足了码外计划的门槛：不静默换题，先问一次范围（会话 37cea3：主诉自身回充，判别题答「接笔记本显示 UVP」，
+    直接下发 UVP 步骤等于把用户的问题换掉）。用户选了新范围 → 码扩展后进入；只确认原范围 → 该计划不再复发也不再问。"""
     lib = library_with_mismatched_codes(tmp_path)
     exhausted = {"exhausted_plans": ["rv_power_supply"], "steps_executed": executed_both()}
     seen = with_observation(base_state(**exhausted), "charging_indication", "none")
     action = decide_next(seen, library=lib)
-    assert action.kind == "step" and action.reason == "observation_unlocked_plan"
-    assert action.plan_cursor["plan_id"] == "rv_power_no_indication"
+    assert action.kind == "ask" and action.reason == "scope_conflict"
+    question = action.question
+    assert question["plan_id"] == "rv_power_no_indication"
+    assert (question["observation_id"], question["option_id"]) == ("charging_indication", "none")
+    assert question["interview"]["question"]["kind"] == "symptom_selection"
+    assert [o["value"] for o in question["interview"]["question"]["options"]] == ["不开机", "异响"]
+    assert "没有充电提示" in question["question"] and "「不开机」" in question["question"]
+    assert action.trace["scope_conflict"] == {"plan_id": "rv_power_no_indication", "codes": ["power_failure"],
+                                              "plan_codes": ["abnormal_noise"]}
+    # 用户说两种都有：症状码扩展，计划按观察解锁进入
+    both = decide_next(scope_answered(seen, question, ["不开机", "异响"]), library=lib)
+    assert both.kind == "step" and both.plan_cursor["plan_id"] == "rv_power_no_indication"
+    # 用户只确认原范围：该计划跳过，不再重复问，如实说明没有路径
+    kept = decide_next(scope_answered(seen, question, ["不开机"]), library=lib)
+    assert kept.kind == "handoff_offer" and kept.reason == "no_supported_followup"
+    assert {"plan_id": "rv_power_no_indication", "reason": "outside_confirmed_scope"} in kept.trace["skipped"]
     # 相反观察仍然排除该计划：放开的只是症状码否决，不是观察门槛本身
     indicated = with_observation(base_state(**exhausted), "charging_indication", "indicated")
     assert decide_next(indicated, library=lib).kind == "handoff_offer"
+
+
+def test_ready_step_ranked_ahead_is_not_preempted_by_a_later_plans_question(tmp_path):
+    """候选按顺序取第一个可行动作：排在前面的可执行步骤不被后面计划缺的观察题抢先，反之亦然。"""
+    lib = library_with_third_plan(tmp_path)
+    ahead = base_state(exhausted_plans=["rv_power_supply"], steps_executed=executed_both(),
+                       plans_ranked=[{"plan_id": "rv_x10_dock_return", "confidence": 0.5, "source": "synthesize"}])
+    action = decide_next(ahead, library=lib)
+    assert action.kind == "step" and action.plan_cursor["plan_id"] == "rv_x10_dock_return"
+    behind = base_state(exhausted_plans=["rv_power_supply"], steps_executed=executed_both(),
+                        plans_ranked=[{"plan_id": "rv_power_no_indication", "confidence": 0.6, "source": "synthesize"},
+                                      {"plan_id": "rv_x10_dock_return", "confidence": 0.5, "source": "synthesize"}])
+    action = decide_next(behind, library=lib)
+    assert action.kind == "ask" and action.question["observation_id"] == "charging_indication"
 
 
 def test_unmatched_codes_do_not_create_new_questions_while_the_observation_is_unknown(tmp_path):

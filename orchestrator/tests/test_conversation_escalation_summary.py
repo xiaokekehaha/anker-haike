@@ -24,10 +24,17 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
             "facts": [{"value": "出问题了", "quote": "出问题了"}],
         },
     )
-    assert "充电宝有输出反应吗" in "".join(e.get("delta", "") for e in first)
+    # 词表有「自身回充慢」后先问充电方向，再问输出反应
+    assert "给充电宝本身充电的时候吗" in "".join(e.get("delta", "") for e in first)
     # 后续使用既有问答解析与预写计划，不依赖模型润色或外部知识库。
     router = get_model_router()
     set_model_router(None)
+    before = await conversation.snapshot()
+    response = await conversation.client.post(
+        f"/sessions/{conversation.sid}/messages",
+        data={"input_id": "not-self-charging", "expected_version": before["version"], "text": "没有"},
+    )
+    assert "充电宝有输出反应吗" in "".join(e.get("delta", "") for e in conversation.check(response))
     before = await conversation.snapshot()
     response = await conversation.client.post(
         f"/sessions/{conversation.sid}/messages",

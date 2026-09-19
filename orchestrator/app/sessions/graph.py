@@ -175,6 +175,7 @@ class SessionState(TypedDict, total=False):
     vision_status: str | None
     vision_echoed: bool  # 读图结果是否已在步骤卡上回显过（阶段 4，只回显一次）
     plans_ranked: list[dict[str, Any]]
+    retrieval_basis: dict[str, Any] | None  # plans_ranked 依据的 {issue_revision, plans_version}；没变不重新检索
     retrieval_rounds: int
     rewrite_used: bool
     evidence_quality: (
@@ -324,7 +325,19 @@ def _after_product(state: SessionState) -> str:
         intent in {"replacement_request", "refund_request", "address_update"} or state.get("requested_remedy")
     ):
         return "service_context"
-    return "vision" if _new_fault_images(state) else "retrieve"
+    if _new_fault_images(state):
+        return "vision"
+    basis = state.get("retrieval_basis") or {}
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id")) or {}
+    if (
+        state.get("plans_ranked")
+        and basis.get("issue_revision") == issue.get("issue_revision")
+        and basis.get("plans_version") == get_plan_library().version
+    ):
+        # 事实修订号与计划库都没变：再检索一次得到的仍是同一份候选（会话 37cea3 第 7 轮重发同一句话，
+        # 重新 retrieve + synthesize 后只多了一份相同摘要）。直接依据已有排序重新决策。
+        return "reassess"
+    return "retrieve"
 
 
 def _new_fault_images(state: SessionState) -> list[dict[str, Any]]:
@@ -1094,13 +1107,31 @@ async def ask_observation(state: SessionState) -> SessionState:
     question = (state.get("next_action") or {}).get("question") or {}
     writer = get_stream_writer()
     writer({"type": "progress", "stage": "guide", "substage": "await_observation"})
-    message_id = stable_id(state.get("input_id"), "ask_observation", question.get("observation_id"))
+    message_id = stable_id(state.get("input_id"), "ask_observation", question.get("observation_id") or question.get("key"))
     is_blocker = question.get("kind") == "operation_blocker"
-    text = acknowledge_current_turn(dict(state), question["question"] if is_blocker else observation_question_text(question))
+    is_scope = question.get("kind") == "scope_conflict"
+    text = acknowledge_current_turn(
+        dict(state), question["question"] if is_blocker or is_scope else observation_question_text(question)
+    )
     writer({"type": "message_start", "message_id": message_id, "issue_id": state.get("active_issue_id"), "reply_to_input_id": state.get("input_id")})
     writer({"type": "message", "message_id": message_id, "delta": text})
     writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     msgs = [*(state.get("visible_messages") or []), {"message_id": message_id, "kind": "ask_observation", "text": text, "model_tier": None}]
+    if is_scope:
+        # 范围冲突走问诊的 symptom_selection 受理路径：下一轮「都有 / 1 / 2」由 symptom_question_answer 确定性解析，
+        # 自由文本由 intake 模型按 options 选择；选了新故障族即扩展症状码，码外计划按正常候选进入。
+        interview = dict(question["interview"])
+        interview["question"] = {
+            **interview["question"],
+            "asked_input_id": state.get("input_id"),
+            "question_id": f"{state.get('active_issue_id')}:{state.get('input_id')}:{question['key']}",
+        }
+        return {
+            "stage": "guide", "substage": "await_scope", "pending_card": None, "plan_cursor": None,
+            "visible_messages": msgs, "symptom_interview": interview,
+            "guide_trace": [{"event": "ask_scope", "plan_id": question.get("plan_id"),
+                             "observation_id": question.get("observation_id"), "option_id": question.get("option_id")}],
+        }
     if is_blocker:
         conditions = conditions_for(state)
         for blocker in conditions.blockers:
@@ -1792,7 +1823,6 @@ async def retrieve(state: SessionState) -> SessionState:
         allowed_ids = {
             p.plan_id for p in constrain_plans(state, get_plan_library().allowed_for(
                 category=scope.category, sku=scope.sku,
-                symptom_codes=state.get("symptom_codes") or [],
             ))
         }
         fc_hits = [f for f in fc_hits if f.plan_id in allowed_ids]
@@ -2164,6 +2194,11 @@ async def retrieve(state: SessionState) -> SessionState:
         ),
         "fault_card": fault_card_state,
         "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
+        # 本次候选依据的事实修订号与计划库版本；两者都没变时 _after_product 不再重新检索
+        "retrieval_basis": {
+            "issue_revision": ((state.get("issues") or {}).get(state.get("active_issue_id")) or {}).get("issue_revision"),
+            "plans_version": get_plan_library().version,
+        },
         **plans,
     }
 
@@ -2172,15 +2207,19 @@ async def _synthesize_step(
     state: SessionState, round_evidence: dict[str, dict[str, Any]], lane: str, rcfg
 ) -> dict[str, Any]:
     scope = knowledge_scope_of(state)
-    allowed = get_plan_library().allowed_for(
-        category=scope.category, sku=scope.sku,
-        symptom_codes=state.get("symptom_codes") or [],
+    codes = set(state.get("symptom_codes") or [])
+    # 症状码是对自由文本的早期粗分类：只决定候选顺序（码内优先），不再把码外计划从模型可选集合里删掉，
+    # 否则分类一错，正确的计划模型永远看不到（会话 37cea3：「很慢」被归入 pb_no_input）。
+    allowed = sorted(
+        get_plan_library().allowed_for(category=scope.category, sku=scope.sku),
+        key=lambda p: not codes.intersection(p.symptom_codes),
     )
     allowed = constrain_plans(state, allowed)
     out = await synthesize(
         get_model_router(),
         state=dict(state),
         allowed=allowed,
+        symptom_codes=sorted(codes),
         evidence=list(round_evidence.values()),
         observations=list(state.get("image_observations") or []),
         budget_ms=min(rcfg.synthesize.budget_ms, max(1000, _remaining_ms(state) - 2000)),
@@ -2891,6 +2930,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "service_context": "service_context",
             "reply": "reply",
             "retrieve": "retrieve",
+            "reassess": "reassess",
             "vision": "vision",
             "escalate": "escalate",
             "clarify": "clarify",
@@ -2907,6 +2947,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             **{target:target for target in ("service_context","authorize","propose","await_human","commit_issue")},
             "reply": "reply",
             "retrieve": "retrieve",
+            "reassess": "reassess",
             "vision": "vision",
             "escalate": "escalate",
             "out_of_scope": "out_of_scope",

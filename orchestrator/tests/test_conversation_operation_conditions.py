@@ -203,8 +203,11 @@ async def test_http_737_screen_answer_changes_action_without_generic_reset(conve
     })
     set_model_router(None)
     client, sid = conversation.client, conversation.sid
-    assert "有输出反应吗" in messages_of(rows)
+    # 词表加入「自身回充慢」后，先问充电方向（给充电宝本身充电吗）再问有没有输出反应
+    assert "给充电宝本身充电的时候吗" in messages_of(rows)
     assert "抱歉" in messages_of(rows) and len([e for e in rows if e["type"] == "message_start"]) == 1
+    rows = events(await send(client, sid, "没有"))
+    assert "有输出反应吗" in messages_of(rows)
     rows = events(await send(client, sid, "没有"))
     state = await graph_state(sid)
     assert "屏幕" in messages_of(rows), {key: state.get(key) for key in ("symptom_interview", "diagnostic_decision", "turn_decision", "category", "product_confirmed")}

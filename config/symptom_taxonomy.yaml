@@ -4,7 +4,7 @@
 # - selection_label：多选题里给用户看的说法（不写就用 fault_family）。
 # - symptom_code 与 plans.yaml 的 symptom_codes 对应，按品类加前缀（rv_ 系列为历史沿用未加前缀）。
 # 没有登记的品类（目录级品类）在 decide_symptoms 里走 question_coverage_missing → R5，不借用其他品类的问题。
-version: 2026-09-17.2
+version: 2026-09-19.1
 source: 人工演示样本，待真实工单替换
 categories:
   robot_vacuum:
@@ -75,6 +75,12 @@ categories:
       symptom_code: pb_no_input
       selection_label: 给充电宝本身充电时充不进 / 充不满
       expressions: [自己充不进, 充不进电, 充不满, 电量不涨, 一直充不满, 回充不了]
+    # 「很慢」是性能异常，不是「充不进」；没有这个槽位时模型只能把它塞进邻近分类（会话 37cea3）。
+    # 表达式只收带自身回充语境的说法，裸「很慢」交给模型按问诊上下文判断，避免把「给手机充电慢」也归到这里。
+    - fault_family: 自身回充慢
+      symptom_code: pb_slow_input
+      selection_label: 给充电宝本身充电很慢
+      expressions: [回充慢, 回充很慢, 回充太慢, 自己充得慢, 自身充电慢, 给充电宝充电慢, 给充电宝充电很慢, 充电宝充得慢, 充不快]
     - fault_family: 掉电快
       symptom_code: pb_battery_drain
       expressions: [掉电快, 电量虚, 用一会就没电, 续航短, 容量变小, 放着就没电]
@@ -90,11 +96,11 @@ categories:
     discriminators:
     - question: 插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？
       splits:
-        'yes': [充电宝自身充不进电, 掉电快, 发热异常, 指示灯异常]
+        'yes': [充电宝自身充不进电, 自身回充慢, 掉电快, 发热异常, 指示灯异常]
         'no': [无法给设备充电, 接口松动或损坏]
     - question: 问题出现在给充电宝本身充电的时候吗？
       splits:
-        'yes': [充电宝自身充不进电, 指示灯异常]
+        'yes': [充电宝自身充不进电, 自身回充慢, 指示灯异常]
         'no': [无法给设备充电, 掉电快, 发热异常, 接口松动或损坏]
 
   charger:

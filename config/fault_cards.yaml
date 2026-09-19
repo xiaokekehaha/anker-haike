@@ -72,20 +72,21 @@ cards:
       - 水箱漏水时先检查密封圈；出现焦味、冒烟、过热立即断电停用。
   # ================= 2026-09-17 多品类：品类通用故障卡（人工演示样本，待真实资料替换）=================
   - key: ANKER-A1289
-    doc_version: 2026-09-18.1
+    doc_version: 2026-09-19.1
     title: Anker 737 A1289 故障卡
     faults:
+      - {fault: 自身回充慢或充不进电, plan_id: pb_737_recharge_slow, symptom_codes: [pb_slow_input, pb_no_input], keywords: [回充慢, 充得慢, 充不进, 充不满, 充电很慢], first_step: 用 PD 快充充电器和认证线材从 USB-C1 回充；5V 1A 老充电器或电脑 USB 口回充慢不算故障}
       - {fault: 无法充电或功率偏低, plan_id: pb_737_output_check, symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage], keywords: [充不了, 没反应, 没输出, 功率, 充不进], first_step: 先询问屏幕显示；能显示电量时结合实际充电情况交叉检查线材和设备，不凭瞬时瓦数判断故障}
       - {fault: 屏幕异常或无法显示电量, plan_id: pb_737_display_reset, symptom_codes: [pb_no_output, pb_no_input, pb_indicator_abnormal, pb_port_damage], keywords: [屏幕异常, 无法显示电量, 黑屏], first_step: 确认屏幕异常后，按 A1289 官方说明连接自身输入输出口复位，再检查充放电}
       - {fault: 连接笔记本出现 UVP, plan_id: pb_737_laptop_uvp, symptom_codes: [pb_no_output, pb_indicator_abnormal, pb_port_damage], keywords: [UVP, 笔记本, 欠压], first_step: 确认连接笔记本出现 UVP 后，改用 USB-C2 端口测试}
     safety:
       - 出现鼓包、异味、冒烟或明显过热时停止使用与充电，不再执行复位。
   - key: category:power_bank
-    doc_version: 2026-09-17.1
+    doc_version: 2026-09-19.1
     title: 移动电源通用故障卡
     faults:
       - {fault: 无法给设备充电 / 接口松动, plan_id: pb_port_debris, signatures: [{part: 接口, phenomenon: 堵塞}, {part: 接口, phenomenon: 污渍}], symptom_codes: [pb_no_output, pb_port_damage], keywords: [充不了, 没反应, 没输出, 接口松, 插不紧], first_step: 关机后清理输出接口，换线换设备测试}
-      - {fault: 自身充不进电 / 指示灯异常, plan_id: pb_input_check, symptom_codes: [pb_no_input, pb_indicator_abnormal], keywords: [充不进, 充不满, 灯闪, 灯不亮], first_step: 换 PD 充电器和认证线材充电，看输入指示灯}
+      - {fault: 自身充不进电 / 回充慢 / 指示灯异常, plan_id: pb_input_check, symptom_codes: [pb_no_input, pb_slow_input, pb_indicator_abnormal], keywords: [充不进, 充不满, 回充慢, 灯闪, 灯不亮], first_step: 换 PD 充电器和认证线材充电，看输入指示灯}
       - {fault: 掉电快 / 电量不准, plan_id: pb_drain_calibrate, symptom_codes: [pb_battery_drain], keywords: [掉电快, 电量虚, 续航短], first_step: 排除静默取电，做一次完整充放电校准}
       - {fault: 发热 / 鼓包 / 异味, plan_id: pb_overheat_stop, symptom_codes: [pb_overheat], keywords: [发烫, 过热, 鼓包, 异味, 冒烟], first_step: 立即停止使用与充电，放到阴凉通风处，联系售后}
     safety:
