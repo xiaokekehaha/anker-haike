@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海科售后 Agent 框架</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F5F7; --surface:#FFFFFF; --surface-2:#E9EEF2; --line:#D3DCE3;
+  --ink:#16212B; --ink-2:#4B5B69; --ink-3:#7D8B97;
+  --accent:#0B5E9E; --accent-ink:#FFFFFF; --accent-soft:#DDEBF6;
+  --ok:#1F7A4D; --ok-soft:#DDF1E5; --warn:#9A5B00; --warn-soft:#FBEBCF; --off:#5B6B7A; --off-soft:#E4E9ED;
+  --code:#F6F8FA; --shadow:0 1px 2px rgba(22,33,43,.06),0 8px 24px -12px rgba(22,33,43,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F161C; --surface:#161F27; --surface-2:#1D2932; --line:#2C3A46;
+    --ink:#E6ECF1; --ink-2:#AEBBC6; --ink-3:#7F8E9B;
+    --accent:#5FA8E3; --accent-ink:#0B1520; --accent-soft:#17324A;
+    --ok:#6CCB93; --ok-soft:#173226; --warn:#E5B35A; --warn-soft:#3A2C12; --off:#9AA8B4; --off-soft:#232F39;
+    --code:#0F161C; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F161C; --surface:#161F27; --surface-2:#1D2932; --line:#2C3A46;
+  --ink:#E6ECF1; --ink-2:#AEBBC6; --ink-3:#7F8E9B;
+  --accent:#5FA8E3; --accent-ink:#0B1520; --accent-soft:#17324A;
+  --ok:#6CCB93; --ok-soft:#173226; --warn:#E5B35A; --warn-soft:#3A2C12; --off:#9AA8B4; --off-soft:#232F39;
+  --code:#0F161C; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.7 "Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 72px;padding-inline:20px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}.toc{display:none}}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);font-size:13px}
+.toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line)}
+.toc li a{display:block;padding:6px 0 6px 14px;color:var(--ink-3);margin-left:-1px;border-left:2px solid transparent}
+.toc li a:hover,.toc li a.on{color:var(--ink);border-left-color:var(--accent);text-decoration:none}
+.toc .eyebrow{margin-bottom:10px}
+h1,h2,h3{font-family:"Noto Serif SC","Songti SC",serif;text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:700;margin-top:56px;padding-top:16px;border-top:1px solid var(--line)}
+h2 .num{color:var(--accent);font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:500;margin-right:10px;vertical-align:2px}
+h3{font-size:17px;font-weight:600;margin-top:28px;font-family:"Noto Sans SC",sans-serif}
+p{margin:12px 0;max-width:72ch}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.lede{font-size:17px;color:var(--ink-2);max-width:64ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--ink-3);margin-top:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:28px}
+.stat{background:var(--surface);padding:14px 16px}
+.stat b{display:block;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1;font-family:"JetBrains Mono",monospace}
+.stat span{font-size:12px;color:var(--ink-3)}
+.principle{margin-top:22px;padding:16px 20px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 8px 8px 0}
+.principle p{margin:4px 0;max-width:none}
+code,pre{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+code{font-size:.9em;background:var(--code);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.6;overflow-x:auto;margin:12px 0}
+pre code{background:none;border:0;padding:0}
+.formula{border-left:3px solid var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--ink-2);font-size:12px;letter-spacing:.04em;background:var(--surface-2)}
+td.num{font-variant-numeric:tabular-nums;font-family:"JetBrains Mono",monospace;font-size:13px}
+.tbl.wide table{min-width:900px}
+.tbl.wide td:first-child{white-space:nowrap}
+/* timeline */
+.tl{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:0}
+.tl li{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.tl .d{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent);padding-top:3px}
+.tl .bar{height:6px;border-radius:3px;background:var(--accent-soft);position:relative;margin-top:8px;max-width:320px}
+.tl .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.tl small{color:var(--ink-3);font-size:12px;margin-left:8px;font-variant-numeric:tabular-nums}
+/* architecture */
+.arch{display:grid;gap:10px;margin-top:20px}
+.tier{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:stretch}
+.tier .lab{font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;padding-top:14px}
+.boxes{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;box-shadow:var(--shadow)}
+.box b{display:block;font-size:14px;font-weight:600;margin-bottom:3px}
+.box.core{border-color:var(--accent);background:var(--accent-soft)}
+.box.wide{grid-column:1/-1}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:"JetBrains Mono",monospace;font-size:12px}
+.flow span{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
+.flow span.hi{border-color:var(--accent);color:var(--accent);font-weight:500}
+.flow em{color:var(--ink-3);font-style:normal}
+.arrow{text-align:center;color:var(--ink-3);font-size:12px;line-height:1}
+/* features */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--ink-2);max-width:none}
+.card ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)}
+.card li{margin:3px 0}
+.card .ref{margin-top:auto;padding-top:8px;font-size:12px;color:var(--ink-3)}
+.pill{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.03em;padding:1px 8px;border-radius:999px;border:1px solid transparent;vertical-align:middle}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.off{background:var(--off-soft);color:var(--off)}
+/* algorithm sections */
+.algo{margin-top:34px;padding-top:22px;border-top:1px dashed var(--line)}
+.algo h3{margin-top:0;font-size:18px;font-family:"Noto Serif SC",serif}
+.algo .src{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);margin-left:10px;font-weight:400}
+.pq{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:10px}
+.pq > div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.pq .eyebrow{margin-bottom:6px}
+.pq p{margin:0;font-size:14px;max-width:none}
+.pq ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.pq li{margin:3px 0}
+.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px 1fr;gap:8px;padding:6px 0;font-size:14px;border-bottom:1px solid var(--line)}
+.steps li::before{content:counter(s);font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:13px;padding-top:2px}
+.note{font-size:13px;color:var(--ink-3)}
+/* status */
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:20px}
+.status .card{border-top:3px solid var(--line)}
+.status .card.ok{border-top-color:var(--ok)}
+.status .card.warn{border-top-color:var(--warn)}
+.status .card.off{border-top-color:var(--off)}
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="layout">
+<nav class="toc" aria-label="目录">
+  <div class="eyebrow">目录</div>
+  <ol>
+    <li><a href="#s1">定位与原则</a></li>
+    <li><a href="#s2">进程</a></li>
+    <li><a href="#s3">架构</a></li>
+    <li><a href="#s4">核心功能</a></li>
+    <li><a href="#s5">算法与原理</a></li>
+    <li><a href="#s6">现状与边界</a></li>
+  </ol>
+</nav>
+
+<main>
+<header id="s1">
+  <div class="eyebrow">anker-haike · 智能服务赛道</div>
+  <h1 style="margin-top:8px">海科售后智能服务 Agent：框架与功能介绍</h1>
+  <p class="lede">用户用文字和照片描述故障，系统完成情绪识别、产品消歧、多模态故障定位、分步排障、保修判定与人工升级。每一步都有来源、可回放、可观测。</p>
+  <div class="meta"><span>整理日期 2026-09-19</span><span>依据：仓库代码、117 次提交、70 余份规划与复盘文档</span><span>面向：其他产品团队的框架介绍</span></div>
+
+  <div class="stats">
+    <div class="stat"><b>8</b><span>开发天数（09-12 起）</span></div>
+    <div class="stat"><b>117</b><span>提交</span></div>
+    <div class="stat"><b>792</b><span>后端单测</span></div>
+    <div class="stat"><b>222</b><span>前端用例</span></div>
+    <div class="stat"><b>57 / 20</b><span>SKU / 品类</span></div>
+    <div class="stat"><b>57</b><span>预写排障计划</span></div>
+    <div class="stat"><b>23</b><span>发布清单</span></div>
+  </div>
+
+  <div class="principle">
+    <p><strong>设计原则：</strong>模型只做「理解」和「排序」，业务决策由确定性代码与配置做出。</p>
+    <p>所有给用户的操作都必须来自预写计划库并带证据引用；宁可说「不知道」，不可说错。</p>
+  </div>
+</header>
+
+<h2 id="s2"><span class="num">02</span>进程</h2>
+<p>从契约与会话骨架起步，逐日收敛到「问诊 → 排障 → 观察 → 升级」闭环，再横向扩到多品类与业务办理。条形长度按当日提交数。</p>
+<ol class="tl">
+  <li><span class="d">09-12</span><div>契约（事件 / 动作 / 快照）、Compose 骨架、SSE 会话流、动作幂等与会话锁、图片上传、凭证 OCR、HTTPS / 限速 / 密钥隔离、CI / 发布 / 回滚、迁移与备份<div class="bar"><i style="width:86%"></i></div><small>25 commits</small></div></li>
+  <li><span class="d">09-13</span><div>会话记忆 V2 主链路；管理员观测台；有界 Agentic RAG；模型 bake-off 与三家厂商链冻结；回放包；巡检；告警；数据保留与脱敏<div class="bar"><i style="width:45%"></i></div><small>13</small></div></li>
+  <li><span class="d">09-14</span><div>L3 闭环设计 19 篇：动作层、政策引擎、案件与人工介入、五难点深化、任务归属、执行恢复<div class="bar"><i style="width:4%"></i></div><small>设计日</small></div></li>
+  <li><span class="d">09-15</span><div>读图从「一次模型调用」重构为「一次可信的测量」：像素画质门控 + 铭牌复看交叉核对；证据驱动下一动作；R7 误升级三例修复<div class="bar"><i style="width:34%"></i></div><small>10</small></div></li>
+  <li><span class="d">09-16</span><div>步骤观察驱动排障闭环，统一下一动作与结束原因；安全词否定语义；问诊不再复读；锚点主引用与回复引用归因<div class="bar"><i style="width:52%"></i></div><small>15</small></div></li>
+  <li><span class="d">09-17</span><div>多品类对齐官网五大产品线；定向采集官方支持文章；按公开售后政策重建保修规则（20 品类）；上下文预算按任务管理<div class="bar"><i style="width:62%"></i></div><small>18</small></div></li>
+  <li><span class="d">09-18</span><div>候选池与最终证据分离、充分性驱动一次补查；观察卡片；判别提问优先于步骤；一次方案试验后整体回滚并留痕；7 个发布版本<div class="bar"><i style="width:100%"></i></div><small>29</small></div></li>
+  <li><span class="d">09-19</span><div>观测台按角色重组（工作台 / 看板 / 会话 / 诊断）；观察越出已记录范围先澄清一次；服务台布局落地<div class="bar"><i style="width:24%"></i></div><small>7</small></div></li>
+</ol>
+
+<h2 id="s3"><span class="num">03</span>架构</h2>
+<p>一个 FastAPI + LangGraph 编排服务同源托管前端；每次用户输入跑一次图（START → understand → … → commit_issue → END），等待用户输入是持久化的业务状态 <code>pending_card</code>，不是图的 interrupt，所以重启、断连、重放都不丢位置。</p>
+
+<div class="arch">
+  <div class="tier"><div class="lab">前端</div><div class="boxes">
+    <div class="box"><b>用户端</b>React 19 + Vite。Composer、Timeline、卡片（产品 / 步骤 / 观察 / 凭证 / 摘要 / 方案 / 执行）、证据抽屉、服务记录面板</div>
+    <div class="box"><b>管理端</b>同一前端包：/desk 坐席工作台 · /board 看板 · /sessions 会话旅程 · /lab 诊断实验室</div>
+    <div class="box"><b>契约</b>Pydantic 单一来源 → JSON Schema + TS 类型；26 种事件、13 种动作、1 个快照；CI 漂移检测</div>
+  </div></div>
+  <div class="arrow">▼ POST /messages · /actions　　SSE 事件流（Last-Event-ID 续接，断连不中止 run）</div>
+  <div class="tier"><div class="lab">编排服务</div><div class="boxes">
+    <div class="box core wide"><b>图节点</b>
+      <div class="flow"><span class="hi">understand</span><em>→</em><span>disambiguate</span><span>clarify</span><span>prepare_card</span><span>out_of_scope</span><em>→</em><span class="hi">vision</span><em>→</em><span class="hi">retrieve</span><em>→</em><span>reply</span><span class="hi">guide</span><em>→</em><span>ask_observation</span><span>reassess</span><em>→</em><span>escalate</span><span>prepare_receipt</span><span>receipt_extract</span><em>→</em><span>summarize</span><span>close</span><em>→</em><span class="hi">commit_issue</span></div>
+      <div class="flow" style="margin-top:6px"><em>L3 业务闭环：</em><span>service_context</span><em>→</em><span>propose</span><em>→</em><span>authorize</span><em>→</em><span>execute</span><em>→</em><span>track</span><em>·</em><span>await_human</span><span>apply_human_decision</span><span>consult</span><span>reopen_case</span></div>
+    </div>
+    <div class="box"><b>会话层</b>幂等 input_id · pg_advisory_lock 会话锁 · 409 附完整快照 · run deadline 25 s / ping 5 s · 取消 · 孤儿 run 收尾</div>
+    <div class="box"><b>语义层</b>interpret_turn 一次抽取意图、事实、答案、操作信号 → reduce 校验后落库；金标绝不进提示词</div>
+    <div class="box"><b>决策层</b>decide_symptoms · decide_next · PolicyEngine · rules 检查点（纯函数，不调模型）</div>
+    <div class="box"><b>模型层</b>ModelRouter：任务 → 模型链；降级 / 重试 / 预算 / 有界并发</div>
+  </div></div>
+  <div class="arrow">▼</div>
+  <div class="tier"><div class="lab">依赖</div><div class="boxes">
+    <div class="box"><b>PostgreSQL 17 + pgvector</b>LangGraph checkpoint、会话投影、案件、analytics 事实表</div>
+    <div class="box"><b>Redis 7</b>会话锁、限速</div>
+    <div class="box"><b>WeKnora v0.8.0</b>kb_manual / kb_tickets；BM25 + 向量 hybrid；父子分块 800 / 200</div>
+    <div class="box"><b>模型厂商</b>国内通道 DeepSeek / 通义 / 智谱；海外通道 Anthropic / Google。每任务一条链，bake-off 定序</div>
+  </div></div>
+</div>
+
+<h2 id="s4"><span class="num">04</span>核心功能</h2>
+<p>对应赛道要求的五项能力，外加业务办理与工程化两块。每张卡末尾给出实现落点。</p>
+<div class="grid">
+  <div class="card"><h3>情绪识别与安抚</h3>
+    <p>intake 一次结构化抽取情绪三级 + 产品线索 + 症状 + 是否要人工。规则词表可抬高级别不能压低；引不到原文依据的「平静」视为无信号。</p>
+    <ul><li>四级 calm &lt; dissatisfied &lt; angry &lt; complaint_risk，含趋势 rising / falling</li><li>有序规则映射五种策略：只改语气与动作集合，不改业务事实</li></ul>
+    <div class="ref">app/intake · app/emotion/policy.py · config/emotion_policy.yaml</div></div>
+  <div class="card"><h3>产品消歧</h3>
+    <p>目录 57 SKU / 20 品类含别名；product_state 三分 unknown / category_only / confirmed_sku。</p>
+    <ul><li>「S1 Pro」同时命中吸奶器与扫地机 → 出卡点选</li><li>答案不改变下一步时不问型号；知识按型号分化的品类才问</li><li>照片部件只作待确认线索；铭牌型号必须复看核对</li><li>范围外产品走 R8，改口即切换</li></ul>
+    <div class="ref">sessions/clarify.py · config/products.yaml</div></div>
+  <div class="card"><h3>多模态故障定位</h3>
+    <p>文字（症状词表归一）、图片（画质门控 → describe-first 观察 → 签名映射计划）、知识（两库并发检索 + FAQ + 故障卡）三路汇总，模型只在允许的计划枚举内排序假设，每个假设必须引用真实 evidence_id。</p>
+    <div class="ref">diagnose/vision.py · knowledge/search.py · diagnose/synthesize.py</div></div>
+  <div class="card"><h3>症状问诊（判别树）</h3>
+    <p>候选故障族从全集开始，选把候选切得最均匀的是非题；无题可问则多选。连续 2 次无进展或总计 8 次仍未收敛，如实结束转人工。</p>
+    <div class="ref">conversation/taxonomy.py · diagnose/decision.py</div></div>
+  <div class="card"><h3>分步排障与观察闭环</h3>
+    <p>预写计划库声明适用范围、症状码、步骤转移与观察门；指令原文必须指向登记的证据。每步三态反馈 + 观察选项，「做不到」只记阻碍不消耗计划。</p>
+    <ul><li>下一动作优先级：风险 → 用户意愿 → 已恢复 → 暂停 / 资源 → 缺失观察 → 可发布步骤 → 人工出口</li></ul>
+    <div class="ref">config/plans.yaml · decide_next · sessions/graph.py::guide</div></div>
+  <div class="card"><h3>升级、凭证与保修</h3>
+    <p>升级原因 R1–R8；摘要卡不调模型即可从状态渲染，card_id 幂等。常规升级先收凭证：OCR 逐字段置信度 → 用户确认 → 订单与经销商名录核对。</p>
+    <ul><li>保修引擎按 US 站公开政策逐条带原文 quote；其他区域一律转人工，不外推</li></ul>
+    <div class="ref">escalation/summary.py · sessions/receipt.py · policy/engine.py</div></div>
+  <div class="card"><h3>L3 业务闭环 <span class="pill warn">后端 mock</span></h3>
+    <p>会话事实（区域 / 渠道 / 订单 / 地址）持久化带来源；物流、订单、换货走动作层；换货等处置需坐席审批。工作台提供队列、SLA 着色、判定表与决定表单；案件可重开。</p>
+    <div class="ref">sessions/l3.py · app/actions · app/backends · config/actions.yaml</div></div>
+  <div class="card"><h3>可观测与工程化</h3>
+    <ul><li>看板：解决率、模型降级率、检索无命中率、五难点指标</li><li>回放包 A1–A8 离线零网络重放并校验版本；巡检脚本；bake-off 报告</li><li>告警 4 条规则 5 分钟冷却；TTL 保留（图片 1 h / 会话 24 h / trace 7 d）与脱敏</li><li>发布冻结全部配置版本，5 分钟内回滚</li></ul>
+    <div class="ref">app/admin · app/replay · app/observability · make release / rollback</div></div>
+</div>
+
+<h2 id="s5"><span class="num">05</span>算法与原理</h2>
+<p>每节按「问题 → 方案与公式 → 为什么这么做」。所有算法都是确定性的或有确定性校验包裹；模型输出在这里只是输入之一。</p>
+
+<section class="algo" id="a1">
+  <h3>5.1 检索：多变体 RRF 融合与跨库交错<span class="src">knowledge/search.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>手册库、工单库、本地 FAQ、重排模型的分值量纲互不可比（WeKnora 内部 RRF ≈ 0.016、FAQ Dice 0.3–1、rerank 0–1），不能按原始分混排。</p></div>
+    <div><div class="eyebrow">方案</div><p>一律用名次而不是分值。同库多变体用 Reciprocal Rank Fusion 合并；跨库再按库内名次交错，同名次按来源可信度破平；反证工单永远排最后。</p></div>
+  </div>
+<pre class="formula"><code>score(d) = Σ_{q ∈ Q, d ∈ R_q}  1 / (k + rank_q(d))          k = 60
+
+排序键 = (counter_evidence, −score)                     反证工单排在正证之后
+跨库破平 = kb_manual(0) &gt; kb_faq(1) &gt; kb_tickets(2)
+状态合并 = 任一 ok → ok ；全部或部分 unavailable → unavailable ；否则 no_match</code></pre>
+  <p>查询变体不调模型：只用已审核同义词表把口语替换为规范词（「不吸」→「吸力下降」），单点替换各一条加全替换一条，断言不引入原句没有的型号或数字；请求数 ≤ 变体数 × 库数 ≤ 6。</p>
+  <div class="tbl"><table><tr><th>product_state</th><th>检索前允许的知识条目</th></tr>
+  <tr><td>confirmed_sku</td><td>sku_list ∋ sku　∪　scope=category_generic ∧ 同品类</td></tr>
+  <tr><td>category_only</td><td>仅 scope=category_generic ∧ 同品类</td></tr>
+  <tr><td>unknown</td><td>空集，不发请求。空 knowledge_ids 在 WeKnora 等于不过滤，禁止退化为整库搜索</td></tr></table></div>
+  <p class="note">同一函数同时决定进 synthesize 的证据顺序与评测 top-k，保证「评测跑的就是线上链路」。多变体 / 重排 / FAQ / 改写 / 充分性评估当前全部默认关闭，每项凭评测报告单独开启。</p>
+</section>
+
+<section class="algo" id="a2">
+  <h3>5.2 本地 FAQ 匹配：字符二元组 Dice<span class="src">knowledge/faq.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>WeKnora v0.8.0 对 FAQ 库的检索接口实测返回空；FAQ 条目少且品类通用。</p></div>
+    <div><div class="eyebrow">方案</div><p>适配器侧确定性匹配。先去标点、去产品词与口语虚词（它们只会稀释症状相似度），再算二元组 Dice；子串包含时给高基线分。</p></div>
+  </div>
+<pre class="formula"><code>若 s ⊂ q 或 q ⊂ s :   sim = 0.85 + 0.15 · min(|q|,|s|) / max(|q|,|s|)
+否则 :                sim = 2 · |B(q) ∩ B(s)| / (|B(q)| + |B(s)|)        B(t) = t 的字符二元组集合
+
+阈值 0.3 以下不返回（避免「无知识」样例泄漏）；只在会话品类内匹配</code></pre>
+</section>
+
+<section class="algo" id="a3">
+  <h3>5.3 证据充分性评估与有界补查<span class="src">knowledge/context.py · diagnose/grade.py · diagnose/rewrite.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>单轮检索可能不足；无界 Agentic RAG 会不停改写重查，延迟与幻觉都不可控。</p></div>
+    <div><div class="eyebrow">方案</div><p>两层预算 + 至多一次受控补查。候选池与最终证据分离：评分只标记质量不删候选；改写只改检索表达不产生业务事实。</p></div>
+  </div>
+<pre class="formula"><code>证据选择：按 (轮次, 来源) 分组后 zip_longest 交错，来源优先 kb_manual &lt; kb_faq &lt; fault_card &lt; kb_tickets
+          反证至少保留 1 个代表；不按一次 grade 的 irrelevant 删除证据
+
+字符预算（context_chars = 5000，item_chars = 800）：
+  allowance_i = min( item_chars, (max_chars − 已用 − Σ_{j ≥ i} header_j) / (n − i) )
+  正文按锚点居中截取；被挤掉者记 excluded[item_limit | char_limit | empty_content]
+
+充分性评估（轻量模型，≤ 12 条）：
+  逐条 verdict ∈ {relevant, irrelevant, unsure}；coverage ∈ {sufficient, insufficient, none}
+  missing_symptoms 只能从「有效症状」逐字选择
+  保守规则：sufficient 但无 relevant → insufficient；只有反证工单 relevant → insufficient
+
+受控改写：Schema 仅 {query}；拒绝 空 / 超长 / 与原句相同 / 改变否定数 / 新增型号·错误码·数值·部件·原因词
+          第二轮预算 3000 ms，剩余 &lt; 3 s 跳过</code></pre>
+</section>
+
+<section class="algo" id="a4">
+  <h3>5.4 症状问诊：最小分裂判别树<span class="src">conversation/taxonomy.py · diagnose/decision.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>口语常映射不到唯一故障族（「充不进电」可能是输出也可能是自身回充）；模型自由追问会复读、跑题、无限循环。</p></div>
+    <div><div class="eyebrow">方案</div><p>确定性判别树，问题来自配置而非模型。每题按 yes / no 切分候选，选把候选切得最均匀的题；无题可问就让用户在剩余现象里多选。</p></div>
+  </div>
+<pre class="formula"><code>候选集 C 初始 = 该品类全部故障族
+可用判别题 D 须满足  C ⊆ yes(D) ∪ no(D)  且两侧非空
+
+D* = argmax_D  min( |C ∩ yes(D)| , |C ∩ no(D)| )        最大化最坏情况的缩小量
+回答后  C ← C ∩ splits[answer]
+
+无可用题且 |C| &gt; 1 → 多选 symptom_selection
+首问：|C| ≤ 6 且尚无回答 → 直接多选（4/1 切分的是非题期望信息量接近零且必再追一问）</code></pre>
+  <div class="tbl"><table><tr><th>终止条件</th><th>结果</th></tr>
+  <tr><td>连续无进展回答 ≥ 2</td><td>全为「不知道」→ answers_unavailable，否则 no_progress → R7</td></tr>
+  <tr><td>总回答数 ≥ 8</td><td>clarification_budget_exhausted → R7</td></tr>
+  <tr><td>有回答但候选为空</td><td>evidence_conflict → 升级</td></tr>
+  <tr><td>剩余候选共享同一组适用计划</td><td>不再问，直接 continue</td></tr></table></div>
+  <p class="note">「进展」= 候选集合变化。新增可归一的症状事实重置连续无进展窗口但不重置总预算；归一不到任何故障族的补充记为 unmapped 并计入预算，否则「每次补充都清窗口」会让同一问题重复到永远。规则与模型给出的症状码不一致时记 disagreement，不静默采用。</p>
+</section>
+
+<section class="algo" id="a5">
+  <h3>5.5 下一动作决策：证据驱动的候选序列<span class="src">diagnose/decision.py::decide_next · plans/models.py::observation_gate</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>模型自由生成的「下一步」没有来源、可能重复已做步骤、可能在有风险时继续操作。</p></div>
+    <div><div class="eyebrow">方案</div><p>纯函数：不调模型、不写库、不发事件。输出 NextAction(kind ∈ {ask, step, resolved, handoff_offer, safety_stop, pause}, reason, basis)。</p></div>
+  </div>
+  <ol class="steps">
+    <li>风险证据（allowed_operations=false / R4）→ safety_stop</li>
+    <li>用户要求人工（R3）→ handoff_offer</li>
+    <li>上一步反馈 solved → resolved</li>
+    <li>用户暂停 / 纯投诉 / 资源缺失待答 / 请求解释 → pause 或 ask</li>
+    <li>候选序列 = plans_ranked 中 confidence ≥ 0.3 且未耗尽者（保持模型排序） ＋ 观察门已满足的解锁计划。逐个：excluded 跳过；missing 记第一个可问观察（同一观察最多问 2 次）；有未执行步骤记第一个可发布步骤；解锁计划与已记录症状码不相交先问一次范围。取序号最小的可行动作，前面的步骤不被后面的问题抢先</li>
+    <li>有阻碍 / 资源缺失 / 连续跳过 ≥ 3 / 情绪策略要求少步骤 → 资源复核或 pause</li>
+    <li>无支持的下一动作 → handoff_offer（observation_unavailable / no_supported_followup / knowledge_coverage_missing）</li>
+  </ol>
+<pre class="formula"><code>observation_gate(known):
+  excluded_by_observations 命中          → excluded
+  requires_observations 中有未知         → missing（列出缺失 id）
+  已知但不在允许选项                     → excluded
+  否则                                   → ok
+未观察到不能当作阴性：只会让计划「缺失」，不会让它「排除」或「满足」</code></pre>
+  <p class="note">R1–R8 是对外兼容 / 观测层的规则码映射，真实结束原因在 next_action.reason。</p>
+</section>
+
+<section class="algo" id="a6">
+  <h3>5.6 读图：一次可信的测量<span class="src">images/quality.py · diagnose/vision.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>视觉模型无法自知其无知。公开实验中亮度降到 0.15 倍时 VLM 准确率从 0.99 掉到 0.22，而自报置信度仍稳定在 0.87–0.90，错误检测 AUROC ≈ 0.50。最该拦的图恰好是模型看不出自己看不见的那些。</p></div>
+    <div><div class="eyebrow">方案</div><p>四层：像素层门控（不调模型）→ describe-first 结构化输出 → 铭牌裁剪复看交叉核对 → 图文冲突由代码比对。</p></div>
+  </div>
+  <div class="tbl wide"><table>
+    <tr><th>指标</th><th>定义</th><th>reject</th><th>marginal</th><th>为什么</th></tr>
+    <tr><td>focus</td><td>长边归一 1024 → autocontrast → 水平梯度 |I(x+1) − I(x)| 的 99.5 分位</td><td class="num">—</td><td class="num">&lt; 12</td><td>高分位而非均值：大片纯色的清晰图均值也低。合成图阈值不迁移，故只做软阈值</td></tr>
+    <tr><td>luma_p95</td><td>灰度直方图 95 分位</td><td class="num">&lt; 60</td><td class="num">&lt; 110</td><td>不用中位数：深色机身正常曝光中位数 64 但 p95 有 204；真欠曝两个数一起塌</td></tr>
+    <tr><td>clipped</td><td>亮度 ≥ 250 像素占比</td><td class="num">&gt; 0.5</td><td class="num">&gt; 0.3</td><td>过曝</td></tr>
+    <tr><td>short_edge</td><td>原图短边像素</td><td class="num">&lt; 300</td><td class="num">&lt; 480</td><td>拍太远 / 截图裁剪</td></tr>
+  </table></div>
+  <p>reject 直接发补拍卡，一次模型都不调；marginal 交模型再看，两边都说不行才判不可用；多图取最好的一张。</p>
+<pre class="formula"><code>describe-first：字段顺序即生成顺序
+  observations[≤5 条可见事实] → findings[part, phenomenon, severity, cell] → model_hint
+  词表区分「其他」（看清了但不在表内）与「不可辨」（看不出）——合并会把未知当成已知的异常
+
+铭牌复看（触发条件是「有型号」而不是「读不清」——校验开关不能握在被校验者手里）：
+  按模型指认的九宫格 cell 裁剪放大再读一次
+  两次一致                 → verified=True，可自动锁 SKU
+  两次不一致               → 取裁剪结果，verified=False，让用户确认
+  裁剪图读不出（单图）     → 全图那次的自信答案不可信，清空回到「不知道」
+  无法复看                 → 保留原值，verified=False
+
+效果：三家模型铭牌读出率 67% → 100 / 100 / 67；主模型综合 65% → 93%；编造路径被堵死</code></pre>
+</section>
+
+<section class="algo" id="a7">
+  <h3>5.7 安全规则与否定语义<span class="src">rules/service.py::_mask_negated</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>视觉模型会把「没看到危险」也写成观察项：「未见冒烟烧焦鼓包漏液火花」。子串匹配读不出否定，正常的滚刷缠绕照片因此被判 R4 安全风险、排障中断。</p></div>
+    <div><div class="eyebrow">方案</div><p>只承认一种否定形态：否定词后紧跟一串安全词，词间只允许连接词。跨过标点或任何实义字符即视为新陈述继续按命中处理。</p></div>
+  </div>
+<pre class="formula"><code>「未见 冒烟 、 烧焦 、 鼓包」   → 三个安全词全部被遮盖
+「无线充电座冒烟」              → 「无」后面是「线」，不是安全词：不算否定，命中
+「未见冒烟，滚刷烧焦」          → 逗号断句：只遮住「冒烟」，「烧焦」命中
+
+安全判定宁可误报不可漏报，所以判否定的条件比判命中严得多
+词表按 mtime 热加载；检查点覆盖 用户文本 / 图片观察 / 动作 / 备注 四个来源</code></pre>
+</section>
+
+<section class="algo" id="a8">
+  <h3>5.8 保修政策引擎<span class="src">policy/engine.py · config/policy/*.yaml</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>保修判定要可解释、可追溯到条款原文，且不在没有依据的区域外推。</p></div>
+    <div><div class="eyebrow">方案</div><p>纯函数、无 IO：冻结的规则包 + 输入完全决定结果，trace_id 由规则、条款、输入的哈希决定，同输入同结果。</p></div>
+  </div>
+  <ol class="steps">
+    <li>别名归一（美国 → US，Amazon → platform_store）</li>
+    <li>缺任一必填（购买区域 / 使用区域 / 渠道 / 购买日期）→ needs_human(missing_inputs)</li>
+    <li>三级匹配：品类 ∧ 购买区域 ∧ 渠道 ∧ 系列子串 ∧ 部件类 全满足的规则中取 priority 最大者：品类兜底 10 &lt; 系列 20 &lt; 部件 / 系列例外 30；无匹配 → needs_human(no_policy_matched)</li>
+    <li>warranty_end = purchase_date + months（按月加、日期夹到月末）；lifetime 无到期日；none 恒不在保。within_warranty = purchase_date ≤ today ≤ warranty_end</li>
+    <li>exclusions / cross_region：每条 when 全满足即命中，效果 no_free_remedy 或 needs_human，附条款引用</li>
+    <li>处置阶梯 parts → repair → replace → refund → paid_repair：eligible = 条件全满足 ∧ ¬(no_free_remedy ∧ 公司承担)；auto_allowed = eligible ∧ 规则允许 ∧ ¬needs_human</li>
+  </ol>
+  <p class="note">条款库每条带 source_url、采集日期与原文 quote。只写 US 站：页面原文明示保修期因国家而异，其他区域没有采集到等价来源，一律转人工。系列（GaNPrime / Prime / MagGo → 24 个月）按产品名子串认，因为系列在目录里没有独立字段。</p>
+</section>
+
+<section class="algo" id="a9">
+  <h3>5.9 上下文预算<span class="src">context/builder.py · context/budget.py</span></h3>
+  <div class="pq">
+    <div><div class="eyebrow">问题</div><p>多轮会话把历史、事实、证据全塞进提示词会超窗或挤掉当前输入；不同任务的输入预算不同。</p></div>
+    <div><div class="eyebrow">方案</div><p>跨厂商 token 估算显式留余量；按任务给预算；超预算时按固定顺序让步并记录分块统计。</p></div>
+  </div>
+<pre class="formula"><code>tokens(text)   = ceil( |tiktoken o200k_base 编码| × 1.25 )
+message_tokens = tokens + 8
+B(task)        = input_budgets[task]（intake 16000）或 max_input_tokens 8000
+                 − 256 − tokens(输出 schema JSON) − tokens(附加指令)
+used           = system + authority(状态投影) + current + history
+
+超预算让步顺序：丢历史摘录缓存 → 当前长文本头尾各留、中间省略（≥ 200 字符）→ 抛 ContextBudgetExceeded
+路由前再校验：text + 每图 16k + output_tokens ≤ 模型 context_window
+状态投影只含模型该看的字段；身份、证据、业务状态留在存储</code></pre>
+</section>
+
+<section class="algo" id="a10">
+  <h3>5.10 模型路由、降级与容量<span class="src">models/router.py · config/models.yaml</span></h3>
+  <p>每个任务一条模型链（如 diagnose.synthesize: deepseek → qwen-max → glm-v），按模型能力选结构化方法（native json_schema / json_object + schema 提示 / 工具调用），统一 Pydantic 校验。ModelRouter 是唯一重试层，厂商 SDK 重试关闭。</p>
+  <div class="tbl"><table><tr><th>失败类型</th><th>处理</th></tr>
+    <tr><td>超时 / 5xx / schema 校验失败</td><td>同模型重试 1 次（schema 失败带错误提示），再失败换下一家</td></tr>
+    <tr><td>429</td><td>同模型最多 3 次，退避 1 / 2 / 4 s + [0, 0.5) s 抖动</td></tr>
+    <tr><td>拒答 / 内容过滤</td><td>不重试，直接换下一家</td></tr>
+    <tr><td>能力不匹配 / 别名未配置</td><td>路由前跳过，记 skipped，不计入重试</td></tr>
+    <tr><td>预算</td><td>单次超时 = min(模型 timeout, 剩余预算)；剩余不足以再调一次即停止</td></tr>
+    <tr><td>全局容量</td><td>有界门 max_in_flight = 50，满则立即返回 error(recoverable=true)，不排队</td></tr></table></div>
+</section>
+
+<section class="algo" id="a11">
+  <h3>5.11 模型选型 bake-off 裁决<span class="src">bakeoff/runner.py::judge · bakeoff/scoring.py</span></h3>
+  <p>先过硬门（如铭牌不编造率 100%），再过 schema 通过率、准确率、P50 延迟门槛；达标者按综合成本排序。准确率只作门槛不参与排序，因为聚合准确率会抹平「失效方式」的差别。</p>
+<pre class="formula"><code>key(c) = latency_p50 / latency_cap  +  cost_cny_per_call × 100         最小者为主模型
+备用须来自另一家厂商，且 schema_pass ≥ 备用门槛 ∧ accuracy ≥ 主 − Δ ∧ latency ≤ 主 × ratio
+
+评分函数按任务对 expect 规则逐项打 0–1：
+  synthesize：top1 命中 ∧ 每个假设都有 evidence_ids
+  reply.stream：≤ 200 字 ∧ 无代码块 ∧ 不出现「可保 / 免费维修」等资格结论词</code></pre>
+</section>
+
+<section class="algo" id="a12">
+  <h3>5.12 评测口径<span class="src">knowledge/eval.py · evaluation/semantic.py · analytics/derive.py</span></h3>
+  <ul>
+    <li><strong>检索</strong>：hit@k（expected_doc_ids 任一在 top-k）、precision@k、leak（无知识样例却返回命中）、scope_leak（命中当前作用域不该看见的文档），按 tag 分组。</li>
+    <li><strong>语义</strong>：独立文本金标经与线上相同的 interpret_turn，逐字段准确率；金标绝不进入解释器状态或提示词。</li>
+    <li><strong>会话结局</strong>：只看 checkpoint 权威状态 + done.reason，不看事件文本；升级原因分系统失败 {R1, R1b, R1c, R2, R5, R7} 与用户 / 政策决定 {R3, R4, R8}，解决率只把前者算失败。</li>
+  </ul>
+</section>
+
+<h2 id="s6"><span class="num">06</span>现状与边界</h2>
+<div class="status">
+  <div class="card ok"><h3><span class="pill ok">已闭环</span></h3>
+    <ul><li>文字 + 图片 → 消歧 → 问诊 → 检索 / 综合 → 分步排障 → 观察 → 升级 / 凭证 / 保修 → 摘要</li><li>SSE 可续接、动作幂等、可回放、可观测</li><li>三家国产 + 两家海外厂商模型链冻结，有 bake-off 依据</li><li>发布 / 回滚 / 备份 / 巡检 / 告警齐备</li></ul></div>
+  <div class="card warn"><h3><span class="pill warn">演示数据 / 部分实现</span></h3>
+    <ul><li>手册与 FAQ 以人工演示样本为主（25 篇官方文章除外）；380 条工单为合成数据</li><li>订单 / 物流 / 经销商名录后端为 mock</li><li>保修政策只覆盖 US 站公开页</li><li>处置动作只有 replace 可自动执行；转人工状态停在 prepared，未接真实转接</li><li>坐席队列尚未在服务端 join 会话事实</li></ul></div>
+  <div class="card off"><h3><span class="pill off">默认关闭，待评测开启</span></h3>
+    <ul><li>多查询变体</li><li>重排（gte-rerank-v2）</li><li>本地 FAQ 索引</li><li>查询改写</li><li>充分性评估</li></ul>
+    <p class="note" style="margin-top:6px">每项在 config/retrieval.yaml 有独立开关。技术与关闭原因见下节。</p></div>
+</div>
+
+<h3 id="s6b" style="margin-top:36px;font-family:'Noto Serif SC',serif;font-size:18px">检索开关：技术与为什么现在关着</h3>
+<p>依据 docs/planning/2026-09-13_bounded-agentic-rag 的 findings 与 switches，以及 09-18 链路 B 附记。三个共同前提决定了「关」不等于「没用」：</p>
+<div class="pq">
+  <div><div class="eyebrow">标注为零</div><p>评测集 56 条，人工标注 0/56。规划定了硬约束：未标注样例的数字只能做回归对比，不能作为开启依据。</p></div>
+  <div><div class="eyebrow">指标饱和</div><p>手册库只有 13 个子块，top-5 覆盖大半份手册，hit@5 各组都是 96%。检索层看不出差别，收益只能在模型侧（synthesize 的 plan 命中率）上量。</p></div>
+  <div><div class="eyebrow">换配置须验活</div><p>config 热挂载而代码在镜像里，曾出现配置与镜像不成对的静默故障：/health 200，只有走到诊断节点的请求失败。</p></div>
+</div>
+<div class="tbl wide"><table>
+  <tr><th>开关</th><th>技术</th><th>成本</th><th>评测证据（56 条，未标注）</th><th>当前结论</th></tr>
+  <tr><td>多查询变体<br><code>multi_query</code></td><td>不调模型。已审核同义词表把口语替换为说明书用语（「不吸」→「吸力下降」）生成 ≤ 2 个变体，变体 × 两库并发，同库 RRF 合并</td><td class="num">0 次模型调用<br>p50 +50 ms</td><td>与 FAQ、父块扩展一起开：plan 命中 40/43 → 41/43，outcome 49/51 → 50/51</td><td><span class="pill ok">建议开</span> 标注后与 FAQ 一起</td></tr>
+  <tr><td>本地 FAQ 索引<br><code>faq</code></td><td>WeKnora v0.8.0 的 FAQ 检索接口实测返回空，改为适配器侧字符二元组 Dice + 子串加分，阈值 0.3</td><td class="num">0 次模型调用<br>≈ 0 ms</td><td>precision@5 61% → 47%，但逐条核对 45 条 FAQ 命中多数正确，只是金标未登记 FAQ；挤掉的是工单不是手册</td><td><span class="pill ok">建议开</span> 先补金标</td></tr>
+  <tr><td>重排<br><code>rerank</code></td><td>WeKnora hybrid-search 只做 RRF 不重排（知识库对象没有 rerank_model_id 字段），适配器自己调百炼 gte-rerank-v2 对每库 top 命中重排</td><td class="num">1 次 HTTP<br>p50 281 → 750 ms</td><td>106 次调用全部成功，文档级 hit 无增益；一例把指示灯表格块顶到正文段前</td><td><span class="pill off">不建议开</span> 只加延迟</td></tr>
+  <tr><td>充分性评估<br><code>grade</code></td><td>轻量模型逐条判 relevant / irrelevant / unsure，给整体 coverage 与缺口症状；只标记不删候选，不足时驱动一次补查</td><td class="num">1 次模型调用<br>p50 +1.6 s</td><td>plan 命中 41/43 → 39/43，两条回归都是金标段落被判 irrelevant；单独探针判得对，但本期语料首轮噪声本来就少，收益抵不过误剔</td><td><span class="pill off">不建议开</span> 语料扩大后重评</td></tr>
+  <tr><td>查询改写<br><code>query_rewrite</code></td><td>证据不足时调模型改写一次 query，Schema 仅 {query}；代码侧拒绝新增型号 / 错误码 / 数字 / 部件 / 原因词或改变否定</td><td class="num">触发时 1 次<br>模型调用</td><td>本语料 0/56 触发：条件是两库都 no_match，而混合检索对任何 query 都返回 ≈ 0.016 的命中。bake-off 校验修正后 qwen-flash 0% → 100%，模型能力不是问题</td><td><span class="pill off">触发不了</span> 链路 B 已改为先评估再补查，等真实金标</td></tr>
+</table></div>
+<p class="note">开启顺序：补标注 → 重跑 A / C_nograde 两组确认 plan / outcome 不降 → 一次性开 multi_query + faq + parent_expand 并发一条真实会话验活 → rerank / grade / query_rewrite 维持关闭待重评。回滚只需改回 enabled: false 重启，无数据迁移、无契约变更。</p>
+
+<footer>本页由仓库代码与提交记录整理而成，与 docs/product-progress-2026-09-19.md 同源。数值以 2026-09-19 的代码与配置为准。</footer>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  try{
+    var links=[].slice.call(document.querySelectorAll('.toc a'));
+    var targets=links.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+    if(!('IntersectionObserver' in window)||!targets.length) return;
+    var current=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ current=e.target.id; } });
+      links.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+current); });
+    },{rootMargin:'-20% 0px -70% 0px'});
+    targets.forEach(function(t){ io.observe(t); });
+  }catch(err){}
+})();
+</script>
+</body>
+</html>
