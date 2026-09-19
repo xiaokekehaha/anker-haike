@@ -1,0 +1,502 @@
+<!doctype html>
+<!--
+  PROTOTYPE · 一次性抛弃件，不进生产构建（vite.config.ts 的 rollupOptions.input 只有 index / admin）。
+  问题：客服助手前端的样式与交互该长什么样？三套结构不同的方案，用 ?variant=A|B|C 切换。
+  内容取自真实会话 3dc53c04（进行中、步骤卡待反馈）与 910fe4fd（三步未解决）拼接，过渡句为示意。
+  打开方式：vite dev 已运行时访问 http://127.0.0.1:5173/prototype/visual-redesign.html?variant=A
+           或直接双击本文件（token 已内联，不依赖 src/styles/tokens.css）。
+  设计说明：同目录 plan.md。本文件是归档副本（原路径 frontend/prototype/visual-redesign.html，分支 prototype/frontend-visual-redesign）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>前端可视化重构 · 三方案原型</title>
+<style>
+/* ===== tokens：与 src/styles/tokens.css 同值，另加本原型需要的少量语义 token ===== */
+:root {
+  color-scheme: light dark;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --page: #f6f8f7; --surface: #ffffff; --subtle: #f1f5f3; --text: #1d3532; --muted: #657872; --border: #dde6e2;
+  --accent: #08786c; --accent-soft: #e8f4ee; --on-accent: #ffffff;
+  --ok: #13815a; --warning: #a76408; --danger: #bb4539; --danger-soft: #fdf3ee;
+  --shadow: 0 12px 44px #203e3405;
+  /* 原型新增 */
+  --task: #0b5fb8; --task-soft: #e9f1fc;        /* 「当前任务」专用色，与品牌绿分开 */
+  --user-bubble: #e6eef8;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #111b19; --surface: #192522; --subtle: #1f2e29; --text: #e6efea; --muted: #a4b9af; --border: #31463d;
+  --accent: #7ddac0; --accent-soft: #213c32; --on-accent: #132b23;
+  --ok: #76d3a9; --warning: #ecc077; --danger: #f69488; --danger-soft: #352822; --shadow: 0 12px 44px #0000000d;
+  --task: #8ab8f0; --task-soft: #1b2b40; --user-bubble: #22334a;
+} }
+:root[data-theme="dark"] {
+  --page: #111b19; --surface: #192522; --subtle: #1f2e29; --text: #e6efea; --muted: #a4b9af; --border: #31463d;
+  --accent: #7ddac0; --accent-soft: #213c32; --on-accent: #132b23;
+  --ok: #76d3a9; --warning: #ecc077; --danger: #f69488; --danger-soft: #352822; --shadow: 0 12px 44px #0000000d;
+  --task: #8ab8f0; --task-soft: #1b2b40; --user-bubble: #22334a;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--page); color: var(--text); }
+body { font-size: 15px; line-height: 1.7; }
+button { font: inherit; color: inherit; cursor: pointer; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3 { margin: 0; font-weight: 600; }
+.hidden { display: none !important; }
+
+/* ===== app 容器：全屏应用；手机框模式用 container query 而不是 media query ===== */
+.app { container: app / inline-size; height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: var(--page); }
+html[data-device="phone"] body { padding: 18px 0 90px; overflow: auto; }
+html[data-device="phone"] .app { width: 390px; height: 844px; margin: 0 auto; border: 10px solid #1a1f1e; border-radius: 40px; box-shadow: 0 30px 80px #0006; }
+
+/* ===== 共用原子：气泡、芯片、卡片、系统行、输入框 ===== */
+.msg-user { align-self: flex-end; max-width: 78%; background: var(--user-bubble); border-radius: 16px 16px 4px 16px; padding: 9px 14px; }
+.msg-assistant { display: flex; gap: 10px; align-items: flex-start; max-width: 720px; }
+.avatar { width: 28px; height: 28px; border-radius: 9px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+.avatar.ghost { visibility: hidden; }
+.msg-assistant .body { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 16px 16px 16px; padding: 10px 14px; }
+.msg-assistant.plain .body { background: none; border: 0; padding: 2px 0; }
+.time-sep { align-self: center; font-size: 11px; color: var(--muted); letter-spacing: .4px; padding: 6px 0; }
+.sys-row { align-self: center; display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); background: var(--subtle); border-radius: 999px; padding: 3px 12px; }
+.sys-row.tool::before { content: "✓"; color: var(--ok); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip { min-height: 36px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; line-height: 1.4; text-align: left; }
+.chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+.chip.chosen { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.chip.faded { opacity: .45; }
+.chip.unknown { border-style: dashed; color: var(--muted); }
+.chips.done .chip { pointer-events: none; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; max-width: 720px; }
+.card .eyebrow { font-size: 11px; letter-spacing: .8px; color: var(--muted); text-transform: uppercase; display: flex; justify-content: space-between; gap: 8px; }
+.card h3 { font-size: 16px; margin: 4px 0 8px; }
+.card .instruction { font-size: 15px; line-height: 1.75; }
+.card .expected { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.card .expected b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+.card .caution { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: var(--danger-soft); color: var(--danger); font-size: 13px; line-height: 1.6; }
+.card .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.card.pending { border-color: var(--task); box-shadow: 0 0 0 4px var(--task-soft); }
+.card.pending .eyebrow { color: var(--task); }
+.seg { display: flex; gap: 8px; margin-top: 12px; }
+.seg button { flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; font-weight: 600; }
+.seg button.solved { border-color: var(--ok); color: var(--ok); }
+.seg button:hover { background: var(--subtle); }
+.step-done { display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); max-width: 720px; }
+.step-done .no { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; border: 1px solid var(--border); flex-shrink: 0; }
+.step-done .res { margin-left: auto; font-size: 12px; border: 1px solid var(--border); border-radius: 4px; padding: 0 6px; white-space: nowrap; }
+.step-done .res.not_solved { color: var(--warning); border-color: var(--warning); }
+.evi-chip { font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.evi-chip:hover { color: var(--accent); border-color: var(--accent); }
+.composer { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); border-radius: 999px; background: var(--surface); padding: 6px 6px 6px 14px; }
+.composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.composer input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 15px; color: var(--text); }
+.composer .icon { width: 36px; height: 36px; border-radius: 50%; border: 0; background: none; color: var(--muted); display: grid; place-items: center; }
+.composer .icon:hover { background: var(--subtle); color: var(--accent); }
+.composer .send { height: 36px; padding: 0 16px; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); font-weight: 600; font-size: 14px; }
+.composer-hint { font-size: 11px; color: var(--muted); margin: 6px 14px 0; }
+.link { background: none; border: 0; color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
+.link:hover { color: var(--accent); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); display: inline-block; }
+.brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 650; letter-spacing: .5px; text-decoration: none; color: inherit; }
+.brand .mark { width: 28px; height: 28px; border-radius: 9px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 17px; }
+.brand small { display: block; font-size: 9px; letter-spacing: 1.4px; color: var(--muted); font-weight: 500; line-height: 1; margin-top: 3px; }
+
+/* 评审视图标签：默认隐藏，html[data-observe] 时显示 */
+.obs { display: none; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0; color: #7a4bd6; background: #f1eaff; border: 1px dashed #b89cf0; border-radius: 4px; padding: 0 6px; white-space: nowrap; }
+:root[data-theme="dark"] .obs { color: #c9b3ff; background: #2a2140; border-color: #6a54a3; }
+html[data-observe] .obs { display: inline-flex; align-items: center; gap: 4px; }
+html[data-observe] .obs-block { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.obs-block { display: none; }
+
+/* ============================================================
+   方案 A 「服务台」：左对话 + 右服务记录；待办卡停靠在输入框上方
+   ============================================================ */
+.A .top { height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.A .top .right { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); }
+.A .session-pill { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; background: var(--subtle); font-size: 12px; color: var(--text); }
+.A .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; }
+.A .conv { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); }
+.A .stream { flex: 1; overflow: auto; padding: 20px 24px 12px; display: flex; flex-direction: column; gap: 10px; }
+.A .dock { flex-shrink: 0; padding: 12px 24px 16px; background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.A .dock .card { max-width: none; }
+.A .record { overflow: auto; background: var(--surface); padding: 18px 20px 24px; display: flex; flex-direction: column; gap: 18px; font-size: 13px; }
+.A .record h2 { font-size: 12px; letter-spacing: 1px; color: var(--muted); font-weight: 600; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+.A .record .kv { display: grid; grid-template-columns: 64px 1fr; gap: 6px 10px; }
+.A .record .kv dt { color: var(--muted); } .A .record .kv dd { margin: 0; }
+.A .record .kv dd code { font-family: var(--mono); font-size: 12px; background: var(--subtle); padding: 0 5px; border-radius: 4px; }
+.A .route { display: flex; flex-direction: column; gap: 0; }
+.A .route li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; padding: 4px 0; color: var(--muted); position: relative; }
+.A .route li::before { content: ""; width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface); margin: 8px 0 0 4px; }
+.A .route li:not(:last-child)::after { content: ""; position: absolute; left: 8.5px; top: 22px; bottom: -6px; width: 1px; background: var(--border); }
+.A .route li.cur { color: var(--text); font-weight: 600; }
+.A .route li.cur::before { background: var(--task); border-color: var(--task); box-shadow: 0 0 0 3px var(--task-soft); }
+.A .route li small { display: block; font-weight: 400; font-size: 11px; color: var(--muted); }
+.A .tried li { display: flex; gap: 8px; align-items: baseline; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+.A .tried li:last-child { border-bottom: 0; }
+.A .tried .mark { font-size: 12px; width: 18px; text-align: center; }
+.A .tried .res { margin-left: auto; font-size: 11px; color: var(--warning); white-space: nowrap; }
+.A .tried .res.pending { color: var(--task); }
+.A .evi li { padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.A .evi li:last-child { border-bottom: 0; }
+.A .evi .src { font-weight: 600; margin-right: 6px; } .A .evi .doc { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+.A .evi p { color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 2px; }
+.A .record .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.A .record .btns button { min-height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; }
+.A .record .btns button.primary { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.A .status-line { display: flex; align-items: center; gap: 8px; }
+.A .status-line .badge { font-size: 11px; border-radius: 4px; padding: 1px 6px; border: 1px solid var(--border); }
+.A .pointer { align-self: stretch; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--task); border-radius: 10px; padding: 8px 12px; color: var(--task); font-size: 13px; max-width: 720px; background: var(--task-soft); }
+.A .record-strip { display: none; }
+@container app (max-width: 900px) {
+  .A .layout { grid-template-columns: 1fr; }
+  .A .record { display: none; }
+  .A .record-strip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background: var(--subtle); border-bottom: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .A .record-strip b { color: var(--text); font-weight: 600; }
+  .A .stream { padding: 14px 14px 8px; }
+  .A .dock { padding: 10px 12px 12px; }
+  .A .top { padding: 0 14px; } .A .top .right .hide-sm { display: none; }
+}
+
+/* ============================================================
+   方案 B 「向导」：当前任务是主界面，对话是可展开的记录
+   ============================================================ */
+.B { background: var(--page); }
+.B .rail { flex-shrink: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 20px 0; }
+.B .rail .row1 { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 40px; }
+.B .rail .row1 .meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; align-items: center; }
+.B .steps { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 6px; }
+.B .steps li { position: relative; text-align: center; padding: 8px 4px 12px; font-size: 12px; color: var(--muted); }
+.B .steps li::before { content: ""; display: block; height: 3px; border-radius: 2px; background: var(--border); margin-bottom: 8px; }
+.B .steps li.cur { color: var(--text); font-weight: 600; }
+.B .steps li.cur::before { background: var(--task); }
+.B .steps li.past::before { background: var(--muted); opacity: .35; } /* 走过的段只是路线，不等于「已完成」（progress.ts 的约定） */
+.B .steps li small { display: block; font-weight: 400; font-size: 10px; }
+.B .main { flex: 1; overflow: auto; padding: 22px 20px 30px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.B .task { width: 100%; max-width: 680px; }
+.B .task .lead { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.B .task .lead .body { font-size: 15px; }
+.B .task .lead .body small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.B .task .card { max-width: none; padding: 18px 20px; }
+.B .task .card h3 { font-size: 18px; }
+.B .task .card .instruction { font-size: 16px; }
+.B .seg button { min-height: 48px; font-size: 15px; }
+.B .freeform { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.B .freeform label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+.B .aside { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 12px; }
+.B details { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.B summary { cursor: pointer; padding: 12px 16px; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+.B summary::-webkit-details-marker { display: none; }
+.B summary small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.B details > div { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.B .kv { display: grid; grid-template-columns: 72px 1fr; gap: 4px 10px; font-size: 13px; }
+.B .kv dt { color: var(--muted); } .B .kv dd { margin: 0; }
+.B .transcript { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.B .exits { display: flex; gap: 14px; justify-content: center; }
+@container app (max-width: 640px) {
+  .B .row1 .meta > span:first-child { display: none; }
+  .B .brand { white-space: nowrap; }
+  .B .steps li span { display: none; }
+  .B .steps li { padding-bottom: 6px; }
+  .B .steps li.cur span { display: inline; }
+  .B .main { padding: 14px 12px 24px; }
+  .B .seg { flex-direction: column; }
+}
+
+/* ============================================================
+   方案 C 「精修对话」：单栏消息流，极简外壳，状态胶囊可展开
+   ============================================================ */
+.C .bar { height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 14px; background: color-mix(in srgb, var(--page) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
+.C .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 5px 12px 5px 8px; font-size: 13px; }
+.C .pill .stage { color: var(--task); font-weight: 600; }
+.C .pill .caret { color: var(--muted); font-size: 11px; }
+.C .bar .more { width: 36px; height: 36px; border-radius: 50%; border: 0; background: none; color: var(--muted); font-size: 18px; }
+.C .sheet { position: absolute; top: 48px; left: 0; right: 0; z-index: 3; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 20px 40px #0002; padding: 14px 18px 18px; display: none; }
+.C .sheet.open { display: block; }
+.C .sheet .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; font-size: 13px; }
+.C .sheet h4 { margin: 0 0 6px; font-size: 11px; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+.C .sheet .kv { display: grid; grid-template-columns: 56px 1fr; gap: 3px 8px; }
+.C .sheet .kv dt { color: var(--muted); } .C .sheet .kv dd { margin: 0; }
+.C .sheet ol { counter-reset: s; } .C .sheet ol li { display: flex; gap: 8px; padding: 2px 0; }
+.C .sheet ol li::before { counter-increment: s; content: counter(s); width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); font-size: 11px; display: grid; place-items: center; flex-shrink: 0; }
+.C .sheet ol li .res { margin-left: auto; color: var(--warning); font-size: 12px; } .C .sheet ol li .res.pending { color: var(--task); }
+.C .sheet .foot { display: flex; gap: 12px; margin-top: 14px; }
+.C .stream { flex: 1; overflow: auto; padding: 18px 16px 90px; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+.C .stream > * { width: 100%; max-width: 760px; margin: 0 auto; }
+.C .msg-user { align-self: flex-end; margin-right: 0; width: auto; }
+.C .stream .msg-user { width: auto; margin: 0 0 0 auto; }
+.C .stream .step-done, .C .stream .card { margin-left: 38px; width: calc(100% - 38px); max-width: 722px; }
+.C .stream .chips { margin-left: 38px; }
+.C .foot { flex-shrink: 0; padding: 8px 14px 14px; background: linear-gradient(to bottom, transparent, var(--page) 30%); position: relative; }
+.C .foot .composer { max-width: 760px; margin: 0 auto; }
+.C .jump { position: absolute; top: -40px; left: 50%; transform: translateX(-50%); border: 1px solid var(--task); background: var(--task-soft); color: var(--task); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; box-shadow: var(--shadow); }
+.C .group-gap { height: 8px; }
+@container app (min-width: 760px) { .C .stream .msg-user { margin-right: calc((100% - 760px) / 2); } }
+
+/* 桌面全屏模式下给原型切换条让出空间；手机框模式切换条在框外 */
+html:not([data-device="phone"]) .A .dock, html:not([data-device="phone"]) .C .foot { padding-bottom: 64px; }
+html:not([data-device="phone"]) .B .main { padding-bottom: 80px; }
+.C .jump.hidden { display: none; }
+
+/* ===== 原型切换条（不属于被评估的设计） ===== */
+.proto-bar { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 4px; background: #111; color: #fff; border-radius: 999px; padding: 6px 8px; font-size: 13px; box-shadow: 0 10px 30px #0006; font-family: var(--mono); }
+.proto-bar button { background: none; border: 0; color: #fff; border-radius: 999px; padding: 6px 10px; }
+.proto-bar button:hover { background: #333; }
+.proto-bar .label { padding: 0 8px; min-width: 190px; text-align: center; font-family: inherit; }
+.proto-bar .sep { width: 1px; height: 18px; background: #444; margin: 0 4px; }
+.proto-bar button[aria-pressed="true"] { background: #7a4bd6; }
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+
+<!-- ============ 模板 A ============ -->
+<template id="tpl-A">
+<div class="A app-inner" style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <header class="top">
+    <a class="brand" href="#"><span class="mark">✦</span><span>智能服务<small>ANKER · SMART CARE</small></span></a>
+    <div class="right">
+      <span class="session-pill">▾ Anker 737 · 今天 17:52</span>
+      <button class="link hide-sm">新建会话</button>
+      <span class="hide-sm"><span class="dot"></span> 服务正常</span>
+      <span class="obs">lane domestic · tier primary</span>
+    </div>
+  </header>
+  <div class="record-strip"><span><b>Anker 737 (A1289)</b> · 分步排障 · 已试 2 步未解决</span><button class="link">查看记录</button></div>
+  <div class="layout">
+    <section class="conv" aria-label="对话">
+      <div class="stream" data-slot="stream"></div>
+      <div class="dock" data-slot="dock"></div>
+    </section>
+    <aside class="record" data-slot="record" aria-label="服务记录"></aside>
+  </div>
+</div>
+</template>
+
+<!-- ============ 模板 B ============ -->
+<template id="tpl-B">
+<div class="B app-inner" style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <header class="rail">
+    <div class="row1">
+      <a class="brand" href="#"><span class="mark">✦</span><span>智能服务</span></a>
+      <div class="meta"><span>Anker 737 PowerCore 24K · A1289</span><span class="dot"></span><button class="link">请求人工</button><span class="obs">stage guide · emotion dissatisfied</span></div>
+    </div>
+    <ol class="steps" data-slot="steps"></ol>
+  </header>
+  <main class="main">
+    <section class="task" data-slot="task" aria-label="当前任务"></section>
+    <section class="aside" data-slot="aside"></section>
+  </main>
+</div>
+</template>
+
+<!-- ============ 模板 C ============ -->
+<template id="tpl-C">
+<div class="C app-inner" style="display:flex;flex-direction:column;height:100%;min-height:0">
+  <header class="bar">
+    <a class="brand" href="#"><span class="mark">✦</span></a>
+    <button class="pill" data-toggle="sheet"><span class="dot"></span><span>Anker 737 · <span class="stage">分步排障 3/5</span></span><span class="caret">▾</span></button>
+    <button class="more" aria-label="更多">⋯</button>
+    <div class="sheet" data-slot="sheet"></div>
+  </header>
+  <div class="stream" data-slot="stream"></div>
+  <div class="foot">
+    <button class="jump">↓ 回到当前步骤</button>
+    <div class="composer"><input placeholder="也可以直接描述，或补充新情况…" /><button class="icon" title="照片">▣</button><button class="send">发送</button></div>
+  </div>
+</div>
+</template>
+
+<div class="proto-bar" role="toolbar" aria-label="原型切换">
+  <button id="prev" title="上一个（←）">◀</button>
+  <span class="label" id="label"></span>
+  <button id="next" title="下一个（→）">▶</button>
+  <span class="sep"></span>
+  <button id="t-observe" aria-pressed="false" title="显示情绪 / 策略 / 规则码等内部信号">评审视图</button>
+  <button id="t-phone" aria-pressed="false" title="390×844 手机框">手机</button>
+  <button id="t-dark" aria-pressed="false">深色</button>
+</div>
+
+<script>
+/* ---------- 数据：来自真实会话，只做拼接 ---------- */
+const S = {
+  product: { name: 'Anker 737 PowerCore 24K', sku: 'A1289', category: '移动电源' },
+  problem: '给充电宝自身充电很慢；屏幕显示异常 / 无法显示剩余电量',
+  route: [
+    { k: 'understand', label: '理解需求', hint: '听懂问题与情绪' },
+    { k: 'product', label: '确认产品', hint: '分清是哪台设备' },
+    { k: 'diagnose', label: '定位故障', hint: '结合照片与知识库' },
+    { k: 'guide', label: '分步排障', hint: '一次一步，反馈推进' },
+    { k: 'result', label: '处理结果', hint: '查看结果或人工接续' },
+  ],
+  cur: 3,
+  emotion: { level: 'dissatisfied', strategy: 'reassure_and_shorten', label: '先安抚，步骤尽量少' },
+  steps: [
+    { no: 1, title: '清理充电宝输出接口', feedback: 'not_solved' },
+    { no: 2, title: '更换数据线和被充设备测试', feedback: 'not_solved' },
+    { no: 3, title: '按 A1289 官方方法复位', feedback: null },
+  ],
+  pending: {
+    no: 3, title: '按 A1289 官方方法复位',
+    instruction: '官方针对该型号给出的复位方式是用同一根线连接自身输入与输出端口 3 至 5 秒，直到显示剩余电量，再充放电检查。',
+    expected: '重新显示剩余电量，充放电恢复正常',
+    caution: '仅适用于确认型号为 A1289 的设备，其他型号不要使用此方法；发现鼓包、冒烟、焦味或异常发热时停止使用和充电',
+    evidence: 3, plan: 'pb_737_display_reset', rule: 'R2-guard',
+  },
+  evidence: [
+    { src: '说明书 / 手册', doc: 'official_anker737_troubleshooting · v3', text: '…复位方式是用同一根线连接自身输入与输出端口 3 至 5 秒，直到显示剩余电量…', primary: true },
+    { src: '历史工单', doc: 'T0227 · v1', text: '现象：自己充不进电；原因：使用 5V 1A 老充电器输入过慢' },
+    { src: '预写排障资料', doc: 'faq_pb#q4 · 2026-09-17.1', text: '长按电源键 10 秒以上可以复位充电宝，复位后重新连接设备再试。' },
+  ],
+  caseStatus: { label: '核实问题中', code: 'diagnosing' },
+  timeline: [
+    { k: 'sep', t: '今天 17:52' },
+    { k: 'user', text: 'Anker 737 充电宝型号 A1289，怎么这么难用' },
+    { k: 'assistant', text: '抱歉，这次使用体验不好。插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？', obs: 'emotion dissatisfied → reassure_and_shorten' },
+    { k: 'user', text: '有的' },
+    { k: 'assistant', text: '问题出现在给充电宝本身充电的时候吗？', cont: true },
+    { k: 'user', text: '是的，很慢' },
+    { k: 'tool', text: '检索知识库 · 命中 23 条来源' },
+    { k: 'assistant', text: '737 连接设备时，屏幕显示更接近下面哪种情况？', quick: ['连接笔记本时显示 UVP', '屏幕显示异常或无法显示剩余电量', '能显示电量，但设备充不上或功率偏低', 'USB-A 空载显示 0.1W 或绿色标记'], unknown: '设备不在身边 / 无法判断', chosen: 1, obs: 'observation_card · discriminator q2' },
+    { k: 'action', text: '已选择：屏幕显示异常或无法显示剩余电量' },
+    { k: 'assistant', text: '好，先从两步基础排查开始，每一步做完告诉我结果。', cont: false },
+    { k: 'step-done', no: 1, title: '清理充电宝输出接口', feedback: 'not_solved', evidence: 6 },
+    { k: 'step-done', no: 2, title: '更换数据线和被充设备测试', feedback: 'not_solved', evidence: 6 },
+    { k: 'sep', t: '17:58' },
+    { k: 'assistant', text: '两步都没解决。接下来用官方针对 A1289 的复位方法，这一步只适用于已确认型号为 A1289 的设备。', obs: 'plan pb_737_display_reset · CP-pre-step ok' },
+    { k: 'pending' },
+  ],
+};
+const FB = { solved: '解决了', not_solved: '还没解决', cannot_do: '做不到' };
+
+/* ---------- 渲染原子 ---------- */
+const h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function renderAssistant(item, { plain = false } = {}) {
+  const chips = item.quick ? `<div class="chips done">${item.quick.map((q, i) => `<button class="chip ${i === item.chosen ? 'chosen' : 'faded'}">${esc(q)}</button>`).join('')}<button class="chip unknown faded">${esc(item.unknown)}</button></div>` : '';
+  const obs = item.obs ? `<div class="obs-block"><span class="obs">${esc(item.obs)}</span></div>` : '';
+  return h(`<div class="msg-assistant ${plain ? 'plain' : ''}"><span class="avatar ${item.cont ? 'ghost' : ''}">✦</span><div class="body"><p>${esc(item.text)}</p>${chips}${obs}</div></div>`);
+}
+function renderStepDone(item) {
+  return h(`<div class="step-done"><span class="no">${item.no}</span><span>${esc(item.title)}</span><span class="evi-chip" title="查看依据">依据 ${item.evidence}</span><span class="res ${item.feedback}">${FB[item.feedback]}</span></div>`);
+}
+function renderPendingCard(p, { big = false, withFree = false } = {}) {
+  return h(`<section class="card pending" aria-label="排障步骤 ${p.no}">
+    <div class="eyebrow"><span>当前步骤 · 第 ${p.no} 步</span><span><span class="evi-chip">依据 ${p.evidence}</span> <span class="obs">plan ${p.plan} · ${p.rule}</span></span></div>
+    <h3>${esc(p.title)}</h3>
+    <p class="instruction">${esc(p.instruction)}</p>
+    <p class="expected"><b>预期结果</b>${esc(p.expected)}</p>
+    <p class="caution">⚠ ${esc(p.caution)}</p>
+    <div class="seg"><button class="solved">解决了</button><button>还没解决</button><button>做不到</button></div>
+    ${withFree ? `<div class="freeform"><label>选项之外的情况，用自己的话说</label><div class="composer"><input placeholder="例如：灯亮了但屏幕还是黑的…" /><button class="icon" title="拍照">▣</button><button class="send">发送</button></div></div>` : ''}
+  </section>`);
+}
+function renderStream(container, { plain = false, pendingMode = 'inline' } = {}) {
+  container.innerHTML = '';
+  for (const item of S.timeline) {
+    if (item.k === 'sep') container.append(h(`<div class="time-sep">${esc(item.t)}</div>`));
+    else if (item.k === 'user') container.append(h(`<div class="msg-user"><p>${esc(item.text)}</p></div>`));
+    else if (item.k === 'assistant') container.append(renderAssistant(item, { plain }));
+    else if (item.k === 'tool') container.append(h(`<div class="sys-row tool">${esc(item.text)}</div>`));
+    else if (item.k === 'action') container.append(h(`<div class="sys-row">${esc(item.text)}</div>`));
+    else if (item.k === 'step-done') container.append(renderStepDone(item));
+    else if (item.k === 'pending') {
+      if (pendingMode === 'inline') container.append(renderPendingCard(S.pending));
+      else if (pendingMode === 'pointer') container.append(h(`<div class="pointer"><span>步骤 ${S.pending.no} · ${esc(S.pending.title)}</span><span>等待你的反馈 ↓</span></div>`));
+    }
+  }
+}
+
+/* ---------- 方案 A ---------- */
+function mountA(root) {
+  renderStream(root.querySelector('[data-slot=stream]'), { pendingMode: 'pointer' });
+  const dock = root.querySelector('[data-slot=dock]');
+  dock.append(renderPendingCard(S.pending));
+  dock.append(h(`<div><div class="composer"><input placeholder="也可以直接描述看到的情况，或补充新情况…" /><button class="icon" title="照片">▣</button><button class="send">发送</button></div><p class="composer-hint">Enter 发送 · 截图可直接粘贴 · 想找人工随时点右侧「请求人工」</p></div>`));
+  const rec = root.querySelector('[data-slot=record]');
+  rec.innerHTML = `
+    <section><h2>服务记录 <span class="badge obs">snapshot v27</span></h2>
+      <dl class="kv"><dt>产品</dt><dd>${S.product.name}<br><code>${S.product.sku}</code> · ${S.product.category}</dd><dt>问题</dt><dd>${S.problem}</dd><dt>服务方式</dt><dd>${S.emotion.label} <span class="obs">${S.emotion.level} · ${S.emotion.strategy}</span></dd></dl></section>
+    <section><h2>进度</h2><ol class="route">${S.route.map((r, i) => `<li class="${i === S.cur ? 'cur' : ''}"><span>${r.label}<small>${r.hint}</small></span></li>`).join('')}</ol></section>
+    <section><h2>已尝试 <span style="font-weight:400">${S.steps.filter(s => s.feedback).length} / ${S.steps.length}</span></h2><ol class="tried">${S.steps.map(s => `<li><span class="mark">${s.feedback ? '✕' : '○'}</span><span>${s.title}</span><span class="res ${s.feedback ? '' : 'pending'}">${s.feedback ? FB[s.feedback] : '进行中'}</span></li>`).join('')}</ol></section>
+    <section><h2>依据 <span style="font-weight:400">${S.evidence.length} 条</span></h2><ul class="evi">${S.evidence.map(e => `<li><span class="src">${e.src}</span><span class="doc">${e.doc}</span><p>${e.text}</p></li>`).join('')}</ul></section>
+    <section><h2>案件</h2><div class="status-line"><span class="dot" style="background:var(--task)"></span><span>${S.caseStatus.label}</span><span class="badge">未升级</span><span class="obs">case ${S.caseStatus.code}</span></div><p style="color:var(--muted);margin-top:6px">排查记录会随时整理，转人工时可直接复制给客服。</p></section>
+    <section class="btns"><button class="primary">复制排查记录</button><button>请求人工</button><button>新问题</button></section>`;
+}
+
+/* ---------- 方案 B ---------- */
+function mountB(root) {
+  root.querySelector('[data-slot=steps]').innerHTML = S.route.map((r, i) => `<li class="${i === S.cur ? 'cur' : i < S.cur ? 'past' : ''}"><span>${r.label}</span><small>${i === S.cur ? r.hint : ''}</small></li>`).join('');
+  const task = root.querySelector('[data-slot=task]');
+  task.append(h(`<div class="lead"><span class="avatar">✦</span><div class="body"><p>两步都没解决。接下来用官方针对 A1289 的复位方法。</p><small>已尝试 2 步 · 这是第 3 步 · 做完告诉我结果</small><div class="obs-block"><span class="obs">emotion dissatisfied · reassure_and_shorten</span><span class="obs">plan pb_737_display_reset</span></div></div></div>`));
+  task.append(renderPendingCard(S.pending, { big: true, withFree: true }));
+  const aside = root.querySelector('[data-slot=aside]');
+  aside.append(h(`<details><summary>已完成的步骤 <small>${S.steps.filter(s => s.feedback).length} 步 · 都没解决</small></summary><div>${S.steps.filter(s => s.feedback).map(s => `<div class="step-done"><span class="no">${s.no}</span><span>${s.title}</span><span class="res ${s.feedback}">${FB[s.feedback]}</span></div>`).join('')}</div></details>`));
+  aside.append(h(`<details><summary>这台设备与问题 <small>${S.product.name}</small></summary><div><dl class="kv"><dt>产品</dt><dd>${S.product.name} · ${S.product.sku}</dd><dt>问题</dt><dd>${S.problem}</dd><dt>依据</dt><dd>${S.evidence.length} 条：官方排障手册、历史工单、预写资料</dd><dt>案件</dt><dd>${S.caseStatus.label}</dd></dl></div></details>`));
+  const tr = h(`<details><summary>对话记录 <small>${S.timeline.filter(t => t.k === 'user' || t.k === 'assistant').length} 条</small></summary><div class="transcript"></div></details>`);
+  renderStream(tr.querySelector('.transcript'), { pendingMode: 'none' });
+  aside.append(tr);
+  aside.append(h(`<div class="exits"><button class="link">整理记录给人工客服</button><button class="link">这是另一个问题</button></div>`));
+}
+
+/* ---------- 方案 C ---------- */
+function mountC(root) {
+  renderStream(root.querySelector('[data-slot=stream]'), { plain: true, pendingMode: 'inline' });
+  const sheet = root.querySelector('[data-slot=sheet]');
+  sheet.innerHTML = `<div class="grid">
+    <div><h4>设备与问题</h4><dl class="kv"><dt>产品</dt><dd>${S.product.name} · ${S.product.sku}</dd><dt>问题</dt><dd>${S.problem}</dd><dt>服务方式</dt><dd>${S.emotion.label} <span class="obs">${S.emotion.level}</span></dd></dl></div>
+    <div><h4>排查记录</h4><ol>${S.steps.map(s => `<li><span>${s.title}</span><span class="res ${s.feedback ? '' : 'pending'}">${s.feedback ? FB[s.feedback] : '进行中'}</span></li>`).join('')}</ol></div>
+    <div><h4>进度与案件</h4><dl class="kv"><dt>阶段</dt><dd>${S.route[S.cur].label}（第 ${S.cur + 1} / ${S.route.length} 段）</dd><dt>案件</dt><dd>${S.caseStatus.label}</dd><dt>依据</dt><dd>${S.evidence.length} 条</dd></dl></div>
+  </div><div class="foot"><button class="link">复制排查记录</button><button class="link">请求人工</button><button class="link">新问题</button><button class="link">切换会话</button></div>`;
+  root.querySelector('[data-toggle=sheet]').addEventListener('click', () => sheet.classList.toggle('open'));
+  // 「回到当前步骤」只在待办卡滚出视口时出现
+  const stream = root.querySelector('[data-slot=stream]');
+  const jump = root.querySelector('.jump');
+  const sync = () => jump.classList.toggle('hidden', stream.scrollTop + stream.clientHeight >= stream.scrollHeight - 40);
+  stream.addEventListener('scroll', sync);
+  jump.onclick = () => stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  requestAnimationFrame(sync);
+}
+/* 对话流挂载后滚到底部：真实应用里最新内容在下方 */
+function scrollStreams(root) { root.querySelectorAll('[data-slot=stream]').forEach((el) => { el.scrollTop = el.scrollHeight; }); }
+
+/* ---------- 切换器 ---------- */
+const VARIANTS = { A: { name: '服务台（双栏 + 停靠待办）', mount: mountA }, B: { name: '向导（任务优先）', mount: mountB }, C: { name: '精修对话（单栏极简）', mount: mountC } };
+const keys = Object.keys(VARIANTS);
+const params = new URLSearchParams(location.search);
+let current = keys.includes(params.get('variant')) ? params.get('variant') : 'A';
+const html = document.documentElement;
+function apply() {
+  const root = document.getElementById('app');
+  root.innerHTML = '';
+  root.append(document.getElementById('tpl-' + current).content.cloneNode(true));
+  VARIANTS[current].mount(root);
+  scrollStreams(root);
+  document.getElementById('label').textContent = `${current} · ${VARIANTS[current].name}`;
+  const q = new URLSearchParams(location.search); q.set('variant', current); history.replaceState(null, '', '?' + q);
+  document.title = `方案 ${current} · ${VARIANTS[current].name}`;
+}
+function cycle(d) { current = keys[(keys.indexOf(current) + d + keys.length) % keys.length]; apply(); }
+document.getElementById('prev').onclick = () => cycle(-1);
+document.getElementById('next').onclick = () => cycle(1);
+document.addEventListener('keydown', (e) => {
+  const t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.key === 'ArrowLeft') cycle(-1); if (e.key === 'ArrowRight') cycle(1);
+});
+function toggle(id, attr, param) {
+  const b = document.getElementById(id);
+  const set = (on) => { b.setAttribute('aria-pressed', String(on)); if (on) html.setAttribute(attr, param === 'theme' ? 'dark' : '1'); else html.removeAttribute(attr); const q = new URLSearchParams(location.search); on ? q.set(param, '1') : q.delete(param); history.replaceState(null, '', '?' + q); };
+  set(params.get(param) === '1');
+  b.onclick = () => set(b.getAttribute('aria-pressed') !== 'true');
+}
+toggle('t-observe', 'data-observe', 'observe');
+toggle('t-phone', 'data-device', 'phone');
+if (params.get('phone') === '1') html.setAttribute('data-device', 'phone');
+toggle('t-dark', 'data-theme', 'theme');
+apply();
+</script>
+</body>
+</html>

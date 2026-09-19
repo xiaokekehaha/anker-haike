@@ -5,7 +5,7 @@
 
 ## 0. 怎么看这份方案
 
-- 可点击原型：[frontend/prototype/visual-redesign.html](../../../frontend/prototype/visual-redesign.html)。dev 服务器在 5173 时访问 `http://127.0.0.1:5173/prototype/visual-redesign.html?variant=A`；也可直接双击文件。底部黑色切换条不属于设计：◀ ▶ 或键盘 ← → 切换 A / B / C；「评审视图」显示情绪、策略、规则码等内部信号；「手机」套 390×844 框；「深色」切主题。
+- 可点击原型：归档于同目录 [prototype.html](prototype.html)（原件在分支 `prototype/frontend-visual-redesign` 的 `frontend/prototype/visual-redesign.html`），直接双击打开，`?variant=A` 切方案。底部黑色切换条不属于设计：◀ ▶ 或键盘 ← → 切换 A / B / C；「评审视图」显示情绪、策略、规则码等内部信号；「手机」套 390×844 框；「深色」切主题。
 - 原型内容取自真实会话 `3dc53c04`（步骤卡待反馈）与 `910fe4fd`（两步未解决）拼接，过渡句为示意。
 - 三案共用 §2 的底座（样式系统、卡片解剖、输入区），差异在 §3 的宏观结构与主交互。§4 对比，§5 建议，§6 需要决策的点，§7 落地拆解。
 
