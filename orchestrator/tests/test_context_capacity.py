@@ -53,7 +53,8 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     assert context["omitted_entries"] == 0
     # 护栏按当前实测值设定，留约 40 token 余量；再加解释字段或提示段落会先在这里失败。
     # 2026-09-18：operation_update 的策略说明使 system 从 2413 升到 2555。
-    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4170
+    # 2026-09-19：pb_slow_input 故障族与两道判别题使 system 从 2555 升到 2593。
+    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4210
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))
     assert state == before

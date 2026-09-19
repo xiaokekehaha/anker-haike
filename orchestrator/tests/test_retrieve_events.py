@@ -92,7 +92,7 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     assert tool_item["status"] == "finished"
 
 
-async def test_evidence_id_stable_within_session(mem_runtime):
+async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
     ad = FakeAdapter("ok")
     set_knowledge_adapter(ad)
     set_rules_service(RulesService(RULES, hot_reload=False))
@@ -104,6 +104,7 @@ async def test_evidence_id_stable_within_session(mem_runtime):
                     await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 不吸了"}))
                 ).text
             )
+            after_first = len(ad.calls)
             e2 = sse.parse(
                 (
                     await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 还是不吸"}))
@@ -113,11 +114,15 @@ async def test_evidence_id_stable_within_session(mem_runtime):
     finally:
         set_knowledge_adapter(None)
         set_rules_service(None)
-    ids1 = [i["evidence_id"] for e in e1 if e["type"] == "evidence" for i in e["items"]]
-    ids2 = [i["evidence_id"] for e in e2 if e["type"] == "evidence" for i in e["items"]]
+
+    def ids(events):
+        return [i["evidence_id"] for e in events if e["type"] == "evidence" for i in e["items"]]
+
     # chunk-c12 的正文就是 c12 那段已审核原文 → 锚点认得出，不再发一条内容重复的本地副本
-    assert ids1 == ["chunk-c12"]
-    assert ids2 == ["chunk-c12"]
+    assert ids(e1) == ["chunk-c12"]
+    # 复述没有改变事实修订号与计划库版本 → retrieval_basis 未变，既不重新检索，也不重发同一条证据。
+    # 前端按 first_seq 与 id upsert 进常驻时间线，首轮那条仍在，用户侧看不到差别。
+    assert ids(e2) == [] and len(ad.calls) == after_first
     assert list(state.values["evidence"]) == ["chunk-c12"]  # 累积去重，可被 step.evidence_ids 引用
 
 
