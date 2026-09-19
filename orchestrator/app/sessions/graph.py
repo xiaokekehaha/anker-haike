@@ -32,7 +32,7 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
-from app.diagnose.decision import constrain_plans
+from app.diagnose.decision import constrain_plans, selected_symptom_codes
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches, signature_plans
 from app.diagnose.observations import record_observations
@@ -2254,12 +2254,16 @@ async def _synthesize_step(
 ) -> dict[str, Any]:
     scope = knowledge_scope_of(state)
     codes = set(state.get("symptom_codes") or [])
-    # 症状码是对自由文本的早期粗分类：只决定候选顺序（码内优先），不再把码外计划从模型可选集合里删掉，
-    # 否则分类一错，正确的计划模型永远看不到（会话 37cea3：「很慢」被归入 pb_no_input）。
-    allowed = sorted(
-        get_plan_library().allowed_for(category=scope.category, sku=scope.sku),
-        key=lambda p: not codes.intersection(p.symptom_codes),
-    )
+    chosen = set(selected_symptom_codes(state))
+    library = get_plan_library().allowed_for(category=scope.category, sku=scope.sku)
+    if chosen:
+        # 用户在问诊里亲自选定的现象是事实：码外计划不进模型可选集合（票 19），没有码内计划就按 R5 如实结束，
+        # 否则模型会被迫从无关计划里挑（会话 e84456：选了「拖地异常」却下发了四步吸力排查）
+        allowed = [p for p in library if chosen.intersection(p.symptom_codes)]
+    else:
+        # 自由文本的粗分类只决定候选顺序（码内优先），不把码外计划删掉，
+        # 否则分类一错，正确的计划模型永远看不到（会话 37cea3：「很慢」被归入 pb_no_input）
+        allowed = sorted(library, key=lambda p: not codes.intersection(p.symptom_codes))
     allowed = constrain_plans(state, allowed)
     out = await synthesize(
         get_model_router(),

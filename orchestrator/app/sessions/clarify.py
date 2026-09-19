@@ -197,14 +197,23 @@ def symptom_decision(
     # One diagnostic decision consumes accepted facts and quoted answers.
     from app.diagnose.decision import decide_symptoms
     product = confirmed or {}
-    decision = decide_symptoms({**state, **update}, available_plans=get_plans().allowed_for(
-        category=product.get("category") or update.get("category") or category,
-        sku=product.get("sku"),
-    ))
+    category = product.get("category") or update.get("category") or category
+    available = get_plans().allowed_for(category=category, sku=product.get("sku"))
+    decision = decide_symptoms({**state, **update}, available_plans=available)
     update["symptom_codes"] = decision.codes
     update["diagnostic_decision"] = decision.snapshot(state)
     if decision.outcome == "continue":
         update["clarification"] = None
+        codes = set(decision.codes)
+        if (
+            not confirmed and codes and category
+            and not any(codes.intersection(p.symptom_codes) for p in available)
+        ):
+            # 现象已经问清，但品类通用计划一条都不覆盖，只有型号专属计划能覆盖：补问一次型号，
+            # 而不是直接 R5（会话 e84456：选了「拖地异常」，唯一的拖地计划锁在 X10 上，却没问过型号）
+            update["product_candidates"] = model_candidates_for_codes(
+                get_catalog(), category, {**state, **update}, sorted(codes)
+            )
         return Decision("continue", update)
     if decision.outcome == "escalate":
         coverage_missing = decision.reason in {"question_coverage_missing", "category_coverage_missing"}
@@ -305,11 +314,31 @@ def differentiated_candidates(catalog, category: str, state: dict[str, Any]) -> 
         or UNKNOWN_MODEL.search(state.get("text", "") or "")
     ):
         return []
-    category_skus = tuple(p.sku for p in catalog.products if p.category == category and p.in_scope)
+    category_skus = _category_skus(catalog, category)
     skus = get_plans().differentiated_skus(
         category=category, symptom_codes=known_symptom_codes(state, category=category)
     )
     skus |= sku_scoped_skus(indexed_entries(), category, category_skus)
+    return _model_card(catalog, category_skus, skus)
+
+
+def model_candidates_for_codes(catalog, category: str, state: dict[str, Any], codes: list[str]) -> list[dict[str, Any]]:
+    """症状已定、品类通用计划无一覆盖时，能覆盖这些症状码的型号专属计划对应的型号（问诊中也可以问）。
+
+    与 differentiated_candidates 一样：本会话已出过型号卡、或用户已声明不知道型号就不再问。
+    """
+    if state.get("prepare_card_calls") or UNKNOWN_MODEL.search(state.get("text", "") or ""):
+        return []
+    category_skus = _category_skus(catalog, category)
+    skus = get_plans().differentiated_skus(category=category, symptom_codes=codes)
+    return _model_card(catalog, category_skus, skus)
+
+
+def _category_skus(catalog, category: str) -> tuple[str, ...]:
+    return tuple(p.sku for p in catalog.products if p.category == category and p.in_scope)
+
+
+def _model_card(catalog, category_skus: tuple[str, ...], skus: set[str]) -> list[dict[str, Any]]:
     records = [catalog.get(sku) for sku in sorted(skus & set(category_skus))]
     if not records or len(records) > MAX_MODEL_CARD:
         return []

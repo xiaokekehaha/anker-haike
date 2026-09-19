@@ -391,3 +391,81 @@ def test_fresh_interview_with_few_families_asks_a_selection_first():
     # 故障族多的品类仍走判别题；有过回答之后也回到判别题
     for category in ("robot_vacuum", "power_bank", "headphones"):
         assert "splits" in next_interview(None, "issue", "first", category=category)["question"], category
+
+
+def _selected_family_state(family: str, text: str):
+    """问诊多选题里用户亲自选定一个故障族后的状态（category_only 扫地机）。"""
+    from app.conversation.taxonomy import taxonomy_for
+    from app.diagnose.decision import accept_answer
+
+    options = [{"value": f["fault_family"]} for f in taxonomy_for("robot_vacuum")["families"]]
+    interview = {
+        "issue_id": "issue", "category": "robot_vacuum", "status": "asking",
+        "candidates": [o["value"] for o in options], "answers": [], "responses": [],
+        "question": {"key": "selection", "kind": "symptom_selection", "question_id": "issue:i1:selection",
+                     "question": "具体有哪些现象？", "options": options, "asked_input_id": "i1"},
+    }
+    issue = {"issue_id": "issue", "facts": [], "device_ref": {"device_ref_id": "d"}, "issue_revision": 1,
+             "symptom_interview": interview}
+    update, accepted = accept_answer(
+        issue,
+        SymptomAnswer(question_id="issue:i1:selection", answer="selection", selected_families=[family], quote=text),
+        text=text, input_id="i2", changed_fact_ids=[],
+    )
+    assert accepted
+    state = ambiguous_state()
+    state["issues"]["issue"] = {**issue, **update}
+    state.update(
+        text=text, input_id="i2", product_state="category_only", product_confirmed=None,
+        symptom_codes=update["symptom_codes"], symptom_interview=update["symptom_interview"],
+    )
+    return state
+
+
+async def test_user_selected_family_excludes_other_plans_from_synthesis(monkeypatch):
+    """会话 e84456：用户在多选题里亲自选了「拖地异常」，模型可选集合只能是覆盖 mop_failure 的计划；
+    category_only 下一条都没有 → 空集合 → R5，而不是让模型从吸力计划里硬挑。"""
+    from app.diagnose.decision import selected_symptom_codes
+    from app.sessions import graph
+    from app.sessions.graph import get_retrieval_config
+
+    seen: list[list[str]] = []
+
+    async def capture(router, *, allowed, symptom_codes, **kwargs):
+        seen.append([p.plan_id for p in allowed])
+        return {"plans_ranked": [], "dropped": [], "model_trace": None, "degraded": "no_allowed_plans"}
+
+    monkeypatch.setattr(graph, "synthesize", capture)
+    monkeypatch.setattr(graph, "get_model_router", lambda: None)
+    state = _selected_family_state("拖地异常", "2")
+    assert selected_symptom_codes(state) == ["mop_failure"]
+    result = await graph._synthesize_step(state, {"e1": {"evidence_id": "e1"}}, "domestic", get_retrieval_config())
+    assert seen == [[]] and result["plans_ranked"] == []
+
+    # 选了「吸力下降」：只剩吸力类计划，供电 / 异响计划不进模型视野
+    state = _selected_family_state("吸力下降", "1")
+    await graph._synthesize_step(state, {"e1": {"evidence_id": "e1"}}, "domestic", get_retrieval_config())
+    assert seen[-1] and all("suction_low" in graph.get_plan_library().get(pid).symptom_codes for pid in seen[-1])
+    assert "rv_power_supply" not in seen[-1]
+
+
+async def test_free_text_code_only_orders_plans_for_synthesis(monkeypatch):
+    """自由文本粗分类出的码（会话 37cea3 那类）只排序不删减：分类错了模型仍能看到正确计划。"""
+    from app.sessions import graph
+    from app.sessions.graph import get_retrieval_config
+
+    seen: list[list[str]] = []
+
+    async def capture(router, *, allowed, symptom_codes, **kwargs):
+        seen.append([p.plan_id for p in allowed])
+        return {"plans_ranked": [], "dropped": [], "model_trace": None, "degraded": None}
+
+    monkeypatch.setattr(graph, "synthesize", capture)
+    monkeypatch.setattr(graph, "get_model_router", lambda: None)
+    state = ambiguous_state()
+    state.update(product_state="category_only", product_confirmed=None, symptom_interview=None,
+                 symptom_codes=["abnormal_noise"], text="声音很大")
+    await graph._synthesize_step(state, {"e1": {"evidence_id": "e1"}}, "domestic", get_retrieval_config())
+    generic = {p.plan_id for p in graph.get_plan_library().allowed_for(category="robot_vacuum")}
+    assert set(seen[0]) == generic
+    assert set(seen[0][:2]) == {"rv_suction_motor_fault", "rv_noise_obstruction"}

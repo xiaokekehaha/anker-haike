@@ -70,6 +70,16 @@ def symptom_codes(issue):
     return list(dict.fromkeys(codes))
 
 
+def selected_symptom_codes(state) -> list[str]:
+    """用户在问诊里亲自选定、或用是非题收敛到唯一故障族的症状码。
+
+    与 intake 对自由文本的粗分类不同，这类码是用户确认过的事实：计划排序时可以据此把码外计划
+    从模型可选集合里排除（票 19），而粗分类只能影响顺序（会话 37cea3）。
+    """
+    interview = state.get("symptom_interview")
+    return _answer_codes(interview if valid_interview(interview) else None)
+
+
 def accept_answer(issue, answer, *, text, input_id, changed_fact_ids, answer_expected=False):
     """The only writer of accepted interview results; corrections explicitly supersede them."""
     original = issue.get("symptom_interview")

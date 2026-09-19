@@ -463,3 +463,88 @@ async def test_product_selection_without_symptom_asks_before_any_step(mem_runtim
     assert state["product_confirmed"]["sku"] == "EUFY-S1-PRO"
     assert state["clarification"]["reason"] == "symptom" and state["clarification"]["attempts"] == 1
     assert state["symptom_interview"]["question"]["question"] == "设备按电源后能正常启动吗？"
+
+
+def _interview_driven_interpret():
+    """按待答问诊题作答的 intake 替身：是非题按原话判 yes/no，多选题按序号选族；不依赖模型。"""
+    import app.conversation.interpret as semantic
+
+    async def interpret(router, state, **kwargs):
+        text = state.get("text", "") or ""
+        question = (state.get("symptom_interview") or {}).get("question") or {}
+        answer = None
+        if question.get("kind") == "symptom_selection":
+            family = question["options"][int(text) - 1]["value"]
+            answer = semantic.SymptomAnswer(
+                question_id=question["question_id"], answer="selection", selected_families=[family], quote=text,
+            )
+        elif question:
+            answer = semantic.SymptomAnswer(
+                question_id=question["question_id"], answer="no" if text.startswith(("不", "没")) else "yes", quote=text,
+            )
+        return semantic.TurnInterpretation(
+            primary_intent="answer_pending" if answer else "report_problem",
+            device_relation="current", symptom_answer=answer,
+        ), {"source": "interview-fixture"}
+
+    return semantic, interpret
+
+
+async def _interview_to_mop_selection(client, monkeypatch):
+    """复现会话 e84456 的前三轮：品类扫地机（分化型号超过卡片上限，首轮不问型号）→ 能启动 → 效果不好 → 选「2」拖地异常。"""
+    from app.knowledge import adapter
+
+    # 线上知识索引里 manual_rv_v2 按 L/G 六款分化，加上 X10 / X9 / S1 Pro 共 9 个型号，超过 MAX_MODEL_CARD；单测无索引，这里补上
+    monkeypatch.setattr(adapter, "sku_scoped_skus", lambda entries, category, skus: {
+        "EUFY-L60-HYBRID", "EUFY-L50-SES", "EUFY-G50-HYBRID", "EUFY-G40-HYBRID", "EUFY-G30-VERGE", "EUFY-G20-HYBRID", "EUFY-S1-PRO",
+    })
+    sid = (await client.post("/sessions")).json()["session_id"]
+    events = await _send(client, sid, "我的扫地机器人出问题了：")
+    assert "product_card" not in {e["type"] for e in events}
+    assert _message_text(events) == "设备按电源后能正常启动吗？"
+    events = await _send(client, sid, "能")
+    assert _message_text(events) == "是清扫或拖地的效果不好吗？"
+    events = await _send(client, sid, "效果不好")
+    text = _message_text(events)
+    assert text.startswith("具体有哪些现象（可多选）？") and "2．拖地后仍有污渍或拖布异常" in text
+    return sid, await _send(client, sid, "2")
+
+
+async def test_selected_symptom_without_generic_plan_asks_model_before_r5(mem_runtime, monkeypatch):
+    """会话 e84456：用户选「2」（拖地异常）被正确记为 mop_failure，但品类通用计划无一覆盖拖地，唯一的拖地计划锁在
+    X10 上。此时应补问一次型号，选中 X10 后走 rv_x10_mop_no_water，而不是直接 R5 转人工。"""
+    semantic, interpret = _interview_driven_interpret()
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    async with _client() as client:
+        sid, events = await _interview_to_mop_selection(client, monkeypatch)
+        assert not any(e["type"] == "escalation_summary" for e in events)
+        card = next(e for e in events if e["type"] == "product_card")
+        assert [c["sku"] for c in card["candidates"]] == ["EUFY-X10-PRO-OMNI"] and card["allow_unknown"] is True
+        state = await _state(sid)
+        assert state["symptom_codes"] == ["mop_failure"] and state["product_state"] == "category_only"
+        response = await _select(client, sid, events, "EUFY-X10-PRO-OMNI")
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+    step = next(e for e in rows if e["type"] == "step_card")["step"]
+    assert step["plan_id"] == "rv_x10_mop_no_water"
+    final = await _state(sid)
+    assert final["product_confirmed"]["sku"] == "EUFY-X10-PRO-OMNI"
+    assert [p["plan_id"] for p in final["plans_ranked"]] == ["rv_x10_mop_no_water"]
+
+
+async def test_selected_symptom_unknown_model_ends_r5_without_unrelated_steps(mem_runtime, monkeypatch):
+    """同一路径选「其他型号 / 不确定」：通用计划全是吸力 / 供电 / 异响，不能拿它们冒充拖地排查（原会话下发了
+    四步吸力排查后 R1），按 R5 如实结束，摘要写明问过型号。"""
+    semantic, interpret = _interview_driven_interpret()
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    async with _client() as client:
+        sid, events = await _interview_to_mop_selection(client, monkeypatch)
+        response = await _select(client, sid, events, None)
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+    assert not any(e["type"] == "step_card" for e in rows)
+    summary = next(e for e in rows if e["type"] == "escalation_summary")["summary"]
+    assert summary["reason"]["rule_id"] == "R5"
+    assert any("已询问型号，用户不确定" in o for o in summary["observations"])
+    state = await _state(sid)
+    assert state["plans_ranked"] == [] and state["product_state"] == "category_only"
