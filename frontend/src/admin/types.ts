@@ -1,4 +1,6 @@
-/** 观测台接口的响应形状（后端 app/admin/router.py）。手写而非生成：管理端不进 make contracts 流程。 */
+/** 观测台接口的响应形状（后端 app/admin/router.py）。手写而非生成：管理端不进 make contracts 流程。
+ *  会话快照直接用聊天端契约生成的 SessionSnapshot，不再手写子集。 */
+import type { SessionSnapshot } from '../types/snapshot';
 
 export type Outcome =
   | 'resolved' | 'escalated' | 'abandoned' | 'awaiting_user'
@@ -15,7 +17,9 @@ export type SessionRow = {
   product_state: string | null;
   emotion_level: string | null;
   steps_executed: number;
+  clarifications?: number;
   knowledge_status: string | null;
+  receipt_status?: string | null;
   outcome: Outcome;
   outcome_reason: string | null;
   model_calls: number;
@@ -56,14 +60,15 @@ export type RunFacts = {
   ended_at: string | null; duration_ms: number | null; entry: string | null;
   stage_from: string | null; stage_to: string | null; done_reason: string | null;
   error_code: string | null; first_visible_ms: number | null; card_ready_ms: number | null;
-  card_kind: string | null; model_calls: number; tokens_in: number; tokens_out: number;
+  card_kind: string | null; tokens_in: number; tokens_out: number;
   node_count: number;
-  nodes: NodeRun[]; model_calls_list?: never; retrieval_calls: RetrievalCall[];
-  /** 后端字段名与 run_facts.model_calls（计数）重名，旅程接口返回的是数组 */
-  model_calls_detail?: ModelCall[];
+  nodes: NodeRun[]; retrieval_calls: RetrievalCall[];
+  /** 旅程接口里 model_calls 是数组（与 run_facts 的同名计数字段重名） */
+  model_calls: ModelCall[] | number;
 };
 
-export type CaseRow = {
+/** 复盘记录（analytics.cases）：对一个会话的人工判定，与 L3 服务案件无关。 */
+export type ReviewRow = {
   case_id: string; session_id: string; run_id: string | null; verdict: 'good' | 'bad' | 'review';
   reason_tags: string[]; note: string | null; labeled_by: string | null; labeled_at: string;
   status: 'open' | 'exported' | 'fixed' | 'wontfix'; exported_to: unknown; fixed_in: string | null;
@@ -73,31 +78,14 @@ export type CaseRow = {
 
 export type Journey = {
   session: SessionRow & Record<string, unknown>;
-  runs: (RunFacts & { model_calls: ModelCall[] | number })[];
-  case: CaseRow | null;
-  snapshot: Snapshot | null;
+  runs: RunFacts[];
+  case: ReviewRow | null;
+  snapshot: SessionSnapshot | null;
 };
-
-export type Snapshot = {
-  session_id: string; version: number; stage: string; substage: string | null;
-  timeline: TimelineItem[];
-};
-
-import type { ContextCardItem, ProposalCardItem, ExecutionCardItem, RetakeCardItem, RatingCardItem, CaseStatusItem } from '../types/snapshot';
-
-export type TimelineItem = ContextCardItem | ProposalCardItem | ExecutionCardItem | RetakeCardItem | RatingCardItem | CaseStatusItem
-  | { kind: 'user_message'; id: string; text: string; at: string; image_ids: string[] }
-  | { kind: 'assistant_message'; message_id: string; text: string; status: string; model_tier: string | null }
-  | { kind: 'tool'; tool_id: string; name: string; status: string; summary: string | null }
-  | { kind: 'product_card'; card_id: string; candidates: { sku: string; name: string }[]; selected_sku: string | null }
-  | { kind: 'step_card'; card_id: string; step: { step_id: string; title: string; instruction: string; expected_result: string }; feedback: string | null; note: string | null }
-  | { kind: 'receipt_card'; card_id: string; fields: Record<string, string | null> }
-  | { kind: 'evidence'; items: { evidence_id: string; source: string; snippet: string; score: number }[] }
-  | { kind: 'escalation_summary'; card_id: string; summary: { product: string; problem: string; reason: { rule_id: string; text: string } } };
 
 export type Overview = {
   window: { from: string; to: string; bucket: string };
-  totals: Record<string, number>;
+  totals: Record<string, number | string>;
   latency: Record<string, number | null>;
   rates: { self_service: number | null; closure: number | null; escalation: number | null };
   series: { at: string; sessions: number; resolved: number; escalated: number }[];

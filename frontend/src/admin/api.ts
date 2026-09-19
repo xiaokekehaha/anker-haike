@@ -1,5 +1,5 @@
 /** 观测台 HTTP 客户端。同源，无鉴权（黑客松范围）。 */
-import type { CaseRow, Flow, Journey, Overview, SessionRow, Topology } from './types';
+import type { Flow, Journey, Overview, ReviewRow, SessionRow, Topology } from './types';
 
 export class AdminError extends Error {
   constructor(public status: number, public code: string, message: string) {
@@ -53,10 +53,11 @@ export const api = {
   sessions: (params: SessionFilters) =>
     get<{ items: SessionRow[]; next_cursor: string | null }>('/sessions', params),
   journey: (id: string) => get<Journey>(`/sessions/${encodeURIComponent(id)}/journey`),
-  cases: (params: { verdict?: string; status?: string; tag?: string }) =>
-    get<{ items: CaseRow[]; tag_stats: { value: string; n: number }[]; reason_tags: string[] }>('/cases', params),
-  labelCase: (body: { session_id: string; run_id?: string | null; verdict: string; reason_tags: string[]; note?: string; labeled_by?: string }) =>
-    send<CaseRow>('/cases', 'POST', body),
-  patchCase: (caseId: string, body: Record<string, unknown>) =>
-    send<CaseRow>(`/cases/${encodeURIComponent(caseId)}`, 'PATCH', body),
+  /** 复盘记录（analytics.cases），与 L3 服务案件是两回事 */
+  reviews: (params: { verdict?: string; status?: string; tag?: string }) =>
+    get<{ items: ReviewRow[]; tag_stats: { value: string; n: number }[]; reason_tags: string[] }>('/cases', params),
+  labelReview: (body: { session_id: string; run_id?: string | null; verdict: string; reason_tags: string[]; note?: string; labeled_by?: string }) =>
+    send<ReviewRow>('/cases', 'POST', body),
+  patchReview: (reviewId: string, body: Record<string, unknown>) =>
+    send<ReviewRow>(`/cases/${encodeURIComponent(reviewId)}`, 'PATCH', body),
 };

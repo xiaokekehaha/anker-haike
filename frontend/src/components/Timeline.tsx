@@ -27,6 +27,8 @@ type Props = {
   onHover?: (ids: string[]) => void;
   /** 待反馈卡片由 dock 渲染，流里只留一行指针 */
   dockPending?: boolean;
+  /** 只读（观测台）：所有卡片禁用，待反馈卡留在流里 */
+  readOnly?: boolean;
 };
 
 type CardItem = Extract<TimelineItem, { card_id: string }>;
@@ -95,9 +97,9 @@ function timeLabel(at: string): string {
 }
 
 /** 按 timeline 渲染（05 §3）。时间戳按 5 分钟分组成分隔行；连续助手消息合并头像；工具 / 动作 / 案件变更走系统行；来源不进流，由记录面板承载。 */
-export function Timeline({ state, onAction, onHover, dockPending = false }: Props) {
+export function Timeline({ state, onAction, onHover, dockPending = false, readOnly = false }: Props) {
   const pendingCard = state.ui === 'awaiting_input' ? state.pendingInput?.card_id ?? null : null;
-  const busy = state.pendingActionId !== null;
+  const busy = readOnly || state.pendingActionId !== null;
   const nodes: ReactNode[] = [];
   let lastTime: number | null = null;
   let prevKind: TimelineItem['kind'] | null = null;

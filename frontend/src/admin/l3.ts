@@ -1,14 +1,22 @@
+/** L3 服务案件接口（后端 app/admin/l3_router.py）。 */
 import type { GateResult, PolicyDecision, ProposalOption } from '../types/events';
-import type { Snapshot } from './types';
+import type { SessionSnapshot } from '../types/snapshot';
+
+export type CaseExecution = {
+  execution_id: string; action_kind: string; status: string; receipt: Record<string, unknown> | null;
+  error: string | null; gate_result: GateResult | null; policy_version: string | null; actions_version: string | null; started_at: string;
+};
 
 export type ServiceCase = {
   case_id: string; session_id: string; issue_id: string; status: string; priority: string; complaint_risk: boolean;
   revision: number; opened_at: string; updated_at: string; owner: string | null;
   policy_decision: PolicyDecision | null; gate_result: GateResult | null;
   proposal: { options: ProposalOption[]; chosen_option_id?: string | null } | null;
-  external_refs: Record<string, string>; snapshot?: Snapshot | null;
+  external_refs: Record<string, string>; snapshot?: SessionSnapshot | null;
   decisions?: { decision_id: string; decision: string; note: string; override_reason: string | null; consumed_input_id: string | null }[];
   events?: { seq: number; type: string; at: string; actor: string; payload: Record<string, unknown> }[];
+  commitments?: Record<string, unknown>[];
+  executions?: CaseExecution[];
 };
 
 async function request<T>(path: string, body?: unknown): Promise<T> {
@@ -20,6 +28,7 @@ async function request<T>(path: string, body?: unknown): Promise<T> {
 export type L3Metrics = { episodes: number; terminal: number; managed: number; managed_rate: number | null; rated: number; rating_coverage: number | null; nss: number | null; intent_labeled: number; intent_accuracy: number | null; unauthorized_executions: number | null };
 export const l3Api = {
   metrics: (from: string) => request<L3Metrics>(`/metrics/l3?since=${encodeURIComponent(from)}`),
+  /** status 为空即全部状态（后端最多 200 条，投诉风险优先） */
   queue: (status = 'awaiting_approval', priority = '') => request<{ items: ServiceCase[] }>(`/cases/queue?status=${encodeURIComponent(status)}&priority=${encodeURIComponent(priority)}`),
   detail: (id: string) => request<ServiceCase>(`/cases/${encodeURIComponent(id)}`),
   decide: (id: string, body: unknown) => request<{ run_id: string }>(`/cases/${encodeURIComponent(id)}/decision`, body),

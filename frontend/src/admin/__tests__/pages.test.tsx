@@ -14,63 +14,72 @@ vi.mock('@xyflow/react', () => ({
 vi.mock('@xyflow/react/dist/style.css', () => ({}));
 
 const overview = vi.fn();
-const flow = vi.fn();
-const topology = vi.fn();
 const sessions = vi.fn();
+const metrics = vi.fn();
+const queue = vi.fn();
 
 vi.mock('../api', () => ({
   api: {
     overview: (...args: unknown[]) => overview(...args),
-    flow: (...args: unknown[]) => flow(...args),
-    topology: (...args: unknown[]) => topology(...args),
+    flow: vi.fn(),
+    topology: vi.fn(),
     sessions: (...args: unknown[]) => sessions(...args),
     journey: vi.fn(),
-    cases: vi.fn(),
-    labelCase: vi.fn(),
-    patchCase: vi.fn(),
+    reviews: vi.fn(),
+    labelReview: vi.fn(),
+    patchReview: vi.fn(),
+  },
+}));
+vi.mock('../l3', () => ({
+  l3Api: {
+    metrics: (...args: unknown[]) => metrics(...args),
+    queue: (...args: unknown[]) => queue(...args),
   },
 }));
 
-const { Dashboard } = await import('../pages/Dashboard');
+const { Board } = await import('../pages/Board');
 const { Sessions } = await import('../pages/Sessions');
 
 const OVERVIEW = {
   window: { from: '', to: '', bucket: 'day' },
-  totals: { sessions: 12, resolved: 5, escalated: 3, escalated_system: 1, model_calls: 40, tokens_in: 1, tokens_out: 2 },
+  totals: { sessions: 12, resolved: 5, escalated: 3, escalated_system: 1, abandoned: 2, errored: 0, model_calls: 40, tokens_in: 1, tokens_out: 2, avg_steps: '1.5' },
   latency: { first_visible_p50: 100, first_visible_p95: 900, card_ready_p50: 200, card_ready_p95: 1800 },
   rates: { self_service: 0.83, closure: 0.62, escalation: 0.38 },
   series: [{ at: '2026-09-12T00:00:00Z', sessions: 7, resolved: 3, escalated: 1 }],
   breakdown: [{ value: 'robot_vacuum', sessions: 9, resolved: 4, escalated: 2 }],
   models: [{ task: 'intake', model_used: 'deepseek/chat', calls: 20, errors: 0, fallbacks: 1, p95_ms: 2400, tokens_in: 1, tokens_out: 2 }],
-  retrieval: [{ kb: 'kb_manual', status: 'ok', n: 10 }],
+  retrieval: [{ kb: 'kb_manual', status: 'ok', n: 10 }, { kb: 'kb_tickets', status: 'no_match', n: 30 }],
 };
+const L3 = { episodes: 10, terminal: 5, managed: 4, managed_rate: 0.8, rated: 2, rating_coverage: 0.2, nss: 0.5, intent_labeled: 0, intent_accuracy: null, unauthorized_executions: 0 };
 
 beforeEach(() => {
   overview.mockReset().mockResolvedValue(OVERVIEW);
-  flow.mockReset().mockResolvedValue({ edges: [], nodes: [], entries: [] });
-  topology.mockReset().mockResolvedValue({ nodes: [], edges: [], stage_order: [] });
   sessions.mockReset().mockResolvedValue({ items: [], next_cursor: null });
+  metrics.mockReset().mockResolvedValue(L3);
+  queue.mockReset().mockResolvedValue({ items: [] });
 });
 
-describe('Dashboard', () => {
+describe('Board', () => {
   test('一个时间窗只取一次数，不会反复重取', async () => {
-    render(<MemoryRouter><Dashboard /></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText('83.0%')).toBeInTheDocument());
+    render(<MemoryRouter><Board /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByText('80.0%')).toBeInTheDocument());
     // 给潜在的循环留出反复触发的机会
     await new Promise((resolve) => setTimeout(resolve, 120));
-    // StrictMode 不在测试里启用，因此每个数据源恰好一次
-    expect(overview).toHaveBeenCalledTimes(1);
-    expect(flow).toHaveBeenCalledTimes(1);
-    expect(topology).toHaveBeenCalledTimes(1);
+    // 三个维度（当前维度 / 原因 / 情绪）各取一次，L3 一次；StrictMode 不在测试里启用
+    expect(overview).toHaveBeenCalledTimes(3);
+    expect(metrics).toHaveBeenCalledTimes(1);
   });
 
-  test('把口径与单位按人话显示', async () => {
-    render(<MemoryRouter><Dashboard /></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText('83.0%')).toBeInTheDocument());
-    expect(screen.getByText('62.0%')).toBeInTheDocument();
+  test('把口径与单位按人话显示，且口径写在卡片上', async () => {
+    render(<MemoryRouter><Board /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByText('80.0%')).toBeInTheDocument());
     expect(screen.getByText('900 ms')).toBeInTheDocument();
     expect(screen.getByText('1.8 s')).toBeInTheDocument();
-    expect(screen.getByText('已解决 5 个')).toBeInTheDocument();
+    expect(screen.getByText('5 解决 / 3 转人工')).toBeInTheDocument();
+    // 模型降级率 1 / 20；检索无命中率 30 / 40
+    expect(screen.getByText('5.0%')).toBeInTheDocument();
+    expect(screen.getByText('75.0%')).toBeInTheDocument();
+    expect(screen.getByText(/独立解决 \+ 独立闭环/)).toBeVisible();
   });
 });
 
@@ -80,6 +89,7 @@ describe('Sessions', () => {
     await waitFor(() => expect(sessions).toHaveBeenCalled());
     await new Promise((resolve) => setTimeout(resolve, 120));
     expect(sessions).toHaveBeenCalledTimes(1);
+    expect(queue).toHaveBeenCalledTimes(1);
   });
 
   test('没有结果时给出说明而不是空表', async () => {

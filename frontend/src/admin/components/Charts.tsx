@@ -12,9 +12,11 @@ import type { Outcome } from '../types';
 export function Kpi({ label, value, note, hint }: { label: string; value: ReactNode; note?: ReactNode; hint?: string }) {
   return (
     <div className="card kpi">
-      <div className="label" title={hint}>{label}</div>
+      <div className="label">{label}</div>
       <div className="value">{value}</div>
       {note !== undefined && <div className="note">{note}</div>}
+      {/* 口径写在屏幕上：评审看投影看不到悬停提示 */}
+      {hint && <div className="hint">{hint}</div>}
     </div>
   );
 }

@@ -3,16 +3,16 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../api';
 import { TAG_TEXT, VERDICT_TEXT } from '../format';
 import { useAsync } from '../useAsync';
-import type { CaseRow } from '../types';
+import type { ReviewRow } from '../types';
 
 export function LabelDialog({ sessionId, current, onClose, onSaved }: {
   sessionId: string;
-  current: CaseRow | null;
+  current: ReviewRow | null;
   onClose: () => void;
   onSaved: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const cases = useAsync(() => api.cases({}), []);
+  const reviews = useAsync(() => api.reviews({}), []);
   const [verdict, setVerdict] = useState(current?.verdict ?? 'review');
   const [tags, setTags] = useState<string[]>(current?.reason_tags ?? []);
   const [note, setNote] = useState(current?.note ?? '');
@@ -25,7 +25,7 @@ export function LabelDialog({ sessionId, current, onClose, onSaved }: {
     setSaving(true);
     setError(null);
     try {
-      await api.labelCase({ session_id: sessionId, verdict, reason_tags: tags, note: note || undefined });
+      await api.labelReview({ session_id: sessionId, verdict, reason_tags: tags, note: note || undefined });
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : '保存失败');
@@ -34,7 +34,7 @@ export function LabelDialog({ sessionId, current, onClose, onSaved }: {
     }
   }
 
-  const available = cases.data?.reason_tags ?? Object.keys(TAG_TEXT);
+  const available = reviews.data?.reason_tags ?? Object.keys(TAG_TEXT);
 
   return (
     <dialog className="sheet" ref={ref} onClose={onClose} aria-label="标注会话">
