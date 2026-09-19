@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 8b99031ae575fb58fbb63641a00df4c354861b405c3a6783b88c705d6af3a8f7
+// SHA-256: cacb3f5997233163925bde51ae65e0f28679b27920c4a074a98e67b7196d1cf4
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -182,6 +182,7 @@ export type RunId10 = string;
 export type Seq10 = number;
 export type Status2 = 'completed' | 'aborted';
 export type Type10 = 'message_end';
+export type AllowUnknown = boolean;
 /**
  * @minItems 1
  */
@@ -194,6 +195,7 @@ export type Sku = string;
 export type CardId1 = string;
 export type EventId11 = string;
 export type IssueId4 = string | null;
+export type Note = string | null;
 export type RecordedAt11 = string;
 export type RunId11 = string;
 /**
@@ -736,10 +738,12 @@ export interface MessageEnd {
  * via the `definition` "ProductCard".
  */
 export interface ProductCard {
+  allow_unknown?: AllowUnknown;
   candidates: Candidates;
   card_id: CardId1;
   event_id: EventId11;
   issue_id?: IssueId4;
+  note?: Note;
   recorded_at: RecordedAt11;
   run_id: RunId11;
   seq: Seq11;

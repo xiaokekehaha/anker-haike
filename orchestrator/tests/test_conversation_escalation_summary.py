@@ -24,6 +24,19 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
             "facts": [{"value": "出问题了", "quote": "出问题了"}],
         },
     )
+    # A1289 有型号专属计划：先问一次型号（spec 2026-09-19-0810 T1）；选「不确定」退回品类通用路径
+    card = next(e for e in first if e["type"] == "product_card")
+    assert [c["sku"] for c in card["candidates"]] == ["ANKER-A1289"] and card["allow_unknown"] is True
+    before = await conversation.snapshot()
+    pending = before["pending_input"]
+    first = conversation.check(await conversation.client.post(
+        f"/sessions/{conversation.sid}/actions",
+        json={
+            "action_id": "model-unknown", "expected_version": before["version"],
+            "target_issue_id": before["active_issue_id"], "card_id": pending["card_id"],
+            "input_token": pending["input_token"], "kind": "select_product", "payload": {"sku": None},
+        },
+    ))
     # 词表有「自身回充慢」后先问充电方向，再问输出反应
     assert "给充电宝本身充电的时候吗" in "".join(e.get("delta", "") for e in first)
     # 后续使用既有问答解析与预写计划，不依赖模型润色或外部知识库。
@@ -72,7 +85,8 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
     copied = summary_to_text(summary)
     assert "【排查记录】清理充电宝输出接口（无法操作）" in copied
     assert not any(word in reply + copied for word in ("扫地机器人", "已完成", "已试步骤", "已经做过", "cannot_do"))
-    assert not any(e["type"] == "product_card" for output in conversation.outputs for e in output)
+    # 型号只在最初问过一次；之后的补充与反馈都不再出产品卡
+    assert not any(e["type"] == "product_card" for output in conversation.outputs[1:] for e in output)
     snapshot = await conversation.snapshot()
     assert snapshot["stage"] == "escalate"
     assert snapshot["timeline"][-1]["summary"] == event["summary"]

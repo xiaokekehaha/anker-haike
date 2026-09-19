@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: d41bd6b01fdf1105710f56627f80c574df8b8cdbe964ce9f66ca19698442859d
+// SHA-256: 0a3742e14a8fc23086f7946fb5397bbeb8ca6e90dfc7a6133fcbb3ba88f4db86
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -28,7 +28,7 @@ export type CardId = string;
 export type ExpectedVersion = number;
 export type InputToken = string;
 export type Kind = 'select_product';
-export type Sku = string;
+export type Sku = string | null;
 export type TargetIssueId = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等

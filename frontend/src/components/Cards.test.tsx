@@ -47,6 +47,23 @@ describe('cards', () => {
     expect(screen.getByText('已选择')).toBeVisible();
   });
 
+  it('ProductCard offers an unknown exit only on model cards and locks after choosing it', () => {
+    const onSelect = vi.fn();
+    const item = { kind: 'product_card' as const, card_id: 'c', version: 1, selected_sku: null, allow_unknown: true, note: '不同型号的排查方法不同', candidates: [
+      { sku: 'X10', name: 'eufy X10 Pro Omni', category: 'robot_vacuum', image: null, in_scope: true },
+    ] };
+    const { rerender } = render(<ProductCard item={item} active onSelect={onSelect} />);
+    expect(screen.getByText('不同型号的排查方法不同')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: /其他型号/ }));
+    expect(onSelect).toHaveBeenCalledWith(null);
+    rerender(<ProductCard item={{ ...item, selected_unknown: true }} active onSelect={onSelect} />);
+    expect(screen.getByRole('button', { name: /其他型号/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /X10/ })).toBeDisabled();
+    expect(screen.getByText('已选择')).toBeVisible();
+    rerender(<ProductCard item={{ ...item, allow_unknown: false }} active onSelect={onSelect} />);
+    expect(screen.queryByRole('button', { name: /其他型号/ })).toBeNull();
+  });
+
   it('ToolRow shows failed state text', () => {
     render(<ToolRow item={{ kind: 'tool', tool_id: 't', name: 'knowledge.search', status: 'failed', summary: '知识库暂不可用，按标准排障流程' }} />);
     expect(screen.getByRole('status')).toHaveTextContent('检索知识库');

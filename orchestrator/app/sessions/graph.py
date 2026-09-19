@@ -15,6 +15,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Annotated, Any, TypedDict
 
+import httpx
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
@@ -50,6 +51,7 @@ from app.knowledge.faq import get_faq_index
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.knowledge.search import interleave_kbs, search_round
+from app.knowledge.weknora_client import WeKnoraError
 from app.models.runtime import get_model_router
 from app.observability.runtime import record
 from app.plans.runtime import get_plan_library
@@ -239,6 +241,13 @@ async def disambiguate(state: SessionState) -> SessionState:
     if _new_fault_images(state):
         # Evidence may resolve the very prerequisite this decision is checking.
         return {"stage": "disambiguate", "_decision": {"outcome": "read_images"}}
+    adapter = get_knowledge_adapter()
+    if adapter is not None:
+        # 型号卡候选要看知识索引里哪些资料按型号分化；索引首次使用时才拉取，失败按索引为空处理，不阻塞消歧
+        try:
+            await ensure_index(adapter)
+        except (httpx.TransportError, TimeoutError, WeKnoraError) as exc:
+            log.warning("knowledge index unavailable during disambiguate: %s", str(exc)[:120])
     decision = clarify_mod.decide(dict(state), abandoned_card=state.get("abandoned_card"))
     update: SessionState = {"stage": "disambiguate", "abandoned_card": None, **decision.update}
     from app.actions.runtime import get_services
@@ -266,7 +275,8 @@ def route_after_disambiguate(state: SessionState) -> str:
         return "clarify"
     if state.get("out_of_scope"):
         return "out_of_scope"
-    if len(state.get("product_candidates") or []) > 1 and not state.get("product_confirmed"):
+    # 多命中（T0）或品类已知的型号卡（T1，可能只有一个候选加「不确定」出口）都出卡
+    if state.get("product_candidates") and not state.get("product_confirmed"):
         return "prepare_card"
     return _after_product(state)
 
@@ -623,11 +633,18 @@ async def prepare_card(state: SessionState) -> SessionState:
     card_id = derive_card_id(
         state["session_id"], "disambiguate", candidates_key([c["sku"] for c in cands])
     )
+    # 品类已知时的型号卡（spec 2026-09-19-0810 T1）：候选只是知识分化的型号，必须给「其他型号 / 不确定」出口；
+    # 目录多命中的卡（T0）品类都还不定，没有可退回的品类，不给出口
+    model_card = state.get("product_state") == "category_only" and bool(state.get("category"))
     return {
         "pending_card": {
             "card_id": card_id,
             "kind": "select_product",
-            "payload": {"candidates": cands},
+            "payload": {
+                "candidates": cands,
+                "allow_unknown": model_card,
+                **({"note": "不同型号的排查方法不同", "category": state["category"]} if model_card else {}),
+            },
         },
         "prepare_card_calls": state.get("prepare_card_calls", 0) + 1,
         # 票 24：产品卡片也是一次「请用户确认产品」的澄清；用户不选而改发文本时计入 R7 次数
@@ -663,6 +680,8 @@ async def await_input(state: SessionState) -> SessionState:
                 "card_id": pc["card_id"],
                 "version": current_version(),
                 "candidates": pc["payload"]["candidates"],
+                "allow_unknown": pc["payload"].get("allow_unknown", False),
+                "note": pc["payload"].get("note"),
             }
         )
     elif pc["kind"] == "step_feedback":
@@ -777,6 +796,20 @@ async def apply_action(state: SessionState) -> SessionState:
         update.update(_apply_step_feedback(state, action, pc, results))
     elif action.get("kind") == "answer_observation":
         update.update(_apply_observation_answer(state, action, pc, results))
+    elif action.get("kind") == "select_product" and action["payload"].get("sku") is None:
+        # 「其他型号 / 不确定」：品类事实保留，型号未知，按品类通用知识继续；结束原因里说清楚问过型号
+        results[pc["card_id"]] = {"selected_sku": None, "selected_unknown": True}
+        update.update(
+            {
+                "card_results": results,
+                "product_confirmed": None,
+                "product_state": "category_only",
+                "product_candidates": [],
+                "category": pc["payload"]["category"],
+                "clarification": None,
+                "observations": [*(state.get("observations") or []), "已询问型号，用户不确定；按品类通用方法继续"],
+            }
+        )
     elif action.get("kind") == "select_product":
         sku = action["payload"]["sku"]
         chosen = next(c for c in pc["payload"]["candidates"] if c["sku"] == sku)
@@ -792,6 +825,16 @@ async def apply_action(state: SessionState) -> SessionState:
                 "clarification": None,  # 票 24：产品已确认，澄清计数清零
             }
         )
+    if action.get("kind") == "select_product" and not update.get("out_of_scope"):
+        # 选完产品还要有现象才能动：与 disambiguate 同一套症状判定，缺现象就问一句（→ clarify），
+        # 品类没有任何计划就按 R5 如实结束，而不是直接下发第一条计划的步骤
+        merged = {**state, **update}
+        decision = clarify_mod.symptom_decision(
+            merged, {}, dict(merged.get("clarification") or {}), merged.get("product_confirmed"), merged.get("category")
+        )
+        update.update(decision.update)
+        if decision.outcome == "clarify":
+            update["_decision"] = {"outcome": "clarify", "reason": decision.reason, **decision.detail}
     return update
 
 
@@ -802,6 +845,8 @@ def route_after_apply(state: SessionState) -> str:
         return "escalate"
     if state.get("out_of_scope"):
         return "out_of_scope"
+    if (state.get("_decision") or {}).get("outcome") == "clarify":
+        return "clarify"
     verify = state.get("_verify")
     if verify:
         # 票 35：step_feedback 的判定——继续 → guide 出下一张卡；票 36：solved / DONE → close 结束语 → done(completed)
@@ -1596,7 +1641,8 @@ def knowledge_scope_of(state: SessionState) -> KnowledgeScope:
     product = state.get("product_confirmed") or {}
     ps = state.get("product_state") or "unknown"
     category = product.get("category") or state.get("category") or ""
-    return KnowledgeScope(ps, category, product.get("sku") if ps == "confirmed_sku" else None)  # type: ignore[arg-type]
+    category_skus = tuple(p.sku for p in get_catalog().products if p.category == category and p.in_scope)
+    return KnowledgeScope(ps, category, product.get("sku") if ps == "confirmed_sku" else None, category_skus=category_skus)  # type: ignore[arg-type]
 
 
 def retrieval_query(state: SessionState) -> str:
@@ -2955,6 +3001,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "close": "close",
             "ask_observation": "ask_observation",
             "dialogue": "dialogue",
+            "clarify": "clarify",
         },
     )
     g.add_conditional_edges(

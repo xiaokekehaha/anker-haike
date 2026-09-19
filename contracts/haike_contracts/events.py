@@ -129,6 +129,9 @@ class _Card(_Event):
 class ProductCard(_Card):
     type: Literal["product_card"]
     candidates: list[ProductCandidate] = Field(min_length=1)
+    # 品类已知、知识按型号分化时的型号卡：多一个「其他型号 / 不确定」出口，并说明为什么要问
+    allow_unknown: bool = False
+    note: str | None = None
 
 
 class StepCard(_Card):

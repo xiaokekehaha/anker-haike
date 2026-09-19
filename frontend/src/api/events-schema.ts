@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 8b99031ae575fb58fbb63641a00df4c354861b405c3a6783b88c705d6af3a8f7
+// SHA-256: cacb3f5997233163925bde51ae65e0f28679b27920c4a074a98e67b7196d1cf4
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -2042,6 +2042,11 @@ export const serverEventSchema = z.fromJSONSchema({
     "ProductCard": {
       "additionalProperties": false,
       "properties": {
+        "allow_unknown": {
+          "default": false,
+          "title": "Allow Unknown",
+          "type": "boolean"
+        },
         "candidates": {
           "items": {
             "$ref": "#/$defs/ProductCandidate"
@@ -2069,6 +2074,18 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "default": null,
           "title": "Issue Id"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
         },
         "recorded_at": {
           "title": "Recorded At",

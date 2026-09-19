@@ -48,7 +48,7 @@ const POINTER: Partial<Record<TimelineItem['kind'], (item: CardItem) => string>>
 function renderCard(item: CardItem, active: boolean, disabled: boolean, onAction: OnAction, onHover?: (ids: string[]) => void, outdated = false) {
   switch (item.kind) {
     case 'product_card':
-      return <ProductCard key={item.card_id} item={item} active={active} disabled={disabled} onSelect={(sku) => onAction('select_product', { sku })} />;
+      return <ProductCard key={item.card_id} item={item} active={active} disabled={disabled} onSelect={(sku) => onAction('select_product', { sku })} />; // sku=null：其他型号 / 不确定
     case 'step_card':
       return <StepCard key={item.card_id} item={item} active={active} disabled={disabled} onHover={onHover} onFeedback={(feedback, note, observations) => onAction('step_feedback', { feedback, ...(note ? { note } : {}), ...(observations?.length ? { observations } : {}) })} />;
     case 'observation_card':

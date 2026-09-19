@@ -15,6 +15,9 @@ import yaml
 
 from app.settings import CONFIG_DIR
 
+# 首问直接多选的故障族数上限；超过就仍用最小切分的判别题
+SELECTION_FIRST_MAX = 6
+
 
 def taxonomy():
     return yaml.safe_load((CONFIG_DIR / "symptom_taxonomy.yaml").read_text())
@@ -169,7 +172,12 @@ def next_interview(interview, issue_id, input_id, category=None):
             "answers": [],
             "status": "asking",
         }
-    question = select_discriminator(current["candidates"], [a["key"] for a in current["answers"]], category=category)
+    # 用户还什么都没说（没有任何回答、候选是全部故障族）且故障族不多时，直接多选：
+    # 此时一道是非题的期望信息量接近零，还必然再追一问（spec 2026-09-19-0810 C，会话 934ad 的首问）。
+    fresh = not current["answers"] and len(current["candidates"]) == len(families(category))
+    question = None if fresh and len(current["candidates"]) <= SELECTION_FIRST_MAX else select_discriminator(
+        current["candidates"], [a["key"] for a in current["answers"]], category=category
+    )
     if not question and current["candidates"]:
         # 没有手写判别题能再切分剩余候选：这是配置的边界，不是用户答错。直接让用户在剩余现象里选。
         # 选项文案用词表里的 selection_label（用户视角的说法），没有就用故障族名。

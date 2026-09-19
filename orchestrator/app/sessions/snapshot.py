@@ -138,7 +138,10 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                     "card_id": e["card_id"],
                     "version": e["version"],
                     "candidates": e["candidates"],
+                    "allow_unknown": e.get("allow_unknown", False),
+                    "note": e.get("note"),
                     "selected_sku": res.get("selected_sku"),
+                    "selected_unknown": bool(res.get("selected_unknown")),
                 },
             )
         elif t == "step_card":

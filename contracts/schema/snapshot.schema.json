@@ -1386,6 +1386,11 @@
     "ProductCardItem": {
       "additionalProperties": false,
       "properties": {
+        "allow_unknown": {
+          "default": false,
+          "title": "Allow Unknown",
+          "type": "boolean"
+        },
         "at": {
           "anyOf": [
             {
@@ -1436,6 +1441,18 @@
           "title": "Last Seq",
           "type": "integer"
         },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
         "selected_sku": {
           "anyOf": [
             {
@@ -1448,6 +1465,12 @@
           "default": null,
           "description": "用户已选结果",
           "title": "Selected Sku"
+        },
+        "selected_unknown": {
+          "default": false,
+          "description": "用户选了「其他型号 / 不确定」",
+          "title": "Selected Unknown",
+          "type": "boolean"
         },
         "version": {
           "minimum": 0,

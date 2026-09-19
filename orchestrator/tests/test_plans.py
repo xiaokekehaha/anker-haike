@@ -242,3 +242,20 @@ def test_official_evidence_plans_stay_within_the_source_sku_list(library):
             front = (kb / f"{doc_id}.md").read_text(encoding="utf-8").split("---\n")[1]
             allowed = set(_yaml.safe_load(front)["sku_list"])
             assert set(plan.applies_to.sku_list) <= allowed, (plan.plan_id, doc_id)
+
+
+def test_differentiated_skus_follow_sku_scoped_knowledge(library):
+    """spec 2026-09-19-0810 A：只有型号专属计划或被排除的型号算分化；症状码收窄；纯通用品类为空。"""
+    assert library.differentiated_skus(category="robot_vacuum") == {"EUFY-X10-PRO-OMNI", "EUFY-X9-PRO"}
+    assert library.differentiated_skus(category="robot_vacuum", symptom_codes=["map_lost"]) == {
+        "EUFY-X10-PRO-OMNI", "EUFY-X9-PRO",
+    }
+    assert library.differentiated_skus(category="robot_vacuum", symptom_codes=["abnormal_noise"]) == {"EUFY-X10-PRO-OMNI"}
+    # 吸力下降只有品类通用计划：知道型号不改变下一步
+    assert library.differentiated_skus(category="robot_vacuum", symptom_codes=["suction_low"]) == set()
+    # A1289 既有专属计划，也被通用计划 excluded_skus 排除
+    assert library.differentiated_skus(category="power_bank") == {"ANKER-A1289"}
+    assert library.differentiated_skus(category="headphones", symptom_codes=["hd_one_side_silent"]) == {
+        "SOUNDCORE-A3035", "SOUNDCORE-A3040",
+    }
+    assert library.differentiated_skus(category="breast_pump") == set()

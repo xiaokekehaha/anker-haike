@@ -43,6 +43,8 @@ class KnowledgeScope:
     category: str
     sku: str | None = None
     region: str | None = None
+    # 该品类在目录里全部在范围 SKU；sku_list 覆盖全部的知识条目按品类通用处理（spec 2026-09-19-0810 A 标签修正）
+    category_skus: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -223,13 +225,30 @@ def entry_from_knowledge(kb: KbName, k: dict[str, Any]) -> IndexEntry | None:
     )
 
 
+def covers_category(entry: IndexEntry, category_skus: tuple[str, ...]) -> bool:
+    """scope=sku 但 sku_list 覆盖该品类全部在范围 SKU：内容对每款型号都一样，实质是品类通用知识。"""
+    return bool(category_skus) and entry.scope == "sku" and set(category_skus) <= set(entry.sku_list)
+
+
+def sku_scoped_skus(entries: list[IndexEntry], category: str, category_skus: tuple[str, ...]) -> set[str]:
+    """知识索引里真正按型号分化的 SKU（不含覆盖全品类的条目）。"""
+    return {
+        sku
+        for e in entries
+        if e.scope == "sku" and e.category == category and not covers_category(e, category_skus)
+        for sku in e.sku_list
+    }
+
+
 def allowed_entries(entries: list[IndexEntry], allow: KnowledgeScope) -> list[IndexEntry]:
     """09 §2.3：confirmed_sku → sku_list ∋ sku ∪ category_generic∧category；category_only → 仅 category_generic∧category；unknown → 空。"""
     if allow.product_state == "unknown":
         return []
     out = []
     for e in entries:
-        generic_ok = e.scope == "category_generic" and e.category == allow.category
+        generic_ok = (
+            e.scope == "category_generic" or covers_category(e, allow.category_skus)
+        ) and e.category == allow.category
         sku_ok = (
             allow.product_state == "confirmed_sku"
             and e.scope == "sku"

@@ -72,7 +72,9 @@ async def test_inadequate_nonempty_results_are_supplemented_and_both_rounds_reac
     events = await conversation.send(REPORT_TEXT, REPORT)
     state = await conversation.state()
     assert len(adapter.calls) == 4 and all(call[2] == 15 for call in adapter.calls)
-    assert {call[3] for call in adapter.calls} == {KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X9-PRO")}
+    assert {(call[3].product_state, call[3].category, call[3].sku) for call in adapter.calls} == {
+        ("confirmed_sku", "robot_vacuum", "EUFY-X9-PRO")
+    }
     assert state["knowledge_status"] == "ok" and state["retrieval_rounds"] == 2
     assert state["plans_ranked"][0]["evidence_ids"] == ["old-0", "new-target"]
     assert state["plans_ranked"][0]["source"] == "synthesize"

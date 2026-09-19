@@ -12,7 +12,7 @@ import logging
 import os
 from pathlib import Path
 
-from app.knowledge.adapter import KnowledgeAdapter, WeKnoraKnowledgeAdapter
+from app.knowledge.adapter import IndexEntry, KnowledgeAdapter, WeKnoraKnowledgeAdapter
 from app.knowledge.weknora_client import WeKnoraClient
 
 log = logging.getLogger("knowledge.runtime")
@@ -70,3 +70,12 @@ async def ensure_index(adapter: KnowledgeAdapter) -> None:
     real = getattr(adapter, "inner", adapter)  # 票 43：录制包装器透传到真实适配器
     if isinstance(real, WeKnoraKnowledgeAdapter) and real.index_loaded_at is None:
         await real.refresh_index()
+
+
+def indexed_entries() -> list[IndexEntry]:
+    """已加载的知识索引条目（两个库合并）；适配器不可用或索引未加载时为空。"""
+    adapter = _adapter if _built else get_knowledge_adapter()
+    real = getattr(adapter, "inner", adapter)
+    if not isinstance(real, WeKnoraKnowledgeAdapter) or real.index_loaded_at is None:
+        return []
+    return [e for entries in real.index.values() for e in entries]

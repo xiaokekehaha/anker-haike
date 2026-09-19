@@ -299,13 +299,13 @@ async def _accept(
                     raise InputConflict("wrong_issue")
                 if not _kind_allowed(payload["kind"], pending.kind):
                     raise InputConflict("not_allowed_now")
-                if payload["kind"] == "select_product" and payload["payload"]["sku"] not in {
-                    c["sku"]
-                    for c in (values.get("pending_card") or {})
-                    .get("payload", {})
-                    .get("candidates", [])
-                }:
-                    raise InputConflict("invalid_selection")
+                if payload["kind"] == "select_product":
+                    card_payload = (values.get("pending_card") or {}).get("payload", {})
+                    allowed = {c["sku"] for c in card_payload.get("candidates", [])}
+                    if card_payload.get("allow_unknown"):
+                        allowed.add(None)  # 「其他型号 / 不确定」只在品类已知的型号卡上合法
+                    if payload["payload"]["sku"] not in allowed:
+                        raise InputConflict("invalid_selection")
                 if payload["kind"] == "confirm_proposal" and payload["payload"]["option_id"] not in {o["option_id"] for o in ((values.get("pending_card") or {}).get("payload") or {}).get("options",[])}:
                     raise InputConflict("invalid_selection")
                 if payload["kind"] == "answer_observation":

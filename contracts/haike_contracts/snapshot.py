@@ -105,7 +105,10 @@ class ProductCardItem(TimelineRecord):
     card_id: str
     version: int = Field(ge=0)
     candidates: list[ProductCandidate]
+    allow_unknown: bool = False
+    note: str | None = None
     selected_sku: str | None = Field(default=None, description="用户已选结果")
+    selected_unknown: bool = Field(default=False, description="用户选了「其他型号 / 不确定」")
 
 
 class StepCardItem(TimelineRecord):

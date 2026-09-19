@@ -126,6 +126,17 @@ class PlanLibrary:
             and (not codes or codes.intersection(p.symptom_codes))
         ]
 
+    def differentiated_skus(self, *, category: str, symptom_codes=()) -> set[str]:
+        """知识按型号分化的 SKU：型号专属计划的 sku_list，加上被通用计划排除的 excluded_skus。
+        给了症状码就只看与之相交的计划。集合为空表示知道型号也不改变下一步（spec 2026-09-19-0810 A）。"""
+        codes = set(symptom_codes)
+        out: set[str] = set()
+        for p in self._plans.values():
+            if p.applies_to.category != category or (codes and not codes.intersection(p.symptom_codes)):
+                continue
+            out.update(p.applies_to.sku_list if p.applies_to.scope == "sku" else p.applies_to.excluded_skus)
+        return out
+
     def schema_for(self, *, category: str, sku: str | None = None) -> dict:
         return plan_json_schema([p.plan_id for p in self.allowed_for(category=category, sku=sku)])
 

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: d270e12b39399ec44cd07d0f7706d8cf0c6a76f8f894035d5fd8b71c43aab595
+// SHA-256: 69322bf28a2679ab621f637ffba5eef840d3ba3f1f6505046650a95ea29efe70
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -176,6 +176,7 @@ export type Name2 = string;
 export type Status2 = 'started' | 'finished' | 'failed';
 export type Summary = string | null;
 export type ToolId = string;
+export type AllowUnknown = boolean;
 export type At7 = string | null;
 export type Category = string;
 export type Image = string | null;
@@ -188,10 +189,15 @@ export type FirstSeq5 = number;
 export type IssueId6 = string | null;
 export type Kind6 = 'product_card';
 export type LastSeq5 = number;
+export type Note = string | null;
 /**
  * 用户已选结果
  */
 export type SelectedSku = string | null;
+/**
+ * 用户选了「其他型号 / 不确定」
+ */
+export type SelectedUnknown = boolean;
 export type Version1 = number;
 export type At8 = string | null;
 export type CardId3 = string;
@@ -200,7 +206,7 @@ export type FirstSeq6 = number;
 export type IssueId7 = string | null;
 export type Kind7 = 'step_card';
 export type LastSeq6 = number;
-export type Note = string | null;
+export type Note1 = string | null;
 export type ObservationId = string;
 export type OptionId1 = string;
 export type ObservationAnswers = ObservationAnswer[];
@@ -681,6 +687,7 @@ export interface ToolItem {
  * via the `definition` "ProductCardItem".
  */
 export interface ProductCardItem {
+  allow_unknown?: AllowUnknown;
   at?: At7;
   candidates: Candidates;
   card_id: CardId2;
@@ -688,7 +695,9 @@ export interface ProductCardItem {
   issue_id?: IssueId6;
   kind: Kind6;
   last_seq?: LastSeq5;
+  note?: Note;
   selected_sku?: SelectedSku;
+  selected_unknown?: SelectedUnknown;
   version: Version1;
 }
 /**
@@ -714,7 +723,7 @@ export interface StepCardItem {
   issue_id?: IssueId7;
   kind: Kind7;
   last_seq?: LastSeq6;
-  note?: Note;
+  note?: Note1;
   observation_answers?: ObservationAnswers;
   seen?: Seen;
   step: TroubleshootStep;

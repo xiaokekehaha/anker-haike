@@ -217,3 +217,20 @@ async def test_live_category_only_excludes_sku_docs():
         "manual_rv_v1",
         "manual_rv_v2",
     }
+
+
+async def test_sku_list_covering_whole_category_counts_as_generic(adapter):
+    """spec 2026-09-19-0810 A 标签修正：sku_list 覆盖全品类的资料对每款型号一样，category_only 也放行，且不算分化。"""
+    from app.knowledge.adapter import sku_scoped_skus
+
+    ad, _ = adapter
+    manual = ad.index["kb_manual"]
+    pumps = ("EUFY-BP-S1-PRO", "EUFY-BP-E10")
+    plain = KnowledgeScope("category_only", "breast_pump")
+    covering = KnowledgeScope("category_only", "breast_pump", category_skus=pumps)
+    assert {e.doc_id for e in allowed_entries(manual, plain)} == {"manual_bp"}
+    assert {e.doc_id for e in allowed_entries(manual, covering)} == {"manual_bp", "official_eufy_pump_suction"}
+    assert sku_scoped_skus(manual, "breast_pump", pumps) == set()
+    # 只覆盖部分型号的资料仍是型号分化
+    assert sku_scoped_skus(manual, "breast_pump", ("EUFY-BP-S1-PRO", "EUFY-BP-E10", "EUFY-BP-OTHER")) == set(pumps)
+    assert {"EUFY-X10-PRO-OMNI", "EUFY-X9-PRO", "EUFY-S1-PRO"} <= sku_scoped_skus(manual, "robot_vacuum", ())

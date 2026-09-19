@@ -765,8 +765,15 @@
       "additionalProperties": false,
       "properties": {
         "sku": {
-          "title": "Sku",
-          "type": "string"
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sku"
         }
       },
       "required": [

@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -163,6 +164,16 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                         "out_of_scope": bool(spec is not None and not spec.in_scope),
                     }
                 )
+                if not update["out_of_scope"]:
+                    # spec 2026-09-19-0810 A：知识按型号分化时问一次型号（点选卡），不分化就不问
+                    cands = differentiated_candidates(catalog, category, {**state, **update})
+                    if cands:
+                        from app.diagnose.decision import known_symptom_codes
+
+                        # 已知症状码随卡片一起留在状态里：选中型号后直接检索排序，不再经过本函数
+                        update["product_candidates"] = cands
+                        update["symptom_codes"] = known_symptom_codes({**state, **update}, category=category)
+                        return Decision("continue", update)
             else:
                 update["product_state"] = "unknown"
                 visual_category = visual.get("category")
@@ -174,7 +185,15 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
 
     if update.get("out_of_scope"):
         return Decision("continue", update)
+    return symptom_decision(state, update, clar, confirmed, category)
 
+
+def symptom_decision(
+    state: dict[str, Any], update: dict[str, Any], clar: dict[str, Any],
+    confirmed: dict[str, Any] | None, category: str | None,
+) -> Decision:
+    """产品已定之后的症状判定：继续 / 问一句 / 升级。disambiguate 与产品卡片选中后（apply_action）共用，
+    否则「我的 S1 Pro 出问题了」选完型号会在没有任何现象的情况下直接下发第一条计划的步骤。"""
     # One diagnostic decision consumes accepted facts and quoted answers.
     from app.diagnose.decision import decide_symptoms
     product = confirmed or {}
@@ -258,6 +277,43 @@ def _confirm(cand: dict[str, Any]) -> dict[str, Any]:
         "category": cand.get("category"),
         "out_of_scope": not cand.get("in_scope", True),
     }
+
+
+# 用户已声明不知道型号：视同选了「不确定」，不再出型号卡
+UNKNOWN_MODEL = re.compile(
+    r"(不知道|不清楚|不确定|不记得|忘了|忘记)[^，。；,.;]{0,4}(型号|哪一?款|哪个型号|什么型号)"
+    r"|(型号|哪一?款)[^，。；,.;]{0,4}(不知道|不清楚|不确定|不记得|忘了|忘记)"
+)
+# 型号卡最多几个候选；超过就退回文字追问（当前数据不会触发）
+MAX_MODEL_CARD = 6
+
+
+def differentiated_candidates(catalog, category: str, state: dict[str, Any]) -> list[dict[str, Any]]:
+    """品类已知、型号未知时，值得问一次型号的候选（spec 2026-09-19-0810 A，T1）。
+
+    只列「知道了会改变下一步」的型号：型号专属计划、被通用计划排除的型号、知识索引里按型号分化的资料。
+    sku_list 覆盖全品类的资料按通用处理。本会话已出过型号卡、症状问诊已经开始、或用户已声明不知道型号时不问。
+    卡片带「其他型号 / 不确定」出口（prepare_card 的 allow_unknown），所以单候选也可以问。
+    """
+    from app.diagnose.decision import known_symptom_codes
+    from app.knowledge.adapter import sku_scoped_skus
+    from app.knowledge.runtime import indexed_entries
+
+    if (
+        state.get("prepare_card_calls")
+        or state.get("symptom_interview")  # 问诊已经开始：型号问题只在最初问一次，不打断问诊
+        or UNKNOWN_MODEL.search(state.get("text", "") or "")
+    ):
+        return []
+    category_skus = tuple(p.sku for p in catalog.products if p.category == category and p.in_scope)
+    skus = get_plans().differentiated_skus(
+        category=category, symptom_codes=known_symptom_codes(state, category=category)
+    )
+    skus |= sku_scoped_skus(indexed_entries(), category, category_skus)
+    records = [catalog.get(sku) for sku in sorted(skus & set(category_skus))]
+    if not records or len(records) > MAX_MODEL_CARD:
+        return []
+    return [r.to_candidate().model_dump() for r in records if r is not None]
 
 
 def _lookup(catalog, text: str, hints: list[str]) -> list[dict[str, Any]]:

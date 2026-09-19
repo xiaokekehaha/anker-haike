@@ -26,7 +26,8 @@ ActionKind = Literal[
 
 
 class SelectProductPayload(Strict):
-    sku: str
+    # None = 「其他型号 / 不确定」：只在 allow_unknown 的卡片上合法，服务端退回 category_only
+    sku: str | None
 
 
 class StepFeedbackPayload(Strict):

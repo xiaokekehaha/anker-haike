@@ -381,3 +381,13 @@ def test_clarification_carries_the_previous_question_for_repeat_detection():
     decided = decide(state, abandoned_card=None)
     assert decided.outcome == "clarify"
     assert decided.update["clarification"]["question"] == "设备按电源后能正常启动吗？"
+
+
+def test_fresh_interview_with_few_families_asks_a_selection_first():
+    """spec 2026-09-19-0810 C：用户什么都没说时，故障族不多的品类直接多选，不用 4/1 切分的是非题。"""
+    question = next_interview(None, "issue", "first", category="breast_pump")["question"]
+    assert question["kind"] == "symptom_selection"
+    assert [o["value"] for o in question["options"]] == ["吸力不足", "无法开机或充电", "漏奶或漏气", "异响", "App 连接"]
+    # 故障族多的品类仍走判别题；有过回答之后也回到判别题
+    for category in ("robot_vacuum", "power_bank", "headphones"):
+        assert "splits" in next_interview(None, "issue", "first", category=category)["question"], category

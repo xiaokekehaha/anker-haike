@@ -206,16 +206,15 @@ def _progress(interview):
     }
 
 
-def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
+def known_symptom_codes(state, *, category=None) -> list[str]:
+    """本轮已知的症状码：事实与问诊答案优先，没有时退回 intake 症状与原文归一；只保留该品类词表内的码。"""
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
     raw_interview = state.get("symptom_interview")
     interview = raw_interview if valid_interview(raw_interview) else None
-    issue = {**issue, "symptom_interview": interview}
-    codes = symptom_codes(issue)
+    codes = symptom_codes({**issue, "symptom_interview": interview})
     if not issue.get("facts") and not raw_interview:
         codes = list(dict.fromkeys([*codes, *(state.get("symptom_codes") or [])]))
-    product = state.get("product_confirmed") or {}
-    category = state.get("category") or product.get("category")
+    category = category or state.get("category") or (state.get("product_confirmed") or {}).get("category")
     if not codes:
         for text in state.get("symptoms") or []:
             codes.extend(canonical_codes(text, category=category)[0])
@@ -224,8 +223,17 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
     # 品类未定时 intake 用全品类并集归一症状码（「异响」同时命中扫地机 / 充电器 / 吸奶器）；
     # 品类一定，只保留本品类词表里的码，别的品类的码不进决策与状态
     known = {f["symptom_code"] for f in families(category)}
-    if known:
-        codes = [c for c in codes if c in known]
+    return [c for c in codes if c in known] if known else codes
+
+
+def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    raw_interview = state.get("symptom_interview")
+    interview = raw_interview if valid_interview(raw_interview) else None
+    issue = {**issue, "symptom_interview": interview}
+    product = state.get("product_confirmed") or {}
+    category = state.get("category") or product.get("category")
+    codes = known_symptom_codes(state, category=category)
     refs = list(
         dict.fromkeys(ref for f in _active_facts(issue) for ref in f.get("source_entry_ids", []))
     )

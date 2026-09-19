@@ -315,3 +315,151 @@ async def test_product_correction_and_category_conflict(mem_runtime):
 def test_fake_router_helper_shape():
     fake = FakeChatModel(script=[json.dumps({"question": "q"})])
     assert fake.script and fake.calls == []
+
+
+async def test_differentiated_category_asks_model_once_then_uses_sku_plan(mem_runtime):
+    """spec 2026-09-19-0810 A（T1）：品类已知、知识按型号分化 → 出一次型号卡；选中后走型号专属计划。
+    今天头戴耳机没有通用卡，不问型号只能 R5。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的头戴耳机一边没声音")
+        card = next(e for e in events if e["type"] == "product_card")
+        assert {c["sku"] for c in card["candidates"]} == {"SOUNDCORE-A3035", "SOUNDCORE-A3040"}
+        assert not any(e["type"] == "escalation_summary" for e in events)
+        state = await _state(sid)
+        assert state["product_state"] == "category_only" and state["category"] == "headphones"
+        pending = next(e for e in events if e["type"] == "awaiting_input")
+        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+        response = await client.post(
+            f"/sessions/{sid}/actions",
+            json=await action_body(client, f"/sessions/{sid}/actions", {
+                "action_id": "pick-q45",
+                "input_token": pending["input_token"],
+                "card_id": pending["card_id"],
+                "expected_version": snap.version,
+                "kind": "select_product",
+                "payload": {"sku": "SOUNDCORE-A3040"},
+            }),
+        )
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+    step = next(e for e in rows if e["type"] == "step_card")["step"]
+    assert step["plan_id"] == "hd_q45_one_side"
+    final = await _state(sid)
+    assert final["product_state"] == "confirmed_sku" and final["product_confirmed"]["sku"] == "SOUNDCORE-A3040"
+
+
+async def test_generic_only_category_skips_model_card_and_asks_selection(mem_runtime):
+    """spec 2026-09-19-0810 A（T2）+ C：吸奶器两款型号知识相同 → 不问型号；没有症状时首问是多选题（会话 934ad）。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的吸奶器出问题了：")
+    types = [e["type"] for e in events]
+    assert "product_card" not in types
+    text = _message_text(events)
+    assert text.startswith("具体有哪些现象（可多选）？") and "吸力不足" in text and "App 连接" in text
+    state = await _state(sid)
+    assert state["product_state"] == "category_only" and state["category"] == "breast_pump"
+    assert state["symptom_interview"]["question"]["kind"] == "symptom_selection"
+
+
+def test_model_card_is_skipped_when_it_would_not_change_the_next_step():
+    """T1 不出卡的三种情况：本会话已出过卡、用户已声明不知道型号、分化候选不足两个。"""
+    from app.sessions.cards import get_catalog
+    from app.sessions.clarify import differentiated_candidates
+
+    catalog = get_catalog()
+    base = {"text": "扫地机地图丢了", "prepare_card_calls": 0}
+    assert {c["sku"] for c in differentiated_candidates(catalog, "robot_vacuum", base)} == {
+        "EUFY-X10-PRO-OMNI", "EUFY-X9-PRO",
+    }
+    assert differentiated_candidates(catalog, "robot_vacuum", {**base, "prepare_card_calls": 1}) == []
+    assert differentiated_candidates(catalog, "robot_vacuum", {**base, "text": "扫地机地图丢了，不知道型号"}) == []
+    assert differentiated_candidates(catalog, "robot_vacuum", {**base, "text": "扫地机型号不清楚，地图丢了"}) == []
+    # 异响只有 X10 一个分化型号：卡片带「其他型号 / 不确定」出口，单候选也问
+    assert [c["sku"] for c in differentiated_candidates(catalog, "robot_vacuum", {**base, "text": "扫地机有异响"})] == ["EUFY-X10-PRO-OMNI"]
+    # 问诊已经开始就不再插入型号问题
+    assert differentiated_candidates(catalog, "robot_vacuum", {**base, "symptom_interview": {"answers": []}}) == []
+    assert differentiated_candidates(catalog, "breast_pump", {**base, "text": "吸奶器不吸了"}) == []
+
+
+async def _select(client, sid, events, sku):
+    pending = next(e for e in events if e["type"] == "awaiting_input")
+    snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+    response = await client.post(
+        f"/sessions/{sid}/actions",
+        json=await action_body(client, f"/sessions/{sid}/actions", {
+            "action_id": f"pick-{sku or 'unknown'}",
+            "input_token": pending["input_token"],
+            "card_id": pending["card_id"],
+            "expected_version": snap.version,
+            "kind": "select_product",
+            "payload": {"sku": sku},
+        }),
+    )
+    return response
+
+
+async def test_unknown_model_falls_back_to_category_generic_plan(mem_runtime):
+    """spec 2026-09-19-0810 B：型号卡带「其他型号 / 不确定」出口；选它退回 category_only，按品类通用计划继续。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "扫地机运行时有异响")
+        card = next(e for e in events if e["type"] == "product_card")
+        assert [c["sku"] for c in card["candidates"]] == ["EUFY-X10-PRO-OMNI"]
+        assert card["allow_unknown"] is True and card["note"] == "不同型号的排查方法不同"
+        response = await _select(client, sid, events, None)
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+    step = next(e for e in rows if e["type"] == "step_card")["step"]
+    from app.sessions.cards import get_plans
+    plan = get_plans().get(step["plan_id"])
+    assert plan.applies_to.scope == "category_generic" and "abnormal_noise" in plan.symptom_codes
+    state = await _state(sid)
+    assert state["product_state"] == "category_only" and state["category"] == "robot_vacuum"
+    assert state["product_confirmed"] is None and state["clarification"] is None
+    item = next(t for t in snap.timeline if t.kind == "product_card")
+    assert item.selected_unknown is True and item.selected_sku is None and item.allow_unknown is True
+
+
+async def test_unknown_model_without_generic_knowledge_ends_honestly(mem_runtime):
+    """头戴耳机没有品类通用计划：选「不确定」后按 R5 结束，摘要写明问过型号。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的头戴耳机一边没声音")
+        response = await _select(client, sid, events, None)
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+    summary = next(e for e in rows if e["type"] == "escalation_summary")["summary"]
+    assert summary["reason"]["rule_id"] == "R5"
+    assert any("已询问型号，用户不确定" in o for o in summary["observations"])
+
+
+async def test_unknown_model_is_rejected_on_cross_category_card(mem_runtime):
+    """目录多命中的卡（T0）品类未定，没有可退回的品类：sku=null 不合法，卡片保持待选。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的 S1 Pro 不吸了")
+        card = next(e for e in events if e["type"] == "product_card")
+        assert card["allow_unknown"] is False
+        response = await _select(client, sid, events, None)
+        assert response.status_code == 409, response.text
+        snap = SessionSnapshot.model_validate((await client.get(f"/sessions/{sid}")).json())
+        assert snap.pending_input is not None and snap.pending_input.kind == "select_product"
+
+
+async def test_product_selection_without_symptom_asks_before_any_step(mem_runtime):
+    """选完型号还没有任何现象：先问症状，不能直接下发第一条计划的步骤（T0 与 T1 同一套判定）。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send(client, sid, "我的 S1 Pro 出问题了：")
+        response = await _select(client, sid, events, "EUFY-S1-PRO")
+        assert response.status_code == 200, response.text
+        rows = sse.parse(response.text)
+    assert not any(e["type"] == "step_card" for e in rows)
+    assert _message_text(rows) == "设备按电源后能正常启动吗？"
+    state = await _state(sid)
+    assert state["product_confirmed"]["sku"] == "EUFY-S1-PRO"
+    assert state["clarification"]["reason"] == "symptom" and state["clarification"]["attempts"] == 1
+    assert state["symptom_interview"]["question"]["question"] == "设备按电源后能正常启动吗？"
