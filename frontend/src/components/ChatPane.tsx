@@ -1,15 +1,27 @@
 import styles from './ChatPane.module.css';
 
-// 品类键与文案对齐 config/products.yaml（官网五大产品线下的品类）；点击发出的文字要能被 category_hint 的关键词认出
+// 品类键与文案对齐 config/products.yaml（官网五大产品线下的品类）；点击发出的文字要能被 category_hint 的关键词认出。
+// supported = config/plans.yaml 里已有排障计划的品类；其余品类在首屏置灰，等资料补齐后翻成 true 即可。
 export const PRODUCT_CATEGORIES = [
-  { key: 'power_bank', label: '移动电源' },
-  { key: 'charger', label: '充电器' },
-  { key: 'robot_vacuum', label: '扫地机器人' },
-  { key: 'security_cam', label: '安防摄像头' },
-  { key: 'breast_pump', label: '吸奶器' },
-  { key: 'earbuds', label: '无线耳机' },
-  { key: 'speaker', label: '音箱' },
-  { key: 'projector', label: '便携投影仪' },
+  { key: 'power_bank', label: '移动电源', supported: true },
+  { key: 'charger', label: '充电器', supported: true },
+  { key: 'robot_vacuum', label: '扫地机器人', supported: true },
+  { key: 'security_cam', label: '安防摄像头', supported: true },
+  { key: 'breast_pump', label: '吸奶器', supported: true },
+  { key: 'earbuds', label: '无线耳机', supported: true },
+  { key: 'headphones', label: '头戴式耳机', supported: true },
+  { key: 'speaker', label: '音箱', supported: true },
+  { key: 'cable', label: '数据线', supported: false },
+  { key: 'wireless_charger', label: '无线充电器', supported: false },
+  { key: 'charging_station', label: '充电站', supported: false },
+  { key: 'hub', label: '集线器与拓展坞', supported: false },
+  { key: 'portable_power_station', label: '便携储能', supported: false },
+  { key: 'robot_mower', label: '割草机器人', supported: false },
+  { key: 'baby_monitor', label: '婴儿监视器', supported: false },
+  { key: 'smart_scale', label: '智能体重秤', supported: false },
+  { key: 'sleep_earbuds', label: '睡眠耳机', supported: false },
+  { key: 'projector', label: '便携投影仪', supported: false },
+  { key: 'uv_printer', label: 'UV 打印机', supported: false },
 ] as const;
 
 export const STARTER_PROMPTS = [
@@ -34,17 +46,19 @@ export function ChatPane({ onPick, disabled }: Props) {
       </div>
 
       <section className={styles.block} aria-labelledby="cat-title">
-        <h3 id="cat-title">也可以先选产品<span>选填</span></h3>
+        <h3 id="cat-title">也可以先选产品<span>选填</span><em>灰色品类的排障资料还在整理，可以直接描述问题</em></h3>
         <ul className={styles.categories}>
           {PRODUCT_CATEGORIES.map((c) => (
             <li key={c.key}>
-              <button type="button" disabled={disabled} onClick={() => onPick(`我的${c.label}出问题了：`)}>{c.label}</button>
+              <button type="button" disabled={disabled || !c.supported} data-supported={c.supported || undefined}
+                title={c.supported ? undefined : '排障资料整理中，暂不支持自助排查'} aria-label={c.supported ? undefined : `${c.label}（暂不支持）`}
+                onClick={() => onPick(`我的${c.label}出问题了：`)}>{c.label}</button>
             </li>
           ))}
         </ul>
       </section>
 
-      <details className={styles.examples}>
+      <details className={styles.examples} open>
         <summary>不知道怎么说？看看示例</summary>
         <ul className={styles.starters}>
           {STARTER_PROMPTS.map((s) => (
