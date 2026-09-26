@@ -7,6 +7,8 @@ import io
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.conversation.taxonomy import families
+from app.diagnose.decision import known_symptom_codes
 from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
 from app.main import app
@@ -363,3 +365,33 @@ async def test_photo_contradicting_the_text_asks_before_diagnosing(
     assert state["clarification"]["reason"] == "conflict"
     said = " ".join(e.get("delta", "") for e in events if e["type"] == "message")
     assert "图片与文字描述存在差异" in said and "滚刷" in said, f"应当把差异说给用户听：{said!r}"
+
+
+async def test_photo_signature_of_another_category_does_not_mask_the_text_symptom(
+    mem_runtime, img_store, l3_services, tmp_path
+):
+    """（充电触点, 污渍）也是耳机不充电的签名。照片在品类确定前读，签名事实只能带耳机的码；
+    决策层按扫地机过滤后不能落空，也不能因此跳过原文「回不了座，充不上电」的归一。"""
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [
+            INTAKE_OK,
+            {
+                "observations": ["充电触点发黑"],
+                "visible_parts": ["充电触点"],
+                "findings": [{"part": "充电触点", "phenomenon": "污渍", "evidence": "触点发黑"}],
+            },
+        ],
+    )
+    set_model_router(router)
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send_bytes(client, sid, "eufy X9 Pro 回不了座，充不上电", [_real_png()])
+    st = await _state(sid)
+    assert st["category"] == "robot_vacuum"
+    vacuum = {f["symptom_code"] for f in families("robot_vacuum")}
+    codes = known_symptom_codes(st)
+    assert codes and set(codes) <= vacuum
+    assert set(st.get("symptom_codes") or []) <= vacuum
+    assert not any(e["type"] == "escalation_summary" for e in events)

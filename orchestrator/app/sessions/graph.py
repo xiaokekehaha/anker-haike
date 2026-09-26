@@ -515,11 +515,18 @@ async def vision(state: SessionState) -> SessionState:
         # 这里把词表签名命中的 plan 在 plans.yaml 声明的症状码写成一条图片来源的症状事实，
         # 图片路径与文字路径（symptom_taxonomy「缠绕 → suction_low」）在决策层等价。同一张图重传会读两次，按 value 去重。
         library = get_plan_library()
+        # 同一签名可以属于多个品类（充电触点污渍既是耳机不充电，也可能是扫地机回座）：
+        # 品类已知时只取本品类的计划，否则别的品类的症状码会进本事项、跳过问诊后落空。
+        category = (
+            update.get("category") or state.get("category") or (state.get("product_confirmed") or {}).get("category")
+        )
         signature_facts = []
-        for index, (finding, plan_ids) in enumerate(signature_matches(out.fault_localization)):
-            codes = list(dict.fromkeys(
-                code for pid in plan_ids if pid in library.plan_ids for code in library.get(pid).symptom_codes
-            ))
+        for index, (finding, matched) in enumerate(signature_matches(out.fault_localization)):
+            plan_ids = [
+                pid for pid in matched
+                if pid in library.plan_ids and (not category or library.get(pid).applies_to.category == category)
+            ]
+            codes = list(dict.fromkeys(code for pid in plan_ids for code in library.get(pid).symptom_codes))
             quote = f"{finding['part']}{finding['phenomenon']}"
             if not codes or any(
                 f.get("kind") == "symptom" and f.get("status") == "active" and f.get("value") == f"图片：{quote}"

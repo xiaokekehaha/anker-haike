@@ -225,14 +225,17 @@ def known_symptom_codes(state, *, category=None) -> list[str]:
     if not issue.get("facts") and not raw_interview:
         codes = list(dict.fromkeys([*codes, *(state.get("symptom_codes") or [])]))
     category = category or state.get("category") or (state.get("product_confirmed") or {}).get("category")
+    # 品类未定时 intake 用全品类并集归一症状码（「异响」同时命中扫地机 / 充电器 / 吸奶器）；
+    # 品类一定，只保留本品类词表里的码，别的品类的码不进决策与状态。
+    # 先过滤再判断要不要退回原文归一：品类未定时写下的照片签名可能只带别的品类的码，
+    # 它不能挡掉本品类的原文症状（充电触点污渍既是耳机不充电，也是扫地机回座）。
+    known = {f["symptom_code"] for f in families(category)}
+    codes = [c for c in codes if c in known] if known else codes
     if not codes:
         for text in state.get("symptoms") or []:
             codes.extend(canonical_codes(text, category=category)[0])
         codes.extend(canonical_codes(state.get("text", ""), category=category)[0])
     codes = list(dict.fromkeys(codes))
-    # 品类未定时 intake 用全品类并集归一症状码（「异响」同时命中扫地机 / 充电器 / 吸奶器）；
-    # 品类一定，只保留本品类词表里的码，别的品类的码不进决策与状态
-    known = {f["symptom_code"] for f in families(category)}
     return [c for c in codes if c in known] if known else codes
 
 
