@@ -89,6 +89,9 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                     break
     update: dict[str, Any] = {}
     visual = state.get("visual_product") or {}
+    # 未核实的铭牌读数（vision 节点只存线索，不锁定）：只在原本就要问产品或型号时用作卡片候选。
+    # 不走 _lookup 的单命中分支——那会自动确认，正是铭牌复看要防的静默锁定。
+    photo = [] if state.get("prepare_card_calls") else _lookup(catalog, visual.get("model_hint") or "", [])
     expected = clar.get("expected_category")
     response = text.strip("。！! ")
     if not category and expected and clar.get("question"):
@@ -170,10 +173,14 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                     if cands:
                         from app.diagnose.decision import known_symptom_codes
 
+                        read = {c["sku"] for c in photo}
                         # 已知症状码随卡片一起留在状态里：选中型号后直接检索排序，不再经过本函数
-                        update["product_candidates"] = cands
+                        update["product_candidates"] = sorted(cands, key=lambda c: c["sku"] not in read)
                         update["symptom_codes"] = known_symptom_codes({**state, **update}, category=category)
                         return Decision("continue", update)
+            elif photo:
+                update.update({"product_candidates": photo, "product_state": "unknown"})
+                return Decision("continue", update)
             else:
                 update["product_state"] = "unknown"
                 visual_category = visual.get("category")

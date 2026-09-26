@@ -259,7 +259,9 @@ async def test_unverified_ocr_cannot_confirm_catalog_product(monkeypatch):
              "image_refs": [{"image_id": "pic", "run_id": "r", "issue_id": "i"}]}
     update = await vision(state)
     result = decide({**state, **update}, abandoned_card=None)
-    assert result.outcome == "clarify"
+    # 未核实的读数只变成卡片候选（由用户点选），不能确认产品
+    assert result.outcome == "continue" and result.update["product_state"] == "unknown"
+    assert result.update["product_candidates"]
     assert not result.update.get("product_confirmed")
 
 

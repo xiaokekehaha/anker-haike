@@ -643,14 +643,21 @@ async def prepare_card(state: SessionState) -> SessionState:
     # 品类已知时的型号卡（spec 2026-09-19-0810 T1）：候选只是知识分化的型号，必须给「其他型号 / 不确定」出口；
     # 目录多命中的卡（T0）品类都还不定，没有可退回的品类，不给出口
     model_card = state.get("product_state") == "category_only" and bool(state.get("category"))
+    # 候选来自未核实的铭牌读数（clarify.decide）：说明来源；候选同属一个品类时也给「不确定」出口
+    hint = (state.get("visual_product") or {}).get("model_hint")
+    from_photo = bool(hint) and bool({c.sku for c in get_catalog().lookup_product(hint)} & {c["sku"] for c in cands})
+    categories = {c.get("category") for c in cands}
+    category = state.get("category") if model_card else next(iter(categories)) if from_photo and len(categories) == 1 else None
+    note = f"照片铭牌读到「{hint}」，请确认是不是这台设备" if from_photo else "不同型号的排查方法不同" if model_card else None
     return {
         "pending_card": {
             "card_id": card_id,
             "kind": "select_product",
             "payload": {
                 "candidates": cands,
-                "allow_unknown": model_card,
-                **({"note": "不同型号的排查方法不同", "category": state["category"]} if model_card else {}),
+                "allow_unknown": bool(category),
+                **({"note": note} if note else {}),
+                **({"category": category} if category else {}),
             },
         },
         "prepare_card_calls": state.get("prepare_card_calls", 0) + 1,
