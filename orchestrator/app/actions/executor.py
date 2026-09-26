@@ -15,6 +15,10 @@ class AuthorizationDenied(RuntimeError):
     pass
 
 
+class OutcomeUnverified(BackendError):
+    user_message = "办理结果暂时无法确认，为避免重复办理，已转人工核实。"
+
+
 @dataclass(frozen=True)
 class ExecutionResult:
     execution_id: str
@@ -22,6 +26,7 @@ class ExecutionResult:
     receipt: Receipt
     replayed: bool = False
     recoverable: bool = False
+    needs_review: bool = False
 
 
 class ActionExecutor:
@@ -93,12 +98,14 @@ class ActionExecutor:
         }
         stored, acquired = await self.store.claim(row, spec["timeout_ms"] + 1000)
         if not acquired:
+            error = stored.get("error") or {}
             return ExecutionResult(
                 stored["execution_id"],
                 stored["status"],
                 Receipt.model_validate(stored["receipt"]),
                 True,
-                bool((stored.get("error") or {}).get("recoverable")),
+                bool(error.get("recoverable")),
+                bool(error.get("needs_review")),
             )
         emit = writer or (lambda _: None)
         emit(
@@ -135,7 +142,7 @@ class ActionExecutor:
                         data=value.model_dump(mode="json"),
                     )
                 else:
-                    value = await self.backend.create_service_order(ServiceOrderRequest(**params))
+                    value = await self._create_once(params, idempotency_key, stored["attempt"])
                     receipt = Receipt(
                         status=value.status,
                         service_order_no=value.service_order_no,
@@ -147,6 +154,7 @@ class ActionExecutor:
         except (BackendError, TimeoutError) as exc:
             error = Timeout() if isinstance(exc, TimeoutError) else exc
             receipt = Receipt(status="failed", next_step=error.user_message)
+            needs_review = isinstance(error, OutcomeUnverified)
             await self.store.finish(
                 idempotency_key,
                 stored["attempt"],
@@ -156,6 +164,9 @@ class ActionExecutor:
                     "code": type(error).__name__,
                     "recoverable": error.recoverable,
                     "message": error.user_message,
+                    # A write that timed out may have happened; the next attempt looks it up.
+                    "outcome_unknown": write and isinstance(error, Timeout),
+                    "needs_review": needs_review,
                 },
             )
             emit(
@@ -168,7 +179,11 @@ class ActionExecutor:
                 }
             )
             return ExecutionResult(
-                stored["execution_id"], "failed", receipt, recoverable=error.recoverable
+                stored["execution_id"],
+                "failed",
+                receipt,
+                recoverable=error.recoverable,
+                needs_review=needs_review,
             )
         await self.store.finish(
             idempotency_key, stored["attempt"], "succeeded", receipt.model_dump(mode="json"), None
@@ -183,3 +198,17 @@ class ActionExecutor:
             }
         )
         return ExecutionResult(stored["execution_id"], "succeeded", receipt)
+
+    async def _create_once(self, params, client_ref, attempt):
+        # An earlier attempt may have created the order and lost the answer. Look it
+        # up first; create again only when the backend confirms nothing exists.
+        if attempt > 1:
+            try:
+                found = await self.backend.find_service_order(client_ref)
+            except BackendError as exc:
+                raise OutcomeUnverified() from exc
+            if found:
+                return found
+        return await self.backend.create_service_order(
+            ServiceOrderRequest(**params, client_ref=client_ref)
+        )

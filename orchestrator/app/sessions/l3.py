@@ -9,7 +9,7 @@ from haike_contracts.common import REMEDY_LADDER
 
 from app.actions.gate import AuthorizationGate
 from app.actions.runtime import require_services
-from app.actions.store import ExecutionBusy
+from app.actions.store import ExecutionBusy, ExecutionNeedsReview
 from app.backends.protocol import BackendError
 from app.cases.service import case_event
 from app.conversation.business import BusinessContext
@@ -427,6 +427,8 @@ async def execute(state):
             policy_version=state["policy_decision"]["policy_version"],
             writer=writer(),
         )
+    except ExecutionNeedsReview:
+        return await _outcome_needs_review(state, "这次办理的结果暂时无法确认。为避免重复办理，已交人工核实。")
     except ExecutionBusy:
         say(state, "相同申请仍在处理，请稍后查询案件状态。")
         return {"l3_route": "commit_issue"}
@@ -450,6 +452,8 @@ async def execute(state):
         "action_kind": "replacement.create",
     }
     if result.status != "succeeded":
+        if result.needs_review:
+            return {"execution": execution, **await _outcome_needs_review(state, result.receipt.next_step)}
         say(state, result.receipt.next_step)
         if result.recoverable:
             case = await services.cases.transition(state["case_id"], "executing_failed", "业务系统暂时不可用，可重试原申请")
@@ -483,6 +487,15 @@ async def execute(state):
         "prior_remedies": list(dict.fromkeys([*state.get("prior_remedies", []), "replace"])),
         "l3_route": "track",
     }
+
+
+async def _outcome_needs_review(state, text):
+    case = await require_services().cases.transition(
+        state["case_id"], "awaiting_approval", "执行结果待人工核实"
+    )
+    emit_case(state, case)
+    say(state, text)
+    return {"l3_route": "await_human"}
 
 
 async def track(state):

@@ -47,16 +47,17 @@ async def l3_pool():
             spec.loader.exec_module(module)
             for statement in module.STATEMENTS:
                 await conn.execute(statement)
-            path = REPO_ROOT / "orchestrator/migrations/versions/0007_l3_metrics.py"
-            spec = importlib.util.spec_from_file_location("l3_metrics_migration", path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            statements = []
             from types import SimpleNamespace
-            module.op = SimpleNamespace(execute=statements.append)
-            module.upgrade()
-            for statement in statements:
-                await conn.execute(statement)
+            for name in ("0007_l3_metrics", "0008_service_order_client_ref"):
+                path = REPO_ROOT / f"orchestrator/migrations/versions/{name}.py"
+                spec = importlib.util.spec_from_file_location(name, path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                statements = []
+                module.op = SimpleNamespace(execute=statements.append)
+                module.upgrade()
+                for statement in statements:
+                    await conn.execute(statement)
         yield pool
     finally:
         await pool.close()
@@ -74,10 +75,14 @@ async def test_seed_sql_and_backend_idempotency(l3_pool):
     assert order.region_purchase == "US"
     shipment = await backend.get_shipment(order_no=order.order_no)
     assert await backend.get_shipment(tracking_no=shipment.tracking_no) == shipment
-    req = ServiceOrderRequest(order_no=order.order_no, sku=order.sku, reason_code="quality")
+    req = ServiceOrderRequest(
+        order_no=order.order_no, sku=order.sku, reason_code="quality", client_ref="case:replace"
+    )
     results = await asyncio.gather(*[backend.create_service_order(req) for _ in range(5)])
     assert all(r == results[0] for r in results)
     assert await backend.get_service_order(results[0].service_order_no) == results[0]
+    assert await backend.find_service_order("case:replace") == results[0]
+    assert await backend.find_service_order("other") is None
 
 
 async def test_durable_executor_and_case_transactions(l3_pool):

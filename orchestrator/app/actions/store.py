@@ -17,6 +17,10 @@ class ExecutionBusy(RuntimeError):
     pass
 
 
+class ExecutionNeedsReview(ExecutionBusy):
+    """A lease already taken over once went stale again; a person must check the outcome."""
+
+
 class IdempotencyConflict(RuntimeError):
     pass
 
@@ -43,9 +47,9 @@ def _claim(old, new, timeout_ms):
         milliseconds=timeout_ms
     ) > datetime.now(UTC):
         raise ExecutionBusy("相同动作仍在执行")
-    # A single recovery of an expired lease; backend creation has its own business key.
+    # A single recovery of an expired lease; the retry looks the order up by client_ref first.
     if old["status"] == "running" and old["attempt"] >= 2:
-        raise ExecutionBusy("执行状态需人工核实")
+        raise ExecutionNeedsReview("执行状态需人工核实")
     if old["status"] == "failed" and not (old.get("error") or {}).get("recoverable"):
         return old, False
     return {

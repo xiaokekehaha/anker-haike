@@ -54,6 +54,9 @@ class ServiceOrderRequest(Strict):
     type: str = "replacement"
     reason_code: str
     evidence_ids: list[str] = Field(default_factory=list)
+    # Caller's idempotency key. After an ambiguous timeout the caller looks the
+    # order up by it instead of creating again; a real backend must honour it.
+    client_ref: str | None = None
 
 
 class ServiceOrder(Strict):
@@ -65,6 +68,7 @@ class ServiceOrder(Strict):
     status: str
     created_at: str
     eta_days: int = 3
+    client_ref: str | None = None
 
 
 class BackendClient(Protocol):
@@ -74,3 +78,4 @@ class BackendClient(Protocol):
     ) -> Shipment: ...
     async def create_service_order(self, req: ServiceOrderRequest) -> ServiceOrder: ...
     async def get_service_order(self, service_order_no: str) -> ServiceOrder: ...
+    async def find_service_order(self, client_ref: str) -> ServiceOrder | None: ...

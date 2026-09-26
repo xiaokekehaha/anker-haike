@@ -21,7 +21,7 @@ def _baseline_module():
     return _revision_module("0001_baseline.py")
 
 
-HEAD = "0007"  # 基线 + 图片 + 凭证参考表（票 41）+ analytics 观测台事实表
+HEAD = "0008"  # 基线 + 图片 + 凭证参考表（票 41）+ analytics 观测台事实表 + 服务单调用方幂等键
 
 
 def _tables_in(ddl: str) -> set[str]:

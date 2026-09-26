@@ -5,6 +5,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from app.actions.runtime import configure
+from app.actions.store import ExecutionNeedsReview
 from app.conversation.interpret import TurnInterpretation
 from app.main import app
 
@@ -633,6 +634,56 @@ async def test_transient_execution_failure_retries_original_case_after_inline_qu
         execution = await l3_runtime.executor.store.get(last_receipt["idempotency_key"])
         assert execution["attempt"] == 2
         assert not any(e["type"] == "error" for e in [*failed, *succeeded])
+
+
+async def test_ambiguous_execution_timeout_retry_does_not_create_twice(l3_runtime, monkeypatch):
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = await seed_issue(client, monkeypatch)
+        await send(client, sid, "我要换货")
+        backend = l3_runtime.backend
+        requests = []
+        create = backend.create_service_order
+
+        async def counted(req):
+            requests.append(req.client_ref)
+            return await create(req)
+
+        monkeypatch.setattr(backend, "create_service_order", counted)
+        backend.faults.append({"op": "create_service_order", "order_no": "DEMO-X10-001", "mode": "created_then_timeout"})
+        failed = events(await act(client, sid, "confirm_proposal", {"option_id": "replace"}))
+        assert any(e["type"] == "case_changed" and e["status"] == "executing_failed" for e in failed)
+        backend.faults.clear()
+        rows = events(await act(client, sid, "confirm_proposal", {"option_id": "replace"}))
+        receipt = next(e for e in rows if e["type"] == "execution_card")
+        assert receipt["status"] == "succeeded"
+        assert len(requests) == 1 and backend.create_calls == 1
+        found = await backend.find_service_order(requests[0])
+        assert receipt["receipt"]["service_order_no"] == found.service_order_no
+        assert not any(e["type"] == "error" for e in [*failed, *rows])
+
+
+async def test_execution_needing_review_goes_to_human_queue(l3_runtime, monkeypatch):
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = await seed_issue(client, monkeypatch)
+        await send(client, sid, "我要换货")
+
+        async def stuck(*args, **kwargs):
+            raise ExecutionNeedsReview("执行状态需人工核实")
+
+        monkeypatch.setattr(l3_runtime.executor, "run", stuck)
+        rows = events(await act(client, sid, "confirm_proposal", {"option_id": "replace"}))
+        assert not any(e["type"] == "error" for e in rows), rows
+        assert any(e["type"] == "case_changed" and e["status"] == "awaiting_approval" for e in rows)
+        assert "人工核实" in "".join(e.get("delta", "") for e in rows)
+        state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
+        case = await l3_runtime.cases.store.get(state["case_id"])
+        assert any(
+            e["type"] == "status_changed" and e["payload"]["reason"] == "执行结果待人工核实"
+            for e in case["events"]
+        )
+        assert any(r["case_id"] == case["case_id"] for r in await l3_runtime.cases.store.queue())
+        detail = (await client.get(f"/admin/api/cases/{case['case_id']}")).json()
+        assert detail["handoff_summary"]["reason"]["text"] == "执行结果待人工核实"
 
 
 async def test_retry_rechecks_changed_service_context(l3_runtime, monkeypatch):

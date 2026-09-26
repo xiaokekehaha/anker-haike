@@ -26,16 +26,25 @@ def load_config(path: Path = CONFIG_DIR / "backends_mock.yaml") -> dict:
     return yaml.safe_load(path.read_text())
 
 
+FAULT_ERRORS = {"timeout": Timeout, "unavailable": Unavailable, "conflict": Conflict}
+
+
 class FaultInjection:
     def __init__(self, faults=()):
         self.faults = list(faults)
 
     def check(self, op, order_no):
         for fault in self.faults:
-            if fault["op"] == op and fault["order_no"] == order_no:
-                raise {"timeout": Timeout, "unavailable": Unavailable, "conflict": Conflict}[
-                    fault["mode"]
-                ]()
+            if fault["op"] == op and fault["order_no"] == order_no and fault["mode"] in FAULT_ERRORS:
+                raise FAULT_ERRORS[fault["mode"]]()
+
+    def check_committed(self, op, order_no):
+        """The write went through but its answer was lost: the case a retry must look up."""
+        if any(
+            f["op"] == op and f["order_no"] == order_no and f["mode"] == "created_then_timeout"
+            for f in self.faults
+        ):
+            raise Timeout()
 
 
 class MockBackend(FaultInjection):
@@ -82,13 +91,15 @@ class MockBackend(FaultInjection):
         number = (
             "SRV-" + uuid.uuid5(uuid.NAMESPACE_URL, req.order_no + ":" + req.type).hex[:16].upper()
         )
-        return await self._one(
-            """insert into service_orders_mock(service_order_no,order_no,sku,type,reason_code,status,eta_days)
-            values (%s,%s,%s,%s,%s,'created',3)
+        created = await self._one(
+            """insert into service_orders_mock(service_order_no,order_no,sku,type,reason_code,status,eta_days,client_ref)
+            values (%s,%s,%s,%s,%s,'created',3,%s)
             on conflict(order_no,type) do update set order_no=excluded.order_no returning *""",
-            (number, req.order_no, req.sku, req.type, req.reason_code),
+            (number, req.order_no, req.sku, req.type, req.reason_code, req.client_ref),
             ServiceOrder,
         )
+        self.check_committed("create_service_order", req.order_no)
+        return created
 
     async def get_service_order(self, service_order_no):
         self.check("get_service_order", service_order_no)
@@ -97,6 +108,14 @@ class MockBackend(FaultInjection):
             (service_order_no,),
             ServiceOrder,
         )
+
+    async def find_service_order(self, client_ref):
+        try:
+            return await self._one(
+                "select * from service_orders_mock where client_ref=%s", (client_ref,), ServiceOrder
+            )
+        except NotFound:
+            return None
 
 
 class MemoryBackend(FaultInjection):
@@ -147,10 +166,18 @@ class MemoryBackend(FaultInjection):
                     status="created",
                     created_at=datetime.now(UTC).isoformat(),
                 )
-            return self.service_orders[number].model_copy(deep=True)
+            created = self.service_orders[number].model_copy(deep=True)
+        self.check_committed("create_service_order", req.order_no)
+        return created
 
     async def get_service_order(self, service_order_no):
         self.check("get_service_order", service_order_no)
         if service_order_no not in self.service_orders:
             raise NotFound()
         return self.service_orders[service_order_no].model_copy(deep=True)
+
+    async def find_service_order(self, client_ref):
+        return next(
+            (o.model_copy(deep=True) for o in self.service_orders.values() if o.client_ref == client_ref),
+            None,
+        )
