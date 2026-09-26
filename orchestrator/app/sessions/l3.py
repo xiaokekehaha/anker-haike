@@ -23,6 +23,7 @@ from app.policy.models import PolicyInput
 
 CONTEXT_FIELDS = ("region_purchase", "region_use", "channel", "platform")
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
+REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}
 REMEDY_TITLES = {
     "parts": "寄送更换配件",
     "repair": "申请维修",
@@ -234,6 +235,8 @@ async def propose(state):
         "user_confirmed": False,
     }
     case = await services.cases.store.get(state["case_id"])
+    if case["status"] in {"approved", "awaiting_approval"} and (requested := changed_request(state, case)):
+        return await _pause_for_changed_request(state, requested)
     if case["status"] not in {
         "open",
         "diagnosing",
@@ -313,6 +316,43 @@ async def propose(state):
                 )
     emit_case(state, case)
     return update
+
+
+def changed_request(state, case):
+    """A remedy asked on a message turn that the pending approval does not cover."""
+    requested = REQUESTED_REMEDY.get((state.get("turn_decision") or {}).get("primary_intent"))
+    if state.get("entry") != "message" or not requested:
+        return None
+    decided_at = max((d["at"] for d in case["decisions"]), default="")
+    # The request recorded at review, or the latest change since the last human decision.
+    latest = next(
+        (
+            e["payload"]["requested"]
+            for e in reversed(case["events"])
+            if e["type"] in {"review_requested", "request_changed"} and e["at"] > decided_at
+        ),
+        None,
+    )
+    covered = latest or case.get("chosen_option_id") or (case.get("proposal") or {}).get("chosen_option_id")
+    return None if requested == covered else requested
+
+
+async def _pause_for_changed_request(state, requested):
+    row = await require_services().cases.request_changed(
+        state["case_id"], input_id=state["input_id"], quote=state.get("text", ""), requested=requested
+    )
+    row = await _record_handoff(
+        {**state, "requested_remedy": requested}, row, "客户变更诉求：" + (state.get("text") or "")
+    )
+    pc = state.get("pending_card")
+    if pc:
+        writer()({"type": "pending_changed", "issue_id": state["active_issue_id"],
+                  "pending_id": pc["card_id"], "status": "invalidated", "reason": "request_changed",
+                  "version": state["base_version"] + 1})
+    emit_case(state, row, "客户变更诉求")
+    say(state, "已暂停原方案。您的新要求已交人工重新审核，审核结果会回到本会话。")
+    return {**inactive_case_state(state), "requested_remedy": requested, "case_status": row["status"],
+            "stage": "awaiting_human", "l3_route": "commit_issue"}
 
 
 async def authorize(state):
@@ -538,6 +578,8 @@ async def await_human(state):
         complaint_risk=complaint_flagged(state),
         priority="high" if complaint_flagged(state) else "normal",
     )
+    if state.get("requested_remedy"):
+        row = await services.cases.record_review_request(state["case_id"], state["requested_remedy"])
     row = await _record_handoff(state, row)
     emit_case(state, row)
     say(state, "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。")

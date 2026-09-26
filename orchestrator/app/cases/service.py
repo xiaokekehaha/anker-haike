@@ -354,6 +354,36 @@ class CaseService:
 
         return await self.store.mutate(case_id, apply)
 
+    async def request_changed(self, case_id, *, input_id, quote, requested):
+        """The customer asked for something else before execution: the pending approval and
+        consent no longer cover it, so the case goes back to review with the change recorded."""
+
+        def apply(row):
+            if any(e["type"] == "request_changed" and e["payload"]["input_id"] == input_id for e in row["events"]):
+                return
+            if row["status"] == "approved":
+                _transition(row, "awaiting_approval", "客户变更诉求，原审批暂停")
+            if row.get("proposal"):
+                row["proposal"] = {**row["proposal"], "user_confirmed": False, "chosen_option_id": None}
+            row["chosen_option_id"] = None
+            _event(row, "request_changed", {"input_id": input_id, "quote": quote, "requested": requested}, "user")
+
+        return await self.store.mutate(case_id, apply)
+
+    async def record_review_request(self, case_id, requested):
+        """What the customer asked for when the case went to review; a later change is judged against it."""
+
+        def apply(row):
+            last = next(
+                (e["payload"]["requested"] for e in reversed(row["events"])
+                 if e["type"] in {"review_requested", "request_changed"}),
+                None,
+            )
+            if last != requested:
+                _event(row, "review_requested", {"requested": requested}, "system")
+
+        return await self.store.mutate(case_id, apply)
+
     async def record_handoff(self, case_id, summary):
         """The latest AI handoff for the desk. Case events never reach the customer's timeline."""
 
