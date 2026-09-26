@@ -9,6 +9,7 @@ from app.actions.runtime import configure
 from app.actions.store import ExecutionNeedsReview
 from app.conversation.interpret import TurnInterpretation
 from app.main import app
+from app.sessions.l3 import policy_input
 
 
 @pytest.fixture
@@ -816,3 +817,30 @@ async def test_confirm_context_command_is_applied_before_intent_routing(l3_runti
         state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
         assert state["service_context"]["region_use"] == "DE"
         assert state["card_results"][card["card_id"]]["confirmed_fields"]["region_use"] == "DE"
+
+
+async def test_stated_purchase_date_is_kept_for_prefill_but_never_as_policy_input(l3_runtime, monkeypatch):
+    original = semantic.interpret_turn
+
+    async def stated(router, state, **kwargs):
+        if state.get("text") == "去年双十一买的":
+            return TurnInterpretation(primary_intent="supplement", facts=[
+                {"kind": "context", "context_field": "purchase_date", "value": "2025-11-11", "quote": "去年双十一买的"},
+            ]), {"source": "test"}
+        if state.get("text") == "下个月买的":
+            return TurnInterpretation(primary_intent="supplement", facts=[
+                {"kind": "context", "context_field": "purchase_date", "value": "2099-01-01", "quote": "下个月买的"},
+            ]), {"source": "test"}
+        return await original(router, state, **kwargs)
+
+    monkeypatch.setattr(semantic, "interpret_turn", stated)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await send(client, sid, "下个月买的")
+        state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
+        assert "purchase_date" not in (state.get("service_context") or {})
+        await send(client, sid, "去年双十一买的")
+        state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
+        assert state["service_context"]["purchase_date"] == "2025-11-11"
+        assert state["context_sources"]["purchase_date"] == "user"
+        assert policy_input(state).purchase_date is None

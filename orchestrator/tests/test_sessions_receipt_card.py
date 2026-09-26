@@ -21,7 +21,13 @@ from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
 from app.sessions import sse
-from app.sessions.receipt import FIELDS, LOW_CONFIDENCE, extract_receipt
+from app.sessions.receipt import (
+    FIELDS,
+    LOW_CONFIDENCE,
+    card_payload,
+    extract_receipt,
+    stated_purchase_date,
+)
 from tests.message_form import action_body, escalate_on_feedback, message_form
 from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_images import png_bytes
@@ -306,3 +312,23 @@ async def test_extract_receipt_module_degrades_without_router_or_images(tmp_path
         router, store, session_id="s", image_ids=["gone"], refs=[], lane="domestic"
     )
     assert out2.status == "failed" and "not found" in (out2.reason or "")
+
+
+def test_card_prefills_a_stated_purchase_date_only_where_ocr_found_none():
+    """客户说过的购买日期只在凭证没识别出日期时预填，仍由客户在卡片上确认；不覆盖凭证上的值。"""
+    blank = {"fields": {"order_no": "A1"}, "unreadable": ["purchase_date"]}
+    payload = card_payload(blank, stated={"purchase_date": "2025-11-11", "region_use": "US"})
+    assert payload["fields"]["purchase_date"] == "2025-11-11"
+    assert "purchase_date" not in payload["unreadable"]
+    assert set(payload["fields"]) == set(FIELDS)
+    read = {"fields": {"purchase_date": "2025-11-12"}}
+    assert card_payload(read, stated={"purchase_date": "2025-11-11"})["fields"]["purchase_date"] == "2025-11-12"
+    assert card_payload(blank)["fields"]["purchase_date"] is None
+
+
+def test_stated_purchase_date_must_be_a_real_day_not_in_the_future():
+    today = "2026-09-25T10:00:00+08:00"
+    assert stated_purchase_date("2025-11-11", today)
+    assert not stated_purchase_date("2026-10-01", today)
+    assert not stated_purchase_date("去年底", today)
+    assert not stated_purchase_date("2025-11", today)

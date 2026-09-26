@@ -1361,7 +1361,11 @@ async def understand(state: SessionState) -> SessionState:
             say({**state,**update},notice)
         context_values = dict(update.get("service_context") or {})
         context_sources = dict(update.get("context_sources") or {})
-        reported = {fact.context_field: fact.value for fact in meaning.facts if fact.kind == "context" and fact.context_field and fact.quote and fact.quote in text}
+        reported = {
+            fact.context_field: fact.value for fact in meaning.facts
+            if fact.kind == "context" and fact.context_field and fact.quote and fact.quote in text
+            and (fact.context_field != "purchase_date" or receipt_mod.stated_purchase_date(fact.value, state["at"]))
+        }
         business = BusinessContext.restore({**state, **update}).remember(reported, state["input_id"], order_no=update.get("case_order_no") if update["turn_decision"].get("answer_scope") in {"case", "issue"} else None)
         update["business_context"] = business.model_dump(mode="json")
         from app.conversation.answers import conversation_view
@@ -2691,7 +2695,7 @@ async def receipt_extract(state: SessionState) -> SessionState:
         "pending_card": {
             "card_id": receipt_mod.confirm_card_id(session_id, image_ids),
             "kind": "confirm_receipt",
-            "payload": receipt_mod.card_payload(new_receipt),
+            "payload": receipt_mod.card_payload(new_receipt, stated=state.get("service_context")),
         },
     }
 

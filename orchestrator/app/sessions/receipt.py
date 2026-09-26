@@ -21,6 +21,7 @@ from __future__ import annotations
 import base64
 import logging
 from dataclasses import dataclass, field
+from datetime import date
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -258,14 +259,29 @@ def extracted_receipt(state: dict[str, Any], ocr: OcrOutcome) -> dict[str, Any]:
     return r
 
 
-def card_payload(receipt: dict[str, Any]) -> dict[str, Any]:
+# 客户在对话里说过、凭证上没识别出来的字段：只做卡片预填，仍由客户在卡片上确认；它本身不是凭证。
+STATED_PREFILL = ("purchase_date",)
+
+
+def stated_purchase_date(value: str, today: str) -> bool:
+    """口述购买日期只收落到具体一天、且不晚于今天的 YYYY-MM-DD；「去年底」这类说法不预填。"""
+    try:
+        return date.fromisoformat(value) <= date.fromisoformat(today[:10])
+    except (TypeError, ValueError):
+        return False
+
+
+def card_payload(receipt: dict[str, Any], stated: dict[str, Any] | None = None) -> dict[str, Any]:
     """receipt_card 事件载荷（08 §5）：fields / confidence / unreadable，不含质保结论。"""
+    fields = {k: receipt.get("fields", {}).get(k) for k in FIELDS}
+    prefilled = {k for k in STATED_PREFILL if not fields.get(k) and (stated or {}).get(k)}
+    fields.update({k: stated[k] for k in prefilled})
     return {
-        "fields": {k: receipt.get("fields", {}).get(k) for k in FIELDS},
+        "fields": fields,
         "confidence": {
             k: float(v) for k, v in (receipt.get("confidence") or {}).items() if k in FIELDS
         },
-        "unreadable": [u for u in receipt.get("unreadable") or [] if u in FIELDS],
+        "unreadable": [u for u in receipt.get("unreadable") or [] if u in FIELDS and u not in prefilled],
     }
 
 
