@@ -81,6 +81,16 @@ describe('Board', () => {
     expect(screen.getByText('75.0%')).toBeInTheDocument();
     expect(screen.getByText(/独立解决 \+ 独立闭环/)).toBeVisible();
   });
+
+  test('没有情绪记录的会话不算作非平静', async () => {
+    const row = (value: string, n: number) => ({ value, sessions: n, resolved: 0, escalated: 0 });
+    overview.mockImplementation(async ({ dim }: { dim: string }) =>
+      dim === 'emotion' ? { ...OVERVIEW, breakdown: [row('calm', 3), row('(未知)', 5), row('angry', 1)] } : OVERVIEW);
+    render(<MemoryRouter><Board /></MemoryRouter>);
+    // 1 个愤怒 ÷（3 平静 + 1 愤怒）；把「(未知)」算进来会得到 6 / 9。
+    await waitFor(() => expect(screen.getByText('25.0%')).toBeInTheDocument());
+    expect(screen.queryByText('66.7%')).not.toBeInTheDocument();
+  });
 });
 
 describe('Sessions', () => {

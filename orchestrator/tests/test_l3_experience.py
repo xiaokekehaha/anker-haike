@@ -6,6 +6,7 @@ from haike_contracts.common import FaultLocalization
 from app.analytics.l3 import episode, metrics
 from app.cases.service import CaseService
 from app.cases.store import CaseConflict
+from app.conversation.reply import OFFER_HUMAN, acknowledge_current_turn, offer_human_after_stream
 from app.conversation.tasks import enqueue, next_task, ordered_intents
 from app.diagnose.localization import (
     normalize,
@@ -14,8 +15,11 @@ from app.diagnose.localization import (
     signature_plans,
     vocabulary,
 )
-from app.emotion.policy import evaluate_emotion
+from app.emotion.policy import complaint_flagged, evaluate_emotion, load_policy
 from app.evaluation.cli import KINDS, run
+from app.prompts import emotion_layer
+from app.sessions.cards import get_catalog
+from app.sessions.clarify import differentiated_candidates
 
 
 async def test_case_order_binding_is_immutable_and_survives_execution_attachment():
@@ -122,6 +126,52 @@ def test_emotion_negation_recovery_and_window():
     )
     track = [{"input_id": str(i), "level": "calm"} for i in range(9)]
     assert len(evaluate_emotion("calm", "", track, "10")["emotion_track"]) == 6
+
+
+def test_every_emotion_prompt_comes_from_policy_config():
+    strategies = load_policy()["strategies"]
+    for name, spec in strategies.items():
+        assert emotion_layer(name) == spec["prompt"]
+        assert "承诺尽快" not in emotion_layer(name)
+    assert emotion_layer("unknown-strategy") == strategies["normal"]["prompt"]
+
+
+def test_offer_human_action_adds_a_fixed_way_out_on_the_unhappy_turn():
+    angry = evaluate_emotion("angry", "", [{"input_id": "old", "level": "calm"}], "now", cues=None)
+    assert angry["emotion"]["strategy"] == "de_escalate_and_offer_human"
+    state = {"input_id": "now", **angry}
+    assert acknowledge_current_turn(state, "我们换一种方式处理。").endswith(OFFER_HUMAN)
+    # Already offered in the wording, or no emotion observed this turn: no duplicate sentence.
+    assert OFFER_HUMAN not in acknowledge_current_turn(state, "可以为您转人工处理。")
+    assert OFFER_HUMAN not in acknowledge_current_turn({**state, "input_id": "later"}, "好的。")
+
+
+def test_offer_human_follows_a_streamed_reply_as_its_own_message():
+    """模型流式回复已经结束，固定出口单独发一条短消息；模型已经提到人工就不补。"""
+    angry = evaluate_emotion("angry", "", [{"input_id": "old", "level": "calm"}], "now")
+    state = {"input_id": "now", "active_issue_id": "i", **angry}
+    sent = []
+    offer_human_after_stream(state, "我们先换一种方式处理。", sent.append)
+    assert [e["type"] for e in sent] == ["message_start", "message", "message_end"]
+    assert sent[1]["delta"] == OFFER_HUMAN
+    sent.clear()
+    offer_human_after_stream(state, "可以为您转人工处理。", sent.append)
+    assert sent == []
+
+
+def test_complaint_flag_follows_strategy_action_not_only_level():
+    rising = evaluate_emotion("angry", "", [{"input_id": "old", "level": "calm"}], "now")
+    assert rising["emotion"]["level"] == "angry" and complaint_flagged(rising)
+    steady = evaluate_emotion("angry", "", [{"input_id": "old", "level": "angry"}], "now")
+    assert steady["emotion"]["strategy"] == "direct_resolution" and not complaint_flagged(steady)
+    assert complaint_flagged({"emotion": {"level": "complaint_risk"}})
+
+
+def test_skip_optional_clarify_skips_the_model_card():
+    state = {"text": "充电宝充不进电", "category": "power_bank"}
+    assert differentiated_candidates(get_catalog(), "power_bank", state)
+    skipped = {**state, "emotion_actions": ["skip_optional_clarify", "prefer_proposal_over_more_steps"]}
+    assert differentiated_candidates(get_catalog(), "power_bank", skipped) == []
 
 
 def test_tasks_order_dedupe_and_inline_completion():

@@ -301,7 +301,8 @@ def differentiated_candidates(catalog, category: str, state: dict[str, Any]) -> 
     """品类已知、型号未知时，值得问一次型号的候选（spec 2026-09-19-0810 A，T1）。
 
     只列「知道了会改变下一步」的型号：型号专属计划、被通用计划排除的型号、知识索引里按型号分化的资料。
-    sku_list 覆盖全品类的资料按通用处理。本会话已出过型号卡、症状问诊已经开始、或用户已声明不知道型号时不问。
+    sku_list 覆盖全品类的资料按通用处理。本会话已出过型号卡、症状问诊已经开始、用户已声明不知道型号、
+    或情绪策略要求只问必要信息（skip_optional_clarify）时不问：这张卡可以跳过，品类通用计划照样能走。
     卡片带「其他型号 / 不确定」出口（prepare_card 的 allow_unknown），所以单候选也可以问。
     """
     from app.diagnose.decision import known_symptom_codes
@@ -312,6 +313,7 @@ def differentiated_candidates(catalog, category: str, state: dict[str, Any]) -> 
         state.get("prepare_card_calls")
         or state.get("symptom_interview")  # 问诊已经开始：型号问题只在最初问一次，不打断问诊
         or UNKNOWN_MODEL.search(state.get("text", "") or "")
+        or "skip_optional_clarify" in (state.get("emotion_actions") or [])
     ):
         return []
     category_skus = _category_skus(catalog, category)

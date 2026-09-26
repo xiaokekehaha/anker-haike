@@ -9,6 +9,13 @@ def load_policy():
     return yaml.safe_load((CONFIG_DIR / "emotion_policy.yaml").read_text())
 
 
+def complaint_flagged(state) -> bool:
+    """Case priority follows the strategy's action, so an angry-and-rising customer is flagged too."""
+    return (state.get("emotion") or {}).get("level") == "complaint_risk" or "flag_complaint_risk" in (
+        state.get("emotion_actions") or []
+    )
+
+
 def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=False, prior_emotion=None, cues=None):
     level = "dissatisfied" if level == "anxious" else level
     grounded = cues is None or any(cue.strip() and cue in text for cue in cues)

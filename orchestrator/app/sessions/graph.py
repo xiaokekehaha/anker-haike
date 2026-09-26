@@ -24,7 +24,7 @@ from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.reduce import OPEN_OBSERVATION_STATUS
-from app.conversation.reply import acknowledge_current_turn
+from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
 from app.diagnose import (
     build_query,
     get_retrieval_config,
@@ -38,7 +38,7 @@ from app.diagnose.localization import part_categories, signature_matches, signat
 from app.diagnose.observations import record_observations
 from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
-from app.emotion.policy import evaluate_emotion
+from app.emotion.policy import complaint_flagged, evaluate_emotion
 from app.escalation.polish import polish_summary
 from app.escalation.summary import build_summary, reassurance_text
 from app.faultcards import fit_prompt_budget
@@ -1491,7 +1491,7 @@ async def commit_issue(state: SessionState) -> SessionState:
     services = get_services()
     if services is not None:
         case = await services.cases.store.get(state["case_id"]) if state.get("case_id") else None
-        if case and state.get("emotion", {}).get("level") == "complaint_risk" and not case["complaint_risk"]:
+        if case and complaint_flagged(state) and not case["complaint_risk"]:
             case = await services.cases.transition(case["case_id"], case["status"], "投诉风险上升", complaint_risk=True, priority="high")
         fact = episode(dict(state), case)
         try:
@@ -2840,6 +2840,7 @@ async def reply(state: SessionState) -> SessionState:
                 "model_tier": out.model_tier,
             }
         )
+        offer_human_after_stream(dict(state), out.text, writer)
     return {
         "stage": "diagnose",
         "visible_messages": msgs,

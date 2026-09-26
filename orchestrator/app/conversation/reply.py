@@ -27,6 +27,29 @@ ACKNOWLEDGEMENT = {
 }
 
 
+OFFER_HUMAN = "需要人工协助的话，可以直接说「转人工」，我会把情况整理好交给人工。"
+
+
+def _observed_now(state: dict) -> dict:
+    return next((e for e in state.get("emotion_track") or [] if e.get("input_id") == state.get("input_id")), {})
+
+
+def offer_human_due(state: dict, text: str) -> bool:
+    """The strategy promises a way out on this unhappy turn; the model's wording must not decide it."""
+    return bool(_observed_now(state)) and "offer_human" in (state.get("emotion_actions") or []) and "人工" not in text
+
+
+def offer_human_after_stream(state: dict, streamed_text: str, writer) -> None:
+    """A streamed reply is already closed, so the fixed sentence goes out as its own short message."""
+    if not offer_human_due(state, streamed_text):
+        return
+    mid = stable_id(state["input_id"], "offer_human")
+    writer({"type": "message_start", "message_id": mid, "issue_id": state.get("active_issue_id"),
+            "reply_to_input_id": state["input_id"]})
+    writer({"type": "message", "message_id": mid, "delta": OFFER_HUMAN})
+    writer({"type": "message_end", "message_id": mid, "status": "completed"})
+
+
 def acknowledge_current_turn(state: dict, text: str) -> str:
     """Acknowledge this turn's quoted emotion, but only the first time it appears or worsens.
 
@@ -34,7 +57,9 @@ def acknowledge_current_turn(state: dict, text: str) -> str:
     """
     track = state.get("emotion_track") or []
     current_input = state.get("input_id")
-    observed = next((e for e in track if e.get("input_id") == current_input), {})
+    observed = _observed_now(state)
+    if offer_human_due(state, text):
+        text += OFFER_HUMAN
     lead = ACKNOWLEDGEMENT.get(observed.get("level"))
     if not lead or text.startswith("抱歉"):
         return text
@@ -170,6 +195,7 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                 cite=lambda text: attribute(text, []),
             )
             if result.completed:
+                offer_human_after_stream(state, result.text, writer)
                 if result.citation and result.citation["ungrounded"]:
                     log.info(
                         "history reply produced %d action sentences session=%s",

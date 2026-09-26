@@ -14,6 +14,7 @@ from app.cases.service import case_event
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.reduce import stable_id
+from app.emotion.policy import complaint_flagged
 from app.policy.engine import PolicyEngine
 from app.policy.fault_class import derive_fault_class
 from app.policy.models import PolicyInput
@@ -139,7 +140,7 @@ async def service_context(state):
         state["session_id"],
         state["active_issue_id"],
         product_update.get("product_confirmed") or state.get("product_confirmed") or {},
-        (state.get("emotion") or {}).get("level") == "complaint_risk",
+        complaint_flagged(state),
     )
     if not case.get("sku") and product_update.get("product_confirmed"):
         case = await services.cases.identify_product(case["case_id"], product_update["product_confirmed"])
@@ -519,10 +520,8 @@ async def await_human(state):
         policy_decision=state.get("policy_decision"),
         proposal=state.get("proposal"),
         gate_result=state.get("gate_result"),
-        complaint_risk=(state.get("emotion") or {}).get("level") == "complaint_risk",
-        priority="high"
-        if (state.get("emotion") or {}).get("level") == "complaint_risk"
-        else "normal",
+        complaint_risk=complaint_flagged(state),
+        priority="high" if complaint_flagged(state) else "normal",
     )
     emit_case(state, row)
     say(state, "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。")

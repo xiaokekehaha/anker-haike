@@ -33,7 +33,8 @@ export function Board() {
   const latency = data?.latency ?? {};
   const sessions = num(totals.sessions);
   const reasonOf = (key: string) => byReason.data?.breakdown.find((b) => b.value === key)?.sessions ?? 0;
-  const emotions = (byEmotion.data?.breakdown ?? []).filter((b) => b.value && b.value !== '(未识别)');
+  // 后端把没有情绪记录的会话记作「(未知)」（analytics/queries.py），不能算进「非平静」。
+  const emotions = (byEmotion.data?.breakdown ?? []).filter((b) => b.value && b.value !== '(未知)');
   const emotionTotal = emotions.reduce((acc, b) => acc + b.sessions, 0);
   const notCalm = emotions.filter((b) => b.value !== 'calm').reduce((acc, b) => acc + b.sessions, 0);
   const modelCalls = (data?.models ?? []).reduce((acc, m) => acc + m.calls, 0);
@@ -66,7 +67,7 @@ export function Board() {
         <Kpi label="看图 · 读图可用率" value="—" hint="可用图片 ÷ 上传图片。节点级 vision_status 已落库，聚合查询待接（P2）。" note="待接数据" />
         <Kpi label="问清 · 澄清超限率" value={percent(ratio(reasonOf('R7'), sessions))} hint="因澄清超限（R7）转人工的会话 ÷ 会话数；越低说明追问越准。" note={`平均排障步骤 ${totals.avg_steps ?? '—'}`} />
         <Kpi label="分流 · 政策类升级" value={percent(ratio(reasonOf('R3') + reasonOf('R8'), sessions))} hint="用户要人工（R3）与范围外（R8）÷ 会话数：分流出去而不是系统失败的部分。" note={`要人工 ${count(reasonOf('R3'))} · 范围外 ${count(reasonOf('R8'))}`} />
-        <Kpi label="接稳 · 非平静情绪占比" value={percent(ratio(notCalm, emotionTotal))} hint="首轮情绪不是「平静」的会话占比；分级处理是否生效看旅程页的情绪轨迹。" note={emotions.slice(0, 3).map((b) => `${EMOTION_TEXT[b.value] ?? b.value} ${b.sessions}`).join(' · ') || '—'} />
+        <Kpi label="接稳 · 非平静情绪占比" value={percent(ratio(notCalm, emotionTotal))} hint="会话最近一轮记录的情绪不是「平静」的占比（没有情绪记录的会话不计）；分级处理是否生效看旅程页的情绪轨迹。" note={emotions.slice(0, 3).map((b) => `${EMOTION_TEXT[b.value] ?? b.value} ${b.sessions}`).join(' · ') || '—'} />
         <Kpi label="幻觉 · 检索无命中率" value={percent(ratio(noMatch, retrievalTotal))} hint="检索无命中 ÷ 检索次数：没有依据时系统必须诚实升级而不是编。越权执行见业务行。" note={`无命中 ${count(noMatch)} / ${count(retrievalTotal)}`} />
       </div>
 
