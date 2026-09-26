@@ -7,6 +7,11 @@ from datetime import UTC, datetime, timedelta
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+CASE_COLUMNS = (
+    "execution_id", "action_kind", "status", "receipt", "error", "gate_result",
+    "policy_version", "actions_version", "started_at",
+)
+
 
 class ExecutionBusy(RuntimeError):
     pass
@@ -66,6 +71,12 @@ class MemoryExecutionStore:
             self.rows[row["idempotency_key"]] = value
             return deepcopy(value), acquired
 
+    async def for_case(self, case_id):
+        rows = sorted((r for r in self.rows.values() if r.get("case_id") == case_id), key=lambda r: r["started_at"])
+        return [
+            {k: r.get(k) for k in CASE_COLUMNS} | {"started_at": r["started_at"].isoformat()} for r in rows
+        ]
+
     async def finish(self, key, attempt, status, receipt, error):
         async with self.lock:
             row = self.rows[key]
@@ -87,6 +98,15 @@ class PostgresExecutionStore:
                     if row[name] is not None:
                         row[name] = str(row[name])
             return row
+
+    async def for_case(self, case_id):
+        async with self.pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
+            await cur.execute(
+                f"select {','.join(CASE_COLUMNS)} from action_executions where case_id=%s order by started_at",
+                (case_id,),
+            )
+            rows = await cur.fetchall()
+        return [r | {"execution_id": str(r["execution_id"]), "started_at": r["started_at"].isoformat()} for r in rows]
 
     async def claim(self, row, timeout_ms):
         async with (

@@ -1,11 +1,14 @@
 /** L3 服务案件接口（后端 app/admin/l3_router.py）。 */
 import type { GateResult, PolicyDecision, ProposalOption } from '../types/events';
-import type { SessionSnapshot } from '../types/snapshot';
+import type { EscalationSummary, SessionSnapshot } from '../types/snapshot';
 
+/** 执行失败时的错误（actions/executor.py）：outcome_unknown 是写操作超时、可能已办理；needs_review 要人工核实。 */
+export type ExecutionError = { code: string; message: string; recoverable: boolean; outcome_unknown?: boolean; needs_review?: boolean };
 export type CaseExecution = {
   execution_id: string; action_kind: string; status: string; receipt: Record<string, unknown> | null;
-  error: string | null; gate_result: GateResult | null; policy_version: string | null; actions_version: string | null; started_at: string;
+  error: ExecutionError | null; gate_result: GateResult | null; policy_version: string | null; actions_version: string | null; started_at: string;
 };
+export type CaseEvent = { seq: number; type: string; at: string; actor: string; payload: Record<string, unknown> };
 
 export type ServiceCase = {
   case_id: string; session_id: string; issue_id: string; status: string; priority: string; complaint_risk: boolean;
@@ -14,9 +17,11 @@ export type ServiceCase = {
   proposal: { options: ProposalOption[]; chosen_option_id?: string | null } | null;
   external_refs: Record<string, string>; snapshot?: SessionSnapshot | null;
   decisions?: { decision_id: string; decision: string; note: string; override_reason: string | null; consumed_input_id: string | null }[];
-  events?: { seq: number; type: string; at: string; actor: string; payload: Record<string, unknown> }[];
+  events?: CaseEvent[];
   commitments?: Record<string, unknown>[];
   executions?: CaseExecution[];
+  /** 最近一次 AI 交接摘要（案件事件 handoff_summary），只给坐席看。 */
+  handoff_summary?: EscalationSummary | null;
 };
 
 async function request<T>(path: string, body?: unknown): Promise<T> {

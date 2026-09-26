@@ -15,8 +15,9 @@ const FEEDBACK_LABELS: Record<Feedback, string> = {
 const stepText = (x: ExecutedStep) =>
   `${x.title}（${FEEDBACK_LABELS[x.feedback]}${x.observed?.length ? `；观察：${x.observed.join('、')}` : ''}）`;
 
-const FACT_LABELS: Record<string, string> = {
+export const FACT_LABELS: Record<string, string> = {
   channel: '订单渠道', purchase_date: '购买日期', 'dealer.name': '经销商', authorized: '名录授权状态',
+  order_no: '订单号', sku: '型号', amount: '订单金额', currency: '币种', region_purchase: '购买地', platform: '平台',
 };
 
 function receiptFacts(facts: Record<string, string>): string {

@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 
 import pytest
@@ -305,6 +306,36 @@ async def test_a6_approval_restores_graph(l3_runtime, monkeypatch, edit_cost):
             e["kind"] == "execution_card" and e["status"] == "succeeded" for e in snap["timeline"]
         ), snap
         assert l3_runtime.backend.create_calls == 1
+
+
+async def test_case_detail_carries_handoff_summary_and_executions(l3_runtime, monkeypatch):
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = await seed_issue(client, monkeypatch, region="DE", order="DEMO-X10-001")
+        await send(client, sid, "我要换货")
+        case = next(c for c in (await client.get("/admin/api/cases/queue")).json()["items"] if c["session_id"] == sid)
+        detail = (await client.get(f"/admin/api/cases/{case['case_id']}")).json()
+        summary = detail["handoff_summary"]
+        assert summary["reason"]["text"].startswith("政策要求人工审核")
+        assert summary["product"] == "eufy X10 Pro Omni"
+        assert [o["option_id"] for o in summary["recommended_options"]] == [o["option_id"] for o in case["proposal"]["options"]]
+        assert summary["draft_reply"] and summary["receipt"]["verified_facts"]["amount"] == "449.99"
+        assert detail["executions"] == []
+        # The handoff is for the desk: the customer's timeline never shows it.
+        snap = (await client.get(f"/sessions/{sid}")).json()
+        assert not any(e["kind"] == "escalation_summary" for e in snap["timeline"])
+        response = await client.post(f"/admin/api/cases/{case['case_id']}/decision", json={
+            "decision_id": str(uuid.uuid4()), "expected_revision": detail["revision"], "decision": "approve",
+            "option_id": "replace", "override_reason": "演示跨区域特批", "note": "同意按换货方案办理",
+        })
+        assert response.status_code == 200, response.text
+        for _ in range(100):
+            if not app.state.run_manager.is_live(response.json()["run_id"]):
+                break
+            await asyncio.sleep(0.01)
+        detail = (await client.get(f"/admin/api/cases/{case['case_id']}")).json()
+        [execution] = detail["executions"]
+        assert execution["action_kind"] == "replacement.create" and execution["status"] == "succeeded"
+        assert execution["receipt"]["service_order_no"] == detail["external_refs"]["service_order_no"]
 
 
 @pytest.mark.parametrize("query_order", ["DEMO-X10-001", "DEMO-CN-003"])

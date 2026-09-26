@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { CASE_LABELS } from '../../state/progress';
 import { ProposalCard } from '../../components/ProposalCard';
 import type { ProposalOption } from '../../types/events';
+import { CaseRecords, HandoffSummary } from '../components/CaseRecords';
 import { SessionRecord, SessionView } from '../components/SessionView';
 import { l3Api } from '../l3';
 import { CONDITION_TEXT, COST_TEXT, FAULT_CLASS_TEXT, GATE_TEXT, REMEDY_TEXT, needsHumanText, showValue, sla, when } from '../format';
@@ -91,7 +92,10 @@ export function CaseDetail() {
         </section>
 
         <section className="card">
-          <h2>服务记录</h2>
+          <h2>交接摘要</h2>
+          <p className="sub">AI 交给人工时整理的问题、依据与核对字段，不用重读对话。</p>
+          <HandoffSummary summary={row.handoff_summary} />
+          <h2 style={{ marginTop: 20 }}>服务记录</h2>
           <SessionRecord snapshot={row.snapshot} highlight={hover} />
           <h2 style={{ marginTop: 20 }}>方案与判定依据</h2>
           {row.proposal ? (
@@ -115,6 +119,7 @@ export function CaseDetail() {
           )) : <p className="muted" style={{ fontSize: 12.5 }}>尚未进入授权门。</p>}
           {(row.policy_decision?.needs_human_reasons ?? []).map((reason) => <p key={reason} className="muted" style={{ fontSize: 12.5 }}>需人工：{needsHumanText(reason)}</p>)}
           {approvalBlocked && <p className="notice">故障未核实或存在安全限制，不能批准办理。可「要求补充信息」，完成核实后再批准。</p>}
+          <CaseRecords executions={row.executions} commitments={row.commitments} events={row.events} />
         </section>
 
         <section className="card">

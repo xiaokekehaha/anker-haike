@@ -354,6 +354,16 @@ class CaseService:
 
         return await self.store.mutate(case_id, apply)
 
+    async def record_handoff(self, case_id, summary):
+        """The latest AI handoff for the desk. Case events never reach the customer's timeline."""
+
+        def apply(row):
+            last = next((e["payload"] for e in reversed(row["events"]) if e["type"] == "handoff_summary"), None)
+            if last != summary:
+                _event(row, "handoff_summary", summary, "system")
+
+        return await self.store.mutate(case_id, apply)
+
     async def record_commitment(self, case_id, text, source, *, source_ref=None):
         from .commitments import valid_commitment
 

@@ -245,3 +245,9 @@ dialog.sheet textarea {
 .diff-section dd { margin: 0; }
 .diff-section dd[data-tone='ok'] { color: var(--ok); }
 .diff-section dd[data-tone='warn'] { color: var(--warning); }
+
+/* 案件页交接摘要（CaseRecords.tsx） */
+.handoff dl { margin: 0; display: grid; gap: 6px; }
+.handoff dl > div { display: grid; grid-template-columns: 96px 1fr; gap: 8px; font-size: 12.5px; }
+.handoff dt { color: var(--muted); }
+.handoff dd { margin: 0; word-break: break-word; }

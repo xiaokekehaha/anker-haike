@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from datetime import date
 
 from haike_contracts.common import REMEDY_LADDER
@@ -15,6 +16,7 @@ from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.reduce import stable_id
 from app.emotion.policy import complaint_flagged
+from app.escalation.summary import build_summary
 from app.policy.engine import PolicyEngine
 from app.policy.fault_class import derive_fault_class
 from app.policy.models import PolicyInput
@@ -523,9 +525,36 @@ async def await_human(state):
         complaint_risk=complaint_flagged(state),
         priority="high" if complaint_flagged(state) else "normal",
     )
+    row = await _record_handoff(state, row)
     emit_case(state, row)
     say(state, "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。")
     return {"stage": "awaiting_human", "pending_card": None, "l3_route": "commit_issue"}
+
+
+def handoff_reason(state, row):
+    """Why the case sits in the queue, in the words a desk agent reads first."""
+    latest = next(
+        (e["payload"]["reason"] for e in reversed(row["events"])
+         if e["type"] == "status_changed" and e["payload"]["to"] == "awaiting_approval"),
+        None,
+    )
+    if latest and latest != "需要人工审核":
+        return latest
+    remedy = state.get("requested_remedy")
+    if remedy in {"refund", "address_update"}:
+        return ("退款" if remedy == "refund" else "修改地址") + "需人工核实办理"
+    decision = state.get("policy_decision") or {}
+    if decision.get("needs_human"):
+        reasons = [c["text"] for hit in decision.get("exclusions_hit") or [] for c in hit.get("clauses", [])]
+        return "政策要求人工审核：" + "；".join(reasons or decision.get("needs_human_reasons") or [])
+    failed = [c["detail"] for c in (state.get("gate_result") or {}).get("checks", []) if not c.get("passed")]
+    return "授权检查未通过：" + "；".join(failed) if failed else "需要人工审核"
+
+
+async def _record_handoff(state, row, reason=None):
+    summary = build_summary(dict(state), reason="R6", lane=os.environ.get("MODEL_LANE", "domestic"))
+    summary.reason.text = reason or handoff_reason(state, row)
+    return await require_services().cases.record_handoff(state["case_id"], summary.model_dump(mode="json"))
 
 
 async def consult(state):

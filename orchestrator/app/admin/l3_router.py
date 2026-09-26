@@ -65,22 +65,11 @@ async def detail(case_id: UUID, request: Request):
         raise HTTPException(
             404, detail={"code": "case_not_found", "message": "案件不存在"}
         ) from None
-    row["commitments"] = [e["payload"] for e in row.get("events", []) if e["type"] == "commitment"]
+    events = row.get("events", [])
+    row["commitments"] = [e["payload"] for e in events if e["type"] == "commitment"]
+    row["handoff_summary"] = next((e["payload"] for e in reversed(events) if e["type"] == "handoff_summary"), None)
     row["snapshot"] = await _snapshot(request, row["session_id"]) if row.get("session_id") else None
-    pool = getattr(request.app.state, "session_pool", None)
-    if pool:
-        from psycopg.rows import dict_row
-
-        from app.cases.store import _json
-
-        async with pool.connection() as conn, conn.cursor(row_factory=dict_row) as cur:
-            await cur.execute(
-                "select execution_id,action_kind,status,receipt,error,gate_result,policy_version,actions_version,started_at from action_executions where case_id=%s order by started_at",
-                (str(case_id),),
-            )
-            row["executions"] = _json(await cur.fetchall())
-    else:
-        row["executions"] = []
+    row["executions"] = await services().executor.store.for_case(str(case_id))
     return row
 
 

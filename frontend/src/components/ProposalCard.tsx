@@ -13,7 +13,7 @@ export function ProposalCard({ item, active, disabled, onConfirm, onDecline }: {
       <p>费用承担：{({ company: '公司', customer: '客户', shared: '双方分担' } as Record<string, string>)[option.cost_bearer ?? ''] ?? '待核实'} · {option.auto_allowed ? '确认后核验并办理' : '需要人工办理'}</p>
       <p>{option.dispatch_estimate ? `预计创建服务单后 ${option.dispatch_estimate.working_days} 个工作日发出，以办理回执为准。` : '办理时长待人工核实。'}</p>
       {option.dispatch_estimate && <small>时效来源：演示动作配置（{option.dispatch_estimate.actions_version}）</small>}
-      <details><summary>政策依据</summary><ul>{(option.clauses ?? []).map(clause => <li key={clause.clause_id}>{clause.clause_id}：{clause.text}<small>（{clause.source_doc}，{clause.policy_version}）</small></li>)}</ul></details>
+      <details><summary>政策依据</summary><ul>{(option.clauses ?? []).map(clause => <li key={clause.clause_id}>{clause.clause_id}：{clause.text}<small>（{clause.source_url ? <a href={clause.source_url} target="_blank" rel="noreferrer">{clause.source_doc}</a> : clause.source_doc}，{clause.policy_version}）</small></li>)}</ul></details>
     </div>)}
     <div className={styles.feedbackButtons}>
       <button disabled={locked || !selected} onClick={() => onConfirm(selected)}>{item.retry ? '重试原申请' : '确认方案'}</button>
