@@ -54,7 +54,8 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     # 护栏按当前实测值设定，留约 40 token 余量；再加解释字段或提示段落会先在这里失败。
     # 2026-09-18：operation_update 的策略说明使 system 从 2413 升到 2555。
     # 2026-09-19：pb_slow_input 故障族与两道判别题使 system 从 2555 升到 2593。
-    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4210
+    # 2026-09-26：口述购买日期（context_field=purchase_date 与一句抽取规则）使 system 从 2593 升到 2641。
+    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4260
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))
     assert state == before
