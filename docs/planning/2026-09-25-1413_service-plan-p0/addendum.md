@@ -36,3 +36,16 @@
 
 业务把方案第二章「读图」标为「非核心」，其余内容未变。T7 撤销；T8 去掉观察卡 `suggested_option_id`；T6-L1 不再做。
 方向复评与「服务事项模型」重做建议见 [spec_2026-09-26-1656_service-plan-direction-v2.md](../../claude/spec_2026-09-26-1656_service-plan-direction-v2.md)。
+
+## 6. 2026-10-03 回滚
+
+需求还会变，用户决定主线回滚到 `66cfb62`（P0 已提交、最小分流未合入），撤 T6-L2、保留 T6-L4。新工作分支 `feat/service-plan-base`：
+
+| 提交 | 内容 |
+| --- | --- |
+| `af23472` | 撤销 T6-L2（`5c4dbe9`）：读图降为非核心，铭牌读数不再作产品卡候选 |
+| `a8fb62d` | T6-L4 的上下文预算护栏回归修复（压短抽取规则，护栏 4260） |
+| `8fe5f19` | `effects.py` 同一轮第二次进入同一节点时副作用被当作重放丢弃；在 `66cfb62` 上用单测复现后修复 |
+
+最小分流的工作存档在 `feat/minimal-routing@eb5ebc3`，未合入；规划目录 `docs/planning/2026-09-26-1727_minimal-routing/` 只在该存档分支上。
+验证：64 个相关后端测试文件 796 passed / 22 skipped，lint、密钥自查、前端 typecheck 与 167 个用例通过；ci-local 仍未跑（Docker）。
