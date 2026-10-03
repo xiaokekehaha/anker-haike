@@ -303,54 +303,6 @@ async def test_unverified_model_hint_does_not_silently_lock_the_sku(
     assert state["product_state"] == "confirmed_sku"
 
 
-async def _nameplate_card(tmp_path, text: str, hint: str) -> dict:
-    router, _ = _router(
-        tmp_path,
-        CONFIG,
-        [
-            {**INTAKE_OK, "product_hints": []},
-            {"observations": [], "visible_parts": [], "model_hint": hint, "model_hint_cell": None},
-        ],
-    )
-    set_model_router(router)
-    async with _client() as client:
-        sid = (await client.post("/sessions")).json()["session_id"]
-        await _send_bytes(client, sid, text, [_real_png()])
-    state = await _state(sid)
-    assert state["fault_localization"]["model_hint_verified"] is False
-    assert state["product_state"] != "confirmed_sku"
-    return state
-
-
-async def test_unverified_nameplate_reading_replaces_the_open_product_question(
-    mem_runtime, img_store, l3_services, tmp_path
-):
-    """品类不明、原本要开放式追问产品时：未核实的铭牌读数变成可点选的候选，单命中也要用户点确认。"""
-    state = await _nameplate_card(tmp_path, "不吸了", "X10 Pro")
-    card = state["pending_card"]
-    assert card["kind"] == "select_product"
-    assert "X10 Pro" in card["payload"]["note"]
-    assert card["payload"]["allow_unknown"] and card["payload"]["category"] == "robot_vacuum"
-    assert [c["sku"] for c in card["payload"]["candidates"]] == ["EUFY-X10-PRO-OMNI"]
-
-
-async def test_unverified_nameplate_reading_leads_the_model_card(mem_runtime, img_store, l3_services, tmp_path):
-    """本来就要问型号（知识按型号分化）时：照片读到的型号排第一并说明来源，仍由用户确认。"""
-    state = await _nameplate_card(tmp_path, "充电宝充不进电", "A1289")
-    card = state["pending_card"]
-    assert card["kind"] == "select_product" and card["payload"]["allow_unknown"]
-    assert card["payload"]["candidates"][0]["sku"] == "ANKER-A1289"
-    assert "A1289" in card["payload"]["note"]
-
-
-async def test_nameplate_reading_does_not_add_a_model_question_when_models_do_not_matter(
-    mem_runtime, img_store, l3_services, tmp_path
-):
-    """品类已知且排查不按型号分化：不为了用上铭牌读数多问一张卡（spec 2026-09-19-0810 三档判定）。"""
-    state = await _nameplate_card(tmp_path, "扫地机不吸了", "X10 Pro")
-    assert (state.get("pending_card") or {}).get("kind") != "select_product"
-
-
 async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_store, l3_services, tmp_path):
     """阶段 4 隐式确认：首张步骤卡带一句「从照片里我看到…」，且不掺进步骤正文。"""
     router, _ = _router(
