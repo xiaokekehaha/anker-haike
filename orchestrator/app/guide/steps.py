@@ -17,8 +17,6 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.conversation.operation_conditions import execution_history, step_unavailable
-from app.diagnose.decision import constrain_plans
-from app.diagnose.observations import known_observations, known_option_ids
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
@@ -83,17 +81,9 @@ async def prepare_step(
     if not cursor.get("plan_id"):
         return StepPrep("exhausted")
     plan = library.get(cursor["plan_id"])
-    if not constrain_plans(state, [plan]):
-        return StepPrep("exhausted", dropped=[{
-            "plan_id": plan.plan_id, "reason": "diagnostic_plan_constraint",
-        }])
     product = state.get("product_confirmed") or {}
     if not plan.applies(category=state.get("category") or product.get("category"), sku=product.get("sku")):
         return StepPrep("exhausted", dropped=[{"plan_id": plan.plan_id, "reason": "plan_model_mismatch"}])
-    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-    gate, _ = plan.observation_gate(known_option_ids(known_observations(issue, state.get("symptom_interview"), library)))
-    if gate != "ok":
-        return StepPrep("blocked", dropped=[{"plan_id": plan.plan_id, "reason": "observation_gate"}])
     step_id = cursor.get("step_id") or plan.first_step().step_id
     allowed_evidence: dict[str, dict[str, Any]] = dict(state.get("evidence") or {})
     ranked_evidence = next(
@@ -170,7 +160,6 @@ async def prepare_step(
                 "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,
                 "primary_evidence_id": primary_id,
-                "observations": _open_observations(step, state, library),
                 "media": step_media(plan.plan_id, step_id),
             },
             card_id=card_id,
@@ -229,23 +218,6 @@ def _primary_evidence(
         },
         "none",
     )
-
-
-def _open_observations(step: PlanStep, state: dict[str, Any], library: PlanLibrary) -> list[dict[str, Any]]:
-    """步骤声明的观察中，用户尚未明确提供结果的那些（design §4：用户明确提供的结果不重复问）。"""
-    if not step.observations:
-        return []
-    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-    known = known_observations(issue, state.get("symptom_interview"), library)
-    return [
-        {
-            "observation_id": o.observation_id,
-            "question": o.question,
-            "options": [{"option_id": x.option_id, "label": x.label, "kind": x.kind} for x in o.options],
-        }
-        for o in step.observations
-        if o.observation_id not in known
-    ]
 
 
 def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:

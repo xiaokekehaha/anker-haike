@@ -55,7 +55,8 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     # 2026-09-18：operation_update 的策略说明使 system 从 2413 升到 2555。
     # 2026-09-19：pb_slow_input 故障族与两道判别题使 system 从 2555 升到 2593。
     # 2026-09-26：口述购买日期（context_field=purchase_date 与一句抽取规则）使 system 从 2593 升到 2641。
-    # 2026-10-08：product_question 意图两段提示（见 docs/planning/2026-10-08-1921_product-knowledge-consult/）约 +150。
+    # 2026-10-08：product_question 意图两段提示（见 docs/planning/2026-10-08-1921_product-knowledge-consult/）约 +150，
+    #   设备安全说明补「噪音大、担心坏掉不算」（63 工单回放 T36 误判 R4）约 +15，system 从 2641 升到 2810。
     assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4400
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))

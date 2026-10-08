@@ -10,7 +10,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from app.conversation.taxonomy import families
 from app.official.message import URLS, parse_message
 from app.sessions.cards import get_catalog
 
@@ -66,10 +65,6 @@ def build_query(state: dict[str, Any]) -> str:
         return ""
     product = product_term(state)
     symptoms = dedupe([str(s) for s in (state.get("symptoms") or [])])
-    if state.get("symptom_codes"):
-        category = state.get("category") or (state.get("product_confirmed") or {}).get("category")
-        labels = [f["fault_family"] for f in families(category) if f["symptom_code"] in state["symptom_codes"]]
-        symptoms = dedupe([*labels, *symptoms])
     if not symptoms:
         # App 报错 / RMA 表单只取问题描述与推送提示：表头、订单字段和图片链接会冲淡检索（63 单评测 recall 4/13 → 7/13）
         text = str(state.get("text") or "")

@@ -9,25 +9,25 @@ from app.official.models import Order, Package
 
 class BackendError(RuntimeError):
     recoverable = False
-    user_message = "售后工具暂时无法处理"
+    user_message = "Our after-sales tool can't process this right now."
 
 
 class NotFound(BackendError):
-    user_message = "未找到对应订单，请核对订单号"
+    user_message = "I couldn't find that order. Please check the order number."
 
 
 class Conflict(BackendError):
-    user_message = "已有服务单或订单状态冲突，请联系人工核实"
+    user_message = "There is already a service request, or the order status conflicts. A colleague will need to check this."
 
 
 class Unavailable(BackendError):
     recoverable = True
-    user_message = "售后工具暂时不可用，请稍后重试或联系人工"
+    user_message = "Our after-sales tool is temporarily unavailable. Please try again later or ask for a colleague."
 
 
 class Timeout(BackendError):
     recoverable = True
-    user_message = "售后工具响应超时，请稍后重试或联系人工"
+    user_message = "Our after-sales tool timed out. Please try again later or ask for a colleague."
 
 
 class ServiceOrderRequest(Strict):

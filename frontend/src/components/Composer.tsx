@@ -22,12 +22,12 @@ type Props = {
   maxImages?: number;
   busy?: boolean;
   onCancel?: () => void;
+  /** 外部预置的附件（「载入真实工单」带的原图）；引用变化时加入附件区，走与手动选择相同的处理。 */
+  presetFiles?: File[] | null;
 };
 
 // 等待步骤时仍可正常对话，是否更新排障由本轮语义决定。
 export const REDIAGNOSE_HINT = '可以追问原因、回顾记录、补充或纠正情况；完成操作后，也可以直接描述结果。';
-// 判别问题出卡后输入框照旧可用：点选只是更省事的那条路，用自己的话说同样会被接住。
-export const OBSERVATION_HINT = '在上方卡片选一项最快；也可以用自己的话描述看到的情况。';
 let seq = 0;
 function makePreview(file: File): string | null {
   try { return typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : null; }
@@ -57,7 +57,7 @@ function autoGrow(el: HTMLTextAreaElement | null) {
   el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
 }
 
-export function Composer({ value, onChange, offline, inputRef, onSend, onRequestHuman, onSkipReceipt, pendingKind = null, purpose = 'fault', maxImages = 3, busy: runBusy = false, onCancel }: Props) {
+export function Composer({ value, onChange, offline, inputRef, onSend, onRequestHuman, onSkipReceipt, pendingKind = null, purpose = 'fault', maxImages = 3, busy: runBusy = false, onCancel, presetFiles = null }: Props) {
   const inputId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
   const localRef = useRef<HTMLTextAreaElement>(null);
@@ -73,7 +73,6 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const touchPrimary = useTouchPrimary();
   const receipt = pendingKind === 'upload_receipt';
   const rediagnose = pendingKind === 'step_feedback';
-  const observing = pendingKind === 'answer_observation';
   const busy = processing || submitting;
   const inputBlocked = !!offline || runBusy || busy;
   const hasContent = value.trim().length > 0 || attachments.length > 0;
@@ -95,6 +94,16 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
       attachmentsRef.current = [];
     };
   }, [purpose, pendingKind]);
+
+  useEffect(() => {
+    if (presetFiles?.length) {
+      release(attachmentsRef.current);
+      updateAttachments([]);
+      void addFiles(presetFiles.slice(0, maxImages));
+    }
+    // 只在载入新工单（新数组引用）时触发
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presetFiles]);
 
   function setRefs(el: HTMLTextAreaElement | null) {
     localRef.current = el;
@@ -192,16 +201,14 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   }
 
   const hint = offline ? '可以先填写问题；对话服务暂未接通，目前无法发送。'
-    : observing ? OBSERVATION_HINT
     : rediagnose ? REDIAGNOSE_HINT
     : receipt ? '请上传订单截图、发票或收据，可附带备注；单张 5 MB 内。也可以跳过，由人工协助核实。'
     : '支持文字与图片（单张 5 MB 内，会自动压缩），说不清楚也没关系。';
   // 键盘用法只在能用上的设备提示；离线时发不出去，不提发送键。
   const keyHint = offline || touchPrimary ? null : 'Enter 发送，Shift+Enter 换行，截图可直接粘贴到输入框。';
-  const label = receipt ? '凭证备注（选填）' : observing ? '回答上方的问题' : rediagnose ? '补充新情况或纠正' : '描述你的问题';
+  const label = receipt ? '凭证备注（选填）' : rediagnose ? '补充新情况或纠正' : '描述你的问题';
   const placeholder = receipt ? '可补充购买平台、店铺或其他需要说明的信息…'
     : rediagnose ? '也可以直接描述结果，例如：其实还有异响 / 说错了，我的是 Omni E28…'
-    : observing ? '选项之外的情况，用自己的话说…'
     : '说说设备型号和问题，例如：Omni E25 报 3212 错误，滚刷拖布卡住了；也可以直接贴 App 报错或订单号…';
 
   return (

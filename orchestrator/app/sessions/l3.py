@@ -32,18 +32,26 @@ from app.sessions import evidence as evidence_mod
 from app.warranty.service import decide_by_dealer, decide_by_order, today
 
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
+LOGISTICS_FIELDS = {"logistics_status", "updated_at", "carrier", "tracking_no", "order_no"}
 REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}
-TYPE_TITLES = {
-    "replace": "提交换货单",
-    "refund": "提交退款单",
-    "reship": "提交补发单",
-    "carrier_investigation": "提交承运商调查单",
+TYPE_NAMES = {
+    "replace": "replacement request",
+    "refund": "refund request",
+    "reship": "reship request",
+    "carrier_investigation": "carrier investigation request",
 }
+TYPE_TITLES = {kind: "Submit a " + name for kind, name in TYPE_NAMES.items()}
+# 人工交接记录（内部）用的中文单据名。
+TYPE_NAMES_ZH = {"replace": "换货单", "refund": "退款单", "reship": "补发单", "carrier_investigation": "承运商调查单"}
 TYPE_DETAILS = {
-    "replace": "保内故障经排查仍未解决，按售后规则可换货；提交后由人工审核寄出。",
-    "refund": "保内可申请退款；提交后由人工审核办理。",
-    "reship": "物流未显示送达，按售后规则可以为您补发；提交后由人工安排。",
-    "carrier_investigation": "物流显示已送达，按售后规则不再补发；如果您确实没有收到，可以提交承运商调查单，由人工联系承运商核实。",
+    "replace": "The fault is still not resolved after troubleshooting and the product is under warranty, so under our "
+               "after-sales policy it qualifies for a replacement. Once submitted, a colleague will review it and arrange the shipment.",
+    "refund": "The product is under warranty, so you can request a refund. Once submitted, a colleague will review and process it.",
+    "reship": "Tracking doesn't show the package as delivered, so under our after-sales policy we can reship it to you. "
+              "Once submitted, a colleague will arrange it.",
+    "carrier_investigation": "Tracking shows the package as delivered, so under our after-sales policy we can't send another "
+                             "shipment. If you really haven't received it, I can submit a carrier investigation request and a "
+                             "colleague will check with the carrier.",
 }
 
 
@@ -151,14 +159,14 @@ async def service_context(state):
     }
     emit_case(state, case)
     if binding.status == "ambiguous":
-        say(state, "涉及多个订单，请明确要办理哪个订单号。")
+        say(state, "This involves more than one order. Please tell me which order number you'd like me to handle.")
         update.update(l3_route="commit_issue", pending_card=None)
         return update
     kind = requested_type(state)
     if kind in {"reship", "carrier_investigation"}:
         update["l3_route"] = "propose" if order is not None else finish(state, "commit_issue")
         if order is None:
-            say(state, "请提供订单号或物流单号，我会先核对物流状态。")
+            say(state, "Please share your order number or tracking number, and I'll check the delivery status first.")
         return update
     if order is not None:
         decision = decide_by_order(order, product.get("sku"), as_of(state))
@@ -173,13 +181,15 @@ async def service_context(state):
         # 首封表单里写了购买商家与国家（T45：Ordered from the reseller Aeroflow，Country: US）：先按名录判断
         decision = stated
         if decision.status == "unknown":
-            say(state, f"已核对：{decision.reason}。请上传购买凭证（需能看到购买日期），我来确认是否在 12 个月质保期内。")
+            say(state, f"I've checked: {decision.reason}. Please upload your proof of purchase (the purchase date must be visible) "
+                     "so I can confirm whether it's within the 12-month warranty.")
             update.update(escalate_reason="R6", l3_route="prepare_receipt", warranty=decision.model_dump(mode="json"))
             return update
     elif receipt.get("skipped_reason"):
-        decision = WarrantyDecision(status="unknown", basis="none", as_of=as_of(state), reason="客户未提供订单或购买凭证")
+        decision = WarrantyDecision(status="unknown", basis="none", as_of=as_of(state), reason="no order or proof of purchase was provided")
     else:
-        say(state, "没有查到订单。请提供订单号；如果是在其他商家购买，请上传购买凭证（需能看到商家名称、购买国家和日期）。")
+        say(state, "I couldn't find an order. Please share your order number. If you bought it from another seller, please "
+                   "upload your proof of purchase showing the seller name, country of purchase and purchase date.")
         update.update(escalate_reason="R6", l3_route="prepare_receipt")
         return update
     case = await services.cases.transition(
@@ -223,37 +233,39 @@ async def propose(state):
         "open", "diagnosing", "proposing", "rejected", "reopened",
         "awaiting_confirmation", "tracking", "executing_failed",
     }:
-        say(state, "案件正在等待处理，进度会在案件状态中更新。")
+        say(state, "Your case is waiting to be processed. Updates will appear in the case status.")
         return {"l3_route": "commit_issue"}
     kind = requested_type(state)
     if state.get("requested_remedy") == "address_update":
-        say(state, "修改地址需人工核实办理，已为您转交人工。")
+        say(state, "Address changes need to be verified by a colleague, so I've passed your request to our team.")
         return {"stage": "propose", "l3_route": "await_human"}
     if kind in {"reship", "carrier_investigation"}:
         return await _propose_logistics(state, case, kind)
     decision = warranty_of(state)
     if decision is None or decision.status == "unknown":
-        say(state, "暂时无法确认质保状态（" + (decision.reason if decision else "缺少订单信息") + "），已整理资料交由人工核实。")
+        say(state, "I can't confirm the warranty status yet (" + (decision.reason if decision else "order details are missing")
+            + "), so I've passed the details to a colleague to check.")
         case = await services.cases.transition(state["case_id"], "escalated_summary", "质保状态无法确认")
         emit_case(state, case)
         return {"stage": "propose", "l3_route": "summarize", "escalate_reason": "R6"}
     if decision.status == "out_of_warranty":
         say(
             state,
-            f"已核对：{decision.reason}，已超过质保期（按 {decision.as_of.isoformat()} 计）。"
-            "很抱歉，过保产品无法提供免费换货或退款。如需继续使用，可以参考产品说明自行保养，或联系我们了解配件购买。",
+            f"I've checked: {decision.reason}. The warranty has expired (as of {decision.as_of.isoformat()}). "
+            "I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. "
+            "To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
         )
         case = await services.cases.transition(state["case_id"], "proposing", "订单已过保")
         case = await services.cases.transition(state["case_id"], "closed_unresolved", "过保，按 SOP 委婉拒绝")
         emit_case(state, case)
         return {"stage": "done", "case_status": case["status"], "l3_route": "commit_issue"}
     if decision.status == "unauthorized_dealer":
-        say(state, f"{decision.reason}。该商家不属于授权经销商，请直接联系购买商家处理售后。")
+        say(state, f"I've checked: {decision.reason}. Please contact the seller directly for after-sales support.")
         case = await services.cases.transition(state["case_id"], "proposing", "非授权经销商")
         case = await services.cases.transition(state["case_id"], "closed_unresolved", "非授权经销商，引导联系商家")
         emit_case(state, case)
         return {"stage": "done", "case_status": case["status"], "l3_route": "commit_issue"}
-    return await _offer(state, case, kind, f"已核对：{decision.reason}，在质保期内。")
+    return await _offer(state, case, kind, f"I've checked: {decision.reason}. ")
 
 
 async def _propose_logistics(state, case, kind):
@@ -261,16 +273,16 @@ async def _propose_logistics(state, case, kind):
     order = await services.backend.get_order(state["case_order_no"])
     verdict = logistics.verdict(order, as_of(state))
     pkg = logistics.main_package(order)
-    status_line = logistics.describe(pkg) if pkg else "没有包裹记录"
+    status_line = logistics.describe(pkg) if pkg else "No package record found"
     if kind == "reship" and verdict == "delivered":
         kind = "carrier_investigation"
     if kind == "carrier_investigation" and verdict == "reship_eligible":
         kind = "reship"
     if (kind == "reship" and verdict != "reship_eligible") or (kind == "carrier_investigation" and verdict != "delivered"):
-        say(state, f"{status_line}。{logistics.SOP_TEXT[verdict]}")
+        say(state, f"{status_line}. {logistics.SOP_TEXT[verdict]}")
         return {"stage": "consult", "l3_route": finish(state, "commit_issue")}
     # consult 已经把包裹状态告诉客户时不再复述。
-    lead = "" if state.get("logistics_announced") else f"{status_line}。"
+    lead = "" if state.get("logistics_announced") else f"{status_line}. "
     return await _offer(state, case, kind, lead, requested=kind)
 
 
@@ -285,8 +297,9 @@ async def _offer(state, case, kind, lead, requested=None):
     update = {"proposal": proposal, "stage": "propose", "human_request_info": False, "escalate_reason": None,
               "sop_evidence": have, **({"requested_remedy": requested} if requested else {})}
     if missing:
-        labels = "、".join(EVIDENCE_LABELS[m] for m in missing)
-        say(state, f"{lead}提交{TYPE_TITLES[kind][2:]}前还需要：{labels}。照片或视频请直接上传，其余信息直接回复即可。")
+        labels = ", ".join(EVIDENCE_LABELS[m] for m in missing)
+        say(state, f"{lead}Before I can submit the {TYPE_NAMES[kind]}, I still need: {labels}. "
+                   "Please upload photos or videos here, and reply with the other details.")
         case = await services.cases.transition(state["case_id"], "awaiting_confirmation", "等待补充 SOP 证据", proposal=proposal)
         emit_case(state, case)
         update["l3_route"] = finish(state, "commit_issue")
@@ -297,7 +310,7 @@ async def _offer(state, case, kind, lead, requested=None):
     say(state, lead + TYPE_DETAILS[kind])
     update.update(
         awaiting_evidence=[],
-        pending_card=pending(state, "confirm_proposal", {"options": [option], "decision_summary": lead.rstrip("。")}),
+        pending_card=pending(state, "confirm_proposal", {"options": [option], "decision_summary": lead.strip().rstrip(".")}),
         l3_route=finish(state, "await_input"),
     )
     return update
@@ -334,7 +347,7 @@ async def _pause_for_changed_request(state, requested):
                   "pending_id": pc["card_id"], "status": "invalidated", "reason": "request_changed",
                   "version": state["base_version"] + 1})
     emit_case(state, row, "客户变更诉求")
-    say(state, "已暂停原方案。您的新要求已交人工重新审核，审核结果会回到本会话。")
+    say(state, "I've paused the original plan. Your new request has been passed to a colleague for review, and the result will come back to this conversation.")
     return {**inactive_case_state(state), "requested_remedy": requested, "case_status": row["status"],
             "stage": "awaiting_human", "l3_route": "commit_issue"}
 
@@ -345,7 +358,7 @@ async def authorize(state):
     proposal = state.get("proposal") or {}
     option = next((o for o in proposal.get("options", []) if o["option_id"] == proposal.get("chosen_option_id")), None)
     if not option:
-        say(state, "该方案需要人工办理，已提交审核。")
+        say(state, "This option needs to be handled by a colleague, so I've submitted it for review.")
         return {"l3_route": "await_human"}
     key = f"{state['case_id']}:service_order.create:{option['option_id']}"
     old = await services.executor.store.get(key)
@@ -406,9 +419,9 @@ async def execute(state):
             writer=writer(),
         )
     except ExecutionNeedsReview:
-        return await _outcome_needs_review(state, "这次提交的结果暂时无法确认。为避免重复提交，已交人工核实。")
+        return await _outcome_needs_review(state, "We can't confirm the result of this submission yet. To avoid a duplicate request, I've passed it to a colleague to check.")
     except ExecutionBusy:
-        say(state, "相同申请仍在处理，请稍后查询案件状态。")
+        say(state, "The same request is still being processed. Please check the case status a little later.")
         return {"l3_route": "commit_issue"}
     writer()(
         {
@@ -438,12 +451,12 @@ async def execute(state):
             emit_case(state, case)
             retry = dict(proposal)
             retry.update(status="offered", chosen_option_id=None, user_confirmed=False)
-            say(state, "本次提交暂未完成。您可以重试原申请，或转人工协助；重试不会重复创建服务单。")
+            say(state, "This submission didn't go through. You can retry the original request or ask for help from a colleague; retrying won't create a duplicate service request.")
             return {
                 "execution": execution, "case_status": case["status"], "proposal": retry, "stage": "propose",
                 "pending_card": pending(state, "confirm_proposal", {
                     "options": [option], "retry": True,
-                    "decision_summary": "售后工具暂时不可用，请重试原申请或选择人工协助。",
+                    "decision_summary": "Our after-sales tool is temporarily unavailable. Please retry the original request or choose help from a colleague.",
                 }),
                 "l3_route": "await_input",
             }
@@ -451,7 +464,7 @@ async def execute(state):
     case = await services.cases.attach_execution(state["case_id"], execution["receipt"])
     case = await services.cases.record_commitment(state["case_id"], execution["receipt"]["next_step"], "receipt")
     case = await services.cases.transition(state["case_id"], "awaiting_approval", "服务单已提交，转人工处理")
-    case = await _record_handoff(state, case, f"{TYPE_TITLES[option['type']][2:]}已提交：{execution['receipt'].get('service_order_no')}")
+    case = await _record_handoff(state, case, f"{TYPE_NAMES_ZH[option['type']]}已提交：{execution['receipt'].get('service_order_no')}")
     emit_case(state, case)
     return {
         "execution": execution,
@@ -477,11 +490,17 @@ async def track(state):
     if number:
         try:
             order = await services.backend.get_service_order(number)
-            say(state, f"服务单 {number} 当前状态：{ {'submitted': '已提交，待人工处理', 'in_review': '人工处理中', 'completed': '已完成', 'rejected': '未通过'}[order.status] }。")
+            status = {
+                "submitted": "submitted, waiting for a colleague to process it",
+                "in_review": "being processed by a colleague",
+                "completed": "completed",
+                "rejected": "not approved",
+            }[order.status]
+            say(state, f"Service request {number} status: {status}.")
         except BackendError as error:
             say(state, error.user_message)
     else:
-        say(state, "当前案件还没有提交服务单。")
+        say(state, "No service request has been submitted for this case yet.")
     return {"stage": state.get("stage", "track"), "l3_route": "advance_tasks", "completed_task_intent": "confirm_received"}
 
 
@@ -501,7 +520,7 @@ async def await_human(state):
         row = await services.cases.record_review_request(state["case_id"], state["requested_remedy"])
     row = await _record_handoff(state, row)
     emit_case(state, row)
-    say(state, "已提交人工审核。审核决定会回到本会话，您可以继续补充信息。")
+    say(state, "I've submitted this for review by a colleague. The decision will come back to this conversation, and you can keep adding information here.")
     return {"stage": "awaiting_human", "pending_card": None, "l3_route": "commit_issue"}
 
 
@@ -561,7 +580,8 @@ async def consult(state):
     business.subjects.update(workflow.subjects)
     view = conversation_view(state, scope)
     reads = required_reads(request, view)
-    if intent == "logistics_query" and not decision.get("answer_request"):
+    if intent == "logistics_query" and set(request.fields) <= LOGISTICS_FIELDS:
+        # 模型给物流问题附带的字段请求（订单号 / 物流单号 / 状态）不改变诉求：仍按物流 SOP 查包裹并给方案（T5 实测）
         reads = ["logistics.query"]
     if view["status"] == "ambiguous":
         reads = reads or ["warranty.check"]
@@ -571,7 +591,14 @@ async def consult(state):
         binding = workflow.bind(kind)
         if binding.status != "ready":
             attempts = (state.get("consult_attempts") or 0) + 1
-            say(state, "涉及多个订单，请明确要查询哪个订单号。" if binding.status == "ambiguous" else "请提供订单号或物流单号，我会直接查询。" if kind == "logistics.query" else "查询这项订单信息还需要订单号。")
+            say(
+                state,
+                "This involves more than one order. Please tell me which order number you'd like me to check."
+                if binding.status == "ambiguous"
+                else "Please share your order number or tracking number and I'll look it up."
+                if kind == "logistics.query"
+                else "I need the order number to look up this order information.",
+            )
             return {
                 "consult_intent": intent, "consult_attempts": attempts,
                 "stage": state.get("stage", "consult") if state.get("pending_card") else "consult",
@@ -592,7 +619,7 @@ async def consult(state):
         if kind == "logistics.query" and receipt["status"] == "packages":
             order = await services.backend.get_order(receipt["order_no"])
             verdict = logistics.verdict(order, as_of(state))
-            logistics_note = f"订单 {order.order_no}：\n" + "\n".join(logistics.describe(p) for p in order.packages) + "\n" + logistics.SOP_TEXT[verdict]
+            logistics_note = f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages) + "\n" + logistics.SOP_TEXT[verdict]
             if intent == "logistics_query" and verdict in {"reship_eligible", "delivered"}:
                 # 物流工单的典型诉求就是「没收到」（主办方 11 单全部如此）：直接按 SOP 给出补发 / 承运商调查方案，客户可暂不办理。
                 offer = "reship" if verdict == "reship_eligible" else "carrier_investigation"
@@ -609,7 +636,7 @@ async def consult(state):
         if case:
             case_update["case_status"] = case["status"]
             view["fields"]["case_status"] = {"value": case["status"], "source": "case"}
-    logistics_only = bool(logistics_note) and set(request.fields) <= {"logistics_status", "updated_at", "carrier", "tracking_no"}
+    logistics_only = bool(logistics_note) and set(request.fields) <= LOGISTICS_FIELDS
     if offer and logistics_only and not state.get("pending_card"):
         say(state, logistics_note.rsplit("\n", 1)[0])
         return {
@@ -650,11 +677,13 @@ async def apply_l3_action(state, action, pc):
             state["session_id"], state["active_issue_id"], payload["score"], payload.get("comment"), state.get("case_id"),
         )
         results[pc["card_id"]] = {"score": payload["score"]}
-        say(state, "感谢您的评价，案件进度可随时查询。")
+        say(state, "Thank you for your feedback. You can check your case progress at any time.")
         update["l3_route"] = "commit_issue"
     elif kind == "skip_retake":
         results[pc["card_id"]] = {"skipped": True}
-        update.update(retake_skipped=True, l3_route="retrieve")
+        # 回到消歧：读图在产品确认之前发生（T55 首封带图），跳过补拍后产品仍可能未确认，直接检索会因无查询而中断。
+        # 图片已记为处理过，消歧不会再次读图。
+        update.update(retake_skipped=True, l3_route="disambiguate")
     update["card_results"] = results
     return update
 
@@ -751,7 +780,8 @@ async def reopening_request(state, meaning):
         business.status == "ambiguous" or (order_no and binding.params.get("order_no") not in {None, order_no})
         or (meaning.business_reference and meaning.business_reference.relation == "other")
     ):
-        return {"clarification": "请确认仍未解决的是原售后案件的问题，还是刚查询的另一笔订单的问题。"}
+        return {"clarification": "Please confirm whether the unresolved problem is with your original after-sales case, "
+                                 "or with the other order you just asked about."}
     return {"case_id": row["case_id"], "expected_revision": row["revision"], "quote": quote,
             "transition": row["status"] != "reopened"}
 
@@ -775,7 +805,7 @@ async def reopen_case(state):
                   "pending_id": pc["card_id"], "status": "invalidated", "reason": "case_reopened",
                   "version": state["base_version"] + 1})
     emit_case(state, row, "继续处理未解决的问题")
-    say(state, "已恢复原案件，保留之前的订单和处理记录。接下来重新核实适用方案。")
+    say(state, "I've reopened your original case and kept the previous order and handling records. Next, I'll re-check which option applies.")
     intent = state["turn_decision"]["primary_intent"]
     return {**inactive_case_state(state), "case_status": row["status"],
             "requested_remedy": {"replacement_request": "replace", "refund_request": "refund"}.get(intent),
@@ -794,7 +824,13 @@ async def apply_case_command(state):
                   "pending_id": pc["card_id"], "status": "invalidated",
                   "reason": "case_" + source["command"], "version": state["base_version"] + 1})
     emit_case(state, row, "人工结案" if source["command"] == "close" else "人工重新受理")
-    say(state, "人工已将此案件结案，您仍可查询历史记录；如问题仍在，请继续说明。" if source["command"] == "close" else "人工已重新受理此案件，请说明仍需处理的问题。后续办理将重新核实方案并征求您的确认。")
+    say(
+        state,
+        "A colleague has closed this case. You can still view its history; if the problem persists, please tell me more."
+        if source["command"] == "close"
+        else "A colleague has reopened this case. Please describe what still needs to be handled. "
+        "Before anything is submitted, I'll re-check the options and ask for your confirmation.",
+    )
     return {**inactive_case_state(state), "case_status": row["status"], "stage": "done",
             "l3_route": "commit_issue"}
 
@@ -807,7 +843,7 @@ async def apply_human_decision(state):
     row = await services.cases.consume_decision(state["case_id"], state["human_decision_id"], state["input_id"])
     decision = next(d for d in row["decisions"] if d["decision_id"] == state["human_decision_id"])
     emit_case(state, row)
-    say(state, "人工处理回复：" + decision["note"])
+    say(state, "Reply from our team: " + decision["note"])
     if decision["decision"] == "approve":
         proposal = dict(row.get("proposal") or state.get("proposal") or {})
         chosen = next((o for o in proposal.get("options", []) if o["option_id"] == decision.get("option_id")), None)
@@ -824,7 +860,7 @@ async def apply_human_decision(state):
 async def prepare_retake(state):
     count = (state.get("retake_attempts") or 0) + 1
     if count > 2:
-        say(state, "照片仍无法辨认，我会整理资料交由人工核实。")
+        say(state, "The photo still can't be read clearly, so I'll pass the details to a colleague to check.")
         return {
             "retake_attempts": count,
             "pending_card": None,
@@ -840,7 +876,7 @@ async def prepare_retake(state):
             "upload_retake",
             {
                 "reasons": quality.get("reasons", []),
-                "guidance": quality.get("guidance", []) or ["请对焦拍摄设备的故障部件。"],
+                "guidance": quality.get("guidance", []) or ["Please take a focused photo of the faulty part of the device."],
             },
         ),
         "l3_route": "await_input",
@@ -850,8 +886,8 @@ async def prepare_retake(state):
 async def vision_conflict(state):
     say(
         state,
-        "图片与文字描述存在差异，请确认："
-        + "；".join((state.get("fault_localization") or {}).get("conflicts_with_text", [])),
+        "The photo and your description don't quite match. Please confirm: "
+        + "; ".join((state.get("fault_localization") or {}).get("conflicts_with_text", [])),
     )
     return {
         "pending_card": None,
@@ -869,7 +905,7 @@ async def advance_tasks(state):
     tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business, task_id=decision.get("task_id"))
     update = {"task_queue": tasks, "completed_task_intent": None}
     if task:
-        say(state, "接下来处理：" + LABELS[task["intent"]] + "。")
+        say(state, "Next up: " + LABELS[task["intent"]] + ".")
         update.update(
             text=task["quote"],
             business_context=task_business(task, business).model_dump(mode="json"),

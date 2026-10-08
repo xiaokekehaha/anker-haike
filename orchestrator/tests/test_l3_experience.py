@@ -183,7 +183,7 @@ def test_tasks_order_dedupe_and_inline_completion():
     assert order == ["refund_request", "replacement_request", "report_problem", "logistics_query"]
     queue, notice = enqueue([], "report_problem", ["logistics_query"], "设备不吸，物流到哪了", "i")
     again, _ = enqueue(queue, "report_problem", ["logistics_query"], "同一个问题", "i2")
-    assert len(again) == 2 and "设备排障 → 物流查询" in notice
+    assert len(again) == 2 and "device troubleshooting → delivery status" in notice
     # An inline read must not finish the active diagnostic task.
     unchanged, task = next_task(queue, "logistics_query")
     assert task is None and unchanged[0]["status"] == "active"
@@ -319,4 +319,5 @@ async def test_retake_limit_and_skip_path(monkeypatch):
     third = await l3.prepare_retake(state | second)
     assert third["l3_route"] == "summarize" and third["escalate_reason"] == "R7"
     skipped = await l3.apply_l3_action(state, {"kind": "skip_retake"}, first["pending_card"])
-    assert skipped["l3_route"] == "retrieve" and skipped["retake_skipped"]
+    # 跳过补拍回到消歧：首封带图时读图早于产品确认（T55 实测），直接检索会因无查询中断
+    assert skipped["l3_route"] == "disambiguate" and skipped["retake_skipped"]

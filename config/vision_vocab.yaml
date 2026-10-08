@@ -15,6 +15,49 @@ parts: [滚刷, 边刷, 滤网, 尘盒, 吸口, 轮组, 传感器, 充电触点,
 # 「弯折」「锈蚀」是 2026-09-17 多品类补入：数据线折损、充电触点氧化是充电与耳机品类的常见可见现象。
 phenomena: [缠绕, 堵塞, 满, 破损, 变形, 弯折, 烧焦, 漏液, 鼓包, 污渍, 锈蚀, 松脱, 缺失, 正常, 其他, 不可辨]
 unknown: 不可辨
+# 客户可见句子用的英文名（图文冲突提示等；2026-10-08 客户可见输出改英文）
+english:
+  滚刷: roller brush
+  边刷: side brush
+  滤网: filter
+  尘盒: dustbin
+  吸口: suction inlet
+  轮组: wheels
+  传感器: sensor
+  充电触点: charging contacts
+  电池仓: battery compartment
+  基站: base station
+  接口: port
+  数据线: cable
+  插脚: plug pins
+  电池: battery
+  外壳: housing
+  指示灯: indicator light
+  耳机: earbud
+  充电盒: charging case
+  耳塞套: ear tip
+  镜头: lens
+  支架: mount
+  太阳能板: solar panel
+  喇叭罩: breast shield
+  鸭嘴阀: duckbill valve
+  隔膜: diaphragm
+  导管: tubing
+  奶瓶: milk bottle
+  缠绕: tangled
+  堵塞: clogged
+  满: full
+  破损: damaged
+  变形: deformed
+  弯折: bent
+  烧焦: scorched
+  漏液: leaking
+  鼓包: swollen
+  污渍: dirty
+  锈蚀: corroded
+  松脱: loose
+  缺失: missing
+  正常: normal
 # 粗定位九宫格：模型无关的最小公分母，供裁剪复看定位（见 contracts Cell）
 cells: [左上, 上中, 右上, 左中, 中心, 右中, 左下, 下中, 右下]
 # 用户在文字里会怎么称呼这些部件与现象。只用于「代码层冲突检测」把用户说法映射回词表，

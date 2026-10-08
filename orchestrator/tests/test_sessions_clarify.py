@@ -153,7 +153,7 @@ async def test_clarify_question_preserves_target_without_model_rewrite(mem_runti
     )
     assert out.text == FIXED_QUESTIONS["symptom"] and out.model_used == "fixed"
     assert fixed_question("conflict", {"confirmed": "A", "mentioned": "B"}) == (
-        "您之前确认的是 A，这次提到的是 B，请问需要排查的是哪一台？"
+        "Earlier we confirmed A, and now you mentioned B. Which one should we look at?"
     )
 
 
@@ -205,7 +205,7 @@ async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runti
                 "asked_run_id": ev1[0]["run_id"],
             }
             set_model_router(None)  # 第二轮不再需要模型
-            ev2 = await _send(client, sid, "吸力变弱了")
+            ev2 = await _send(client, sid, "吸力变弱了，地上的灰尘和碎屑都吸不干净")
         assert "diagnose" in _stages(ev2)
         s2 = await _state(sid)
         assert s2["clarification"] is None and s2["product_confirmed"]["sku"] == "T2351"
@@ -268,7 +268,7 @@ async def test_product_correction_and_category_conflict(mem_runtime):
 
         ev2 = await _send(client, sid, "吸奶器也坏了")
     assert _message_text(ev2) == (
-        "您之前确认的是 eufy Robot Vacuum Omni E28，这次提到的是 吸奶器，请问需要排查的是哪一台？"
+        "Earlier we confirmed eufy Robot Vacuum Omni E28, and now you mentioned 吸奶器. Which one should we look at?"
     )
     s2 = await _state(sid)
     assert s2["clarification"]["reason"] == "conflict" and s2["product_confirmed"]["sku"] == "T2352"

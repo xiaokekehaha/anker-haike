@@ -19,7 +19,6 @@ CONTRACT_TYPES = {
     "message_end",
     "product_card",
     "step_card",
-    "observation_card",
     "evidence",
     "receipt_card",
     "awaiting_input",
@@ -36,7 +35,7 @@ CONTRACT_TYPES = {
 
 def test_covers_all_15_types_from_contract_section_5():
     assert set(EVENT_TYPES) == CONTRACT_TYPES
-    assert len(EVENT_TYPES) == 25
+    assert len(EVENT_TYPES) == 24
     assert set(EVENTS) == CONTRACT_TYPES, "每种 type 都要有样例"
 
 

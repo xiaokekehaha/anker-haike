@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { type OfficialTicket, ticketFiles } from './api/officialTickets';
 import { HeaderBar } from './components/HeaderBar';
 import { ChatPane } from './components/ChatPane';
 import { Composer } from './components/Composer';
@@ -36,6 +37,12 @@ export function App() {
     const el = streamRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [lastKey, state.ui]);
+
+  const [presetFiles, setPresetFiles] = useState<File[] | null>(null);
+  const loadTicket = useCallback(async (ticket: OfficialTicket) => {
+    pickPrompt(ticket.body);
+    setPresetFiles(ticket.attachments.length ? await ticketFiles(ticket) : null);
+  }, []);
 
   function pickPrompt(text: string) {
     setDraft(text);
@@ -82,7 +89,7 @@ export function App() {
       <main id="main" className={styles.layout}>
         <section className={styles.conv} aria-label="智能售后对话">
           <div className={styles.stream} ref={streamRef}>
-            {!hasHistory && <ChatPane onPick={pickPrompt} disabled={busy} />}
+            {!hasHistory && <ChatPane onPick={pickPrompt} onLoadTicket={loadTicket} disabled={busy} />}
             <Timeline state={state} onAction={onAction} onHover={setHover} dockPending />
             {state.stalled && busy && <p className={cardStyles.stallNote} role="status">仍在处理，请稍候…</p>}
             {busy && !state.stalled && <p className={cardStyles.sysRow} role="status">{state.ui === 'tool_running' ? '正在检索知识库…' : state.ui === 'recovering' ? '正在恢复连接…' : '正在处理…'}</p>}
@@ -105,6 +112,7 @@ export function App() {
               onSend={(text, files, purpose) => session.send(text, { files, purpose })}
               onRequestHuman={hasHistory ? undefined : () => void session.requestHuman()}
               onCancel={state.activeRun ? () => void session.cancel() : undefined}
+              presetFiles={presetFiles}
             />
           </div>
         </section>

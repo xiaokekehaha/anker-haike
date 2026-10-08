@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 6203cbf1fad0a5c03e05892726ac31a03e8b5fc595543ec910bff47b4d7bc5fb
+// SHA-256: 15a1a20d27f94f06e9095922be0f4712041a65456dc0851341f915a579e33bea
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -38,7 +38,6 @@ export const serverEventSchema = z.fromJSONSchema({
           "enum": [
             "select_product",
             "step_feedback",
-            "answer_observation",
             "upload_receipt",
             "confirm_receipt",
             "confirm_proposal",
@@ -735,14 +734,6 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "title": "Feedback",
           "type": "string"
-        },
-        "observed": {
-          "description": "该步骤记录到的观察结果（选项文字）",
-          "items": {
-            "type": "string"
-          },
-          "title": "Observed",
-          "type": "array"
         },
         "step_id": {
           "title": "Step Id",
@@ -1476,110 +1467,6 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "ModelTraceItem",
       "type": "object"
     },
-    "ObservationCard": {
-      "additionalProperties": false,
-      "description": "计划级判别问题的卡片。与步骤内 observations 用同一份定义，独立追问时也要能点选 ——\n自由文本回答只能靠字面匹配，两次匹配不上该观察就被记为不可用，依赖它的计划再也解锁不了。",
-      "properties": {
-        "attempt": {
-          "minimum": 1,
-          "title": "Attempt",
-          "type": "integer"
-        },
-        "card_id": {
-          "title": "Card Id",
-          "type": "string"
-        },
-        "event_id": {
-          "title": "Event Id",
-          "type": "string"
-        },
-        "issue_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Issue Id"
-        },
-        "observation": {
-          "$ref": "#/$defs/StepObservation"
-        },
-        "plan_id": {
-          "title": "Plan Id",
-          "type": "string"
-        },
-        "recorded_at": {
-          "title": "Recorded At",
-          "type": "string"
-        },
-        "run_id": {
-          "title": "Run Id",
-          "type": "string"
-        },
-        "seq": {
-          "description": "会话内单调递增",
-          "minimum": 1,
-          "title": "Seq",
-          "type": "integer"
-        },
-        "type": {
-          "const": "observation_card",
-          "title": "Type",
-          "type": "string"
-        },
-        "version": {
-          "minimum": 0,
-          "title": "Version",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "seq",
-        "run_id",
-        "event_id",
-        "recorded_at",
-        "card_id",
-        "version",
-        "type",
-        "observation",
-        "plan_id",
-        "attempt"
-      ],
-      "title": "ObservationCard",
-      "type": "object"
-    },
-    "ObservationOption": {
-      "additionalProperties": false,
-      "properties": {
-        "kind": {
-          "default": "finding",
-          "enum": [
-            "finding",
-            "unknown"
-          ],
-          "title": "Kind",
-          "type": "string"
-        },
-        "label": {
-          "title": "Label",
-          "type": "string"
-        },
-        "option_id": {
-          "title": "Option Id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "option_id",
-        "label"
-      ],
-      "title": "ObservationOption",
-      "type": "object"
-    },
     "PendingChanged": {
       "additionalProperties": false,
       "properties": {
@@ -2127,7 +2014,7 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Service Order No"
         },
         "source": {
-          "default": "售后工具",
+          "default": "after-sales tool",
           "title": "Source",
           "type": "string"
         },
@@ -2587,35 +2474,6 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "StepMedia",
       "type": "object"
     },
-    "StepObservation": {
-      "additionalProperties": false,
-      "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
-      "properties": {
-        "observation_id": {
-          "title": "Observation Id",
-          "type": "string"
-        },
-        "options": {
-          "items": {
-            "$ref": "#/$defs/ObservationOption"
-          },
-          "minItems": 2,
-          "title": "Options",
-          "type": "array"
-        },
-        "question": {
-          "title": "Question",
-          "type": "string"
-        }
-      },
-      "required": [
-        "observation_id",
-        "question",
-        "options"
-      ],
-      "title": "StepObservation",
-      "type": "object"
-    },
     "SummaryUpdated": {
       "additionalProperties": false,
       "properties": {
@@ -2803,13 +2661,6 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Media",
           "type": "array"
         },
-        "observations": {
-          "items": {
-            "$ref": "#/$defs/StepObservation"
-          },
-          "title": "Observations",
-          "type": "array"
-        },
         "plan_id": {
           "title": "Plan Id",
           "type": "string"
@@ -2976,7 +2827,6 @@ export const serverEventSchema = z.fromJSONSchema({
       "message": "#/$defs/Message",
       "message_end": "#/$defs/MessageEnd",
       "message_start": "#/$defs/MessageStart",
-      "observation_card": "#/$defs/ObservationCard",
       "pending_changed": "#/$defs/PendingChanged",
       "ping": "#/$defs/Ping",
       "product_card": "#/$defs/ProductCard",
@@ -3031,9 +2881,6 @@ export const serverEventSchema = z.fromJSONSchema({
     },
     {
       "$ref": "#/$defs/StepCard"
-    },
-    {
-      "$ref": "#/$defs/ObservationCard"
     },
     {
       "$ref": "#/$defs/Evidence"

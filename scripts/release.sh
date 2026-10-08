@@ -32,7 +32,7 @@ cat > RELEASE.md <<MD
 | bake-off | ${BAKEOFF}（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | $(ver config/rules/safety_terms.yaml) |
 | actions_version | $(ver config/actions.yaml) |
-| emotion_policy / symptom_taxonomy / vision_vocab | $(ver config/emotion_policy.yaml) / $(ver config/symptom_taxonomy.yaml) / $(ver config/vision_vocab.yaml) |
+| emotion_policy / vision_vocab | $(ver config/emotion_policy.yaml) / $(ver config/vision_vocab.yaml) |
 | official data | $(head -2 data/official/orders.yaml | tail -1 | sed 's/.*sha256=//' | cut -c1-12) |
 | products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
 | kb_ver | $KB_VER |

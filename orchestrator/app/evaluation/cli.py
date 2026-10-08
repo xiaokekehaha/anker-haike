@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict
 
 from app.settings import REPO_ROOT
 
-KINDS = ("vision", "symptom", "routing", "emotion", "warranty", "authorization", "commitments", "tickets")
+KINDS = ("vision", "routing", "emotion", "warranty", "authorization", "commitments", "tickets")
 
 # 这几个金标字段断言的是「出现在列表里」，不是整列表相等。
 MEMBERSHIP: dict[str, str] = {}
@@ -24,15 +24,6 @@ class EvalCase(BaseModel):
 
 
 def evaluate(kind, value):
-    if kind == "symptom":
-        from app.conversation.taxonomy import normalize
-
-        hits = normalize(value["text"])
-        return (
-            {"fault_family": hits[0]["fault_family"], "symptom_code": hits[0]["symptom_code"]}
-            if hits
-            else {"fault_family": None, "symptom_code": None}
-        )
     if kind == "routing":
         from app.conversation.tasks import ordered_intents
 
@@ -128,12 +119,23 @@ def main():
     from app.evaluation.semantic import MODEL_KINDS, run_model
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("kind", choices=[*KINDS, "intent", "all"])
+    parser.add_argument("kind", choices=[*KINDS, "intent", "all", "live-tickets"])
     parser.add_argument("--mode", choices=["deterministic", "model"], default="deterministic")
     parser.add_argument("--lane", default=None)
     parser.add_argument("--min-accuracy", type=float, default=0.9)
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "reports/eval")
+    parser.add_argument("--base-url", default="http://localhost:8000", help="live-tickets：运行中的编排服务")
+    parser.add_argument("--ids", default="", help="live-tickets：只跑这些工单，逗号分隔，如 T55,T8")
+    parser.add_argument("--concurrency", type=int, default=3, help="live-tickets：并发会话数（智谱账号并发 4 即限流）")
     args = parser.parse_args()
+    if args.kind == "live-tickets":
+        from app.evaluation.live_tickets import run_live
+
+        ids = [i.strip() for i in args.ids.split(",") if i.strip()] or None
+        result = asyncio.run(run_live(args.base_url, ids, args.concurrency, REPO_ROOT / "reports" / "eval"))
+        print(json.dumps(result["summary"], ensure_ascii=False, indent=2))
+        print(f"report: {result['report']}")
+        return 0
     if args.mode == "model":
         if args.kind not in MODEL_KINDS:
             parser.error("model mode supports intent, routing, emotion")

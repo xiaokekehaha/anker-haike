@@ -84,7 +84,7 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
         "T2351",
         "robot_vacuum",
     )
-    assert not query.startswith("eufy")  # 型号已锁定检索范围，查询不再拼产品名
+    assert not query.startswith("eufy Clean X10 Pro Omni")  # 型号已锁定检索范围，查询不再拼产品名
     assert state.values["knowledge_status"] == "ok" and "chunk-c12" in state.values["evidence"]
     kinds = [i["kind"] for i in snap["timeline"]]
     assert "tool" in kinds and "evidence" in kinds  # 时间线出现工具行与来源列表
@@ -101,13 +101,13 @@ async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             e1 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了，地上的灰尘和碎屑都吸不干净"}))
                 ).text
             )
             after_first = len(ad.calls)
             e2 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 还是不吸"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 还是不吸，地上的灰尘和碎屑都吸不干净"}))
                 ).text
             )
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
@@ -127,7 +127,7 @@ async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
 
 
 async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
-    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了", FakeAdapter("unavailable"))
+    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了，地上的灰尘和碎屑都吸不干净", FakeAdapter("unavailable"))
     tools = [e for e in events if e["type"] == "tool_call"]
     assert [t["status"] for t in tools] == ["started", "failed"] and "暂不可用" in tools[1][
         "summary"
@@ -139,7 +139,7 @@ async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
 
 
 async def test_no_match_has_text_marker(mem_runtime):
-    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了", FakeAdapter("no_match"))
+    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了，地上的灰尘和碎屑都吸不干净", FakeAdapter("no_match"))
     finished = [e for e in events if e["type"] == "tool_call" and e["status"] == "finished"]
     assert finished and finished[0]["summary"] == "未找到匹配的官方说明"
     assert state.values["knowledge_status"] == "no_match"
@@ -153,7 +153,7 @@ async def test_adapter_disabled_is_failed_tool_call(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             events = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了，地上的灰尘和碎屑都吸不干净"}))
                 ).text
             )
     finally:

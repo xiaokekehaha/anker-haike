@@ -36,6 +36,11 @@ REFERENCE_FIELDS = frozenset(
         "selected_entry_ids",
         "last_input_id",
         "references",
+        # 事件 id 由会话 / 输入 id 派生（stable_id），录制与回放不同；卡片效果进入下一轮上下文时会带上它
+        "event_id",
+        "effect_id",
+        "action_id",  # 前端 / 脚本每次生成的 uuid
+        "execution_id",
     }
 )
 CLOCK_FIELDS = frozenset(

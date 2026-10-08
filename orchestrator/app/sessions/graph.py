@@ -25,7 +25,6 @@ from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.product_questions import answer_product_question, handles_product_question
-from app.conversation.reduce import OPEN_OBSERVATION_STATUS
 from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
 from app.diagnose import (
     build_query,
@@ -34,10 +33,8 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
-from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches
-from app.diagnose.observations import record_observations
 from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
 from app.emotion.policy import complaint_flagged, evaluate_emotion
@@ -53,6 +50,8 @@ from app.knowledge.search import interleave_kbs, search_round
 from app.knowledge.weknora_client import WeKnoraError
 from app.models.runtime import get_model_router
 from app.observability.runtime import record
+from app.official.damage import physical_damage
+from app.official.message import parse_message
 from app.plans.runtime import get_plan_library
 from app.prompts import reply_messages
 from app.rules import get_rules_service
@@ -156,9 +155,7 @@ class SessionState(TypedDict, total=False):
     product_hints: list[str]
     product_question: dict | None
     symptoms: list[str]
-    symptom_codes: list[str]
     diagnostic_decision: dict[str, Any]
-    symptom_interview: dict[str, Any] | None
     model_trace: list[dict[str, Any]]
     # 票 28：检索结果。evidence 按 evidence_id 去重累积，供 step.evidence_ids 引用；knowledge_status 为最近一次四态
     evidence: dict[str, dict[str, Any]]
@@ -202,10 +199,8 @@ class SessionState(TypedDict, total=False):
     card_ready_ms: int | None
     guide_trace: Annotated[list[dict[str, Any]], operator.add]
     _verify: dict[str, Any] | None
-    # design §3.2：统一下一动作决策的快照（kind / reason / compat_rule / question），问题内持久；
-    # observation_requests 为已向用户追问过的观察 {observation_id, plan_id, input_id, status}
+    # design §3.2：统一下一动作决策的快照（kind / reason / compat_rule / question），问题内持久
     next_action: dict[str, Any] | None
-    observation_requests: list[dict[str, Any]]
 
 
 def _delay() -> float:
@@ -316,7 +311,6 @@ async def clarify(state: SessionState) -> SessionState:
             state.get("clarification"), reason, state.get("run_id", ""),
             question=out.text, input_id=state.get("input_id"),
         ),
-        **({"symptom_interview": detail["symptom_interview"]} if detail.get("symptom_interview") else {}),
         "visible_messages": msgs,
         "model_trace": [
             *state.get("model_trace", []),
@@ -483,8 +477,6 @@ async def vision(state: SessionState) -> SessionState:
             *(state.get("observations") or []),
             *(f"图片：{o}" for o in out.observations),
         ]
-        import copy
-
         from app.conversation.reduce import stable_id
 
         issues = copy.deepcopy(state["issues"])
@@ -506,11 +498,8 @@ async def vision(state: SessionState) -> SessionState:
                     "recorded_at": state["at"],
                 }
             )
-        # 照片签名 → 症状事实（2026-09-17，9db 重放）。候选计划的三处过滤——decide_symptoms 的 selected、
-        # retrieve 的 allowed_ids、_synthesize_step 的 allowed——都只认 kind=symptom 事实里的 symptom_codes，
-        # 上面的观察事实进不了决策层：文字一说「异响」，滚刷缠绕的照片就对候选集毫无贡献。
-        # 这里把词表签名命中的 plan 在 plans.yaml 声明的症状码写成一条图片来源的症状事实，
-        # 图片路径与文字路径（symptom_taxonomy「缠绕 → suction_low」）在决策层等价。同一张图重传会读两次，按 value 去重。
+        # 照片签名 → 症状事实（2026-09-17，9db 重放）：上面的观察事实不算现象，症状判定只认 kind=symptom 事实。
+        # 这里把词表签名命中、且带错误码的官方 Q&A 写成一条图片来源的症状事实。同一张图重传会读两次，按 value 去重。
         library = get_plan_library()
         # 同一签名可以属于多个品类（充电触点污渍既是耳机不充电，也可能是扫地机回座）：
         # 品类已知时只取本品类的计划，否则别的品类的症状码会进本事项、跳过问诊后落空。
@@ -546,7 +535,6 @@ async def vision(state: SessionState) -> SessionState:
                     "image_ids": out.used_image_ids,
                     "plan_ids": plan_ids,
                     "symptom_codes": codes,
-                    "symptom_code": codes[0] if len(codes) == 1 else None,
                     "recorded_at": state["at"],
                     "occurred_at": None,
                     "time_expression": None,
@@ -699,15 +687,6 @@ async def await_input(state: SessionState) -> SessionState:
                 **({"seen": pc["payload"]["seen"]} if pc["payload"].get("seen") else {}),
             }
         )
-    elif pc["kind"] == "answer_observation":
-        writer(
-            {
-                "type": "observation_card",
-                "card_id": pc["card_id"],
-                "version": current_version(),
-                **pc["payload"],
-            }
-        )
     elif pc["kind"] == "confirm_receipt":
         # 票 40：字段确认卡；confidence < 0.7 前端标黄，unreadable 为空字段可手输
         writer(
@@ -798,8 +777,6 @@ async def apply_action(state: SessionState) -> SessionState:
             update["escalate_reason"] = receipt.get("collection_reason") or "R6"
     elif action.get("kind") == "step_feedback":
         update.update(_apply_step_feedback(state, action, pc, results))
-    elif action.get("kind") == "answer_observation":
-        update.update(_apply_observation_answer(state, action, pc, results))
     elif action.get("kind") == "select_product" and action["payload"].get("sku") is None:
         # 「其他型号 / 不确定」：品类事实保留，型号未知，按品类通用知识继续；结束原因里说清楚问过型号
         results[pc["card_id"]] = {"selected_sku": None, "selected_unknown": True}
@@ -855,80 +832,11 @@ def route_after_apply(state: SessionState) -> str:
     if verify:
         # 票 35：step_feedback 的判定——继续 → guide 出下一张卡；票 36：solved / DONE → close 结束语 → done(completed)
         if verify["outcome"] == "ask":
-            return "ask_observation"
+            return "ask_operation"
         if verify["outcome"] == "pause":
             return "dialogue"
         return "guide" if verify["outcome"] == "next" else "close"
     return _after_product(state)
-
-
-def _apply_observation_answer(
-    state: SessionState,
-    action: dict[str, Any],
-    pc: dict[str, Any],
-    results: dict[str, dict[str, Any]],
-) -> SessionState:
-    """observation_card 的作答：finding 选项写观察事实，unknown 选项只记「答不上来」。
-
-    两者都把这条追问请求收口，再按更新后的事实重新决定下一动作。选项只接受本张卡声明过的，
-    旧卡与其他观察的选项不能污染当前事实（与 _apply_step_feedback 的 declared 校验同口径）。
-    """
-    payload = action.get("payload") or {}
-    declared = (pc.get("payload") or {}).get("observation") or {}
-    observation_id = declared.get("observation_id")
-    option = next(
-        (o for o in declared.get("options") or [] if o["option_id"] == payload.get("option_id")),
-        None,
-    )
-    if option is None or observation_id != payload.get("observation_id"):
-        return {}
-    is_finding = option.get("kind", "finding") == "finding"
-    results[pc.get("card_id", "")] = {"chosen_option_id": option["option_id"]}
-    update: SessionState = {"stage": "guide", "substage": None, "card_results": results}
-    requests = copy.deepcopy(state.get("observation_requests") or [])
-    open_requests = [
-        r
-        for r in requests
-        if r.get("observation_id") == observation_id and r.get("status") in OPEN_OBSERVATION_STATUS
-    ]
-    for request in open_requests:
-        request.update(
-            status="answered" if is_finding else "unknown",
-            answered_input_id=state["input_id"],
-            option_id=option["option_id"],
-            quote=option["label"],
-        )
-    update["observation_requests"] = requests
-    issues = copy.deepcopy(state.get("issues") or {})
-    issue_id = state.get("active_issue_id")
-    if is_finding and issue_id in issues:
-        issue, patches = record_observations(
-            issues[issue_id],
-            [{"observation_id": observation_id, "option_id": option["option_id"]}],
-            definitions=get_plan_library().observation_definitions(),
-            input_id=state["input_id"],
-            at=state["at"],
-            source_kind="observation_card",
-            binding={
-                "card_id": pc.get("card_id"),
-                "plan_id": (pc.get("payload") or {}).get("plan_id"),
-                "asked_input_id": next((r.get("input_id") for r in open_requests), None),
-            },
-        )
-        if patches:
-            issues[issue_id] = issue
-            update.update(
-                {
-                    "issues": issues,
-                    "observations": list(
-                        dict.fromkeys([*state.get("observations", []), *issue["observations"]])
-                    ),
-                    "context_revision": state.get("context_revision", 0) + 1,
-                }
-            )
-    get_stream_writer()({"type": "progress", "stage": "guide"})
-    update.update(_apply_next_action({**state, **update}))
-    return update
 
 
 def _apply_step_feedback(
@@ -944,53 +852,8 @@ def _apply_step_feedback(
     note = payload.get("note") or None
     card_id = pc.get("card_id", "")
     session_id = state.get("session_id", "")
-    step = (pc.get("payload") or {}).get("step") or {}
-    # 观察答案只接受本张卡片步骤声明过的观察；旧卡 / 其他步骤的选项不写入事实
-    declared = {o["observation_id"]: o for o in step.get("observations") or []}
-    observations = [
-        {"observation_id": o["observation_id"], "option_id": o["option_id"]}
-        for o in payload.get("observations") or []
-        if o.get("observation_id") in declared
-        and any(opt["option_id"] == o.get("option_id") for opt in declared[o["observation_id"]]["options"])
-    ]
-    results[card_id] = {
-        "feedback": feedback,
-        **({"note": note} if note else {}),
-        **({"observations": observations} if observations else {}),
-    }
+    results[card_id] = {"feedback": feedback, **({"note": note} if note else {})}
     update: SessionState = {"stage": "verify", "substage": None, "card_results": results, "unresolved_turns": 0 if feedback == "solved" else (state.get("unresolved_turns") or 0) + 1}
-    if observations:
-        import copy
-
-        from app.diagnose.observations import record_observations
-
-        issues = copy.deepcopy(state.get("issues") or {})
-        issue_id = state.get("active_issue_id")
-        if issue_id in issues:
-            issue, patches = record_observations(
-                issues[issue_id],
-                observations,
-                definitions=get_plan_library().observation_definitions(),
-                input_id=state["input_id"],
-                at=state["at"],
-                source_kind="step_feedback",
-                binding={
-                    "card_id": card_id,
-                    "plan_id": step.get("plan_id"),
-                    "plan_version": step.get("plan_version"),
-                    "step_id": step.get("step_id"),
-                },
-            )
-            if patches:
-                issues[issue_id] = issue
-                update.update(
-                    {
-                        "issues": issues,
-                        "observations": list(dict.fromkeys([*state.get("observations", []), *issue["observations"]])),
-                        "context_revision": state.get("context_revision", 0) + 1,
-                    }
-                )
-        state = {**state, **update}
     cp = get_rules_service().check_in(
         action_kind="step_feedback", action_note=note, session_id=session_id
     )
@@ -1013,20 +876,7 @@ def _apply_step_feedback(
         return update
     out = apply_feedback(
         state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library(),
-        observations=observations,
     )
-    if out.outcome == "next" and out.plan_cursor:
-        # 新事实使当前计划不再适用 → 不继续该计划，进入重新评估
-        from app.diagnose.observations import known_observations, known_option_ids
-
-        issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-        known = known_option_ids(known_observations(issue, state.get("symptom_interview"), get_plan_library()))
-        if get_plan_library().get(out.plan_cursor["plan_id"]).observation_gate(known)[0] == "excluded":
-            out = exhaust_plan(
-                {**state, "step_attempts": out.step_attempts}, out.plan_cursor["plan_id"], counters=out.counters,
-                executed=out.steps_executed, exhausted=out.exhausted_plans,
-            )
-            out.trace = {**out.trace, "rule": "excluded_by_observation"}
     log.info(
         "cp_verify session=%s card=%s feedback=%s outcome=%s rule=%s counters=%s",
         session_id,
@@ -1129,7 +979,7 @@ def _apply_next_action(state: SessionState, *, feedback: str | None = None) -> S
 
 
 async def reassess(state: SessionState) -> SessionState:
-    """自由文本补上观察结果（或明确无法提供）后，依据更新后的事实重新决定下一动作。"""
+    """操作条件或事实变化后，依据更新后的状态重新决定下一动作。"""
     get_stream_writer()({"type": "progress", "stage": "guide"})
     update: SessionState = {"stage": "guide", "substage": None, "_verify": None}
     update.update(_apply_next_action({**state, **update}))
@@ -1140,105 +990,37 @@ def route_after_reassess(state: SessionState) -> str:
     verify = state.get("_verify") or {}
     if state.get("escalate_reason"):
         return "escalate"
-    return {"next": "guide", "ask": "ask_observation", "done": "close"}.get(verify.get("outcome"), "dialogue")
+    return {"next": "guide", "ask": "ask_operation", "done": "close"}.get(verify.get("outcome"), "dialogue")
 
 
-def observation_question_text(question: dict[str, Any]) -> str:
-    """正文只留问题本身：选项与「答不上来」都在卡片上，再在一句话里用 ／ 罗列一遍只会变成一长串。"""
-    prefix = "再确认一下：" if int(question.get("attempt", 1)) > 1 else ""
-    return f"{prefix}{question['question']}"
-
-
-async def ask_observation(state: SessionState) -> SessionState:
-    """向用户追问一个会改变后续处理的观察结果（design §3.3 第 4 步）。固定文案，不调模型。"""
+async def ask_operation(state: SessionState) -> SessionState:
+    """追问操作条件（operation_blocker：为什么做不了 / 资源是否恢复）。固定文案，不调模型，不出卡。"""
     from app.conversation.reduce import stable_id
 
     question = (state.get("next_action") or {}).get("question") or {}
     writer = get_stream_writer()
-    writer({"type": "progress", "stage": "guide", "substage": "await_observation"})
-    message_id = stable_id(state.get("input_id"), "ask_observation", question.get("observation_id") or question.get("key"))
-    is_blocker = question.get("kind") == "operation_blocker"
-    is_scope = question.get("kind") == "scope_conflict"
-    text = acknowledge_current_turn(
-        dict(state), question["question"] if is_blocker or is_scope else observation_question_text(question)
-    )
+    writer({"type": "progress", "stage": "guide", "substage": "await_operation_conditions"})
+    message_id = stable_id(state.get("input_id"), "ask_operation", question.get("card_id") or question.get("resource"))
+    text = acknowledge_current_turn(dict(state), question["question"])
     writer({"type": "message_start", "message_id": message_id, "issue_id": state.get("active_issue_id"), "reply_to_input_id": state.get("input_id")})
     writer({"type": "message", "message_id": message_id, "delta": text})
     writer({"type": "message_end", "message_id": message_id, "status": "completed"})
-    msgs = [*(state.get("visible_messages") or []), {"message_id": message_id, "kind": "ask_observation", "text": text, "model_tier": None}]
-    if is_scope:
-        # 范围冲突走问诊的 symptom_selection 受理路径：下一轮「都有 / 1 / 2」由 symptom_question_answer 确定性解析，
-        # 自由文本由 intake 模型按 options 选择；选了新故障族即扩展症状码，码外计划按正常候选进入。
-        interview = dict(question["interview"])
-        interview["question"] = {
-            **interview["question"],
-            "asked_input_id": state.get("input_id"),
-            "question_id": f"{state.get('active_issue_id')}:{state.get('input_id')}:{question['key']}",
-        }
-        return {
-            "stage": "guide", "substage": "await_scope", "pending_card": None, "plan_cursor": None,
-            "visible_messages": msgs, "symptom_interview": interview,
-            "guide_trace": [{"event": "ask_scope", "plan_id": question.get("plan_id"),
-                             "observation_id": question.get("observation_id"), "option_id": question.get("option_id")}],
-        }
-    if is_blocker:
-        conditions = conditions_for(state)
-        for blocker in conditions.blockers:
-            if blocker.card_id == question.get("card_id"):
-                blocker.asked = True
-        if question.get("resource"):
-            conditions.resource_asks[question["resource"]] = state.get("input_id")
-        return {
-            "stage": "guide", "substage": "await_operation_conditions", "pending_card": None,
-            "plan_cursor": None, "visible_messages": msgs, "operation_conditions": conditions.model_dump(),
-            "guide_trace": [{"event": "ask_operation_conditions", "card_id": question.get("card_id"),
-                             "resource": question.get("resource")}],
-        }
-    requests = [
-        *(state.get("observation_requests") or []),
-        {
-            "observation_id": question.get("observation_id"),
-            "plan_id": question.get("plan_id"),
-            "issue_id": state.get("active_issue_id"),
-            "input_id": state.get("input_id"),
-            "asked_at": state.get("at"),
-            "status": "asked",
-            "attempt": question.get("attempt", 1),
-        },
-    ]
-    card_id = stable_id(state.get("input_id"), "observation", question.get("observation_id"))
+    msgs = [*(state.get("visible_messages") or []), {"message_id": message_id, "kind": "ask_operation", "text": text, "model_tier": None}]
+    conditions = conditions_for(state)
+    for blocker in conditions.blockers:
+        if blocker.card_id == question.get("card_id"):
+            blocker.asked = True
+    if question.get("resource"):
+        conditions.resource_asks[question["resource"]] = state.get("input_id")
     return {
-        "stage": "guide",
-        "substage": "await_observation",
-        # 出卡让选项可点：option_id 直达事实写入，绕开只认唯一字面命中的 match_reply。
-        # 自由文本回答仍然受理（输入框不禁用），两条路都通。
-        "pending_card": {
-            "card_id": card_id,
-            "input_token": stable_id(card_id, "token"),
-            "kind": "answer_observation",
-            "payload": {
-                "observation": {
-                    "observation_id": question.get("observation_id"),
-                    "question": question.get("question"),
-                    "options": list(question.get("options") or []),
-                },
-                "plan_id": question.get("plan_id"),
-                "attempt": question.get("attempt", 1),
-            },
-        },
-        "plan_cursor": None,
-        "visible_messages": msgs,
-        "observation_requests": requests,
-        "guide_trace": [{"event": "ask_observation", "observation_id": question.get("observation_id"), "card_id": card_id}],
+        "stage": "guide", "substage": "await_operation_conditions", "pending_card": None,
+        "plan_cursor": None, "visible_messages": msgs, "operation_conditions": conditions.model_dump(),
+        "guide_trace": [{"event": "ask_operation_conditions", "card_id": question.get("card_id"),
+                         "resource": question.get("resource")}],
     }
 
 
 # ---------------- 票 25：范围外 R8 与 request_human ----------------
-
-
-def route_after_ask_observation(state: SessionState) -> str:
-    """观察题出卡；操作条件追问（operation_blocker）没有卡片，直接提交。"""
-    return "await_input" if state.get("pending_card") else "commit_issue"
 
 
 async def understand(state: SessionState) -> SessionState:
@@ -1453,7 +1235,7 @@ async def understand(state: SessionState) -> SessionState:
     if get_services() is not None:
         from app.sessions.l3 import reopening_request
         reopening = await reopening_request({**state, **update}, meaning)
-    if update["turn_decision"].get("symptom_answered") or update["turn_decision"].get("operation_changed"):
+    if update["turn_decision"].get("operation_changed"):
         update["turn_decision"].update(reply_mode="diagnose", clarification=None)
         command, clarification = None, None
     elif reopening and not reopening.get("clarification"):
@@ -1500,14 +1282,6 @@ async def understand(state: SessionState) -> SessionState:
     return update
 
 
-async def product_help(state: SessionState) -> SessionState:
-    return await answer_product_question(
-        dict(state), writer=get_stream_writer(), catalog=get_catalog(),
-        adapter=get_knowledge_adapter(), router=get_model_router(),
-        rules=get_rules_service(), lane=_lane(),
-    )
-
-
 async def dialogue(state: SessionState) -> SessionState:
     from app.conversation.reply import reply_to_turn
 
@@ -1517,6 +1291,14 @@ async def dialogue(state: SessionState) -> SessionState:
     if state.get("turn_decision", {}).get("resumed_pending"):
         result.update(await await_input(state))
     return result
+
+
+async def product_help(state: SessionState) -> SessionState:
+    return await answer_product_question(
+        dict(state), writer=get_stream_writer(), catalog=get_catalog(),
+        adapter=get_knowledge_adapter(), router=get_model_router(),
+        rules=get_rules_service(), lane=_lane(),
+    )
 
 
 async def commit_issue(state: SessionState) -> SessionState:
@@ -1577,15 +1359,13 @@ def route_entry(state: SessionState) -> str:
         return "receipt_extract"
     if decision.get("escalation_trigger"):
         return "escalate"
-    if decision.get("observation_answered") or decision.get("observation_attempted"):
-        return "reassess"
     if decision.get("operation_changed"):
         return "reassess"
     if decision.get("primary_intent") == "complaint" and state.get("plans_ranked") and not state.get("pending_card") and not state.get("case_id"):
         return "reassess"
     if decision.get("business_ambiguous"):
         return "dialogue"
-    if decision.get("symptom_answered") or decision.get("product_answered"):
+    if decision.get("product_answered"):
         return "disambiguate"
     if decision.get("business_switched"):
         return "service_context"
@@ -1636,8 +1416,8 @@ def out_of_scope_text(name: str, category_name: str) -> str:
     """范围外说明：支持范围从目录 in_scope 品类所属的产品线生成，不写死品牌与品类。"""
     lines = list(dict.fromkeys(spec.line for spec in get_catalog().categories.values() if spec.in_scope))
     return (
-        f"当前智能排障覆盖 {' / '.join(lines)} 产品线的常见品类。"
-        f"您咨询的「{name}」属于{category_name}，暂不在支持范围内；我会整理问题记录，供您交给人工客服继续处理。"
+        f"Our assistant currently supports {' / '.join(lines)} products. "
+        f"\"{name}\" ({category_name}) isn't covered yet; I'll put together a record you can pass to our support team."
     )
 
 
@@ -1649,7 +1429,7 @@ async def out_of_scope(state: SessionState) -> SessionState:
     product = dict(state.get("product_confirmed") or {})
     category = product.get("category") or state.get("category") or ""
     spec = catalog.categories.get(category)
-    category_name = spec.name if spec else (category or "其他品类")
+    category_name = (spec.name_en or spec.name) if spec else (category or "other")
     update: SessionState = {"stage": "out_of_scope", "escalate_reason": "R8"}
     if not product:
         # 只提到范围外品类、没有具体型号：摘要里的产品写品类（02 §5 product_confirmed.sku 可选）
@@ -1939,6 +1719,22 @@ async def retrieve(state: SessionState) -> SessionState:
             "observations": [*(state.get("observations") or []),
                              "错误码 " + "、".join(exact["codes"]) + " 未在官方知识库收录，需人工核实"],
             "retrieval_trace": [{"round": 0, "status": "code_miss", "codes": exact["codes"],
+                                 "session_id": session_id, "run_id": run_id}],
+        }
+    damage = None if exact["codes"] else physical_damage(parse_message(state.get("text") or "").problem_text or state.get("text") or "")
+    if damage:
+        # 客户描述了可见物理损坏（部件断裂 / 脱落）：排障步骤修不好，按 SOP 直接进质保判断（T42 / T44）
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "ok",
+            "query": query,
+            "plans_ranked": [],
+            "diagnose_outcome": {"mode": "warranty", "reason": "physical_damage"},
+            "escalate_reason": "R6",
+            "plan_cursor": None,
+            "observations": [*(state.get("observations") or []), f"客户描述物理损坏：{damage}，按 SOP 进入质保判断"],
+            "retrieval_trace": [{"round": 0, "status": "physical_damage", "quote": damage,
                                  "session_id": session_id, "run_id": run_id}],
         }
     if exact["warranty"]:
@@ -2330,7 +2126,7 @@ async def _synthesize_step(
         plan_id = "qa_" + str(item.get("doc_id") or "").replace("-", "_")
         if plan_id in allowed_by_id and plan_id not in hit_ids:
             hit_ids.append(plan_id)
-    allowed = constrain_plans(state, [allowed_by_id[i] for i in hit_ids])
+    allowed = [allowed_by_id[i] for i in hit_ids]
     out = await synthesize(
         get_model_router(),
         state=dict(state),
@@ -2556,7 +2352,7 @@ def route_after_guide(state: SessionState) -> str:
         return "escalate"
     verify = state.get("_verify") or {}
     if verify.get("outcome") == "ask":
-        return "ask_observation"
+        return "ask_operation"
     if verify.get("outcome") == "done":
         return "close"
     if verify.get("outcome") == "pause":
@@ -2572,14 +2368,14 @@ def closing_text(state: SessionState) -> str:
     steps = list(state.get("steps_executed") or [])
     solved = next((s for s in reversed(steps) if s.get("feedback") == "solved"), None)
     product = (state.get("product_confirmed") or {}).get("name")
-    who = f"您的 {product}" if product else "设备"
-    parts = ["太好了，问题已经解决！"]
+    who = f"your {product}" if product else "your device"
+    parts = ["Great, the issue is resolved! "]
     if solved and solved.get("title"):
-        parts.append(f"这次是「{solved['title']}」起了作用，")
+        parts.append(f"\"{solved['title']}\" did the trick, and ")
     else:
-        parts.append("按步骤处理后，")
-    parts.append(f"{who}现在可以正常使用了。")
-    parts.append("建议按说明书定期做同样的保养。之后如果再遇到问题，随时回来找我。")
+        parts.append("After following the steps, ")
+    parts.append(f"{who} should work normally now. ")
+    parts.append("Regular maintenance as described in the manual helps prevent this. If anything else comes up, just come back here.")
     return "".join(parts)
 
 
@@ -2765,8 +2561,6 @@ async def summarize(state: SessionState) -> SessionState:
         lane=os.environ.get("MODEL_LANE", "domestic"),
         budget_ms=max(0, _remaining_ms(state) - 2000),
     )
-    import copy
-
     from app.conversation.reduce import stable_id
 
     issue_id = state["active_issue_id"]
@@ -3002,15 +2796,11 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("out_of_scope", durable_node(out_of_scope))
     g.add_node("guide", durable_node(guide))
     g.add_node("reassess", durable_node(reassess))
-    g.add_node("ask_observation", durable_node(ask_observation))
-    g.add_conditional_edges(
-        "ask_observation",
-        route_after_ask_observation,
-        {"await_input": "await_input", "commit_issue": "commit_issue"},
-    )
+    g.add_node("ask_operation", durable_node(ask_operation))
+    g.add_edge("ask_operation", "commit_issue")
     g.add_conditional_edges(
         "reassess", route_after_reassess,
-        {"guide": "guide", "ask_observation": "ask_observation", "close": "close", "escalate": "escalate", "dialogue": "dialogue"},
+        {"guide": "guide", "ask_operation": "ask_operation", "close": "close", "escalate": "escalate", "dialogue": "dialogue"},
     )
     g.add_node("close", durable_node(close))
     g.add_node("advance_tasks",durable_node(l3.advance_tasks))
@@ -3054,6 +2844,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         route_after_apply,
         {
             **{target:target for target in ("service_context","authorize","propose","await_human","commit_issue")},
+            "disambiguate": "disambiguate",
             "reply": "reply",
             "retrieve": "retrieve",
             "reassess": "reassess",
@@ -3062,7 +2853,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "out_of_scope": "out_of_scope",
             "guide": "guide",
             "close": "close",
-            "ask_observation": "ask_observation",
+            "ask_operation": "ask_operation",
             "dialogue": "dialogue",
             "clarify": "clarify",
         },
@@ -3073,7 +2864,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(
         "guide", route_after_guide,
-        {"await_input": "await_input", "escalate": "escalate", "ask_observation": "ask_observation", "close": "close", "dialogue": "dialogue"},
+        {"await_input": "await_input", "escalate": "escalate", "ask_operation": "ask_operation", "close": "close", "dialogue": "dialogue"},
     )
     g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

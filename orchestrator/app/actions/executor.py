@@ -16,7 +16,7 @@ class AuthorizationDenied(RuntimeError):
 
 
 class OutcomeUnverified(BackendError):
-    user_message = "办理结果暂时无法确认，为避免重复办理，已转人工核实。"
+    user_message = "We can't confirm the result yet. To avoid a duplicate request, I've passed it to a colleague to check."
 
 
 @dataclass(frozen=True)
@@ -112,7 +112,7 @@ class ActionExecutor:
                 "tool_id": stored["execution_id"],
                 "name": kind,
                 "status": "started",
-                "summary": "正在查询售后工具" if not write else "正在提交服务单",
+                "summary": "Checking our after-sales tool" if not write else "Submitting your service request",
             }
         )
         try:
@@ -197,7 +197,7 @@ class ActionExecutor:
                 "tool_id": stored["execution_id"],
                 "name": kind,
                 "status": "finished",
-                "summary": "售后工具已返回",
+                "summary": "After-sales tool responded",
             }
         )
         return ExecutionResult(stored["execution_id"], "succeeded", receipt)

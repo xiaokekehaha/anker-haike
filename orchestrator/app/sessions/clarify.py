@@ -29,9 +29,12 @@ CLARIFY_BUDGET_MS = 4000
 CLARIFY_PROMPT_VERSION = "2026-09-15.1"
 
 FIXED_QUESTIONS: dict[str, str] = {
-    "product": "请告诉我设备的品类和型号，例如扫地机器人 X10 Pro Omni、Omni E25 / E28、S1 Pro，吸奶器 S1 Pro，或 SoloCam S340 摄像头。",
-    "symptom": "请具体描述一下故障现象，或告诉我 App 里显示的错误码（例如 3212、E41）。",
-    "conflict": "您之前确认的是 {confirmed}，这次提到的是 {mentioned}，请问需要排查的是哪一台？",
+    "product": (
+        "Which product is this? For example: robot vacuum X10 Pro Omni, Omni E25 / E28, S1 Pro or Omni C20; "
+        "S1 Pro wearable breast pump; or SoloCam S340 camera. The model number (e.g. T2351) also works."
+    ),
+    "symptom": "Could you describe what the device is doing, or tell me the error code shown in the app (e.g. 3212 or E41)?",
+    "conflict": "Earlier we confirmed {confirmed}, and now you mentioned {mentioned}. Which one should we look at?",
 }
 
 
@@ -40,7 +43,7 @@ class ClarifyQuestion(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    question: str = Field(min_length=2, max_length=80, description="一句具体的中文追问，不含步骤")
+    question: str = Field(min_length=2, max_length=200, description="一句具体的英文追问，不含步骤")
 
 
 @dataclass
@@ -185,20 +188,16 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                     # spec 2026-09-19-0810 A：知识按型号分化时问一次型号（点选卡），不分化就不问
                     cands = differentiated_candidates(catalog, category, {**state, **update})
                     if cands:
-                        from app.diagnose.decision import known_symptom_codes
-
-                        # 已知症状码随卡片一起留在状态里：选中型号后直接检索排序，不再经过本函数
                         update["product_candidates"] = cands
-                        update["symptom_codes"] = known_symptom_codes({**state, **update}, category=category)
                         return Decision("continue", update)
             else:
                 update["product_state"] = "unknown"
                 visual_category = visual.get("category")
                 spec = catalog.categories.get(visual_category)
                 return _clarify(clar, "product", update, unmatched_hints=hints,
-                                known_symptoms=sorted(set(state.get("symptom_codes") or state.get("symptoms") or [])),
+                                known_symptoms=sorted(set(state.get("symptoms") or [])),
                                 expected_category=visual_category if spec else None,
-                                category_name=spec.name if spec else None)
+                                category_name=(spec.name_en or spec.name) if spec else None)
 
     if update.get("out_of_scope"):
         return Decision("continue", update)
@@ -211,46 +210,32 @@ def symptom_decision(
 ) -> Decision:
     """产品已定之后的症状判定：继续 / 问一句 / 升级。disambiguate 与产品卡片选中后（apply_action）共用，
     否则「我的 S1 Pro 出问题了」选完型号会在没有任何现象的情况下直接下发第一条计划的步骤。"""
-    # One diagnostic decision consumes accepted facts and quoted answers.
-    from app.diagnose.decision import decide_symptoms
+    from app.diagnose.decision import decide_symptoms, fact_codes
     product = confirmed or {}
     category = product.get("category") or update.get("category") or category
-    available = get_plans().allowed_for(category=category, sku=product.get("sku"))
-    decision = decide_symptoms({**state, **update}, available_plans=available)
-    update["symptom_codes"] = decision.codes
+    decision = decide_symptoms({**state, **update})
     update["diagnostic_decision"] = decision.snapshot(state)
     if decision.outcome == "continue":
         update["clarification"] = None
-        codes = set(decision.codes)
+        codes = set(fact_codes({**state, **update}))
+        available = get_plans().allowed_for(category=category, sku=product.get("sku"))
         if (
             not confirmed and codes and category
             and not any(codes.intersection(p.symptom_codes) for p in available)
         ):
-            # 现象已经问清，但品类通用计划一条都不覆盖，只有型号专属计划能覆盖：补问一次型号，
-            # 而不是直接 R5（会话 e84456：选了「拖地异常」，唯一的拖地计划锁在 X10 上，却没问过型号）
+            # 照片签名已定位到带错误码的官方 Q&A，但当前产品状态下一条都不可用（型号未知）：补问一次型号，
+            # 而不是直接 R5（会话 e84456）
             update["product_candidates"] = model_candidates_for_codes(
                 get_catalog(), category, {**state, **update}, sorted(codes)
             )
         return Decision("continue", update)
     if decision.outcome == "escalate":
-        coverage_missing = decision.reason in {"question_coverage_missing", "category_coverage_missing"}
-        rule_id = "R4" if decision.reason == "safety_restriction" else "R5" if coverage_missing else "R7"
-        update.update(escalate_reason=rule_id, symptom_interview=decision.interview,
+        # 只剩安全限制一种升级：R4，不再继续排查。
+        update.update(escalate_reason="R4",
                       clarification={**clar, "reason": "symptom", "resolved": False},
-                      observations=[*state.get("observations", []),
-                                    "仍需核对的信息：" + "；".join(decision.missing_information) if decision.missing_information else "当前无法继续排查"])
+                      observations=[*state.get("observations", []), "当前无法继续排查"])
         return Decision("escalate", update, "symptom")
-    if decision.interview is None:
-        return _clarify(clar, "symptom", update,
-                        category=product.get("category") or update.get("category") or category)
-    # Product clarification budget is separate from useful symptom questions.
-    # 上一次真正问出去的那句话要留着：clarify 节点靠它认出「同一个问题又要问一遍」。
-    update["clarification"] = {"reason": "symptom", "attempts": int(clar.get("attempts") or 0),
-                               **({"question": clar["question"]} if clar.get("question") else {})}
-    return Decision("clarify", update, "symptom", {
-        "symptom_interview": decision.interview,
-        "discriminator": decision.interview.get("question"),
-    })
+    return _clarify(clar, "symptom", update, category=category)
 
 
 def _clarify(
@@ -318,31 +303,34 @@ def differentiated_candidates(catalog, category: str, state: dict[str, Any]) -> 
     """品类已知、型号未知时，值得问一次型号的候选（spec 2026-09-19-0810 A，T1）。
 
     只列「知道了会改变下一步」的型号：型号专属计划、被通用计划排除的型号、知识索引里按型号分化的资料。
-    sku_list 覆盖全品类的资料按通用处理。本会话已出过型号卡、症状问诊已经开始、用户已声明不知道型号、
+    sku_list 覆盖全品类的资料按通用处理。本会话已出过型号卡、用户已声明不知道型号、
     或情绪策略要求只问必要信息（skip_optional_clarify）时不问：这张卡可以跳过，品类通用计划照样能走。
     卡片带「其他型号 / 不确定」出口（prepare_card 的 allow_unknown），所以单候选也可以问。
     """
-    from app.diagnose.decision import known_symptom_codes
+    from app.diagnose.decision import described, fact_codes
     from app.knowledge.adapter import sku_scoped_skus
     from app.knowledge.runtime import indexed_entries
 
     if (
         state.get("prepare_card_calls")
-        or state.get("symptom_interview")  # 问诊已经开始：型号问题只在最初问一次，不打断问诊
         or UNKNOWN_MODEL.search(state.get("text", "") or "")
         or "skip_optional_clarify" in (state.get("emotion_actions") or [])
     ):
         return []
     category_skus = _category_skus(catalog, category)
-    skus = get_plans().differentiated_skus(
-        category=category, symptom_codes=known_symptom_codes(state, category=category)
-    )
+    codes = fact_codes(state)
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    # 计划层只按症状事实上的错误码定位型号；已描述现象但没有码时没有可按码定位的计划，不因计划触发型号卡。
+    if codes or not described(state, issue):
+        skus = get_plans().differentiated_skus(category=category, symptom_codes=codes)
+    else:
+        skus = set()
     skus |= sku_scoped_skus(indexed_entries(), category, category_skus)
     return _model_card(catalog, category_skus, skus)
 
 
 def model_candidates_for_codes(catalog, category: str, state: dict[str, Any], codes: list[str]) -> list[dict[str, Any]]:
-    """症状已定、品类通用计划无一覆盖时，能覆盖这些症状码的型号专属计划对应的型号（问诊中也可以问）。
+    """症状码已定、当前产品状态下没有计划覆盖时，能覆盖这些码的型号专属计划对应的型号。
 
     与 differentiated_candidates 一样：本会话已出过型号卡、或用户已声明不知道型号就不再问。
     """
@@ -382,12 +370,10 @@ def _lookup(catalog, text: str, hints: list[str]) -> list[dict[str, Any]]:
 
 
 def fixed_question(reason: str, detail: dict[str, Any]) -> str:
-    if detail.get("discriminator"):
-        return detail["discriminator"]["question"]
     if reason == "product" and detail.get("expected_category"):
-        return f"照片中的设备看起来是{detail['category_name']}，请确认是这个品类吗？"
+        return f"The device in the photo looks like a {detail['category_name']}. Is that right?"
     if reason == "product" and detail.get("unmatched_hints"):
-        return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
+        return "I couldn't match that model to our product list. Could you tell me the product type, or send a photo of the model label on the device?"
     tpl = FIXED_QUESTIONS.get(reason, FIXED_QUESTIONS["product"])
     try:
         return tpl.format(**detail)
@@ -397,8 +383,8 @@ def fixed_question(reason: str, detail: dict[str, Any]) -> str:
 
 CLARIFY_INSTRUCTION = {
     "product": "当前信息尚未匹配到可用的产品或品类。结合历史问答，只追问仍缺少的信息；用户已提供型号但未匹配时，先说明已收到且目录未匹配，再请补充品类或机身型号标签，不要重复询问已回答的型号。不要给排查步骤，不要猜测型号。",
-    "symptom": "设备已确认，但用户没有描述具体故障现象。请只输出一句具体的中文追问，给出两三个该类设备的常见现象让用户选择；不要给排查步骤。",
-    "conflict": "用户之前确认的产品与这次提到的产品不一致。请只输出一句具体的中文追问，请用户确认要排查的是哪一台；不要给排查步骤。",
+    "symptom": "设备已确认，但用户没有描述具体故障现象。请只输出一句具体的英文追问，给出两三个该类设备的常见现象让用户选择；不要给排查步骤。",
+    "conflict": "用户之前确认的产品与这次提到的产品不一致。请只输出一句具体的英文追问，请用户确认要排查的是哪一台；不要给排查步骤。",
 }
 
 
@@ -410,8 +396,6 @@ def build_messages(
         ctx = f"之前确认：{detail.get('confirmed')}；这次提到：{detail.get('mentioned')}。"
     elif reason == "product" and detail.get("unmatched_hints"):
         ctx = wrap_data("、".join(detail["unmatched_hints"]), kind="unmatched_product_hints")
-    if detail.get("discriminator"):
-        ctx += "原样保留下列核心问题，只允许在前面加一句简短引导，不增加其他问题或选项：" + detail["discriminator"]["question"]
     return [
         ("system", compose_system_prompt(strategy, summary)),
         (
@@ -431,7 +415,7 @@ class QuestionOutcome:
 
 # 同一句判别问题再问一次时先承接一下。一字不差地复读读起来像没听见（2026-09-16 实测）。
 # 只改呈现：问题原文与 question_id 保持不变，模型仍按原文引用，状态里也不多一个字段。
-REPEAT_LEAD = "您说的我记下了。还需要先确认一项："
+REPEAT_LEAD = "Thanks, noted. I still need one thing first: "
 
 
 def render_question(reason: str, detail: dict[str, Any], *, previous: str | None = None) -> str:

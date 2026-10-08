@@ -180,11 +180,11 @@ async def test_no_vision_model_available_hints_user_to_describe(mem_runtime, img
     calls = _tool(events, "diagnose.vision")
     assert calls[-1]["status"] == "failed" and "无可用的图片识别模型" in calls[-1]["summary"]
     hint = "".join(e["delta"] for e in events if e["type"] == "message")
-    assert "请用文字描述" in hint
+    assert "describe what the photo shows" in hint
     assert (await _state(sid))["vision_status"] == "no_vision"
     assert [c["metadata"]["task"] for c in fake.calls][:1] == ["intake"]  # 没有视觉调用
     assert any(
-        i["kind"] == "assistant_message" and "请用文字描述" in i["text"] for i in snap["timeline"]
+        i["kind"] == "assistant_message" and "describe what the photo shows" in i["text"] for i in snap["timeline"]
     )
 
 
@@ -364,8 +364,8 @@ async def test_photo_contradicting_the_text_asks_before_diagnosing(
         )
     state = await _state(sid)
     conflicts = state["fault_localization"]["conflicts_with_text"]
-    assert conflicts == ["您提到的是滤网，但照片里看到问题的是滚刷（缠绕）"]
+    assert conflicts == ["you mentioned the filter, but the photo shows a problem with the roller brush (tangled)"]
     assert state["clarification"]["reason"] == "conflict"
     said = " ".join(e.get("delta", "") for e in events if e["type"] == "message")
-    assert "图片与文字描述存在差异" in said and "滚刷" in said, f"应当把差异说给用户听：{said!r}"
+    assert "don't quite match" in said and "roller brush" in said, f"应当把差异说给用户听：{said!r}"
 

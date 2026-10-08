@@ -34,7 +34,7 @@ describe('session reducer (票 06)', () => {
     const s = run(FIXTURE);
     expect(initialState).toEqual(before);
     expect(s.lastSeq).toBe(25);
-    expect(s.timeline.map((t) => t.kind)).toEqual(['tool', 'assistant_message', 'product_card', 'step_card', 'evidence', 'receipt_card', 'escalation_summary', 'user_message', 'observation_card', 'proposal_card', 'execution_card', 'case_changed', 'retake_card', 'rating_card']);
+    expect(s.timeline.map((t) => t.kind)).toEqual(['tool', 'assistant_message', 'product_card', 'step_card', 'evidence', 'receipt_card', 'escalation_summary', 'user_message', 'proposal_card', 'execution_card', 'case_changed', 'retake_card', 'rating_card']);
   });
 
   it('drives idle → streaming → idle on run_started/done and tracks stage + version', () => {

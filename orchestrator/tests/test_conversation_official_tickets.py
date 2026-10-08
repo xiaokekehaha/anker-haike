@@ -111,7 +111,7 @@ async def test_t29_out_of_warranty_order_is_declined_after_troubleshooting(l3_ru
     finally:
         set_knowledge_adapter(None)
     assert state["warranty"]["status"] == "out_of_warranty" and state["stage"] == "done"
-    assert "已超过质保期" in said(rows)
+    assert "warranty has expired" in said(rows)
 
 
 @pytest.fixture
@@ -135,4 +135,20 @@ async def test_t45_safety_handoff_keeps_dealer_and_serial_facts(l3_runtime, repo
     assert state["escalate_reason"] == "R4"
     observations = next(e for e in rows if e["type"] == "escalation_summary")["summary"]["observations"]
     assert "客户填写的 SN：ANKER1234567E" in observations
-    assert any("Aeroflow" in o and "授权经销商" in o for o in observations)
+    assert any("Aeroflow" in o and "authorized dealer" in o for o in observations)
+
+
+@pytest.mark.parametrize("ticket", ["T42", "T44"])
+async def test_physical_damage_skips_troubleshooting(l3_runtime, report_intent, ticket):
+    # 部件断裂 / 脱落：排障步骤修不好，直接进质保判断（2026-10-08 Fable 5.1 裁定，63 单回放 T42 先跑了 4 张排障卡）
+    rows, state = await _first_turn(ticket)
+    assert not [e for e in rows if e["type"] == "step_card"]
+    assert state["escalate_reason"] == "R6" or state.get("stage") == "context"
+
+
+def test_crack_sound_is_not_physical_damage():
+    from app.official.damage import physical_damage
+
+    assert physical_damage("When it starts there is a crack sound from the brush") is None
+    assert physical_damage("The roller brush came off") is None
+    assert physical_damage("The lid of the tank snapped") == "The lid of the tank snapped"

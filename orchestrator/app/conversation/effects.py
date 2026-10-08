@@ -17,7 +17,6 @@ PERSISTED = {
     "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed",
     "product_card",
     "step_card",
-    "observation_card",
     "receipt_card",
     "escalation_summary",
     "issue_changed",
@@ -38,7 +37,7 @@ def writer():
 
     def emit(payload):
         payload = dict(payload)
-        if payload["type"] in {"product_card", "step_card", "observation_card", "receipt_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
+        if payload["type"] in {"product_card", "step_card", "receipt_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
             payload["issue_id"] = state.get("active_issue_id")
         if payload["type"] == "message_start":
             payload.setdefault("reply_to_input_id", state.get("input_id"))

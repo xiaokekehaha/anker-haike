@@ -60,16 +60,8 @@ def _model_authority(authority: dict, task: str | None) -> dict:
     else:
         authority["decision"] = {
             key: value for key, value in decision.items()
-            if key not in {"patches", "pending_changes", "normalization_disagreements"}
+            if key not in {"patches", "pending_changes"}
         }
-    interview = authority.get("symptom_interview")
-    if interview:
-        # Keep actual questions, replies and input IDs; candidate transitions are replay data.
-        interview["response_attempts"] = [
-            {key: value for key, value in attempt.items()
-             if key not in {"candidates_before", "candidates_after", "progressed"}}
-            for attempt in interview.get("response_attempts", [])
-        ]
     return authority
 
 
@@ -182,8 +174,6 @@ def build_context(
         product=state.get("product_confirmed"),
         product_question=state.get("product_question"),
         decision=state.get("turn_decision"),
-        symptom_interview=state.get("symptom_interview"),
-        symptom_candidates=state.get("symptom_candidates"),
         clarification=state.get("clarification"),
     )
     authority["business_subject"] = BusinessContext.restore(state).projection()

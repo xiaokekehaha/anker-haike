@@ -25,13 +25,13 @@ class AnswerRequest(BaseModel):
 
 
 LABELS = {
-    "order_no": "订单号", "tracking_no": "物流单号", "service_order_no": "服务单号",
-    "sku": "产品型号", "purchase_date": "购买日期", "amount": "订单金额",
-    "address": "收货地址", "serial_number": "产品 SN", "seller": "购买商家", "country": "购买国家",
-    "logistics_status": "物流状态",
-    "carrier": "承运商", "updated_at": "更新时间", "warranty_end": "保修截止日期",
-    "symptoms": "已报告现象", "steps_executed": "已反馈的排查步骤",
-    "case_status": "案件状态", "proposal": "当前方案",
+    "order_no": "Order number", "tracking_no": "Tracking number", "service_order_no": "Service request number",
+    "sku": "Product model", "purchase_date": "Purchase date", "amount": "Order amount",
+    "address": "Shipping address", "serial_number": "Serial number (SN)", "seller": "Seller", "country": "Country of purchase",
+    "logistics_status": "Delivery status",
+    "carrier": "Carrier", "updated_at": "Last updated", "warranty_end": "Warranty end date",
+    "symptoms": "Reported symptoms", "steps_executed": "Troubleshooting steps you tried",
+    "case_status": "Case status", "proposal": "Current option",
 }
 FACTUAL_INTENTS = {"logistics_query", "order_query", "warranty_query", "history_query", "explain", "supplement", "unknown", "answer_pending"}
 ORDER_FIELDS = {"sku", "purchase_date", "amount"}
@@ -94,7 +94,7 @@ def required_reads(request, view):
 
 def render_answer(request, view):
     if view["status"] == "ambiguous":
-        return "涉及多个订单，请明确要查询哪一个订单。"
+        return "This involves more than one order. Please tell me which order number you'd like me to check."
     lines = []
     fields = list(dict.fromkeys(request.fields))
     if "logistics_status" in fields and "updated_at" not in fields:
@@ -102,16 +102,16 @@ def render_answer(request, view):
     for field in fields:
         fact = view["fields"].get(field)
         if not fact:
-            lines.append(f"{LABELS[field]}：当前对象尚无已确认记录。")
+            lines.append(f"{LABELS[field]}: no confirmed record yet.")
             continue
         value = fact["value"]
         if field == "steps_executed":
-            value = "；".join(f"{s['title'] or '排查步骤'}（反馈：{s['feedback'] or '未提供'}{('，' + s['note']) if s.get('note') else ''}）" for s in value)
+            value = "; ".join(f"{s['title'] or 'Troubleshooting step'} (result: {s['feedback'] or 'not provided'}{(', ' + s['note']) if s.get('note') else ''})" for s in value)
         elif field == "proposal":
-            value = f"{value.get('status') or '待确认'}，可选方案：{'、'.join(filter(None, value['options']))}"
+            value = f"{value.get('status') or 'pending'}, options: {', '.join(filter(None, value['options']))}"
         elif isinstance(value, list):
-            value = "；".join(value)
-        source = {"backend": "订单系统", "user": "您提供的信息", "user_report": "您的报告", "receipt": "已核实订单"}.get(fact["source"])
-        lines.append(f"{LABELS[field]}：{value}" + (f"（来源：{source}）" if source else "") + "。")
-    prefix = f"订单 {view['order_no']}：\n" if view.get("order_no") and "order_no" not in request.fields else ""
+            value = "; ".join(value)
+        source = {"backend": "order system", "user": "information you provided", "user_report": "your report", "receipt": "verified order"}.get(fact["source"])
+        lines.append(f"{LABELS[field]}: {value}" + (f" (source: {source})" if source else "") + ".")
+    prefix = f"Order {view['order_no']}:\n" if view.get("order_no") and "order_no" not in request.fields else ""
     return prefix + "\n".join(lines)

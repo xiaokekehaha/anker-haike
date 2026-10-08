@@ -6,15 +6,15 @@ from typing import Any
 
 from app.prompts.system import compose_system_prompt, state_layer, wrap_data
 
-REPLY_PROMPT_VERSION = "2026-09-12.1"
+REPLY_PROMPT_VERSION = "2026-10-08.1"
 
 REASSURANCE_INSTRUCTION = (
-    "用户情绪需要先安抚。请只输出一到两句中文安抚与承诺（不超过 40 字），不要给步骤、不要提问、不要用 Markdown。"
+    "用户情绪需要先安抚。请只输出一到两句英文安抚与承诺（不超过 30 个词），不要给步骤、不要提问、不要用 Markdown。"
     "语气真诚、不夸张。"
 )
 
 REPLY_INSTRUCTION = (
-    "根据 <data> 段里的检索片段与用户描述，用中文回应：先一句话确认理解，再给出最可能的原因与一个立即可做的动作。"
+    "根据 <data> 段里的检索片段与用户描述，用英文回应（官方 Q&A 与客户工单都是英文）：先一句话确认理解，再给出最可能的原因与一个立即可做的动作。"
     "只能引用检索片段里出现的操作；片段不足时如实说明没有找到对应的官方说明。不要编造型号、政策或质保结论。"
     "使用简洁 Markdown（最多一个短列表），不要输出代码块。"
 )

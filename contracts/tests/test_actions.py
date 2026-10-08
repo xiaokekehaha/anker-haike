@@ -7,7 +7,6 @@ from tests.samples import ACTIONS
 CONTRACT_KINDS = {
     "select_product",
     "step_feedback",
-    "answer_observation",
     "confirm_receipt",
     "skip_receipt",
     "request_human",

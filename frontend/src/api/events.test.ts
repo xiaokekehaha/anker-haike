@@ -22,14 +22,14 @@ describe('shared event contract', () => {
 
   it('covers the 15 protocol variants and generates discriminated types', () => {
     const parsed = samples.map(parseServerEvent);
-    expect(new Set(parsed.map((event) => event?.type)).size).toBe(25);
+    expect(new Set(parsed.map((event) => event?.type)).size).toBe(24);
     const event = parsed.find((event) => event?.type === 'step_card');
     if (!event || event.type !== 'step_card') throw new Error('Missing step_card sample');
     expectTypeOf(event.step.evidence_ids).toEqualTypeOf<string[] | undefined>();
-    expectTypeOf<PendingKind>().toEqualTypeOf<'select_product' | 'step_feedback' | 'answer_observation' | 'upload_receipt' | 'confirm_receipt' | 'confirm_proposal' | 'upload_retake' | 'rate_satisfaction'>();
+    expectTypeOf<PendingKind>().toEqualTypeOf<'select_product' | 'step_feedback' | 'upload_receipt' | 'confirm_receipt' | 'confirm_proposal' | 'upload_retake' | 'rate_satisfaction'>();
     expectTypeOf<ActionResult['replayed']>().toEqualTypeOf<boolean | undefined>();
     expectTypeOf<ActionConflict['code']>().toEqualTypeOf<'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active'>();
-    expectTypeOf<ActionRequest['kind']>().toEqualTypeOf<'select_product' | 'step_feedback' | 'answer_observation' | 'confirm_receipt' | 'skip_receipt' | 'request_human' | 'new_issue' | 'resume_issue' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction'>();
+    expectTypeOf<ActionRequest['kind']>().toEqualTypeOf<'select_product' | 'step_feedback' | 'confirm_receipt' | 'skip_receipt' | 'request_human' | 'new_issue' | 'resume_issue' | 'confirm_proposal' | 'decline_proposal' | 'skip_retake' | 'rate_satisfaction'>();
     expectTypeOf<TimelineItem>().toEqualTypeOf<NonNullable<SessionSnapshot['timeline']>[number]>();
   });
 

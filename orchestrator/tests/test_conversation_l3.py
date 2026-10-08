@@ -127,13 +127,13 @@ async def test_logistics_delivered_offers_carrier_investigation_not_reship(l3_ru
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "查物流 Anker001"))
         text = said(rows)
-        assert "Anker1234567：已于 2026-09-21 送达" in text and "Anker1234567-1：已于 2026-09-23 送达" in text
-        assert "不再补发" in text
+        assert "Anker1234567: delivered on 2026-09-21" in text and "Anker1234567-1: delivered on 2026-09-23" in text
+        assert "can't send another shipment" in text
         card = next(e for e in rows if e["type"] == "proposal_card")
         assert [o["type"] for o in card["options"]] == ["carrier_investigation"]
         rows = events(await act(client, sid, "confirm_proposal", {"option_id": "carrier_investigation"}))
         receipt = next(e for e in rows if e["type"] == "execution_card")
-        assert receipt["status"] == "succeeded" and "人工处理中" in receipt["receipt"]["next_step"]
+        assert receipt["status"] == "succeeded" and "a colleague is handling it" in receipt["receipt"]["next_step"]
         order = await l3_runtime.backend.get_service_order(receipt["receipt"]["service_order_no"])
         assert order.type == "carrier_investigation" and order.order_no == "Anker001"
         state = await state_of(sid)
@@ -146,7 +146,7 @@ async def test_logistics_returned_to_sender_offers_reship(l3_runtime):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "my order Anker007 never arrived, where is it"))
-        assert "已退回发件人" in said(rows) and "可以为您补发" in said(rows)
+        assert "returned to sender" in said(rows) and "we can reship it to you" in said(rows)
         assert [o["type"] for o in next(e for e in rows if e["type"] == "proposal_card")["options"]] == ["reship"]
         rows = events(await act(client, sid, "confirm_proposal", {"option_id": "reship"}))
         assert any(e["type"] == "execution_card" and e["status"] == "succeeded" for e in rows)
@@ -158,7 +158,7 @@ async def test_logistics_presale_only_informs_ship_date(l3_runtime):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "查物流 Anker008"))
-        assert "预计 2026-10-20 发货" in said(rows)
+        assert "pre-order" in said(rows) and "expected to ship on 2026-10-20" in said(rows)
         assert not any(e["type"] == "proposal_card" for e in rows)
 
 
@@ -167,15 +167,15 @@ async def test_logistics_by_tracking_number(l3_runtime):
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "UPS says label created for Anker1234567-3"))
         assert any(e["type"] == "tool_call" and e["name"] == "logistics.query" and e["status"] == "finished" for e in rows)
-        assert "订单 Anker002" in said(rows)
+        assert "Order Anker002" in said(rows)
 
 
 async def test_logistics_missing_order_asks_for_number(l3_runtime):
     """T7：客户没给单号。"""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        assert "请提供订单号" in said(events(await send(client, sid, "查物流")))
-        assert "已送达" in said(events(await send(client, sid, "Anker003")))
+        assert "order number" in said(events(await send(client, sid, "查物流")))
+        assert "delivered" in said(events(await send(client, sid, "Anker003")))
 
 
 async def test_in_warranty_replacement_collects_sop_evidence_then_submits(l3_runtime, monkeypatch):
@@ -183,14 +183,14 @@ async def test_in_warranty_replacement_collects_sop_evidence_then_submits(l3_run
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid, rows = await replacement_ready(client, monkeypatch)
         text = said(rows)
-        assert "订单 Anker016 质保至 2027-04-01" in text and "在质保期内" in text
-        assert "故障照片或视频" in text and "产品 SN" in text and "收货地址" not in text
+        assert "order Anker016 is under warranty until 2027-04-01" in text
+        assert "a photo or video of the fault" in text and "serial number (SN)" in text and "shipping address" not in text
         assert not any(e["type"] == "proposal_card" for e in rows)
         state = await state_of(sid)
         assert state["warranty"]["status"] == "in_warranty"
         assert state["product_confirmed"]["sku"] == "T8D04"
         rows = events(await send(client, sid, "照片", images=1))
-        assert "产品 SN" in said(rows) and not any(e["type"] == "proposal_card" for e in rows)
+        assert "serial number (SN)" in said(rows) and not any(e["type"] == "proposal_card" for e in rows)
         rows = events(await send(client, sid, "SN: T8D04121ABCD"))
         card = next(e for e in rows if e["type"] == "proposal_card")
         assert [o["type"] for o in card["options"]] == ["replace"]
@@ -217,7 +217,7 @@ async def test_out_of_warranty_is_declined_politely(l3_runtime, monkeypatch):
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "污水盘不排水，订单 Anker011，申请换货"))
         text = said(rows)
-        assert "2025-11-30" in text and "已超过质保期" in text and "很抱歉" in text
+        assert "2025-11-30" in text and "warranty has expired" in text and "I'm sorry" in text
         assert not any(e["type"] in {"proposal_card", "execution_card"} for e in rows)
         state = await state_of(sid)
         assert (await l3_runtime.cases.store.get(state["case_id"]))["status"] == "closed_unresolved"
@@ -230,7 +230,7 @@ async def test_no_order_goes_through_dealer_directory(l3_runtime, monkeypatch):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "pump not charging, bought from a reseller, want a replacement"))
-        assert "上传购买凭证" in said(rows)
+        assert "upload your proof of purchase" in said(rows)
         assert (await client.get(f"/sessions/{sid}")).json()["pending_input"]["kind"] == "upload_receipt"
         snap = (await client.get(f"/sessions/{sid}")).json()
         await client.post(
@@ -265,7 +265,7 @@ async def test_unauthorized_dealer_is_guided_to_seller(l3_runtime, monkeypatch):
             "fields": {"order_no": None, "seller": "Random Marketplace Seller", "country": "US", "purchase_date": "2026-05-01", "amount": None},
             "edited": ["seller"],
         }))
-        assert "联系购买商家" in said(rows)
+        assert "authorized dealer" in said(rows) and "contact the seller" in said(rows)
         state = await state_of(sid)
         assert state["warranty"]["status"] == "unauthorized_dealer"
         assert l3_runtime.backend.create_calls == 0
@@ -276,7 +276,7 @@ async def test_refund_request_follows_same_warranty_gate(l3_runtime, monkeypatch
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "订单 Anker013 电机异响，我要退款"))
-        assert "在质保期内" in said(rows) and "提交退款单前还需要" in said(rows)
+        assert "under warranty until" in said(rows) and "Before I can submit the refund request, I still need" in said(rows)
         assert (await state_of(sid))["requested_remedy"] == "refund"
 
 
@@ -350,7 +350,7 @@ async def test_execution_needing_review_goes_to_human_queue(l3_runtime, monkeypa
         monkeypatch.setattr(l3_runtime.executor, "run", stuck)
         rows = events(await act(client, sid, "confirm_proposal", {"option_id": "replace"}))
         assert any(e["type"] == "case_changed" and e["status"] == "awaiting_approval" for e in rows)
-        assert "人工核实" in said(rows)
+        assert "passed it to a colleague to check" in said(rows)
 
 
 async def test_consult_warranty_reads_order_warranty_end(l3_runtime):
@@ -367,7 +367,7 @@ async def test_two_orders_do_not_execute_a_random_query(l3_runtime):
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "查 Anker001 和 Anker003 的物流"))
         assert not any(e["type"] == "tool_call" for e in rows)
-        assert "多个订单" in said(rows)
+        assert "more than one order" in said(rows)
         rows = events(await send(client, sid, "Anker003"))
         assert any(e["type"] == "tool_call" and e["status"] == "finished" for e in rows)
 
@@ -378,5 +378,5 @@ async def test_complaint_marks_existing_case_priority(l3_runtime, monkeypatch):
         rows = events(await send(client, sid, "我要投诉，太烂了"))
         row = next(r for r in await l3_runtime.cases.store.queue(status=None) if r["session_id"] == sid)
         assert row["complaint_risk"] and row["priority"] == "high"
-        assert "人工" in said(rows)
+        assert "human agent" in said(rows)
         assert l3_runtime.backend.create_calls == 0

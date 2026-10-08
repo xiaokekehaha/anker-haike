@@ -122,7 +122,7 @@ function entryText(entry: string | null): string {
   if (entry === 'message') return '用户发消息';
   if (entry === 'action:retry') return '重试';
   const kind = entry.replace('action:', '');
-  return { select_product: '选择产品', step_feedback: '步骤反馈', confirm_receipt: '确认凭证', skip_receipt: '跳过凭证', request_human: '要求人工', rediagnose: '补充信息', resumed: '回应卡片', answer_observation: '回答判别题' }[kind] ?? entry;
+  return { select_product: '选择产品', step_feedback: '步骤反馈', confirm_receipt: '确认凭证', skip_receipt: '跳过凭证', request_human: '要求人工', rediagnose: '补充信息', resumed: '回应卡片' }[kind] ?? entry;
 }
 
 function doneText(reason: string | null): string {

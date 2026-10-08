@@ -271,7 +271,7 @@ async def test_unverifiable_previous_attempt_goes_to_review_without_creating():
     backend.find_service_order = lookup_down
     result = await executor.run("service_order.create", params(), **WRITE_ARGS, gate_result=gate())
     assert result.status == "failed" and not result.recoverable and result.needs_review
-    assert "人工核实" in result.receipt.next_step
+    assert "passed it to a colleague to check" in result.receipt.next_step
     assert calls == [WRITE_ARGS["idempotency_key"]]
 
 

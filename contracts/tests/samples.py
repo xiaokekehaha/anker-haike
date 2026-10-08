@@ -41,16 +41,6 @@ STEP = {
     "evidence_ids": ["e1"],
 }
 
-OBSERVATION = {
-    "observation_id": "o1",
-    "question": "指示灯现在是什么状态？",
-    "options": [
-        {"option_id": "blink", "label": "快速闪烁", "kind": "finding"},
-        {"option_id": "off", "label": "不亮", "kind": "finding"},
-        {"option_id": "unknown", "label": "设备不在身边或无法判断", "kind": "unknown"},
-    ],
-}
-
 SUMMARY = {
     "product": "A1234",
     "problem": "无法充电",
@@ -121,18 +111,6 @@ _reg(
     ev("step_card", card_id="c2", version=4, step=STEP),
     ev("step_card", card_id="c2", version=4, **{k: v for k, v in STEP.items()}),
     "step 字段必须嵌在 step 对象内",
-)
-_reg(
-    ev("observation_card", card_id="c3", version=5, observation=OBSERVATION, plan_id="p1", attempt=1),
-    ev(
-        "observation_card",
-        card_id="c3",
-        version=5,
-        observation={**OBSERVATION, "options": OBSERVATION["options"][:1]},
-        plan_id="p1",
-        attempt=1,
-    ),
-    "选项少于两个",
 )
 _reg(
     ev(
@@ -238,11 +216,6 @@ ACTIONS: dict[str, tuple[dict, dict, str]] = {
         act("step_feedback", {"feedback": "solved", "note": None}),
         act("step_feedback", {"feedback": "maybe"}),
         "feedback 非法",
-    ),
-    "answer_observation": (
-        act("answer_observation", {"observation_id": "o1", "option_id": "blink"}),
-        act("answer_observation", {"observation_id": "o1"}),
-        "缺少 option_id",
     ),
     "confirm_receipt": (
         act("confirm_receipt", {"fields": {"order_no": "1"}, "edited": ["order_no"]}),

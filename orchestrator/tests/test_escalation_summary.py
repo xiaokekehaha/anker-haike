@@ -73,7 +73,7 @@ def test_no_supported_followup_text_separates_skipped_steps():
     assert text.startswith("无法操作「清理充电宝输出接口」、「更换数据线和被充设备测试」，现有资料没有进一步")
     assert "已完成" not in text
     reply = reassurance_text("R2", state)
-    assert "排查记录" in reply
+    assert "steps you tried" in reply
     assert not any(word in reply for word in ("已完成", "已试步骤", "已经做过"))
     copied = summary_to_text(build_summary(state, reason="R2", lane="domestic"))
     assert "【排查记录】清理充电宝输出接口（无法操作）" in copied
@@ -147,7 +147,7 @@ async def test_safety_first_message_full_chain(mem_runtime):
         parse_event(e)
     assert [e["stage"] for e in events if e["type"] == "progress"] == ["intake", "escalate"]
     msg = next(e for e in events if e["type"] == "message")
-    assert "停止使用" in msg["delta"]
+    assert "stop using" in msg["delta"]
     summ = next(e for e in events if e["type"] == "escalation_summary")
     s = EscalationSummary.model_validate(summ["summary"])
     assert s.receipt.status == "not_collected" and s.reason.rule_id == "R4"

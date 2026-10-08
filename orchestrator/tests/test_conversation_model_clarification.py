@@ -19,7 +19,7 @@ async def test_unknown_model_after_category_and_symptom_reaches_retrieval(conver
     )
     await session.send(
         "不启动",
-        {"primary_intent": "supplement", "facts": [{"value": "不启动", "quote": "不启动", "symptom_code": "power_failure"}]},
+        {"primary_intent": "supplement", "facts": [{"value": "不启动", "quote": "不启动"}]},
     )
     await session.send(
         "00001",
@@ -94,6 +94,6 @@ async def test_unmatched_model_fallback_acknowledges_answer():
         session_id=None,
         lane="domestic",
     )
-    assert "您提供的型号" in question.text
-    assert "未匹配" in question.text
-    assert "品类" in question.text and "标签" in question.text
+    assert "couldn't match that model" in question.text
+    assert "couldn't match" in question.text
+    assert "product type" in question.text and "label" in question.text

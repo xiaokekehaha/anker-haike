@@ -22,6 +22,7 @@ from app.models.probe import ModelProbes
 from app.models.runtime import set_model_router
 from app.observability.alerts import build_from_settings, health_watch_loop, set_alert_manager
 from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
+from app.official.router import router as official_router
 from app.plans.runtime import get_plan_library
 from app.replay.runtime import get_replay_package
 from app.retention import retention_loop
@@ -132,6 +133,7 @@ def create_app() -> FastAPI:
     app.include_router(health_router)
     app.include_router(models_router)
     app.include_router(sessions_router)
+    app.include_router(official_router)  # 主办方工单只读（载入真实工单）
     from app.admin.l3_router import router as l3_router
     app.include_router(l3_router)
     app.include_router(admin_router)  # 管理员观测台 /admin/api/*（黑客松范围无鉴权）

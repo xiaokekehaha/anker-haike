@@ -100,3 +100,72 @@
 5. D1 + D2 + E3（63 单评测集与载入工单入口）。
 6. D4 + D5 + D3（回放、巡检、bake-off 重做）。
 7. A4 / A7 / A8 / B10–B13 / D7 / D8 / F1–F8 收尾，跑 ci-local 与 grep 门禁。
+
+## 2026-10-08 状态更新（追加）
+
+已提交：47902b3（排障链路切官方 Q&A）、7269d1d（旧知识模块清理 + 首封事实）、cc3b324（前端口径）。
+
+| # | 状态 |
+| --- | --- |
+| A1–A3、A5、A6、A8、A9 | 完成 |
+| A4 | 部分完成：kb_manual / kb_tickets / scripts / sources 已删；snapshots 未跟踪，保留 |
+| A7 | 完成：snapshot.py 删除（入库幂等可重建） |
+| A10 | 待做 |
+| A11（新增） | SoloCam 离线 / 不录像漏召回（T57、T59），现象单 recall@5 77% 的剩余缺口 |
+| B1–B3、B5–B9 | 完成（B8 只改了 signatures 指向，vision_vocab 结构未拆） |
+| B4 | 完成：判别题问诊入口关闭，无现象时问一句开放问题；symptom_taxonomy / observations 代码未删，归入第 7 步 |
+| B10、B11、B13 | 待做 |
+| B12 | 待做（安全词已补英荷德法西；投诉 / 愤怒词仍只有中文） |
+| C1、C2、C4、E4 | 作废：2026-10-08 改为客户可见输出用英文、不翻译、不附中文（见 addendum「D2 变更」） |
+| C3 | 改为：客户可见固定话术改英文；转人工摘要、观测台与前端界面保持中文 |
+| C5 | 不改 |
+| D1 | 部分完成：63 单标注与确定性评测（35 单 SOP 终点 63/63） |
+| D1b（新增） | 真实模型批量回放 63 单，出 plan §4 指标（意图准确率、SOP 分支准确率、独立托管率、幻觉） |
+| D2 | 待做 |
+| D3、D4、D5 | 待做（D5 巡检已换官方 PN，场景本身未按 D6 重写） |
+| D6 | 完成 |
+| D7、D8 | 待做 |
+| E1、E2、E5、E6、E7 | 完成 |
+| E3 | 待做 |
+| E8 | 不做（问诊改开放问题后不需要候选现象卡） |
+| F4、F5 | 部分完成：kb-official-* / kb-anchors / kb-snapshot 目标、kb_manual 挂载、PLANS / FAULT_CARDS 环境变量已删；seed plans / plans-schema 未删 |
+| F1–F3、F6–F8 | 待做 |
+
+接下来的顺序（2026-10-08 用户确认）：D1b → B12 → C3 → D4 → E3，然后第 7 步收尾。
+
+### 2026-10-08 进度（D1b → B12 → C3 → D4 → E3）
+
+- D1b 进行中：`haike-eval live-tickets` 对运行中的编排服务逐单回放 63 单（orchestrator/app/evaluation/live_tickets.py），报告写 reports/eval/*_live_tickets.md。
+  首轮（修复前）意图 87% / SOP 分支 84% / 幻觉 9（全为检测器把「不再补发」「无法免费换货」误判为承诺）。
+  已修：
+  - 检测器按句判断、有否定词不算承诺；
+  - 解释器把「没收到货 / 何时发货 + 订单号」判成 order_query（T1 T3 T7 T9）→ 有配送词且未问订单字段时改为 logistics_query；
+  - 物流问题附带订单号 / 物流单号字段请求时仍按物流 SOP 查包裹给方案（T5）；
+  - 首封带图且读图不可用时，跳过补拍回到消歧而不是直接检索（T55 因无查询中断）；
+  - 一条官方指南走完仍未解决即进入质保判断（R1），不再换相近指南（T55 / T29 连走 3 条、7 步）；
+  - 自由文本现象（≥ 6 个词）视为已描述，不再追问现象（T40 / T61）；
+  - 型号别名允许字母数字间加空格（「omni c 20」，T62）；
+  - 安全说明补「噪音大、担心坏掉不算」（T36 误判 R4）。上下文预算护栏 4260 → 4400（Fable 5.1 裁定，含另一会话 product_question 的约 150 token）。
+  第二轮：意图 94% / SOP 分支 89% / 幻觉 0。
+- B12 完成：complaint_terms.yaml 补英荷德法西词（取自 T56 T57 T58 T59 T60 T62 原文）；拉丁字母词改为忽略大小写、整词匹配、前一两个词为否定词不算。新增 tests/test_emotion_terms_multilingual.py。
+- D1b 完成：第三轮（C3 英文化与全部修复后）意图 97% / SOP 分支 98% / 幻觉 0 / 机器人闭环率 75%（6/8）/ 提交服务单 11 单，报告 reports/eval/20261008T124854Z_live_tickets.md。
+  Fable 5.1 裁定：T42 / T44 改 warranty_by_qa、T44 意图改 replacement_request、T50 改 troubleshoot、T63 意图改 report_problem；
+  「独立托管率」改为 bot_closed_rate，只统计期望终点可由机器人独立闭环的工单（运输中 / 预售 / 过保 / 解释）；
+  可见物理损坏（部件断裂 / 脱落，同句共现部件名词，排除耗材与声音）直接进质保（app/official/damage.py，63 单命中 T42、T44）。
+  剩余：T12 / T35（清水不足 / 低电回充是正常提示，期望解释即结束）走到了质保；T59 / T60 意图细分差异。
+- C3 完成：客户可见固定话术改英文（SOP 话术、物流状态与描述、证据标签、服务单回执、质保结论、订单查询回答、任务队列提示、结束语、安全 / 转人工说明、追问、操作条件提示及对应的英文回复短语、读图提示、产品咨询提示）；
+  品类加 name_en 供客户文字使用。保留中文：转人工摘要、观测台、前端界面、案件审计原因、GateCheck.detail、工具行与卡片备注。
+  遗留：读图冲突句（app/diagnose/conflict.py）与回执来源默认值「售后工具」（contracts）仍是中文。
+- E3 完成：后端 GET /official/tickets 与附件接口（app/official/router.py）；前端首屏「载入主办方真实工单」下拉，展开时才拉列表，选中后原文填入输入框、附件图加入附件区（Composer presetFiles）。
+- D4 完成：回放场景换成 D6 七单（t55_main、t8_reship、t2_delivered、t29_out_of_warranty、t45_safety_dealer、t14_hardware_fault、t13_code_miss），
+  首封即工单原文与原图；旧 a1–a9 录制包删除。脚本新增 ticket / while 步骤。真实模型录制后 `make replay-all` 7/7 断网重放通过。
+  修了回放键不稳定：卡片效果的 event_id / effect_id / execution_id / action_id 进入下一轮上下文时未归一，T55 第三轮 intake 回放未命中。
+
+### 2026-10-08 质量项（Fable 5.1 裁定后执行）
+
+- T12 / T35（正常状态提示）：暂缓系统改动；回放驱动对 explain 单答「解决了」。
+- T59 / T60：改标签（T59 意图 replacement_request，T60 意图 report_problem）；评测 code_miss 只算报了错误码的单，无码 R5 记为 no_guidance。
+- 检索：英文官方术语改写实验 recall 9/12 → 9/12，无提升，query_rewrite 保持关闭；rerank 不开。补等价金标（T54 bp-0125、T57、T59），现象单 recall@5 77%。剩余 T57 / T59（SoloCam 口语描述）未召回，暂缓。
+- 中文跨语言召回、前端界面中文：暂缓。
+- 图文冲突提示改英文（vision_vocab.yaml 新增 english 对照表）；回执来源默认值改 "after-sales tool"（契约已重新生成）。
+- 旧症状词表与观察机制删除：单独一次提交，进行中。

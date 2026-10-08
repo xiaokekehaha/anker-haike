@@ -14,6 +14,13 @@ from haike_contracts.common import GateCheck, GateResult, WarrantyDecision
 from .registry import GATE_CHECKS
 
 EVIDENCE_LABELS = {
+    "order_or_receipt": "order number or proof of purchase",
+    "address": "shipping address",
+    "photo_or_video": "a photo or video of the fault",
+    "serial_number": "product serial number (SN)",
+}
+# GateCheck.detail 是内部审计文字，保持中文。
+EVIDENCE_LABELS_ZH = {
     "order_or_receipt": "订单或购买凭证",
     "address": "收货地址",
     "photo_or_video": "故障照片或视频",
@@ -57,7 +64,7 @@ class AuthorizationGate:
             GateCheck(
                 name="evidence",
                 passed=not missing and user_confirmed,
-                detail="缺少：" + "、".join(EVIDENCE_LABELS[m] for m in missing)
+                detail="缺少：" + "、".join(EVIDENCE_LABELS_ZH[m] for m in missing)
                 if missing
                 else ("资料齐全，客户已确认" if user_confirmed else "客户尚未确认提交"),
             ),

@@ -44,14 +44,6 @@ def test_control_turns_preserve_facts_and_do_not_repeat_escalation():
     assert corrected["turn_decision"]["clarification"]
 
 
-def test_symptom_rule_code_is_persisted_and_overrides_model_disagreement():
-    state = turn({}, "i1", "吸力变弱", primary_intent="report_problem", device_relation="current", facts=[{"value": "吸力变弱", "quote": "吸力变弱", "symptom_code": "power_failure"}])
-    assert state["symptom_codes"] == ["suction_low"]
-    issue = state["issues"][state["active_issue_id"]]
-    assert issue["facts"][0]["symptom_code"] == "suction_low"
-    assert state["turn_decision"]["normalization_disagreements"]
-
-
 def test_human_handoff_requires_current_request_source():
     state = earbuds()
     card = {"card_id": "pending", "kind": "step_feedback", "payload": {}}

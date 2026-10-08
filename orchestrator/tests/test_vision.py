@@ -335,7 +335,7 @@ def test_conflict_same_part_different_phenomenon():
     out = detect_conflicts(
         _loc_for_conflict([{"part": "滤网", "phenomenon": "正常"}]), ["应该是滤网堵住了"]
     )
-    assert out == ["您提到滤网堵塞，但照片里滤网看起来是正常的"]
+    assert out == ["you mentioned the filter is clogged, but in the photo it looks normal"]
 
 
 def test_conflict_user_blames_one_part_while_the_fault_is_on_another():
@@ -346,7 +346,7 @@ def test_conflict_user_blames_one_part_while_the_fault_is_on_another():
         _loc_for_conflict([{"part": "滚刷", "phenomenon": "缠绕"}]),
         ["我家扫地机吸力变小了，应该是滤网堵住了"],
     )
-    assert out == ["您提到的是滤网，但照片里看到问题的是滚刷（缠绕）"]
+    assert out == ["you mentioned the filter, but the photo shows a problem with the roller brush (tangled)"]
 
 
 def test_conflict_claimed_part_is_not_in_the_photo():
@@ -355,7 +355,7 @@ def test_conflict_claimed_part_is_not_in_the_photo():
     out = detect_conflicts(
         _loc_for_conflict([{"part": "滚刷", "phenomenon": "正常"}]), ["滤网是不是堵了"]
     )
-    assert out == ["您提到滤网，但照片里没有拍到滤网"]
+    assert out == ["you mentioned the filter, but it isn't visible in the photo"]
 
 
 def test_no_conflict_when_text_and_image_agree_or_evidence_is_weak():
@@ -402,7 +402,7 @@ async def test_user_text_reaches_conflict_detection_but_never_the_model(tmp_path
     # 词表本身会出现在指令里，所以比对的是用户那句话，而不是单个词
     assert "应该是滤网堵住了" not in blob and "吸力变小" not in blob
     assert out.fault_localization["conflicts_with_text"] == [
-        "您提到的是滤网，但照片里看到问题的是滚刷（缠绕）"
+        "you mentioned the filter, but the photo shows a problem with the roller brush (tangled)"
     ]
 
 

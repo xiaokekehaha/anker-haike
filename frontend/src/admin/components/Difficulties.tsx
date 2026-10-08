@@ -16,7 +16,6 @@ function items<T extends TimelineItem['kind']>(timeline: TimelineItem[], kind: T
 export function deriveDifficulties(state: SessionState | null, session: (SessionRow & Record<string, unknown>) | null, runs: RunFacts[], serviceCase: ServiceCase | null): Section[] {
   const tl = state?.timeline ?? [];
   const steps = items(tl, 'step_card');
-  const observations = items(tl, 'observation_card');
   const summaries = items(tl, 'escalation_summary');
   const summary = summaries[summaries.length - 1]?.summary ?? null;
   const userImages = items(tl, 'user_message').reduce((acc, m) => acc + (m.images?.length ?? m.image_ids?.length ?? 0), 0);
@@ -30,8 +29,6 @@ export function deriveDifficulties(state: SessionState | null, session: (Session
   const failedTools = tools.filter((t) => t.status === 'failed').length;
   const modelCalls = runs.flatMap((r) => (Array.isArray(r.model_calls) ? r.model_calls : []));
   const fallbacks = modelCalls.filter((m) => m.fallback_used).length;
-  const answered = observations.filter((o) => o.chosen_option_id).length;
-  const stepObs = steps.reduce((acc, s) => acc + (s.observation_answers?.length ?? 0), 0);
   const clarifications = Number(session?.clarifications ?? 0);
   const issues = state?.issues.length ?? 0;
   const taskQueue = (summary?.task_queue ?? []).length;
@@ -53,8 +50,6 @@ export function deriveDifficulties(state: SessionState | null, session: (Session
     {
       key: 'ask', title: '问清', question: '口语描述有没有被追问成可判定的现象',
       items: [
-        { label: '判别提问', value: `${observations.length} 题，已答 ${answered}`, tone: observations.length ? 'ok' : 'muted' },
-        { label: '步骤内观察', value: `${stepObs} 条记录`, tone: 'muted' },
         { label: '澄清轮次', value: `${clarifications} 次${session?.outcome_reason === 'R7' ? '（超限转人工）' : ''}`, tone: session?.outcome_reason === 'R7' ? 'warn' : 'muted' },
         { label: '排障步骤', value: `${steps.length} 步，${steps.filter((s) => s.feedback).length} 步有反馈`, tone: 'muted' },
       ],

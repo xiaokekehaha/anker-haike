@@ -18,13 +18,13 @@ PRIORITY = {
 }
 TASK_INTENTS = set(PRIORITY) - {"social", "request_human"}
 LABELS = {
-    "replacement_request": "换货申请",
-    "refund_request": "退款审核",
-    "address_update": "地址变更",
-    "report_problem": "设备排障",
-    "logistics_query": "物流查询",
-    "warranty_query": "保修查询",
-    "order_query": "订单查询",
+    "replacement_request": "replacement request",
+    "refund_request": "refund request",
+    "address_update": "address change",
+    "report_problem": "device troubleshooting",
+    "logistics_query": "delivery status",
+    "warranty_query": "warranty check",
+    "order_query": "order details",
 }
 
 
@@ -106,7 +106,7 @@ def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
                 else "pending"
             )
     labels = [LABELS[i] for i in incoming]
-    notice = "您提到的需求将按顺序处理：" + " → ".join(labels) + "。" if len(labels) > 1 else None
+    notice = "I'll handle your requests in this order: " + " → ".join(labels) + "." if len(labels) > 1 else None
     return result, notice
 
 

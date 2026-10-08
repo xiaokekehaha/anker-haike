@@ -671,14 +671,6 @@
           "title": "Feedback",
           "type": "string"
         },
-        "observed": {
-          "description": "该步骤记录到的观察结果（选项文字）",
-          "items": {
-            "type": "string"
-          },
-          "title": "Observed",
-          "type": "array"
-        },
         "step_id": {
           "title": "Step Id",
           "type": "string"
@@ -946,141 +938,6 @@
       "title": "ModelTraceItem",
       "type": "object"
     },
-    "ObservationAnswer": {
-      "additionalProperties": false,
-      "description": "用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。",
-      "properties": {
-        "observation_id": {
-          "title": "Observation Id",
-          "type": "string"
-        },
-        "option_id": {
-          "title": "Option Id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "observation_id",
-        "option_id"
-      ],
-      "title": "ObservationAnswer",
-      "type": "object"
-    },
-    "ObservationCardItem": {
-      "additionalProperties": false,
-      "properties": {
-        "at": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "At"
-        },
-        "attempt": {
-          "minimum": 1,
-          "title": "Attempt",
-          "type": "integer"
-        },
-        "card_id": {
-          "title": "Card Id",
-          "type": "string"
-        },
-        "chosen_option_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Chosen Option Id"
-        },
-        "first_seq": {
-          "default": 0,
-          "title": "First Seq",
-          "type": "integer"
-        },
-        "issue_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Issue Id"
-        },
-        "kind": {
-          "const": "observation_card",
-          "title": "Kind",
-          "type": "string"
-        },
-        "last_seq": {
-          "default": 0,
-          "title": "Last Seq",
-          "type": "integer"
-        },
-        "observation": {
-          "$ref": "#/$defs/StepObservation"
-        },
-        "plan_id": {
-          "title": "Plan Id",
-          "type": "string"
-        },
-        "version": {
-          "minimum": 0,
-          "title": "Version",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "kind",
-        "card_id",
-        "version",
-        "observation",
-        "plan_id",
-        "attempt"
-      ],
-      "title": "ObservationCardItem",
-      "type": "object"
-    },
-    "ObservationOption": {
-      "additionalProperties": false,
-      "properties": {
-        "kind": {
-          "default": "finding",
-          "enum": [
-            "finding",
-            "unknown"
-          ],
-          "title": "Kind",
-          "type": "string"
-        },
-        "label": {
-          "title": "Label",
-          "type": "string"
-        },
-        "option_id": {
-          "title": "Option Id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "option_id",
-        "label"
-      ],
-      "title": "ObservationOption",
-      "type": "object"
-    },
     "PendingInput": {
       "additionalProperties": false,
       "properties": {
@@ -1108,7 +965,6 @@
           "enum": [
             "select_product",
             "step_feedback",
-            "answer_observation",
             "upload_receipt",
             "confirm_receipt",
             "confirm_proposal",
@@ -1548,7 +1404,7 @@
           "title": "Service Order No"
         },
         "source": {
-          "default": "售后工具",
+          "default": "after-sales tool",
           "title": "Source",
           "type": "string"
         },
@@ -1966,13 +1822,6 @@
           "default": null,
           "title": "Note"
         },
-        "observation_answers": {
-          "items": {
-            "$ref": "#/$defs/ObservationAnswer"
-          },
-          "title": "Observation Answers",
-          "type": "array"
-        },
         "seen": {
           "anyOf": [
             {
@@ -2026,35 +1875,6 @@
         "kind"
       ],
       "title": "StepMedia",
-      "type": "object"
-    },
-    "StepObservation": {
-      "additionalProperties": false,
-      "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
-      "properties": {
-        "observation_id": {
-          "title": "Observation Id",
-          "type": "string"
-        },
-        "options": {
-          "items": {
-            "$ref": "#/$defs/ObservationOption"
-          },
-          "minItems": 2,
-          "title": "Options",
-          "type": "array"
-        },
-        "question": {
-          "title": "Question",
-          "type": "string"
-        }
-      },
-      "required": [
-        "observation_id",
-        "question",
-        "options"
-      ],
-      "title": "StepObservation",
       "type": "object"
     },
     "SummaryItem": {
@@ -2276,13 +2096,6 @@
             "$ref": "#/$defs/StepMedia"
           },
           "title": "Media",
-          "type": "array"
-        },
-        "observations": {
-          "items": {
-            "$ref": "#/$defs/StepObservation"
-          },
-          "title": "Observations",
           "type": "array"
         },
         "plan_id": {
@@ -2627,7 +2440,6 @@
             "escalation_summary": "#/$defs/SummaryItem",
             "evidence": "#/$defs/EvidenceItemGroup",
             "execution_card": "#/$defs/ExecutionCardItem",
-            "observation_card": "#/$defs/ObservationCardItem",
             "product_card": "#/$defs/ProductCardItem",
             "proposal_card": "#/$defs/ProposalCardItem",
             "rating_card": "#/$defs/RatingCardItem",
@@ -2657,9 +2469,6 @@
           },
           {
             "$ref": "#/$defs/StepCardItem"
-          },
-          {
-            "$ref": "#/$defs/ObservationCardItem"
           },
           {
             "$ref": "#/$defs/ReceiptCardItem"

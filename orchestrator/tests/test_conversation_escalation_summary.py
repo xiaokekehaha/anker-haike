@@ -67,7 +67,7 @@ async def test_skipped_steps_keep_product_and_feedback(
     assert [step.feedback for step in summary.steps] == ["cannot_do"]
     assert summary.reason.rule_id == "R3"
     reply = "".join(e.get("delta", "") for e in rows)
-    assert "复制给人工客服" in reply
+    assert "support team" in reply
     copied = summary_to_text(summary)
     assert "（无法操作）" in copied
     assert not any(word in reply + copied for word in ("吸奶器", "已完成", "已试步骤", "已经做过", "cannot_do"))

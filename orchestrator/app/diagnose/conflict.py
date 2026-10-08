@@ -17,6 +17,11 @@ from typing import Any
 
 from app.diagnose.localization import usable_findings, vocabulary
 
+
+def en(word: str) -> str:
+    """词表词 → 客户可见英文；没登记的原样返回。"""
+    return (vocabulary().get("english") or {}).get(word, word)
+
 NORMAL = ("正常", "不可辨")
 
 
@@ -61,14 +66,14 @@ def detect_conflicts(localization: dict[str, Any] | None, claims: list[str]) -> 
             got = seen[part]
             said = next((ph for ph in claimed_phenomena if ph != got), None)
             if said and said not in NORMAL and got in NORMAL:
-                out.append(f"您提到{part}{said}，但照片里{part}看起来是{got}的")
+                out.append(f"you mentioned the {en(part)} is {en(said)}, but in the photo it looks {en(got)}")
             elif said and said not in NORMAL and got not in NORMAL:
-                out.append(f"您提到{part}{said}，但照片里{part}是{got}")
+                out.append(f"you mentioned the {en(part)} is {en(said)}, but the photo shows it {en(got)}")
             continue
         others = [(p, ph) for p, ph in faulty if p != part]
         if others:
             p, ph = others[0]
-            out.append(f"您提到的是{part}，但照片里看到问题的是{p}（{ph}）")
+            out.append(f"you mentioned the {en(part)}, but the photo shows a problem with the {en(p)} ({en(ph)})")
         else:
-            out.append(f"您提到{part}，但照片里没有拍到{part}")
+            out.append(f"you mentioned the {en(part)}, but it isn't visible in the photo")
     return out

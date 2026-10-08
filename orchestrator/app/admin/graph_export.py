@@ -32,8 +32,8 @@ NODE_STAGE: dict[str, str] = {
     "retrieve": "diagnose",  # progress: diagnose/retrieve
     "reply": "diagnose",  # progress: diagnose
     "guide": "guide",
-    "reassess": "guide",  # progress: guide（依据观察重新决策）
-    "ask_observation": "guide",  # progress: guide / await_observation
+    "reassess": "guide",  # progress: guide（依据反馈与操作条件重新决策）
+    "ask_operation": "guide",  # progress: guide / await_operation_conditions
     "await_input": "wait",  # 发布持久待办，本轮正常结束
     "apply_action": "wait",
     "escalate": "escalate",

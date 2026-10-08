@@ -12,8 +12,7 @@ const FEEDBACK_LABELS: Record<Feedback, string> = {
   solved: '已解决', not_solved: '已操作，仍有问题', cannot_do: '无法操作',
 };
 
-const stepText = (x: ExecutedStep) =>
-  `${x.title}（${FEEDBACK_LABELS[x.feedback]}${x.observed?.length ? `；观察：${x.observed.join('、')}` : ''}）`;
+const stepText = (x: ExecutedStep) => `${x.title}（${FEEDBACK_LABELS[x.feedback]}）`;
 
 export const FACT_LABELS: Record<string, string> = {
   order_no: '订单号', purchase_date: '购买日期', address: '收货地址', dealer: '授权经销商', country: '购买国家',

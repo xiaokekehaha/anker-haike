@@ -117,18 +117,24 @@ def explicit_operation_reply(text: str) -> OperationUpdate | None:
         "没有备用线": "cable_missing", "没有另一台设备": "spare_missing",
         "有备用线了": "cable_ready", "买到线了": "cable_ready",
         "有另一台设备了": "spare_ready", "有充电器了": "charger_ready",
+        # 英文说法：下面的复核问题会原样请客户回复这些短语（D2 2026-10-08 客户可见文字改英文）
+        "device not with me": "device_missing", "i have the device now": "device_ready",
+        "no tools": "tool_missing", "tools ready": "tool_ready",
+        "no spare cable": "cable_missing", "i have a spare cable": "cable_ready",
+        "no other device": "spare_missing", "i have another device": "spare_ready", "i have a charger": "charger_ready",
     }
-    if phrase in resource_choices:
-        return OperationUpdate(signal=resource_choices[phrase], quote=text)
-    if phrase in {"暂停排查", "不想继续", "暂时不想继续", "先不查了"}:
+    key = phrase.casefold()
+    if key in resource_choices:
+        return OperationUpdate(signal=resource_choices[key], quote=text)
+    if key in {"暂停排查", "不想继续", "暂时不想继续", "先不查了", "pause", "pause troubleshooting", "stop for now"}:
         return OperationUpdate(signal="pause", quote=text)
-    if phrase in {"继续排查", "继续排障"}:
+    if key in {"继续排查", "继续排障", "continue", "continue troubleshooting"}:
         return OperationUpdate(signal="continue", quote=text)
-    if phrase in {"现在可以做了", "现在可以操作了", "重试这一步"}:
+    if key in {"现在可以做了", "现在可以操作了", "重试这一步", "retry this step", "i can do it now"}:
         return OperationUpdate(signal="retry", quote=text)
-    if phrase in {"不会操作", "不知道怎么做"}:
+    if key in {"不会操作", "不知道怎么做", "i don't know how", "i don't know how to do it"}:
         return OperationUpdate(signal="explain", quote=text)
-    if phrase in {"跳过这步", "只跳过这一步"}:
+    if key in {"跳过这步", "只跳过这一步", "skip this step"}:
         return OperationUpdate(signal="skip", quote=text)
     return None
 
@@ -136,7 +142,7 @@ def explicit_operation_reply(text: str) -> OperationUpdate | None:
 def resolve_operation_reply(text: str, state: dict) -> tuple[OperationUpdate | None, str | None]:
     """把省略对象的资源短答绑定到当前问题；没有唯一对象时返回澄清。"""
     explicit = explicit_operation_reply(text)
-    if explicit is not None or text.strip(" \n。！!，,") not in {"拿到了", "已经拿到了"}:
+    if explicit is not None or text.strip(" \n。！!，,").casefold() not in {"拿到了", "已经拿到了", "got it", "i have it now"}:
         return explicit, None
     if not has_operation_context(state):
         return None, None
@@ -154,7 +160,7 @@ def resolve_operation_reply(text: str, state: dict) -> tuple[OperationUpdate | N
     for signal, (name, available) in RESOURCE_SIGNALS.items():
         if name == resource and available:
             return OperationUpdate(signal=signal, quote=text), None
-    return None, "您拿到的是设备、清洁工具、备用线、另一台设备，还是充电器？"
+    return None, "Which one do you have now: the device, the cleaning tool, a spare cable, another device, or a charger?"
 
 
 def update_conditions(state: dict, proposal: OperationUpdate | None, *, text: str, input_id: str) -> tuple[dict, bool]:
@@ -232,18 +238,18 @@ def support_question(state: dict) -> dict | None:
         return None
     return {
         "kind": "operation_blocker", "card_id": blocker.card_id,
-        "question": "这一步先不做。当前是设备不在身边、缺少工具、不知道怎么做，还是想暂停排查？",
+        "question": "Let's hold this step. Is the device not with you, are you missing a tool, unsure how to do it, or would you like to pause?",
     }
 
 
 # 资源缺失导致暂停时的复核问题。每句都给出一个 explicit_operation_reply 真的认得的回复说法：
 # 邀请用户"拿到设备后告诉我"却听不懂他的回答，会话就再也走不出去（会话 0f8809）。
 RESOURCE_RECHECK = {
-    "device": "设备现在在身边了吗？拿到了回复“设备现在在身边”，我按已有记录接着排查；还不在也可以先整理问题摘要。",
-    "cleaning_tool": "清洁工具准备好了吗？准备好了回复“工具准备好了”，我接着给下一步；暂时没有也可以先整理问题摘要。",
-    "spare_cable": "有可以替换的线了吗？有了回复“有备用线了”，我接着给下一步；暂时没有也可以先整理问题摘要。",
-    "spare_device": "有另一台设备可以交叉测试了吗？有了回复“有另一台设备了”；暂时没有也可以先整理问题摘要。",
-    "charger": "有可以替换的充电器了吗？有了回复“有充电器了”；暂时没有也可以先整理问题摘要。",
+    "device": "Do you have the device with you now? If so, reply \"I have the device now\" and I'll continue from where we left off; otherwise I can prepare a summary.",
+    "cleaning_tool": "Are the cleaning tools ready? If so, reply \"tools ready\" and I'll give the next step; otherwise I can prepare a summary.",
+    "spare_cable": "Do you have a spare cable now? If so, reply \"I have a spare cable\" and I'll give the next step; otherwise I can prepare a summary.",
+    "spare_device": "Do you have another device to cross-test with? If so, reply \"I have another device\"; otherwise I can prepare a summary.",
+    "charger": "Do you have a spare charger now? If so, reply \"I have a charger\"; otherwise I can prepare a summary.",
 }
 
 
@@ -275,7 +281,7 @@ def resource_recheck(state: dict) -> dict | None:
 def pause_text(state: dict) -> str:
     conditions = conditions_for(state)
     if conditions.paused:
-        return "已暂停排查，已有现象和操作记录会保留。准备好后可以要求继续；需要联系人工客服时，我可以整理问题摘要。"
+        return "Troubleshooting is paused; everything reported and tried is kept. Say \"continue\" when you're ready, or I can prepare a summary for our support team."
     if conditions.resources.get("device") is False:
-        return "已记下设备不在身边，先不安排读屏或动手操作。拿到设备后回复“设备现在在身边”，我再结合已有记录继续；也可以先整理问题摘要。"
-    return "目前还不能确认故障原因，先不继续增加操作。已有现象和未执行的步骤都已保留；条件具备后可以继续，或要求整理给客服的问题摘要。"
+        return "Noted that the device isn't with you, so no hands-on steps for now. When you have it, reply \"I have the device now\" and I'll continue; or I can prepare a summary."
+    return "I can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team."

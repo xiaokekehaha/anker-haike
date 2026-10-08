@@ -140,7 +140,7 @@ async def test_missing_knowledge_does_not_generate_instructions(conversation, kn
         server.down = True
     events = await conversation.send(DIRECT, {"primary_intent": "product_question", "product_hints": ["T8D04"]})
     text = "".join(e["delta"] for e in events if e["type"] == "message")
-    assert ("未找到" if failure == "empty" else "暂不可用") in text
+    assert ("couldn't find" if failure == "empty" else "unavailable") in text
     assert not conversation.models["reply.stream"].calls
     state = await conversation.state()
     assert state["knowledge_status"] == ("no_match" if failure == "empty" else "unavailable")

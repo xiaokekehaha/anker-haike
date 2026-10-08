@@ -37,7 +37,6 @@ EscalateSubstage = Literal["collect_receipt", "extract", "confirm_fields", "look
 PendingKind = Literal[
     "select_product",
     "step_feedback",
-    "answer_observation",
     "upload_receipt",
     "confirm_receipt",
     "confirm_proposal",
@@ -94,27 +93,6 @@ class ProductCandidate(Strict):
     in_scope: bool
 
 
-class ObservationOption(Strict):
-    option_id: str
-    label: str
-    kind: Literal["finding", "unknown"] = "finding"
-
-
-class StepObservation(Strict):
-    """步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。"""
-
-    observation_id: str
-    question: str
-    options: list[ObservationOption] = Field(min_length=2)
-
-
-class ObservationAnswer(Strict):
-    """用户对某个步骤观察的选择；option_id 必须是该步骤声明过的选项。"""
-
-    observation_id: str
-    option_id: str
-
-
 class StepMedia(Strict):
     """官方 Q&A 步骤里附带的图片 / 视频 / 文章链接（原样引用，不进模型上下文）。"""
 
@@ -137,8 +115,6 @@ class TroubleshootStep(Strict):
     # 这一步真正的出处。evidence_ids 是同 doc 的宽集合（一步清理滚刷会带上滤网、尘盒的命中），
     # 主引用按 instruction_src 的锚点认出，前端默认只展开它，其余折叠。
     primary_evidence_id: str | None = None
-    # 可选：需要判别结果的步骤声明其观察问题；旧客户端忽略该字段仍可只反馈三态
-    observations: list[StepObservation] = Field(default_factory=list)
     media: list[StepMedia] = Field(default_factory=list)
 
 
@@ -174,7 +150,6 @@ class ExecutedStep(Strict):
     step_id: str
     title: str
     feedback: Feedback
-    observed: list[str] = Field(default_factory=list, description="该步骤记录到的观察结果（选项文字）")
 
 
 class EscalationReason(Strict):
@@ -240,7 +215,7 @@ class Receipt(Strict):
     order_no: str | None = None
     next_step: str = ""
     updated_at: str | None = None
-    source: str = "售后工具"
+    source: str = "after-sales tool"
     data: dict = Field(default_factory=dict)
 
 

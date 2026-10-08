@@ -13,11 +13,11 @@ from app.official.models import Order, Package
 Verdict = Literal["delivered", "reship_eligible", "in_transit", "presale", "unknown"]
 
 STATUS_TEXT = {
-    "delivered": "已送达",
-    "in_transit": "运输中",
-    "returned": "已退回发件人",
-    "shipped": "已发货，暂无轨迹",
-    "not_shipped": "未发货",
+    "delivered": "delivered",
+    "in_transit": "in transit",
+    "returned": "returned to sender",
+    "shipped": "shipped, no tracking updates yet",
+    "not_shipped": "not shipped yet",
 }
 
 
@@ -27,15 +27,15 @@ def main_package(order: Order) -> Package | None:
 
 
 def describe(pkg: Package) -> str:
-    head = " ".join(filter(None, [pkg.carrier, pkg.tracking_no])) or "包裹"
+    head = " ".join(filter(None, [pkg.carrier, pkg.tracking_no])) or "Package"
     text = STATUS_TEXT[pkg.status]
     if pkg.status == "delivered" and pkg.delivered_on:
-        text = f"已于 {pkg.delivered_on.isoformat()} 送达"
+        text = f"delivered on {pkg.delivered_on.isoformat()}"
     elif pkg.status == "in_transit" and pkg.eta:
-        text = f"运输中，预计 {pkg.eta.isoformat()} 送达"
+        text = f"in transit, estimated delivery {pkg.eta.isoformat()}"
     elif pkg.status == "not_shipped" and pkg.expected_ship_on:
-        text = f"未发货（预售），预计 {pkg.expected_ship_on.isoformat()} 发货"
-    return f"{head}：{text}（含 {'、'.join(pkg.skus)}）"
+        text = f"pre-order, not shipped yet, expected to ship on {pkg.expected_ship_on.isoformat()}"
+    return f"{head}: {text} ({', '.join(pkg.skus)})"
 
 
 def verdict(order: Order, as_of: date) -> Verdict:
@@ -54,9 +54,11 @@ def verdict(order: Order, as_of: date) -> Verdict:
 
 
 SOP_TEXT = {
-    "delivered": "物流显示主商品已送达，按售后规则不再补发。如果确实没有收到，我可以为您提交承运商调查单，由人工跟进。",
-    "reship_eligible": "物流未显示送达，按售后规则可以为您申请补发。",
-    "in_transit": "包裹仍在运输途中，请以预计送达时间为准；逾期仍未送达可以再联系我们申请补发。",
-    "presale": "该商品为预售，尚未发货，会在预计发货日发出。",
-    "unknown": "物流信息不完整，我会交由人工核实。",
+    "delivered": "Tracking shows the item was delivered, so under our after-sales policy we can't send a replacement "
+                 "shipment. If you really haven't received it, I can open a carrier investigation and a colleague will follow up.",
+    "reship_eligible": "Tracking doesn't show the item as delivered, so under our after-sales policy we can arrange a reship for you.",
+    "in_transit": "The package is still in transit; please allow until the estimated delivery date. If it still hasn't "
+                  "arrived after that, contact us again and we can arrange a reship.",
+    "presale": "This item is a pre-order and hasn't shipped yet. It will be sent on the expected ship date.",
+    "unknown": "The tracking information is incomplete, so I'll pass this to a colleague to check.",
 }

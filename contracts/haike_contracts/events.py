@@ -19,7 +19,6 @@ from haike_contracts.common import (
     Receipt,
     ReceiptFields,
     Stage,
-    StepObservation,
     Strict,
     TroubleshootStep,
 )
@@ -143,16 +142,6 @@ class StepCard(_Card):
     seen: str | None = None
 
 
-class ObservationCard(_Card):
-    """计划级判别问题的卡片。与步骤内 observations 用同一份定义，独立追问时也要能点选 ——
-    自由文本回答只能靠字面匹配，两次匹配不上该观察就被记为不可用，依赖它的计划再也解锁不了。"""
-
-    type: Literal["observation_card"]
-    observation: StepObservation
-    plan_id: str
-    attempt: int = Field(ge=1)
-
-
 class Evidence(_Event):
     type: Literal["evidence"]
     items: list[EvidenceItem]
@@ -254,7 +243,6 @@ ServerEvent = Annotated[
     | MessageEnd
     | ProductCard
     | StepCard
-    | ObservationCard
     | Evidence
     | ReceiptCard
     | AwaitingInput

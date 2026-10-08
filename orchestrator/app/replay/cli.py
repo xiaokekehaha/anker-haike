@@ -1,6 +1,6 @@
 """haike-replay（票 43）：录制 / 校验 / 回放核对 A1–A3 录制包。
 
-haike-replay record <case_id> [--scenario a1_hair_wrap] [--replay-dir ../replay]
+haike-replay record <case_id> [--scenario t55_main] [--replay-dir ../replay]
     进程内起编排图（内存存储），真实 ModelRouter + WeKnora 适配器包上录制器，跑脚本后落盘
     replay/<case_id>/{manifest.json,events.jsonl}，并刷新 replay/kb_manifest.json（kb_ver 快照，镜像内比对用）。
 haike-replay check <case_id>      清单与当前进程版本比对：不符打印 replay_incompatible 并以 2 退出。
@@ -155,6 +155,25 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
                     {**current.model_dump(), "status": step["backend_status"]}
                 )
                 continue
+            if "ticket" in step:
+                from app.official.models import OfficialData
+
+                data = OfficialData()
+                ticket = next(t for t in data.tickets if t.id == step["ticket"])
+                files = [
+                    ("images", (name, io.BytesIO(data.attachment(name).read_bytes()), "image/jpeg"))
+                    for name in ticket.attachments
+                ] or None
+                r = await client.post(
+                    f"/sessions/{sid}/messages",
+                    data={"input_id": uuid.uuid4().hex, "expected_version": snapshot["version"],
+                          "evaluation_source": "replay", "text": ticket.body, "purpose": "fault"},
+                    files=files,
+                )
+                if r.status_code != 200:
+                    raise RuntimeError(f"ticket message failed {r.status_code}: {r.text[:300]}")
+                _absorb(sse.parse(r.text))
+                continue
             if "message" in step:
                 files = None
                 if step.get("image"):
@@ -205,7 +224,12 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
                 continue
             kind = step["action"]
             until, max_n = step.get("until"), int(step.get("max") or 1)
+            keep = step.get("while")
+            if (step.get("optional") or keep) and (pending is None or pending["kind"] != (keep or kind)):
+                continue
             for _ in range(max_n):
+                if keep and (pending is None or pending["kind"] != keep):
+                    break
                 if pending is None and kind != "request_human":
                     state = (await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})).values
                     diagnostic = {k: state.get(k) for k in ("stage", "turn_decision", "emotion", "case_id", "product_state")}
@@ -230,7 +254,7 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
                     raise RuntimeError(f"action {kind} failed {r.status_code}: {r.text[:300]}")
                 _absorb(sse.parse(r.text))
                 snapshot = (await client.get(f"/sessions/{sid}")).json()
-                if not until:
+                if not until and not keep:
                     break
             else:
                 if until and (pending is None or pending["kind"] != until):

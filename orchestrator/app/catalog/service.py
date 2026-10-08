@@ -32,6 +32,7 @@ class _Strict(BaseModel):
 
 class CategorySpec(_Strict):
     name: str
+    name_en: str | None = None  # 客户可见文字用（D2：客户可见输出英文）
     line: str  # 官网产品线：Anker Charging / Anker SOLIX / Anker eufy / Anker soundcore / Anker eufyMake
     in_scope: bool
     keywords: list[str] = Field(default_factory=list)
@@ -85,7 +86,12 @@ def normalize(text: str) -> str:
 
 def _alias_regex(alias: str) -> re.Pattern[str]:
     """别名作为句中片段：各 token 间允许任意分隔符，两端不能紧贴 ASCII 字母数字（x 不匹配 x10）。"""
-    tokens = [re.escape(tok) for tok in _SEP.split(alias.casefold()) if tok]
+    # 字母与数字交界也允许分隔：客户会写「omni c 20」「x 10」「t 2351」
+    tokens = [
+        re.escape(part)
+        for tok in _SEP.split(alias.casefold()) if tok
+        for part in re.findall(r"[a-z]+|\d+|[^a-z\d]+", tok)
+    ]
     body = r"[\s\-_/·.]*".join(tokens)
     return re.compile(rf"(?<![a-z0-9]){body}(?![a-z0-9])")
 

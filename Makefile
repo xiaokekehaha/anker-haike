@@ -60,11 +60,11 @@ kb-verify: ## 打印各知识库解析状态与 custom_metadata
 	cd orchestrator && uv run --env-file ../.env haike-kb verify
 
 ## ---- 回放（票 43）----
-replay-record: ## 真实模型 + WeKnora 跑内置脚本并录制：make replay-record CASE=a1_hair_wrap [SCENARIO=a1_hair_wrap]
+replay-record: ## 真实模型 + WeKnora 跑内置脚本并录制：make replay-record CASE=t55_main [SCENARIO=t55_main]
 	cd orchestrator && uv run --env-file ../.env haike-replay record $(CASE) $(if $(SCENARIO),--scenario $(SCENARIO),)
-replay-verify: ## 断网重放录制包并核对（未命中 / 缺事件非零退出）：make replay-verify CASE=a1_hair_wrap
+replay-verify: ## 断网重放录制包并核对（未命中 / 缺事件非零退出）：make replay-verify CASE=t55_main
 	cd orchestrator && uv run --env-file ../.env haike-replay verify $(CASE)
-replay-check: ## 录制包清单与当前 prompt / models / kb / rules 版本比对：make replay-check CASE=a1_hair_wrap
+replay-check: ## 录制包清单与当前 prompt / models / kb / rules 版本比对：make replay-check CASE=t55_main
 	cd orchestrator && uv run --env-file ../.env haike-replay check $(CASE)
 replay-list: ## 列出录制包
 	cd orchestrator && uv run --env-file ../.env haike-replay list

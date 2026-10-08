@@ -119,14 +119,14 @@ def decide_by_order(order: Order, sku: str | None, as_of: date) -> WarrantyDecis
     if line.warranty_end is None:
         return WarrantyDecision(
             status="unknown", basis="order", as_of=as_of, order_no=order.order_no, sku=line.sku,
-            reason="订单未记录质保结束日期，需人工核实",
+            reason=f"order {order.order_no} has no warranty end date on record",
         )
     inside = line.warranty_end >= as_of
     return WarrantyDecision(
         status="in_warranty" if inside else "out_of_warranty",
         basis="order", warranty_end=line.warranty_end, as_of=as_of,
         order_no=order.order_no, sku=line.sku,
-        reason=f"订单 {order.order_no} 质保至 {line.warranty_end.isoformat()}",
+        reason=f"order {order.order_no} {'is' if inside else 'was'} under warranty until {line.warranty_end.isoformat()}",
     )
 
 
@@ -136,24 +136,28 @@ def decide_by_dealer(
     if not seller or not normalize_country(country):
         return WarrantyDecision(
             status="unknown", basis="none", as_of=as_of, dealer=seller, country=country,
-            reason="查不到订单，需要购买商家与购买国家",
+            reason="the order wasn't found, and the seller name and country of purchase are needed",
         )
     found = directory().match(seller, country)
     if found is None:
         return WarrantyDecision(
             status="unauthorized_dealer", basis="dealer", as_of=as_of, dealer=seller,
             country=normalize_country(country),
-            reason=f"{seller} 不在 {normalize_country(country)} 授权经销商名录内，请联系购买商家售后",
+            reason=f"{seller} is not on our list of authorized dealers in {normalize_country(country)}",
         )
     base = {"basis": "dealer", "as_of": as_of, "dealer": found.dealer.seller, "country": found.dealer.country}
     if purchase_date is None:
         return WarrantyDecision(
-            status="unknown", reason=f"{found.dealer.seller}（{found.dealer.country}）是授权经销商，缺购买日期", **base
+            status="unknown",
+            reason=f"{found.dealer.seller} ({found.dealer.country}) is an authorized dealer, but the purchase date is missing",
+            **base,
         )
     end = add_months(purchase_date, DEALER_WARRANTY_MONTHS)
+    inside = end >= as_of
     return WarrantyDecision(
-        status="in_warranty" if end >= as_of else "out_of_warranty",
+        status="in_warranty" if inside else "out_of_warranty",
         warranty_end=end,
-        reason=f"授权经销商 {found.dealer.seller}，购买日起 {DEALER_WARRANTY_MONTHS} 个月，质保至 {end.isoformat()}",
+        reason=f"{found.dealer.seller} is an authorized dealer; the {DEALER_WARRANTY_MONTHS}-month warranty from purchase "
+               f"{'runs' if inside else 'ran'} until {end.isoformat()}",
         **base,
     )

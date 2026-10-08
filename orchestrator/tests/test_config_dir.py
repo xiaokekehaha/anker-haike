@@ -43,7 +43,6 @@ def test_every_config_yaml_is_reachable_under_config_dir():
     for name in (
         "actions.yaml",
         "emotion_policy.yaml",
-        "symptom_taxonomy.yaml",
         "vision_vocab.yaml",
         "conversation.yaml",
         "rules/complaint_terms.yaml",

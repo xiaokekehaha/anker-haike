@@ -355,7 +355,7 @@ async def scn_all_models_down(ctx: Ctx):
 
 @scenario("replay_mismatch", "boundary", "回放包版本不符 → replay_incompatible，不静默回落到真实模型", "09 §6；票 43")
 async def scn_replay_mismatch(ctx: Ctx):
-    pkg = load_package(settings.replay_dir, "a1_hair_wrap")
+    pkg = load_package(settings.replay_dir, "t55_main")
     now = versions_now()
     problems: list[str] = []
     try:
@@ -537,7 +537,7 @@ def _rewrite_stats(st: dict, h: Harness, ev: Events) -> dict[str, Any]:
     }
 
 
-INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current", "symptom_code": "suction_low"}]}
+INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current"}]}
 DEBRIS_TEXT = "eufy X10 Pro Omni 它跑完了，地上还是一堆渣"
 # 改写须保留原症状词（「渣」）；中文同义词表已随自建手册删除，不再靠同义映射放行
 REWRITE_GOOD = {"query": "扫地机器人 清扫后地上还有渣"}

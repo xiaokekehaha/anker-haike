@@ -377,14 +377,12 @@
             {
               "title": "清理充电宝输出接口",
               "step_id": "s1",
-              "feedback": "cannot_do",
-              "observed": []
+              "feedback": "cannot_do"
             },
             {
               "title": "更换数据线和被充设备测试",
               "step_id": "s2",
-              "feedback": "cannot_do",
-              "observed": []
+              "feedback": "cannot_do"
             }
           ],
           "reason": {
@@ -528,47 +526,6 @@
         "image": null,
         "in_scope": true
       },
-      "symptom_interview": {
-        "taxonomy_version": "2026-09-17.1",
-        "category": "power_bank",
-        "candidates": [
-          "无法给设备充电",
-          "接口松动或损坏"
-        ],
-        "answers": [
-          {
-            "key": "c7b20e489fc0",
-            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
-            "answer": "no",
-            "quote": "没有",
-            "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508"
-          }
-        ],
-        "status": "resolved",
-        "question": null,
-        "response_attempts": [
-          {
-            "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
-            "question_id": "d85e1024727b50a1a58b14c1133c8156:f77d589e-dd2f-4bee-823c-d252c455e7d3:c7b20e489fc0",
-            "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
-            "outcome": "no",
-            "candidates_before": [
-              "无法给设备充电",
-              "充电宝自身充不进电",
-              "掉电快",
-              "发热异常",
-              "指示灯异常",
-              "接口松动或损坏"
-            ],
-            "candidates_after": [
-              "无法给设备充电",
-              "接口松动或损坏"
-            ],
-            "progressed": true,
-            "quote": "没有"
-          }
-        ]
-      },
       "task_queue": [],
       "title": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
       "facts": [
@@ -589,9 +546,7 @@
           "occurred_at": null,
           "time_expression": null,
           "precision": null,
-          "quote": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电",
-          "symptom_codes": [],
-          "symptom_code": null
+          "quote": "用 USB-C1 给笔记本充电时提示 UVP，无法正常充电"
         },
         {
           "fact_id": "1c80063de59c58a8bb3bdadaba4bb98c",
@@ -610,9 +565,7 @@
           "occurred_at": null,
           "time_expression": null,
           "precision": null,
-          "quote": "没有异常发热或外观损坏",
-          "symptom_codes": [],
-          "symptom_code": null
+          "quote": "没有异常发热或外观损坏"
         }
       ],
       "device_ref": {
@@ -641,47 +594,6 @@
     "in_scope": true
   },
   "category": "power_bank",
-  "symptom_interview": {
-    "taxonomy_version": "2026-09-17.1",
-    "category": "power_bank",
-    "candidates": [
-      "无法给设备充电",
-      "接口松动或损坏"
-    ],
-    "answers": [
-      {
-        "key": "c7b20e489fc0",
-        "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
-        "answer": "no",
-        "quote": "没有",
-        "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508"
-      }
-    ],
-    "status": "resolved",
-    "question": null,
-    "response_attempts": [
-      {
-        "input_id": "a6a92e52-e6ed-483d-9265-0852fb26d508",
-        "question_id": "d85e1024727b50a1a58b14c1133c8156:f77d589e-dd2f-4bee-823c-d252c455e7d3:c7b20e489fc0",
-        "question": "插上手机或其他设备后，充电宝有输出反应吗（指示灯亮或设备显示充电）？",
-        "outcome": "no",
-        "candidates_before": [
-          "无法给设备充电",
-          "充电宝自身充不进电",
-          "掉电快",
-          "发热异常",
-          "指示灯异常",
-          "接口松动或损坏"
-        ],
-        "candidates_after": [
-          "无法给设备充电",
-          "接口松动或损坏"
-        ],
-        "progressed": true,
-        "quote": "没有"
-      }
-    ]
-  },
   "steps_executed": [
     {
       "plan_id": "pb_port_debris",
@@ -726,11 +638,7 @@
     "resumed_pending": false,
     "business_switched": false,
     "business_ambiguous": false,
-    "symptom_answered": false,
-    "observation_answered": false,
-    "observation_attempted": false,
-    "diagnostic_request": false,
-    "normalization_disagreements": []
+    "diagnostic_request": false
   },
   "context_revision": 2,
   "risk_cases": [],

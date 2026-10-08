@@ -34,7 +34,7 @@ VISION_BUDGET_MS = 12_000  # 含图轮 run deadline 40 s（08 §8），读图给
 DEFAULT_MAX_IMAGES = 4
 VISION_PROMPT_VERSION = "2026-09-15.3"
 NO_VISION_TEXT = (
-    "当前暂时无法识别图片，请用文字描述一下照片里的情况（例如哪个部件、什么现象），我继续为您排查。"
+    "I can't read images right now. Could you describe what the photo shows (which part, what's wrong)? I'll continue from there."
 )
 
 # unusable：像素层画质门控直接判定不可用，**一次模型都没调**（阶段 3）

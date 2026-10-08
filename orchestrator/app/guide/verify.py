@@ -50,7 +50,6 @@ def apply_feedback(
     note: str | None,
     card_id: str,
     library: PlanLibrary,
-    observations: list[dict[str, str]] | None = None,
 ) -> VerifyOutcome:
     cursor = dict(state.get("plan_cursor") or {})
     plan = library.get(cursor["plan_id"])
@@ -75,11 +74,6 @@ def apply_feedback(
             "instruction_src": step.instruction_src,
             "feedback": feedback,
             "note": note,
-            "observations": [
-                {"observation_id": o["observation_id"], "option_id": o["option_id"]}
-                for o in (observations or [])
-                if o.get("observation_id") and o.get("option_id")
-            ],
             "ts": datetime.now(UTC).isoformat(),
         }
     )

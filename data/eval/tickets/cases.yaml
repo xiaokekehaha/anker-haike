@@ -16,6 +16,8 @@
 #   safety_human               安全风险 → 转人工
 #   clarify                    信息不足（型号 / 现象）→ 追问
 #   explain                    产品咨询 / 状态提示 → 解释即可
+# 2026-10-08 二次复核：T54 补 bp-0125（not suctioning 原题），T57 补离线 / 不录像条目，T59 补 Wi-Fi 连接失败条目；英文官方术语改写实验 recall 无提升（9/12 → 9/12），query_rewrite 保持关闭。
+# 2026-10-08 复核（真实链路回放后，Fable 5.1 裁定）：T42 / T44 改 warranty_by_qa，T44 意图改 replacement_request，T50 改 troubleshoot，T63 意图改 report_problem。
 # 2026-10-08 复核：bp-0123（电机异响）、bp-0090（吸力弱或无吸力）与原金标同义，补为等价金标。
 # 演示时钟 as_of: 2026-10-08；标注依据见 docs/planning/2026-10-07-1543_organizer-materials-replan/findings.md §7。
 as_of: '2026-10-08'
@@ -61,25 +63,25 @@ cases:
 - {id: T39, intent: report_problem, language: en, pn: T2351, sop: troubleshoot, note: 离线}
 - {id: T40, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [rv-0371], note: S1 Pro 清洁液不出}
 - {id: T41, intent: report_problem, language: en, pn: T2352, sop: troubleshoot, note: 烘干故障 + 等待插头寄送（多诉求）}
-- {id: T42, intent: report_problem, language: en, pn: T2080, sop: warranty_replace, note: 塑料件脱落漏水，附照片}
+- {id: T42, intent: report_problem, language: en, pn: T2080, sop: warranty_by_qa, note: 塑料件脱落漏水，附照片；无订单 → 追订单 / 经销商（2026-10-08 复核）}
 - {id: T43, intent: report_problem, language: es, pn: T2351, sop: troubleshoot, note: 离线}
-- {id: T44, intent: report_problem, language: en, sop: warranty_replace, qa_gold: [bp-0127, bp-0039], note: 充电盒针脚卡死}
+- {id: T44, intent: replacement_request, language: en, sop: warranty_by_qa, qa_gold: [bp-0127, bp-0039], note: 充电盒针脚卡死；原文要求保修换货，无订单（2026-10-08 复核）}
 - {id: T45, intent: report_problem, language: en, sop: safety_human, note: 加热烫伤；Aeroflow 授权经销商 12 个月保内}
 - {id: T46, intent: report_problem, language: en, order_no: Anker013, sop: warranty_replace, qa_gold: [bp-0123, bp-0102, bp-0043], note: 电机异响}
 - {id: T47, intent: logistics_query, language: en, order_no: Anker010, sop: logistics_delivered, note: 问的是 Hub 配件，订单只有吸奶器且已送达 → 不编造}
 - {id: T48, intent: report_problem, language: en, sop: explain, note: 吸奶器绿灯含义（附图，外壳有裂纹）}
 - {id: T49, intent: replacement_request, language: en, sop: dealer_check, note: 保险渠道购买，未给商家}
-- {id: T50, intent: report_problem, language: en, sop: clarify, note: 「left one does work」语义不明}
+- {id: T50, intent: report_problem, language: en, sop: troubleshoot, note: 「left one does work」按笔误 doesn't work 读，型号已给（2026-10-08 复核）}
 - {id: T51, intent: replacement_request, language: en, order_no: Anker014, sop: out_of_warranty, forbid: [free_replacement]}
 - {id: T52, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0039, bp-0127, bp-0067], note: exclusive pumper，紧急}
 - {id: T53, intent: replacement_request, language: en, order_no: Anker015, sop: out_of_warranty, forbid: [free_replacement]}
-- {id: T54, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0043, bp-0090, bp-0102, bp-0040]}
+- {id: T54, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0125, bp-0043, bp-0090, bp-0102, bp-0040]}
 - {id: T55, intent: report_problem, language: en, order_no: Anker016, sop: warranty_replace, qa_gold: [bp-0102, bp-0043, bp-0090], note: 决赛主案例}
 - {id: T56, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0152, bp-0186, bp-0151, bp-0212], note: 辱骂 + 离线}
-- {id: T57, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0164], note: 不录像，未给型号}
+- {id: T57, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0164, bp-0152, bp-0229, bp-0186], note: 不录像且离线，未给型号}
 - {id: T58, intent: complaint, language: en, sop: clarify, note: 只有辱骂，无型号无现象}
-- {id: T59, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0152, bp-0212, bp-0272], note: 想换成 C20 摄像头（多诉求）}
-- {id: T60, intent: complaint, language: en, sop: clarify, note: 辱骂 + App，C20}
+- {id: T59, intent: replacement_request, language: en, sop: troubleshoot, qa_gold: [bp-0152, bp-0212, bp-0272, bp-0176, bp-0175], note: 想换成 C20 摄像头（多诉求）；原文 wish I could swap，意图按换货（2026-10-08 Fable 裁定）}
+- {id: T60, intent: report_problem, language: en, sop: clarify, note: 辱骂 + App；含「想让它正常清扫」的故障诉求（2026-10-08 Fable 裁定）}
 - {id: T61, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [rv-0551, rv-0522], note: C20 定时偏 2 小时}
 - {id: T62, intent: report_problem, language: en, sop: troubleshoot, note: C20 不走直线}
-- {id: T63, intent: order_query, language: en, sop: clarify, note: 无型号，问刷罩配件购买}
+- {id: T63, intent: report_problem, language: en, sop: clarify, note: 无型号，刷罩断裂与配件购买；正文同时报故障（2026-10-08 复核）}

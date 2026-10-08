@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { type OfficialTicket, listOfficialTickets } from '../api/officialTickets';
 import styles from './ChatPane.module.css';
 
 // 品类与 config/products.yaml 对齐：只收主办方资料包里的三类产品（扫地机 / 吸奶器 / SoloCam 摄像头）。
@@ -16,10 +18,15 @@ export const STARTER_PROMPTS = [
   { text: '我的 S1 Pro 不吸了，明天家里要来客人，急！', tag: '同名消歧' },
 ] as const;
 
-type Props = { onPick: (text: string) => void; disabled?: boolean };
+type Props = { onPick: (text: string) => void; onLoadTicket?: (ticket: OfficialTicket) => void; disabled?: boolean };
 
 /** 首屏 intake：一句开场白 + 品类 chip + 示例。线上 Live Chat 的开场白要求「一条消息里同时给型号与问题」，这里照做。 */
-export function ChatPane({ onPick, disabled }: Props) {
+export function ChatPane({ onPick, onLoadTicket, disabled }: Props) {
+  const [tickets, setTickets] = useState<OfficialTicket[] | null>(null);
+  // 展开时才拉列表：首屏不多发请求
+  const loadList = () => {
+    if (tickets === null) listOfficialTickets().then(setTickets).catch(() => setTickets([]));
+  };
   return (
     <div className={styles.pane}>
       <p className={styles.eyebrow}>ANKER eufy · 售后服务 · 真正听懂，真正解决</p>
@@ -54,6 +61,31 @@ export function ChatPane({ onPick, disabled }: Props) {
           ))}
         </ul>
       </details>
+
+      {onLoadTicket && (
+        <details className={styles.examples} onToggle={(e) => { if ((e.target as HTMLDetailsElement).open) loadList(); }}>
+          <summary>载入主办方真实工单（演示 / 回归）</summary>
+          {tickets === null ? <p className={styles.ticketHint}>加载中…</p> : tickets.length === 0 ? <p className={styles.ticketHint}>工单列表暂不可用</p> : (
+            <select
+              className={styles.ticketSelect}
+              aria-label="选择主办方工单"
+              disabled={disabled}
+              value=""
+              onChange={(e) => {
+                const ticket = tickets.find((t) => t.id === e.target.value);
+                if (ticket) onLoadTicket(ticket);
+              }}
+            >
+              <option value="">选择 T1–T63，原文与附件图载入输入框…</option>
+              {tickets.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.id} · {t.scenario === 'shipping' ? '物流' : '排障'} · {t.product_name}{t.attachments.length ? ` · ${t.attachments.length} 图` : ''}
+                </option>
+              ))}
+            </select>
+          )}
+        </details>
+      )}
     </div>
   );
 }

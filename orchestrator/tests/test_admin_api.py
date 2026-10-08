@@ -122,7 +122,7 @@ async def seeded(db):
                    values (%s,%s,%s,%s,%s,%s,%s,'confirmed_sku','calm',
                            %s,2,'ok',%s,%s,%s,4,1000,200,7000,%s)""",
                 (sid, at, at, runs, f"{tag} 扫地机不吸了", sku, category,
-                 ["rv_suction_hair_wrap"], outcome, reason, at, at + timedelta(hours=24)),
+                 ["qa_test_seeded_plan"], outcome, reason, at, at + timedelta(hours=24)),
             )
             run_id = f"{sid}-run1"
             await conn.execute(
@@ -200,7 +200,7 @@ async def test_sessions_list_filters_by_outcome_and_plan(api, seeded):
             "/admin/api/sessions", params={"q": tag, "outcome": "escalated"}
         )
         by_plan = await client.get(
-            "/admin/api/sessions", params={"q": tag, "plan": "rv_suction_hair_wrap"}
+            "/admin/api/sessions", params={"q": tag, "plan": "qa_test_seeded_plan"}
         )
         missing = await client.get("/admin/api/sessions", params={"q": tag, "sku": "NOPE"})
     assert [i["session_id"] for i in by_outcome.json()["items"]] == [f"{tag}-escalated"]
@@ -269,7 +269,7 @@ async def test_overview_breakdown_dimensions(api, seeded):
         by_reason = await client.get(
             "/admin/api/metrics/overview", params={"from": frm, "dim": "reason"}
         )
-    # 共享开发库里当天有大量真实回放会话（每会话多个 qa_ 计划），breakdown 只取前 30：按计划维度能返回即可
+    # 共享开发库里当天有大量真实回放会话（每会话多个 qa_ 计划），breakdown 只取前 30：按 qa_ 维度存在即可
     assert by_plan.status_code == 200 and all(r["value"] for r in by_plan.json()["breakdown"])
     assert any(r["value"] == "R2" for r in by_reason.json()["breakdown"])
 

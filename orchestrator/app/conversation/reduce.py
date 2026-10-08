@@ -33,9 +33,7 @@ ISSUE_FIELDS = {
     "product_hints": [],
     "product_question": None,
     "symptoms": [],
-    "symptom_codes": [],
     "diagnostic_decision": None,
-    "symptom_interview": None,
     "evidence": {},
     "current_evidence_ids": [],
     "image_observations": [],
@@ -54,7 +52,6 @@ ISSUE_FIELDS = {
     "operation_conditions": {},
     "counters": {},
     "exhausted_plans": [],
-    "observation_requests": [],
     "next_action": None,
     "receipt": None,
     "vision_status": None,
@@ -74,17 +71,11 @@ ISSUE_FIELDS = {
 }
 
 
-# 一个观察请求在写出观察事实之前都还接受回答；answered 之后才是终态。
-OPEN_OBSERVATION_STATUS = frozenset({"asked", "unparsed", "unknown"})
-
-
 def stable_id(*parts) -> str:
     return uuid.uuid5(uuid.NAMESPACE_URL, ":".join(map(str, parts))).hex
 
 
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
-    from app.conversation.taxonomy import canonical_codes
-
     issues = copy.deepcopy(state.get("issues") or {})
     iid, at = state["input_id"], state["at"]
     current = state.get("active_issue_id")
@@ -217,30 +208,20 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
                 old,
                 fact_id=stable_id(iid, "replace", index),
                 value=correction.value,
-                symptom_codes=canonical_codes(correction.value, category=issue.get("category") or meaning.device_category)[0] if old["kind"] == "symptom" else [],
-                symptom_code=None,
                 status="active",
                 source_entry_ids=[iid],
                 recorded_at=at,
                 supersedes=old["fact_id"],
                 revision=old["revision"] + 1,
             )
-            if old.get("observation_id"):
-                # 更正后的观察重新匹配选项；匹配不到则保持未知，不沿用旧选项
-                replacement["option_id"] = _rematch_option(old["observation_id"], correction.value)
             facts.append(replacement)
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
-    normalization_disagreements = []
-    from app.diagnose.decision import accept_answer
     for index, candidate in enumerate(meaning.facts):
         if not candidate.quote.strip() or candidate.quote not in text:
             continue
         if any(f["value"] == candidate.value and f["status"] == "active" for f in facts):
             continue
-        codes, disagreement = canonical_codes(candidate.quote, candidate.symptom_code, issue.get("category") or meaning.device_category) if candidate.kind == "symptom" else ([], None)
-        if disagreement:
-            normalization_disagreements.append({**disagreement, "quote": candidate.quote})
         fact = {
             "fact_id": stable_id(iid, "add", index),
             "kind": candidate.kind,
@@ -257,8 +238,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "time_expression": candidate.time_expression,
             "precision": candidate.precision,
             "quote": candidate.quote,
-            "symptom_codes": codes,
-            "symptom_code": codes[0] if len(codes) == 1 else None,
         }
         facts.append(fact)
         applied.append({"op": "add", "fact_id": fact["fact_id"], "input_id": iid})
@@ -285,8 +264,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             plan_cursor=None,
             query=None,
             knowledge_status=None,
-            symptom_interview=None,
-            symptom_codes=[],
         )
     elif hints:
         issue["product_hints"] = list(dict.fromkeys([*issue.get("product_hints", []), *hints]))
@@ -314,34 +291,11 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     issue["observations"] = [
         f["value"] for f in facts if f["status"] == "active" and f["kind"] == "observation"
     ]
-    symptom_update, symptom_answered = accept_answer(
-        issue, meaning.symptom_answer, text=text, input_id=iid,
-        changed_fact_ids={p["fact_id"] for p in applied},
-        answer_expected=meaning.primary_intent in {"answer_pending", "unknown"},
-    )
-    issue.update(symptom_update)
     operation_proposal, operation_clarification = resolve_operation_reply(text, issue)
     operation_proposal = operation_proposal or meaning.operation_update
     if operation_clarification:
         operation_proposal = None
         clarify = operation_clarification
-    observation_answered = observation_attempted = False
-    if not operation_clarification:
-        observation_answered, observation_attempted = _accept_observation_reply(
-            issue, text, iid, at, intent=meaning.primary_intent, applied=applied,
-            entry=state.get("entry"),
-        )
-    pc = issue.get("pending_card")
-    if pc and pc.get("kind") == "answer_observation":
-        obs_id = ((pc.get("payload") or {}).get("observation") or {}).get("observation_id")
-        # 用户改用文本答了同一个问题时收掉卡片；未解析的那一轮保留，问题还开着就还该能点。
-        if any(
-            r.get("observation_id") == obs_id and r.get("status") in {"answered", "unknown"}
-            for r in issue.get("observation_requests") or []
-        ):
-            pending_changes.append({"issue_id": target, "pending_id": pc["card_id"], "status": "consumed", "reason": "answered_in_text"})
-            issue["pending_card"] = None
-            resumed_pending = False
     conditions, operation_changed = update_conditions(issue, operation_proposal, text=text, input_id=iid)
     issue["operation_conditions"] = conditions
     if operation_changed:
@@ -351,7 +305,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             pending_changes.append({"issue_id": target, "pending_id": pc["card_id"], "status": "invalidated", "reason": "operation_conditions_changed"})
             issue["pending_card"] = None
             resumed_pending = False
-    if basis_changed or symptom_answered:
+    if basis_changed:
         issue["diagnostic_decision"] = None
     if issue["symptoms"]:
         issue["status"] = "open"
@@ -449,9 +403,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         }
         else "diagnose"
     )
-    attempts = (issue.get("symptom_interview") or {}).get("response_attempts", [])
-    if intent == "unknown" and attempts and attempts[-1]["input_id"] == iid:
-        mode = "diagnose"
     if issue.get("pending_card") and intent == "supplement" and not basis_changed:
         mode = "dialogue"
     trigger = "R4" if new_risk or uncertain_risk else "R3" if intent == "request_human" else None
@@ -478,9 +429,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         resumed_pending = False
     if restriction and mode == "diagnose" and not trigger:
         mode = "dialogue"
-    if observation_answered:
-        mode = "diagnose"
-    if applied or open_new or product_corrected or symptom_answered or operation_changed:
+    if applied or open_new or product_corrected or operation_changed:
         issue["issue_revision"] = issue.get("issue_revision", 0) + 1
     decision = {
         "input_id": iid,
@@ -500,12 +449,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "resumed_pending": resumed_pending,
         "business_switched": business_switched,
         "business_ambiguous": business_ambiguous,
-        "symptom_answered": symptom_answered,
-        "observation_answered": observation_answered,
-        "observation_attempted": observation_attempted,
         "operation_changed": operation_changed,
         "diagnostic_request": bool(meaning.diagnostic_request_quote and meaning.diagnostic_request_quote.strip() and meaning.diagnostic_request_quote in text),
-        "normalization_disagreements": normalization_disagreements,
     }
     result = {key: copy.deepcopy(issue.get(key, default)) for key, default in ISSUE_FIELDS.items()}
     preferences = dict(state.get("session_preferences") or {})
@@ -520,7 +465,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         context_revision=state.get("context_revision", 0)
         + (
             1
-            if applied or open_new or product_corrected or symptom_answered or operation_changed or risks != state.get("risk_cases", [])
+            if applied or open_new or product_corrected or operation_changed or risks != state.get("risk_cases", [])
             else 0
         ),
         applied_input_ids=[*state.get("applied_input_ids", []), iid],
@@ -530,84 +475,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         _verify=None,
     )
     return result
-
-
-def _rematch_option(observation_id, text):
-    from app.diagnose.observations import definitions, match_reply
-
-    obs = definitions().get(observation_id)
-    if obs is None:
-        return None
-    matched = match_reply(text, obs)
-    return None if matched in {None, "unknown"} else matched
-
-
-def _accept_observation_reply(issue, text, iid, at, *, intent, applied, entry):
-    """把自由文本回答接到尚未回答的观察问题上（design §3.1）。
-
-    请求在写出观察事实之前一直开着：匹配唯一选项 → 写观察事实，明确说不知道 → 记为 unknown
-    （decide_next 不再追问），其他文本按一次未解析尝试计数。unparsed / unknown 都不是终态——
-    会话 0f8809 里用户隔一轮逐字给出了选项标签，只认 asked 会把它整条丢掉。
-    返回 (observation_answered, observation_attempted)。
-    """
-    # 提到选项不等于确认现象；解释、历史和业务查询不能消费待答观察。
-    if (entry != "message" or not text.strip()
-            or intent not in {"answer_pending", "unknown", "supplement", "report_problem"}):
-        return False, False
-    open_requests = [
-        r for r in issue.get("observation_requests") or [] if r.get("status") in OPEN_OBSERVATION_STATUS
-    ]
-    if not open_requests:
-        return False, False
-    from app.diagnose.observations import definitions as load_definitions
-    from app.diagnose.observations import match_reply, record_observations
-
-    definitions = load_definitions()
-    if not definitions:  # 计划库不可用是系统问题，不把用户回答当作未回答
-        return False, False
-
-    answered = attempted = False
-    for request in open_requests:
-        obs = definitions.get(request["observation_id"])
-        if obs is None:
-            continue
-        matched = match_reply(text, obs)
-        if matched is None:
-            # 只有刚问过的那一轮记未解析：之后每条无关消息都改写记录会掩盖真正的回答
-            if request["status"] == "asked":
-                request["status"] = "unparsed"
-                request["quote"] = text
-                attempted = True
-            continue
-        if matched == "unknown":
-            if request["status"] != "unknown":
-                request.update(status="unknown", quote=text, answered_input_id=iid)
-                attempted = True
-            continue
-        if intent == "unknown":
-            # 理解不可用时仍接受完整选项短答，但不从引用或提问中的子串推断设备事实。
-            option = obs.option(matched)
-            if option is None or text.strip(" \n。！!，,、").casefold() not in {
-                phrase.casefold() for phrase in [option.label, *option.phrases]
-            }:
-                continue
-        updated, patches = record_observations(
-            issue,
-            [{"observation_id": obs.observation_id, "option_id": matched}],
-            definitions=definitions,
-            input_id=iid,
-            at=at,
-            source_kind="user_report",
-            binding={"plan_id": request.get("plan_id"), "asked_input_id": request.get("input_id")},
-        )
-        issue.clear()
-        issue.update(updated)
-        applied.extend(patches)
-        for r in issue.get("observation_requests") or []:
-            if r.get("observation_id") == obs.observation_id and r.get("status") in OPEN_OBSERVATION_STATUS:
-                r.update(status="answered", answered_input_id=iid, option_id=matched, quote=text)
-        answered = True
-    return answered, attempted
 
 
 def persist_issue(state: dict) -> dict:

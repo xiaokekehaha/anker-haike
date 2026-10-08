@@ -16,7 +16,10 @@ HANDLERS = {
 }
 GATE_CHECKS = ["eligibility", "evidence", "safety", "idempotency"]
 # 主办方工具只收单：不承诺发货或退款时效。
-SUBMITTED_NEXT_STEP = "服务单已提交，人工处理中；处理结果会回到本会话，请保留服务单号"
+SUBMITTED_NEXT_STEP = (
+    "Your service request has been submitted and a colleague is handling it. The result will come back to "
+    "this conversation; please keep your service request number."
+)
 
 
 class ActionRegistry:

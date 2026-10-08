@@ -21,63 +21,6 @@ class NextOn(_Strict):
     cannot_do: str
 
 
-class ObservationOption(_Strict):
-    """一个有限的检查结果选项。kind=unknown 表示「还没观察完 / 无法判断」，只记录不写成事实。"""
-
-    option_id: str = Field(pattern=r"^[a-z0-9_]+$")
-    label: str = Field(min_length=1)
-    kind: Literal["finding", "unknown"] = "finding"
-    # 用户自由文本回答时用于匹配的说法；label 本身总是可匹配
-    phrases: list[str] = Field(default_factory=list)
-
-
-class InterviewLink(_Strict):
-    """已有问诊问题（symptom_taxonomy.discriminators）的 yes / no 回答与观察选项的对应关系。"""
-
-    question: str = Field(min_length=1)
-    answers: dict[Literal["yes", "no"], str]
-
-
-class StepObservation(_Strict):
-    """步骤要收集的检查结果：一个问题 + 有限选项。功能是否恢复仍由 feedback 三态表达。"""
-
-    observation_id: str = Field(pattern=r"^[a-z0-9_]+$")
-    question: str = Field(min_length=1)
-    options: list[ObservationOption] = Field(min_length=2)
-    interview_links: list[InterviewLink] = Field(default_factory=list)
-    required_resources: list[str] = Field(default_factory=lambda: ["device"])
-    requires_execution: bool = True
-
-    @model_validator(mode="after")
-    def _options_consistent(self) -> StepObservation:
-        ids = [o.option_id for o in self.options]
-        dup = {i for i in ids if ids.count(i) > 1}
-        if dup:
-            raise ValueError(f"observation {self.observation_id}: duplicate option_id {sorted(dup)}")
-        if sum(1 for o in self.options if o.kind == "unknown") > 1:
-            raise ValueError(f"observation {self.observation_id}: at most one unknown option")
-        for link in self.interview_links:
-            for target in link.answers.values():
-                if target not in ids:
-                    raise ValueError(
-                        f"observation {self.observation_id}: interview link -> {target!r} is not an option"
-                    )
-        return self
-
-    def option(self, option_id: str) -> ObservationOption | None:
-        return next((o for o in self.options if o.option_id == option_id), None)
-
-    def finding_ids(self) -> list[str]:
-        return [o.option_id for o in self.options if o.kind == "finding"]
-
-
-class ObservationCondition(_Strict):
-    """计划适用条件：某个观察的结果必须落在 option_ids 之中。"""
-
-    observation_id: str = Field(pattern=r"^[a-z0-9_]+$")
-    option_ids: list[str] = Field(min_length=1)
-
-
 class PlanStep(_Strict):
     step_id: str = Field(min_length=1)
     title: str = Field(min_length=1)
@@ -86,16 +29,7 @@ class PlanStep(_Strict):
     caution: str | None = None
     stop_conditions: list[str] = Field(default_factory=list)
     next_on: NextOn
-    observations: list[StepObservation] = Field(default_factory=list)
     required_resources: list[str] = Field(default_factory=lambda: ["device"])
-
-    @model_validator(mode="after")
-    def _observations_unique(self) -> PlanStep:
-        ids = [o.observation_id for o in self.observations]
-        dup = {i for i in ids if ids.count(i) > 1}
-        if dup:
-            raise ValueError(f"step {self.step_id}: duplicate observation_id {sorted(dup)}")
-        return self
 
     @field_validator("instruction_src")
     @classmethod
@@ -129,10 +63,6 @@ class Plan(_Strict):
     applies_to: AppliesTo
     symptom_codes: list[str] = Field(default_factory=list)
     steps: list[PlanStep] = Field(min_length=1)
-    # 观察门槛：requires 全部满足才可用；excluded 任一命中即排除。未知（未观察）时 requires 视为缺失，不视为不满足。
-    requires_observations: list[ObservationCondition] = Field(default_factory=list)
-    excluded_by_observations: list[ObservationCondition] = Field(default_factory=list)
-    diagnostic_observations: list[StepObservation] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _steps_consistent(self) -> Plan:
@@ -169,26 +99,6 @@ class Plan(_Strict):
         return self.applies_to.scope == "category_generic" or (
             sku is not None and sku in self.applies_to.sku_list
         )
-
-    def observations(self) -> list[StepObservation]:
-        return [*self.diagnostic_observations, *(o for s in self.steps for o in s.observations)]
-
-    def observation_gate(self, known: dict[str, str]) -> tuple[str, list[str]]:
-        """按已知观察（observation_id → option_id）判断：("ok"|"excluded"|"missing", 缺失的 observation_id)。
-
-        未观察到的结果不能当作阴性：只会让计划「缺失」，不会让它「排除」或「满足」。
-        """
-        for cond in self.excluded_by_observations:
-            if known.get(cond.observation_id) in cond.option_ids:
-                return "excluded", []
-        missing = []
-        for cond in self.requires_observations:
-            value = known.get(cond.observation_id)
-            if value is None:
-                missing.append(cond.observation_id)
-            elif value not in cond.option_ids:
-                return "excluded", []
-        return ("missing", missing) if missing else ("ok", [])
 
 
 class EvidenceEntry(_Strict):
