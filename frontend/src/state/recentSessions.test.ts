@@ -60,5 +60,8 @@ describe('recentSessions', () => {
     expect(makeTitle('   ')).toBeNull();
     expect(makeTitle('a  b')).toBe('a b');
     expect(makeTitle('一'.repeat(40))).toBe(`${'一'.repeat(30)}…`);
+    // App 报错表单：取产品与问题字段，不用首行「Product Name: …」
+    expect(makeTitle('Product Name: Omni E28\nProduct PN: T2352\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage.'))
+      .toBe('Omni E28：Rolling Mop Blockage.');
   });
 });

@@ -109,10 +109,10 @@ describe('RunWaterfall', () => {
     render(
       <RunWaterfall nodes={NODES} selected={null} onSelect={() => {}}
         models={[{ run_id: 'r1', node: 'intake', task: 'intake', model_used: 'deepseek/chat', lane: 'domestic', status: 'ok', attempts: 1, fallback_used: true, stream: false, latency_ms: 2400, tokens_in: 600, tokens_out: 40, error_type: null, created_at: '' }]}
-        retrievals={[{ run_id: 'r1', node: 'retrieve', round: 1, kb: 'kb_manual', status: 'ok', allowed_count: 2, hits: 5, top_score: 0.02, latency_ms: 240, query: null, created_at: '' }]} />,
+        retrievals={[{ run_id: 'r1', node: 'retrieve', round: 1, kb: 'kb_qa', status: 'ok', allowed_count: 2, hits: 5, top_score: 0.02, latency_ms: 240, query: null, created_at: '' }]} />,
     );
     expect(screen.getByText(/deepseek\/chat/)).toHaveTextContent('已降级');
-    expect(screen.getByText(/kb_manual/)).toHaveTextContent('命中 5');
+    expect(screen.getByText(/kb_qa/)).toHaveTextContent('命中 5');
   });
 
   test('历史回填没有耗时时说明条形只表示顺序', () => {
@@ -188,7 +188,7 @@ describe('图表与口径', () => {
   test('结局与规则号翻成人话', () => {
     expect(outcomeLabel('resolved')).toBe('已解决');
     expect(outcomeLabel('interrupted')).toBe('被打断');
-    expect(reasonText('R5')).toBe('没有适用排查方案');
+    expect(reasonText('R5')).toBe('没有对应的官方说明');
     expect(reasonText(null)).toBe('—');
     expect(reasonText('R99')).toBe('R99');
   });

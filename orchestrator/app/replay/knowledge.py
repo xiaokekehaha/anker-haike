@@ -24,7 +24,7 @@ from app.replay.package import Recorder, ReplayPackage, knowledge_key
 log = logging.getLogger("replay.knowledge")
 
 REPLAY_HINT = "演示回放数据（录制时的检索结果）。"
-REPLAY_MISS_HINT = "回放包未收录此检索，知识库按不可用处理；按标准排障流程，不得用常识补假设。"
+REPLAY_MISS_HINT = "回放包未收录此检索，知识库按不可用处理；不得用常识补假设。"
 
 
 def _hit_record(h: Hit) -> dict[str, Any]:

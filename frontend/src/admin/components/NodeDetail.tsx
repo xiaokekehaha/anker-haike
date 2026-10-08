@@ -8,14 +8,14 @@ const SUMMARY_TEXT: Record<string, string> = {
   vision_status: '读图', escalate_reason: '升级原因', stage: '阶段', substage: '子阶段',
   out_of_scope: '范围外', rewrite_used: '用过改写', retrieval_rounds: '检索轮次',
   decision: '消歧判定', verify: '反馈判定', rule: '命中规则', diagnose_outcome: '诊断结论',
-  plan_id: '排障计划', receipt_status: '凭证状态', backfilled: '历史回填',
+  plan_id: '官方 Q&A', receipt_status: '凭证状态', backfilled: '历史回填',
 };
 
 const VALUE_TEXT: Record<string, string> = {
   ok: '有命中', no_match: '无命中', unavailable: '不可用', replay: '回放',
   confirmed_sku: '已确认型号', category_only: '只知品类', unknown: '未知',
   continue: '继续', clarify: '澄清', escalate: '升级', next: '下一步', done: '完成',
-  evidence: '有依据', standard_flow: '走标准流程', skipped: '跳过', no_vision: '无读图',
+  evidence: '有依据', exact_code: '错误码精确命中', retrieval_order: '按检索顺序', skipped: '跳过', no_vision: '无读图',
   failed: '失败', true: '是', false: '否',
 };
 

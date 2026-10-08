@@ -6,13 +6,13 @@ import { EvidenceDrawer } from './EvidenceDrawer';
 import { StepCard } from './StepCard';
 
 const step = (over: Partial<StepCardItem['step']> = {}): StepCardItem['step'] => ({
-  step_id: 's1', plan_id: 'rv_suction_hair_wrap', plan_version: 1, step_no: 1, title: '检查并清理滚刷',
+  step_id: 's1', plan_id: 'qa_rv_0272', plan_version: 1, step_no: 1, title: '检查并清理滚刷',
   instruction: '把主机翻过来，取出滚刷，割断毛发后装回。', expected_result: '滚刷无缠绕物，转动顺畅', caution: null, evidence_ids: ['c12'], ...over,
 });
 const item = (over: Partial<StepCardItem> = {}): StepCardItem => ({ kind: 'step_card', card_id: 'k1', version: 3, step: step(), feedback: null, note: null, ...over });
 const EVIDENCE: EvidenceItem[] = [
-  { evidence_id: 'c12', source: 'kb_manual', doc_id: 'manual_rv_v1', doc_version: '1', chunk_id: 'c12', snippet: '翻转主机取出滚刷', score: 0.4, status: 'ok' },
-  { evidence_id: 'c15', source: 'kb_manual', doc_id: 'manual_rv_v1', doc_version: '1', chunk_id: 'c15', snippet: '取出滤网清洗', score: 0.2, status: 'ok' },
+  { evidence_id: 'c12', source: 'kb_qa', doc_id: 'rv-0272', doc_version: '1', chunk_id: 'c12', snippet: 'Turn the robot over and remove the roller brush', score: 0.4, status: 'ok' },
+  { evidence_id: 'c15', source: 'qa_exact', doc_id: 'rv-0306', doc_version: '1', chunk_id: 'c15', snippet: 'Remove and clean the filter', score: 0.2, status: 'ok' },
 ];
 
 describe('StepCard（票 34）', () => {
@@ -63,9 +63,9 @@ describe('StepCard（票 34）', () => {
     container.querySelector('details[data-testid="evidence-drawer"]')!.setAttribute('open', '');
     const main = container.querySelector('[data-testid="evidence-primary"]')!;
     expect(main.querySelectorAll('li')).toHaveLength(1);
-    expect(main).toHaveTextContent('翻转主机取出滚刷');
+    expect(main).toHaveTextContent('Turn the robot over and remove the roller brush');
     expect(screen.getByText('其他相关来源 1 条')).toBeVisible();
-    expect(container.querySelector('li[data-primary]')).toHaveTextContent('翻转主机取出滚刷');
+    expect(container.querySelector('li[data-primary]')).toHaveTextContent('Turn the robot over and remove the roller brush');
   });
 
   it('没有主引用时退回单一列表，不显示空的折叠层', () => {
@@ -91,7 +91,7 @@ describe('StepCard（票 34）', () => {
     fireEvent.mouseEnter(card);
     const lit = container.querySelectorAll('li[data-highlight]');
     expect(lit).toHaveLength(1);
-    expect(lit[0]).toHaveTextContent('翻转主机取出滚刷');
+    expect(lit[0]).toHaveTextContent('Turn the robot over and remove the roller brush');
     expect(screen.getByText('（当前步骤引用 1 条）')).toBeInTheDocument();
     fireEvent.mouseLeave(card);
     expect(container.querySelectorAll('li[data-highlight]')).toHaveLength(0);
@@ -121,7 +121,7 @@ describe('StepCard 的读图回显', () => {
 describe('StepCard 的观察结果（design §3.1）', () => {
   const observed = (over: Partial<StepCardItem> = {}): StepCardItem => item({
     step: step({
-      plan_id: 'rv_power_supply', title: '放回基站观察充电',
+      plan_id: 'qa_rv_0101', title: '放回基站观察充电',
       observations: [{
         observation_id: 'charging_indication', question: '放回基站后有充电提示（指示灯或语音）吗？',
         options: [

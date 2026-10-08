@@ -17,6 +17,7 @@ from app.plans.library import PlanLibrary
 from app.plans.models import PlansConfig
 
 EXPECTED = "按这一步操作后，确认问题是否解决"
+TIPS_LEAD = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\s*[:：]?\s*", re.IGNORECASE)
 SENTENCE = re.compile(r"(?<=[.!?。！？])\s")
 
 
@@ -37,10 +38,11 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
         evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": text}
         steps.append({
             "step_id": step_id,
-            "title": step_title(text) or guide.title[:60],
+            # 单步答案的首句就是正文开头，当标题只会重复；用 Q&A 标题（问的是什么问题）更有信息量
+            "title": (step_title(guide.title, 80) if len(texts) == 1 else step_title(text)) or guide.title[:60],
             "instruction_src": f"evidence:{key}",
             "expected_result": EXPECTED,
-            "caution": guide.tips or None,
+            "caution": TIPS_LEAD.sub("", guide.tips).strip() or None,
             "next_on": {
                 "solved": "DONE",
                 "not_solved": "EXHAUSTED" if warranty else nxt,

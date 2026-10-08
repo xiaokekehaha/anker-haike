@@ -628,7 +628,7 @@ async def scn_rewrite_invalid(ctx: Ctx):
         return stats
 
 
-@scenario("rewrite_on_second_round_empty", "rewrite", "开关开启，改写接受但第二轮仍无结果 → 明确出口（预写计划 / R5），不再改写", "09 §4.1")
+@scenario("rewrite_on_second_round_empty", "rewrite", "开关开启，改写接受但第二轮仍无结果 → 明确出口（R5），不再改写", "09 §4.1")
 async def scn_rewrite_second_empty(ctx: Ctx):
     async with Harness(ctx.dir("rw5"), scripts={"intake": [INTAKE_DEBRIS], "query.rewrite": [REWRITE_GOOD, REWRITE_GOOD], "reply.stream": [["好"]]},
                        adapter=ScriptedAdapter({}, default=NO_MATCH), retrieval=rewrite_config(True)) as h:
@@ -637,7 +637,7 @@ async def scn_rewrite_second_empty(ctx: Ctx):
         st = await h.state(sid)
         stats = _rewrite_stats(st, h, ev)
         _check(stats["rewrite_invokes"] == 1 and stats["retrieval_rounds"] == 2, stats)
-        _check(stats["knowledge_status"] == "no_match" and stats["fallback"] in ("standard_flow", "escalate"), stats)
+        _check(stats["knowledge_status"] == "no_match" and stats["fallback"] == "escalate", stats)
         _check(ev.done["reason"] in ("awaiting_input", "completed"), ev.done)
         return stats
 

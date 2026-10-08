@@ -35,9 +35,9 @@ export function outcomeRole(outcome: string): Role {
 /** 升级原因（规则号）→ 人话。R3/R4/R8 属政策，不计入「系统没解决」。 */
 export const REASON_TEXT: Record<string, string> = {
   R1: '步骤走完仍未解决', R1b: '步骤走完仍未解决', R1c: '步骤走完仍未解决',
-  R2: '适用步骤已耗尽', R3: '用户要求人工', R4: '安全风险',
-  R5: '没有适用排查方案', R7: '继续处理所需信息待确认', R8: '不在支持范围',
-  solved: '用户确认解决', plan_done: '计划执行完毕',
+  R2: '官方步骤已用尽', R3: '用户要求人工', R4: '安全风险',
+  R5: '没有对应的官方说明', R6: '转质保判断', R7: '继续处理所需信息待确认', R8: '不在支持范围',
+  solved: '用户确认解决', plan_done: '官方步骤执行完毕',
   server_restarted: '服务重启打断', node_failed: '节点异常',
   deadline_exceeded: '超过时限', no_checkpoint: '数据已过保留期',
   step_feedback: '等步骤反馈', select_product: '等选择产品',
@@ -52,7 +52,7 @@ export function reasonText(reason: string | null): string {
 /** 复盘原因标签 → 中文。键与后端 derive.REASON_TAGS 一致。 */
 export const TAG_TEXT: Record<string, string> = {
   intent_correct: '意图正确', intent_wrong: '意图有误',
-  knowledge_missing: '知识缺失', retrieval_mismatch: '检索错配', wrong_plan: '计划不对',
+  knowledge_missing: '知识缺失', retrieval_mismatch: '检索错配', wrong_plan: '命中的官方 Q&A 不对',
   bad_step_wording: '步骤话术差', model_quality: '模型输出差', model_fallback: '降级导致',
   rule_false_positive: '规则误触', product_unrecognized: '产品未识别',
   emotion_mishandled: '情绪处理不当', latency: '太慢', ui_flow: '交互问题',

@@ -141,7 +141,7 @@ async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
 async def test_no_match_has_text_marker(mem_runtime):
     _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了", FakeAdapter("no_match"))
     finished = [e for e in events if e["type"] == "tool_call" and e["status"] == "finished"]
-    assert finished and finished[0]["summary"] == "未找到匹配知识，按标准排障流程"
+    assert finished and finished[0]["summary"] == "未找到匹配的官方说明"
     assert state.values["knowledge_status"] == "no_match"
 
 

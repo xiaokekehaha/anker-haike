@@ -85,8 +85,18 @@ export function markAlive(ids: readonly string[]) {
   write(list.map((x) => (targets.has(x.id) && x.missing_since ? { ...x, missing_since: null } : x)));
 }
 
+// App 报错 / RMA 表单的首行是「Product Name: …」，当标题看不出问题；优先取问题字段（与后端 app/official/message.py 的字段名一致）
+const PROBLEM_FIELDS = [
+  'Problem Push|Probleempush', // 推送提示最短最准
+  'Problem Description|Probleembeschrijving|Probleemomschrijving|Problembeschreibung|Description du problème|Descripción del problema',
+  'Problem Code|Probleemcode',
+].map((labels) => new RegExp(`^[ \\t]*(?:${labels})[ \\t]*[:：][ \\t]*(\\S[^\\n]*)$`, 'im'));
+const PRODUCT_FIELD = /^[ \t]*(?:Product Name|Productnaam|Produktname|Nom du produit|Nombre del producto)[ \t]*[:：][ \t]*(\S[^\n]*)$/im;
+
 export function makeTitle(text: string): string | null {
-  const t = text.trim().replace(/\s+/g, ' ');
+  const problem = PROBLEM_FIELDS.map((re) => re.exec(text)?.[1]).find(Boolean);
+  const product = PRODUCT_FIELD.exec(text)?.[1];
+  const t = (problem ? `${product ? `${product}：` : ''}${problem}` : text).trim().replace(/\s+/g, ' ');
   if (!t) return null;
   return t.length > TITLE_LEN ? `${t.slice(0, TITLE_LEN)}…` : t;
 }

@@ -30,25 +30,25 @@ describe('SummaryCard 的真实结束原因（design §3.5）', () => {
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } });
     const skipped: EscalationSummary = {
       ...summary,
-      product: '移动电源（型号未确认）',
-      problem: '移动电源出问题了',
+      product: '扫地机器人（型号未确认）',
+      problem: '扫地机回不了基站',
       observations: ['插上设备后没有输出反应'],
       hypotheses: ['输出接口或连接问题'],
       steps: [
-        { step_id: 's1', title: '清理充电宝输出接口', feedback: 'cannot_do' },
+        { step_id: 's1', title: '清洁基站充电触点', feedback: 'cannot_do' },
         { step_id: 's2', title: '更换数据线和被充设备测试', feedback: 'cannot_do' },
       ],
       reason: { rule_id: 'R2', text: '两项操作均无法完成，已整理排查记录', cause: 'no_supported_followup' },
     };
     const { container } = render(<SummaryCard summary={skipped} />);
     expect(screen.getByText('排查记录')).toBeVisible();
-    expect(container).toHaveTextContent('清理充电宝输出接口（无法操作）');
+    expect(container).toHaveTextContent('清洁基站充电触点（无法操作）');
     expect(container).not.toHaveTextContent('已执行步骤');
     expect(container).not.toHaveTextContent('cannot_do');
     fireEvent.click(screen.getByRole('button', { name: '一键复制' }));
     await screen.findByText('已复制');
     expect(writeText).toHaveBeenCalledWith(summaryToText(skipped));
-    expect(summaryToText(skipped)).toContain('【排查记录】清理充电宝输出接口（无法操作）');
+    expect(summaryToText(skipped)).toContain('【排查记录】清洁基站充电触点（无法操作）');
     expect(summaryToText(skipped)).not.toMatch(/已执行步骤|cannot_do/);
   });
 

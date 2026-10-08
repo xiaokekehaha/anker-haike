@@ -8,7 +8,7 @@ import { EMOTION_TEXT, count, defaultWindow, ms, percent, reasonText } from '../
 import { useAsync } from '../useAsync';
 
 const DIMS = [
-  { key: 'category', label: '品类' }, { key: 'sku', label: '型号' }, { key: 'plan', label: '排障计划' },
+  { key: 'category', label: '品类' }, { key: 'sku', label: '型号' }, { key: 'plan', label: '官方 Q&A' },
   { key: 'reason', label: '结局原因' }, { key: 'emotion', label: '情绪' },
 ] as const;
 const RANGES = [{ days: 1, label: '今天' }, { days: 7, label: '近 7 天' }, { days: 30, label: '近 30 天' }, { days: 365, label: '近一年' }];

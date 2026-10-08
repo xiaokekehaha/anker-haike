@@ -1979,7 +1979,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 "tool_id": tool_id,
                 "name": "knowledge.search",
                 "status": "failed",
-                "summary": "知识库暂不可用，按标准排障流程",
+                "summary": "知识库暂不可用",
             }
         )
         for it in exact_evidence:
@@ -2230,7 +2230,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 "tool_id": tool_id,
                 "name": "knowledge.search",
                 "status": "failed",
-                "summary": "知识库暂不可用，按标准排障流程",
+                "summary": "知识库暂不可用",
             }
         )
     else:
@@ -2244,7 +2244,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 + ("（已补检索）" if rounds == 2 else "")
             )
         else:
-            summary = "未找到匹配知识，按标准排障流程"
+            summary = "未找到匹配的官方说明"
         writer(
             {
                 "type": "tool_call",
@@ -2350,7 +2350,7 @@ def _diagnose_outcome(
     plans_ranked: list[dict[str, Any]], *, knowledge_status: str, exact_hits: list[str],
     exhausted_plans: list[str] = (),
 ) -> dict[str, Any]:
-    """票 33 / 09 §4：有假设 → 进 guide；来源 synthesize（有证据）或 standard_flow（预写计划默认顺序）；无适用计划 → R5。"""
+    """有假设 → 进 guide；来源 synthesize（模型按证据排序）或 retrieval_order（模型不可用时按命中顺序）；无候选 → R5。"""
     if not plans_ranked:
         return {
             "diagnose_outcome": {
@@ -2370,18 +2370,8 @@ def _diagnose_outcome(
             "next_action": {"kind": "handoff_offer", "reason": "no_supported_followup", "compat_rule": "R2"},
         }
     first = available[0]
-    mode = (
-        "standard_flow"
-        if first.get("source") == "standard_flow"
-        else ("exact_code" if exact_hits else "evidence")
-    )
-    note = {
-        "evidence": None,
-        "exact_code": "依据官方错误码说明",
-        "standard_flow": "按标准排障流程"
-        if knowledge_status == "no_match"
-        else "知识库暂不可用，按标准排障流程",
-    }[mode]
+    mode = "exact_code" if exact_hits else "evidence"
+    note = {"evidence": None, "exact_code": "依据官方错误码说明"}[mode]
     plan = get_plan_library().get(first["plan_id"])
     return {
         "diagnose_outcome": {

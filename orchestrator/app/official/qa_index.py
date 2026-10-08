@@ -176,6 +176,14 @@ def inline_steps(content: str) -> list[tuple[int, str]]:
 CATEGORY = {"Breast Pump": "breast_pump", "SoloCam": "security_cam"}
 
 
+def answer_body(content: str, tips: str) -> str:
+    """答案正文去掉 Tips 段：Tips 单独作为步骤卡的注意事项，正文再带一遍就重复了。"""
+    if not tips:
+        return content
+    match = INLINE_TIPS.search(content)
+    return content[: match.start()].rstrip() if match else content
+
+
 def build_guide(entry: QAEntry) -> Guide:
     raw_steps, tips = split_steps(entry.content)
     steps = tuple(
@@ -203,7 +211,7 @@ def build_guide(entry: QAEntry) -> Guide:
         codes=title_codes(entry.title),
         kind=kind,
         steps=steps if kind == "steps" else (),
-        answer=strip_lead_in(strip_urls(entry.content)),
+        answer=strip_lead_in(strip_urls(answer_body(entry.content, tips))),
         tips=strip_urls(tips),
         media=media_of(entry.content),
         asks_media=bool(ASKS_MEDIA.search(entry.content)),

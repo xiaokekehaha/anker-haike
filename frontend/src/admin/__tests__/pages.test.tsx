@@ -48,7 +48,7 @@ const OVERVIEW = {
   series: [{ at: '2026-09-12T00:00:00Z', sessions: 7, resolved: 3, escalated: 1 }],
   breakdown: [{ value: 'robot_vacuum', sessions: 9, resolved: 4, escalated: 2 }],
   models: [{ task: 'intake', model_used: 'deepseek/chat', calls: 20, errors: 0, fallbacks: 1, p95_ms: 2400, tokens_in: 1, tokens_out: 2 }],
-  retrieval: [{ kb: 'kb_manual', status: 'ok', n: 10 }, { kb: 'kb_tickets', status: 'no_match', n: 30 }],
+  retrieval: [{ kb: 'kb_qa', status: 'ok', n: 10 }, { kb: 'kb_qa', status: 'no_match', n: 30 }],
 };
 const L3 = { episodes: 10, terminal: 5, managed: 4, managed_rate: 0.8, rated: 2, rating_coverage: 0.2, nss: 0.5, intent_labeled: 0, intent_accuracy: null, unauthorized_executions: 0 };
 

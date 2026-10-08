@@ -15,7 +15,7 @@ REASSURANCE_INSTRUCTION = (
 
 REPLY_INSTRUCTION = (
     "根据 <data> 段里的检索片段与用户描述，用中文回应：先一句话确认理解，再给出最可能的原因与一个立即可做的动作。"
-    "只能引用检索片段里出现的操作；片段不足时说明将按标准排障流程处理。不要编造型号、政策或质保结论。"
+    "只能引用检索片段里出现的操作；片段不足时如实说明没有找到对应的官方说明。不要编造型号、政策或质保结论。"
     "使用简洁 Markdown（最多一个短列表），不要输出代码块。"
 )
 
@@ -48,8 +48,8 @@ def reply_messages(
         f"[{e.get('evidence_id', '')[:8]}] {e.get('snippet', '')}" for e in evidence[:6]
     )
     status_note = {
-        "no_match": "（知识库未找到匹配片段，按标准排障流程说明）",
-        "unavailable": "（知识库暂不可用，按标准排障流程说明，不要臆造步骤）",
+        "no_match": "（知识库未找到匹配的官方说明，如实说明，不要臆造步骤）",
+        "unavailable": "（知识库暂不可用，如实说明，不要臆造步骤）",
     }.get(knowledge_status or "", "")
     step_rule = "每个步骤不超过两句。" if strategy == "reassure_and_shorten" else ""
     human = (

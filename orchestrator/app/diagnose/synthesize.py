@@ -2,7 +2,7 @@
 
 每个假设必须引用当前允许集合内的 plan_id（枚举由 PlanLibrary.allowed_for 决定）与状态里已有的 evidence_ids；
 不在枚举内的 plan_id 丢弃并记录，无效 evidence_id 剔除。无证据（no_match / unavailable）时不调模型，
-按适用预写计划默认顺序给出 plans_ranked 并标注来源 standard_flow（09 §4）。
+按候选（本轮命中的官方 Q&A，已按检索顺序）给出 plans_ranked 并标注来源 retrieval_order。
 """
 
 from __future__ import annotations
@@ -58,9 +58,9 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
 
 
 def default_plans_ranked(
-    allowed: list[Plan], *, source: str = "standard_flow", symptom_codes: Sequence[str] = ()
+    allowed: list[Plan], *, source: str = "retrieval_order", symptom_codes: Sequence[str] = ()
 ) -> list[dict[str, Any]]:
-    """无证据 / 模型不可用时的降级：适用预写计划默认顺序，置信度统一 0.3，标注来源。
+    """无证据 / 模型不可用时的降级：候选按检索命中顺序（错误码精确命中在前），置信度统一 0.3，标注来源。
 
     没有证据时唯一的线索就是症状码，所以这里仍按码过滤（票 19：不下发与已记录现象无关的计划）；
     有模型和证据时允许集合不按码过滤，由模型依据原话与片段排序。观察解锁的计划不经过这里。

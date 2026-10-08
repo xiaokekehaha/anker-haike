@@ -30,7 +30,7 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
       if (url === '/sessions' && init?.method === 'POST') return new Response(JSON.stringify({ session_id: 'sid1', version: 0 }), { status: 201 });
       if (url.endsWith('/messages')) {
         expect(init?.body).toBeInstanceOf(FormData);
-        expect((init!.body as FormData).get('text')).toBe('eufy X9 Pro 不吸了');
+        expect((init!.body as FormData).get('text')).toBe('eufy X10 Pro Omni 报错 6025');
         return sse([
           { type: 'run_started', seq: 1, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', resumed: false, deadline_ms: 25000 },
           { type: 'progress', seq: 2, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'r1', stage: 'intake' },
@@ -47,10 +47,10 @@ describe('chat shell wired to the session API (票 06 集成)', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
     render(<App />);
-    fireEvent.change(screen.getByLabelText('描述你的问题'), { target: { value: 'eufy X9 Pro 不吸了' } });
+    fireEvent.change(screen.getByLabelText('描述你的问题'), { target: { value: 'eufy X10 Pro Omni 报错 6025' } });
     fireEvent.click(screen.getByRole('button', { name: '发送' }));
     await waitFor(() => expect(screen.getByTestId('assistant-bubble')).toHaveTextContent('请先清理滚刷。'));
-    expect(screen.getAllByText('eufy X9 Pro 不吸了')).toHaveLength(2); // 用户气泡 + 服务记录面板「问题」
+    expect(screen.getAllByText('eufy X10 Pro Omni 报错 6025')).toHaveLength(2); // 用户气泡 + 服务记录面板「问题」
     expect(screen.getByText('命中 2 条来源')).toBeVisible(); // 工具行
     const diagnose = screen.getByText('定位故障').closest('li');
     expect(diagnose).toHaveAttribute('data-state', 'active');

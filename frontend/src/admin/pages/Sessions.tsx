@@ -11,7 +11,13 @@ import { useAsync } from '../useAsync';
 import type { SessionRow } from '../types';
 
 const OUTCOMES = Object.entries(OUTCOME).map(([key, meta]) => ({ key, label: meta.label }));
-const REASONS = ['R1', 'R1b', 'R1c', 'R2', 'R3', 'R4', 'R5', 'R7', 'R8', 'solved', 'plan_done'];
+const REASONS = ['R1', 'R1b', 'R1c', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'solved', 'plan_done'];
+
+/** 「rv-0147」「qa_rv_0147」都按计划 id qa_rv_0147 查（计划由官方 Q&A 生成，见 orchestrator app/plans/qa.py）。 */
+export function planId(input: string): string | undefined {
+  const raw = input.trim().replace(/^qa_/, '');
+  return raw ? `qa_${raw.replace(/-/g, '_')}` : undefined;
+}
 
 export function Sessions() {
   const [q, setQ] = useState('');
@@ -26,7 +32,7 @@ export function Sessions() {
   const cursor = pages[pages.length - 1];
 
   const list = useAsync(
-    () => api.sessions({ from, q: q || undefined, outcome: outcome || undefined, reason: reason || undefined, category: category || undefined, plan: plan || undefined, cursor, limit: 30 }),
+    () => api.sessions({ from, q: q || undefined, outcome: outcome || undefined, reason: reason || undefined, category: category || undefined, plan: planId(plan), cursor, limit: 30 }),
     [from, q, outcome, reason, category, plan, cursor],
   );
   const cases = useAsync(() => l3Api.queue(''), []);
@@ -50,7 +56,7 @@ export function Sessions() {
           <option value="">全部品类</option>
           {PRODUCT_CATEGORIES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
         </select>
-        <input value={plan} placeholder="排障计划 id" aria-label="按排障计划筛选" style={{ minWidth: 140 }} onChange={(e) => change(() => setPlan(e.target.value))} />
+        <input value={plan} placeholder="官方 Q&A，如 rv-0147" aria-label="按官方 Q&A 筛选" style={{ minWidth: 160 }} onChange={(e) => change(() => setPlan(e.target.value))} />
         <select value={days} aria-label="时间范围" onChange={(e) => change(() => setDays(Number(e.target.value)))}>
           <option value={1}>今天</option><option value={7}>近 7 天</option><option value={30}>近 30 天</option><option value={365}>近一年</option>
         </select>

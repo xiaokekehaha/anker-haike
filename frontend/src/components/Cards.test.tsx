@@ -6,7 +6,7 @@ import { SummaryCard, summaryToText } from './SummaryCard';
 import { ToolRow } from './ToolRow';
 
 const SUMMARY = {
-  product: 'eufy X9 Pro', problem: '冒烟', observations: ['用户补充：有焦味'], hypotheses: [], steps: [{ step_id: 's1', title: '清理滚刷', feedback: 'not_solved' as const }],
+  product: 'eufy Clean X10 Pro Omni', problem: '冒烟', observations: ['用户补充：有焦味'], hypotheses: [], steps: [{ step_id: 's1', title: '清理滚刷', feedback: 'not_solved' as const }],
   reason: { rule_id: 'R4', text: '检测到安全风险信号' }, emotion: { level: 'anxious' as const, strategy: 'reassure_first' as const },
   receipt: { status: 'not_collected' as const, verified_facts: {}, conflicts: [], next_step: '已转人工' }, model_trace: [],
 };
@@ -19,7 +19,7 @@ describe('cards', () => {
     fireEvent.click(screen.getByRole('button', { name: '一键复制' }));
     await screen.findByText('已复制');
     const text = writeText.mock.calls[0]?.[0] as string;
-    for (const k of ['【产品】eufy X9 Pro', '【问题】冒烟', '【观察】', '【假设】', '【排查记录】清理滚刷（已操作，仍有问题）', '【升级原因】R4', '【凭证】not_collected']) expect(text).toContain(k);
+    for (const k of ['【产品】eufy Clean X10 Pro Omni', '【问题】冒烟', '【观察】', '【假设】', '【排查记录】清理滚刷（已操作，仍有问题）', '【升级原因】R4', '【凭证】not_collected']) expect(text).toContain(k);
     expect(summaryToText(SUMMARY)).toContain('【凭证核实事实】');
     expect(summaryToText(SUMMARY)).toContain('【凭证待核实差异】');
   });
@@ -65,8 +65,8 @@ describe('cards', () => {
   });
 
   it('ToolRow shows failed state text', () => {
-    render(<ToolRow item={{ kind: 'tool', tool_id: 't', name: 'knowledge.search', status: 'failed', summary: '知识库暂不可用，按标准排障流程' }} />);
+    render(<ToolRow item={{ kind: 'tool', tool_id: 't', name: 'knowledge.search', status: 'failed', summary: '知识库暂不可用' }} />);
     expect(screen.getByRole('status')).toHaveTextContent('检索知识库');
-    expect(screen.getByText('知识库暂不可用，按标准排障流程')).toBeVisible();
+    expect(screen.getByText('知识库暂不可用')).toBeVisible();
   });
 });

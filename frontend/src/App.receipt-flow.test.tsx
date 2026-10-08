@@ -8,7 +8,7 @@ vi.mock('./state/useHealth', () => ({ useHealth: () => ({ snapshot: null, error:
 const receiptFields = { order_no: 'OCR-001', seller: '示例商家', country: null, purchase_date: null, amount: null };
 const receiptCard: ReceiptCardItem = { kind: 'receipt_card', card_id: 'receipt', version: 6, fields: receiptFields,
   confidence: { order_no: 0.5, seller: 0.95 }, unreadable: ['country', 'purchase_date', 'amount'], confirmed_fields: null, skipped_reason: null };
-const summary: EscalationSummary = { product: 'eufy X9 Pro', problem: '吸力下降', observations: [], hypotheses: [], steps: [],
+const summary: EscalationSummary = { product: 'eufy Clean X10 Pro Omni', problem: '吸力下降', observations: [], hypotheses: [], steps: [],
   reason: { rule_id: 'R1', text: '排障后仍未解决' }, emotion: { level: 'calm', strategy: 'normal' },
   receipt: { status: 'dealer_authorized', verified_facts: { dealer: '示例商家' }, conflicts: [], next_step: '购买商家在授权经销商名录内，按购买日起 12 个月判断质保' }, model_trace: [] };
 function snapshot(patch: Partial<SessionSnapshot> = {}): SessionSnapshot {
