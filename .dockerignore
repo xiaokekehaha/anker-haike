@@ -3,7 +3,9 @@
 .env.*
 !.env.example
 releases/
-data/
+data/*
+# 主办方订单 / 经销商 / Q&A 是运行时数据，随镜像发布
+!data/official/
 docs/
 deploy/proxy/certs/
 deploy/proxy/.htpasswd

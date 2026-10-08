@@ -102,7 +102,7 @@ async def delete_session_data(pool: AsyncConnectionPool, session_id: str, *, exp
                 ("human_decisions", "update human_decisions set actor='anonymized',note='',override_reason=null,edited_proposal=null,consumed_input_id=null where case_id in (select case_id from cases where session_id=%s)"),
                 ("action_executions", "update action_executions set session_id=null,issue_id=null,request='{}',receipt=jsonb_build_object('status',status),error=null,gate_result=null where session_id=%s"),
                 ("satisfaction_ratings", "update satisfaction_ratings set session_id=null,issue_id=null,comment=null where session_id=%s"),
-                ("cases", "update cases set session_id=null,issue_id=null,proposal=null,policy_decision=null,gate_result=null,external_refs='{}',owner=null where session_id=%s"),
+                ("cases", "update cases set session_id=null,issue_id=null,proposal=null,warranty=null,gate_result=null,external_refs='{}',owner=null where session_id=%s"),
             ):
                 if table in tables:
                     cur = await conn.execute(statement, (session_id,))

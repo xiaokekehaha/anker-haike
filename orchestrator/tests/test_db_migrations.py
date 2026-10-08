@@ -21,7 +21,7 @@ def _baseline_module():
     return _revision_module("0001_baseline.py")
 
 
-HEAD = "0008"  # 基线 + 图片 + 凭证参考表（票 41）+ analytics 观测台事实表 + 服务单调用方幂等键
+HEAD = "0009"  # 基线 + 图片 + 凭证参考表 + analytics + 服务单幂等键 + 主办方数据替换演示后端
 
 
 def _tables_in(ddl: str) -> set[str]:
@@ -96,9 +96,11 @@ async def test_real_db_current_equals_head_after_upgrade():
     assert out["upgraded"] is False and out["after"] == HEAD
 
 
-def test_receipt_reference_migration_covers_store_ddl():
-    from app.warranty import store
-
-    rev = _revision_module("0003_receipt_reference.py")
-    assert rev.down_revision == "0002"
-    assert _tables_in("\n".join(rev.STATEMENTS)) == _tables_in(store.DDL) == {"orders_mock", "dealers"}
+def test_official_backend_migration_drops_demo_tables():
+    """0009：订单 / 经销商改读主办方数据，演示表全部删除；服务单落新表 service_orders。"""
+    rev = _revision_module("0009_official_backend.py")
+    assert rev.down_revision == "0008"
+    ddl = "\n".join(rev.STATEMENTS)
+    for table in ("service_orders_mock", "shipments_mock", "orders_mock", "dealers"):
+        assert f"drop table if exists {table}" in ddl
+    assert "create table service_orders(" in ddl

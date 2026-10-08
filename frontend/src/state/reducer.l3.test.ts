@@ -5,11 +5,10 @@ import { parseServerEvent } from '../api/events';
 import type { TimelineItem } from '../types/snapshot';
 
 const cards = [
-  { kind: 'context_card', fields: ['region_use'], confirmed_fields: { region_use: 'CN' } },
-  { kind: 'proposal_card', options: [], decision_summary: '演示', policy_version: 'v1', chosen_option_id: 'replace' },
+  { kind: 'proposal_card', options: [{ option_id: 'replace', type: 'replace', title: '提交换货单', detail: '', source: 'sop' }], decision_summary: '保内', chosen_option_id: 'replace' },
   { kind: 'retake_card', reasons: ['模糊'], guidance: ['对焦'], skipped: true },
   { kind: 'rating_card', score: 5 },
-  { kind: 'execution_card', execution_id: 'ex1', action_kind: 'replacement.create', status: 'succeeded', receipt: { status: 'created' }, idempotency_key: 'case:replace' },
+  { kind: 'execution_card', execution_id: 'ex1', action_kind: 'service_order.create', status: 'succeeded', receipt: { status: 'submitted' }, idempotency_key: 'case:service_order.create:replace' },
   { kind: 'case_changed', case_id: 'case1', status: 'tracking', reason: 'created', updated_at: '2026-09-14T00:00:00Z' },
 ] as const;
 

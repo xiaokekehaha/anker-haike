@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: cacb3f5997233163925bde51ae65e0f28679b27920c4a074a98e67b7196d1cf4
+// SHA-256: 1d3e396a0657f500a971be6d6f96c4a7fc45b32de11495d409aa77e7147dc26f
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -41,7 +41,6 @@ export const serverEventSchema = z.fromJSONSchema({
             "answer_observation",
             "upload_receipt",
             "confirm_receipt",
-            "confirm_context",
             "confirm_proposal",
             "upload_retake",
             "rate_satisfaction"
@@ -215,170 +214,6 @@ export const serverEventSchema = z.fromJSONSchema({
         "updated_at"
       ],
       "title": "CaseStatusEvent",
-      "type": "object"
-    },
-    "Clause": {
-      "additionalProperties": false,
-      "properties": {
-        "clause_id": {
-          "title": "Clause Id",
-          "type": "string"
-        },
-        "doc_version": {
-          "title": "Doc Version",
-          "type": "string"
-        },
-        "policy_version": {
-          "title": "Policy Version",
-          "type": "string"
-        },
-        "source_doc": {
-          "title": "Source Doc",
-          "type": "string"
-        },
-        "source_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Source Url"
-        },
-        "text": {
-          "title": "Text",
-          "type": "string"
-        }
-      },
-      "required": [
-        "clause_id",
-        "text",
-        "source_doc",
-        "doc_version",
-        "policy_version"
-      ],
-      "title": "Clause",
-      "type": "object"
-    },
-    "ContextCardEvent": {
-      "additionalProperties": false,
-      "properties": {
-        "card_id": {
-          "title": "Card Id",
-          "type": "string"
-        },
-        "choices": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "title": "Choices",
-          "type": "object"
-        },
-        "event_id": {
-          "title": "Event Id",
-          "type": "string"
-        },
-        "fields": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Fields",
-          "type": "array"
-        },
-        "issue_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Issue Id"
-        },
-        "prefilled": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Prefilled",
-          "type": "object"
-        },
-        "recorded_at": {
-          "title": "Recorded At",
-          "type": "string"
-        },
-        "run_id": {
-          "title": "Run Id",
-          "type": "string"
-        },
-        "seq": {
-          "description": "会话内单调递增",
-          "minimum": 1,
-          "title": "Seq",
-          "type": "integer"
-        },
-        "sources": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Sources",
-          "type": "object"
-        },
-        "type": {
-          "const": "context_card",
-          "title": "Type",
-          "type": "string"
-        },
-        "version": {
-          "minimum": 0,
-          "title": "Version",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "seq",
-        "run_id",
-        "event_id",
-        "recorded_at",
-        "card_id",
-        "version",
-        "type",
-        "fields"
-      ],
-      "title": "ContextCardEvent",
-      "type": "object"
-    },
-    "DispatchEstimate": {
-      "additionalProperties": false,
-      "properties": {
-        "action": {
-          "const": "replacement.create",
-          "default": "replacement.create",
-          "title": "Action",
-          "type": "string"
-        },
-        "actions_version": {
-          "title": "Actions Version",
-          "type": "string"
-        },
-        "working_days": {
-          "exclusiveMinimum": 0,
-          "title": "Working Days",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "working_days",
-        "actions_version"
-      ],
-      "title": "DispatchEstimate",
       "type": "object"
     },
     "Done": {
@@ -635,19 +470,6 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Observations",
           "type": "array"
         },
-        "policy_decision_brief": {
-          "anyOf": [
-            {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Policy Decision Brief"
-        },
         "problem": {
           "title": "Problem",
           "type": "string"
@@ -683,6 +505,17 @@ export const serverEventSchema = z.fromJSONSchema({
           },
           "title": "Task Queue",
           "type": "array"
+        },
+        "warranty": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WarrantyDecision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -1865,139 +1698,6 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "Ping",
       "type": "object"
     },
-    "PolicyCondition": {
-      "additionalProperties": false,
-      "properties": {
-        "actual": {
-          "title": "Actual"
-        },
-        "expected": {
-          "title": "Expected"
-        },
-        "met": {
-          "title": "Met",
-          "type": "boolean"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "expected",
-        "actual",
-        "met"
-      ],
-      "title": "PolicyCondition",
-      "type": "object"
-    },
-    "PolicyDecision": {
-      "additionalProperties": false,
-      "properties": {
-        "exclusions_hit": {
-          "items": {
-            "additionalProperties": true,
-            "type": "object"
-          },
-          "title": "Exclusions Hit",
-          "type": "array"
-        },
-        "fault_class": {
-          "enum": [
-            "quality",
-            "user_damage",
-            "safety",
-            "unknown"
-          ],
-          "title": "Fault Class",
-          "type": "string"
-        },
-        "matched": {
-          "default": false,
-          "title": "Matched",
-          "type": "boolean"
-        },
-        "missing_inputs": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Missing Inputs",
-          "type": "array"
-        },
-        "needs_human": {
-          "default": false,
-          "title": "Needs Human",
-          "type": "boolean"
-        },
-        "needs_human_reasons": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Needs Human Reasons",
-          "type": "array"
-        },
-        "policy_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Policy Id"
-        },
-        "policy_version": {
-          "title": "Policy Version",
-          "type": "string"
-        },
-        "remedies": {
-          "items": {
-            "$ref": "#/$defs/RemedyDecision"
-          },
-          "title": "Remedies",
-          "type": "array"
-        },
-        "trace_id": {
-          "title": "Trace Id",
-          "type": "string"
-        },
-        "warranty_end": {
-          "anyOf": [
-            {
-              "format": "date",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Warranty End"
-        },
-        "within_warranty": {
-          "anyOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Within Warranty"
-        }
-      },
-      "required": [
-        "policy_version",
-        "fault_class",
-        "trace_id"
-      ],
-      "title": "PolicyDecision",
-      "type": "object"
-    },
     "ProductCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -2229,10 +1929,6 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Options",
           "type": "array"
         },
-        "policy_version": {
-          "title": "Policy Version",
-          "type": "string"
-        },
         "recorded_at": {
           "title": "Recorded At",
           "type": "string"
@@ -2272,8 +1968,7 @@ export const serverEventSchema = z.fromJSONSchema({
         "version",
         "type",
         "options",
-        "decision_summary",
-        "policy_version"
+        "decision_summary"
       ],
       "title": "ProposalCardEvent",
       "type": "object"
@@ -2281,73 +1976,19 @@ export const serverEventSchema = z.fromJSONSchema({
     "ProposalOption": {
       "additionalProperties": false,
       "properties": {
-        "auto_allowed": {
-          "default": false,
-          "title": "Auto Allowed",
-          "type": "boolean"
-        },
-        "clauses": {
-          "items": {
-            "$ref": "#/$defs/Clause"
-          },
-          "title": "Clauses",
-          "type": "array"
-        },
-        "conditions": {
-          "items": {
-            "$ref": "#/$defs/PolicyCondition"
-          },
-          "title": "Conditions",
-          "type": "array"
-        },
-        "cost_bearer": {
-          "anyOf": [
-            {
-              "enum": [
-                "company",
-                "customer",
-                "shared"
-              ],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Cost Bearer"
-        },
-        "dispatch_estimate": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/DispatchEstimate"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
         },
         "option_id": {
           "title": "Option Id",
           "type": "string"
         },
-        "remedy": {
-          "enum": [
-            "parts",
-            "repair",
-            "replace",
-            "refund",
-            "paid_repair",
-            "none"
-          ],
-          "title": "Remedy",
-          "type": "string"
-        },
         "source": {
-          "default": "policy",
+          "default": "sop",
           "enum": [
-            "policy",
+            "sop",
             "human"
           ],
           "title": "Source",
@@ -2356,11 +1997,21 @@ export const serverEventSchema = z.fromJSONSchema({
         "title": {
           "title": "Title",
           "type": "string"
+        },
+        "type": {
+          "enum": [
+            "replace",
+            "refund",
+            "reship",
+            "carrier_investigation"
+          ],
+          "title": "Type",
+          "type": "string"
         }
       },
       "required": [
         "option_id",
-        "remedy",
+        "type",
         "title"
       ],
       "title": "ProposalOption",
@@ -2446,18 +2097,6 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Data",
           "type": "object"
         },
-        "eta_days": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Eta Days"
-        },
         "next_step": {
           "default": "",
           "title": "Next Step",
@@ -2488,7 +2127,7 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Service Order No"
         },
         "source": {
-          "default": "业务系统（模拟）",
+          "default": "售后工具",
           "title": "Source",
           "type": "string"
         },
@@ -2620,7 +2259,7 @@ export const serverEventSchema = z.fromJSONSchema({
           "default": null,
           "title": "Amount"
         },
-        "channel": {
+        "country": {
           "anyOf": [
             {
               "type": "string"
@@ -2630,7 +2269,7 @@ export const serverEventSchema = z.fromJSONSchema({
             }
           ],
           "default": null,
-          "title": "Channel"
+          "title": "Country"
         },
         "order_no": {
           "anyOf": [
@@ -2655,6 +2294,18 @@ export const serverEventSchema = z.fromJSONSchema({
           ],
           "default": null,
           "title": "Purchase Date"
+        },
+        "seller": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seller"
         }
       },
       "title": "ReceiptFields",
@@ -2690,8 +2341,8 @@ export const serverEventSchema = z.fromJSONSchema({
             "order_verified",
             "order_product_mismatch",
             "needs_manual_check",
-            "channel_in_directory",
-            "channel_unknown"
+            "dealer_authorized",
+            "dealer_unauthorized"
           ],
           "title": "Status",
           "type": "string"
@@ -2708,69 +2359,6 @@ export const serverEventSchema = z.fromJSONSchema({
         "status"
       ],
       "title": "ReceiptOutcome",
-      "type": "object"
-    },
-    "RemedyDecision": {
-      "additionalProperties": false,
-      "properties": {
-        "auto_allowed": {
-          "title": "Auto Allowed",
-          "type": "boolean"
-        },
-        "clauses": {
-          "items": {
-            "$ref": "#/$defs/Clause"
-          },
-          "title": "Clauses",
-          "type": "array"
-        },
-        "conditions": {
-          "items": {
-            "$ref": "#/$defs/PolicyCondition"
-          },
-          "title": "Conditions",
-          "type": "array"
-        },
-        "cost_bearer": {
-          "anyOf": [
-            {
-              "enum": [
-                "company",
-                "customer",
-                "shared"
-              ],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Cost Bearer"
-        },
-        "eligible": {
-          "title": "Eligible",
-          "type": "boolean"
-        },
-        "remedy": {
-          "enum": [
-            "parts",
-            "repair",
-            "replace",
-            "refund",
-            "paid_repair",
-            "none"
-          ],
-          "title": "Remedy",
-          "type": "string"
-        }
-      },
-      "required": [
-        "remedy",
-        "eligible",
-        "auto_allowed"
-      ],
-      "title": "RemedyDecision",
       "type": "object"
     },
     "RetakeCardEvent": {
@@ -3236,6 +2824,109 @@ export const serverEventSchema = z.fromJSONSchema({
       ],
       "title": "TroubleshootStep",
       "type": "object"
+    },
+    "WarrantyDecision": {
+      "additionalProperties": false,
+      "description": "主办方 SOP「订单质保判断」：有订单看订单质保结束日期；查不到订单看经销商名录（授权 = 购买日起 12 个月）。",
+      "properties": {
+        "as_of": {
+          "format": "date",
+          "title": "As Of",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "order",
+            "dealer",
+            "none"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Country"
+        },
+        "dealer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dealer"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "sku": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sku"
+        },
+        "status": {
+          "enum": [
+            "in_warranty",
+            "out_of_warranty",
+            "unauthorized_dealer",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "warranty_end": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty End"
+        }
+      },
+      "required": [
+        "status",
+        "basis",
+        "as_of",
+        "reason"
+      ],
+      "title": "WarrantyDecision",
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -3243,7 +2934,6 @@ export const serverEventSchema = z.fromJSONSchema({
     "mapping": {
       "awaiting_input": "#/$defs/AwaitingInput",
       "case_changed": "#/$defs/CaseStatusEvent",
-      "context_card": "#/$defs/ContextCardEvent",
       "done": "#/$defs/Done",
       "error": "#/$defs/Error",
       "escalation_summary": "#/$defs/EscalationSummaryEvent",
@@ -3330,9 +3020,6 @@ export const serverEventSchema = z.fromJSONSchema({
     },
     {
       "$ref": "#/$defs/Done"
-    },
-    {
-      "$ref": "#/$defs/ContextCardEvent"
     },
     {
       "$ref": "#/$defs/ProposalCardEvent"

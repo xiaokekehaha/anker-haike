@@ -26,7 +26,7 @@ from langchain_core.messages.utils import convert_to_messages
 
 log = logging.getLogger("replay.package")
 
-VERSION_KEYS: tuple[str, ...] = ("prompt_ver", "models_ver", "kb_ver", "rules_ver", "policy_version", "actions_version")
+VERSION_KEYS: tuple[str, ...] = ("prompt_ver", "models_ver", "kb_ver", "rules_ver", "actions_version")
 MANIFEST_FILE = "manifest.json"
 EVENTS_FILE = "events.jsonl"
 FORMAT_VERSION = 3
@@ -175,9 +175,7 @@ def current_versions(
     kb_ver_override: str = "",
 ) -> dict[str, str | None]:
     from app.actions.registry import ActionRegistry
-    from app.policy.loader import PolicyLoader
     return {
-        "policy_version": PolicyLoader().load()["policy"]["version"],
         "actions_version": ActionRegistry().version,
         "prompt_ver": prompt_version(),
         "models_ver": models_ver,

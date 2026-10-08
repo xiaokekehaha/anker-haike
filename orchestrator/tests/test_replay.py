@@ -106,7 +106,7 @@ def NO_MATCH():
     return ToolResult("no_match", hint=HINTS["no_match"], allowed_count=2)
 
 
-VERSIONS = {"prompt_ver": "p1", "models_ver": "m1", "kb_ver": "k1", "rules_ver": "r1", "policy_version": "p1", "actions_version": "a1"}
+VERSIONS = {"prompt_ver": "p1", "models_ver": "m1", "kb_ver": "k1", "rules_ver": "r1", "actions_version": "a1"}
 SCOPE = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X9-PRO")
 PNG_A = b"\x89PNG\r\n\x1a\n" + b"a" * 20
 PNG_B = b"\x89PNG\r\n\x1a\n" + b"b" * 20

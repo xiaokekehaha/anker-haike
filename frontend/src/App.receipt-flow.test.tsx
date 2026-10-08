@@ -5,12 +5,12 @@ import { serverEventSchema } from './api/events-schema';
 import type { EscalationSummary, ReceiptCardItem, SessionSnapshot } from './types/snapshot';
 
 vi.mock('./state/useHealth', () => ({ useHealth: () => ({ snapshot: null, error: null, refreshing: false, checkedAt: null, refresh: vi.fn() }) }));
-const receiptFields = { order_no: 'OCR-001', channel: '示例渠道', purchase_date: null, amount: null };
+const receiptFields = { order_no: 'OCR-001', seller: '示例商家', country: null, purchase_date: null, amount: null };
 const receiptCard: ReceiptCardItem = { kind: 'receipt_card', card_id: 'receipt', version: 6, fields: receiptFields,
-  confidence: { order_no: 0.5, channel: 0.95 }, unreadable: ['purchase_date', 'amount'], confirmed_fields: null, skipped_reason: null };
+  confidence: { order_no: 0.5, seller: 0.95 }, unreadable: ['country', 'purchase_date', 'amount'], confirmed_fields: null, skipped_reason: null };
 const summary: EscalationSummary = { product: 'eufy X9 Pro', problem: '吸力下降', observations: [], hypotheses: [], steps: [],
   reason: { rule_id: 'R1', text: '排障后仍未解决' }, emotion: { level: 'calm', strategy: 'normal' },
-  receipt: { status: 'channel_in_directory', verified_facts: { channel: '示例渠道' }, conflicts: [], next_step: '经销商在名录内，人工确认购买凭证后办理' }, model_trace: [] };
+  receipt: { status: 'dealer_authorized', verified_facts: { dealer: '示例商家' }, conflicts: [], next_step: '购买商家在授权经销商名录内，按购买日起 12 个月判断质保' }, model_trace: [] };
 function snapshot(patch: Partial<SessionSnapshot> = {}): SessionSnapshot {
   return { session_id: 's', stage: 'escalate', substage: 'collect_receipt', version: 4,
     timeline: [{ kind: 'user_message', id: 'u', text: '还是不吸', image_ids: [], images: [], at: '2026-09-12T00:00:00Z' }],
@@ -19,7 +19,7 @@ function snapshot(patch: Partial<SessionSnapshot> = {}): SessionSnapshot {
 }
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 const sse = (events: object[]) => new Response(events.map(e => `data: ${JSON.stringify(serverEventSchema.parse(e))}\n\n`).join(''));
-const finalEvents = (status = 'channel_in_directory') => [
+const finalEvents = (status = 'dealer_authorized') => [
   { type: 'run_started', seq: 5, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'lookup', resumed: true, deadline_ms: 30000 },
   { type: 'escalation_summary', seq: 6, event_id: 'fixture-event', recorded_at: '2026-09-13T00:00:00Z', run_id: 'lookup', card_id: 'summary',
     summary_id: 'summary-1', revision: 1, issue_id: 'issue-1', updated_at: '2026-09-13T00:00:00Z', source_through_seq: 6,
@@ -75,7 +75,7 @@ describe('A3 receipt workflow through App and HTTP/SSE', () => {
     expect(screen.getByLabelText('描述你的问题')).toBeEnabled(); // 等待确认凭证时也能继续追问（交接契约 §7）
     fireEvent.change(screen.getByLabelText('订单号'), { target: { value: 'CONFIRMED-009' } });
     fireEvent.click(screen.getByRole('button', { name: /^确认$/ }));
-    await screen.findByText('经销商在名录内', { exact: false });
+    await screen.findByText(/购买商家在授权经销商名录内/);
     await waitFor(() => expect(document.querySelector('[data-ui]')).toHaveAttribute('data-ui', 'idle'));
     expect(posted).toHaveLength(1);
     expect(posted[0]).toMatchObject({ kind: 'confirm_receipt', expected_version: 6, card_id: 'receipt', input_token: 'receipt',

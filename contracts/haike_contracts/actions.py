@@ -17,7 +17,6 @@ ActionKind = Literal[
     "request_human",
     "new_issue",
     "resume_issue",
-    "confirm_context",
     "confirm_proposal",
     "decline_proposal",
     "skip_retake",
@@ -47,7 +46,7 @@ class AnswerObservationPayload(Strict):
 
 class ConfirmReceiptPayload(Strict):
     fields: ReceiptFields
-    edited: list[Literal["order_no", "channel", "purchase_date", "amount"]] = Field(
+    edited: list[Literal["order_no", "seller", "country", "purchase_date", "amount"]] = Field(
         default_factory=list
     )
 
@@ -120,18 +119,6 @@ class ResumeIssueAction(_Action):
     payload: RequestHumanPayload = Field(default_factory=RequestHumanPayload)
 
 
-class ConfirmContextPayload(Strict):
-    region_purchase: str = Field(min_length=1, max_length=50)
-    region_use: str = Field(min_length=1, max_length=50)
-    channel: str = Field(min_length=1, max_length=50)
-    platform: str | None = None
-
-
-class ConfirmContextAction(_CardAction):
-    kind: Literal["confirm_context"]
-    payload: ConfirmContextPayload
-
-
 class ConfirmProposalPayload(Strict):
     option_id: str
 
@@ -178,7 +165,6 @@ ActionRequest = Annotated[
     | RequestHumanAction
     | NewIssueAction
     | ResumeIssueAction
-    | ConfirmContextAction
     | ConfirmProposalAction
     | DeclineProposalAction
     | SkipRetakeAction

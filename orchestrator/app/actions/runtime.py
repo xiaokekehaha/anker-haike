@@ -1,9 +1,10 @@
+"""售后业务能力的进程内单例：业务后端（主办方订单 + 服务单）、动作执行器、案件服务。"""
+
 from dataclasses import dataclass
 
-from app.backends.mock import MemoryBackend, MockBackend, load_config
+from app.backends.service import MemoryBackend, PostgresBackend
 from app.cases.service import CaseService
 from app.cases.store import PostgresCaseStore
-from app.policy.loader import PolicyLoader
 
 from .executor import ActionExecutor
 from .store import PostgresExecutionStore
@@ -11,10 +12,9 @@ from .store import PostgresExecutionStore
 
 @dataclass
 class L3Services:
-    backend: object
+    backend: MemoryBackend | PostgresBackend
     executor: ActionExecutor
     cases: CaseService
-    policy_loader: PolicyLoader
 
 
 _services: L3Services | None = None
@@ -25,11 +25,9 @@ def configure(pool=None, *, memory=False):
     if pool is None and not memory:
         _services = None
         return None
-    backend = MemoryBackend() if memory else MockBackend(pool, load_config().get("faults", []))
+    backend = MemoryBackend() if memory else PostgresBackend(pool)
     executor = ActionExecutor(backend, None if memory else PostgresExecutionStore(pool))
-    _services = L3Services(
-        backend, executor, CaseService(None if memory else PostgresCaseStore(pool)), PolicyLoader()
-    )
+    _services = L3Services(backend, executor, CaseService(None if memory else PostgresCaseStore(pool)))
     return _services
 
 

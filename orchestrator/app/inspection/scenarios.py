@@ -197,9 +197,9 @@ async def scn_safety_image(ctx: Ctx):
         return {"rule": "R4", "source": flag["source"], "model_calls": h.fake.tasks_called}
 
 
-def _ocr(order_no: str | None, channel: str | None, conf: float) -> dict:
-    return {"order_no": order_no, "channel": channel, "purchase_date": "2026-03-15", "amount": None,
-            "confidence": {"order_no": conf, "channel": 0.9, "purchase_date": 0.9}, "unreadable": ["amount"]}
+def _ocr(order_no: str | None, seller: str | None, conf: float) -> dict:
+    return {"order_no": order_no, "seller": seller, "purchase_date": "2026-03-15", "amount": None,
+            "confidence": {"order_no": conf, "seller": 0.9, "purchase_date": 0.9}, "unreadable": ["amount"]}
 
 
 async def _to_receipt_card(h: Harness, ocr: dict) -> tuple[str, dict, Events]:
@@ -221,8 +221,8 @@ async def _to_receipt_card(h: Harness, ocr: dict) -> tuple[str, dict, Events]:
 @scenario("wrong_device_receipt", "boundary", "上传另一台设备的订单凭证 → order_product_mismatch，只列事实不下结论", "09 §5；票 41")
 async def scn_wrong_device_receipt(ctx: Ctx):
     async with Harness(ctx.dir("rc1"), scripts=A1_SCRIPTS) as h:
-        sid, p, _up = await _to_receipt_card(h, _ocr("DEMO-S1-002", "任意店铺", 0.95))
-        fields = {"order_no": "DEMO-S1-002", "channel": "任意店铺", "purchase_date": "2026-03-15", "amount": None}
+        sid, p, _up = await _to_receipt_card(h, _ocr("Anker002", "任意店铺", 0.95))
+        fields = {"order_no": "Anker002", "seller": "任意店铺", "country": None, "purchase_date": "2026-03-15", "amount": None}
         r = await h.action(sid, h.card_action(p, "confirm_receipt", {"fields": fields, "edited": []}))
         _check(r.status_code == 200, r.headers.get("_body"))
         summary = r.first("escalation_summary")["summary"]
@@ -234,10 +234,10 @@ async def scn_wrong_device_receipt(ctx: Ctx):
 @scenario("low_confidence_order_hit", "boundary", "OCR 低置信订单号恰好命中他人订单 → 未经确认修改不得核实，needs_manual_check", "09 §5；票 41")
 async def scn_low_conf_order(ctx: Ctx):
     async with Harness(ctx.dir("rc2"), scripts=A1_SCRIPTS) as h:
-        sid, p, up = await _to_receipt_card(h, _ocr("DEMO-X10-001", "京东", 0.5))
+        sid, p, up = await _to_receipt_card(h, _ocr("Anker016", "京东", 0.5))
         card = up.first("receipt_card")
         _check(card["confidence"]["order_no"] == 0.5, "卡片应带低置信")
-        fields = {"order_no": "DEMO-X10-001", "channel": "京东", "purchase_date": "2026-03-15", "amount": None}
+        fields = {"order_no": "Anker016", "seller": "京东", "country": None, "purchase_date": "2026-03-15", "amount": None}
         r = await h.action(sid, h.card_action(p, "confirm_receipt", {"fields": fields, "edited": []}))
         summary = r.first("escalation_summary")["summary"]
         _check(summary["receipt"]["status"] == "needs_manual_check", f"status={summary['receipt']['status']}")

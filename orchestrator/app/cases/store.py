@@ -126,11 +126,11 @@ class PostgresCaseStore:
             old_decisions = {d["decision_id"]: d.get("consumed_input_id") for d in row["decisions"]}
             fn(row)
             values = {**row}
-            for field in ("policy_decision", "proposal", "gate_result", "external_refs"):
+            for field in ("warranty", "proposal", "gate_result", "external_refs"):
                 values[field] = Jsonb(row.get(field))
             await cur.execute(
                 """update cases set sku=%(sku)s,category=%(category)s,status=%(status)s,complaint_risk=%(complaint_risk)s,priority=%(priority)s,
-                policy_decision=%(policy_decision)s,proposal=%(proposal)s,chosen_option_id=%(chosen_option_id)s,
+                warranty=%(warranty)s,proposal=%(proposal)s,chosen_option_id=%(chosen_option_id)s,
                 gate_result=%(gate_result)s,owner=%(owner)s,external_refs=%(external_refs)s,updated_at=%(updated_at)s,
                 closed_at=%(closed_at)s,reopened_count=%(reopened_count)s,revision=%(revision)s where case_id=%(case_id)s""",
                 values,

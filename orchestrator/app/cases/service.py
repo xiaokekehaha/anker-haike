@@ -3,21 +3,19 @@
 from datetime import UTC, datetime
 from uuid import NAMESPACE_URL, uuid5
 
-from haike_contracts.common import ProposalOption
-
 from .store import CaseConflict, MemoryCaseStore
 
 TRANSITIONS = {
-    "open": {"diagnosing", "proposing", "awaiting_approval"},
+    "open": {"diagnosing", "proposing", "awaiting_approval", "escalated_summary"},
     "diagnosing": {"proposing", "awaiting_approval"},
-    "proposing": {"awaiting_confirmation", "awaiting_approval", "closed_unresolved"},
+    "proposing": {"awaiting_confirmation", "awaiting_approval", "closed_unresolved", "escalated_summary"},
     "awaiting_confirmation": {"proposing", "executing", "awaiting_approval", "closed_unresolved"},
-    "awaiting_approval": {"approved", "rejected", "awaiting_confirmation"},
-    "approved": {"executing", "awaiting_approval"},
+    "awaiting_approval": {"approved", "rejected", "awaiting_confirmation", "closed"},
+    "approved": {"executing", "awaiting_approval", "closed"},
     "executing": {"tracking", "executing_failed", "awaiting_approval"},
     "executing_failed": {"executing", "proposing", "awaiting_approval", "closed_unresolved"},
     "tracking": {"closed", "proposing", "awaiting_approval"},
-    "rejected": {"proposing", "closed_unresolved"},
+    "rejected": {"proposing", "closed_unresolved", "closed"},
     "closed": {"reopened"},
     "closed_unresolved": {"reopened"},
     "reopened": {"tracking", "proposing"},
@@ -88,7 +86,7 @@ class CaseService:
                 "status": "open",
                 "complaint_risk": complaint_risk,
                 "priority": "high" if complaint_risk else "normal",
-                "policy_decision": None,
+                "warranty": None,
                 "proposal": None,
                 "chosen_option_id": None,
                 "gate_result": None,
@@ -106,7 +104,7 @@ class CaseService:
         self, case_id, status, reason, *, actor="system", expected_revision=None, **updates
     ):
         allowed = {
-            "policy_decision",
+            "warranty",
             "proposal",
             "chosen_option_id",
             "gate_result",
@@ -299,22 +297,16 @@ class CaseService:
                 raise CaseConflict("案件已由其他人处理，请刷新")
             options = (row.get("proposal") or {}).get("options", [])
             option = next((o for o in options if o["option_id"] == option_id), None)
-            if decision == "approve":
-                if (row.get("policy_decision") or {}).get("fault_class") in {"unknown", "safety"}:
-                    raise ValueError("请先核实故障并解除安全限制；人工审批不能替代故障证据，可要求补充信息")
-                if edited_option:
-                    edited = ProposalOption.model_validate(edited_option).model_dump(mode="json")
-                    if not option or edited["option_id"] != option_id or edited["remedy"] != option["remedy"]:
-                        raise ValueError("人工编辑必须对应所选方案")
-                    option = edited
-                if not option or option["remedy"] != "replace":
-                    raise ValueError("P0 仅支持批准换货动作")
-                if (
-                    edited_option
-                    or (row.get("policy_decision") or {}).get("needs_human")
-                    or not option.get("auto_allowed")
-                ) and not (override_reason or "").strip():
-                    raise ValueError("覆盖政策需填写理由")
+            if decision == "approve" and option_id and not option:
+                raise ValueError("人工批准必须对应案件中的方案")
+            if edited_option:
+                raise ValueError("服务单方案不支持人工改写，请驳回后重新提交")
+            warranty = (row.get("warranty") or {}).get("status")
+            if (
+                decision == "approve" and option and option["type"] in {"replace", "refund"}
+                and warranty not in {None, "in_warranty"} and not (override_reason or "").strip()
+            ):
+                raise ValueError("过保或非授权经销商仍要办理，需填写例外理由")
             row["decisions"].append(
                 {
                     "decision_id": decision_id,

@@ -61,10 +61,10 @@ GOOD = {
     "diagnose.vision": {"observations": ["滚刷缠绕大量毛发"], "visible_parts": ["滚刷"]},
     "warranty.receipt_ocr": {
         "order_no": "2026091200123456",
-        "channel": "eufy 官方旗舰店",
+        "seller": "eufy 官方旗舰店",
         "purchase_date": "2026-08-01",
         "amount": "¥2999.00",
-        "confidence": {"order_no": 0.9, "channel": 0.9, "purchase_date": 0.9, "amount": 0.9},
+        "confidence": {"order_no": 0.9, "seller": 0.9, "purchase_date": 0.9, "amount": 0.9},
         "unreadable": [],
     },
 }
@@ -142,12 +142,12 @@ def test_scoring_receipt_normalizes_digits_and_amount():
         fields={
             "order_no": "JD-3012345678",
             "amount": "¥1,899",
-            "channel": "京东自营",
+            "seller": "京东自营",
             "purchase_date": None,
         },
     )
     exp = {
-        "fields": {"order_no": "3012345678", "amount": "1899", "channel": "京东"},
+        "fields": {"order_no": "3012345678", "amount": "1899", "seller": "京东"},
         "unreadable": ["purchase_date"],
     }
     assert scoring.score_receipt(out, exp) == 1.0

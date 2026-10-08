@@ -31,10 +31,9 @@ cat > RELEASE.md <<MD
 | models.yaml | $(ver config/models.yaml)（TBD / TODO 计数：${TBD}，须为 0 才能冻结，票 42） |
 | bake-off | ${BAKEOFF}（reports/bakeoff/bakeoff.md；裁决理由见 docs/planning/2026-09-12_smart-service-bakeoff/findings.md） |
 | rules_ver | $(ver config/rules/safety_terms.yaml) |
-| policy_version | $(ver config/policy/warranty_policy.yaml) |
 | actions_version | $(ver config/actions.yaml) |
 | emotion_policy / symptom_taxonomy / vision_vocab | $(ver config/emotion_policy.yaml) / $(ver config/symptom_taxonomy.yaml) / $(ver config/vision_vocab.yaml) |
-| backends_mock seed | $(ver config/backends_mock.yaml) |
+| official data | $(head -2 data/official/orders.yaml | tail -1 | sed 's/.*sha256=//' | cut -c1-12) |
 | products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
 | kb_ver | $KB_VER |
 | WeKnora 镜像 tag | $WEKNORA_TAG |

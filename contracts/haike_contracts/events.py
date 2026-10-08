@@ -201,19 +201,10 @@ class Done(_Event):
     version: int = Field(ge=0, description="本 run 结束后的会话版本")
 
 
-class ContextCardEvent(_Card):
-    type: Literal["context_card"]
-    fields: list[str]
-    prefilled: dict[str, str] = Field(default_factory=dict)
-    sources: dict[str, str] = Field(default_factory=dict)
-    choices: dict[str, list[str]] = Field(default_factory=dict)
-
-
 class ProposalCardEvent(_Card):
     type: Literal["proposal_card"]
     options: list[ProposalOption]
     decision_summary: str
-    policy_version: str
     retry: bool = False
 
 
@@ -270,7 +261,6 @@ ServerEvent = Annotated[
     | EscalationSummaryEvent
     | Error
     | Done
-    | ContextCardEvent
     | ProposalCardEvent
     | ExecutionCardEvent
     | RetakeCardEvent

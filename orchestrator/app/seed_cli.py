@@ -1,4 +1,6 @@
-"""参考数据 seed（票 19 / 31）：haike-seed [products|plans|fault_cards|receipts|all] [--config-dir DIR]，可重复执行。
+"""参考数据 seed（票 19 / 31）：haike-seed [products|plans|fault_cards|all] [--config-dir DIR]，可重复执行。
+
+订单、物流与经销商名录直接读 data/official（主办方数据），不进数据库。
 
 另：haike-plans-schema 输出计划模型 JSON Schema（可 --out 写文件）。
 """
@@ -21,8 +23,6 @@ from app.faultcards import store as faultcard_store
 from app.plans import PlanLibrary, PlansError, plan_json_schema
 from app.plans import store as plans_store
 from app.settings import CONFIG_DIR, settings
-from app.warranty.service import ReferenceData
-from app.warranty.store import seed_reference
 
 
 async def _run(what: str, config_dir: Path) -> int:
@@ -32,11 +32,7 @@ async def _run(what: str, config_dir: Path) -> int:
         cards = FaultCardLibrary.from_yaml(
             config_dir / "fault_cards.yaml", plan_ids=set(library.plan_ids)
         )
-        reference = (
-            ReferenceData.from_yaml(config_dir / "receipt_reference.yaml")
-            if what in ("receipts", "all") else None
-        )
-    except (CatalogError, PlansError, FaultCardsError, ValueError, OSError) as exc:
+    except (CatalogError, PlansError, FaultCardsError, OSError) as exc:
         print(exc, file=sys.stderr)
         return 2
     pool = AsyncConnectionPool(
@@ -54,20 +50,15 @@ async def _run(what: str, config_dir: Path) -> int:
             print("plans", await plans_store.seed_plans(pool, library))
         if what in ("fault_cards", "all"):
             print("fault_cards", await faultcard_store.seed_fault_cards(pool, cards))
-        if what in ("backends", "all"):
-            from app.backends.seed import seed_backends
-            print("backends", await seed_backends(pool, config_dir / "backends_mock.yaml"))
-        if reference is not None:
-            print("receipts", await seed_reference(pool, reference))
     finally:
         await pool.close()
     return 0
 
 
 def seed(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="写入产品 / 计划 / 故障卡 / 凭证参考数据（幂等）")
+    p = argparse.ArgumentParser(description="写入产品 / 计划 / 故障卡参考数据（幂等）")
     p.add_argument(
-        "what", nargs="?", default="all", choices=["products", "plans", "fault_cards", "receipts", "backends", "all"]
+        "what", nargs="?", default="all", choices=["products", "plans", "fault_cards", "all"]
     )
     p.add_argument("--config-dir", default=str(CONFIG_DIR))
     args = p.parse_args(argv)

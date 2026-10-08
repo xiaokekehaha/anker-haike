@@ -184,7 +184,7 @@ async def resume_events(
     return _sse(manager.subscribe(session_id, run_id, after_seq=after_seq))
 
 
-_CARD_KINDS = {"select_product", "step_feedback", "answer_observation", "confirm_receipt", "skip_receipt", "confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}
+_CARD_KINDS = {"select_product", "step_feedback", "answer_observation", "confirm_receipt", "skip_receipt", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}
 
 
 @router.post("/{session_id}/actions")

@@ -5,8 +5,8 @@ import type { ReceiptCardItem } from '../types/snapshot';
 
 function card(patch: Partial<ReceiptCardItem> = {}): ReceiptCardItem {
   return { kind: 'receipt_card', card_id: 'c', version: 4,
-    fields: { order_no: '00123', channel: '示例店', purchase_date: '2026-09-01', amount: '￥999' },
-    confidence: { order_no: 0.5, channel: 0.95 }, unreadable: [], confirmed_fields: null, skipped_reason: null, ...patch };
+    fields: { order_no: '00123', seller: '示例店', country: 'US', purchase_date: '2026-09-01', amount: '￥999' },
+    confidence: { order_no: 0.5, seller: 0.95 }, unreadable: [], confirmed_fields: null, skipped_reason: null, ...patch };
 }
 
 describe('receipt field confirmation', () => {
@@ -14,7 +14,7 @@ describe('receipt field confirmation', () => {
     const onConfirm = vi.fn();
     render(<ReceiptCard item={card()} active onConfirm={onConfirm} onSkip={vi.fn()} />);
     expect(screen.getByLabelText('订单号').closest('[data-low]')).not.toBeNull();
-    expect(screen.getByLabelText('购买渠道').closest('[data-low]')).toBeNull();
+    expect(screen.getByLabelText('购买商家').closest('[data-low]')).toBeNull();
     fireEvent.change(screen.getByLabelText('订单号'), { target: { value: '00999' } });
     fireEvent.click(screen.getByRole('button', { name: /^确认$/ }));
     expect(onConfirm).toHaveBeenCalledWith({ ...card().fields, order_no: '00999' }, ['order_no']);
@@ -32,11 +32,11 @@ describe('receipt field confirmation', () => {
   it('allows manual entry and skipping when all fields are unreadable', () => {
     const onConfirm = vi.fn();
     const onSkip = vi.fn();
-    render(<ReceiptCard item={card({ fields: {}, unreadable: ['order_no', 'channel', 'purchase_date', 'amount'] })} active onConfirm={onConfirm} onSkip={onSkip} />);
-    expect(screen.getAllByText('未识别')).toHaveLength(4);
-    fireEvent.change(screen.getByLabelText('购买渠道'), { target: { value: '示例专卖店' } });
+    render(<ReceiptCard item={card({ fields: {}, unreadable: ['order_no', 'seller', 'country', 'purchase_date', 'amount'] })} active onConfirm={onConfirm} onSkip={onSkip} />);
+    expect(screen.getAllByText('未识别')).toHaveLength(5);
+    fireEvent.change(screen.getByLabelText('购买商家'), { target: { value: '示例专卖店' } });
     fireEvent.click(screen.getByRole('button', { name: /^确认$/ }));
-    expect(onConfirm).toHaveBeenCalledWith({ channel: '示例专卖店' }, ['channel']);
+    expect(onConfirm).toHaveBeenCalledWith({ seller: '示例专卖店' }, ['seller']);
     fireEvent.click(screen.getByRole('button', { name: '看不清，跳过' }));
     expect(onSkip).toHaveBeenCalledWith('unreadable');
   });
@@ -54,7 +54,7 @@ describe('receipt field confirmation', () => {
   it('shows confirmed server values on restore and disables historical cards', () => {
     const props = { onConfirm: vi.fn(), onSkip: vi.fn() };
     const { rerender } = render(<ReceiptCard item={card()} active {...props} />);
-    rerender(<ReceiptCard item={card({ confirmed_fields: { order_no: 'server-confirmed', channel: '新店铺' } })} active={false} {...props} />);
+    rerender(<ReceiptCard item={card({ confirmed_fields: { order_no: 'server-confirmed', seller: '新店铺' } })} active={false} {...props} />);
     expect(screen.getByLabelText('订单号')).toHaveValue('server-confirmed');
     expect(screen.getByLabelText('订单号')).toBeDisabled();
     expect(screen.getByText('已确认')).toBeVisible();

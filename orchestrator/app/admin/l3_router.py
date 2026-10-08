@@ -207,11 +207,11 @@ async def l3_metrics(request: Request, since: datetime | None = None):
         async with pool.connection() as conn:
             cur = await conn.execute(
                 """select count(*) from action_executions a
-                where action_kind='replacement.create' and status='succeeded' and started_at >= %s
+                where action_kind='service_order.create' and status='succeeded' and started_at >= %s
                 and not exists(select 1 from service_episodes e where e.session_id=a.session_id and e.issue_id=a.issue_id and e.source in ('replay','smoke'))
                 and (gate_result is null or gate_result->>'passed' is distinct from 'true'
                 or exists(select 1 from jsonb_array_elements(coalesce(gate_result->'checks','[]')) c where c->>'passed' is distinct from 'true')
-                or not (coalesce(gate_result->'checks','[]') @> '[{"name":"policy"},{"name":"evidence_and_consent"},{"name":"safety"},{"name":"idempotency"}]'::jsonb))""",
+                or not (coalesce(gate_result->'checks','[]') @> '[{"name":"eligibility"},{"name":"evidence"},{"name":"safety"},{"name":"idempotency"}]'::jsonb))""",
                 (since,),
             )
             row = await cur.fetchone()

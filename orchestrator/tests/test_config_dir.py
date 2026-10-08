@@ -41,7 +41,6 @@ def test_no_module_resolves_config_via_repo_root():
 def test_every_config_yaml_is_reachable_under_config_dir():
     """新增配置只要落在 config/ 下就该被找到——这是 CONFIG_DIR 存在的意义。"""
     for name in (
-        "backends_mock.yaml",
         "actions.yaml",
         "emotion_policy.yaml",
         "symptom_taxonomy.yaml",
@@ -49,6 +48,5 @@ def test_every_config_yaml_is_reachable_under_config_dir():
         "conversation.yaml",
         "rules/complaint_terms.yaml",
         "rules/intent_terms.yaml",
-        "policy/warranty_policy.yaml",
     ):
         assert (CONFIG_DIR / name).is_file(), f"{name} 不在 CONFIG_DIR 下"

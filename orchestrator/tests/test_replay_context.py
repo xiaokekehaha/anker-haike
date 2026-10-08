@@ -3,7 +3,7 @@ from app.conversation.history import ConversationEntry
 from app.replay.package import model_key
 
 
-def context(prefix, *, text="查物流 DEMO-X10-001", value="不吸了", now="2026-09-14T10:00:00Z"):
+def context(prefix, *, text="查物流 Anker016", value="不吸了", now="2026-09-14T10:00:00Z"):
     entry = ConversationEntry(
         entry_id=prefix + "input",
         session_id=prefix + "session",
@@ -51,7 +51,7 @@ def test_context_replay_identity_ignores_run_identity_but_preserves_business_dat
         "intake", "Meaning", context("a", value="漏水了")
     )
     assert model_key("intake", "Meaning", a) != model_key(
-        "intake", "Meaning", context("a", text="查物流 DEMO-X10-002")
+        "intake", "Meaning", context("a", text="查物流 Anker013")
     )
 
 

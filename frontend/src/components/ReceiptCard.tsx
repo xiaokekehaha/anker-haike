@@ -2,8 +2,8 @@ import { useState } from 'react';
 import type { ReceiptCardItem, ReceiptFields } from '../types/snapshot';
 import styles from './Cards.module.css';
 
-type Field = 'order_no' | 'channel' | 'purchase_date' | 'amount';
-const LABELS: Record<Field, string> = { order_no: '订单号', channel: '购买渠道', purchase_date: '购买日期', amount: '金额' };
+type Field = 'order_no' | 'seller' | 'country' | 'purchase_date' | 'amount';
+const LABELS: Record<Field, string> = { order_no: '订单号', seller: '购买商家', country: '购买国家', purchase_date: '购买日期', amount: '金额' };
 type Props = { item: ReceiptCardItem; active: boolean; disabled?: boolean; onConfirm: (fields: ReceiptFields, edited: Field[]) => void; onSkip: (reason: 'none' | 'unreadable' | 'later') => void };
 
 /** 凭证确认卡（票 40 前端）：字段可编辑，confidence < 0.7 标黄；确认 / 跳过。 */

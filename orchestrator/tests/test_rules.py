@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import time
 
 import pytest
@@ -96,9 +97,9 @@ def test_hot_reload_on_file_change(tmp_path):
     svc = RulesService(p)
     assert svc.check_in(text="机器会发光").rule_ids == []
     text = p.read_text(encoding="utf-8").replace("text_terms: [冒烟,", "text_terms: [发光, 冒烟,")
-    p.write_text(text.replace("version: 2026-09-12.1", "version: 2026-09-12.2"), encoding="utf-8")
+    p.write_text(re.sub(r"^version: .*$", "version: hot-reload-test", text, flags=re.MULTILINE), encoding="utf-8")
     os.utime(p, (time.time() + 5, time.time() + 5))  # 保证 mtime 变化
-    assert svc.check_in(text="机器会发光").rule_ids == ["R4"] and svc.version == "2026-09-12.2"
+    assert svc.check_in(text="机器会发光").rule_ids == ["R4"] and svc.version == "hot-reload-test"
     # 改坏文件：保留旧字典继续工作
     p.write_text("version: [", encoding="utf-8")
     os.utime(p, (time.time() + 10, time.time() + 10))

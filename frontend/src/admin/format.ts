@@ -132,22 +132,21 @@ export function sla(iso: string): { label: string; level: 'fresh' | 'aging' | 'l
   return { label: `${Math.round(diff / 86_400_000)} 天`, level: 'late' };
 }
 
-export const REMEDY_TEXT: Record<string, string> = {
-  parts: '寄送更换配件', repair: '申请维修', replace: '申请换货', refund: '申请退款审核', paid_repair: '申请付费维修', none: '不提供免费处置',
+/** 服务单类型（主办方 SOP：提交后一律转人工） */
+export const SERVICE_TYPE_TEXT: Record<string, string> = {
+  replace: '换货单', refund: '退款单', reship: '补发单', carrier_investigation: '承运商调查单',
 };
-export const COST_TEXT: Record<string, string> = { company: '公司承担', customer: '客户承担', shared: '双方分担' };
-export const FAULT_CLASS_TEXT: Record<string, string> = { quality: '质量故障', user_damage: '人为损坏', safety: '安全风险', unknown: '故障未核实' };
+/** 订单质保判断 */
+export const WARRANTY_TEXT: Record<string, string> = {
+  in_warranty: '保内', out_of_warranty: '已过保', unauthorized_dealer: '非授权经销商', unknown: '待核实',
+};
+export const WARRANTY_BASIS_TEXT: Record<string, string> = { order: '订单质保结束日期', dealer: '授权经销商购买日起 12 个月', none: '无依据' };
 export const EMOTION_TEXT: Record<string, string> = { calm: '平静', anxious: '焦急', dissatisfied: '不满', angry: '愤怒', complaint_risk: '投诉风险' };
 export const STRATEGY_TEXT: Record<string, string> = {
   normal: '常规处理', reassure_first: '先安抚再排查', reassure_and_shorten: '先安抚、缩短步骤', direct_resolution: '直接给方案', de_escalate_and_offer_human: '降温并提供人工',
 };
-/** 政策条件名 → 人话；未知条件原样显示 */
-export const CONDITION_TEXT: Record<string, string> = {
-  within_warranty: '在保修期内', fault_class: '故障类别', region_purchase: '购买地', channel: '购买渠道', proof_of_purchase: '购买凭证',
-  authorized_dealer: '授权经销商', receipt_status: '凭证状态', exclusions: '不保条款',
-};
-/** 授权门四项检查 */
-export const GATE_TEXT: Record<string, string> = { policy: '政策允许', evidence_and_consent: '证据与用户确认', safety: '安全限制', idempotency: '幂等键' };
+/** 服务单提交闸门四项检查 */
+export const GATE_TEXT: Record<string, string> = { eligibility: '办理资格', evidence: 'SOP 证据与客户确认', safety: '安全限制', idempotency: '幂等键' };
 
 /** L3 案件状态分组（工作台 tab） */
 export const CASE_GROUPS: { key: string; label: string; statuses: string[] }[] = [
@@ -162,15 +161,5 @@ export function showValue(value: unknown): string {
   if (typeof value === 'boolean') return value ? '是' : '否';
   if (typeof value === 'object') return JSON.stringify(value);
   const text = String(value);
-  return COST_TEXT[text] ?? FAULT_CLASS_TEXT[text] ?? REMEDY_TEXT[text] ?? text;
-}
-
-/** 政策引擎的 needs_human 原因码 → 人话 */
-export const NEEDS_HUMAN_TEXT: Record<string, string> = {
-  fault_unknown: '故障未核实', fault_safety: '存在安全风险', missing_inputs: '服务信息不全', no_policy_matched: '政策未覆盖',
-  unauthorized_dealer: '非授权经销商', out_of_warranty: '已过保修期', receipt_missing: '缺购买凭证', region_unknown: '购买地未知',
-};
-export function needsHumanText(reason: string): string {
-  const [code, detail] = reason.split(':');
-  return (NEEDS_HUMAN_TEXT[code ?? ''] ?? code ?? reason) + (detail ? `（${detail.trim()}）` : '');
+  return SERVICE_TYPE_TEXT[text] ?? WARRANTY_TEXT[text] ?? text;
 }

@@ -1,25 +1,28 @@
 # 规则服务字典（票 15，09 §1、03 §1.7）。修改后无需重启：服务按文件 mtime 热加载。
 # 每条规则带编号；action=escalate 的规则在 CP-in 命中即写 safety_flags 并直接跳 escalate。
 # text_terms 匹配用户文本与动作备注（子串，忽略大小写与空白）；observation_terms 匹配图片观察项（英文小写子串）。
-version: 2026-09-12.1
+version: 2026-10-08.1
 rules:
   R4:
     name: 安全风险（冒烟 / 烧焦 / 电池鼓包等）
     action: escalate
     priority: 1
-    text_terms: [冒烟, 冒烟了, 烧焦, 焦味, 糊味, 异味, 鼓包, 电池鼓, 发热变形, 变形发烫, 漏液, 电击, 触电, 麻手, 火花, 起火, 着火, 冒火, 爆炸, 烫手, 烫到, 融化, 熔化]
+    # 英 / 荷 / 德 / 法 / 西语词按主办方工单用语补充（T45「heating part also burned me」）；只收设备安全表达，不收情绪粗口。
+    text_terms: [冒烟, 冒烟了, 烧焦, 焦味, 糊味, 异味, 鼓包, 电池鼓, 发热变形, 变形发烫, 漏液, 电击, 触电, 麻手, 火花, 起火, 着火, 冒火, 爆炸, 烫手, 烫到, 融化, 熔化,
+                 burned me, burnt me, burns me, burning smell, smells burnt, smoke, smoking, sparks, sparking, caught fire, on fire, electric shock, shocked me, swollen battery, battery swelling, bulging battery, melted, melting, overheating, too hot to touch,
+                 rook, brandlucht, verbrand, oververhit, Rauch, verbrannt, Brandgeruch, überhitzt, fumée, brûlé, surchauffe, humo, quemado, sobrecalentamiento]
     observation_terms: [烧焦, 冒烟, 鼓包, 漏液, 火花, smoke, smoking, burn, burnt, scorch, charred, melted, deformed battery, swollen battery, swollen, bulging, bulge, leak, leaking, spark, fire, flame, overheat]
   R3:
     name: 明确要求人工
     action: escalate
     priority: 2
-    text_terms: [转人工, 人工客服, 找人工, 要人工, 人工服务, 真人客服, 客服电话, 找你们经理, 要人来处理]
+    text_terms: [转人工, 人工客服, 找人工, 要人工, 人工服务, 真人客服, 客服电话, 找你们经理, 要人来处理, talk to a human, speak to a human, real person, human agent, speak to someone, live agent, contact customer service, klantenservice, Kundendienst, service client, servicio al cliente]
     action_kinds: [request_human]
   R6:
     name: 退换 / 保修诉求（常规升级时进入凭证子流程）
     action: flag
     priority: 3
-    text_terms: [退货, 换货, 退款, 保修, 质保, 三包, 换新, 退换]
+    text_terms: [退货, 换货, 退款, 保修, 质保, 三包, 换新, 退换, replacement, refund, warranty, return, garantie, Ersatz, remboursement, reembolso]
 
 # CP-pre-step（09 §1）：步骤文字含高危动作而知识来源无 caution → 丢弃该步骤取下一步；含 R4 安全词 → 升级
 pre_step:

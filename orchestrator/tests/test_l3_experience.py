@@ -189,8 +189,8 @@ def test_tasks_order_dedupe_and_inline_completion():
     assert task is None and unchanged[0]["status"] == "active"
     finished, task = next_task(queue, "report_problem")
     assert finished[0]["status"] == "done" and task["intent"] == "logistics_query"
-    a = BusinessContext().accept("DEMO-X10-001", "a")
-    b = a.accept("DEMO-CN-003", "b")
+    a = BusinessContext().accept("Anker016", "a")
+    b = a.accept("Anker013", "b")
     queue, _ = enqueue([], "report_problem", ["logistics_query"], "设备不吸，查物流", "a", business=a)
     queue, _ = enqueue(queue, "order_query", ["logistics_query"], "型号和物流", "b", business=b)
     assert len([t for t in queue if t["intent"] == "logistics_query"]) == 2
@@ -199,9 +199,9 @@ def test_tasks_order_dedupe_and_inline_completion():
     assert queue[1]["status"] == "pending"
     checked, _ = next_task(queue, "logistics_query", business=b, task_id=queue[1]["task_id"])
     assert checked[1]["status"] == "pending"
-    assert task_business(queue[1], b).bind("warranty.check").params == {"order_no": "DEMO-X10-001"}
+    assert task_business(queue[1], b).bind("warranty.check").params == {"order_no": "Anker016"}
     assert task_business({"task_id": "old", "quote": "查物流"}, b).status == "missing"
-    assert task_business({"task_id": "old", "quote": "查 DEMO-X10-001 物流"}, b).bind("warranty.check").params == {"order_no": "DEMO-X10-001"}
+    assert task_business({"task_id": "old", "quote": "查 Anker016 物流"}, b).bind("warranty.check").params == {"order_no": "Anker016"}
 
 
 def test_vision_vocabulary_quality_and_prior():
@@ -294,7 +294,7 @@ async def test_manual_close_commitment_and_reopen():
     with pytest.raises(CaseConflict):
         await service.close(cid, user_confirmed=True, external_status="created")
     for _ in range(2):
-        row = await service.record_commitment(cid, "申请换货", "clause")
+        row = await service.record_commitment(cid, "服务单已提交，人工处理中", "receipt")
     assert len([e for e in row["events"] if e["type"] == "commitment"]) == 1
     with pytest.raises(ValueError):
         await service.record_commitment(cid, "赔偿100元", "model")

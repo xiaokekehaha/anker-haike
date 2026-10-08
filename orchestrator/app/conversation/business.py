@@ -9,7 +9,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.actions.params import IDENTIFIER
+from app.actions.params import IDENTIFIER, classify
 
 KEYS = ("order_no", "tracking_no", "service_order_no")
 
@@ -86,14 +86,7 @@ class BusinessContext(BaseModel):
         result.last_input_id = input_id
         explicit: dict[str, list[str]] = {}
         for match in IDENTIFIER.finditer(text):
-            value = match.group().upper()
-            key = (
-                "service_order_no"
-                if value.startswith("SRV-")
-                else "tracking_no"
-                if "TRACK-" in value
-                else "order_no"
-            )
+            key, value = classify(match.group())
             if value not in explicit.setdefault(key, []):
                 explicit[key].append(value)
         if any(len(values) > 1 for values in explicit.values()):
@@ -174,7 +167,7 @@ class BusinessContext(BaseModel):
         if target.status != "resolved" or subject is None:
             return result
         for key, value in values.items():
-            if key not in {"region_purchase", "region_use", "channel", "platform"} or not value:
+            if key not in {"address", "serial_number", "seller", "country"} or not value:
                 continue
             old = subject.facts.get(key)
             if not old or old.source != "backend":
@@ -238,11 +231,11 @@ class BusinessContext(BaseModel):
         for key, value in observed.items():
             current.identifiers[key] = Value(value=value, source="backend", input_id=input_id)
         data = receipt.get("data") or receipt
-        fields = ("sku", "channel", "purchase_date", "region_purchase", "platform", "amount", "currency") if action == "warranty.check" else ("carrier", "status", "updated_at") if action == "logistics.query" else ()
+        fields = ("sku", "purchase_date", "warranty_end", "amount") if action == "warranty.check" else ("sku", "purchase_date", "warranty_end", "amount", "logistics_status") if action == "logistics.query" else ()
         for key in fields:
             value = data.get(key) or receipt.get(key)
             if value is not None:
-                current.facts["logistics_status" if key == "status" else key] = Value(
+                current.facts[key] = Value(
                     value=str(value), source="backend", input_id=input_id,
                     observed_at=receipt.get("updated_at") or data.get("updated_at"),
                 )

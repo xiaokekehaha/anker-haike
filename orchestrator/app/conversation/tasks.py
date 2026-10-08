@@ -28,8 +28,15 @@ LABELS = {
 }
 
 
+# 投诉 / 情绪不是要办的事：和业务诉求同时出现时排在最后，由情绪策略处理语气，不抢走查询或办理。
+TRAILING = {"complaint", "social"}
+
+
 def ordered_intents(primary, secondary):
-    return sorted(dict.fromkeys([primary, *secondary]), key=lambda intent: PRIORITY.get(intent, 2))
+    return sorted(
+        dict.fromkeys([primary, *secondary]),
+        key=lambda intent: (intent in TRAILING, PRIORITY.get(intent, 2)),
+    )
 
 
 def task_business(task, business):

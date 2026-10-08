@@ -5,7 +5,7 @@ import { HANDOFF_LABELS } from '../state/record';
 
 const STATUS: Record<string, string> = {
   not_collected: '未收集', insufficient: '信息不足', order_verified: '订单已核实', order_product_mismatch: '订单与设备不一致',
-  needs_manual_check: '需人工核实', channel_in_directory: '经销商在名录内', channel_unknown: '渠道未知',
+  needs_manual_check: '需人工核实', dealer_authorized: '授权经销商', dealer_unauthorized: '非授权经销商',
 };
 
 const FEEDBACK_LABELS: Record<Feedback, string> = {
@@ -16,16 +16,12 @@ const stepText = (x: ExecutedStep) =>
   `${x.title}（${FEEDBACK_LABELS[x.feedback]}${x.observed?.length ? `；观察：${x.observed.join('、')}` : ''}）`;
 
 export const FACT_LABELS: Record<string, string> = {
-  channel: '订单渠道', purchase_date: '购买日期', 'dealer.name': '经销商', authorized: '名录授权状态',
-  order_no: '订单号', sku: '型号', amount: '订单金额', currency: '币种', region_purchase: '购买地', platform: '平台',
+  order_no: '订单号', purchase_date: '购买日期', address: '收货地址', dealer: '授权经销商', country: '购买国家',
+  sku: '型号', amount: '订单金额',
 };
 
 function receiptFacts(facts: Record<string, string>): string {
-  const authorization: Record<string, string> = { true: '已授权', false: '未授权' };
-  return Object.entries(facts).map(([key, value]) => {
-    const display = key === 'authorized' ? (authorization[value] ?? value) : value;
-    return `${FACT_LABELS[key] ?? key}：${display}`;
-  }).join('；');
+  return Object.entries(facts).map(([key, value]) => `${FACT_LABELS[key] ?? key}：${value}`).join('；');
 }
 
 /** 与后端 summary_to_text 同款的可读文本（票 16 一键复制）。 */

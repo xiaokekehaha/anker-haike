@@ -53,7 +53,7 @@ class FactCandidate(BaseModel):
     model_config = ConfigDict(extra="forbid")
     kind: Literal["symptom", "observation", "preference", "context"] = "symptom"
     value: str
-    context_field: Literal["region_purchase", "region_use", "channel", "platform", "purchase_date"] | None = None
+    context_field: Literal["address", "serial_number", "purchase_date", "seller", "country"] | None = None
     quote: str = Field(description="本条用户消息中支持此事实的逐字原文，不能引用助手建议")
     occurred_at: str | None = None
     time_expression: str | None = None
@@ -141,7 +141,7 @@ business_reference 是唯一的对象选择：问正在办理的案件/退款/�
 对事实追问填写 answer_request：fields 只选择本轮所问字段，quote 是当前逐字原话，不输出答案值。对象只在 business_reference 中选择，answer_request 不重复选择对象。询问型号/渠道/平台/购买日/购买地/金额属于订单事实，使用地来自用户，物流状态/单号来自物流，现象/已做步骤来自问题记录，方案/案件状态来自办理记录。结合 conversation_view 识别已知与缺失，不把另一对象事实当作当前事实；问题中没重述已知信息无需追问。只有事实问答才填写 answer_request，操作解释和一般建议保持空。
 查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。
 情绪分 calm/dissatisfied/angry/complaint_risk 四级，emotion_cues 仅引用当前原话。单纯表达不满、催促或提出投诉用 complaint 意图；例如“再不解决我就去平台投诉”是 complaint + complaint_risk，不含转人工请求。只有明确要求接入人工客服才 request_human，且须填写 human_request_quote，不能从用户情绪或你认为需要人工推导此操作。情绪策略与实际转人工请求相互独立。
-购买地、使用地、渠道、平台抽为 facts(kind=context, context_field=对应字段, value=值, quote=当前原话)。购买地和使用地不同，不要推断另一字段。购买日期能确定到某天时抽为 context_field=purchase_date，value=YYYY-MM-DD（相对说法按当前时间换算），只到月份不抽。一句多诉求放 secondary_intents。只有用户明确指定队列中存在的任务且能给出其 target_task_id，才用 resume_task；否则即使说「继续、先处理」，仍按其明确的退款、换货、查询等业务诉求分类，由服务端恢复对应订单的案件。不得生成 task_id。
+收货地址、产品 SN、购买商家、购买国家（ISO 代码）抽为 facts(kind=context, context_field=对应字段, value=原样, quote=当前原话)。购买日期能确定到某天时抽为 context_field=purchase_date，value=YYYY-MM-DD（相对说法按当前时间换算），只到月份不抽。一句多诉求放 secondary_intents。只有用户明确指定队列中存在的任务且能给出其 target_task_id，才用 resume_task；否则即使说「继续、先处理」，仍按其明确的退款、换货、查询等业务诉求分类，由服务端恢复对应订单的案件。不得生成 task_id。
 逐一识别本轮每个独立诉求，不因涉及另一设备或另一订单而省略其中任何一项；只把第一个诉求放 primary_intent，其余按原话出现顺序放 secondary_intents，服务端负责业务优先级排序。new_issue 仅表示用户明确要求新建问题，不能替代已经说清的换货、退款、排障等业务意图。查购买日期/渠道/型号属于 order_query，查保修期限属于 warranty_query，同一句同时问两者时保留两个意图。
 每轮先理解用户当前想做什么，不受之前升级/转人工阶段限制。结合完整历史问答、当前时间、问题与事实 ID。
 “之前问了什么”是 history_query；“新问题”是 new_issue，要求描述新问题；“刚说错了”没有纠正内容时必须 clarification，不擅自删除事实。

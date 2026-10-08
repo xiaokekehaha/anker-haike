@@ -90,8 +90,8 @@ async def test_dense_context_preserves_required_state(rounds, objects, input_cha
     issue["pending"] = {"kind": "step_feedback", "step_id": "step-0"}
     business = BusinessContext()
     for i in range(objects):
-        business = business.accept(f"订单 DEMO-CAP-{i:04}", f"user-{i}")
-        business = business.remember({"channel": f"渠道{i}"}, f"user-{i}")
+        business = business.accept(f"订单 Anker{i:03}", f"user-{i}")
+        business = business.remember({"seller": f"商家{i}"}, f"user-{i}")
         if i:
             state["issues"][f"issue-{i}"] = {
                 "title": f"设备{i}不启动", "facts": copy.deepcopy(issue["facts"][:2]),

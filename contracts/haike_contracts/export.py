@@ -10,7 +10,7 @@ from pydantic import TypeAdapter
 from pydantic.json_schema import GenerateJsonSchema
 
 from haike_contracts.actions import ActionConflict, ActionRequest, ActionResult
-from haike_contracts.common import FaultLocalization, ImageQuality, PolicyDecision
+from haike_contracts.common import FaultLocalization, ImageQuality, WarrantyDecision
 from haike_contracts.events import ServerEvent
 from haike_contracts.snapshot import SessionSnapshot
 
@@ -28,7 +28,7 @@ def _wrap(title: str, schema: dict) -> dict:
 
 def build_schemas() -> dict[str, dict]:
     events = TypeAdapter(ServerEvent).json_schema(schema_generator=_Gen, mode="validation")
-    for shared in (PolicyDecision, FaultLocalization, ImageQuality):
+    for shared in (WarrantyDecision, FaultLocalization, ImageQuality):
         sub = shared.model_json_schema(schema_generator=_Gen, mode="validation")
         events.setdefault("$defs", {}).update(sub.pop("$defs", {}))
         events["$defs"][shared.__name__] = sub

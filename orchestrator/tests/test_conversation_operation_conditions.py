@@ -25,7 +25,6 @@ from app.guide.verify import apply_feedback
 from app.main import app
 from app.models.runtime import get_model_router, set_model_router
 from app.plans.library import PlanLibrary
-from app.policy.fault_class import derive_fault_class
 from app.rules import RulesService
 from app.settings import REPO_ROOT
 from tests import conversation_runtime, test_conversation_l3
@@ -63,10 +62,10 @@ def test_cannot_do_records_constraint_without_execution_or_plan_consumption():
     assert any("操作限制" in item for item in summary.observations)
 
 
-def test_damage_report_in_unexecuted_step_remains_available_to_service_policy():
+def test_damage_report_in_unexecuted_step_is_not_recorded_as_executed():
     state, _ = blocked_state("设备摔坏了，无法操作")
     assert not execution_history(state)
-    assert derive_fault_class(state) == "user_damage"
+    assert any("摔坏" in (b.quote or "") for b in conditions_for(state).blockers)
 
 
 def test_device_unavailable_blocks_observation_and_operations_until_it_returns():

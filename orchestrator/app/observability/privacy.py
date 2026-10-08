@@ -31,7 +31,7 @@ LABELLED = re.compile(
 LONG_NUMBER = re.compile(
     r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d[- ]?\d{4}[- ]?\d{4}(?!\d)|(?<!\d)\d{8,}(?!\d)"
 )
-BUSINESS_NUMBER = re.compile(r"\b(?:DEMO-[A-Z0-9-]+|SRV-[A-Z0-9]+)\b", re.IGNORECASE)
+BUSINESS_NUMBER = re.compile(r"\b(?:Anker ?\d{3,7}(?:-\d{1,3})?|SRV-[A-Z0-9]+)\b", re.IGNORECASE)
 DATA_URI = re.compile(r'data:image/[^\s"\']+')
 # 票 48：地址脱敏——「地址 / 收货地址 / 住址 / 寄到」标签后的整段（到句读为止）
 ADDRESS = re.compile(

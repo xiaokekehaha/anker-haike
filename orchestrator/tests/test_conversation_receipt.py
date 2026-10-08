@@ -49,8 +49,8 @@ async def test_replacing_photo_keeps_old_card_and_confirms_only_new_fields(conve
         cards = []
         for i in (1, 2):
             c.models["intake"].script.append({"primary_intent": "supplement", "device_relation": "current"})
-            c.models["warranty.receipt_ocr"].script.append({"order_no": f"TEST-{i}", "channel": "京东",
-                "purchase_date": "2026-09-01", "confidence": {"order_no": 0.9, "channel": 0.9, "purchase_date": 0.9}})
+            c.models["warranty.receipt_ocr"].script.append({"order_no": f"TEST-{i}", "seller": "京东",
+                "purchase_date": "2026-09-01", "confidence": {"order_no": 0.9, "seller": 0.9, "purchase_date": 0.9}})
             snap = await c.snapshot()
             output = c.check(await c.client.post(f"/sessions/{c.sid}/messages", data={
                 "input_id": f"photo-{i}", "expected_version": snap["version"], "purpose": "receipt"},

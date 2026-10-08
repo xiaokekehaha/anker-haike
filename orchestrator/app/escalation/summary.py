@@ -231,12 +231,12 @@ def build_summary(
     )
     return EscalationSummary(
         case_id=state.get("case_id"),
-        policy_decision_brief={k: (state.get("policy_decision") or {}).get(k) for k in ("policy_id", "policy_version", "within_warranty", "needs_human_reasons")} if state.get("policy_decision") else None,
+        warranty=state.get("warranty"),
         recommended_options=(state.get("proposal") or {}).get("options", []),
         gate_result=state.get("gate_result"),
         task_queue=state.get("task_queue") or [],
         emotion_track=state.get("emotion_track") or [],
-        draft_reply="已整理订单与政策依据，请核实后继续处理。" if state.get("case_id") else None,
+        draft_reply="已整理订单、质保判断与证据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
         problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "；".join(
             f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
@@ -267,15 +267,16 @@ def build_summary(
 
 def _receipt_facts_text(facts: dict[str, str]) -> str:
     labels = {
-        "channel": "订单渠道",
+        "order_no": "订单号",
         "purchase_date": "购买日期",
-        "dealer.name": "经销商",
-        "authorized": "名录授权状态",
+        "address": "收货地址",
+        "dealer": "授权经销商",
+        "country": "购买国家",
     }
     return (
         "；".join(
             f"{labels.get(k, k)}："
-            + ({"true": "已授权", "false": "未授权"}.get(v, v) if k == "authorized" else v)
+            + v
             for k, v in facts.items()
         )
         or "无"

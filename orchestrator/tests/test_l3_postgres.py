@@ -10,9 +10,8 @@ from psycopg_pool import AsyncConnectionPool
 
 from app.actions.executor import ActionExecutor
 from app.actions.store import PostgresExecutionStore
-from app.backends.mock import MockBackend
 from app.backends.protocol import ServiceOrderRequest
-from app.backends.seed import seed_backends
+from app.backends.service import PostgresBackend
 from app.cases.service import CaseService
 from app.cases.store import CaseConflict, PostgresCaseStore
 from app.settings import REPO_ROOT, settings
@@ -48,7 +47,7 @@ async def l3_pool():
             for statement in module.STATEMENTS:
                 await conn.execute(statement)
             from types import SimpleNamespace
-            for name in ("0007_l3_metrics", "0008_service_order_client_ref"):
+            for name in ("0007_l3_metrics", "0008_service_order_client_ref", "0009_official_backend"):
                 path = REPO_ROOT / f"orchestrator/migrations/versions/{name}.py"
                 spec = importlib.util.spec_from_file_location(name, path)
                 module = importlib.util.module_from_spec(spec)
@@ -65,24 +64,23 @@ async def l3_pool():
         await connection.close()
 
 
-async def test_seed_sql_and_backend_idempotency(l3_pool):
+async def test_service_order_sql_is_idempotent_by_client_ref(l3_pool):
     import asyncio
 
-    path = REPO_ROOT / "config/backends_mock.yaml"
-    assert await seed_backends(l3_pool, path) == await seed_backends(l3_pool, path)
-    backend = MockBackend(l3_pool)
-    order = await backend.get_order("DEMO-X10-001")
-    assert order.region_purchase == "US"
-    shipment = await backend.get_shipment(order_no=order.order_no)
-    assert await backend.get_shipment(tracking_no=shipment.tracking_no) == shipment
+    backend = PostgresBackend(l3_pool)
+    order = await backend.get_order("Anker016")
     req = ServiceOrderRequest(
-        order_no=order.order_no, sku=order.sku, reason_code="quality", client_ref="case:replace"
+        type="replace", order_no=order.order_no, sku=order.main_line.sku, reason="左侧无吸力",
+        evidence={"serial_number": "customer:SN1"}, client_ref="case:replace",
     )
     results = await asyncio.gather(*[backend.create_service_order(req) for _ in range(5)])
-    assert all(r == results[0] for r in results)
+    assert all(r == results[0] for r in results) and results[0].status == "submitted"
+    assert results[0].evidence == {"serial_number": "customer:SN1"}
     assert await backend.get_service_order(results[0].service_order_no) == results[0]
     assert await backend.find_service_order("case:replace") == results[0]
     assert await backend.find_service_order("other") is None
+    dealer = await backend.create_service_order(req.model_copy(update={"order_no": None, "sku": None, "client_ref": "dealer"}))
+    assert dealer.order_no is None
 
 
 async def test_durable_executor_and_case_transactions(l3_pool):
@@ -90,27 +88,22 @@ async def test_durable_executor_and_case_transactions(l3_pool):
 
     from tests.test_l3_backends_actions import gate
 
-    await seed_backends(l3_pool, REPO_ROOT / "config/backends_mock.yaml")
     cases = CaseService(PostgresCaseStore(l3_pool))
-    case = await cases.open("s", "i", {"sku": "EUFY-X10-PRO-OMNI", "category": "robot_vacuum"})
-    case = await cases.bind_order(case["case_id"], "DEMO-X10-001")
+    case = await cases.open("s", "i", {"sku": "T8D04", "category": "breast_pump"})
+    case = await cases.bind_order(case["case_id"], "Anker016")
     with pytest.raises(CaseConflict, match="其他订单"):
-        await cases.bind_order(case["case_id"], "DEMO-CN-003")
-    assert (await cases.store.get(case["case_id"]))["external_refs"]["order_no"] == "DEMO-X10-001"
+        await cases.bind_order(case["case_id"], "Anker013")
+    assert (await cases.store.get(case["case_id"]))["external_refs"]["order_no"] == "Anker016"
     case = await cases.transition(case["case_id"], "proposing", "test")
-    option = {
-        "option_id": "replace",
-        "remedy": "replace",
-        "title": "申请换货",
-        "auto_allowed": False,
-    }
+    option = {"option_id": "replace", "type": "replace", "title": "提交换货单", "detail": "", "source": "sop"}
     case = await cases.transition(
         case["case_id"],
         "awaiting_approval",
-        "cross region",
+        "evidence missing",
         proposal={"options": [option]},
-        policy_decision={"needs_human": True},
+        warranty={"status": "in_warranty", "basis": "order", "as_of": "2026-10-08", "reason": "test"},
     )
+    assert (await cases.store.get(case["case_id"]))["warranty"]["status"] == "in_warranty"
     args = {
         "decision": "approve",
         "actor": "agent:test",
@@ -132,14 +125,9 @@ async def test_durable_executor_and_case_transactions(l3_pool):
     ] == row["revision"]
     await cases.consume_decision(case["case_id"], decision["decision_id"], "input1")
     await cases.transition(case["case_id"], "executing", "test")
-    backend = MockBackend(l3_pool)
+    backend = PostgresBackend(l3_pool)
     executor = ActionExecutor(backend, PostgresExecutionStore(l3_pool))
-    params = {
-        "order_no": "DEMO-X10-001",
-        "sku": "EUFY-X10-PRO-OMNI",
-        "reason_code": "quality",
-        "evidence_ids": [],
-    }
+    params = {"type": "replace", "order_no": "Anker016", "sku": "T8D04121", "reason": "左侧无吸力", "evidence": {}}
     args = {
         "idempotency_key": "case:replace",
         "case_id": case["case_id"],
@@ -148,16 +136,15 @@ async def test_durable_executor_and_case_transactions(l3_pool):
         "run_id": "r",
         "gate_result": gate(),
     }
-    first = await executor.run("replacement.create", params, **args)
+    first = await executor.run("service_order.create", params, **args)
     # A fresh service instance simulates process restart.
     second = await ActionExecutor(backend, PostgresExecutionStore(l3_pool)).run(
-        "replacement.create", params, **args
+        "service_order.create", params, **args
     )
     assert second.replayed and second.receipt == first.receipt
     await cases.attach_execution(case["case_id"], first.receipt.model_dump())
-    with pytest.raises(CaseConflict):
-        await cases.close(case["case_id"], user_confirmed=True, external_status="created")
-    row = await cases.close(case["case_id"], user_confirmed=True, external_status="shipped")
+    await cases.transition(case["case_id"], "awaiting_approval", "服务单已提交，转人工处理")
+    row = await cases.close(case["case_id"], actor="agent:test")
     assert row["status"] == "closed"
     assert (await cases.reopen(case["case_id"]))["reopened_count"] == 1
     await cases.rate("s", "i", 5, case_id=case["case_id"])
@@ -196,7 +183,7 @@ async def test_retention_keeps_open_case_and_explicit_delete_erases_raw(l3_pool)
         await conn.execute("insert into sessions values ('retention-session',null,now()-interval '2 days')")
     service=CaseService(PostgresCaseStore(l3_pool))
     row=await service.open('retention-session','issue',{})
-    await service.record_commitment(row['case_id'],'模拟时效承诺','clause')
+    await service.record_commitment(row['case_id'],'服务单已提交，人工处理中','receipt')
     await service.store.record_episode(episode({'session_id':'retention-session','active_issue_id':'issue','case_id':row['case_id'],'stage':'track'},row))
     await service.rate('retention-session','issue',4,'客户原文',row['case_id'])
     assert await delete_session_data(l3_pool,'retention-session',expired_before=datetime.now(UTC)-timedelta(days=1)) == {}

@@ -173,7 +173,8 @@ _reg(
         version=5,
         fields={
             "order_no": "1234",
-            "channel": "京东",
+            "seller": "Aeroflow Breastpumps",
+            "country": "US",
             "purchase_date": "2026-01-02",
             "amount": None,
         },
@@ -429,17 +430,11 @@ _reg(
 )
 
 _reg(
-    ev("context_card", card_id="l3-context_card", version=1, fields=["region_use"]),
-    ev("context_card", version=1),
-    "missing card_id",
-)
-
-_reg(
     ev(
         "proposal_card",
         card_id="l3-proposal_card",
         version=1,
-        options=[], decision_summary="演示政策", policy_version="v1",
+        options=[{"option_id": "replace", "type": "replace", "title": "提交换货单"}], decision_summary="保内，可提交换货单",
     ),
     ev("proposal_card", version=1),
     "missing card_id",
@@ -450,7 +445,7 @@ _reg(
         "execution_card",
         card_id="l3-execution_card",
         version=1,
-        execution_id="e1", action_kind="replacement.create", status="succeeded", receipt={"status": "created"}, idempotency_key="case:replace",
+        execution_id="e1", action_kind="service_order.create", status="succeeded", receipt={"status": "submitted"}, idempotency_key="case:service_order.create:replace",
     ),
     ev("execution_card", version=1),
     "missing card_id",
@@ -482,27 +477,6 @@ _reg(
     ),
     ev("case_changed", version=1),
     "missing card_id",
-)
-
-ACTIONS["confirm_context"] = (
-    {
-        "kind": "confirm_context",
-        "action_id": "a-confirm_context",
-        "expected_version": 1,
-        "target_issue_id": "issue1",
-        "input_token": "t",
-        "card_id": "c",
-        "payload": {"region_purchase": "CN", "region_use": "CN", "channel": "official_store"},
-    },
-    {
-        "kind": "confirm_context",
-        "action_id": "a-confirm_context",
-        "expected_version": 1,
-        "target_issue_id": "issue1",
-        "card_id": "c",
-        "payload": {"region_purchase": "CN", "region_use": "CN", "channel": "official_store"},
-    },
-    "missing token",
 )
 
 ACTIONS["confirm_proposal"] = (

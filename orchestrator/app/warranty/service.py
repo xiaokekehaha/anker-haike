@@ -1,102 +1,157 @@
-"""票 41：演示订单/渠道参考库与确定性 L1–L6；只输出事实，不判断质保资格。"""
+"""主办方 SOP 的「订单质保判断」与经销商名录（data/official/dealers.yaml）。
+
+    有订单        → 订单行的质保结束日期 ≥ 演示今天 → 保内，否则过保
+    查不到订单    → 核实购买商家：country 精确 + seller 模糊命中名录 → 授权经销，购买日起 12 个月
+                    （工单 T45 注明「Reseller（提供12个月质保）」）；未命中 → 引导客户联系商家售后
+    信息不足      → unknown，追问而不是猜
+
+只输出判定与依据，不做任何办理动作。
+"""
 
 from __future__ import annotations
 
+import re
 import unicodedata
-from datetime import date
-from pathlib import Path
-from typing import Any
+from dataclasses import dataclass
+from datetime import UTC, date, datetime
+from difflib import SequenceMatcher
+from functools import lru_cache
 
-import yaml
-from haike_contracts.common import ReceiptOutcome
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from haike_contracts.common import WarrantyDecision
 
+from app.official.models import Dealer, OfficialData, Order, pn_of
+from app.settings import settings
 
-def key(value: str | None) -> str:
-    # 精确匹配规范化后的完整名称，不做子串/模糊授权判断。
-    return "".join(unicodedata.normalize("NFKC", value or "").casefold().split())
-
-
-class Record(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True, frozen=True)
-
-
-class Order(Record):
-    order_no: str = Field(min_length=1)
-    sku: str = Field(min_length=1)
-    channel: str = Field(min_length=1)
-    purchase_date: date
-
-
-class Dealer(Record):
-    name: str = Field(min_length=1)
-    region: str = Field(min_length=1)
-    authorized: bool
-    warranty_note: str = ""
-
-
-class ReferenceData(Record):
-    version: str
-    orders: list[Order]
-    dealers: list[Dealer]
-
-    @model_validator(mode="after")
-    def unique_keys(self):
-        for values in ([key(o.order_no) for o in self.orders], [key(d.name) for d in self.dealers]):
-            if len(values) != len(set(values)):
-                raise ValueError("duplicate normalized order number or dealer name")
-        return self
-
-    @classmethod
-    def from_yaml(cls, path: str | Path) -> ReferenceData:
-        return cls.model_validate(yaml.safe_load(Path(path).read_text(encoding="utf-8")))
-
-
-NEXT_STEP = {
-    "insufficient": "请准备购买凭证，人工协助核实",
-    "channel_unknown": "请准备购买凭证，人工协助核实",
-    "order_verified": "资料已核实，转人工办理",
-    "channel_in_directory": "经销商在名录内，人工确认购买凭证后办理",
-    "order_product_mismatch": "凭证与当前设备信息不一致，需人工核实",
-    "needs_manual_check": "凭证与当前设备信息不一致，需人工核实",
+DEALER_WARRANTY_MONTHS = 12
+FUZZY_THRESHOLD = 0.85
+# 名录里常见的公司后缀与标点，对授权判定没有区分度。
+NOISE = re.compile(
+    r"\b(inc|llc|ltd|limited|gmbh|corp|corporation|co|b\.?v|s\.?a|sarl|sasu|plc|eg|ag|mbh|ta|t/a)\b"
+)
+COUNTRY_ALIASES = {
+    "usa": "US", "unitedstates": "US", "america": "US",
+    "gb": "UK", "unitedkingdom": "UK", "england": "UK", "britain": "UK", "greatbritain": "UK",
+    "germany": "DE", "deutschland": "DE",
+    "netherlands": "NL", "holland": "NL", "nederland": "NL",
+    "ireland": "IE", "france": "FR", "canada": "CA",
+    "saudiarabia": "KSA", "sa": "KSA", "ksa": "KSA",
+    "uae": "UAE", "unitedarabemirates": "UAE", "ae": "UAE",
+    "russia": "RU",
 }
 
 
-class ReceiptLookup:
-    def __init__(self, data: ReferenceData):
-        self.data = data
-        self.orders = {key(o.order_no): o for o in data.orders}
-        self.dealers = {key(d.name): d for d in data.dealers}
+def today(at: str | None = None) -> date:
+    """演示时钟：设置 DEMO_TODAY 时固定，否则取本轮时间。"""
+    if settings.demo_today:
+        return settings.demo_today
+    return date.fromisoformat(at[:10]) if at else datetime.now(UTC).date()
 
-    def lookup(self, receipt: dict[str, Any], product: dict[str, Any] | None) -> ReceiptOutcome:
-        fields = receipt.get("fields") or {}
-        order_no, channel = key(fields.get("order_no")), key(fields.get("channel"))
-        facts: dict[str, str] = {}
-        conflicts: list[str] = []
-        if not order_no and not channel:  # L1
-            status = "insufficient"
-        elif order := self.orders.get(order_no):
-            sku = (product or {}).get("sku")
-            if not sku:
-                status = "needs_manual_check"
-                conflicts.append("当前设备型号未确认，无法核对订单商品")
-            elif sku == order.sku:  # L2
-                status = "order_verified"
-                facts = {"channel": order.channel, "purchase_date": order.purchase_date.isoformat()}
-            else:  # L3
-                status = "order_product_mismatch"
-                conflicts.append(f"订单商品 {order.sku} 与当前设备 {sku} 不一致")
-            confidence = (receipt.get("confidence") or {}).get("order_no", 0.0)
-            if confidence < 0.7 and "order_no" not in (receipt.get("edited") or []):  # L4
-                status = "needs_manual_check"
-                conflicts.append("订单号低置信且未经修改，需人工核实")
-                # 未确认订单归属，不把可能属于他人的渠道/日期作为已核实事实输出。
-                facts = {}
-        elif dealer := self.dealers.get(channel):  # L5
-            status = "channel_in_directory"
-            facts = {"dealer.name": dealer.name, "authorized": str(dealer.authorized).lower()}
-        else:  # L6
-            status = "channel_unknown"
-        return ReceiptOutcome(
-            status=status, verified_facts=facts, conflicts=conflicts, next_step=NEXT_STEP[status]
+
+def normalize_country(value: str | None) -> str | None:
+    if not value:
+        return None
+    compact = re.sub(r"[^a-z]", "", value.casefold())
+    if compact.upper() in {"US", "UK", "DE", "NL", "IE", "FR", "CA", "RU"}:
+        return compact.upper()
+    return COUNTRY_ALIASES.get(compact)
+
+
+def seller_key(value: str) -> str:
+    text = unicodedata.normalize("NFKC", value).casefold()
+    text = NOISE.sub(" ", text.replace("&", " and "))
+    return re.sub(r"[^\w]", "", text)
+
+
+def add_months(start: date, months: int) -> date:
+    month = start.month - 1 + months
+    year, month = start.year + month // 12, month % 12 + 1
+    days = [31, 29 if year % 4 == 0 and (year % 100 or year % 400 == 0) else 28,
+            31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1]
+    return date(year, month, min(start.day, days))
+
+
+@dataclass(frozen=True)
+class DealerMatch:
+    dealer: Dealer
+    score: float
+
+
+class DealerDirectory:
+    def __init__(self, dealers: list[Dealer]):
+        self.by_country: dict[str, list[tuple[str, Dealer]]] = {}
+        for dealer in dealers:
+            self.by_country.setdefault(dealer.country, []).append((seller_key(dealer.seller), dealer))
+
+    def match(self, seller: str | None, country: str | None) -> DealerMatch | None:
+        code = normalize_country(country)
+        key = seller_key(seller or "")
+        if not code or len(key) < 3:
+            return None
+        best: DealerMatch | None = None
+        for candidate, dealer in self.by_country.get(code, []):
+            if len(candidate) < 3:
+                continue
+            if key == candidate or (min(len(key), len(candidate)) >= 4 and (key in candidate or candidate in key)):
+                score = 1.0
+            else:
+                score = SequenceMatcher(None, key, candidate).ratio()
+            if score >= FUZZY_THRESHOLD and (best is None or score > best.score):
+                best = DealerMatch(dealer, score)
+        return best
+
+
+@lru_cache(maxsize=1)
+def directory() -> DealerDirectory:
+    return DealerDirectory(OfficialData().dealers)
+
+
+def order_line(order: Order, sku: str | None):
+    """案件产品对应的订单行；未指定时取主商品行（订单第一行）。"""
+    if sku:
+        for line in order.lines:
+            if line.sku == sku or pn_of(line.sku) == pn_of(sku):
+                return line
+    return order.main_line
+
+
+def decide_by_order(order: Order, sku: str | None, as_of: date) -> WarrantyDecision:
+    line = order_line(order, sku)
+    if line.warranty_end is None:
+        return WarrantyDecision(
+            status="unknown", basis="order", as_of=as_of, order_no=order.order_no, sku=line.sku,
+            reason="订单未记录质保结束日期，需人工核实",
         )
+    inside = line.warranty_end >= as_of
+    return WarrantyDecision(
+        status="in_warranty" if inside else "out_of_warranty",
+        basis="order", warranty_end=line.warranty_end, as_of=as_of,
+        order_no=order.order_no, sku=line.sku,
+        reason=f"订单 {order.order_no} 质保至 {line.warranty_end.isoformat()}",
+    )
+
+
+def decide_by_dealer(
+    seller: str | None, country: str | None, purchase_date: date | None, as_of: date
+) -> WarrantyDecision:
+    if not seller or not normalize_country(country):
+        return WarrantyDecision(
+            status="unknown", basis="none", as_of=as_of, dealer=seller, country=country,
+            reason="查不到订单，需要购买商家与购买国家",
+        )
+    found = directory().match(seller, country)
+    if found is None:
+        return WarrantyDecision(
+            status="unauthorized_dealer", basis="dealer", as_of=as_of, dealer=seller,
+            country=normalize_country(country),
+            reason=f"{seller} 不在 {normalize_country(country)} 授权经销商名录内，请联系购买商家售后",
+        )
+    base = {"basis": "dealer", "as_of": as_of, "dealer": found.dealer.seller, "country": found.dealer.country}
+    if purchase_date is None:
+        return WarrantyDecision(status="unknown", reason="授权经销商，缺购买日期", **base)
+    end = add_months(purchase_date, DEALER_WARRANTY_MONTHS)
+    return WarrantyDecision(
+        status="in_warranty" if end >= as_of else "out_of_warranty",
+        warranty_end=end,
+        reason=f"授权经销商 {found.dealer.seller}，购买日起 {DEALER_WARRANTY_MONTHS} 个月，质保至 {end.isoformat()}",
+        **base,
+    )

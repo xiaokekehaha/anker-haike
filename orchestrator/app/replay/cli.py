@@ -138,8 +138,8 @@ async def run_scenario(app, scenario: dict[str, Any]) -> list[dict[str, Any]]:
                 continue
             if "backend_status" in step:
                 from app.actions.runtime import require_services
-                from app.backends.mock import MemoryBackend
                 from app.backends.protocol import ServiceOrder
+                from app.backends.service import MemoryBackend
 
                 backend = require_services().backend
                 if not isinstance(backend, MemoryBackend):

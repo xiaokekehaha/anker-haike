@@ -36,10 +36,10 @@ from tests.test_vision import CONFIG, NO_VISION_CONFIG, _router
 INTAKE = {"emotion_level": "calm", "product_hints": [], "symptoms": [], "wants_human": False}
 A3_OCR = {
     "order_no": "2024031512345678",
-    "channel": "京东 eufy 官方旗舰店",
+    "seller": "京东 eufy 官方旗舰店",
     "purchase_date": "2024-03-15",
     "amount": None,
-    "confidence": {"order_no": 0.95, "channel": 0.55, "purchase_date": 0.9},
+    "confidence": {"order_no": 0.95, "seller": 0.55, "purchase_date": 0.9},
     "unreadable": ["amount"],
 }
 
@@ -119,10 +119,10 @@ class _Env:
         app.state.image_store = None
 
 
-async def test_a3_sample_recognizes_order_and_channel_with_low_confidence_flag(
+async def test_a3_sample_recognizes_order_and_seller_with_low_confidence_flag(
     mem_runtime, tmp_path
 ):
-    """A3 样本订单截图 → receipt_card 含订单号与渠道；channel 置信 0.55 < 0.7 由前端标黄；amount unreadable（验收项 1）。"""
+    """A3 样本订单截图 → receipt_card 含订单号与商家；seller 置信 0.55 < 0.7 由前端标黄；country / amount unreadable（验收项 1）。"""
     with _Env(tmp_path, CONFIG, [A3_OCR]) as env:
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
@@ -132,13 +132,14 @@ async def test_a3_sample_recognizes_order_and_channel_with_low_confidence_flag(
     parse_event(card)
     assert card["fields"] == {
         "order_no": "2024031512345678",
-        "channel": "京东 eufy 官方旗舰店",
+        "seller": "京东 eufy 官方旗舰店",
+        "country": None,
         "purchase_date": "2024-03-15",
         "amount": None,
     }
-    assert card["confidence"]["order_no"] == 0.95 and card["confidence"]["channel"] == 0.55
-    assert [k for k, v in card["confidence"].items() if v < LOW_CONFIDENCE] == ["channel", "amount"]
-    assert card["unreadable"] == ["amount"]
+    assert card["confidence"]["order_no"] == 0.95 and card["confidence"]["seller"] == 0.55
+    assert [k for k, v in card["confidence"].items() if v < LOW_CONFIDENCE] == ["seller", "country", "amount"]
+    assert card["unreadable"] == ["amount", "country"]
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert card["issue_id"] == st["active_issue_id"]
     assert card["card_id"] == snap.pending_input.card_id
@@ -176,12 +177,13 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
             pending = next(e for e in events if e["type"] == "awaiting_input")
             fields = {
                 "order_no": "2024031512345678",
-                "channel": "京东自营",  # 用户改了低置信的渠道
+                "seller": "京东自营",  # 用户改了低置信的商家
+                "country": "CN",
                 "purchase_date": "2024-03-15",
                 "amount": None,
             }
             resp = await client.post(
-                f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, fields, ["channel"]))
+                f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, fields, ["seller", "country"]))
             )
             assert resp.status_code == 200, resp.text
             resumed = sse.parse(resp.text)
@@ -192,18 +194,19 @@ async def test_confirm_with_edited_field_records_edited_and_summarizes(mem_runti
     assert "escalation_summary" in types and resumed[-1]["reason"] == "completed"
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert (
-        st["receipt"]["edited"] == ["channel"] and st["receipt"]["fields"]["channel"] == "京东自营"
+        st["receipt"]["edited"] == ["seller", "country"] and st["receipt"]["fields"]["seller"] == "京东自营"
     )
-    assert st["receipt"]["status"] == "channel_unknown"  # 票 41：演示名录未命中
+    # 订单号不在主办方订单内 → 按商家 + 国家查名录：CN 不在授权名录内
+    assert st["receipt"]["status"] == "dealer_unauthorized"
     assert st["card_results"][pending["card_id"]] == {
         "confirmed_fields": st["receipt"]["fields"],
-        "edited": ["channel"],
+        "edited": ["seller", "country"],
     }
     item = next(i for i in snap.timeline if i.kind == "receipt_card")
-    assert item.confirmed_fields.channel == "京东自营" and item.skipped_reason is None
+    assert item.confirmed_fields.seller == "京东自营" and item.skipped_reason is None
     summary = next(e for e in resumed if e["type"] == "escalation_summary")["summary"]
-    assert summary["receipt"]["status"] == "channel_unknown"
-    assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
+    assert summary["receipt"]["status"] == "dealer_unauthorized"
+    assert summary["receipt"]["next_step"] == "购买商家不在授权经销商名录内，请联系购买商家售后"
     # 重复确认（旧 version）→ 409
     again = await _client().__aenter__()
     r = await again.post(f"/sessions/{sid}/actions", json=await action_body(again, f"/sessions/{sid}/actions", _confirm(pending, fields, [])))
@@ -227,7 +230,7 @@ async def test_all_unreadable_yields_empty_card_for_manual_input(mem_runtime, tm
             # 手输订单号
             resp = await client.post(
                 f"/sessions/{sid}/actions",
-                json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, {"order_no": " 2024ABC ", "channel": None}, ["order_no"])),
+                json=await action_body(client, f"/sessions/{sid}/actions", _confirm(pending, {"order_no": " 2024ABC ", "seller": None}, ["order_no"])),
             )
             assert resp.status_code == 200
             resumed = sse.parse(resp.text)

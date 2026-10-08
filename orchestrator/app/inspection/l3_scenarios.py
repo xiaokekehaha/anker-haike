@@ -10,27 +10,30 @@ from app.inspection.scenarios import scenario
 
 
 def valid_gate():
+    from datetime import date
+
+    from haike_contracts.common import WarrantyDecision
+
     from app.actions.gate import AuthorizationGate
-    from app.policy import PolicyEngine, PolicyInput
-    # US：保修期表只对美国有公开来源，非 US 购买地一律 no_policy_matched 转人工，授权门必然不通过。
-    policy = PolicyEngine().decide(PolicyInput(sku='EUFY-X10-PRO-OMNI', category='robot_vacuum', region_purchase='US', region_use='US', channel='official_store', purchase_date='2026-02-26', today='2026-09-14', fault_class='quality'))
-    return AuthorizationGate().check(decision=policy, option={'remedy':'replace'},receipt={'status':'order_verified'},product_state='confirmed_sku',risk_cases=[],allowed_operations=True,user_confirmed=True,case_status='awaiting_confirmation')
+    warranty = WarrantyDecision(status='in_warranty', basis='order', as_of=date(2026, 10, 8), order_no='Anker016', reason='订单 Anker016 质保至 2027-04-01')
+    evidence = {'order_or_receipt': 'order:Anker016', 'address': 'order', 'photo_or_video': 'images:1', 'serial_number': 'customer:SN1'}
+    return AuthorizationGate().check(kind='replace', warranty=warranty, logistics_ok=False, evidence=evidence, risk_cases=[], allowed_operations=True, user_confirmed=True, case_status='awaiting_confirmation')
 
 
 def args():
     return {'idempotency_key': 'inspection:replace','session_id': 'inspection','run_id': 'r','case_id': 'c','gate_result': valid_gate()}
 
 
-def params(order='DEMO-X10-001'):
-    return {'order_no': order,'sku': 'EUFY-X10-PRO-OMNI','reason_code': 'quality','evidence_ids': []}
+def params(order='Anker016'):
+    return {'type': 'replace', 'order_no': order, 'sku': 'T8D04121', 'reason': '左侧无吸力，已排查隔膜', 'evidence': {}}
 
 
-@scenario('l3_forged_authorization','l3','伪造通过标记不能绕过四项授权检查','L3 03 §3')
+@scenario('l3_forged_authorization','l3','伪造通过标记不能绕过四项提交检查','L3 03 §3')
 async def forged(ctx):
-    from app.backends.mock import MemoryBackend
+    from app.backends.service import MemoryBackend
     backend=MemoryBackend()
     try:
-        await ActionExecutor(backend).run('replacement.create',params(),**(args()|{'gate_result':GateResult(passed=True,checks=[])}))
+        await ActionExecutor(backend).run('service_order.create',params(),**(args()|{'gate_result':GateResult(passed=True,checks=[])}))
     except AuthorizationDenied:
         assert backend.create_calls==0
         return {'unauthorized_writes':0}
@@ -39,10 +42,10 @@ async def forged(ctx):
 
 @scenario('l3_idempotent_execution','l3','重复申请只创建一张服务单','L3 03 §4')
 async def idempotent(ctx):
-    from app.backends.mock import MemoryBackend
+    from app.backends.service import MemoryBackend
     backend=MemoryBackend(); executor=ActionExecutor(backend)
-    first=await executor.run('replacement.create',params(),**args())
-    repeats=await asyncio.gather(*[executor.run('replacement.create',params(),**args()) for _ in range(5)])
+    first=await executor.run('service_order.create',params(),**args())
+    repeats=await asyncio.gather(*[executor.run('service_order.create',params(),**args()) for _ in range(5)])
     assert backend.create_calls==1 and all(r.replayed and r.receipt==first.receipt for r in repeats)
     return {'created':backend.create_calls,'replayed':len(repeats)}
 
@@ -59,11 +62,11 @@ async def reject(ctx):
 
 @scenario('l3_backend_faults','l3','超时与不可用返回可解释失败回执','L3 03 §5')
 async def backend_faults(ctx):
-    from app.backends.mock import MemoryBackend
+    from app.backends.service import MemoryBackend
     results=[]
-    for i in (1,2):
-        executor=ActionExecutor(MemoryBackend())
-        result=await executor.run('replacement.create',params(f'DEMO-FAIL-{i:03}'),**args())
+    for mode in ('timeout','unavailable'):
+        executor=ActionExecutor(MemoryBackend(faults=[{'op':'create_service_order','key':'Anker016','mode':mode}]))
+        result=await executor.run('service_order.create',params(),**args())
         assert result.status=='failed' and result.receipt.next_step
         results.append(result.status)
     return {'statuses':results}

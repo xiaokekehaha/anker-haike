@@ -7,11 +7,10 @@ import type { ProposalOption } from '../../types/events';
 import { CaseRecords, HandoffSummary } from '../components/CaseRecords';
 import { SessionRecord, SessionView } from '../components/SessionView';
 import { l3Api } from '../l3';
-import { CONDITION_TEXT, COST_TEXT, FAULT_CLASS_TEXT, GATE_TEXT, REMEDY_TEXT, needsHumanText, showValue, sla, when } from '../format';
+import { GATE_TEXT, SERVICE_TYPE_TEXT, WARRANTY_BASIS_TEXT, WARRANTY_TEXT, sla, when } from '../format';
 import { useAsync } from '../useAsync';
 
-/** 后端目前只放开换货的自动办理（D-SR-4 计划增加 parts / paid_repair）；其余处置在前端显示为不可批准而不是隐藏。 */
-const APPROVABLE = new Set(['replace']);
+/** 主办方 SOP：服务单提交后由人工处理。「批准」= 人工确认办理（尚未提交的单子会按原方案提交）。 */
 const DECISION_TEXT: Record<string, string> = { approve: '批准', reject: '拒绝', request_info: '要求补充信息' };
 
 export function CaseDetail() {
@@ -21,18 +20,14 @@ export function CaseDetail() {
   const [optionId, setOptionId] = useState('');
   const [note, setNote] = useState('');
   const [override, setOverride] = useState('');
-  const [editTitle, setEditTitle] = useState('');
-  const [editCost, setEditCost] = useState<'company' | 'customer' | 'shared' | ''>('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [hover, setHover] = useState<string[]>([]);
   const row = result.data;
   const options: ProposalOption[] = row?.proposal?.options ?? [];
   const selectedOption = options.find((o) => o.option_id === optionId) ?? options[0];
-  const changed = !!selectedOption && ((!!editTitle.trim() && editTitle.trim() !== selectedOption.title) || (!!editCost && editCost !== selectedOption.cost_bearer));
-  const needsOverride = decision === 'approve' && (changed || !!row?.policy_decision?.needs_human || !selectedOption?.auto_allowed);
-  const approvalBlocked = row?.policy_decision?.fault_class === 'unknown' || row?.policy_decision?.fault_class === 'safety';
-  const remedyOpen = !!selectedOption && APPROVABLE.has(selectedOption.remedy);
+  // 过保 / 非授权经销商按 SOP 不办理换货退款；人工仍可批准，但必须写明例外理由。
+  const needsOverride = decision === 'approve' && !!row?.warranty && row.warranty.status !== 'in_warranty' && ['replace', 'refund'].includes(selectedOption?.type ?? '');
   const ended = !!row && ['closed', 'closed_unresolved', 'escalated_summary'].includes(row.status);
 
   async function changeLifecycle(command: 'close' | 'reopen') {
@@ -49,8 +44,8 @@ export function CaseDetail() {
     if (!row) return;
     setBusy(true); setMessage('');
     try {
-      if (!note.trim() || (needsOverride && !override.trim())) throw new Error('请填写说明及必要的覆盖政策理由。');
-      await l3Api.decide(id, { decision_id: crypto.randomUUID(), expected_revision: row.revision, decision, option_id: selectedOption?.option_id ?? null, note: note.trim(), override_reason: override.trim() || null, edited_option: decision === 'approve' && changed && selectedOption ? { ...selectedOption, title: editTitle.trim() || selectedOption.title, cost_bearer: editCost || selectedOption.cost_bearer, source: 'human' } : null });
+      if (!note.trim() || (needsOverride && !override.trim())) throw new Error('请填写说明及必要的例外理由。');
+      await l3Api.decide(id, { decision_id: crypto.randomUUID(), expected_revision: row.revision, decision, option_id: selectedOption?.option_id ?? null, note: note.trim(), override_reason: override.trim() || null, edited_option: null });
       setMessage('决定已保存并投递到会话。'); result.reload();
     } catch (error) { setMessage(error instanceof Error ? error.message : '提交失败'); result.reload(); }
     finally { setBusy(false); }
@@ -59,7 +54,6 @@ export function CaseDetail() {
   if (result.error) return <p className="empty" role="alert">{result.error} <Link className="link" to="/desk">返回工作台</Link></p>;
   if (!row) return <p className="empty">正在加载案件…</p>;
   const wait = sla(row.updated_at);
-  const conditions = (row.policy_decision?.remedies ?? []).flatMap((remedy) => (remedy.conditions ?? []).map((c) => ({ remedy: remedy.remedy, ...c })));
 
   return (
     <>
@@ -74,7 +68,7 @@ export function CaseDetail() {
               <span className="muted">受理 {when(row.opened_at)}</span>
               {row.external_refs.order_no && <span className="muted">订单 <span className="mono">{row.external_refs.order_no}</span></span>}
               {row.external_refs.service_order_no && <span className="muted">服务单 <span className="mono">{row.external_refs.service_order_no}</span></span>}
-              {row.policy_decision && <span className="muted">故障类别 {FAULT_CLASS_TEXT[row.policy_decision.fault_class] ?? row.policy_decision.fault_class}</span>}
+              {row.warranty && <span className="muted">质保 {WARRANTY_TEXT[row.warranty.status] ?? row.warranty.status}{row.warranty.warranty_end ? `（至 ${row.warranty.warranty_end}）` : ''}</span>}
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -97,28 +91,21 @@ export function CaseDetail() {
           <HandoffSummary summary={row.handoff_summary} />
           <h2 style={{ marginTop: 20 }}>服务记录</h2>
           <SessionRecord snapshot={row.snapshot} highlight={hover} />
-          <h2 style={{ marginTop: 20 }}>方案与判定依据</h2>
+          <h2 style={{ marginTop: 20 }}>订单质保判断</h2>
+          {row.warranty ? (
+            <p style={{ fontSize: 12.5 }}>
+              <b>{WARRANTY_TEXT[row.warranty.status] ?? row.warranty.status}</b> · {row.warranty.reason}
+              <span className="muted"> · 依据：{WARRANTY_BASIS_TEXT[row.warranty.basis] ?? row.warranty.basis} · 按 {row.warranty.as_of} 计</span>
+            </p>
+          ) : <p className="muted" style={{ fontSize: 12.5 }}>尚未判断（物流类服务单不需要质保判断）。</p>}
+          <h2 style={{ marginTop: 20 }}>服务单方案</h2>
           {row.proposal ? (
-            <ProposalCard item={{ kind: 'proposal_card', card_id: row.case_id, version: row.revision, options: options, chosen_option_id: row.proposal.chosen_option_id, policy_version: row.policy_decision?.policy_version ?? '待核实', decision_summary: `政策 ${row.policy_decision?.policy_id ?? '待核实'} · 版本 ${row.policy_decision?.policy_version ?? '—'}` }} active={false} onConfirm={() => {}} onDecline={() => {}} />
+            <ProposalCard item={{ kind: 'proposal_card', card_id: row.case_id, version: row.revision, options: options, chosen_option_id: row.proposal.chosen_option_id, decision_summary: row.warranty?.reason ?? '按 SOP 生成' }} active={false} onConfirm={() => {}} onDecline={() => {}} />
           ) : <p className="muted" style={{ fontSize: 12.5 }}>尚未生成方案。</p>}
-          {conditions.length > 0 && (
-            <div className="scroll-x" style={{ marginTop: 10 }}>
-              <table className="data">
-                <thead><tr><th>处置</th><th>条件</th><th>期望</th><th>实际</th><th>满足</th></tr></thead>
-                <tbody>
-                  {conditions.map((c, i) => (
-                    <tr key={i}><td>{REMEDY_TEXT[c.remedy] ?? c.remedy}</td><td>{CONDITION_TEXT[c.name] ?? c.name}</td><td className="mono">{showValue(c.expected)}</td><td className="mono">{showValue(c.actual)}</td><td>{c.met ? '✓ 是' : '× 否'}</td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <h3 className="sub" style={{ marginTop: 14, fontWeight: 600 }}>授权检查</h3>
+          <h3 className="sub" style={{ marginTop: 14, fontWeight: 600 }}>提交检查</h3>
           {row.gate_result ? row.gate_result.checks.map((check) => (
             <p key={check.name} style={{ margin: '2px 0', fontSize: 12.5 }}>{check.passed ? '✓' : '×'} {GATE_TEXT[check.name] ?? check.name}<span className="muted"> · {check.detail}</span></p>
-          )) : <p className="muted" style={{ fontSize: 12.5 }}>尚未进入授权门。</p>}
-          {(row.policy_decision?.needs_human_reasons ?? []).map((reason) => <p key={reason} className="muted" style={{ fontSize: 12.5 }}>需人工：{needsHumanText(reason)}</p>)}
-          {approvalBlocked && <p className="notice">故障未核实或存在安全限制，不能批准办理。可「要求补充信息」，完成核实后再批准。</p>}
+          )) : <p className="muted" style={{ fontSize: 12.5 }}>尚未进入提交检查。</p>}
           <CaseRecords executions={row.executions} commitments={row.commitments} events={row.events} />
         </section>
 
@@ -133,29 +120,16 @@ export function CaseDetail() {
               </label>
               {options.length > 0 && (
                 <label>方案
-                  <select value={selectedOption?.option_id ?? ''} onChange={(e) => { setOptionId(e.target.value); setEditTitle(''); setEditCost(''); }}>
-                    {options.map((o) => <option key={o.option_id} value={o.option_id}>{o.title}{APPROVABLE.has(o.remedy) ? '' : '（后端暂未放开自动办理）'}</option>)}
+                  <select value={selectedOption?.option_id ?? ''} onChange={(e) => setOptionId(e.target.value)}>
+                    {options.map((o) => <option key={o.option_id} value={o.option_id}>{o.title}</option>)}
                   </select>
                 </label>
               )}
-              {decision === 'approve' && selectedOption && (
-                <>
-                  <label>修改方案标题（可选）<input value={editTitle} placeholder={selectedOption.title} onChange={(e) => setEditTitle(e.target.value)} /></label>
-                  <label>费用承担
-                    <select value={editCost || selectedOption.cost_bearer || ''} onChange={(e) => setEditCost(e.target.value as typeof editCost)}>
-                      <option value="" disabled>待核实</option>
-                      {Object.entries(COST_TEXT).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                    </select>
-                  </label>
-                  {changed && <p className="notice">修改后的方案会发给用户重新确认，确认前不会执行。</p>}
-                </>
-              )}
               <label>说明或补充问题<textarea required value={note} onChange={(e) => setNote(e.target.value)} /></label>
-              <label>覆盖政策理由{needsOverride && <span className="muted">（必填）</span>}<input value={override} required={needsOverride} onChange={(e) => setOverride(e.target.value)} /></label>
-              <button className="btn" data-variant="primary" disabled={decision === 'approve' && (!remedyOpen || approvalBlocked)}>
-                {decision === 'approve' ? `批准：${selectedOption ? REMEDY_TEXT[selectedOption.remedy] ?? selectedOption.title : '—'}` : DECISION_TEXT[decision]} 并恢复会话
+              <label>例外理由{needsOverride && <span className="muted">（过保或非授权经销商仍要办理时必填）</span>}<input value={override} required={needsOverride} onChange={(e) => setOverride(e.target.value)} /></label>
+              <button className="btn" data-variant="primary">
+                {decision === 'approve' ? `批准：${selectedOption ? SERVICE_TYPE_TEXT[selectedOption.type] ?? selectedOption.title : '—'}` : DECISION_TEXT[decision]} 并恢复会话
               </button>
-              {decision === 'approve' && selectedOption && !remedyOpen && <p className="muted" style={{ fontSize: 12 }}>该处置后端尚未放开自动办理。</p>}
             </fieldset>
           </form>
           {row.status !== 'awaiting_approval' && <p className="muted" style={{ fontSize: 12.5 }}>案件当前不在等待审核，决定表单不可用。</p>}

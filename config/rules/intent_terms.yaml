@@ -1,9 +1,9 @@
-# 降级意图词表；仅在语义模型不可用时使用。
-logistics_query: [物流, 到哪, 发出去, 发货了吗, 运单]
-warranty_query: [保修, 质保, 在保]
-order_query: [查订单, 订单状态]
-replacement_request: [我要换, 换货申请, 申请换货]
-refund_request: [退款, 退钱]
-address_update: [改地址, 修改地址]
-confirm_received: [已收到, 收到货了]
+# 降级意图词表；仅在语义模型不可用时使用。多语种词取自主办方 63 单工单原文（英 / 荷 / 德 / 法 / 西）。
+logistics_query: [物流, 到哪, 发出去, 发货了吗, 运单, tracking, delivery, not arrived, never arrived, not received, "haven't received", have not received, "didn't arrive", when will, shipped, shipment, nog steeds niet binnen, verzonden, nicht angekommen, sendungsverfolgung, pas reçu, livraison, no ha llegado, envío]
+warranty_query: [保修, 质保, 在保, warranty, garantie, garantía]
+order_query: [查订单, 订单状态, order status]
+replacement_request: [我要换, 换货申请, 申请换货, replacement, replace it, replaced, vervanging, ersatz, remplacement, reemplazo]
+refund_request: [退款, 退钱, refund, money back, terugbetaling, rückerstattung, remboursement, reembolso]
+address_update: [改地址, 修改地址, change address, change my address]
+confirm_received: [已收到, 收到货了, received it, got it today]
 rate: [我要评价, 我要评分]

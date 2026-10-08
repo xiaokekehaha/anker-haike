@@ -31,6 +31,8 @@ COPY orchestrator/app ./app
 COPY orchestrator/alembic.ini ./alembic.ini
 COPY orchestrator/migrations ./migrations
 COPY config ./config
+# 主办方订单 / 经销商 / Q&A（data/official，由 app.official.build 从 xlsx 导出）
+COPY data/official ./data/official
 # 票 43：回放录制包随镜像打包（REPLAY_CASE_ID=<case_id> 启用；清单不符启动即失败）
 COPY replay ./replay
 # 票 02：镜像内构建前端，不依赖宿主机事先生成 dist
@@ -39,11 +41,10 @@ COPY --from=frontend-build /frontend/dist ./static/
 # 容器内 app 装在 /srv/app，settings.REPO_ROOT 解析为 /。CONFIG_DIR 是 config/ 下所有加载的统一基准，
 # 新增配置文件只要放进 config/ 就能被找到，不必再逐个补 *_CONFIG_PATH（下面这些保留为显式覆盖）。
 ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
-    CONFIG_DIR=/srv/config \
+    CONFIG_DIR=/srv/config OFFICIAL_DATA_DIR=/srv/data/official \
     MODELS_CONFIG_PATH=/srv/config/models.yaml \
     CATALOG_CONFIG_PATH=/srv/config/products.yaml \
     PLANS_CONFIG_PATH=/srv/config/plans.yaml \
-    RECEIPT_REFERENCE_CONFIG_PATH=/srv/config/receipt_reference.yaml \
     FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
     RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
     RETRIEVAL_CONFIG_PATH=/srv/config/retrieval.yaml \

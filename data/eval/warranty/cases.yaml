@@ -1,0 +1,50 @@
+source: 主办方订单与经销商名录（data/official）；as_of 固定 2026-10-08；期望值按 SOP「订单质保判断」人工标注
+cases:
+- id: warranty-T55-order-in
+  input: {order_no: Anker016, as_of: '2026-10-08'}
+  expected: {status: in_warranty, basis: order, warranty_end: '2027-04-01'}
+- id: warranty-T29-order-out
+  input: {order_no: Anker011, as_of: '2026-10-08'}
+  expected: {status: out_of_warranty, basis: order, warranty_end: '2025-11-30'}
+- id: warranty-T38-order-out
+  input: {order_no: Anker012, as_of: '2026-10-08'}
+  expected: {status: out_of_warranty, warranty_end: '2025-10-10'}
+- id: warranty-T51-order-out
+  input: {order_no: Anker014, as_of: '2026-10-08'}
+  expected: {status: out_of_warranty, warranty_end: '2026-07-30'}
+- id: warranty-T53-order-out
+  input: {order_no: Anker015, as_of: '2026-10-08'}
+  expected: {status: out_of_warranty, warranty_end: '2025-12-13'}
+- id: warranty-T46-order-in
+  input: {order_no: Anker013, as_of: '2026-10-08'}
+  expected: {status: in_warranty, warranty_end: '2027-08-27'}
+- id: warranty-accessory-line
+  input: {order_no: Anker002, sku: T29C2001, as_of: '2026-10-08'}
+  expected: {status: in_warranty, warranty_end: '2026-10-13'}
+- id: warranty-boundary-same-day
+  input: {order_no: Anker002, sku: T29C2001, as_of: '2026-10-13'}
+  expected: {status: in_warranty}
+- id: warranty-boundary-next-day
+  input: {order_no: Anker002, sku: T29C2001, as_of: '2026-10-14'}
+  expected: {status: out_of_warranty}
+- id: warranty-T45-aeroflow-authorized
+  input: {seller: Aeroflow, country: US, purchase_date: '2025-12-09', as_of: '2026-10-08'}
+  expected: {status: in_warranty, basis: dealer, warranty_end: '2026-12-09'}
+- id: warranty-dealer-case-and-suffix
+  input: {seller: 'BEST BUY Inc.', country: USA, purchase_date: '2026-01-15', as_of: '2026-10-08'}
+  expected: {status: in_warranty, basis: dealer}
+- id: warranty-dealer-wrong-country
+  input: {seller: Aeroflow Breastpumps, country: UK, purchase_date: '2026-01-15', as_of: '2026-10-08'}
+  expected: {status: unauthorized_dealer, basis: dealer}
+- id: warranty-dealer-unknown
+  input: {seller: Random Marketplace Seller, country: US, purchase_date: '2026-01-15', as_of: '2026-10-08'}
+  expected: {status: unauthorized_dealer}
+- id: warranty-dealer-expired
+  input: {seller: Currys, country: UK, purchase_date: '2025-06-01', as_of: '2026-10-08'}
+  expected: {status: out_of_warranty, basis: dealer, warranty_end: '2026-06-01'}
+- id: warranty-dealer-missing-date
+  input: {seller: MediaMarkt, country: DE, as_of: '2026-10-08'}
+  expected: {status: unknown, basis: dealer}
+- id: warranty-no-seller
+  input: {country: US, as_of: '2026-10-08'}
+  expected: {status: unknown, basis: none}

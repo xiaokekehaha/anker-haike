@@ -19,30 +19,30 @@ def history(text, *, issue="i", seq=1):
     "state,expected",
     [
         (
-            {"text": "物流状态", "last_consult_params": {"order_no": "DEMO-X10-001"}},
-            {"order_no": "DEMO-X10-001"},
+            {"text": "物流状态", "last_consult_params": {"order_no": "Anker016"}},
+            {"order_no": "Anker016"},
         ),
-        ({"text": "查另一个订单物流", "last_consult_params": {"order_no": "DEMO-X10-001"}}, {}),
+        ({"text": "查另一个订单物流", "last_consult_params": {"order_no": "Anker016"}}, {}),
         (
             {
-                "text": "查物流 DEMO-UK-005",
-                "last_consult_params": {"order_no": "DEMO-X10-001", "tracking_no": "TRACK-123456"},
+                "text": "查物流 Anker003",
+                "last_consult_params": {"order_no": "Anker016", "tracking_no": "Anker1234567-19"},
             },
-            {"order_no": "DEMO-UK-005"},
+            {"order_no": "Anker003"},
         ),
         (
             {
                 "text": "物流状态",
                 "active_issue_id": "i",
-                "history": [history("查物流 DEMO-X10-001"), history("物流状态", seq=2)],
+                "history": [history("查物流 Anker016"), history("物流状态", seq=2)],
             },
-            {"order_no": "DEMO-X10-001"},
+            {"order_no": "Anker016"},
         ),
         (
             {
                 "text": "物流状态",
                 "active_issue_id": "other",
-                "history": [history("查物流 DEMO-X10-001")],
+                "history": [history("查物流 Anker016")],
             },
             {},
         ),
@@ -50,26 +50,26 @@ def history(text, *, issue="i", seq=1):
             {
                 "text": "物流状态",
                 "active_issue_id": "i",
-                "history": [history("查物流 DEMO-X10-001"), history("查另一个订单物流", seq=2)],
-                "receipt": {"status": "order_verified", "fields": {"order_no": "DEMO-X10-001"}},
+                "history": [history("查物流 Anker016"), history("查另一个订单物流", seq=2)],
+                "receipt": {"status": "order_verified", "fields": {"order_no": "Anker016"}},
             },
             {},
         ),
         (
             {
                 "text": "物流状态",
-                "receipt": {"status": "order_verified", "fields": {"order_no": "DEMO-X10-001"}},
+                "receipt": {"status": "order_verified", "fields": {"order_no": "Anker016"}},
             },
-            {"order_no": "DEMO-X10-001"},
+            {"order_no": "Anker016"},
         ),
         (
             {
                 "text": "保修状态",
                 "execution": {
-                    "receipt": {"order_no": "DEMO-X10-001", "service_order_no": "SRV-123456"}
+                    "receipt": {"order_no": "Anker016", "service_order_no": "SRV-123456ABCDEF"}
                 },
             },
-            {"order_no": "DEMO-X10-001", "service_order_no": "SRV-123456"},
+            {"order_no": "Anker016", "service_order_no": "SRV-123456ABCDEF"},
         ),
     ],
 )

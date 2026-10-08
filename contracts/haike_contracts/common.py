@@ -40,7 +40,6 @@ PendingKind = Literal[
     "answer_observation",
     "upload_receipt",
     "confirm_receipt",
-    "confirm_context",
     "confirm_proposal",
     "upload_retake",
     "rate_satisfaction",
@@ -56,8 +55,8 @@ ReceiptStatus = Literal[
     "order_verified",
     "order_product_mismatch",
     "needs_manual_check",
-    "channel_in_directory",
-    "channel_unknown",
+    "dealer_authorized",
+    "dealer_unauthorized",
 ]
 
 EmotionLevel = Literal["calm", "anxious", "dissatisfied", "angry", "complaint_risk"]
@@ -148,7 +147,8 @@ class EvidenceItem(Strict):
 
 class ReceiptFields(Strict):
     order_no: str | None = None
-    channel: str | None = None
+    seller: str | None = None
+    country: str | None = None
     purchase_date: str | None = None
     amount: str | None = None
 
@@ -183,70 +183,34 @@ class ModelTraceItem(Strict):
     attempts: int = Field(ge=1)
 
 
-class Clause(Strict):
-    clause_id: str
-    text: str
-    source_doc: str
-    doc_version: str
-    policy_version: str
-    # 条款出处的可点链接。真实政策必须有，演示条款留空；用户可见文本只允许引用有出处的条款。
-    source_url: str | None = None
+WarrantyStatus = Literal["in_warranty", "out_of_warranty", "unauthorized_dealer", "unknown"]
 
 
-class PolicyCondition(Strict):
-    name: str
-    expected: Any
-    actual: Any
-    met: bool
+class WarrantyDecision(Strict):
+    """主办方 SOP「订单质保判断」：有订单看订单质保结束日期；查不到订单看经销商名录（授权 = 购买日起 12 个月）。"""
 
-
-# 官方处置阶梯（anker.com / us.eufy.com 售后政策）：先寄配件，再维修，再换翻新/新机，
-# 最后才是按使用时长部分退款；过保另有付费维修。顺序即优先级，propose 按此排序。
-Remedy = Literal["parts", "repair", "replace", "refund", "paid_repair", "none"]
-
-REMEDY_LADDER: tuple[str, ...] = ("parts", "repair", "replace", "refund", "paid_repair")
-
-
-class RemedyDecision(Strict):
-    remedy: Remedy
-    eligible: bool
-    auto_allowed: bool
-    cost_bearer: Literal["company", "customer", "shared"] | None = None
-    conditions: list[PolicyCondition] = Field(default_factory=list)
-    clauses: list[Clause] = Field(default_factory=list)
-
-
-class PolicyDecision(Strict):
-    policy_id: str | None = None
-    policy_version: str
-    matched: bool = False
-    within_warranty: bool | None = None
+    status: WarrantyStatus
+    basis: Literal["order", "dealer", "none"]
     warranty_end: date | None = None
-    fault_class: Literal["quality", "user_damage", "safety", "unknown"]
-    remedies: list[RemedyDecision] = Field(default_factory=list)
-    exclusions_hit: list[dict] = Field(default_factory=list)
-    needs_human: bool = False
-    needs_human_reasons: list[str] = Field(default_factory=list)
-    missing_inputs: list[str] = Field(default_factory=list)
-    trace_id: str
+    as_of: date
+    order_no: str | None = None
+    sku: str | None = None
+    dealer: str | None = None
+    country: str | None = None
+    reason: str
 
 
-class DispatchEstimate(Strict):
-    working_days: int = Field(gt=0)
-    action: Literal["replacement.create"] = "replacement.create"
-    actions_version: str
+# 服务单类型：主办方只要求「把换货 / 退款 / 补发信息提交到工具，再转人工」；承运商调查对应 D3。
+ServiceOrderType = Literal["replace", "refund", "reship", "carrier_investigation"]
+SERVICE_ORDER_TYPES: tuple[str, ...] = ("replace", "refund", "reship", "carrier_investigation")
 
 
 class ProposalOption(Strict):
     option_id: str
-    remedy: Remedy
+    type: ServiceOrderType
     title: str
-    cost_bearer: Literal["company", "customer", "shared"] | None = None
-    conditions: list[PolicyCondition] = Field(default_factory=list)
-    clauses: list[Clause] = Field(default_factory=list)
-    auto_allowed: bool = False
-    source: Literal["policy", "human"] = "policy"
-    dispatch_estimate: DispatchEstimate | None = None
+    detail: str = ""
+    source: Literal["sop", "human"] = "sop"
 
 
 class GateCheck(Strict):
@@ -266,10 +230,9 @@ class Receipt(Strict):
     service_order_no: str | None = None
     tracking_no: str | None = None
     order_no: str | None = None
-    eta_days: int | None = None
     next_step: str = ""
     updated_at: str | None = None
-    source: str = "业务系统（模拟）"
+    source: str = "售后工具"
     data: dict = Field(default_factory=dict)
 
 
@@ -360,7 +323,7 @@ class EscalationSummary(Strict):
     receipt: ReceiptOutcome
     model_trace: list[ModelTraceItem] = Field(default_factory=list)
     case_id: str | None = None
-    policy_decision_brief: dict | None = None
+    warranty: WarrantyDecision | None = None
     recommended_options: list[ProposalOption] = Field(default_factory=list)
     gate_result: GateResult | None = None
     task_queue: list[dict] = Field(default_factory=list)

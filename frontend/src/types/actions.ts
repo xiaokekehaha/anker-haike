@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 0a3742e14a8fc23086f7946fb5397bbeb8ca6e90dfc7a6133fcbb3ba88f4db86
+// SHA-256: 6d1a41e1edd04785a30b1a4e9dfdbe76bc2c6c88ac63b8174951e6e8e81674c7
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -15,7 +15,6 @@ export type ActionRequest =
   | RequestHumanAction
   | NewIssueAction
   | ResumeIssueAction
-  | ConfirmContextAction
   | ConfirmProposalAction
   | DeclineProposalAction
   | SkipRetakeAction
@@ -63,11 +62,12 @@ export type CardId3 = string;
 export type ExpectedVersion3 = number;
 export type InputToken3 = string;
 export type Kind3 = 'confirm_receipt';
-export type Edited = ('order_no' | 'channel' | 'purchase_date' | 'amount')[];
+export type Edited = ('order_no' | 'seller' | 'country' | 'purchase_date' | 'amount')[];
 export type Amount = string | null;
-export type Channel = string | null;
+export type Country = string | null;
 export type OrderNo = string | null;
 export type PurchaseDate = string | null;
+export type Seller = string | null;
 export type TargetIssueId3 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -109,11 +109,8 @@ export type ActionId8 = string;
 export type CardId6 = string;
 export type ExpectedVersion8 = number;
 export type InputToken6 = string;
-export type Kind8 = 'confirm_context';
-export type Channel1 = string;
-export type Platform = string | null;
-export type RegionPurchase = string;
-export type RegionUse = string;
+export type Kind8 = 'confirm_proposal';
+export type OptionId2 = string;
 export type TargetIssueId8 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -122,8 +119,8 @@ export type ActionId9 = string;
 export type CardId7 = string;
 export type ExpectedVersion9 = number;
 export type InputToken7 = string;
-export type Kind9 = 'confirm_proposal';
-export type OptionId2 = string;
+export type Kind9 = 'decline_proposal';
+export type Reason1 = 'want_other' | 'not_now' | 'request_human';
 export type TargetIssueId9 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -132,8 +129,8 @@ export type ActionId10 = string;
 export type CardId8 = string;
 export type ExpectedVersion10 = number;
 export type InputToken8 = string;
-export type Kind10 = 'decline_proposal';
-export type Reason1 = 'want_other' | 'not_now' | 'request_human';
+export type Kind10 = 'skip_retake';
+export type Reason2 = string;
 export type TargetIssueId10 = string;
 /**
  * 前端生成的 uuid，重试时复用，服务端据此幂等
@@ -142,23 +139,13 @@ export type ActionId11 = string;
 export type CardId9 = string;
 export type ExpectedVersion11 = number;
 export type InputToken9 = string;
-export type Kind11 = 'skip_retake';
-export type Reason2 = string;
-export type TargetIssueId11 = string;
-/**
- * 前端生成的 uuid，重试时复用，服务端据此幂等
- */
-export type ActionId12 = string;
-export type CardId10 = string;
-export type ExpectedVersion12 = number;
-export type InputToken10 = string;
-export type Kind12 = 'rate_satisfaction';
+export type Kind11 = 'rate_satisfaction';
 export type Comment = string | null;
 export type Score = number;
-export type TargetIssueId12 = string;
+export type TargetIssueId11 = string;
 export type Code = 'stale_version' | 'stale_card' | 'not_allowed_now' | 'run_active';
 export type Message = string;
-export type ActionId13 = string;
+export type ActionId12 = string;
 export type Replayed = boolean;
 export type RunId = string;
 export type VersionAfter = number | null;
@@ -269,9 +256,10 @@ export interface ConfirmReceiptPayload {
  */
 export interface ReceiptFields {
   amount?: Amount;
-  channel?: Channel;
+  country?: Country;
   order_no?: OrderNo;
   purchase_date?: PurchaseDate;
+  seller?: Seller;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -337,39 +325,16 @@ export interface ResumeIssueAction {
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
- * via the `definition` "ConfirmContextAction".
+ * via the `definition` "ConfirmProposalAction".
  */
-export interface ConfirmContextAction {
+export interface ConfirmProposalAction {
   action_id: ActionId8;
   card_id: CardId6;
   expected_version: ExpectedVersion8;
   input_token: InputToken6;
   kind: Kind8;
-  payload: ConfirmContextPayload;
-  target_issue_id: TargetIssueId8;
-}
-/**
- * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
- * via the `definition` "ConfirmContextPayload".
- */
-export interface ConfirmContextPayload {
-  channel: Channel1;
-  platform?: Platform;
-  region_purchase: RegionPurchase;
-  region_use: RegionUse;
-}
-/**
- * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
- * via the `definition` "ConfirmProposalAction".
- */
-export interface ConfirmProposalAction {
-  action_id: ActionId9;
-  card_id: CardId7;
-  expected_version: ExpectedVersion9;
-  input_token: InputToken7;
-  kind: Kind9;
   payload: ConfirmProposalPayload;
-  target_issue_id: TargetIssueId9;
+  target_issue_id: TargetIssueId8;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -383,13 +348,13 @@ export interface ConfirmProposalPayload {
  * via the `definition` "DeclineProposalAction".
  */
 export interface DeclineProposalAction {
-  action_id: ActionId10;
-  card_id: CardId8;
-  expected_version: ExpectedVersion10;
-  input_token: InputToken8;
-  kind: Kind10;
+  action_id: ActionId9;
+  card_id: CardId7;
+  expected_version: ExpectedVersion9;
+  input_token: InputToken7;
+  kind: Kind9;
   payload: DeclineProposalPayload;
-  target_issue_id: TargetIssueId10;
+  target_issue_id: TargetIssueId9;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -403,13 +368,13 @@ export interface DeclineProposalPayload {
  * via the `definition` "SkipRetakeAction".
  */
 export interface SkipRetakeAction {
-  action_id: ActionId11;
-  card_id: CardId9;
-  expected_version: ExpectedVersion11;
-  input_token: InputToken9;
-  kind: Kind11;
+  action_id: ActionId10;
+  card_id: CardId8;
+  expected_version: ExpectedVersion10;
+  input_token: InputToken8;
+  kind: Kind10;
   payload: SkipRetakePayload;
-  target_issue_id: TargetIssueId11;
+  target_issue_id: TargetIssueId10;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -423,13 +388,13 @@ export interface SkipRetakePayload {
  * via the `definition` "RateSatisfactionAction".
  */
 export interface RateSatisfactionAction {
-  action_id: ActionId12;
-  card_id: CardId10;
-  expected_version: ExpectedVersion12;
-  input_token: InputToken10;
-  kind: Kind12;
+  action_id: ActionId11;
+  card_id: CardId9;
+  expected_version: ExpectedVersion11;
+  input_token: InputToken9;
+  kind: Kind11;
   payload: RateSatisfactionPayload;
-  target_issue_id: TargetIssueId12;
+  target_issue_id: TargetIssueId11;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -463,7 +428,7 @@ export interface Snapshot {
  * via the `definition` "ActionResult".
  */
 export interface ActionResult {
-  action_id: ActionId13;
+  action_id: ActionId12;
   replayed?: Replayed;
   run_id: RunId;
   version_after?: VersionAfter;

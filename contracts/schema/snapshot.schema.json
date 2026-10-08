@@ -347,185 +347,6 @@
       "title": "CaseStatusItem",
       "type": "object"
     },
-    "Clause": {
-      "additionalProperties": false,
-      "properties": {
-        "clause_id": {
-          "title": "Clause Id",
-          "type": "string"
-        },
-        "doc_version": {
-          "title": "Doc Version",
-          "type": "string"
-        },
-        "policy_version": {
-          "title": "Policy Version",
-          "type": "string"
-        },
-        "source_doc": {
-          "title": "Source Doc",
-          "type": "string"
-        },
-        "source_url": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Source Url"
-        },
-        "text": {
-          "title": "Text",
-          "type": "string"
-        }
-      },
-      "required": [
-        "clause_id",
-        "text",
-        "source_doc",
-        "doc_version",
-        "policy_version"
-      ],
-      "title": "Clause",
-      "type": "object"
-    },
-    "ContextCardItem": {
-      "additionalProperties": false,
-      "properties": {
-        "at": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "At"
-        },
-        "card_id": {
-          "title": "Card Id",
-          "type": "string"
-        },
-        "choices": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "title": "Choices",
-          "type": "object"
-        },
-        "confirmed_fields": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Confirmed Fields"
-        },
-        "fields": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Fields",
-          "type": "array"
-        },
-        "first_seq": {
-          "default": 0,
-          "title": "First Seq",
-          "type": "integer"
-        },
-        "issue_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Issue Id"
-        },
-        "kind": {
-          "const": "context_card",
-          "title": "Kind",
-          "type": "string"
-        },
-        "last_seq": {
-          "default": 0,
-          "title": "Last Seq",
-          "type": "integer"
-        },
-        "prefilled": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Prefilled",
-          "type": "object"
-        },
-        "sources": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "title": "Sources",
-          "type": "object"
-        },
-        "version": {
-          "minimum": 0,
-          "title": "Version",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "kind",
-        "card_id",
-        "version",
-        "fields"
-      ],
-      "title": "ContextCardItem",
-      "type": "object"
-    },
-    "DispatchEstimate": {
-      "additionalProperties": false,
-      "properties": {
-        "action": {
-          "const": "replacement.create",
-          "default": "replacement.create",
-          "title": "Action",
-          "type": "string"
-        },
-        "actions_version": {
-          "title": "Actions Version",
-          "type": "string"
-        },
-        "working_days": {
-          "exclusiveMinimum": 0,
-          "title": "Working Days",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "working_days",
-        "actions_version"
-      ],
-      "title": "DispatchEstimate",
-      "type": "object"
-    },
     "Emotion": {
       "additionalProperties": false,
       "properties": {
@@ -668,19 +489,6 @@
           "title": "Observations",
           "type": "array"
         },
-        "policy_decision_brief": {
-          "anyOf": [
-            {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Policy Decision Brief"
-        },
         "problem": {
           "title": "Problem",
           "type": "string"
@@ -716,6 +524,17 @@
           },
           "title": "Task Queue",
           "type": "array"
+        },
+        "warranty": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WarrantyDecision"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -1292,7 +1111,6 @@
             "answer_observation",
             "upload_receipt",
             "confirm_receipt",
-            "confirm_context",
             "confirm_proposal",
             "upload_retake",
             "rate_satisfaction"
@@ -1313,33 +1131,6 @@
         "version"
       ],
       "title": "PendingInput",
-      "type": "object"
-    },
-    "PolicyCondition": {
-      "additionalProperties": false,
-      "properties": {
-        "actual": {
-          "title": "Actual"
-        },
-        "expected": {
-          "title": "Expected"
-        },
-        "met": {
-          "title": "Met",
-          "type": "boolean"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "expected",
-        "actual",
-        "met"
-      ],
-      "title": "PolicyCondition",
       "type": "object"
     },
     "ProductCandidate": {
@@ -1568,10 +1359,6 @@
           "title": "Options",
           "type": "array"
         },
-        "policy_version": {
-          "title": "Policy Version",
-          "type": "string"
-        },
         "retry": {
           "default": false,
           "title": "Retry",
@@ -1588,8 +1375,7 @@
         "card_id",
         "version",
         "options",
-        "decision_summary",
-        "policy_version"
+        "decision_summary"
       ],
       "title": "ProposalCardItem",
       "type": "object"
@@ -1597,73 +1383,19 @@
     "ProposalOption": {
       "additionalProperties": false,
       "properties": {
-        "auto_allowed": {
-          "default": false,
-          "title": "Auto Allowed",
-          "type": "boolean"
-        },
-        "clauses": {
-          "items": {
-            "$ref": "#/$defs/Clause"
-          },
-          "title": "Clauses",
-          "type": "array"
-        },
-        "conditions": {
-          "items": {
-            "$ref": "#/$defs/PolicyCondition"
-          },
-          "title": "Conditions",
-          "type": "array"
-        },
-        "cost_bearer": {
-          "anyOf": [
-            {
-              "enum": [
-                "company",
-                "customer",
-                "shared"
-              ],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Cost Bearer"
-        },
-        "dispatch_estimate": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/DispatchEstimate"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
         },
         "option_id": {
           "title": "Option Id",
           "type": "string"
         },
-        "remedy": {
-          "enum": [
-            "parts",
-            "repair",
-            "replace",
-            "refund",
-            "paid_repair",
-            "none"
-          ],
-          "title": "Remedy",
-          "type": "string"
-        },
         "source": {
-          "default": "policy",
+          "default": "sop",
           "enum": [
-            "policy",
+            "sop",
             "human"
           ],
           "title": "Source",
@@ -1672,11 +1404,21 @@
         "title": {
           "title": "Title",
           "type": "string"
+        },
+        "type": {
+          "enum": [
+            "replace",
+            "refund",
+            "reship",
+            "carrier_investigation"
+          ],
+          "title": "Type",
+          "type": "string"
         }
       },
       "required": [
         "option_id",
-        "remedy",
+        "type",
         "title"
       ],
       "title": "ProposalOption",
@@ -1776,18 +1518,6 @@
           "title": "Data",
           "type": "object"
         },
-        "eta_days": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Eta Days"
-        },
         "next_step": {
           "default": "",
           "title": "Next Step",
@@ -1818,7 +1548,7 @@
           "title": "Service Order No"
         },
         "source": {
-          "default": "业务系统（模拟）",
+          "default": "售后工具",
           "title": "Source",
           "type": "string"
         },
@@ -1978,7 +1708,7 @@
           "default": null,
           "title": "Amount"
         },
-        "channel": {
+        "country": {
           "anyOf": [
             {
               "type": "string"
@@ -1988,7 +1718,7 @@
             }
           ],
           "default": null,
-          "title": "Channel"
+          "title": "Country"
         },
         "order_no": {
           "anyOf": [
@@ -2013,6 +1743,18 @@
           ],
           "default": null,
           "title": "Purchase Date"
+        },
+        "seller": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seller"
         }
       },
       "title": "ReceiptFields",
@@ -2048,8 +1790,8 @@
             "order_verified",
             "order_product_mismatch",
             "needs_manual_check",
-            "channel_in_directory",
-            "channel_unknown"
+            "dealer_authorized",
+            "dealer_unauthorized"
           ],
           "title": "Status",
           "type": "string"
@@ -2623,6 +2365,109 @@
       ],
       "title": "UserMessageItem",
       "type": "object"
+    },
+    "WarrantyDecision": {
+      "additionalProperties": false,
+      "description": "主办方 SOP「订单质保判断」：有订单看订单质保结束日期；查不到订单看经销商名录（授权 = 购买日起 12 个月）。",
+      "properties": {
+        "as_of": {
+          "format": "date",
+          "title": "As Of",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "order",
+            "dealer",
+            "none"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Country"
+        },
+        "dealer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dealer"
+        },
+        "order_no": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order No"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "sku": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sku"
+        },
+        "status": {
+          "enum": [
+            "in_warranty",
+            "out_of_warranty",
+            "unauthorized_dealer",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "warranty_end": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Warranty End"
+        }
+      },
+      "required": [
+        "status",
+        "basis",
+        "as_of",
+        "reason"
+      ],
+      "title": "WarrantyDecision",
+      "type": "object"
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2747,7 +2592,6 @@
             "action": "#/$defs/ActionItem",
             "assistant_message": "#/$defs/AssistantMessageItem",
             "case_changed": "#/$defs/CaseStatusItem",
-            "context_card": "#/$defs/ContextCardItem",
             "escalation_summary": "#/$defs/SummaryItem",
             "evidence": "#/$defs/EvidenceItemGroup",
             "execution_card": "#/$defs/ExecutionCardItem",
@@ -2793,9 +2637,6 @@
           },
           {
             "$ref": "#/$defs/SummaryItem"
-          },
-          {
-            "$ref": "#/$defs/ContextCardItem"
           },
           {
             "$ref": "#/$defs/ProposalCardItem"

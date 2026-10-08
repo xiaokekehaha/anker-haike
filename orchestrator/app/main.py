@@ -29,7 +29,7 @@ from app.retention import retention_loop
 from app.sessions.router import router as sessions_router
 from app.sessions.runtime import close_session_runtime, open_session_runtime
 from app.settings import settings
-from app.warranty.runtime import get_receipt_lookup
+from app.warranty.service import directory as dealer_directory
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 log = logging.getLogger("orchestrator")
@@ -62,7 +62,7 @@ async def _lifespan(app: FastAPI):
     # 票 19 / 31：产品目录与排障计划进 L4 内存缓存；计划 next_on / 证据引用不合法时启动失败
     app.state.catalog = ProductCatalog.from_yaml(settings.catalog_config_path)
     app.state.plans = PlanLibrary.from_yaml(settings.plans_config_path)
-    app.state.receipt_lookup = get_receipt_lookup()
+    dealer_directory()  # 启动即加载经销商名录，数据有误时启动失败
     app.state.fault_cards = (
         get_fault_card_library()
     )  # 票 33：故障卡 ≤ 800 token、plan_id 合法，否则启动失败

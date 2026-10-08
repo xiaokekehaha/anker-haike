@@ -17,10 +17,13 @@ from app.settings import settings
 TABLES = [('public', name) for name in (
     'sessions', 'session_events', 'session_inputs', 'session_actions', 'session_images',
     'conversation_summaries', 'checkpoints', 'checkpoint_blobs', 'checkpoint_writes',
+    # 售后案件与服务单都绑定在会话上，随会话一起清
+    'satisfaction_ratings', 'human_decisions', 'action_executions', 'case_events', 'service_episodes',
+    'cases', 'service_orders',
 )] + [('analytics', name) for name in (
     'cases', 'model_calls', 'retrieval_calls', 'node_runs', 'run_facts', 'session_facts',
 )]
-PRESERVED = ('products', 'plans', 'catalog_meta', 'sku_fault_cards', 'dealers', 'orders_mock')
+PRESERVED = ('products', 'plans', 'catalog_meta', 'sku_fault_cards')
 
 async def main(args):
     async with await psycopg.AsyncConnection.connect(settings.database_url) as conn:

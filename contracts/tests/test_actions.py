@@ -13,7 +13,6 @@ CONTRACT_KINDS = {
     "request_human",
     "new_issue",
     "resume_issue",
-    "confirm_context",
     "confirm_proposal",
     "decline_proposal",
     "skip_retake",

@@ -1,99 +1,41 @@
-source: 人工确定性规则回归样本，不代表真实模型评测
+source: 服务单提交闸门的确定性回归样本（四项：资格 / SOP 证据 / 安全 / 幂等）
 cases:
-- id: authorization-01
-  input:
-    policy: &id001
-      sku: EUFY-X10-PRO-OMNI
-      category: robot_vacuum
-      region_purchase: US
-      region_use: US
-      channel: official_store
-      purchase_date: '2026-02-26'
-      today: '2026-09-14'
-      fault_class: quality
-    gate: {}
-  expected:
-    passed: true
-- id: authorization-02
-  input:
-    policy: *id001
-    gate:
-      user_confirmed: false
-  expected:
-    passed: false
-- id: authorization-03
-  input:
-    policy: *id001
-    gate:
-      receipt:
-        status: insufficient
-  expected:
-    passed: false
-- id: authorization-04
-  input:
-    policy: *id001
-    gate:
-      product_state: unknown
-  expected:
-    passed: false
-- id: authorization-05
-  input:
-    policy: *id001
-    gate:
-      allowed_operations: false
-  expected:
-    passed: false
-- id: authorization-06
-  input:
-    policy: *id001
-    gate:
-      risk_cases:
-      - rule_id: R4
-        status: reported
-  expected:
-    passed: false
-- id: authorization-07
-  input:
-    policy: *id001
-    gate:
-      execution_status: running
-  expected:
-    passed: false
-- id: authorization-08
-  input:
-    policy: *id001
-    gate:
-      execution_status: succeeded
-  expected:
-    passed: false
-- id: authorization-09
-  input:
-    policy: *id001
-    gate:
-      case_status: closed
-  expected:
-    passed: false
-- id: authorization-10
-  input:
-    policy: *id001
-    gate:
-      option:
-        remedy: refund
-  expected:
-    passed: false
-- id: authorization-11
-  input:
-    policy: *id001
-    gate:
-      human_approved: true
-      user_confirmed: false
-  expected:
-    passed: false
-- id: authorization-12
-  input:
-    policy: *id001
-    gate:
-      human_approved: true
-      allowed_operations: false
-  expected:
-    passed: false
+- id: authorization-01-all-pass
+  input: {gate: {}}
+  expected: {passed: true}
+- id: authorization-02-not-confirmed
+  input: {gate: {user_confirmed: false}}
+  expected: {passed: false}
+- id: authorization-03-out-of-warranty
+  input: {warranty: out_of_warranty}
+  expected: {passed: false}
+- id: authorization-04-unauthorized-dealer
+  input: {warranty: unauthorized_dealer}
+  expected: {passed: false}
+- id: authorization-05-missing-serial
+  input: {gate: {evidence: {order_or_receipt: 'order:Anker016', address: order, photo_or_video: 'images:1'}}}
+  expected: {passed: false}
+- id: authorization-06-missing-photo
+  input: {gate: {evidence: {order_or_receipt: 'order:Anker016', address: order, serial_number: 'customer:SN1'}}}
+  expected: {passed: false}
+- id: authorization-07-safety-risk
+  input: {gate: {risk_cases: [{rule_id: R4, status: reported}]}}
+  expected: {passed: false}
+- id: authorization-08-operations-blocked
+  input: {gate: {allowed_operations: false}}
+  expected: {passed: false}
+- id: authorization-09-running
+  input: {gate: {execution_status: running}}
+  expected: {passed: false}
+- id: authorization-10-succeeded
+  input: {gate: {execution_status: succeeded}}
+  expected: {passed: false}
+- id: authorization-11-closed-case
+  input: {gate: {case_status: closed}}
+  expected: {passed: false}
+- id: authorization-12-reship-needs-only-order
+  input: {gate: {kind: reship, logistics_ok: true, evidence: {order_or_receipt: 'order:Anker007'}}}
+  expected: {passed: true}
+- id: authorization-13-reship-delivered
+  input: {gate: {kind: reship, logistics_ok: false, evidence: {order_or_receipt: 'order:Anker001'}}}
+  expected: {passed: false}

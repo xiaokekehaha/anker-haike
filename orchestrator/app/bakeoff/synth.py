@@ -60,7 +60,7 @@ def _receipt(spec: dict[str, Any]) -> Image.Image:
     y = 130
     rows = [
         ("订单编号", fields.get("order_no")),
-        ("店铺", fields.get("channel")),
+        ("店铺", fields.get("seller")),
         ("下单时间", fields.get("purchase_date")),
         ("实付款", fields.get("amount")),
     ]

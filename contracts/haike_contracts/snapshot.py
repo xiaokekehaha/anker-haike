@@ -160,24 +160,12 @@ class SummaryItem(TimelineRecord):
     handoff_status: Literal["prepared", "requested", "accepted", "failed", "cancelled"] = "prepared"
 
 
-class ContextCardItem(TimelineRecord):
-    kind: Literal["context_card"]
-    card_id: str
-    version: int = Field(ge=0)
-    fields: list[str]
-    prefilled: dict[str, str] = Field(default_factory=dict)
-    sources: dict[str, str] = Field(default_factory=dict)
-    choices: dict[str, list[str]] = Field(default_factory=dict)
-    confirmed_fields: dict[str, str] | None = None
-
-
 class ProposalCardItem(TimelineRecord):
     kind: Literal["proposal_card"]
     card_id: str
     version: int = Field(ge=0)
     options: list[ProposalOption]
     decision_summary: str
-    policy_version: str
     retry: bool = False
     chosen_option_id: str | None = None
     declined_reason: str | None = None
@@ -236,7 +224,6 @@ TimelineItem = Annotated[
     | ReceiptCardItem
     | EvidenceItemGroup
     | SummaryItem
-    | ContextCardItem
     | ProposalCardItem
     | ExecutionCardItem
     | RetakeCardItem

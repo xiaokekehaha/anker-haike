@@ -156,7 +156,7 @@ def fold_history(
             ]
             if e["status"] != "started":
                 entry.completed_at = at
-        elif kind in {"product_card", "step_card", "observation_card", "receipt_card", "escalation_summary", "context_card", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
+        elif kind in {"product_card", "step_card", "observation_card", "receipt_card", "escalation_summary", "proposal_card", "execution_card", "retake_card", "rating_card", "case_changed"}:
             entry = entries.get(e["card_id"]) or ConversationEntry(
                 **base,
                 entry_id=e["card_id"],

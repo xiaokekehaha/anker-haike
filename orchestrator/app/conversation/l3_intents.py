@@ -72,7 +72,8 @@ def fallback_interpretation(state):
         return answer
     text = state.get("text", "")
     terms = yaml.safe_load((CONFIG_DIR / "rules/intent_terms.yaml").read_text())
-    intents = [intent for intent, words in terms.items() if any(word in text for word in words)]
+    folded = text.casefold()
+    intents = [intent for intent, words in terms.items() if any(word.casefold() in folded for word in words)]
     from app.emotion.policy import evaluate_emotion
     from app.rules import get_rules_service
 
@@ -89,6 +90,9 @@ def fallback_interpretation(state):
         intents = ordered_intents("report_problem", intents)
     if not intents and state.get("consult_intent") and extract_params(text):
         intents = [state["consult_intent"]]
+    if not intents and "tracking_no" in extract_params(text):
+        # 只给了运单号，没有别的诉求：就是在问物流。
+        intents = ["logistics_query"]
     if not intents and emotion != "calm":
         intents = ["complaint"]
     if not intents:

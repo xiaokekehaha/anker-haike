@@ -5,16 +5,15 @@ import { Link } from 'react-router-dom';
 import { CASE_LABELS } from '../../state/progress';
 import { api } from '../api';
 import { l3Api, type ServiceCase } from '../l3';
-import { CASE_GROUPS, EMOTION_TEXT, REMEDY_TEXT, defaultWindow, needsHumanText, sla } from '../format';
+import { CASE_GROUPS, EMOTION_TEXT, SERVICE_TYPE_TEXT, WARRANTY_TEXT, defaultWindow, sla } from '../format';
 import { useAsync } from '../useAsync';
 import type { SessionRow } from '../types';
 
+/** 队列行摘要：服务单类型 + 质保判断（物流类服务单没有质保判断）。 */
 export function policySummary(row: ServiceCase): string {
-  const d = row.policy_decision;
-  if (!d) return '信息待核实';
-  if (d.needs_human) return `需人工：${(d.needs_human_reasons ?? []).map(needsHumanText).join('；') || '政策未覆盖'}`;
-  const eligible = (d.remedies ?? []).filter((r) => r.eligible).map((r) => REMEDY_TEXT[r.remedy] ?? r.remedy);
-  return eligible.length ? eligible.join(' / ') : '无可用处置';
+  const types = (row.proposal?.options ?? []).map((o) => SERVICE_TYPE_TEXT[o.type] ?? o.title);
+  const warranty = row.warranty ? WARRANTY_TEXT[row.warranty.status] ?? row.warranty.status : null;
+  return [types.join(' / '), warranty].filter(Boolean).join(' · ') || '信息待核实';
 }
 
 export function Desk() {

@@ -137,94 +137,6 @@
       "title": "AnswerObservationPayload",
       "type": "object"
     },
-    "ConfirmContextAction": {
-      "additionalProperties": false,
-      "properties": {
-        "action_id": {
-          "description": "前端生成的 uuid，重试时复用，服务端据此幂等",
-          "title": "Action Id",
-          "type": "string"
-        },
-        "card_id": {
-          "title": "Card Id",
-          "type": "string"
-        },
-        "expected_version": {
-          "minimum": 0,
-          "title": "Expected Version",
-          "type": "integer"
-        },
-        "input_token": {
-          "title": "Input Token",
-          "type": "string"
-        },
-        "kind": {
-          "const": "confirm_context",
-          "title": "Kind",
-          "type": "string"
-        },
-        "payload": {
-          "$ref": "#/$defs/ConfirmContextPayload"
-        },
-        "target_issue_id": {
-          "title": "Target Issue Id",
-          "type": "string"
-        }
-      },
-      "required": [
-        "action_id",
-        "expected_version",
-        "target_issue_id",
-        "input_token",
-        "card_id",
-        "kind",
-        "payload"
-      ],
-      "title": "ConfirmContextAction",
-      "type": "object"
-    },
-    "ConfirmContextPayload": {
-      "additionalProperties": false,
-      "properties": {
-        "channel": {
-          "maxLength": 50,
-          "minLength": 1,
-          "title": "Channel",
-          "type": "string"
-        },
-        "platform": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Platform"
-        },
-        "region_purchase": {
-          "maxLength": 50,
-          "minLength": 1,
-          "title": "Region Purchase",
-          "type": "string"
-        },
-        "region_use": {
-          "maxLength": 50,
-          "minLength": 1,
-          "title": "Region Use",
-          "type": "string"
-        }
-      },
-      "required": [
-        "region_purchase",
-        "region_use",
-        "channel"
-      ],
-      "title": "ConfirmContextPayload",
-      "type": "object"
-    },
     "ConfirmProposalAction": {
       "additionalProperties": false,
       "properties": {
@@ -338,7 +250,8 @@
           "items": {
             "enum": [
               "order_no",
-              "channel",
+              "seller",
+              "country",
               "purchase_date",
               "amount"
             ],
@@ -567,7 +480,7 @@
           "default": null,
           "title": "Amount"
         },
-        "channel": {
+        "country": {
           "anyOf": [
             {
               "type": "string"
@@ -577,7 +490,7 @@
             }
           ],
           "default": null,
-          "title": "Channel"
+          "title": "Country"
         },
         "order_no": {
           "anyOf": [
@@ -602,6 +515,18 @@
           ],
           "default": null,
           "title": "Purchase Date"
+        },
+        "seller": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seller"
         }
       },
       "title": "ReceiptFields",
@@ -994,7 +919,6 @@
   "discriminator": {
     "mapping": {
       "answer_observation": "#/$defs/AnswerObservationAction",
-      "confirm_context": "#/$defs/ConfirmContextAction",
       "confirm_proposal": "#/$defs/ConfirmProposalAction",
       "confirm_receipt": "#/$defs/ConfirmReceiptAction",
       "decline_proposal": "#/$defs/DeclineProposalAction",
@@ -1033,9 +957,6 @@
     },
     {
       "$ref": "#/$defs/ResumeIssueAction"
-    },
-    {
-      "$ref": "#/$defs/ConfirmContextAction"
     },
     {
       "$ref": "#/$defs/ConfirmProposalAction"

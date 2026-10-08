@@ -1,9 +1,10 @@
-# 虚构演示动作；真实系统可替换 BackendClient。
-version: '2026-09-14.2'
+# 售后工具动作。订单 / 物流只读主办方数据；service_order.create 只把换货 / 退款 / 补发 / 承运商调查
+# 信息提交给工具，随后转人工（主办方：工单与订单系统不提供接口，在工具中设置转人工节点）。
+version: '2026-10-08.1'
 actions:
   logistics.query:
     kind: read
-    backend: get_shipment
+    backend: get_order
     timeout_ms: 3000
     params:
       order_no: {type: str}
@@ -14,19 +15,18 @@ actions:
     timeout_ms: 3000
     params:
       order_no: {type: str, required: true}
-  replacement.create:
+  service_order.create:
     kind: write
     backend: create_service_order
     timeout_ms: 5000
-    estimated_dispatch_working_days: 3
     params:
-      order_no: {type: str, required: true}
-      sku: {type: str, from_state: product_confirmed.sku, required: true}
-      reason_code: {type: str, from_state: policy_decision.fault_class, required: true}
-      evidence_ids: {from_state: current_evidence_ids}
+      type: {type: str, required: true}
+      order_no: {type: str}
+      sku: {type: str}
+      reason: {type: str, required: true}
+      evidence: {}
+    # 四项闸门都通过才提交：资格（换货 / 退款看质保，补发 / 调查看物流）、SOP 证据、安全、幂等。
     requires:
-      policy_auto_allowed: replace
-      receipt_status: [order_verified]
-      product_state: [confirmed_sku]
+      checks: [eligibility, evidence, safety, idempotency]
       user_confirmed: true
-    idempotency: '{case_id}:replacement.create:{proposal.chosen_option_id}'
+    idempotency: '{case_id}:service_order.create:{proposal.chosen_option_id}'

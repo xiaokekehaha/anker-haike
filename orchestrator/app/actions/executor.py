@@ -2,12 +2,12 @@ import asyncio
 import uuid
 from dataclasses import dataclass
 
-from haike_contracts.common import GateResult, Receipt
+from haike_contracts.common import SERVICE_ORDER_TYPES, GateResult, Receipt
 
-from app.backends.protocol import BackendError, ServiceOrderRequest, Timeout
+from app.backends.protocol import BackendError, Logistics, ServiceOrderRequest, Timeout
 
 from .params import missing_params
-from .registry import ActionRegistry, ConfigError
+from .registry import GATE_CHECKS, SUBMITTED_NEXT_STEP, ActionRegistry, ConfigError
 from .store import MemoryExecutionStore
 
 
@@ -46,8 +46,8 @@ class ActionExecutor:
         case_id=None,
         issue_id=None,
         gate_result: GateResult | None = None,
-        policy_version=None,
         writer=None,
+        as_of=None,
         deadline_ms=None,
     ):
         spec = self.registry.spec(kind)
@@ -56,8 +56,7 @@ class ActionExecutor:
             not case_id
             or not gate_result
             or not gate_result.passed
-            or {c.name for c in gate_result.checks}
-            != {"policy", "evidence_and_consent", "safety", "idempotency"}
+            or [c.name for c in gate_result.checks] != GATE_CHECKS
             or not all(c.passed for c in gate_result.checks)
         ):
             raise AuthorizationDenied("写操作授权门未通过")
@@ -75,11 +74,11 @@ class ActionExecutor:
                 and not isinstance(params[name], str)
             ):
                 raise ConfigError("参数必须为文本：" + name)
-        if "evidence_ids" in params and (
-            not isinstance(params["evidence_ids"], list)
-            or any(not isinstance(v, str) for v in params["evidence_ids"])
+        if kind == "service_order.create" and (
+            params.get("type") not in SERVICE_ORDER_TYPES
+            or not isinstance(params.get("evidence", {}), dict)
         ):
-            raise ConfigError("evidence_ids 必须为字符串列表")
+            raise ConfigError("服务单类型或证据格式不合法")
         timeout_ms = min(spec["timeout_ms"], deadline_ms) if deadline_ms else spec["timeout_ms"]
         if timeout_ms <= 0:
             raise Timeout()
@@ -93,7 +92,6 @@ class ActionExecutor:
             "idempotency_key": idempotency_key,
             "request": params,
             "gate_result": gate_result.model_dump() if gate_result else None,
-            "policy_version": policy_version,
             "actions_version": self.registry.version,
         }
         stored, acquired = await self.store.claim(row, spec["timeout_ms"] + 1000)
@@ -114,25 +112,31 @@ class ActionExecutor:
                 "tool_id": stored["execution_id"],
                 "name": kind,
                 "status": "started",
-                "summary": "正在调用模拟业务系统",
+                "summary": "正在查询售后工具" if not write else "正在提交服务单",
             }
         )
         try:
             async with asyncio.timeout(timeout_ms / 1000):
-                if kind == "logistics.query":
-                    value = (
-                        await self.backend.get_service_order(params["service_order_no"])
-                        if params.get("service_order_no")
-                        else await self.backend.get_shipment(**params)
-                    )
-                    data = value.model_dump(mode="json")
+                if kind == "logistics.query" and params.get("service_order_no"):
+                    value = await self.backend.get_service_order(params["service_order_no"])
                     receipt = Receipt(
-                        status=data["status"],
-                        order_no=data.get("order_no"),
-                        tracking_no=data.get("tracking_no"),
-                        service_order_no=data.get("service_order_no"),
-                        updated_at=data.get("updated_at") or data.get("created_at"),
-                        data=data,
+                        status=value.status,
+                        service_order_no=value.service_order_no,
+                        order_no=value.order_no,
+                        data=value.model_dump(mode="json"),
+                    )
+                elif kind == "logistics.query":
+                    order = (
+                        await self.backend.get_order(params["order_no"])
+                        if params.get("order_no")
+                        else await self.backend.find_order_by_tracking(params["tracking_no"])
+                    )
+                    logistics = Logistics(order_no=order.order_no, packages=order.packages, as_of=as_of)
+                    receipt = Receipt(
+                        status="packages",
+                        order_no=order.order_no,
+                        tracking_no=params.get("tracking_no"),
+                        data=logistics.model_dump(mode="json"),
                     )
                 elif kind == "warranty.check":
                     value = await self.backend.get_order(params["order_no"])
@@ -147,8 +151,7 @@ class ActionExecutor:
                         status=value.status,
                         service_order_no=value.service_order_no,
                         order_no=value.order_no,
-                        eta_days=value.eta_days,
-                        next_step=f"预计 {value.eta_days} 个工作日发出，请保留服务单号",
+                        next_step=SUBMITTED_NEXT_STEP,
                         data=value.model_dump(mode="json"),
                     )
         except (BackendError, TimeoutError) as exc:
@@ -194,7 +197,7 @@ class ActionExecutor:
                 "tool_id": stored["execution_id"],
                 "name": kind,
                 "status": "finished",
-                "summary": "模拟业务查询或办理完成",
+                "summary": "售后工具已返回",
             }
         )
         return ExecutionResult(stored["execution_id"], "succeeded", receipt)

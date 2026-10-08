@@ -65,7 +65,7 @@ export function deriveDifficulties(state: SessionState | null, session: (Session
         { label: '会话内问题数', value: `${issues || 1} 个`, tone: 'muted' },
         { label: '待接续诉求', value: taskQueue ? `${taskQueue} 项` : '无', tone: 'muted' },
         { label: '结局原因', value: session ? `${session.outcome_reason ?? '—'} · ${reasonText(session.outcome_reason)}` : '—', tone: 'muted' },
-        { label: '服务案件', value: serviceCase ? `${serviceCase.status}${serviceCase.policy_decision?.policy_id ? ` · 政策 ${serviceCase.policy_decision.policy_id}` : ''}` : '未进入办理', tone: 'muted' },
+        { label: '服务案件', value: serviceCase ? `${serviceCase.status}${serviceCase.warranty ? ` · 质保 ${serviceCase.warranty.status}` : ''}` : '未进入办理', tone: 'muted' },
       ],
     },
     {

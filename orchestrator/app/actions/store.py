@@ -9,7 +9,7 @@ from psycopg.types.json import Jsonb
 
 CASE_COLUMNS = (
     "execution_id", "action_kind", "status", "receipt", "error", "gate_result",
-    "policy_version", "actions_version", "started_at",
+    "actions_version", "started_at",
 )
 
 
@@ -138,8 +138,8 @@ class PostgresExecutionStore:
                 for field in ("request", "gate_result"):
                     values[field] = Jsonb(values.get(field))
                 await cur.execute(
-                    """insert into action_executions(execution_id,case_id,session_id,issue_id,run_id,action_kind,idempotency_key,request,gate_result,status,policy_version,actions_version,started_at)
-                    values (%(execution_id)s,%(case_id)s,%(session_id)s,%(issue_id)s,%(run_id)s,%(action_kind)s,%(idempotency_key)s,%(request)s,%(gate_result)s,'running',%(policy_version)s,%(actions_version)s,%(started_at)s)""",
+                    """insert into action_executions(execution_id,case_id,session_id,issue_id,run_id,action_kind,idempotency_key,request,gate_result,status,actions_version,started_at)
+                    values (%(execution_id)s,%(case_id)s,%(session_id)s,%(issue_id)s,%(run_id)s,%(action_kind)s,%(idempotency_key)s,%(request)s,%(gate_result)s,'running',%(actions_version)s,%(started_at)s)""",
                     values,
                 )
             else:

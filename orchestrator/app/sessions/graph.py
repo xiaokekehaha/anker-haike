@@ -72,14 +72,16 @@ class SessionState(TypedDict, total=False):
     evaluation_source: str
     service_context: dict
     context_sources: dict
-    policy_decision: dict | None
+    warranty: dict | None
+    sop_evidence: dict
+    awaiting_evidence: list[str]
+    logistics_announced: bool
     proposal: dict | None
     case_id: str | None
     case_order_no: str | None
     execution: dict | None
     execution_key: str | None
     gate_result: dict | None
-    prior_remedies: list[str]
     requested_remedy: str | None
     consult_intent: str | None
     last_consult_params: dict
@@ -721,8 +723,8 @@ async def await_input(state: SessionState) -> SessionState:
                 **pc["payload"],
             }
         )
-    elif pc["kind"] in {"confirm_context", "confirm_proposal", "upload_retake", "rate_satisfaction"}:
-        event_type = {"confirm_context":"context_card", "confirm_proposal":"proposal_card", "upload_retake":"retake_card", "rate_satisfaction":"rating_card"}[pc["kind"]]
+    elif pc["kind"] in {"confirm_proposal", "upload_retake", "rate_satisfaction"}:
+        event_type = {"confirm_proposal":"proposal_card", "upload_retake":"retake_card", "rate_satisfaction":"rating_card"}[pc["kind"]]
         writer({"type":event_type,"card_id":pc["card_id"],"version":current_version(),**pc["payload"]})
     # Waiting is business state. Every graph invocation reaches END normally.
     return {
@@ -751,7 +753,7 @@ async def apply_action(state: SessionState) -> SessionState:
                 "version": state["base_version"] + 1,
             }
         )
-    if action.get("kind") in {"confirm_context", "confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}:
+    if action.get("kind") in {"confirm_proposal", "decline_proposal", "skip_retake", "rate_satisfaction"}:
         from app.sessions.l3 import apply_l3_action
         return await apply_l3_action(state, action, pc)
     results = dict(state.get("card_results") or {})
@@ -792,13 +794,13 @@ async def apply_action(state: SessionState) -> SessionState:
             "confirmed_fields": receipt["fields"],
             "edited": receipt["edited"],
         }
-        update.update(
-            {
-                "card_results": results,
-                "receipt": receipt,
-                "escalate_reason": receipt.get("collection_reason") or "R6",
-            }
-        )
+        update.update({"card_results": results, "receipt": receipt})
+        from app.actions.runtime import get_services
+        if get_services() is not None and (state.get("requested_remedy") or state.get("case_id")):
+            # 售后办理中收的凭证：回到 SOP 的订单质保判断（查订单或查经销商名录）。
+            update.update(escalate_reason=None, l3_route="service_context")
+        else:
+            update["escalate_reason"] = receipt.get("collection_reason") or "R6"
     elif action.get("kind") == "step_feedback":
         update.update(_apply_step_feedback(state, action, pc, results))
     elif action.get("kind") == "answer_observation":
@@ -1283,6 +1285,22 @@ async def understand(state: SessionState) -> SessionState:
         from app.conversation.tasks import ordered_intents
         intents=ordered_intents(meaning.primary_intent, meaning.secondary_intents)
         meaning=meaning.model_copy(update={"primary_intent":intents[0],"secondary_intents":intents[1:]})
+    if (
+        get_services() is not None
+        and meaning.primary_intent in {"refund_request", "replacement_request"}
+        and "logistics_query" in meaning.secondary_intents
+        and not state.get("case_id")
+    ):
+        # SOP：没收到货先查物流（送达不补发 / 未送达补发），不能直接按换货退款判质保。
+        rest = [i for i in meaning.secondary_intents if i != "logistics_query"]
+        meaning = meaning.model_copy(update={"primary_intent": "logistics_query", "secondary_intents": rest})
+    if get_services() is not None and meaning.clarification and meaning.primary_intent in {
+        "logistics_query", "warranty_query", "order_query", "replacement_request", "refund_request",
+    }:
+        from app.actions.params import extract_params
+        if extract_params(text):
+            # 原话里已有订单 / 运单号：业务事实由服务端查询，模型对「订单状态缺失」的追问不成立。
+            meaning = meaning.model_copy(update={"clarification": None})
     if meaning.answer_request and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update", "report_problem", "request_human"}:
         # A single factual question can require several reads. Those reads are
         # planned by the answer module, not queued as duplicate user tasks.
@@ -1368,6 +1386,9 @@ async def understand(state: SessionState) -> SessionState:
                 if context_sources.get(key) != "receipt":
                     context_values[key], context_sources[key] = value, "user"
         update.update(service_context=context_values, context_sources=context_sources)
+        if state.get("awaiting_evidence") and state.get("case_id") and (reported or _new_fault_images(state)):
+            # 补齐 SOP 证据的回复：回到质保 / 方案节点重新核对，缺什么再问什么。
+            update["turn_decision"]["evidence_supplied"] = True
     if context.get("source") != "validated_action":
         update["model_trace"] = [
             *state.get("model_trace", []),
@@ -1582,6 +1603,8 @@ def route_entry(state: SessionState) -> str:
             return "track"
         if intent in {"replacement_request","refund_request","address_update"}:
             return "service_context"
+        if decision.get("evidence_supplied"):
+            return "propose"
         if state.get("requested_remedy") and (state.get("stage") == "context" or (state.get("pending_card") or {}).get("kind") in {"upload_receipt", "confirm_receipt"}) and intent in {"supplement", "unknown", "answer_pending"}:
             return "service_context"
         if state.get("human_request_info") and intent in {"supplement","correct","answer_pending"}:
@@ -2902,13 +2925,13 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     from app.sessions import l3
     g = StateGraph(SessionState)
     l3_routes = {
-        "service_context": ["await_input", "prepare_receipt", "propose"],
-        "propose": ["commit_issue", "await_human", "summarize", "await_input"],
+        "service_context": ["await_input", "prepare_receipt", "propose", "commit_issue", "advance_tasks"],
+        "propose": ["commit_issue", "await_human", "summarize", "await_input", "advance_tasks"],
         "authorize": ["execute", "await_human", "commit_issue", "service_context"],
-        "execute": ["commit_issue", "await_human", "track", "await_input"],
+        "execute": ["commit_issue", "await_human", "advance_tasks", "await_input"],
         "track": ["advance_tasks"],
         "await_human": ["commit_issue"],
-        "consult": ["commit_issue", "summarize", "advance_tasks"],
+        "consult": ["commit_issue", "summarize", "advance_tasks", "service_context"],
         "apply_human_decision": ["await_input", "authorize", "propose", "commit_issue"],
         "apply_case_command": ["commit_issue"],
         "reopen_case": ["service_context", "escalate"],
@@ -2974,7 +2997,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         "understand",
         route_entry,
         {
-            **{name:name for name in ("consult","service_context","track","apply_human_decision","apply_case_command","reopen_case","vision")},
+            **{name:name for name in ("consult","service_context","propose","track","apply_human_decision","apply_case_command","reopen_case","vision")},
             "disambiguate": "disambiguate",
             "escalate": "escalate",
             "apply_action": "apply_action",

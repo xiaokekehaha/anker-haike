@@ -10,11 +10,10 @@ from pydantic import BaseModel, ConfigDict
 
 from app.settings import REPO_ROOT
 
-KINDS = ("vision", "symptom", "routing", "emotion", "policy", "authorization", "commitments")
+KINDS = ("vision", "symptom", "routing", "emotion", "warranty", "authorization", "commitments")
 
-# 这几个金标字段断言的是「出现在列表里」，不是整列表相等：一次判定可以有多个缺参数或多条转人工理由，
-# 用例只钉自己关心的那一条。
-MEMBERSHIP = {"missing": "missing_inputs", "reason": "needs_human_reasons"}
+# 这几个金标字段断言的是「出现在列表里」，不是整列表相等。
+MEMBERSHIP: dict[str, str] = {}
 
 
 class EvalCase(BaseModel):
@@ -42,45 +41,44 @@ def evaluate(kind, value):
         from app.emotion.policy import evaluate_emotion
 
         return evaluate_emotion(**value)["emotion"]
-    if kind in {"policy", "authorization"}:
-        from app.policy import PolicyEngine, PolicyInput
+    if kind == "warranty":
+        from datetime import date
 
-        decision = PolicyEngine().decide(
-            PolicyInput.model_validate(value if kind == "policy" else value["policy"])
-        )
-        if kind == "policy":
-            return {
-                "needs_human": decision.needs_human,
-                "replace_auto": any(
-                    r.remedy == "replace" and r.auto_allowed for r in decision.remedies
-                ),
-                "parts_auto": any(
-                    r.remedy == "parts" and r.auto_allowed for r in decision.remedies
-                ),
-                "paid_repair": any(
-                    r.remedy == "paid_repair" and r.eligible for r in decision.remedies
-                ),
-                "within_warranty": decision.within_warranty,
-                "warranty_end": decision.warranty_end.isoformat()
-                if decision.warranty_end
-                else None,
-                "policy_id": decision.policy_id,
-                "missing_inputs": decision.missing_inputs,
-                "needs_human_reasons": decision.needs_human_reasons,
-            }
+        from app.backends.service import OrderBook
+        from app.warranty.service import decide_by_dealer, decide_by_order
+
+        as_of = date.fromisoformat(value["as_of"])
+        if value.get("order_no"):
+            order = OrderBook().orders[value["order_no"].casefold()]
+            decision = decide_by_order(order, value.get("sku"), as_of)
+        else:
+            purchase = date.fromisoformat(value["purchase_date"]) if value.get("purchase_date") else None
+            decision = decide_by_dealer(value.get("seller"), value.get("country"), purchase, as_of)
+        return {
+            "status": decision.status,
+            "basis": decision.basis,
+            "warranty_end": decision.warranty_end.isoformat() if decision.warranty_end else None,
+        }
+    if kind == "authorization":
+        from datetime import date
+
+        from haike_contracts.common import WarrantyDecision
+
         from app.actions.gate import AuthorizationGate
 
         gate = {
-            "decision": decision,
-            "option": {"remedy": "replace"},
-            "receipt": {"status": "order_verified"},
-            "product_state": "confirmed_sku",
+            "kind": "replace",
+            "warranty": WarrantyDecision(
+                status=value.get("warranty", "in_warranty"), basis="order", as_of=date(2026, 10, 8), reason="eval"
+            ),
+            "logistics_ok": False,
+            "evidence": {"order_or_receipt": "order:Anker016", "address": "order", "photo_or_video": "images:1", "serial_number": "customer:SN1"},
             "risk_cases": [],
             "allowed_operations": True,
             "user_confirmed": True,
             "case_status": "awaiting_confirmation",
         }
-        return {"passed": AuthorizationGate().check(**(gate | value["gate"])).passed}
+        return {"passed": AuthorizationGate().check(**(gate | value.get("gate", {}))).passed}
     if kind == "vision":
         from haike_contracts.common import FaultLocalization
 

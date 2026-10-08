@@ -24,22 +24,24 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any
 
+from haike_contracts.common import ReceiptOutcome
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.images.store import ImageStore
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
+from app.official.models import OfficialData, pn_of
 from app.prompts import compose_system_prompt, wrap_data
 from app.sessions.cards import derive_card_id
-from app.warranty.runtime import get_receipt_lookup
+from app.warranty.service import directory
 
 log = logging.getLogger("sessions.receipt")
 
 OCR_TASK = "warranty.receipt_ocr"
 OCR_BUDGET_MS = 12_000  # 凭证轮 run deadline 30 s（08 §8）
-OCR_PROMPT_VERSION = "2026-09-12.1"
-FIELDS = ("order_no", "channel", "purchase_date", "amount")
+OCR_PROMPT_VERSION = "2026-10-08.1"
+FIELDS = ("order_no", "seller", "country", "purchase_date", "amount")
 LOW_CONFIDENCE = 0.7  # 低于此值前端标黄（09 §5.3）
 
 # 不收凭证直接摘要的升级原因：安全 / 人工请求 / 无可用知识（凭证无助于排障）/ 品类不明（无产品可核对）/ 范围外产品
@@ -50,9 +52,9 @@ NEXT_STEP = {
     "not_collected": "请准备购买凭证，人工协助核实",
     "needs_manual_check": "凭证已收到，待人工核实",
     "insufficient": "请准备购买凭证，人工协助核实",
-    "channel_unknown": "请准备购买凭证，人工协助核实",
-    "order_verified": "资料已核实，转人工办理",
-    "channel_in_directory": "经销商在名录内，人工确认购买凭证后办理",
+    "order_verified": "订单已核实",
+    "dealer_authorized": "购买商家在授权经销商名录内，按购买日起 12 个月判断质保",
+    "dealer_unauthorized": "购买商家不在授权经销商名录内，请联系购买商家售后",
     "order_product_mismatch": "凭证与当前设备信息不一致，需人工核实",
 }
 
@@ -78,14 +80,15 @@ class ReceiptOcr(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     order_no: str | None = Field(default=None, description="订单号 / 单号，原样抄录；看不清留空")
-    channel: str | None = Field(default=None, description="购买渠道 / 店铺名，原样抄录")
+    seller: str | None = Field(default=None, description="销售商家 / 店铺名（如 Amazon 卖家、Aeroflow），原样抄录")
+    country: str | None = Field(default=None, description="购买国家或地区（发票地址、币种可推断时填 ISO 代码，如 US / UK / DE）")
     purchase_date: str | None = Field(
         default=None, description="购买或下单日期，YYYY-MM-DD；看不清留空"
     )
     amount: str | None = Field(default=None, description="实付金额，含货币符号原样抄录")
     confidence: dict[str, float] = Field(
         default_factory=dict,
-        description="逐字段置信度 0-1，键为 order_no / channel / purchase_date / amount",
+        description="逐字段置信度 0-1，键为 order_no / seller / country / purchase_date / amount",
     )
     unreadable: list[str] = Field(default_factory=list, description="图片中看不清或不存在的字段名")
 
@@ -103,8 +106,8 @@ class OcrOutcome:
 
 
 OCR_INSTRUCTION = (
-    "你正在查看用户上传的购买凭证（订单截图 / 发票 / 收据）。只抄录图片中可见的订单号、购买渠道（店铺 / 平台）、"
-    "购买日期、实付金额四个字段；看不清或不存在的字段留空并写入 unreadable；给每个字段 0-1 的置信度。"
+    "你正在查看用户上传的购买凭证（订单截图 / 发票 / 收据）。只抄录图片中可见的订单号、销售商家、购买国家、"
+    "购买日期、实付金额五个字段；看不清或不存在的字段留空并写入 unreadable；给每个字段 0-1 的置信度。"
     "不要判断是否在保、是否可退换，不要补全或猜测任何数字。只输出 JSON。"
 )
 
@@ -260,7 +263,7 @@ def extracted_receipt(state: dict[str, Any], ocr: OcrOutcome) -> dict[str, Any]:
 
 
 # 客户在对话里说过、凭证上没识别出来的字段：只做卡片预填，仍由客户在卡片上确认；它本身不是凭证。
-STATED_PREFILL = ("purchase_date",)
+STATED_PREFILL = ("purchase_date", "seller", "country")
 
 
 def stated_purchase_date(value: str, today: str) -> bool:
@@ -304,9 +307,40 @@ def confirmed_receipt(
             "edited": actual_edits,
         }
     )
-    outcome = get_receipt_lookup().lookup(r, state.get("product_confirmed"))
+    outcome = lookup(r, state.get("product_confirmed"))
     r.update(outcome.model_dump(mode="json"))
     return r
+
+
+def lookup(receipt: dict[str, Any], product: dict[str, Any] | None) -> ReceiptOutcome:
+    """凭证核对：有订单号查主办方订单；没有就按 seller + country 查授权经销商名录。只输出事实。"""
+    fields = receipt.get("fields") or {}
+    order_no = (fields.get("order_no") or "").strip()
+    order = next((o for o in OfficialData().orders if o.order_no.casefold() == order_no.casefold()), None) if order_no else None
+    facts: dict[str, str] = {}
+    conflicts: list[str] = []
+    if order is not None:
+        sku = (product or {}).get("sku")
+        pns = {pn_of(line.sku) for line in order.lines}
+        if sku and pn_of(sku) not in pns:
+            status = "order_product_mismatch"
+            conflicts.append(f"订单 {order.order_no} 的商品与当前设备 {sku} 不一致")
+        else:
+            status = "order_verified"
+            facts = {"order_no": order.order_no, "purchase_date": order.purchase_date.isoformat()}
+        confidence = (receipt.get("confidence") or {}).get("order_no", 1.0)
+        if confidence < LOW_CONFIDENCE and "order_no" not in (receipt.get("edited") or []):
+            status = "needs_manual_check"
+            conflicts.append("订单号低置信且未经修改，需人工核实")
+            facts = {}
+    elif fields.get("seller") and fields.get("country"):
+        found = directory().match(fields["seller"], fields["country"])
+        status = "dealer_authorized" if found else "dealer_unauthorized"
+        if found:
+            facts = {"dealer": found.dealer.seller, "country": found.dealer.country}
+    else:
+        status = "insufficient"
+    return ReceiptOutcome(status=status, verified_facts=facts, conflicts=conflicts, next_step=NEXT_STEP[status])
 
 
 def skipped_after_upload(state: dict[str, Any], reason: str) -> dict[str, Any]:

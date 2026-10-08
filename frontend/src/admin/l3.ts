@@ -1,19 +1,19 @@
 /** L3 服务案件接口（后端 app/admin/l3_router.py）。 */
-import type { GateResult, PolicyDecision, ProposalOption } from '../types/events';
+import type { GateResult, ProposalOption, WarrantyDecision } from '../types/events';
 import type { EscalationSummary, SessionSnapshot } from '../types/snapshot';
 
 /** 执行失败时的错误（actions/executor.py）：outcome_unknown 是写操作超时、可能已办理；needs_review 要人工核实。 */
 export type ExecutionError = { code: string; message: string; recoverable: boolean; outcome_unknown?: boolean; needs_review?: boolean };
 export type CaseExecution = {
   execution_id: string; action_kind: string; status: string; receipt: Record<string, unknown> | null;
-  error: ExecutionError | null; gate_result: GateResult | null; policy_version: string | null; actions_version: string | null; started_at: string;
+  error: ExecutionError | null; gate_result: GateResult | null; actions_version: string | null; started_at: string;
 };
 export type CaseEvent = { seq: number; type: string; at: string; actor: string; payload: Record<string, unknown> };
 
 export type ServiceCase = {
   case_id: string; session_id: string; issue_id: string; status: string; priority: string; complaint_risk: boolean;
   revision: number; opened_at: string; updated_at: string; owner: string | null;
-  policy_decision: PolicyDecision | null; gate_result: GateResult | null;
+  warranty: WarrantyDecision | null; gate_result: GateResult | null;
   proposal: { options: ProposalOption[]; chosen_option_id?: string | null } | null;
   external_refs: Record<string, string>; snapshot?: SessionSnapshot | null;
   decisions?: { decision_id: string; decision: string; note: string; override_reason: string | null; consumed_input_id: string | null }[];
