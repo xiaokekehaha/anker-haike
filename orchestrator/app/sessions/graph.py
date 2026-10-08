@@ -24,6 +24,7 @@ from app.context.budget import fit_prompt_budget
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
+from app.conversation.product_questions import answer_product_question, handles_product_question
 from app.conversation.reduce import OPEN_OBSERVATION_STATUS
 from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
 from app.diagnose import (
@@ -153,6 +154,7 @@ class SessionState(TypedDict, total=False):
     # 票 17：intake 抽取结果；emotion.strategy 注入系统提示第二层；model_trace 累积各 task 命中模型
     emotion: dict[str, str | None]
     product_hints: list[str]
+    product_question: dict | None
     symptoms: list[str]
     symptom_codes: list[str]
     diagnostic_decision: dict[str, Any]
@@ -1498,6 +1500,14 @@ async def understand(state: SessionState) -> SessionState:
     return update
 
 
+async def product_help(state: SessionState) -> SessionState:
+    return await answer_product_question(
+        dict(state), writer=get_stream_writer(), catalog=get_catalog(),
+        adapter=get_knowledge_adapter(), router=get_model_router(),
+        rules=get_rules_service(), lane=_lane(),
+    )
+
+
 async def dialogue(state: SessionState) -> SessionState:
     from app.conversation.reply import reply_to_turn
 
@@ -1585,6 +1595,8 @@ def route_entry(state: SessionState) -> str:
         # Accepted card commands have already been scoped and validated. They
         # must be applied before free-text business routing can advance a flow.
         return "apply_action"
+    if handles_product_question(state):
+        return "product_help"
     if get_services() is not None:
         intent = decision.get("primary_intent")
         from app.conversation.answers import FACTUAL_INTENTS
@@ -2950,9 +2962,11 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         g.add_conditional_edges(name, l3.route, {target: target for target in targets})
     g.add_node("understand", durable_node(understand))
     g.add_node("dialogue", durable_node(dialogue))
+    g.add_node("product_help", durable_node(product_help))
     g.add_node("commit_issue", durable_node(commit_issue))
     g.add_edge(START, "understand")
     g.add_edge("dialogue", "commit_issue")
+    g.add_edge("product_help", "commit_issue")
     g.add_node("reply", durable_node(reply))
     g.add_node("escalate", durable_node(escalate))
     g.add_node("summarize", durable_node(summarize))
@@ -3012,6 +3026,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
             "apply_action": "apply_action",
             "dialogue": "dialogue",
             "receipt_extract": "receipt_extract",
+            "product_help": "product_help",
             "reassess": "reassess",
         },
     )

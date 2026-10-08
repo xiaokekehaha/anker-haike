@@ -180,6 +180,7 @@ def build_context(
         step_attempts=feedback_history(state),
         operation_conditions=state.get("operation_conditions"),
         product=state.get("product_confirmed"),
+        product_question=state.get("product_question"),
         decision=state.get("turn_decision"),
         symptom_interview=state.get("symptom_interview"),
         symptom_candidates=state.get("symptom_candidates"),

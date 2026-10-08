@@ -19,6 +19,7 @@ NODE_STAGE: dict[str, str] = {
     "service_context": "context", "propose": "propose", "authorize": "execute",
     "execute": "execute", "track": "track", "await_human": "awaiting_human",
     "consult": "consult", "apply_human_decision": "awaiting_human",
+    "product_help": "consult",
     "advance_tasks": "done", "prepare_retake": "diagnose", "vision_conflict": "diagnose",
     "apply_case_command": "awaiting_human", "reopen_case": "context",
     "understand": "intake",

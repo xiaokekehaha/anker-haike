@@ -29,6 +29,7 @@ type Intent = Literal[
     "resume_task",
     "history_query",
     "explain",
+    "product_question",
     "answer_pending",
     "step_feedback",
     "request_human",
@@ -145,7 +146,8 @@ business_reference 是唯一的对象选择：问正在办理的案件/退款/�
 逐一识别本轮每个独立诉求，不因涉及另一设备或另一订单而省略其中任何一项；只把第一个诉求放 primary_intent，其余按原话出现顺序放 secondary_intents，服务端负责业务优先级排序。new_issue 仅表示用户明确要求新建问题，不能替代已经说清的换货、退款、排障等业务意图。查购买日期/渠道/型号属于 order_query，查保修期限属于 warranty_query，同一句同时问两者时保留两个意图。
 每轮先理解用户当前想做什么，不受之前升级/转人工阶段限制。结合完整历史问答、当前时间、问题与事实 ID。
 “之前问了什么”是 history_query；“新问题”是 new_issue，要求描述新问题；“刚说错了”没有纠正内容时必须 clarification，不擅自删除事实。
-“为什么这样做/怎么操作”是 explain，不当作反馈或已执行。仅明确操作结果才能 step_feedback。
+询问产品功能、使用方法、设置或规格是 product_question，需要产品知识支持，不写成故障现象。型号缺失也保留这个意图，服务端负责追问。只解释已经给出的步骤、卡片或回答时才用 explain；同样的“怎么操作”要根据用户是否在问一个新的产品功能区分，不能一律 explain。仅明确操作结果才能 step_feedback。
+product_question 状态保存正在查询的问题。status=awaiting_product 时，用户补充品类或型号属于 supplement，device_relation=current，不能把型号当作新的咨询问题或切换设备；只有明确换设备才 other。已经回答后的新功能问题仍为 product_question。
 feedback 必须同时给出 feedback_quote（当前原话）；仅“做过了”没有效果描述时不能猜测反馈。
 用户说问题仍未解决、再次发生或否认已解决时，填写 unresolved_quote。已结束案件的再次求助归 report_problem，引用对应 issue 或 case；如果只问历史记录、提出假设或仅表达情绪，不填写。案件结果未达成与单个步骤的执行反馈不同；没有对应步骤卡时，不强造 step_feedback 命令。新的退换货诉求仍保留其业务意图。
 symptom_interview.question 是当前故障判别问题。用户回答它时填 symptom_answer，question_id 原样引用当前问题，answer 为 yes/no/unknown，quote 引用本轮原话；意图为 answer_pending。这是对问题的回答，不是排障步骤已执行的反馈。不要把纯“是/否/不知道”或问题中的假设写成用户新故障事实。症状判别结果只代表待验证的排查方向，不能直接当作故障原因或办理资格。

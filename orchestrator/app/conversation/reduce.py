@@ -31,6 +31,7 @@ ISSUE_FIELDS = {
     "abandoned_card": None,
     "observations": [],
     "product_hints": [],
+    "product_question": None,
     "symptoms": [],
     "symptom_codes": [],
     "diagnostic_decision": None,
