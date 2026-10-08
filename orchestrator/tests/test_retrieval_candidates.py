@@ -50,37 +50,35 @@ async def test_eighth_candidate_and_text_beyond_snippet_reach_reranker():
     assert "唯一支持缠绕处置" in render_evidence(packed.hits[0].as_internal_item())
 
 
-def test_context_budget_preserves_rounds_sources_and_counter_evidence():
+def test_context_budget_preserves_rounds_and_sources():
     first = [
-        Hit(f"old-{i}", "m", f"c{i}", "manual", "v1", "kb_manual", "摘要", 0.9, content="长文。" * 300)
+        Hit(f"old-{i}", "m", f"c{i}", "rv-0001", "v1", "kb_qa", "摘要", 0.9, content="长文。" * 300)
         for i in range(15)
     ]
-    fresh = Hit("new", "m", "new", "manual", "v1", "kb_manual", "新增有效证据", 0.01, round=2)
-    counter = Hit("counter", "t", "counter", "ticket", "v1", "kb_tickets", "工单未解决", 0.99,
-                  counter_evidence=True, case_outcome="unsolved")
-    local = Hit("card", "f", "card", "card", "v1", "fault_card", "故障卡", 0.6)
-    selection = pack_hits([*first, fresh, counter, local], max_items=6, max_chars=1000, item_chars=800)
+    fresh = Hit("new", "m", "new", "rv-0002", "v1", "kb_qa", "新增有效证据", 0.01, round=2)
+    exact = Hit("qa:rv-0147", "q", "rv-0147", "rv-0147", "v1", "qa_exact", "错误码精确命中", 1.0)
+    selection = pack_hits([*first, fresh, exact], max_items=6, max_chars=1000, item_chars=800)
     ids = [hit.evidence_id for hit in selection.hits]
-    assert len(ids) == 6 and {"new", "old-0", "counter", "card"} <= set(ids)
+    # 精确命中排第一；补查新增与首轮首条都拿到名额
+    assert len(ids) == 6 and ids[0] == "qa:rv-0147" and {"new", "old-0"} <= set(ids)
     text = "\n".join(render_evidence(hit.as_internal_item()) for hit in selection.hits)
-    assert len(text) <= selection.chars <= 1000 and "未解决工单" in text
+    assert len(text) <= selection.chars <= 1000
     assert selection.excluded and selection.shortened_ids
     assert fresh.context_text is None  # 打包不能修改首轮/二轮候选原文
 
 
 def test_second_round_gets_a_slot_without_displacing_the_first_hit():
-    first = [Hit(f"r1-{i}", "m", f"c{i}", "manual", "v1",
-                 "kb_manual" if i % 2 == 0 else "kb_tickets", "命中段落", 0.9 - i / 100)
+    first = [Hit(f"r1-{i}", "m", f"c{i}", "rv-0001", "v1", "kb_qa", "命中段落", 0.9 - i / 100)
              for i in range(10)]
-    fresh = [Hit("r2", "m", "r2", "manual", "v1", "kb_manual", "补查新增", 0.01, round=2)]
+    fresh = [Hit("r2", "m", "r2", "rv-0002", "v1", "kb_qa", "补查新增", 0.01, round=2)]
     ids = [hit.evidence_id for hit in select_hits([*first, *fresh], 6)]
     # 补查 query 掺了改写或图片观察，不能假定它比首轮首条更相关；但必须拿到名额
     assert ids[0] == "r1-0" and "r2" in ids
 
 
 def test_empty_body_cannot_displace_usable_evidence():
-    blank = Hit("blank", "m", "blank", "manual", "v1", "kb_manual", " ", 0.9)
-    useful = Hit("useful", "m", "useful", "manual", "v1", "kb_manual", "命中段落", 0.1)
+    blank = Hit("blank", "m", "blank", "rv-0001", "v1", "kb_qa", " ", 0.9)
+    useful = Hit("useful", "m", "useful", "rv-0002", "v1", "kb_qa", "命中段落", 0.1)
     selection = pack_hits([blank, useful], max_items=1, max_chars=200, item_chars=100)
     assert [hit.evidence_id for hit in selection.hits] == ["useful"]
     assert selection.excluded == {"blank": "empty_content"}

@@ -1,7 +1,7 @@
 """票 27：scope → 允许集合、空集合不发请求、后过滤、四态、截断；真实集成测试需显式开启。
 
 2026-10-08 起只有一个知识库 kb_qa：一条官方 Q&A 一个 knowledge，custom_metadata scope=sku、
-sku_list=PN 逗号串、category、doc_id=qa id（app.knowledge.official_qa）。
+sku_list=PN 逗号串、category、doc_id=qa id（app.knowledge.ingest）。
 """
 
 from __future__ import annotations
@@ -20,8 +20,7 @@ from app.knowledge.adapter import (
     parse_custom_metadata,
     sku_scoped_skus,
 )
-from app.knowledge.ingest import IngestReport
-from app.knowledge.official_qa import ingest_qa
+from app.knowledge.ingest import Ingestor
 from app.official.qa_index import QAIndex
 from app.settings import REPO_ROOT, settings
 from tests.fake_weknora import FakeWeKnora
@@ -42,9 +41,9 @@ UNKNOWN = KnowledgeScope("unknown", "robot_vacuum")
 async def adapter():
     server = FakeWeKnora()
     async with WeKnoraClient("http://weknora.test", "sk-test", transport=server.transport()) as c:
-        report = IngestReport()
-        await ingest_qa(c, report, embedding_model_id=None, index=INDEX)
-        ad = WeKnoraKnowledgeAdapter(c, report.kb_ids)
+        ing = Ingestor(c)
+        await ing.ingest_qa(embedding_model_id=None, index=INDEX)
+        ad = WeKnoraKnowledgeAdapter(c, ing.report.kb_ids)
         counts = await ad.refresh_index()
         assert counts == {"kb_qa": len(SAMPLE)}
         yield ad, server
@@ -122,17 +121,6 @@ async def test_weknora_down_is_unavailable_with_hint(adapter):
     res = await ad.hybrid_search("kb_qa", "mop", 5, E28)
     assert res.status == "unavailable" and res.hint == HINTS["unavailable"]
     assert "ConnectError" in (res.detail or "") and res.for_model()["status"] == "unavailable"
-
-
-async def test_qa_hits_are_never_counter_evidence(adapter):
-    """反证标记只属于工单；官方 Q&A 命中的 case_outcome 恒为 n/a。"""
-    ad, _ = adapter
-    res = await ad.hybrid_search("kb_qa", "mop", 5, X10)
-    assert res.status == "ok"
-    assert all(not h.counter_evidence and h.case_outcome == "n/a" for h in res.hits)
-    assert "counter_evidence" not in res.for_model()["hits"][0]
-    assert res.hits[0].as_internal_item()["case_outcome"] == "n/a"
-    assert "case_outcome" not in res.hits[0].as_evidence_item()
 
 
 async def test_candidate_content_is_independent_of_display_snippets(adapter):

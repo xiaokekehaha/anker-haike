@@ -8,17 +8,25 @@ from __future__ import annotations
 import re
 from typing import Any
 
-# 机身 SN：工单里出现过 AK7RCN1E15600379、AMP3AC0F14201072、T8D02P20262058EB 这类 12–20 位大写字母数字。
+from app.official.message import parse_message
+
+# 机身 SN：工单里出现过 AK7RCN1E15600379、AMP3AC0F14201072、T8D02P20262058EB 这类 8–20 位字母数字。
+# 表单字段（Product SN: …）由首封解析取；这里补自由文本里的「serial number is …」。
+# 只在同一行内找值：App 报告里 SN 留空时，下一行的「Probleemtype」不能被读成序列号（T13 / T18）。
 SN_PATTERN = re.compile(
-    r"(?:\bS/?N\b|serial(?:\s*number)?|seriennummer|serienummer|product[-\s]?sn|numéro de série|número de serie)"
-    r"\s*[:：#]?\s*([A-Z0-9]{8,20})",
+    r"(?:\bS/?N\b|serial(?:[ \t]*number)?|seriennummer|serienummer|product[-\s]?sn|numéro de série|número de serie)"
+    r"[ \t]*(?:is[ \t]+)?[:：#]?[ \t]*([A-Z0-9]{8,20})\b",
     re.IGNORECASE,
 )
 
 
 def serial_from_text(text: str) -> str | None:
+    if sn := parse_message(text or "").sn:
+        return sn
     match = SN_PATTERN.search(text or "")
-    return match.group(1).upper() if match else None
+    if not match or not any(ch.isdigit() for ch in match.group(1)):
+        return None
+    return match.group(1).upper()
 
 
 def collect(state: dict[str, Any]) -> dict[str, str]:

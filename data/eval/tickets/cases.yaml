@@ -16,6 +16,7 @@
 #   safety_human               安全风险 → 转人工
 #   clarify                    信息不足（型号 / 现象）→ 追问
 #   explain                    产品咨询 / 状态提示 → 解释即可
+# 2026-10-08 复核：bp-0123（电机异响）、bp-0090（吸力弱或无吸力）与原金标同义，补为等价金标。
 # 演示时钟 as_of: 2026-10-08；标注依据见 docs/planning/2026-10-07-1543_organizer-materials-replan/findings.md §7。
 as_of: '2026-10-08'
 cases:
@@ -64,7 +65,7 @@ cases:
 - {id: T43, intent: report_problem, language: es, pn: T2351, sop: troubleshoot, note: 离线}
 - {id: T44, intent: report_problem, language: en, sop: warranty_replace, qa_gold: [bp-0127, bp-0039], note: 充电盒针脚卡死}
 - {id: T45, intent: report_problem, language: en, sop: safety_human, note: 加热烫伤；Aeroflow 授权经销商 12 个月保内}
-- {id: T46, intent: report_problem, language: en, order_no: Anker013, sop: warranty_replace, qa_gold: [bp-0102, bp-0043], note: 电机异响}
+- {id: T46, intent: report_problem, language: en, order_no: Anker013, sop: warranty_replace, qa_gold: [bp-0123, bp-0102, bp-0043], note: 电机异响}
 - {id: T47, intent: logistics_query, language: en, order_no: Anker010, sop: logistics_delivered, note: 问的是 Hub 配件，订单只有吸奶器且已送达 → 不编造}
 - {id: T48, intent: report_problem, language: en, sop: explain, note: 吸奶器绿灯含义（附图，外壳有裂纹）}
 - {id: T49, intent: replacement_request, language: en, sop: dealer_check, note: 保险渠道购买，未给商家}
@@ -72,8 +73,8 @@ cases:
 - {id: T51, intent: replacement_request, language: en, order_no: Anker014, sop: out_of_warranty, forbid: [free_replacement]}
 - {id: T52, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0039, bp-0127, bp-0067], note: exclusive pumper，紧急}
 - {id: T53, intent: replacement_request, language: en, order_no: Anker015, sop: out_of_warranty, forbid: [free_replacement]}
-- {id: T54, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0043, bp-0102, bp-0040]}
-- {id: T55, intent: report_problem, language: en, order_no: Anker016, sop: warranty_replace, qa_gold: [bp-0102, bp-0043], note: 决赛主案例}
+- {id: T54, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0043, bp-0090, bp-0102, bp-0040]}
+- {id: T55, intent: report_problem, language: en, order_no: Anker016, sop: warranty_replace, qa_gold: [bp-0102, bp-0043, bp-0090], note: 决赛主案例}
 - {id: T56, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0152, bp-0186, bp-0151, bp-0212], note: 辱骂 + 离线}
 - {id: T57, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [bp-0164], note: 不录像，未给型号}
 - {id: T58, intent: complaint, language: en, sop: clarify, note: 只有辱骂，无型号无现象}

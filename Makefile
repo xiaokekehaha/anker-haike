@@ -49,29 +49,15 @@ plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
 ## ---- 知识库（票 26）----
 kb-bootstrap: ## 在本机 WeKnora 自助注册项目独立 tenant，并把 API key 写入 .env
 	cd orchestrator && uv run --env-file ../.env haike-kb bootstrap
-kb-official-fetch: ## 定向采集官方支持文章到 tmp/official-knowledge，正文变更需复核摘要及哈希
-	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official fetch
-kb-official-build: ## 校验来源哈希、型号与语义单元长度，生成可入库的官方资料摘要
-	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official build
-kb-official-verify: ## 实测官方批次的来源元数据、完整切块、型号隔离与逐条 Top-5 召回
-	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official_verify
 kb-ingest: ## 官方 Q&A 幂等导入 haike_kb_qa（一条 Q&A 一个知识），删除旧中文手册 / FAQ / 合成工单库，写 manifest；结束后重建 BM25 索引
 	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(KEEP_LEGACY),--keep-legacy,)
 	@# WeKnora v0.8.0 + ParadeDB：批量删除知识后 bm25 索引会残留失效行指针（item_pointer_is_valid 断言），关键词检索 500；重建即恢复
 	$(COMPOSE) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$${POSTGRES_DB:-WeKnora}" -c "REINDEX INDEX embeddings_search_idx;"'
 
-kb-eval: ## 检索评测（ARM=A|B|C，默认 A）：data/eval/retrieval/cases.yaml → reports/retrieval/
+kb-eval: ## 检索评测：63 单工单首封打 kb_qa，按语言统计 recall@5 → reports/retrieval/（ARM= 报告标签）
 	cd orchestrator && uv run --env-file ../.env haike-kb eval --arm $(or $(ARM),A)
-
-eval-worksheet: ## 生成标注工作单（金标 vs 实际召回并排）：reports/retrieval/worksheet.md
-	cd orchestrator && uv run python ../scripts/eval_worksheet.py
 kb-verify: ## 打印各知识库解析状态与 custom_metadata
 	cd orchestrator && uv run --env-file ../.env haike-kb verify
-kb-anchors: ## 证据可达性基线：锚点标记与正文同块、锚点检索可达、元数据完整（非零退出即有红）
-	cd orchestrator && uv run --env-file ../.env haike-kb anchors
-
-kb-snapshot: ## 导出知识库快照（DIR= 指定则导入该快照实现回滚）
-	cd orchestrator && uv run --env-file ../.env haike-kb snapshot $(if $(DIR),import $(DIR),export)
 
 ## ---- 回放（票 43）----
 replay-record: ## 真实模型 + WeKnora 跑内置脚本并录制：make replay-record CASE=a1_hair_wrap [SCENARIO=a1_hair_wrap]
@@ -132,11 +118,6 @@ db-restore: ## 恢复：make db-restore FILE=haike_20260912T120000Z.dump（停�
 	$(COMPOSE) stop orchestrator
 	$(COMPOSE) exec pg-backup /opt/backup/restore.sh $(FILE)
 	$(COMPOSE) start orchestrator
-
-## 知识库变更前自动导出快照（票 47；04 §4 回滚前提）
-kb-snapshot-export: ## 导出 WeKnora 知识库快照
-	cd orchestrator && uv run --env-file ../.env haike-kb snapshot export
-kb-ingest: kb-snapshot-export
 
 ## ---- 发布 / 回滚 / CI（票 49）----
 release: ## 生成 RELEASE.md 并快照 config/ 到 releases/<id>/：make release [REL=20260912-abc1234]

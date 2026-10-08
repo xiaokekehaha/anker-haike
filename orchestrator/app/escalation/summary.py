@@ -22,7 +22,9 @@ from haike_contracts.common import (
 
 from app.conversation.operation_conditions import conditions_for, feedback_history
 from app.diagnose.query import category_label
+from app.official.message import parse_message
 from app.sessions.receipt import receipt_outcome
+from app.warranty.service import decide_by_dealer, today
 
 REASON_TEXT = {
     "R1": "排障步骤已达上限（executed ≥ 4）",
@@ -242,7 +244,7 @@ def build_summary(
             f"问：{a['question']}；用户回答：{a['quote']}" for a in interview.get("answers", [])
         ) or "（尚未记录具体故障现象）",
         observations=list(dict.fromkeys([
-            *list(state.get("observations") or []), *diagnostic_observations,
+            *list(state.get("observations") or []), *diagnostic_observations, *first_message_facts(state),
             *(f"操作限制：{b.quote or '该步骤暂时无法执行，原因未确认'}" for b in conditions_for(state).blockers if not b.cleared),
         ])),
         hypotheses=list(dict.fromkeys([*candidate_families, *[
@@ -263,6 +265,25 @@ def build_summary(
         receipt=ReceiptOutcome(**receipt_outcome(state, reason)),
         model_trace=trace,
     )
+
+
+def first_message_facts(state: dict[str, Any]) -> list[str]:
+    """首封表单里可核对的事实（PN、SN、订单号、购买商家与国家）原样带给人工；
+    商家与国家齐全时附经销商名录判定（T45：安全转人工，人工仍需要知道是不是授权经销商）。"""
+    parsed = parse_message(state.get("text") or "")
+    out = []
+    if parsed.product_name or parsed.pn:
+        out.append("客户填写的产品：" + " / ".join(filter(None, [parsed.product_name, parsed.pn])))
+    if parsed.sn:
+        out.append(f"客户填写的 SN：{parsed.sn}")
+    if parsed.order_no:
+        out.append(f"客户填写的订单号：{parsed.order_no}")
+    if parsed.seller or parsed.country:
+        out.append("客户自述购买渠道：" + " / ".join(filter(None, [parsed.seller, parsed.country])))
+    if parsed.seller and parsed.country and not state.get("warranty"):
+        decision = decide_by_dealer(parsed.seller, parsed.country, None, today(state.get("at")))
+        out.append(f"经销商名录：{decision.reason}")
+    return out
 
 
 def _receipt_facts_text(facts: dict[str, str]) -> str:

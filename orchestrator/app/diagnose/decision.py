@@ -23,11 +23,9 @@ from app.conversation.taxonomy import (
     canonical_codes,
     families,
     interview_answer,
-    next_interview,
     record_response,
     response_attempts,
     taxonomy,
-    taxonomy_for,
 )
 
 
@@ -319,52 +317,9 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
     if described(state, issue):
         # 官方 Q&A 是英文、客户多语言：现象不必先归入中文症状词表，有描述或错误码就交给检索。
         return result("continue", "symptom_described")
-    if not taxonomy_for(category)["families"]:
-        # 该品类没有症状词表（目录级品类）：没有判别题可问，按「缺少适用的澄清问题」诚实结束，
-        # 不拿别的品类的判别题去问用户
-        return result(
-            "escalate", "category_coverage_missing", missing=["该品类暂无可用的排查资料"], current=None
-        )
-    # Same plan identity/version guarantees compatible instructions, conditions,
-    # and subsequent transitions. Similar step names do not establish equivalence.
-    if interview and any(a["answer"] in {"yes", "no"} for a in interview.get("answers", [])):
-        choices = [{p.plan_id for p in eligible if code in p.symptom_codes} for code in candidates]
-        shared = set.intersection(*choices) if choices else set()
-        if shared:
-            reason = (
-                "same_applicable_plans"
-                if all(c == choices[0] for c in choices)
-                else "common_applicable_plans"
-            )
-            return result(
-                "continue",
-                reason,
-                selected=[p for p in eligible if p.plan_id in shared],
-                constrained=True,
-                resolved_codes=list(candidates),
-            )
-    interview = next_interview(interview, state.get("active_issue_id"), state.get("input_id"), category=category)
-    progress = _progress(interview)
-    question = (interview.get("question") or {}).get("question")
-    missing = [question] if question else ["可区分当前现象的澄清问题"]
-    reason = None
-    if progress["consecutive_no_progress"] >= MAX_NO_PROGRESS:
-        tail = response_attempts(interview)[-MAX_NO_PROGRESS:]
-        reason = (
-            "answers_unavailable" if all(a["outcome"] == "unknown" for a in tail) else "no_progress"
-        )
-    elif progress["attempts"] >= MAX_INTERVIEW_RESPONSES:
-        reason = "clarification_budget_exhausted"
-    elif not question:
-        reason = "question_coverage_missing"
-    if reason:
-        return result(
-            "escalate",
-            reason,
-            missing=missing,
-            current={**interview, "status": "insufficient", "question": None},
-        )
-    return result("clarify", "symptom_missing", current=interview, missing=missing)
+    # 没有任何现象描述也没有错误码：问一次现象（开放问题，可贴错误码）。
+    # 自建的中文是非判别题已随手写计划删除；现象直接交给官方 Q&A 检索，不再先归入中文症状族。
+    return result("clarify", "symptom_missing", missing=["故障现象或 App 错误码"], current=None)
 
 
 def owns_diagnostic_reply(state):

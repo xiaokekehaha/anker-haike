@@ -1,8 +1,8 @@
 """查询规范化（03 §1.4.1）：纯函数，无模型调用。
 
-1. confirmed_sku 只取已确认产品名 / 型号；category_only 只取品类名，不拼候选型号；unknown 不构造（返回空）。
-2. 产品 + 有效症状固定顺序拼接，去重、清理空白；保留否定、部件、错误码，不猜型号 / 原因。
-3. 症状为空（抽取失败）→ 产品 + 当前原文回退；原文也为空 → 空串（调用方按「无可查内容」处理）。
+1. confirmed_sku 不拼产品名（检索范围已按 PN 锁定）；category_only 拼品类名，不拼候选型号；unknown 不构造（返回空）。
+2. 有效症状去重、清理空白；保留否定、部件、错误码，不猜型号 / 原因。
+3. 症状为空（抽取失败）→ 产品 + 当前原文回退（表单只取问题描述 / 推送，去链接）；原文也为空 → 空串。
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ import re
 from typing import Any
 
 from app.conversation.taxonomy import families
+from app.official.message import URLS, parse_message
 from app.sessions.cards import get_catalog
 
 _WS = re.compile(r"[\s　]+")
@@ -70,8 +71,13 @@ def build_query(state: dict[str, Any]) -> str:
         labels = [f["fault_family"] for f in families(category) if f["symptom_code"] in state["symptom_codes"]]
         symptoms = dedupe([*labels, *symptoms])
     if not symptoms:
-        raw = _clean_part(str(state.get("text") or ""))
+        # App 报错 / RMA 表单只取问题描述与推送提示：表头、订单字段和图片链接会冲淡检索（63 单评测 recall 4/13 → 7/13）
+        text = str(state.get("text") or "")
+        raw = _clean_part(parse_message(text).problem_text or URLS.sub(" ", text))
         symptoms = [raw] if raw else []
     if not symptoms:
         return ""
+    if ps == "confirmed_sku":
+        # 检索范围已按 PN 锁定，范围内每条 Q&A 标题都带型号名：再拼产品名只会给所有候选同样加分，冲淡现象词
+        return " ".join(dedupe(symptoms))
     return " ".join(dedupe([product, *symptoms]))

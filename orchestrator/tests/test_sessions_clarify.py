@@ -147,11 +147,11 @@ async def test_clarify_question_preserves_target_without_model_rewrite(mem_runti
         "这个又不行了",
         strategy="normal",
         summary=None,
-        detail={"category": "robot_vacuum"},  # 判别题按品类选：decide 把品类放进 detail
+        detail={"category": "robot_vacuum"},
         session_id="s",
         lane="domestic",
     )
-    assert out.text == "设备按电源后能正常启动吗？" and out.model_used == "fixed"
+    assert out.text == FIXED_QUESTIONS["symptom"] and out.model_used == "fixed"
     assert fixed_question("conflict", {"confirmed": "A", "mentioned": "B"}) == (
         "您之前确认的是 A，这次提到的是 B，请问需要排查的是哪一台？"
     )
@@ -195,8 +195,8 @@ async def test_symptom_clarification_when_product_known_but_no_symptom(mem_runti
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             ev1 = await _send(client, sid, "X10 这个又不行了")
-            # The model's different question cannot change the stored yes/no split.
-            assert _message_text(ev1) == "设备按电源后能正常启动吗？"
+            # 没有现象：问一句开放问题（可贴错误码），模型改写的问题保持同一目标
+            assert _message_text(ev1) in (FIXED_QUESTIONS["symptom"], "请问 X10 是吸力变弱、无法启动，还是有异响？")
             s1 = await _state(sid)
             assert s1["product_state"] == "confirmed_sku"  # 产品已定，只问症状
             assert {k: s1["clarification"][k] for k in ("reason", "attempts", "asked_run_id")} == {
@@ -318,33 +318,7 @@ async def test_product_selection_without_symptom_asks_before_any_step(mem_runtim
         assert response.status_code == 200, response.text
         rows = sse.parse(response.text)
     assert not any(e["type"] == "step_card" for e in rows)
-    assert _message_text(rows) == "设备按电源后能正常启动吗？"
+    assert _message_text(rows) == FIXED_QUESTIONS["symptom"]
     state = await _state(sid)
     assert state["product_confirmed"]["sku"] == "T2080"
     assert state["clarification"]["reason"] == "symptom" and state["clarification"]["attempts"] == 1
-    assert state["symptom_interview"]["question"]["question"] == "设备按电源后能正常启动吗？"
-
-
-def _interview_driven_interpret():
-    """按待答问诊题作答的 intake 替身：是非题按原话判 yes/no，多选题按序号选族；不依赖模型。"""
-    import app.conversation.interpret as semantic
-
-    async def interpret(router, state, **kwargs):
-        text = state.get("text", "") or ""
-        question = (state.get("symptom_interview") or {}).get("question") or {}
-        answer = None
-        if question.get("kind") == "symptom_selection":
-            family = question["options"][int(text) - 1]["value"]
-            answer = semantic.SymptomAnswer(
-                question_id=question["question_id"], answer="selection", selected_families=[family], quote=text,
-            )
-        elif question:
-            answer = semantic.SymptomAnswer(
-                question_id=question["question_id"], answer="no" if text.startswith(("不", "没")) else "yes", quote=text,
-            )
-        return semantic.TurnInterpretation(
-            primary_intent="answer_pending" if answer else "report_problem",
-            device_relation="current", symptom_answer=answer,
-        ), {"source": "interview-fixture"}
-
-    return semantic, interpret

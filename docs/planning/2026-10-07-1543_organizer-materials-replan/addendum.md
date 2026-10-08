@@ -113,3 +113,36 @@ query输入 → 意图识别 → <服务边界判断> --N--> 转人工
 - 多轮排障推进已补一条：T28 重启 → 未解决 → 质保步 → 未解决 → R6 进入订单 / 凭证收集。
 - 删测试后的覆盖缺口：语义检索候选排序、读图与文字冲突以外的读图联动。按 remaining_work.md D4/D5 用 63 单回放补，不恢复旧用例。
 - 结果：后端 780 passed / 1 skipped，ruff 0；前端 typecheck 0、232 passed；contracts 94 passed。
+
+## 2026-10-08 第 2 步：旧知识模块清理 + 首封事实接入（未提交）
+
+知识库（A5 / A6 / A8 / A9 / A4 部分）：
+- 删除 faq / anchors / reachability / official / official_verify / snapshot / official_qa 七个模块与 diagnose/expand；ingest.py 收敛为只导入官方 Q&A（Ingestor.ingest_qa / drop_legacy_kbs）。
+- 删除多查询扩展、FAQ 第三库、父块扩展、工单反证（counter_evidence / case_outcome）及其配置；retrieval.yaml 中文同义词表清空。
+- 步骤主引用按 doc_id（= qa_id）认，不再按手册小节锚点。
+- 删除 data/knowledge/{kb_manual, kb_tickets, scripts, sources}、data/eval/retrieval、scripts/eval_worksheet.py；compose 去掉 kb_manual 挂载；Makefile 去掉 kb-official-* / kb-anchors / kb-snapshot / eval-worksheet。快照目录未跟踪，未动。
+- 检索评测改为 63 单首封 → 金标 qa_id，按语言统计（make kb-eval）。
+
+检索查询（实测 kb_qa，13 单无错误码的现象单）：
+
+| 版本 | recall@5 |
+| --- | --- |
+| 全文（含表头、订单字段、图片链接）+ 产品名 | 31% |
+| 只取问题描述 / 推送提示 | 38% |
+| 型号已锁定时不拼产品名 | 54% |
+| 评测范围按唯一型号名确认（T61 omni c20）+ 金标补同义条目 | 77% |
+
+最后一行的提升部分来自标注：T46 补 bp-0123（电机异响）、T54 / T55 补 bp-0090（吸力弱或无吸力），与原金标同义。仍漏：T57、T59（SoloCam 离线 / 不录像）、T40（无型号无品类词）。
+
+首封事实（B4 / B7）：
+- 同名型号跨品类（「S1 Pro Wearable Breast Pump」）按原话品类词直接确认，不出产品卡（T55 / T45）。
+- 一个订单号 + 多个运单号视为同一订单的多个包裹（T2 不再追问「哪个订单」）。
+- SN 只在同一行取值（App 报告 SN 空时不再把下一行「Probleemtype」读成序列号）；首封表单 SN 作为 SOP 证据。
+- 首封自述的购买商家 + 国家进入经销商名录判定（无订单时）；安全转人工的摘要带 PN / SN / 渠道 / 名录结论（T45）。
+- 中文是非判别题问诊删除：没有现象也没有错误码时问一句开放问题（可贴错误码），有描述即交给检索。
+- R1 / R1c 与「指南走完 → 质保判断」已在第 1 步完成（B6）。
+
+回归：test_conversation_official_tickets 覆盖 T55 主线（消歧 → 排障 → 保内 → 收照片与 SN）、T29 过保拒绝、T2 双运单、T45 安全转人工带经销商事实、T14 / T13 / T28 / T18 / T11 / T16。
+结果：后端 766 passed / 2 skipped，ruff 0；contracts 94；前端 typecheck 0、232；tickets 评测 63/63。
+
+未做（仍在 remaining_work.md）：symptom_taxonomy.yaml 与 observations 机制整体删除（问诊入口已关，代码与配置仍在，第 7 步清）、vision_vocab signatures 维护、多语回复（第 4 步）。

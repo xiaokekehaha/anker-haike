@@ -151,6 +151,10 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                 mentioned=mentioned,
             )
     else:
+        if len(cands) > 1 and category:
+            # 「S1 Pro Wearable Breast Pump」：同名型号跨品类，原话里的品类词已经说明是哪一台（T55 / T45）
+            same = [c for c in cands if c.get("category") == category]
+            cands = same if len(same) == 1 else cands
         if len(cands) > 1:
             update.update({"product_candidates": cands, "product_state": "unknown"})
             return Decision(
@@ -384,14 +388,6 @@ def fixed_question(reason: str, detail: dict[str, Any]) -> str:
         return f"照片中的设备看起来是{detail['category_name']}，请确认是这个品类吗？"
     if reason == "product" and detail.get("unmatched_hints"):
         return "您提供的型号暂未匹配到产品目录。请补充设备品类，或拍一张机身型号标签。"
-    if reason == "symptom":
-        from app.conversation.taxonomy import discriminator, families
-        category = detail.get("category")
-        question = discriminator(
-            detail.get("fault_families") or [f["fault_family"] for f in families(category)], category=category
-        )
-        if question:
-            return question
     tpl = FIXED_QUESTIONS.get(reason, FIXED_QUESTIONS["product"])
     try:
         return tpl.format(**detail)

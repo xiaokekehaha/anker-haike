@@ -162,7 +162,7 @@ async def grade_hits(
         )
     verdicts, coverage = normalize_result(res.parsed, ids)
     if coverage == "sufficient" and not any(
-        verdicts.get(h.evidence_id) == "relevant" and not h.counter_evidence for h in items
+        verdicts.get(h.evidence_id) == "relevant" for h in items
     ):
         coverage = "insufficient"
     out = EvidenceAssessment(

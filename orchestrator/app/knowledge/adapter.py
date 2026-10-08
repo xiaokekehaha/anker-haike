@@ -3,7 +3,7 @@
 IV-1 核对结论（2026-09-12，WeKnora v0.8.0 本机实测，见 findings）：
 - `POST /knowledge-search` 忽略 `knowledge_ids`（传不存在的 id 仍返回全部命中）→ 不用。
 - `POST /knowledge-bases/{id}/hybrid-search` 遵守 `knowledge_ids`；但空列表等于不过滤 → 允许集合为空时必须在本地直接 no_match。
-- 命中带 `knowledge_custom_metadata`（YAML 文本）、`parent_chunk_id`、`match_type`；适配器再按 knowledge_id 后过滤一次兜底。
+- 命中带 `knowledge_custom_metadata`（YAML 文本）、`match_type`；适配器再按 knowledge_id 后过滤一次兜底。
 
 四态：ok / no_match / unavailable（/ replay 由票 43 的 ReplayKnowledgeAdapter 提供）。hint 面向模型可读。
 top_k 是候选预算；排序正文与展示摘要分开，最终模型预算由上下文选择层控制。
@@ -19,8 +19,7 @@ from typing import Any, Literal, Protocol
 import httpx
 import yaml
 
-from app.knowledge.ingest import sku_list_of
-from app.knowledge.official_qa import KB_QA
+from app.knowledge.ingest import KB_QA
 from app.knowledge.weknora_client import WeKnoraClient, WeKnoraError
 
 log = logging.getLogger("knowledge.adapter")
@@ -58,7 +57,11 @@ class IndexEntry:
     sku_list: tuple[str, ...]
     category: str
     doc_version: str
-    result: str | None = None  # 工单：solved / unsolved / escalated
+
+
+def sku_list_of(metadata: dict[str, Any] | None) -> list[str]:
+    raw = (metadata or {}).get("sku_list") or ""
+    return [s for s in str(raw).split(",") if s]
 
 
 @dataclass
@@ -71,20 +74,11 @@ class Hit:
     source: str
     snippet: str
     score: float
-    counter_evidence: bool = False
     knowledge_title: str | None = None
-    parent_chunk_id: str | None = None
     status: Literal["ok", "replay"] = "ok"  # 票 43：回放命中的证据标 replay
-    # P0-4：工单结果（solved / unsolved / unknown；手册与 FAQ 为 n/a）。counter_evidence 是它的兼容别名。
-    case_outcome: Literal["solved", "unsolved", "unknown", "n/a"] = "n/a"
     round: int = 1  # P0-3：命中来自第几轮检索
-    rrf_score: float | None = (
-        None  # 阶段 3：多变体 RRF 融合分（rerank 后 score 被替换，这里保留原分）
-    )
-    source_queries: tuple[str, ...] = ()  # 阶段 3：命中来自哪些查询变体
-    full_text: str | None = None  # 阶段 4：父块（同父子块拼接）正文，只进 synthesize，不进 SSE
-    expanded_from: str | None = None  # 阶段 4：被扩展的子块 id
-    context_chunk_ids: tuple[str, ...] = ()  # 阶段 4：拼接用到的子块 id（按 chunk_index）
+    rrf_score: float | None = None  # rerank 前的原分（rerank 后 score 被替换）
+    source_queries: tuple[str, ...] = ()  # 命中来自哪些查询（原 query / 补查改写）
     grade: Literal["relevant", "irrelevant", "unsure"] | None = None  # 阶段 5：相关性评分结论
     content: str = ""  # 命中的子块正文，供重排/上下文选择；不进入 SSE
     context_text: str | None = None  # 已按最终预算选择的模型正文
@@ -103,26 +97,15 @@ class Hit:
         }
 
     def as_internal_item(self) -> dict[str, Any]:
-        """给 synthesize 看的形状：契约字段 + 工单结果、轮次、父块正文（不进 SSE / 快照）。"""
-        out = {**self.as_evidence_item(), "case_outcome": self.case_outcome, "round": self.round}
+        """给 synthesize 看的形状：契约字段 + 标题、轮次、正文（不进 SSE / 快照）。"""
+        out = {**self.as_evidence_item(), "round": self.round}
         if self.knowledge_title:
             out["knowledge_title"] = self.knowledge_title
         if self.content:
             out["content"] = self.content
         if self.context_text is not None:
             out["context_text"] = self.context_text
-        if self.full_text:
-            out["full_text"] = self.full_text
-            out["expanded_from"] = self.expanded_from
         return out
-
-
-def case_outcome_of(kb: str, result: Any) -> Literal["solved", "unsolved", "unknown", "n/a"]:
-    if kb != "kb_tickets":
-        return "n/a"
-    if result is None or result == "":
-        return "unknown"
-    return "solved" if result == "solved" else "unsolved"
 
 
 @dataclass
@@ -150,7 +133,6 @@ class ToolResult:
                     "evidence_id": h.evidence_id,
                     "snippet": h.snippet,
                     "score": round(h.score, 3),
-                    **({"counter_evidence": True} if h.counter_evidence else {}),
                 }
                 for h in self.hits
             ]
@@ -165,19 +147,6 @@ class KnowledgeAdapter(Protocol):
     async def hybrid_search(
         self, kb: KbName, query: str, top_k: int, allow: KnowledgeScope
     ) -> ToolResult: ...
-
-
-def merge_overlapping(parts: list[str], *, max_overlap: int = 120) -> str:
-    """按序拼接相邻子块，去掉 WeKnora 分块重叠（chunk_overlap=80）：取前块后缀与后块前缀的最长公共串。"""
-    out = ""
-    for part in parts:
-        if not out:
-            out = part
-            continue
-        limit = min(max_overlap, len(out), len(part))
-        ov = next((n for n in range(limit, 0, -1) if out.endswith(part[:n])), 0)
-        out += part[ov:]
-    return out
 
 
 def context_window(text: str, anchor: str, max_chars: int) -> str:
@@ -222,7 +191,6 @@ def entry_from_knowledge(kb: KbName, k: dict[str, Any]) -> IndexEntry | None:
         sku_list=tuple(sku_list_of(meta)),
         category=str(meta.get("category") or ""),
         doc_version=str(meta.get("doc_version") or ""),
-        result=meta.get("result"),
     )
 
 
@@ -271,13 +239,10 @@ class WeKnoraKnowledgeAdapter:
         snippet_chars: int = SNIPPET_CHARS,
     ):
         self.client = client
-        self.kb_ids = {k: v for k, v in kb_ids.items() if k in (KB_ALIASES)}
+        self.kb_ids = {k: v for k, v in kb_ids.items() if k in KB_ALIASES}
         self.snippet_chars = snippet_chars
         self.index: dict[KbName, list[IndexEntry]] = {"kb_qa": []}
         self.index_loaded_at: float | None = None
-        # 阶段 4：手册库子块缓存 knowledge_id → [chunk dict]（工单单块，不缓存）
-        self.chunks: dict[str, list[dict[str, Any]]] = {}
-        self.chunks_loaded_at: float | None = None
 
     # ---- 索引 ----
     async def refresh_index(self) -> dict[str, int]:
@@ -297,57 +262,6 @@ class WeKnoraKnowledgeAdapter:
         self.index_loaded_at = time.time()
         log.info("knowledge index refreshed %s", counts)
         return counts
-
-    async def refresh_chunks(self, kb: KbName = "kb_qa") -> int:
-        """拉取手册库每份知识的子块列表（阶段 4 父块扩展用）；失败只记日志，扩展退化为不扩展。"""
-        n = 0
-        for e in self.index.get(kb, []):
-            try:
-                self.chunks[e.knowledge_id] = await self.client.list_chunks(e.knowledge_id)
-                n += len(self.chunks[e.knowledge_id])
-            except (httpx.TransportError, TimeoutError, WeKnoraError) as exc:
-                log.warning("chunk cache miss knowledge=%s: %s", e.knowledge_id, str(exc)[:120])
-        self.chunks_loaded_at = time.time()
-        log.info("chunk cache refreshed kb=%s chunks=%d", kb, n)
-        return n
-
-    def expand_parents(self, hits: list[Hit], *, max_items: int, max_chars: int) -> list[str]:
-        """small-to-big（design §3.2 S4）：对前 max_items 条手册命中，把同一 parent_chunk_id 的子块按 chunk_index
-        拼接（去重叠）当作父块正文写入 full_text；无父（越界尾块）用前后相邻块。返回被扩展的 evidence_id。"""
-        done: list[str] = []
-        used_groups: dict[tuple[str, ...], str] = {}
-        for h in hits:
-            if len(done) >= max_items:
-                break
-            if h.source != "kb_qa" or h.full_text:
-                continue
-            chunks = self.chunks.get(h.knowledge_id)
-            if not chunks:
-                continue
-            by_id = {c["id"]: c for c in chunks}
-            me = by_id.get(h.chunk_id)
-            if me is None:
-                continue
-            pid = me.get("parent_chunk_id")
-            if pid:
-                group = [c for c in chunks if c.get("parent_chunk_id") == pid]
-            else:
-                ids = {me["id"], me.get("pre_chunk_id"), me.get("next_chunk_id")}
-                group = [c for c in chunks if c["id"] in ids]
-            group.sort(key=lambda c: c.get("chunk_index", 0))
-            key = tuple(c["id"] for c in group)
-            if key in used_groups:  # 同一父块只带一份正文进 synthesize，其余命中保留子块 snippet
-                h.expanded_from = used_groups[key]
-                continue
-            text = merge_overlapping([c.get("content") or "" for c in group])
-            if len(text) <= len(h.snippet):
-                continue
-            used_groups[key] = h.chunk_id
-            h.full_text = context_window(text, me.get("content") or h.snippet, max_chars)
-            h.expanded_from = h.chunk_id
-            h.context_chunk_ids = tuple(c["id"] for c in group)
-            done.append(h.evidence_id)
-        return done
 
     def allowed_ids(self, kb: KbName, allow: KnowledgeScope) -> list[str]:
         return [e.knowledge_id for e in allowed_entries(self.index[kb], allow)]
@@ -402,16 +316,10 @@ class WeKnoraKnowledgeAdapter:
                     snippet=snippet[: self.snippet_chars],
                     content=snippet[:CANDIDATE_CHARS],
                     score=float(r.get("score") or 0.0),
-                    counter_evidence=bool(
-                        kb == "kb_tickets"
-                        and (meta.get("result") or entry.result) not in (None, "solved")
-                    ),
-                    case_outcome=case_outcome_of(kb, meta.get("result") or entry.result),
                     knowledge_title=r.get("knowledge_title") or entry.title,
-                    parent_chunk_id=r.get("parent_chunk_id") or None,
                 )
             )
-        hits.sort(key=lambda h: (h.counter_evidence, -h.score))
+        hits.sort(key=lambda h: -h.score)
         total = len(hits)
         hits = hits[:top_k]
         ms = int((time.perf_counter() - start) * 1000)

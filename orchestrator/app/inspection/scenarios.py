@@ -539,8 +539,9 @@ def _rewrite_stats(st: dict, h: Harness, ev: Events) -> dict[str, Any]:
 
 INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current", "symptom_code": "suction_low"}]}
 DEBRIS_TEXT = "eufy X10 Pro Omni 它跑完了，地上还是一堆渣"
-REWRITE_GOOD = {"query": "扫地机器人 清扫后残留碎屑 清洁效果差"}
-REWRITE_BAD = {"query": "扫地机器人 清扫后残留碎屑 电机损坏"}  # 新增原因词 → 拒绝
+# 改写须保留原症状词（「渣」）；中文同义词表已随自建手册删除，不再靠同义映射放行
+REWRITE_GOOD = {"query": "扫地机器人 清扫后地上还有渣"}
+REWRITE_BAD = {"query": "扫地机器人 清扫后地上还有渣 电机损坏"}  # 新增原因词 → 拒绝
 SYNTH_ONE = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.7, "evidence_ids": ["c21"]}]}
 
 

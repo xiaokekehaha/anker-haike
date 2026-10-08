@@ -1,158 +1,63 @@
-"""haike-kb eval（阶段 2）：样例 → state / scope / query；打分与汇总的纯函数。"""
+"""haike-kb eval：63 单工单首封 → 检索范围与查询；打分、汇总与报告（纯函数，不连 WeKnora）。"""
 
 from __future__ import annotations
 
 from app.diagnose.query import build_query
-from app.knowledge.adapter import Hit, ToolResult
-from app.knowledge.eval import (
-    case_scope,
-    case_state,
-    merge_top_k,
-    render_markdown,
-    score_case,
-    summarize,
-)
+from app.knowledge.adapter import Hit
+from app.knowledge.eval import case_state, gold_of, render_markdown, score_case, summarize
+from app.official.models import OfficialData
+
+BODIES = {t.id: t.body for t in OfficialData().tickets}
 
 
-def _hit(eid: str, doc: str, score: float, *, kb: str = "kb_manual", counter: bool = False) -> Hit:
-    h = Hit(eid, "k", eid, doc, "v", kb, "s", score, counter_evidence=counter)
-    h.case_outcome = "unsolved" if counter else ("solved" if kb == "kb_tickets" else "n/a")
-    return h
+def _hit(doc: str) -> Hit:
+    return Hit(doc, "k", doc, doc, "v", "kb_qa", "s", 0.5)
 
 
-def test_case_state_and_scope_confirmed_and_category_only():
-    c = {
-        "id": "x",
-        "product_state": "confirmed_sku",
-        "sku": "T2351",
-        "category": "robot_vacuum",
-        "text": "不吸",
-        "symptoms": ["不吸"],
+def test_pn_in_first_message_scopes_to_that_model():
+    state, scope = case_state({"id": "T20"}, BODIES["T20"])
+    assert (scope.product_state, scope.sku, scope.category) == ("confirmed_sku", "T2351", "robot_vacuum")
+    # 范围已按 PN 锁定：查询只留问题描述，不拼型号名、表头和图片链接
+    query = build_query(state)
+    assert query.startswith("Kan positie niet bepalen") and "http" not in query and "Productnaam" not in query
+
+
+def test_unique_model_name_without_pn_is_confirmed():
+    _, scope = case_state({"id": "T61"}, "omni c20  isn't following my schedule")
+    assert (scope.product_state, scope.sku) == ("confirmed_sku", "T2280")
+
+
+def test_single_product_category_is_confirmed_and_unknown_product_has_no_scope():
+    # 吸奶器品类只有 T8D04：品类即型号，与线上消歧一致
+    _, scope = case_state({"id": "T54"}, "My breast pump has weak suction on the left side.")
+    assert (scope.product_state, scope.sku) == ("confirmed_sku", "T8D04")
+    _, none = case_state({"id": "x"}, "It stopped working.")
+    assert none is None
+
+
+def test_gold_merges_exact_and_semantic_labels():
+    assert gold_of({"qa_exact": "rv-0147"}) == ["rv-0147"]
+    assert gold_of({"qa_gold": ["bp-0102", "bp-0043"]}) == ["bp-0102", "bp-0043"]
+    assert gold_of({"id": "T1"}) == []
+
+
+def test_score_case_hit_and_rank_within_top_k():
+    hits = [_hit("rv-0001"), _hit("rv-0218"), _hit("rv-0106")]
+    assert score_case(["rv-0106"], hits, 5) == {
+        "doc_ids": ["rv-0001", "rv-0218", "rv-0106"], "hit": True, "first_rank": 3,
     }
-    st, sc = case_state(c), case_scope(c)
-    assert (
-        sc.product_state == "confirmed_sku"
-        and sc.sku == "T2351"
-        and sc.category == "robot_vacuum"
-    )
-    assert build_query(st) == "T2351 不吸"
-    c2 = {
-        "id": "y",
-        "product_state": "category_only",
-        "category": "robot_vacuum",
-        "text": "扫地机不吸",
-        "symptoms": [],
-    }
-    st2, sc2 = case_state(c2), case_scope(c2)
-    assert sc2.sku is None and build_query(st2) == "扫地机器人 扫地机不吸"  # 症状为空退回原文
+    assert score_case(["rv-0106"], hits, 2)["hit"] is False
 
 
-def test_merge_top_k_puts_counter_evidence_last_and_caps():
-    results = {
-        "kb_manual": ToolResult(
-            "ok", [_hit("c12", "manual_rv_v1", 0.9), _hit("c15", "manual_rv_v1", 0.5)]
-        ),
-        "kb_tickets": ToolResult(
-            "ok",
-            [
-                _hit("T1", "T0001", 0.95, kb="kb_tickets", counter=True),
-                _hit("T2", "T0002", 0.7, kb="kb_tickets"),
-            ],
-        ),
-    }
-    top = merge_top_k(results, 3)
-    # 正证按来源交错；反证留一个代表且仍排最后，分值不与其他库混比。
-    assert [h.evidence_id for h in top] == ["c12", "T2", "T1"]
-
-
-def test_case_without_category_resolves_confirmed_sku_from_catalog():
-    case = {"id": "sku-only", "product_state": "confirmed_sku", "sku": "T2351"}
-    assert case_scope(case).category == "robot_vacuum"
-    assert case_state(case)["product_confirmed"]["category"] == "robot_vacuum"
-
-
-def test_chunk_marker_must_belong_to_gold_document_and_visible_context():
-    unrelated = _hit("a", "wrong", 0.9)
-    unrelated.snippet = "正确标记（c12）放在无关文档"
-    gold = _hit("b", "manual", 0.8)
-    gold.content = "前言。" * 300 + "（c12）关键步骤"
-    gold.context_text = "当前模型只看到前言"
-    case = {"expected_doc_ids": ["manual"], "expected_chunk_hint": "c12"}
-    assert score_case(case, [unrelated, gold])["chunk_hit"] is False
-    gold.context_text = "（c12）关键步骤"
-    assert score_case(case, [unrelated, gold])["chunk_rank"] == 2
-
-
-def test_score_case_hit_precision_rank_and_leak():
-    hits = [
-        _hit("a", "manual_rv_v1", 0.9),
-        _hit("b", "T0009", 0.8),
-        _hit("c", "troubleshooting_rv", 0.7),
-    ]
-    s = score_case({"expected_doc_ids": ["troubleshooting_rv", "T0001"]}, hits)
-    assert s["hit"] is True and s["first_rank"] == 3 and abs(s["precision"] - 1 / 3) < 1e-9
-    s2 = score_case({"expected_doc_ids": ["faq_rv"]}, hits)
-    assert s2["hit"] is False and s2["first_rank"] is None and s2["precision"] == 0.0
-    s3 = score_case({"expected_doc_ids": []}, hits)
-    assert s3["leak"] is True and "hit" not in s3
-    assert score_case({"expected_doc_ids": []}, [])["leak"] is False
-
-
-def test_summarize_and_render():
+def test_summarize_reports_recall_by_language_for_semantic_cases_only():
     rows = [
-        {
-            "id": "a",
-            "tags": ["口语"],
-            "query": "q",
-            "status": "ok",
-            "hit": True,
-            "precision": 0.5,
-            "first_rank": 1,
-            "doc_ids": ["m"],
-            "latency_ms": 100,
-        },
-        {
-            "id": "b",
-            "tags": ["口语", "否定"],
-            "query": "q",
-            "status": "no_match",
-            "hit": False,
-            "precision": 0.0,
-            "first_rank": None,
-            "doc_ids": [],
-            "latency_ms": 300,
-        },
-        {
-            "id": "c",
-            "tags": ["无知识"],
-            "query": "q",
-            "status": "ok",
-            "leak": True,
-            "doc_ids": ["m"],
-            "latency_ms": 200,
-        },
-        {
-            "id": "d",
-            "tags": [],
-            "query": "",
-            "status": "no_query",
-            "leak": False,
-            "doc_ids": [],
-            "latency_ms": 0,
-        },
+        {"id": "a", "language": "en", "exact": False, "gold": ["x"], "status": "ok", "hit": True, "latency_ms": 10},
+        {"id": "b", "language": "nl", "exact": False, "gold": ["y"], "status": "ok", "hit": False, "latency_ms": 20},
+        {"id": "c", "language": "en", "exact": True, "gold": ["z"], "status": "ok", "hit": False, "latency_ms": 30},
     ]
     s = summarize(rows, top_k=5)
-    assert (
-        s["cases"] == 4 and s["scored"] == 2 and s["hit@5"] == "50%" and s["precision@5"] == "25%"
-    )
-    assert (
-        s["leak"] == "1/2"
-        and s["no_match"] == 1
-        and s["latency_p50_ms"] == 200
-        and s["latency_p95_ms"] == 300
-    )
-    assert s["by_tag"]["口语"] == {"n": 2, "hit@5": "50%"} and s["by_tag"]["否定"]["hit@5"] == "0%"
-    md = render_markdown(
-        arm="A", cases_meta={"version": "v1", "annotated_count": 0}, summary=s, rows=rows, top_k=5
-    )
-    assert "| hit@5 | 50% |" in md and "| c | ok | leak |" in md and "| d | no_query | - |" in md
+    assert s["semantic_cases"] == 2 and s["recall@5"] == "50%"
+    assert s["exact_also_retrieved@5"] == "0%"
+    assert s["by_language"] == {"en": {"n": 1, "recall@5": "100%"}, "nl": {"n": 1, "recall@5": "0%"}}
+    md = render_markdown(arm="A", summary=s, rows=rows, top_k=5)
+    assert "| nl | 1 | 0% |" in md and "| c | en | 是 |" in md

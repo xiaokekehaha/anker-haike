@@ -84,7 +84,7 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
         "T2351",
         "robot_vacuum",
     )
-    assert query.startswith("eufy Clean X10 Pro Omni")
+    assert not query.startswith("eufy")  # 型号已锁定检索范围，查询不再拼产品名
     assert state.values["knowledge_status"] == "ok" and "chunk-c12" in state.values["evidence"]
     kinds = [i["kind"] for i in snap["timeline"]]
     assert "tool" in kinds and "evidence" in kinds  # 时间线出现工具行与来源列表
@@ -118,12 +118,12 @@ async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
     def ids(events):
         return [i["evidence_id"] for e in events if e["type"] == "evidence" for i in e["items"]]
 
-    # 检索命中 + 命中 Q&A 生成的计划步骤（approved_plan）
-    assert ids(e1)[0] == "chunk-c12" and all(i.startswith("plan:rv-0272#") for i in ids(e1)[1:])
+    # 检索命中的就是这一步出自的 Q&A（doc_id rv-0272）→ 它就是主引用，不再本地重发一份原文
+    assert ids(e1) == ["chunk-c12"]
     # 复述没有改变事实修订号与计划库版本 → retrieval_basis 未变，既不重新检索，也不重发同一条证据。
     # 前端按 first_seq 与 id upsert 进常驻时间线，首轮那条仍在，用户侧看不到差别。
     assert ids(e2) == [] and len(ad.calls) == after_first
-    assert next(iter(state.values["evidence"])) == "chunk-c12"  # 累积去重，可被 step.evidence_ids 引用
+    assert list(state.values["evidence"]) == ["chunk-c12"]  # 累积去重，可被 step.evidence_ids 引用
 
 
 async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):

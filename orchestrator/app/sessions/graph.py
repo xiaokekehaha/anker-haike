@@ -45,7 +45,7 @@ from app.escalation.summary import build_summary, reassurance_text
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
 from app.images.runtime import current_image_store
 from app.knowledge.adapter import Hit, KnowledgeScope
-from app.knowledge.context import pack_hits, select_hits
+from app.knowledge.context import pack_hits
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.knowledge.search import interleave_kbs, search_round
@@ -1794,19 +1794,6 @@ async def _grade_second_round(
     return hits, second if second.status == "graded" else assessment
 
 
-async def _expand_parents(adapter, hits, rcfg) -> list[str] | None:
-    """适配器支持时（真实 WeKnora 适配器或录制包装器透传）做 small-to-big；不支持返回 None。"""
-    real = getattr(adapter, "inner", adapter)
-    expand = getattr(real, "expand_parents", None)
-    if expand is None:
-        return None
-    refresh = getattr(real, "refresh_chunks", None)
-    if refresh is not None and getattr(real, "chunks_loaded_at", 0) is None:
-        await refresh()
-    return expand(
-        hits, max_items=rcfg.parent_expand.max_items, max_chars=rcfg.parent_expand.max_chars
-    )
-
 
 _reranker_cache: dict[str, DashScopeReranker] = {}
 
@@ -1923,7 +1910,7 @@ async def retrieve(state: SessionState) -> SessionState:
         }
     # 错误码精确命中（官方 Q&A 标题里的码 + 型号）：先于语义检索，作为本地证据进入排序与步骤主引用。
     exact = exact_code_hits(state, scope)
-    fc_evidence: list[dict[str, Any]] = exact["evidence"]
+    exact_evidence: list[dict[str, Any]] = exact["evidence"]
     if exact["miss"]:
         # 客户报了错误码、官方 Q&A 未收录：不拿相近码顶替（T13 的 5116 ≠ 5112），如实说明后转人工。
         return {
@@ -1944,7 +1931,7 @@ async def retrieve(state: SessionState) -> SessionState:
         }
     if exact["warranty"]:
         # 官方 Q&A 判定为硬件故障（hardware malfunction / warranty service）：不发排障步骤，直接进质保判断。
-        items = [{k: v for k, v in it.items() if k != "knowledge_title"} for it in fc_evidence]
+        items = [{k: v for k, v in it.items() if k != "knowledge_title"} for it in exact_evidence]
         writer({"type": "evidence", "items": items})
         for it in items:
             evidence[it["evidence_id"]] = it
@@ -1953,11 +1940,11 @@ async def retrieve(state: SessionState) -> SessionState:
             "substage": "retrieve",
             "knowledge_status": "ok",
             "evidence": evidence,
-            "current_evidence_ids": [it["evidence_id"] for it in fc_evidence],
+            "current_evidence_ids": [it["evidence_id"] for it in exact_evidence],
             "query": query,
             "error_codes": exact["codes"],
             "plans_ranked": [{"plan_id": exact["warranty"], "version": 1, "confidence": 1.0,
-                              "evidence_ids": [it["evidence_id"] for it in fc_evidence], "source": "exact_code"}],
+                              "evidence_ids": [it["evidence_id"] for it in exact_evidence], "source": "exact_code"}],
             "diagnose_outcome": {"mode": "warranty", "reason": "hardware_malfunction", "plan_id": exact["warranty"]},
             "escalate_reason": "R6",
             "plan_cursor": None,
@@ -1973,7 +1960,7 @@ async def retrieve(state: SessionState) -> SessionState:
             snippet=it["snippet"], score=it["score"], content=it["snippet"],
             knowledge_title=it.get("knowledge_title") or it["doc_id"],
         )
-        for it in fc_evidence
+        for it in exact_evidence
     ]
     writer(
         {
@@ -1995,7 +1982,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 "summary": "知识库暂不可用，按标准排障流程",
             }
         )
-        for it in fc_evidence:
+        for it in exact_evidence:
             evidence[it["evidence_id"]] = {k: v for k, v in it.items() if k != "knowledge_title"}
         selection = pack_hits(
             local_hits, max_items=rcfg.retrieval.final_k,
@@ -2008,7 +1995,7 @@ async def retrieve(state: SessionState) -> SessionState:
             _diagnose_outcome(
                 plans.get("plans_ranked") or [],
                 knowledge_status="unavailable",
-                exact_hits=[e["chunk_id"] for e in fc_evidence],
+                exact_hits=[e["chunk_id"] for e in exact_evidence],
                 exhausted_plans=state.get("exhausted_plans") or [],
             )
         )
@@ -2270,21 +2257,6 @@ async def retrieve(state: SessionState) -> SessionState:
         if items:
             writer({"type": "evidence", "items": items})
     candidates = [*hits, *local_hits]
-    selected = select_hits(candidates, rcfg.retrieval.final_k)
-    # 只扩展已选中的代表，按命中位置保留上下文；SSE 仍发布命中子块摘要。
-    if selected and rcfg.parent_expand.enabled:
-        expanded = await _expand_parents(adapter, selected, rcfg)
-        if expanded is not None:
-            trace.append(
-                {
-                    "round": rounds,
-                    "kb": "kb_manual",
-                    "event": "parent_expanded",
-                    "ids": expanded,
-                    "session_id": session_id,
-                    "run_id": run_id,
-                }
-            )
     selection = pack_hits(
         candidates, max_items=rcfg.retrieval.final_k,
         max_chars=rcfg.retrieval.context_chars, item_chars=rcfg.retrieval.item_chars,
@@ -2297,7 +2269,7 @@ async def retrieve(state: SessionState) -> SessionState:
         "rounds": {h.evidence_id: h.round for h in selection.hits},
         "session_id": session_id, "run_id": run_id,
     })
-    for it in fc_evidence:
+    for it in exact_evidence:
         evidence.setdefault(it["evidence_id"], {k: v for k, v in it.items() if k != "knowledge_title"})
     plans = await _synthesize_step(state, round_evidence, lane, rcfg)
     trace += plans.pop("retrieval_trace", [])
@@ -2305,7 +2277,7 @@ async def retrieve(state: SessionState) -> SessionState:
         _diagnose_outcome(
             plans.get("plans_ranked") or [],
             knowledge_status=status,
-            exact_hits=[e["chunk_id"] for e in fc_evidence],
+            exact_hits=[e["chunk_id"] for e in exact_evidence],
             exhausted_plans=sorted(effective_exhausted(state)),
         )
     )

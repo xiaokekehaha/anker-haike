@@ -89,6 +89,9 @@ class BusinessContext(BaseModel):
             key, value = classify(match.group())
             if value not in explicit.setdefault(key, []):
                 explicit[key].append(value)
+        if len(explicit.get("order_no", [])) == 1 and len(explicit.get("tracking_no", [])) > 1:
+            # 一个订单号 + 多个运单号（T2：配件包与主机分开发）：运单是这个订单的多个包裹，不是多个对象
+            explicit = {k: v for k, v in explicit.items() if k != "tracking_no"}
         if any(len(values) > 1 for values in explicit.values()):
             candidates = [
                 result._select({key: value}, "user", input_id)

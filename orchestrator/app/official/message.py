@@ -25,12 +25,14 @@ LABELS: dict[str, tuple[str, ...]] = {
     "sn": ("Product SN", "Product-SN", "Prodcut SN", "Seriennummer \\(SN\\)", "Seriennummer", "SN"),
     "description": ("Problem Description", "Probleembeschrijving", "Probleemomschrijving", "Problembeschreibung",
                     "Description du problème", "Descripción del problema"),
+    "push": ("Problem Push", "Probleempush", "Push-Benachrichtigung"),
     "order_no": ("Order No", "Order Number", "Order", "Ordernummer", "Bestellnummer", "Numéro de commande", "Número de pedido"),
     "country": ("Country", "Land", "Pays", "País", "Inlogland", "Land van accountregistratie"),
     "source": ("Source", "Bron"),
 }
 APP_MARKERS = re.compile(r"Product\s*PN|Product-PN|Produktnummer|Référence produit|Número de parte|Problem Type|Probleemtype|Problemtyp", re.IGNORECASE)
 RMA_MARKERS = re.compile(r"----RMA----|Submit Date|Prodcut SN|Purchase proof", re.IGNORECASE)
+URLS = re.compile(r"\[?\s*\"?https?://\S+|\[\s*\]")
 SELLER = re.compile(r"(?:ordered|bought|purchased)[ \t]+(?:it[ \t]+)?(?:from|at|on)[ \t]+(?:the[ \t]+)?(?:reseller[ \t]+)?([A-Z][\w&'.-]*(?:[ \t]+[A-Z][\w&'.-]*){0,3})", re.IGNORECASE)
 
 # 只用各语言独有的词：英文工单里也会出现 the / die / la 这类拼写，功能词会误判。
@@ -56,6 +58,13 @@ class ParsedMessage:
     product_name: str | None = None
     description: str | None = None
     fields: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def problem_text(self) -> str | None:
+        """检索用的问题原话：表单的问题描述 / 推送提示，不含表头、订单字段与图片链接。自由邮件返回 None（用全文）。"""
+        parts = list(dict.fromkeys(v for k in ("push", "description") if (v := self.fields.get(k))))
+        text = URLS.sub(" ", " ".join(parts)).strip()
+        return text or None
 
     @property
     def has_facts(self) -> bool:

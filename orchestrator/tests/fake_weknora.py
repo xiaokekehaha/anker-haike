@@ -14,7 +14,6 @@ class FakeWeKnora:
         self.models = models if models is not None else []
         self.kbs: dict[str, dict] = {}
         self.knowledge: dict[str, dict] = {}
-        self.faq: dict[str, list[dict]] = {}
         self.calls: list[tuple[str, str]] = []
         self.registered: dict[str, dict] = {}
         self.down = False  # True → 模拟 WeKnora 不可达
@@ -67,6 +66,10 @@ class FakeWeKnora:
             if kb_id not in self.kbs:
                 return self._err(404, "kb not found")
             rest = parts[2:]
+            if not rest and method == "DELETE":
+                del self.kbs[kb_id]
+                self.knowledge = {k: v for k, v in self.knowledge.items() if v["knowledge_base_id"] != kb_id}
+                return self._ok(None)
             if rest == ["knowledge"] and method == "GET":
                 items = [k for k in self.knowledge.values() if k["knowledge_base_id"] == kb_id]
                 page = int(request.url.params.get("page", 1))
@@ -85,14 +88,6 @@ class FakeWeKnora:
                 }
                 self.knowledge[k["id"]] = k
                 return self._ok(k)
-            if rest == ["faq", "entries"]:
-                if method == "GET":
-                    return self._ok(self.faq.get(kb_id, []), total=len(self.faq.get(kb_id, [])))
-                if body.get("mode") == "replace":
-                    self.faq[kb_id] = list(body["entries"])
-                else:
-                    self.faq.setdefault(kb_id, []).extend(body["entries"])
-                return self._ok({"task_id": uuid.uuid4().hex})
             if rest == ["hybrid-search"]:
                 ids = set(body.get("knowledge_ids") or [])
                 hits = []

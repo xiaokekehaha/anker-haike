@@ -1,6 +1,6 @@
 """票 26：知识库 bootstrap / 官方 Q&A 幂等导入 / 元数据 / 分块配置 / manifest（内存版 WeKnora）。
 
-2026-10-08 起只导入官方 Q&A（app.knowledge.official_qa），一条 Q&A 一个 knowledge；旧的手册 / FAQ / 工单库已删除。
+2026-10-08 起只导入官方 Q&A，一条 Q&A 一个 knowledge；旧的手册 / FAQ / 工单库已删除。
 """
 
 from __future__ import annotations
@@ -10,18 +10,14 @@ import pytest
 from app.knowledge import WeKnoraClient, WeKnoraError
 from app.knowledge.ingest import (
     EMBEDDING_DIM,
+    KB_QA,
+    LEGACY_KBS,
+    QA_CHUNK,
     Ingestor,
-    IngestReport,
+    qa_content,
+    qa_metadata,
     verify_metadata,
     write_manifest,
-)
-from app.knowledge.official_qa import (
-    KB_QA,
-    QA_CHUNK,
-    ingest_qa,
-    qa_content,
-    qa_manifest_chunking,
-    qa_metadata,
 )
 from app.official.qa_index import QAIndex
 from app.settings import REPO_ROOT
@@ -68,8 +64,9 @@ def test_qa_content_keeps_title_codes_and_drops_urls():
 
 
 async def test_ingest_creates_single_qa_kb_one_knowledge_per_entry(client, server):
-    report = IngestReport()
-    kb = await ingest_qa(client, report, embedding_model_id="emb-1", index=_index())
+    ing = Ingestor(client)
+    report = ing.report
+    kb = await ing.ingest_qa(embedding_model_id="emb-1", index=_index())
     assert {k["name"] for k in server.kbs.values()} == {KB_QA}
     cc = server.kbs[kb["id"]]["chunking_config"]
     assert cc["chunk_size"] == QA_CHUNK == 1500 and cc["enable_parent_child"] is False
@@ -83,42 +80,44 @@ async def test_ingest_creates_single_qa_kb_one_knowledge_per_entry(client, serve
 
 
 async def test_ingest_is_idempotent_and_version_bump_replaces(client, server):
-    first = IngestReport()
-    await ingest_qa(client, first, embedding_model_id="emb-1", index=_index())
-    second = IngestReport()
-    await ingest_qa(client, second, embedding_model_id="emb-1", index=_index())
+    await Ingestor(client).ingest_qa(embedding_model_id="emb-1", index=_index())
+    again = Ingestor(client)
+    await again.ingest_qa(embedding_model_id="emb-1", index=_index())
+    second = again.report
     assert (second.created, second.replaced, second.skipped) == (0, 0, len(SAMPLE))
     assert len(server.knowledge) == len(SAMPLE) and len(server.kbs) == 1
-    third = IngestReport()
-    await ingest_qa(client, third, embedding_model_id="emb-1", index=_index(version="v-next"))
+    bumped = Ingestor(client)
+    await bumped.ingest_qa(embedding_model_id="emb-1", index=_index(version="v-next"))
+    third = bumped.report
     assert third.replaced == third.created == len(SAMPLE) and third.skipped == 0
     assert len(server.knowledge) == len(SAMPLE)
     assert {k["custom_metadata"]["doc_version"] for k in server.knowledge.values()} == {"v-next"}
 
 
 async def test_prune_removes_entries_no_longer_in_source(client, server):
-    await ingest_qa(client, IngestReport(), embedding_model_id="emb-1", index=_index())
-    report = IngestReport()
-    await ingest_qa(client, report, embedding_model_id="emb-1", index=_index(SAMPLE[:2]))
+    await Ingestor(client).ingest_qa(embedding_model_id="emb-1", index=_index())
+    ing = Ingestor(client)
+    await ing.ingest_qa(embedding_model_id="emb-1", index=_index(SAMPLE[:2]))
+    report = ing.report
     assert report.deleted == len(SAMPLE) - 2
     assert {k["title"] for k in server.knowledge.values()} == set(SAMPLE[:2])
 
 
 async def test_manifest_records_kb_ver_bound_to_embedding(client, tmp_path):
     ing = Ingestor(client)
-    ing.embedding_model_id = await ing.ensure_embedding_model(None)
-    await ingest_qa(client, ing.report, embedding_model_id=ing.embedding_model_id, index=_index())
+    embedding_id = await ing.ensure_embedding_model(None)
+    await ing.ingest_qa(embedding_model_id=embedding_id, index=_index())
     manifest = write_manifest(tmp_path / "manifest.json", ing.report, source_root=REPO_ROOT / "data" / "official")
     assert manifest["kb_ver"] == f"{FULL.version}+text-embedding-v4"
     assert manifest["embedding"]["dimension"] == EMBEDDING_DIM == 1024
     assert manifest["errors"] == [] and set(manifest["knowledge_bases"]) == {"kb_qa"}
-    assert qa_manifest_chunking()["parent_child"] is False
+    assert manifest["chunking"]["parent_child"] is False
 
 
 async def test_search_with_knowledge_ids(client, server):
-    report = IngestReport()
-    await ingest_qa(client, report, embedding_model_id="emb-1", index=_index())
-    kb_ids = [report.kb_ids["kb_qa"]]
+    ing = Ingestor(client)
+    await ing.ingest_qa(embedding_model_id="emb-1", index=_index())
+    kb_ids = [ing.report.kb_ids["kb_qa"]]
     hits = await client.knowledge_search("mop", knowledge_base_ids=kb_ids)
     assert len(hits) == 2 and all("knowledge_id" in h for h in hits)
     only = [hits[0]["knowledge_id"]]
@@ -126,6 +125,14 @@ async def test_search_with_knowledge_ids(client, server):
         h["knowledge_id"]
         for h in await client.knowledge_search("mop", knowledge_base_ids=kb_ids, knowledge_ids=only)
     } == set(only)
+
+
+async def test_legacy_kbs_are_dropped(client, server):
+    for name in LEGACY_KBS:
+        await client.create_knowledge_base({"name": name, "type": "document"})
+    await client.create_knowledge_base({"name": KB_QA, "type": "document"})
+    assert sorted(await Ingestor(client).drop_legacy_kbs()) == sorted(LEGACY_KBS)
+    assert {k["name"] for k in server.kbs.values()} == {KB_QA}
 
 
 async def test_dimension_mismatch_reported(server):

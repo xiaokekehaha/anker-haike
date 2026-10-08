@@ -1,19 +1,15 @@
-"""检索评测（有界 Agentic RAG 阶段 2，design.md §9）：用 data/eval/retrieval/cases.yaml 直接打 KnowledgeAdapter。
+"""检索评测：63 单主办方工单首封消息 → 金标官方 Q&A（data/eval/tickets/cases.yaml 的 qa_gold / qa_exact）。
 
-单轮检索与上下文评测；--with-synthesize 可调用评分/诊断模型，不覆盖 intake 和补查编排：
-- hit@k：expected_doc_ids 任一出现在合并后 top-k 的 doc_id 中（expected 为空的样例不计入，另算泄漏）
-- precision@k：top-k 中 doc_id ∈ expected_doc_ids 的比例（expected 为空的样例不计入）
-- leak：expected 为空（无知识）却返回命中的样例数；scope_leak：命中了当前 scope 不该看见的文档
-- 按 tag 分组给 hit@k；记录每样例 query、状态、命中与延迟
-结果写 reports/retrieval/<stamp>_<arm>.md 与 .json。expected_outcome / expected_plan 需要 synthesize，留给后续阶段。
+只评检索层（与图内同一个 search_round）：
+- 查询与线上一致：build_query（产品名 + 原文）；范围按首封 PN 锁型号，没有 PN 时按品类词 category_only。
+- recall@k：金标 qa_id 任一出现在 top-k 的 doc_id 中；按客户语言分组统计（工单有英 / 荷 / 德 / 法 / 西）。
+- 错误码单走确定性精确命中（qa_exact），不经过检索，这里单列「检索是否也召回」作参考。
+结果写 reports/retrieval/<stamp>_<arm>.md 与 .json。
 """
 
 from __future__ import annotations
 
-import collections
 import json
-import os
-import re
 import time
 from collections import defaultdict
 from datetime import UTC, datetime
@@ -23,213 +19,73 @@ from typing import Any
 import yaml
 
 from app.diagnose.config import RetrievalConfig, get_retrieval_config
-from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.query import build_query
-from app.diagnose.synthesize import synthesize
-from app.knowledge.adapter import Hit, KnowledgeScope, ToolResult, WeKnoraKnowledgeAdapter
-from app.knowledge.context import evidence_text, pack_hits, select_hits
-from app.knowledge.faq import get_faq_index
+from app.knowledge.adapter import Hit, KnowledgeScope, WeKnoraKnowledgeAdapter
+from app.knowledge.context import select_hits
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.search import interleave_kbs, search_round
 from app.knowledge.weknora_client import WeKnoraClient
-from app.models.runtime import get_model_router
-from app.plans.runtime import get_plan_library
+from app.official.message import parse_message
+from app.official.models import OfficialData
 from app.sessions.cards import get_catalog
+from app.settings import REPO_ROOT
+
+CASES = REPO_ROOT / "data" / "eval" / "tickets" / "cases.yaml"
 
 
-def case_state(case: dict[str, Any]) -> dict[str, Any]:
-    """把评测样例还原成 build_query / KnowledgeScope 需要的最小 state。"""
-    ps = case["product_state"]
-    scope = case_scope(case)
-    state: dict[str, Any] = {
-        "product_state": ps,
-        "text": case.get("text", ""),
-        "symptoms": list(case.get("symptoms") or []),
-    }
-    if ps == "confirmed_sku":
-        state["product_confirmed"] = {
-            "sku": case["sku"],
-            "name": case.get("product_name") or case["sku"],
-            "category": scope.category,
+def gold_of(case: dict[str, Any]) -> list[str]:
+    return [*([case["qa_exact"]] if case.get("qa_exact") else []), *(case.get("qa_gold") or [])]
+
+
+def case_state(case: dict[str, Any], body: str) -> tuple[dict[str, Any], KnowledgeScope | None]:
+    """工单首封 → build_query 需要的最小 state 与检索范围；认不出产品返回 None（线上会先追问型号）。"""
+    catalog = get_catalog()
+    pn = parse_message(body).pn or case.get("pn")
+    product = catalog.get(pn) if pn else None
+    if product is None:
+        # 与线上消歧一致：型号名唯一命中即确认（「omni c20」）；同名多命中（「S1 Pro」）线上会出产品卡，这里不计
+        named = catalog.lookup_product(body)
+        product = catalog.get(named[0].sku) if len(named) == 1 else None
+    if product is not None:
+        state = {
+            "product_state": "confirmed_sku",
+            "text": body,
+            "product_confirmed": {"sku": product.sku, "name": product.name, "category": product.category},
         }
-    else:
-        state["category"] = scope.category
-    return state
-
-
-def case_scope(case: dict[str, Any]) -> KnowledgeScope:
-    ps = case["product_state"]
-    category = case.get("category")
-    if not category and ps == "confirmed_sku":
-        product = next(
-            (p for p in get_catalog().lookup_product(case["sku"]) if p.sku == case["sku"]), None
-        )
-        category = product.category if product else None
+        return state, KnowledgeScope("confirmed_sku", product.category, product.sku)
+    category = catalog.category_hint(body)
     if not category:
-        raise ValueError(f"评测样例 {case.get('id')} 缺少可确定的品类")
-    return KnowledgeScope(
-        ps,
-        category,
-        case.get("sku") if ps == "confirmed_sku" else None,
-    )
-
-
-def merge_top_k(results: dict[str, ToolResult], top_k: int) -> list[Hit]:
-    """与图内相同的来源/轮次代表选择。"""
-    return select_hits(interleave_kbs(results), top_k)
-
-
-_CHUNK_TOKEN = re.compile(r"c\d+|faq q\d+|第3章表|\b[A-E]\b|\b[1-5]\b")
-
-
-def chunk_markers(hint: str | None) -> list[str]:
-    """expected_chunk_hint → 命中正文里应出现的标记（阶段 4 分块级金标）：
-    c12 → 「（c12）」；A–E → 排障手册小节「## A.」；1–5 → v2 手册小节「## 1 」；第3章表 → 指示灯表头；faq qN → FAQ 条目 id。"""
-    out: list[str] = []
-    for tok in _CHUNK_TOKEN.findall(hint or ""):
-        if tok.startswith("c"):
-            out.append(f"（{tok}）")
-        elif tok.startswith("faq "):
-            out.append(f"faq_rv#{tok.split()[1]}")
-        elif tok == "第3章表":
-            out.append("| 现象 | 含义 |")
-        elif tok.isalpha():
-            out.append(f"## {tok}.")
-        else:
-            out.append(f"## {tok} ")
-    return out
-
-
-def _hit_text(h: Hit) -> str:
-    return f"{h.evidence_id}\n{evidence_text(h.as_internal_item())}"
-
-
-def is_gold(h: Any, case: dict[str, Any]) -> bool:
-    """金标命中：doc_id 在 expected_doc_ids 里，或（工单）根因与 expected_ticket_cause 一致。
-    工单同因的有好几条，逐条列 id 既繁琐又脆弱，按根因匹配更稳（标注指南见 ANNOTATION.md）。"""
-    if h.doc_id in set(case.get("expected_doc_ids") or []):
-        return True
-    cause = case.get("expected_ticket_cause")
-    return bool(cause and h.source == "kb_tickets" and f"原因：{cause}" in (h.snippet or ""))
-
-
-def score_case(case: dict[str, Any], hits: list[Any]) -> dict[str, Any]:
-    expected = bool(case.get("expected_doc_ids") or case.get("expected_ticket_cause"))
-    docs = [h.doc_id for h in hits]
-    gold = [is_gold(h, case) for h in hits]
-    out: dict[str, Any] = {"doc_ids": docs, "n_hits": len(hits)}
-    if expected:
-        out["hit"] = any(gold)
-        out["precision"] = (sum(gold) / len(gold)) if gold else 0.0
-        out["first_rank"] = next((i + 1 for i, g in enumerate(gold) if g), None)
-        markers = chunk_markers(case.get("expected_chunk_hint"))
-        if markers:
-            texts = [_hit_text(h) for h in hits]
-            out["chunk_hit"] = any(g and any(m in t for m in markers) for g, t in zip(gold, texts, strict=True))
-            out["chunk_rank"] = next(
-                (i + 1 for i, (g, t) in enumerate(zip(gold, texts, strict=True)) if g and any(m in t for m in markers)), None
-            )
-    else:
-        out["leak"] = bool(docs)
-    return out
-
-
-async def _model_side(
-    case: dict[str, Any], hits: list[Any], *, cfg: RetrievalConfig, router: Any, lane: str
-) -> dict[str, Any]:
-    """--with-synthesize：真实模型跑 grade（若开）+ synthesize，比较 expected_plan / expected_outcome。"""
-    state = case_state(case)
-    out: dict[str, Any] = {}
-    kept = hits
-    if cfg.grade.enabled and hits:
-        a = await grade_hits(
-            router,
-            hits=hits,
-            user_text=state["text"],
-            symptoms=state["symptoms"],
-            product=(state.get("product_confirmed") or {}).get("name"),
-            cfg=cfg.grade,
-            retrieval=cfg.retrieval,
-            budget_ms=cfg.grade.budget_ms,
-            session_id=f"eval-{case['id']}",
-            lane=lane,
-        )
-        kept = apply_assessment(list(hits), a)
-        out["grade"] = {
-            "status": a.status,
-            "reason": a.reason,
-            "coverage": a.coverage,
-            "model": a.model_used,
-            "ms": a.latency_ms,
-            "evaluated_ids": a.evaluated_ids,
-            "missing_symptoms": a.missing_symptoms,
-            # 金标文档被判 irrelevant = 评分假阴性；非金标被判 relevant 只作参考（金标是文档级）
-            "false_negative": [
-                h.evidence_id for h in hits if is_gold(h, case) and h.grade == "irrelevant"
-            ],
-            "relevant_n": len(a.relevant_ids),
+        return {"product_state": "unknown", "text": body}, None
+    skus = tuple(p.sku for p in catalog.products if p.category == category and p.in_scope)
+    if len(skus) == 1:
+        # 品类下只有一款（吸奶器、SoloCam）：线上同样直接确认
+        product = catalog.get(skus[0])
+        state = {
+            "product_state": "confirmed_sku",
+            "text": body,
+            "product_confirmed": {"sku": product.sku, "name": product.name, "category": category},
         }
-    scope = case_scope(case)
-    allowed = get_plan_library().allowed_for(category=scope.category, sku=scope.sku)
-    st = {**state, "emotion": {"strategy": "normal"}}
-    t0 = time.perf_counter()
-    syn = await synthesize(
-        router,
-        state=st,
-        allowed=allowed,
-        evidence=[h.as_internal_item() for h in kept],
-        observations=[],
-        budget_ms=cfg.synthesize.budget_ms,
-        max_hypotheses=cfg.synthesize.max_hypotheses,
-        session_id=f"eval-{case['id']}",
-        lane=lane,
-    )
-    ranked = syn.get("plans_ranked") or []
-    top = ranked[0]["plan_id"] if ranked else None
-    outcome = (
-        "escalate"
-        if not ranked
-        else ("standard_flow" if ranked[0].get("source") == "standard_flow" else "evidence")
-    )
-    exp_plan, exp_out = case.get("expected_plan"), case.get("expected_outcome")
-    out["synth"] = {
-        "top_plan": top,
-        "ranked": [p["plan_id"] for p in ranked],
-        "source": ranked[0].get("source") if ranked else None,
-        "degraded": syn.get("degraded"),
-        "model": (syn.get("model_trace") or {}).get("model_used"),
-        "ms": int((time.perf_counter() - t0) * 1000),
-        "outcome": outcome,
-        "plan_match": (top == exp_plan) if exp_plan else None,
-        # 安全类样例的 escalate 来自规则 R4（检索之前），synthesize 层不比较
-        "outcome_match": (outcome == exp_out)
-        if exp_out and "安全" not in (case.get("tags") or [])
-        else None,
-    }
-    return out
+        return state, KnowledgeScope("confirmed_sku", category, product.sku)
+    state = {"product_state": "category_only", "text": body, "category": category}
+    return state, KnowledgeScope("category_only", category, category_skus=skus)
+
+
+def score_case(gold: list[str], hits: list[Hit], top_k: int) -> dict[str, Any]:
+    docs = [h.doc_id for h in hits[:top_k]]
+    rank = next((i + 1 for i, d in enumerate(docs) if d in gold), None)
+    return {"doc_ids": docs, "hit": rank is not None, "first_rank": rank}
 
 
 async def evaluate(
     adapter: WeKnoraKnowledgeAdapter,
     cases: list[dict[str, Any]],
+    bodies: dict[str, str],
     *,
     top_k: int,
     cfg: RetrievalConfig | None = None,
-    with_synthesize: bool = False,
-    lane: str = "domestic",
 ) -> list[dict[str, Any]]:
-    """每条样例跑一轮线上同款 search_round（含 multi_query / faq / rerank 开关），只评检索层；
-    with_synthesize 时再用真实模型跑 grade + synthesize，比较 expected_plan / expected_outcome。"""
     cfg = cfg or get_retrieval_config()
-    if cfg.query_rewrite.enabled:
-        raise ValueError("单轮检索评测不覆盖充分性补查；请通过会话编排评测，或关闭 query_rewrite 做单项对照")
-    router = None
-    if with_synthesize:
-        router = get_model_router()
-        if router is None:
-            raise RuntimeError("--with-synthesize 需要模型路由（HAIKE_LLM=on 且有厂商 key）")
     await adapter.refresh_index()
-    faq_index = get_faq_index() if cfg.faq.enabled else None
     reranker = (
         DashScopeReranker(model=cfg.rerank.model, timeout_s=cfg.rerank.timeout_ms / 1000)
         if cfg.rerank.enabled
@@ -237,91 +93,35 @@ async def evaluate(
     )
     rows = []
     for case in cases:
-        state, scope = case_state(case), case_scope(case)
-        query = build_query(state)
+        gold = gold_of(case)
+        if not gold:
+            continue
+        state, scope = case_state(case, bodies[case["id"]])
         row: dict[str, Any] = {
             "id": case["id"],
-            "tags": list(case.get("tags") or []),
-            "query": query,
-            "scope": {
-                "product_state": scope.product_state,
-                "category": scope.category,
-                "sku": scope.sku,
-            },
+            "language": case.get("language"),
+            "exact": bool(case.get("qa_exact")),
+            "gold": gold,
         }
-        if not query:
-            row.update({"status": "no_query", "latency_ms": 0, **score_case(case, [])})
+        query = build_query(state) if scope is not None else ""
+        row["query"] = query[:120]
+        if not query or scope is None:
+            row.update({"status": "no_scope", "hit": False, "first_rank": None, "doc_ids": [], "latency_ms": 0})
             rows.append(row)
             continue
+        row["scope"] = {"product_state": scope.product_state, "category": scope.category, "sku": scope.sku}
         t0 = time.perf_counter()
         out = await search_round(
-            adapter,
-            query,
-            scope,
-            cfg.retrieval.candidate_k,
-            cfg=cfg,
-            round_no=1,
-            session_id="eval",
-            run_id=case["id"],
-            faq_index=faq_index,
-            reranker=reranker,
+            adapter, query, scope, cfg.retrieval.candidate_k,
+            cfg=cfg, round_no=1, session_id="eval", run_id=case["id"], reranker=reranker,
         )
-        results = out.results
-        hits_all = interleave_kbs(results)
-        if cfg.parent_expand.enabled:
-            if adapter.chunks_loaded_at is None:
-                await adapter.refresh_chunks()
-            row["expanded"] = adapter.expand_parents(
-                select_hits(hits_all, cfg.retrieval.final_k),
-                max_items=cfg.parent_expand.max_items,
-                max_chars=cfg.parent_expand.max_chars,
-            )
+        hits = select_hits(interleave_kbs(out.results), cfg.retrieval.final_k)
         row["latency_ms"] = int((time.perf_counter() - t0) * 1000)
-        row["queries"] = out.queries
-        row["rerank"] = [
-            {"kb": t["kb"], "status": t["status"], "reason": t.get("reason"), "ms": t["latency_ms"]}
-            for t in out.trace
-            if t.get("event") == "rerank"
-        ]
-        row["per_kb"] = {
-            kb: {
-                "status": r.status,
-                "allowed": r.allowed_count,
-                "hits": len(r.hits),
-                "ms": r.latency_ms,
-            }
-            for kb, r in results.items()
-        }
-        statuses = [r.status for r in results.values()]
-        row["status"] = (
-            "unavailable"
-            if all(s == "unavailable" for s in statuses)
-            else ("ok" if any(r.hits for r in results.values()) else "no_match")
+        statuses = [r.status for r in out.results.values()]
+        row["status"] = "unavailable" if all(s == "unavailable" for s in statuses) else (
+            "ok" if hits else "no_match"
         )
-        selection = pack_hits(
-            hits_all, max_items=cfg.retrieval.final_k,
-            max_chars=cfg.retrieval.context_chars, item_chars=cfg.retrieval.item_chars,
-        )
-        hits = selection.hits
-        row["candidate_count"] = len(hits_all)
-        row["candidate_hit"] = any(is_gold(h, case) for h in hits_all)
-        row["context_ids"] = [h.evidence_id for h in hits]
-        row["context_excluded"] = selection.excluded
-        row.update(score_case(case, hits[:top_k]))
-        if router is not None:
-            row.update(await _model_side(case, hits, cfg=cfg, router=router, lane=lane))
-        row["hits"] = [
-            {
-                "doc_id": h.doc_id,
-                "chunk_id": h.chunk_id,
-                "source": h.source,
-                "score": round(h.score, 4),
-                "case_outcome": h.case_outcome,
-                "snippet": h.snippet[:60].replace("\n", " "),
-                "full_len": len(h.full_text) if h.full_text else None,
-            }
-            for h in hits
-        ]
+        row.update(score_case(gold, hits, top_k))
         rows.append(row)
     return rows
 
@@ -337,102 +137,36 @@ def _p(values: list[int], q: float) -> int:
     return s[min(len(s) - 1, round(q * (len(s) - 1)))]
 
 
-def _model_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    syn = [r["synth"] for r in rows if r.get("synth")]
-    if not syn:
-        return {}
-    pm = [x["plan_match"] for x in syn if x["plan_match"] is not None]
-    om = [x["outcome_match"] for x in syn if x["outcome_match"] is not None]
-    out: dict[str, Any] = {
-        "plan_match": f"{sum(pm)}/{len(pm)}",
-        "outcome_match": f"{sum(om)}/{len(om)}",
-        "synth_degraded": sum(1 for x in syn if x.get("degraded")),
-        "synth_p50_ms": _p([x["ms"] for x in syn], 0.5),
-    }
-    gr = [r["grade"] for r in rows if r.get("grade")]
-    if gr:
-        out["grade_graded"] = f"{sum(g['status'] == 'graded' for g in gr)}/{len(gr)}"
-        out["grade_fail_reasons"] = dict(
-            collections.Counter(g.get("reason") for g in gr if g["status"] != "graded")
-        )
-        out["grade_coverage"] = dict(
-            sorted(
-                {
-                    c: sum(g.get("coverage") == c for g in gr)
-                    for c in ("sufficient", "insufficient", "none", "unknown")
-                }.items()
-            )
-        )
-        out["grade_false_negative"] = sum(len(g["false_negative"]) for g in gr)
-        out["grade_p50_ms"] = _p([g["ms"] for g in gr if g["ms"]], 0.5)
-    return out
-
-
 def summarize(rows: list[dict[str, Any]], *, top_k: int) -> dict[str, Any]:
-    scored = [r for r in rows if "hit" in r]
-    leak_rows = [r for r in rows if "leak" in r]
+    semantic = [r for r in rows if not r["exact"]]
+    by_lang: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for r in semantic:
+        by_lang[r.get("language") or "?"].append(r)
     lat = [r["latency_ms"] for r in rows if r.get("latency_ms")]
-    by_tag: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for r in scored:
-        for t in r["tags"] or ["(untagged)"]:
-            by_tag[t].append(r)
     return {
         "cases": len(rows),
-        "scored": len(scored),
-        f"hit@{top_k}": _pct(sum(r["hit"] for r in scored), len(scored)),
-        f"precision@{top_k}": _pct(sum(r["precision"] for r in scored), len(scored)),
-        f"chunk_hit@{top_k}": _pct(
-            sum(r["chunk_hit"] for r in rows if "chunk_hit" in r),
-            sum("chunk_hit" in r for r in rows),
-        ),
-        "chunk_scored": sum("chunk_hit" in r for r in rows),
-        "no_match": sum(r.get("status") == "no_match" for r in rows),
-        "unavailable": sum(r.get("status") == "unavailable" for r in rows),
-        "leak": f"{sum(r['leak'] for r in leak_rows)}/{len(leak_rows)}",
+        "semantic_cases": len(semantic),
+        f"recall@{top_k}": _pct(sum(r["hit"] for r in semantic), len(semantic)),
+        f"exact_also_retrieved@{top_k}": _pct(sum(r["hit"] for r in rows if r["exact"]), sum(r["exact"] for r in rows)),
+        "no_scope": sum(r["status"] == "no_scope" for r in rows),
+        "no_match": sum(r["status"] == "no_match" for r in rows),
+        "unavailable": sum(r["status"] == "unavailable" for r in rows),
         "latency_p50_ms": _p(lat, 0.5),
         "latency_p95_ms": _p(lat, 0.95),
-        **_model_summary(rows),
-        "by_tag": {
-            t: {"n": len(rs), f"hit@{top_k}": _pct(sum(r["hit"] for r in rs), len(rs))}
-            for t, rs in sorted(by_tag.items(), key=lambda kv: -len(kv[1]))
+        "by_language": {
+            lang: {"n": len(rs), f"recall@{top_k}": _pct(sum(r["hit"] for r in rs), len(rs))}
+            for lang, rs in sorted(by_lang.items(), key=lambda kv: -len(kv[1]))
         },
     }
 
 
-def _mark(v: bool | None) -> str:
-    return "-" if v is None else ("✓" if v else "✗")
-
-
-def _plan_cell(r: dict[str, Any]) -> str:
-    s = r.get("synth")
-    if not s:
-        return "-"
-    g = r.get("grade") or {}
-    cov = f" g={g.get('coverage')}" if g else ""
-    return f"{_mark(s['plan_match'])} {s.get('top_plan') or '∅'}{cov}"
-
-
-def _outcome_cell(r: dict[str, Any]) -> str:
-    s = r.get("synth")
-    return "-" if not s else f"{_mark(s['outcome_match'])} {s['outcome']}"
-
-
-def render_markdown(
-    *,
-    arm: str,
-    cases_meta: dict[str, Any],
-    summary: dict[str, Any],
-    rows: list[dict[str, Any]],
-    top_k: int,
-) -> str:
+def render_markdown(*, arm: str, summary: dict[str, Any], rows: list[dict[str, Any]], top_k: int) -> str:
     lines = [
         f"# 检索评测 {arm} 组（{datetime.now(UTC).strftime('%Y-%m-%d %H:%M UTC')}）",
         "",
         (
-            f"评测集 version={cases_meta.get('version')}，"
-            f"annotated_count={cases_meta.get('annotated_count', 0)}。"
-            "单轮检索评测，可选评分/诊断模型；不覆盖 intake、故障卡与第二轮补查。"
-            "latency 仅含检索/扩展，模型耗时单列；未标注样例只用于回归对比。"
+            "63 单工单首封消息打 kb_qa，金标为 data/eval/tickets/cases.yaml 的 qa_gold / qa_exact。"
+            "recall 只统计无错误码的现象描述单；有错误码的单线上走精确命中，这里列出检索是否也召回作参考。"
         ),
         "",
         "## 汇总",
@@ -441,28 +175,23 @@ def render_markdown(
         "| --- | --- |",
     ]
     for k, v in summary.items():
-        if k != "by_tag":
+        if k != "by_language":
             lines.append(f"| {k} | {v} |")
-    lines += ["", "## 按标签", "", f"| 标签 | n | hit@{top_k} |", "| --- | --- | --- |"]
-    for t, v in summary["by_tag"].items():
-        lines.append(f"| {t} | {v['n']} | {v[f'hit@{top_k}']} |")
+    lines += ["", "## 按语言", "", f"| 语言 | n | recall@{top_k} |", "| --- | --- | --- |"]
+    for lang, v in summary["by_language"].items():
+        lines.append(f"| {lang} | {v['n']} | {v[f'recall@{top_k}']} |")
     lines += [
         "",
-        "## 逐样例",
+        "## 逐单",
         "",
-        "| id | 状态 | hit | 首命中位 | chunk | 命中文档 | ms | query（+变体数） | plan | outcome |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| id | 语言 | 精确码 | 状态 | hit | 首命中位 | 金标 | 命中文档 | ms |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in rows:
-        hit = "leak" if r.get("leak") else ("✓" if r.get("hit") else ("✗" if "hit" in r else "-"))
-        chunk = (
-            f"✓@{r.get('chunk_rank')}" if r.get("chunk_hit") else ("✗" if "chunk_hit" in r else "-")
-        )
-        nv = len(r.get("queries") or []) - 1
         lines.append(
-            f"| {r['id']} | {r.get('status')} | {hit} | {r.get('first_rank') or '-'} | {chunk} | "
-            f"{', '.join(r.get('doc_ids') or []) or '-'} | {r.get('latency_ms', 0)} | "
-            f"{r['query'] or '(空)'}{f' (+{nv})' if nv > 0 else ''} | {_plan_cell(r)} | {_outcome_cell(r)} |"
+            f"| {r['id']} | {r.get('language')} | {'是' if r['exact'] else ''} | {r['status']} | "
+            f"{'✓' if r['hit'] else '✗'} | {r.get('first_rank') or '-'} | {', '.join(r['gold'])} | "
+            f"{', '.join(r.get('doc_ids') or []) or '-'} | {r.get('latency_ms', 0)} |"
         )
     return "\n".join(lines) + "\n"
 
@@ -475,53 +204,28 @@ async def run_eval(
     top_k: int,
     out_dir: Path,
     config_path: Path | None = None,
-    with_synthesize: bool = False,
 ) -> int:
     from app.diagnose.config import load_retrieval_config
     from app.knowledge.cli import MANIFEST
 
     data = yaml.safe_load(cases_path.read_text(encoding="utf-8")) or {}
-    cases = data.get("cases") or []
+    bodies = {t.id: t.body for t in OfficialData().tickets}
     cfg = load_retrieval_config(config_path) if config_path else get_retrieval_config()
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     async with client as c:
         adapter = WeKnoraKnowledgeAdapter(c, manifest["knowledge_bases"])
-        rows = await evaluate(
-            adapter,
-            cases,
-            top_k=top_k,
-            cfg=cfg,
-            with_synthesize=with_synthesize,
-            lane=os.environ.get("MODEL_LANE", "domestic"),
-        )
+        rows = await evaluate(adapter, data.get("cases") or [], bodies, top_k=top_k, cfg=cfg)
     summary = summarize(rows, top_k=top_k)
     summary["kb_ver"] = manifest.get("kb_ver")
-    summary["retrieval_config"] = cfg.model_dump(mode="json")
-    summary["evaluation_scope"] = "single_round"
-    summary["flags"] = {
-        "multi_query": cfg.multi_query.enabled,
-        "faq": cfg.faq.enabled,
-        "rerank": cfg.rerank.enabled,
-        "parent_expand": cfg.parent_expand.enabled,
-        "grade": cfg.grade.enabled,
-        "with_synthesize": with_synthesize,
-        "config": str(config_path or "config/retrieval.yaml"),
-    }
+    summary["rerank"] = cfg.rerank.enabled
     out_dir.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     md = out_dir / f"{stamp}_{arm}.md"
-    md.write_text(
-        render_markdown(arm=arm, cases_meta=data, summary=summary, rows=rows, top_k=top_k),
-        encoding="utf-8",
-    )
+    md.write_text(render_markdown(arm=arm, summary=summary, rows=rows, top_k=top_k), encoding="utf-8")
     (out_dir / f"{stamp}_{arm}.json").write_text(
         json.dumps({"arm": arm, "summary": summary, "rows": rows}, ensure_ascii=False, indent=1),
         encoding="utf-8",
     )
-    print(
-        json.dumps(
-            {k: v for k, v in summary.items() if k != "by_tag"}, ensure_ascii=False, indent=2
-        )
-    )
+    print(json.dumps({k: v for k, v in summary.items() if k != "by_language"}, ensure_ascii=False, indent=2))
     print(f"report: {md}")
     return 0

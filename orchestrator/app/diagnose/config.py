@@ -34,24 +34,6 @@ class RetrievalRounds(_Strict):
     min_remaining_for_second_round_ms: int = Field(default=3000, ge=0)
 
 
-class MultiQueryConfig(_Strict):
-    """S0/S1：已审核同义词表的确定性多查询 + 本地 RRF 合并（design.md §3.2）。"""
-
-    enabled: bool = False
-    categories: list[str] = Field(default_factory=lambda: ["robot_vacuum"])
-    max_variants: int = Field(default=2, ge=0, le=4)  # 不含原 query
-    max_requests_per_round: int = Field(default=6, ge=2, le=12)
-    rrf_k: int = Field(default=60, ge=1)
-
-
-class FaqConfig(_Strict):
-    """本地 FAQ 索引接入首轮检索（design.md §14）。"""
-
-    enabled: bool = False
-    top_k: int = Field(default=3, ge=1, le=10)
-    threshold: float = Field(default=0.3, ge=0.0, le=1.0)
-
-
 class RerankConfig(_Strict):
     """适配器侧调百炼 gte-rerank-v2（WeKnora hybrid-search 不重排）。"""
 
@@ -72,14 +54,6 @@ class GradeConfig(_Strict):
     second_round: bool = False
 
 
-class ParentExpandConfig(_Strict):
-    """S4 small-to-big：手册命中的同父子块拼接成父块正文给 synthesize（design.md §3.2）。"""
-
-    enabled: bool = False
-    max_items: int = Field(default=3, ge=1, le=10)
-    max_chars: int = Field(default=800, ge=200, le=3000)
-
-
 class SynthesizeConfig(_Strict):
     budget_ms: int = Field(default=8000, ge=1000)
     max_hypotheses: int = Field(default=3, ge=1, le=5)
@@ -89,10 +63,7 @@ class RetrievalConfig(_Strict):
     version: str = "0"
     query_rewrite: QueryRewriteConfig = Field(default_factory=QueryRewriteConfig)
     retrieval: RetrievalRounds = Field(default_factory=RetrievalRounds)
-    multi_query: MultiQueryConfig = Field(default_factory=MultiQueryConfig)
-    faq: FaqConfig = Field(default_factory=FaqConfig)
     rerank: RerankConfig = Field(default_factory=RerankConfig)
-    parent_expand: ParentExpandConfig = Field(default_factory=ParentExpandConfig)
     grade: GradeConfig = Field(default_factory=GradeConfig)
     synthesize: SynthesizeConfig = Field(default_factory=SynthesizeConfig)
 

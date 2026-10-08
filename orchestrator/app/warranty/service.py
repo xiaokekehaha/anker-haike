@@ -147,7 +147,9 @@ def decide_by_dealer(
         )
     base = {"basis": "dealer", "as_of": as_of, "dealer": found.dealer.seller, "country": found.dealer.country}
     if purchase_date is None:
-        return WarrantyDecision(status="unknown", reason="授权经销商，缺购买日期", **base)
+        return WarrantyDecision(
+            status="unknown", reason=f"{found.dealer.seller}（{found.dealer.country}）是授权经销商，缺购买日期", **base
+        )
     end = add_months(purchase_date, DEALER_WARRANTY_MONTHS)
     return WarrantyDecision(
         status="in_warranty" if end >= as_of else "out_of_warranty",

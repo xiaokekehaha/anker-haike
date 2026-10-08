@@ -5,9 +5,11 @@ from httpx import ASGITransport, AsyncClient
 
 import app.conversation.interpret as semantic
 from app.conversation.interpret import TurnInterpretation
+from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.official.models import OfficialData
-from tests.test_conversation_l3 import act, events, send, state_of
+from tests.fake_qa import QAHitAdapter
+from tests.test_conversation_l3 import act, events, said, send, state_of
 from tests.test_conversation_l3 import l3_runtime as l3_runtime  # noqa: PLC0414
 
 TICKETS = {t.id: t.body for t in OfficialData().tickets}
@@ -69,3 +71,68 @@ async def test_restart_then_warranty_entry_ends_in_the_warranty_flow(l3_runtime,
     assert state["escalate_reason"] == "R6" and state["stage"] == "context"
     assert not [e for e in rows if e["type"] == "step_card"]
     assert any(e["type"] == "awaiting_input" for e in rows)
+
+
+async def _feedback_until_no_card(client, sid, limit=8):
+    rows = []
+    for _ in range(limit):
+        rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+        if not any(e["type"] == "step_card" for e in rows):
+            break
+    return rows
+
+
+async def test_t55_main_case_troubleshoots_then_checks_order_warranty(l3_runtime, report_intent):
+    # T55：RMA 表单「S1 Pro Wearable Breast Pump」同名型号由品类词消歧 → 官方 Q&A 排障 → 未解决 → 订单 Anker016 保内 → 收 SOP 证据
+    set_knowledge_adapter(QAHitAdapter("bp-0102"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = (await client.post("/sessions")).json()["session_id"]
+            rows = events(await send(client, sid, TICKETS["T55"]))
+            assert not any(e["type"] == "product_card" for e in rows)
+            assert next(e for e in rows if e["type"] == "step_card")["step"]["plan_id"] == "qa_bp_0102"
+            rows = await _feedback_until_no_card(client, sid)
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert state["product_confirmed"]["sku"] == "T8D04"
+    assert state["case_order_no"] == "Anker016" and state["warranty"]["status"] == "in_warranty"
+    assert set(state["awaiting_evidence"]) == {"photo_or_video", "serial_number"}
+
+
+async def test_t29_out_of_warranty_order_is_declined_after_troubleshooting(l3_runtime, report_intent):
+    set_knowledge_adapter(QAHitAdapter("rv-0236"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = (await client.post("/sessions")).json()["session_id"]
+            events(await send(client, sid, TICKETS["T29"]))
+            rows = await _feedback_until_no_card(client, sid)
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert state["warranty"]["status"] == "out_of_warranty" and state["stage"] == "done"
+    assert "已超过质保期" in said(rows)
+
+
+@pytest.fixture
+def logistics_intent(monkeypatch):
+    async def interpret(router, state, **kwargs):
+        return TurnInterpretation(primary_intent="logistics_query", device_relation="current"), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+
+
+async def test_t2_one_order_with_two_tracking_numbers_is_not_ambiguous(l3_runtime, logistics_intent):
+    # T2：一个订单号 + 两个运单号（配件包与主机分开发）是同一订单的两个包裹，不应追问「哪个订单」
+    rows, state = await _first_turn("T2")
+    assert state["case_order_no"] == "Anker002"
+    card = next(e for e in rows if e["type"] == "proposal_card")
+    assert [o["type"] for o in card["options"]] == ["carrier_investigation"]
+
+
+async def test_t45_safety_handoff_keeps_dealer_and_serial_facts(l3_runtime, report_intent):
+    rows, state = await _first_turn("T45")
+    assert state["escalate_reason"] == "R4"
+    observations = next(e for e in rows if e["type"] == "escalation_summary")["summary"]["observations"]
+    assert "客户填写的 SN：ANKER1234567E" in observations
+    assert any("Aeroflow" in o and "授权经销商" in o for o in observations)

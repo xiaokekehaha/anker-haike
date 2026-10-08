@@ -26,6 +26,7 @@ from app.conversation.effects import writer
 from app.conversation.reduce import stable_id
 from app.emotion.policy import complaint_flagged
 from app.escalation.summary import build_summary
+from app.official.message import parse_message
 from app.official.models import pn_of
 from app.sessions import evidence as evidence_mod
 from app.warranty.service import decide_by_dealer, decide_by_order, today
@@ -168,6 +169,13 @@ async def service_context(state):
         except ValueError:
             purchase = None
         decision = decide_by_dealer(fields.get("seller"), fields.get("country"), purchase, as_of(state))
+    elif (stated := stated_dealer(state)) is not None:
+        # 首封表单里写了购买商家与国家（T45：Ordered from the reseller Aeroflow，Country: US）：先按名录判断
+        decision = stated
+        if decision.status == "unknown":
+            say(state, f"已核对：{decision.reason}。请上传购买凭证（需能看到购买日期），我来确认是否在 12 个月质保期内。")
+            update.update(escalate_reason="R6", l3_route="prepare_receipt", warranty=decision.model_dump(mode="json"))
+            return update
     elif receipt.get("skipped_reason"):
         decision = WarrantyDecision(status="unknown", basis="none", as_of=as_of(state), reason="客户未提供订单或购买凭证")
     else:
@@ -180,6 +188,19 @@ async def service_context(state):
     )
     update.update(warranty=decision.model_dump(mode="json"), l3_route="propose")
     return update
+
+
+def stated_dealer(state) -> WarrantyDecision | None:
+    """客户在本问题首封里自述的购买商家与国家 → 经销商名录判定；两者缺一返回 None（走凭证收集）。"""
+    texts = [state.get("text", "")] + [
+        e.get("text", "") for e in state.get("history") or []
+        if e.get("role") == "user" and e.get("issue_id") == state.get("active_issue_id")
+    ]
+    for text in texts:
+        parsed = parse_message(text or "")
+        if parsed.seller and parsed.country:
+            return decide_by_dealer(parsed.seller, parsed.country, None, as_of(state))
+    return None
 
 
 def order_facts(order) -> dict:

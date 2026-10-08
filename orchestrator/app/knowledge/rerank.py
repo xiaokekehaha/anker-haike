@@ -99,7 +99,7 @@ class DashScopeReranker:
         for h, s in zip(hits, scores, strict=True):
             h.rrf_score = h.score
             h.score = s
-        ordered = sorted(hits, key=lambda h: (h.counter_evidence, -h.score))
+        ordered = sorted(hits, key=lambda h: -h.score)
         return ordered, RerankOutcome(
             "ok",
             None,
