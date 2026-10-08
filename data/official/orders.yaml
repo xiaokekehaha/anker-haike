@@ -1,0 +1,466 @@
+# 生成文件，勿手改：python -m app.official.build
+# 来源 黑客松智能服务赛题资料.xlsx sha256=0cc02e6531d627433f9b5dba1978bfbf9f196b4581e033657c37ad2939007eb7
+orders:
+- order_no: Anker001
+  purchase_date: '2026-09-17'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货(拆成2个包裹发货）
+  lines:
+  - sku: E235311B
+    description: eufy Robot Vacuum and Mop Combo E25+Replacement Parts Kit,20,000 Pa,Auto Mop Washing&Drying,Pet Hair and Carpet Friendly
+    qty: 1
+    purchase_date: '2026-09-17'
+    warranty_end: '2027-09-17'
+    amount: '1099.99'
+  packages:
+  - tracking_no: Anker1234567
+    carrier: Fedex
+    skus:
+    - E235311B
+    status: delivered
+    shipped_on: '2026-09-17'
+    delivered_on: '2026-09-21'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/21
+  - tracking_no: Anker1234567-1
+    carrier: Amazon Logistic
+    skus:
+    - E235311B
+    status: delivered
+    shipped_on: '2026-09-19'
+    delivered_on: '2026-09-23'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/23
+- order_no: Anker002
+  purchase_date: '2026-09-13'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2080GA1
+    description: eufy Robot Vacuum and Mop, S1 Pro Omni, HydroJet System with Roller Mop
+    qty: 1
+    purchase_date: '2026-09-13'
+    warranty_end: '2027-09-13'
+    amount: '1099.90'
+  - sku: T29C2001
+    description: EUFY S1 PRO REPLACEMENT ACCESSORY KIT
+    qty: 1
+    purchase_date: null
+    warranty_end: '2026-10-13'
+    amount: '122.21'
+  packages:
+  - tracking_no: Anker1234567-2
+    carrier: ANPOST
+    skus:
+    - T2080GA1
+    status: delivered
+    shipped_on: '2026-09-18'
+    delivered_on: '2026-09-21'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/21
+  - tracking_no: Anker1234567-3
+    carrier: UPS
+    skus:
+    - T29C2001
+    status: delivered
+    shipped_on: '2026-09-20'
+    delivered_on: '2026-09-24'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/24
+- order_no: Anker003
+  purchase_date: '2026-09-21'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2351V11-F
+    description: eufy X10 Pro Omni Robot Vacuum Cleaner & Dual Mops 8000Pa Acceptable Condition
+    qty: 1
+    purchase_date: '2026-09-21'
+    warranty_end: '2027-09-21'
+    amount: '257.50'
+  packages:
+  - tracking_no: Anker1234567-4
+    carrier: Royal Mail
+    skus:
+    - T2351V11-F
+    status: delivered
+    shipped_on: '2026-09-21'
+    delivered_on: '2026-09-25'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/25
+- order_no: Anker004
+  purchase_date: '2026-09-12'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2353T11
+    description: eufy Robot Vacuum Omni E25
+    qty: 1
+    purchase_date: '2026-09-12'
+    warranty_end: '2027-09-12'
+    amount: '1701.62'
+  - sku: T29YQA20
+    description: Dust Bag
+    qty: 1
+    purchase_date: '2026-09-12'
+    warranty_end: '2027-09-12'
+    amount: '34.73'
+  packages:
+  - tracking_no: Anker1234567-5
+    carrier: Australia Post
+    skus:
+    - T2353T11
+    - T29YQA20
+    status: delivered
+    shipped_on: '2026-09-14'
+    delivered_on: '2026-09-20'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/20
+- order_no: Anker005
+  purchase_date: '2026-09-07'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2353112
+    description: eufy Robot Vacuum Omni E25 Black 2
+    qty: 1
+    purchase_date: '2026-09-07'
+    warranty_end: '2027-09-07'
+    amount: '1077.99'
+  - sku: T291HA11
+    description: cleaning solution
+    qty: 1
+    purchase_date: '2026-09-07'
+    warranty_end: '2028-03-07'
+    amount: '22.00'
+  packages:
+  - tracking_no: Anker1234567-6
+    carrier: FedEx
+    skus:
+    - T2353112
+    status: in_transit
+    shipped_on: '2026-09-26'
+    delivered_on: null
+    eta: '2026-09-30'
+    expected_ship_on: null
+    raw_status: in transist, estimate arrival at 9/30
+  - tracking_no: Anker1234567-7
+    carrier: USPS
+    skus:
+    - T291HA11
+    status: delivered
+    shipped_on: '2026-09-11'
+    delivered_on: '2026-09-15'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/15
+- order_no: Anker006
+  purchase_date: '2026-09-12'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2353G11
+    description: eufy Robotstofzuiger Omni E25 - E25
+    qty: 1
+    purchase_date: '2026-09-12'
+    warranty_end: '2027-09-12'
+    amount: '802.06'
+  - sku: T290QAR0
+    description: eufy Accessories Package, Side Brush, Filter, Rolling Brush for Robovac, Dustbag, Roller Mop, Dirty Water Reservoir Filter
+    qty: 1
+    purchase_date: '2026-09-12'
+    warranty_end: '2027-09-12'
+    amount: '60.37'
+  packages:
+  - tracking_no: Anker1234567-8
+    carrier: DHL NL
+    skus:
+    - T2353G11
+    - T290QAR0
+    status: delivered
+    shipped_on: '2026-09-15'
+    delivered_on: '2026-09-20'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/20
+- order_no: Anker007
+  purchase_date: '2026-09-08'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2292111
+    description: eufy Auto-Empty C10 - black
+    qty: 1
+    purchase_date: '2026-09-08'
+    warranty_end: '2027-09-08'
+    amount: '448.18'
+  - sku: T290Y000
+    description: eufy Replacement Washable Filter for eufy C10 and C20, 2-Pack Included
+    qty: 1
+    purchase_date: '2026-09-08'
+    warranty_end: '2028-03-08'
+    amount: '49.80'
+  packages:
+  - tracking_no: Anker1234567-9
+    carrier: USPS
+    skus:
+    - T2292111
+    - T290Y000
+    status: returned
+    shipped_on: '2026-09-08'
+    delivered_on: null
+    eta: null
+    expected_ship_on: null
+    raw_status: Return to sender
+- order_no: Anker008
+  purchase_date: '2026-09-08'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 未发货
+  lines:
+  - sku: T2292111
+    description: eufy Auto-Empty C10 - black
+    qty: 1
+    purchase_date: '2026-09-08'
+    warranty_end: '2027-09-08'
+    amount: '448.18'
+  - sku: T290Y000
+    description: eufy Replacement Washable Filter for eufy C10 and C20, 2-Pack Included
+    qty: 1
+    purchase_date: '2026-09-08'
+    warranty_end: '2028-03-08'
+    amount: '49.80'
+  packages:
+  - tracking_no: null
+    carrier: null
+    skus:
+    - T2292111
+    status: not_shipped
+    shipped_on: null
+    delivered_on: null
+    eta: null
+    expected_ship_on: '2026-10-20'
+    raw_status: 预售产品，预计2026/10/20发货
+  - tracking_no: Anker1234567-10
+    carrier: US YANWEN
+    skus:
+    - T290Y000
+    status: delivered
+    shipped_on: '2026-09-08'
+    delivered_on: '2026-09-12'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/12
+- order_no: Anker009
+  purchase_date: '2026-08-23'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2292111
+    description: eufy Auto-Empty C10 - black
+    qty: 1
+    purchase_date: '2026-08-23'
+    warranty_end: '2027-08-23'
+    amount: '482.99'
+  - sku: T2351111
+    description: eufy X10 Pro Omni - Black
+    qty: 1
+    purchase_date: '2026-08-23'
+    warranty_end: '2027-08-23'
+    amount: '896.99'
+  packages:
+  - tracking_no: Anker1234567-11
+    carrier: USPS
+    skus:
+    - T2292111
+    status: delivered
+    shipped_on: '2026-09-21'
+    delivered_on: '2026-09-25'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 9/25
+  - tracking_no: Anker1234567-12
+    carrier: Amazon Logistics
+    skus:
+    - T2351111
+    status: delivered
+    shipped_on: '2026-08-23'
+    delivered_on: '2026-08-27'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 8/27
+- order_no: Anker010
+  purchase_date: '2025-12-02'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T8D04121
+    description: eufy Security Breast Pump S1 Pro
+    qty: 1
+    purchase_date: '2025-12-02'
+    warranty_end: '2026-12-02'
+    amount: '249.99'
+  packages:
+  - tracking_no: Anker1234567-13
+    carrier: Amazon Logistics
+    skus:
+    - T8D04121
+    status: delivered
+    shipped_on: '2025-12-03'
+    delivered_on: '2025-12-07'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2025/12/07
+- order_no: Anker011
+  purchase_date: '2024-11-30'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2351111
+    description: eufy X10 Pro Omni Robot Vacuum
+    qty: 1
+    purchase_date: '2024-11-30'
+    warranty_end: '2025-11-30'
+    amount: '549.99'
+  packages:
+  - tracking_no: Anker1234567-14
+    carrier: UPS
+    skus:
+    - T2351111
+    status: delivered
+    shipped_on: '2024-12-04'
+    delivered_on: '2024-12-07'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2024/12/07
+- order_no: Anker012
+  purchase_date: '2024-10-09'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T2351V11
+    description: eufy X10 Pro Omni
+    qty: 1
+    purchase_date: '2024-10-09'
+    warranty_end: '2025-10-10'
+    amount: '695.97'
+  - sku: T29F70A2
+    description: 6-Pack Large Capacity Anti-Bacterial and Deodorizing Dust Bags, Compatible with eufy Clean X8 Pro with Self-Empty Station
+    qty: 1
+    purchase_date: '2024-10-09'
+    warranty_end: '2024-11-10'
+    amount: '21.52'
+  packages:
+  - tracking_no: Anker1234567-15
+    carrier: UPS
+    skus:
+    - T2351V11
+    status: delivered
+    shipped_on: '2024-10-10'
+    delivered_on: '2024-10-14'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2024/10/14
+  - tracking_no: null
+    carrier: UPS
+    skus:
+    - T29F70A2
+    status: shipped
+    shipped_on: '2024-10-10'
+    delivered_on: null
+    eta: null
+    expected_ship_on: null
+    raw_status: ''
+- order_no: Anker013
+  purchase_date: '2026-08-27'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T8D04121
+    description: eufy Security Heated Wearable Breast Pump S1 Pro, Charging Case, Hands-Free
+    qty: 1
+    purchase_date: '2026-08-27'
+    warranty_end: '2027-08-27'
+    amount: '349.98'
+  packages:
+  - tracking_no: Anker1234567-16
+    carrier: UPS
+    skus:
+    - T8D04121
+    status: delivered
+    shipped_on: '2026-08-29'
+    delivered_on: '2026-09-02'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2026/9/2
+- order_no: Anker014
+  purchase_date: '2025-07-30'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T8D04121
+    description: eufy Security Heated Wearable Breast Pump S1 Pro, Charging Case, Hands-Free
+    qty: 1
+    purchase_date: '2025-07-30'
+    warranty_end: '2026-07-30'
+    amount: '349.99'
+  packages:
+  - tracking_no: Anker1234567-17
+    carrier: UPS
+    skus:
+    - T8D04121
+    status: delivered
+    shipped_on: '2025-07-29'
+    delivered_on: '2025-08-04'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2025/8/4
+- order_no: Anker015
+  purchase_date: '2024-12-13'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T8D04121
+    description: eufy Security Heated Wearable Breast Pump S1 Pro, Charging Case, Hands-Free
+    qty: 1
+    purchase_date: '2024-12-13'
+    warranty_end: '2025-12-13'
+    amount: '349.99'
+  packages:
+  - tracking_no: Anker1234567-18
+    carrier: UPS
+    skus:
+    - T8D04121
+    status: delivered
+    shipped_on: '2024-12-20'
+    delivered_on: '2024-12-26'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2024/12/26
+- order_no: Anker016
+  purchase_date: '2026-04-01'
+  address: "AnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States"
+  raw_status: 已发货
+  lines:
+  - sku: T8D04121
+    description: eufy Security Heated Wearable Breast Pump S1 Pro, Charging Case, Hands-Free
+    qty: 1
+    purchase_date: '2026-04-01'
+    warranty_end: '2027-04-01'
+    amount: '349.99'
+  packages:
+  - tracking_no: Anker1234567-19
+    carrier: UPS
+    skus:
+    - T8D04121
+    status: delivered
+    shipped_on: '2026-04-02'
+    delivered_on: '2026-04-07'
+    eta: null
+    expected_ship_on: null
+    raw_status: Delivered on 2026/04/07
