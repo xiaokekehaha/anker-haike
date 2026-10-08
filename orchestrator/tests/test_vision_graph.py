@@ -7,15 +7,15 @@ import io
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from app.conversation.taxonomy import families
-from app.diagnose.decision import known_symptom_codes
 from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
+from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.models.runtime import set_model_router
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.fake_qa import QAHitAdapter
 from tests.message_form import message_form
 from tests.test_images import png_bytes
 from tests.test_vision import CONFIG, NO_VISION_CONFIG, _router
@@ -46,7 +46,10 @@ def img_store():
     set_image_store(store)
     app.state.image_store = store
     set_rules_service(RulesService(RULES, hot_reload=False))
+    # 读图之后的检索命中一条真实官方 Q&A（X10 滚刷卡住 rv-0272），排障才有依据出步骤卡
+    set_knowledge_adapter(QAHitAdapter("rv-0272"))
     yield store
+    set_knowledge_adapter(None)
     set_image_store(None)
     app.state.image_store = None
     set_rules_service(None)
@@ -91,7 +94,7 @@ async def test_brush_hair_photo_yields_observation_and_continues(mem_runtime, im
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         # 图片只有两张脚本输出：intake + vision；后续 synthesize / reply 调用会拿到 ScriptExhausted → 降级路径
-        events = await _send_with_images(client, sid, "eufy X9 Pro 滚刷这样正常吗")
+        events = await _send_with_images(client, sid, "eufy X10 Pro Omni 滚刷这样正常吗")
     calls = _tool(events, "diagnose.vision")
     assert [c["status"] for c in calls] == ["started", "finished"]
     assert "毛发" in calls[1]["summary"] and calls[0]["summary"] == "识别 1 张故障照片"
@@ -128,7 +131,7 @@ async def test_smoke_in_photo_triggers_r4_escalation(mem_runtime, img_store, tmp
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_with_images(client, sid, "扫地机 X9 有点味道", 1)
+        events = await _send_with_images(client, sid, "扫地机 X10 有点味道", 1)
         snap = (await client.get(f"/sessions/{sid}")).json()
     stages = [e["stage"] for e in events if e["type"] == "progress"]
     assert stages[-1] == "escalate" and "retrieve" not in [
@@ -151,7 +154,7 @@ async def test_vision_chain_failure_does_not_break_run(mem_runtime, img_store, t
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_with_images(client, sid, "eufy X9 Pro 吸力变小", 2)
+        events = await _send_with_images(client, sid, "eufy X10 Pro Omni 吸力变小", 2)
     calls = _tool(events, "diagnose.vision")
     assert [c["status"] for c in calls] == ["started", "failed"]
     assert calls[0]["summary"] == "识别 2 张故障照片" and "失败" in calls[1]["summary"]
@@ -172,7 +175,7 @@ async def test_no_vision_model_available_hints_user_to_describe(mem_runtime, img
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_with_images(client, sid, "eufy X9 Pro 看图")
+        events = await _send_with_images(client, sid, "eufy X10 Pro Omni 看图")
         snap = (await client.get(f"/sessions/{sid}")).json()
     calls = _tool(events, "diagnose.vision")
     assert calls[-1]["status"] == "failed" and "无可用的图片识别模型" in calls[-1]["summary"]
@@ -188,7 +191,7 @@ async def test_no_vision_model_available_hints_user_to_describe(mem_runtime, img
 async def test_message_without_images_skips_vision_node(mem_runtime, img_store):
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X9 吸力变小"}))
+        resp = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 吸力变小"}))
     events = sse.parse(resp.text)
     assert _tool(events, "diagnose.vision") == []
     assert "vision" not in [e.get("substage") for e in events if e["type"] == "progress"]
@@ -236,7 +239,7 @@ async def test_underexposed_photo_yields_a_retake_card_without_calling_the_model
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_bytes(client, sid, "eufy X9 Pro 不吸了，拍了张照片", [_real_png(brightness=0.08)])
+        events = await _send_bytes(client, sid, "eufy X10 Pro Omni 不吸了，拍了张照片", [_real_png(brightness=0.08)])
     calls = [c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision"]
     assert calls == [], "被像素门控拦下时不应发起任何视觉模型调用"
     finished = [e for e in _tool(events, "diagnose.vision") if e["status"] == "finished"]
@@ -268,7 +271,7 @@ async def test_a_good_retake_resumes_diagnosis(mem_runtime, img_store, l3_servic
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        await _send_bytes(client, sid, "eufy X9 Pro 不吸了，拍了张照片", [_real_png(brightness=0.08)])
+        await _send_bytes(client, sid, "eufy X10 Pro Omni 不吸了，拍了张照片", [_real_png(brightness=0.08)])
         assert (await _state(sid))["vision_status"] == "unusable"
         events = await _send_bytes(client, sid, "重新拍了一张", [_real_png()])
     calls = [c for c in fake.calls if c["metadata"]["task"] == "diagnose.vision"]
@@ -279,7 +282,7 @@ async def test_a_good_retake_resumes_diagnosis(mem_runtime, img_store, l3_servic
     # 签名先验由 retrieve 直接读 fault_localization 消费，不经 fault_card_hits（那个键存 chunk_id）
     from app.diagnose.localization import signature_plans
 
-    assert signature_plans(state["fault_localization"]) == ["rv_suction_hair_wrap"]
+    assert signature_plans(state["fault_localization"]) == ["qa_rv_0272", "qa_rv_0189", "qa_rv_0408"]
     assert [e["type"] for e in events if e["type"] == "retake_card"] == []
 
 
@@ -290,16 +293,16 @@ async def test_unverified_model_hint_does_not_silently_lock_the_sku(
     router, _ = _router(
         tmp_path,
         CONFIG,
-        [INTAKE_OK, {"observations": [], "visible_parts": [], "model_hint": "X10 Pro", "model_hint_cell": None}],
+        [INTAKE_OK, {"observations": [], "visible_parts": [], "model_hint": "Omni E28", "model_hint_cell": None}],
     )
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        await _send_bytes(client, sid, "eufy X9 Pro 不吸了", [_real_png()])
+        await _send_bytes(client, sid, "eufy X10 Pro Omni 不吸了", [_real_png()])
     state = await _state(sid)
     assert state["fault_localization"]["model_hint_verified"] is False
-    # 用户文字已经确认了 X9 Pro：未验证的铭牌既不能改写它，也不能让它变成别的 SKU
-    assert state["product_confirmed"]["sku"] == "EUFY-X9-PRO"
+    # 用户文字已经确认了 X10 Pro Omni：未验证的铭牌（E28）既不能改写它，也不能让它变成别的 SKU
+    assert state["product_confirmed"]["sku"] == "T2351"
     assert state["product_state"] == "confirmed_sku"
 
 
@@ -323,7 +326,7 @@ async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_stor
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_bytes(client, sid, "eufy X9 Pro 不吸了", [_real_png()])
+        events = await _send_bytes(client, sid, "eufy X10 Pro Omni 不吸了", [_real_png()])
     cards = [e for e in events if e["type"] == "step_card"]
     assert cards, f"应当出步骤卡：{[e['type'] for e in events]}"
     seen = cards[0].get("seen")
@@ -357,7 +360,7 @@ async def test_photo_contradicting_the_text_asks_before_diagnosing(
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         events = await _send_bytes(
-            client, sid, "eufy X9 Pro 吸力变小，应该是滤网堵住了吧", [_real_png()]
+            client, sid, "eufy X10 Pro Omni 吸力变小，应该是滤网堵住了吧", [_real_png()]
         )
     state = await _state(sid)
     conflicts = state["fault_localization"]["conflicts_with_text"]
@@ -366,32 +369,3 @@ async def test_photo_contradicting_the_text_asks_before_diagnosing(
     said = " ".join(e.get("delta", "") for e in events if e["type"] == "message")
     assert "图片与文字描述存在差异" in said and "滚刷" in said, f"应当把差异说给用户听：{said!r}"
 
-
-async def test_photo_signature_of_another_category_does_not_mask_the_text_symptom(
-    mem_runtime, img_store, l3_services, tmp_path
-):
-    """（充电触点, 污渍）也是耳机不充电的签名。照片在品类确定前读，签名事实只能带耳机的码；
-    决策层按扫地机过滤后不能落空，也不能因此跳过原文「回不了座，充不上电」的归一。"""
-    router, _ = _router(
-        tmp_path,
-        CONFIG,
-        [
-            INTAKE_OK,
-            {
-                "observations": ["充电触点发黑"],
-                "visible_parts": ["充电触点"],
-                "findings": [{"part": "充电触点", "phenomenon": "污渍", "evidence": "触点发黑"}],
-            },
-        ],
-    )
-    set_model_router(router)
-    async with _client() as client:
-        sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send_bytes(client, sid, "eufy X9 Pro 回不了座，充不上电", [_real_png()])
-    st = await _state(sid)
-    assert st["category"] == "robot_vacuum"
-    vacuum = {f["symptom_code"] for f in families("robot_vacuum")}
-    codes = known_symptom_codes(st)
-    assert codes and set(codes) <= vacuum
-    assert set(st.get("symptom_codes") or []) <= vacuum
-    assert not any(e["type"] == "escalation_summary" for e in events)

@@ -43,7 +43,7 @@ GOOD = {
     "disambiguate.clarify": {"question": "请告诉我设备的型号或品类是什么？"},
     "diagnose.synthesize": {
         "hypotheses": [
-            {"plan_id": "rv_suction_hair_wrap", "confidence": 0.8, "evidence_ids": ["e-c12"]}
+            {"plan_id": "qa_rv_0272", "confidence": 0.8, "evidence_ids": ["e-c12"]}
         ]
     },
     "guide.step": {"instruction": "翻转主机，按下滚刷盖两侧卡扣取出滚刷，割断缠绕毛发后装回。"},

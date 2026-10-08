@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict
 
 from app.settings import REPO_ROOT
 
-KINDS = ("vision", "symptom", "routing", "emotion", "warranty", "authorization", "commitments")
+KINDS = ("vision", "symptom", "routing", "emotion", "warranty", "authorization", "commitments", "tickets")
 
 # 这几个金标字段断言的是「出现在列表里」，不是整列表相等。
 MEMBERSHIP: dict[str, str] = {}
@@ -94,6 +94,10 @@ def evaluate(kind, value):
 
 
 def run(kind):
+    if kind == "tickets":
+        from app.evaluation.tickets import run as run_tickets
+
+        return {**run_tickets(), "mode": "deterministic_regression", "at": datetime.now(UTC).isoformat()}
     raw = yaml.safe_load((REPO_ROOT / f"data/eval/{kind}/cases.yaml").read_text())
     cases = [EvalCase.model_validate(c) for c in raw["cases"]]
     if len({c.id for c in cases}) != len(cases):

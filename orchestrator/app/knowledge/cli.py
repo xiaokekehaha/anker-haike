@@ -1,9 +1,9 @@
 """haike-kb：WeKnora 知识库运维。
 
 haike-kb bootstrap            注册项目独立 tenant（本地自助注册）并打印 tenant id；key 写入 .env 的 WEKNORA_API_KEY
-haike-kb ingest [--prune] [--recreate-kb]
-                              幂等导入 kb_manual / faq / kb_tickets，写 data/knowledge/manifest.json；
-                              --recreate-kb：知识库绑定的 embedding 模型与目标不同时删库重建（换 embedding 时用）
+haike-kb ingest [--keep-legacy]
+                              官方 Q&A（data/official/qa.yaml）幂等导入 haike_kb_qa，一条 Q&A 一个知识；
+                              删除不再使用的中文手册 / FAQ / 合成工单库（--keep-legacy 保留）；写 manifest
 haike-kb eval [--arm A] [--config data/eval/retrieval/configs/B.yaml] [--cases …] [--top-k 5]
                               用评测集直接打 KnowledgeAdapter，输出 hit@k / precision@k / 泄漏 / 延迟到 reports/retrieval/
 haike-kb verify               打印各知识库解析状态与 custom_metadata
@@ -132,28 +132,28 @@ def _write_env(name: str, value: str) -> None:
     env.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-async def _ingest(prune: bool, wait: bool, recreate_kb: bool = False) -> int:
+async def _ingest(wait: bool, keep_legacy: bool = False) -> int:
+    from app.knowledge.official_qa import drop_legacy_kbs, ingest_qa, qa_manifest_chunking
+
     async with _client() as c:
-        ing = Ingestor(c, recreate_on_embedding_change=recreate_kb)
-        ing.embedding_model_id = await ing.ensure_embedding_model(_embedding_spec())
+        ing = Ingestor(c)
+        embedding_id = await ing.ensure_embedding_model(_embedding_spec())
         await ing.ensure_rerank_model(_rerank_spec())
-        report = await ing.ingest_all(DATA_ROOT, prune=prune)
+        dropped = [] if keep_legacy else await drop_legacy_kbs(c)
+        kb = await ingest_qa(c, ing.report, embedding_model_id=embedding_id)
         if wait:
-            for name, kb_id in report.kb_ids.items():
-                if name != "kb_faq":
-                    print(name, "parse_status", await wait_parsed(c, kb_id))
-        manifest = write_manifest(MANIFEST, report, source_root=DATA_ROOT)
+            print("kb_qa parse_status", await wait_parsed(c, kb["id"], timeout_s=900))
+        manifest = write_manifest(MANIFEST, ing.report, source_root=REPO_ROOT / "data" / "official")
+        manifest["chunking"] = qa_manifest_chunking()
+        MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         json.dumps(
-            {
-                **{k: manifest[k] for k in ("kb_ver", "knowledge_bases", "counts", "errors")},
-                "recreated_kbs": report.recreated_kbs,
-            },
+            {**{k: manifest[k] for k in ("kb_ver", "knowledge_bases", "counts", "errors")}, "dropped_kbs": dropped},
             ensure_ascii=False,
             indent=2,
         )
     )
-    return 1 if report.errors else 0
+    return 1 if ing.report.errors else 0
 
 
 async def _verify() -> int:
@@ -265,9 +265,8 @@ def main(argv: list[str] | None = None) -> int:
         "--password", default=os.environ.get("WEKNORA_TENANT_PASSWORD", "haike-dev-pass-2026")
     )
     i = sub.add_parser("ingest")
-    i.add_argument("--prune", action="store_true")
     i.add_argument("--no-wait", action="store_true")
-    i.add_argument("--recreate-kb", action="store_true")
+    i.add_argument("--keep-legacy", action="store_true")
     ev = sub.add_parser("eval")
     ev.add_argument("--arm", default="A")
     ev.add_argument(
@@ -296,7 +295,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.cmd == "bootstrap":
             return asyncio.run(_bootstrap(args.password))
         if args.cmd == "ingest":
-            return asyncio.run(_ingest(args.prune, not args.no_wait, args.recreate_kb))
+            return asyncio.run(_ingest(not args.no_wait, args.keep_legacy))
         if args.cmd == "eval":
             from app.knowledge.eval import run_eval
 

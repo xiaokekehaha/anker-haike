@@ -39,10 +39,10 @@ from tests.scripted_model import ScriptedSemanticModel as FakeChatModel
 from tests.test_reply_stream import CONFIG as REPLY_CONFIG
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
-INTAKE_X9 = json.dumps(
+INTAKE_X10 = json.dumps(
     {
         "emotion_level": "calm",
-        "product_hints": ["X9 Pro"],
+        "product_hints": ["X10 Pro Omni"],
         "symptoms": ["不吸了", "滚刷缠头发"],
         "wants_human": False,
     },
@@ -52,7 +52,7 @@ SYNTH_HAIR = json.dumps(
     {
         "hypotheses": [
             {
-                "plan_id": "rv_suction_hair_wrap",
+                "plan_id": "qa_rv_0272",
                 "confidence": 0.85,
                 "evidence_ids": ["c12"],
                 "rationale": "滚刷缠绕毛发",
@@ -91,23 +91,19 @@ class ScriptedAdapter:
 
 
 def _hit(eid: str, snippet: str, score: float = 0.4) -> Hit:
-    return Hit(eid, "k-manual", eid, "manual_rv_v1", "2026-09-12.1", "kb_manual", snippet, score)
+    return Hit(eid, "k-qa", eid, "rv-0272", "2026-10-08.1", "kb_qa", snippet, score)
 
 
 def OK_HAIR():
     return ToolResult(
         "ok",
-        [_hit("c12", "翻转主机取出滚刷，割断缠绕的毛发"), _hit("c15", "取出滤网清洗", 0.2)],
+        [_hit("c12", "Turn the robot over, take out the roller brush and clean the hair."), _hit("c15", "Clean the filter.", 0.2)],
         allowed_count=2,
     )
 
 
-def NO_MATCH():
-    return ToolResult("no_match", hint=HINTS["no_match"], allowed_count=2)
-
-
 VERSIONS = {"prompt_ver": "p1", "models_ver": "m1", "kb_ver": "k1", "rules_ver": "r1", "actions_version": "a1"}
-SCOPE = KnowledgeScope("confirmed_sku", "robot_vacuum", "EUFY-X9-PRO")
+SCOPE = KnowledgeScope("confirmed_sku", "robot_vacuum", "T2351")
 PNG_A = b"\x89PNG\r\n\x1a\n" + b"a" * 20
 PNG_B = b"\x89PNG\r\n\x1a\n" + b"b" * 20
 
@@ -139,11 +135,11 @@ def test_model_key_ignores_session_and_depends_on_task_schema_text_and_image_byt
     assert model_key("diagnose.vision", "Out", with_a) != model_key(
         "diagnose.vision", "Out", with_b
     )
-    assert knowledge_key("kb_manual", " X9  不吸 ", SCOPE, 5) == knowledge_key(
-        "kb_manual", "X9 不吸", SCOPE, 5
+    assert knowledge_key("kb_qa", " X10  不吸 ", SCOPE, 5) == knowledge_key(
+        "kb_qa", "X10 不吸", SCOPE, 5
     )
-    assert knowledge_key("kb_manual", "X9 不吸", SCOPE, 5) != knowledge_key(
-        "kb_tickets", "X9 不吸", SCOPE, 5
+    assert knowledge_key("kb_qa", "X10 不吸", SCOPE, 5) != knowledge_key(
+        "kb_qa", "X10 不吸", SCOPE, 3
     )
 
 
@@ -170,18 +166,18 @@ def _save(tmp_path: Path, versions=VERSIONS, case_id="demo") -> Path:
         },
     )
     rec.add_knowledge(
-        knowledge_key("kb_manual", "q", SCOPE, 5),
+        knowledge_key("kb_qa", "q", SCOPE, 5),
         {
-            "kb": "kb_manual",
+            "kb": "kb_qa",
             "status": "ok",
             "hits": [
                 {
                     "evidence_id": "c12",
                     "knowledge_id": "k1",
                     "chunk_id": "c12",
-                    "doc_id": "manual_rv_v1",
+                    "doc_id": "rv-0272",
                     "doc_version": "1",
-                    "source": "kb_manual",
+                    "source": "kb_qa",
                     "snippet": "s",
                     "score": 0.4,
                 }
@@ -245,10 +241,10 @@ async def test_replay_router_hits_and_misses_without_touching_models(tmp_path):
 async def test_replay_knowledge_marks_hits_replay_and_miss_is_unavailable(tmp_path):
     _save(tmp_path)
     ad = ReplayKnowledgeAdapter(load_package(tmp_path, "demo"))
-    r = await ad.hybrid_search("kb_manual", "q", 5, SCOPE)
+    r = await ad.hybrid_search("kb_qa", "q", 5, SCOPE)
     assert r.status == "replay" and r.hits[0].as_evidence_item()["status"] == "replay"
     assert r.allowed_count == 2 and "回放" in (r.hint or "")
-    miss = await ad.hybrid_search("kb_tickets", "q", 5, SCOPE)
+    miss = await ad.hybrid_search("kb_qa", "other", 5, SCOPE)
     assert miss.status == "unavailable" and miss.hits == [] and "replay_miss" in (miss.detail or "")
     assert ad.hits == 1 and len(ad.misses) == 1
 
@@ -261,7 +257,7 @@ async def _run_a1(client, sid):
         (
             await client.post(
                 f"/sessions/{sid}/messages",
-                data=await message_form(client, f"/sessions/{sid}/messages", {"text": "eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发"}),
+                data=await message_form(client, f"/sessions/{sid}/messages", {"text": "eufy X10 Pro Omni 扫地机不吸了，滚刷缠了很多头发"}),
             )
         ).text
     )
@@ -271,11 +267,11 @@ async def _run_a1(client, sid):
 async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem_runtime, tmp_path):
     set_rules_service(RulesService(RULES, hot_reload=False))
     recorder = Recorder("a1", "A1", VERSIONS)
-    real, _fakes = make_router(tmp_path, fast=[INTAKE_X9], main=[SYNTH_HAIR])
+    real, _fakes = make_router(tmp_path, fast=[INTAKE_X10], main=[SYNTH_HAIR])
     set_model_router(RecordingRouter(real, recorder))
     set_knowledge_adapter(
         RecordingKnowledgeAdapter(
-            ScriptedAdapter({"kb_manual": [OK_HAIR()], "kb_tickets": [NO_MATCH()]}), recorder
+            ScriptedAdapter({"kb_qa": [OK_HAIR()]}), recorder
         )
     )
     try:
@@ -287,7 +283,7 @@ async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem
         set_knowledge_adapter(None)
     base = recorder.save(tmp_path / "replay")
     manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["versions"] == VERSIONS and manifest["counts"]["knowledge"] == 2
+    assert manifest["versions"] == VERSIONS and manifest["counts"]["knowledge"] == 1
     # intake / synthesize 的 invoke 进包；失败的调用（如脚本耗尽的 guide.step）不入包
     assert {"intake", "diagnose.synthesize"} <= {r["task"] for r in recorder.models.values()}
     failed_tasks = [m["task"] for m in recorder.misses]
@@ -313,10 +309,10 @@ async def test_a1_recorded_then_replayed_offline_with_evidence_status_replay(mem
         set_rules_service(None)
     for e in replayed:
         parse_event(e)
-    # 同一事件类型序列；真实模型零调用；知识两库都命中录制
+    # 同一事件类型序列；真实模型零调用；知识库检索命中录制
     assert [e["type"] for e in replayed] == [e["type"] for e in recorded]
     assert all(len(f.calls) == 0 for f in offline_fakes.values())
-    assert router.hits == len(pkg.models) and adapter.hits == 2 and adapter.misses == []
+    assert router.hits == len(pkg.models) and adapter.hits == 1 and adapter.misses == []
     # 回放未命中集合 == 录制时失败集合（如 guide.step）：同样 miss 走降级，不借其他记录
     assert [m["task"] for m in router.misses] == failed_tasks
     ev = next(e for e in replayed if e["type"] == "evidence")

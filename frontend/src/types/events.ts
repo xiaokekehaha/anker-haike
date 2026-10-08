@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 1d3e396a0657f500a971be6d6f96c4a7fc45b32de11495d409aa77e7147dc26f
+// SHA-256: 6203cbf1fad0a5c03e05892726ac31a03e8b5fc595543ec910bff47b4d7bc5fb
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -217,12 +217,15 @@ export type Caution = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
 export type Instruction = string;
+export type Kind = 'image' | 'video' | 'link';
+export type Url = string;
+export type Media = StepMedia[];
 export type ObservationId = string;
 /**
  * @minItems 2
  */
 export type Options = [ObservationOption, ObservationOption, ...ObservationOption[]];
-export type Kind = 'finding' | 'unknown';
+export type Kind1 = 'finding' | 'unknown';
 export type Label = string;
 export type OptionId = string;
 export type Question = string;
@@ -286,7 +289,7 @@ export type CardId5 = string;
 export type EventId16 = string;
 export type InputToken = string;
 export type IssueId8 = string | null;
-export type Kind1 =
+export type Kind2 =
   | 'select_product'
   | 'step_feedback'
   | 'answer_observation'
@@ -745,6 +748,7 @@ export interface TroubleshootStep {
   evidence_ids?: EvidenceIds;
   expected_result: ExpectedResult;
   instruction: Instruction;
+  media?: Media;
   observations?: Observations;
   plan_id: PlanId;
   plan_version: PlanVersion;
@@ -752,6 +756,16 @@ export interface TroubleshootStep {
   step_id: StepId;
   step_no: StepNo;
   title: Title;
+}
+/**
+ * 官方 Q&A 步骤里附带的图片 / 视频 / 文章链接（原样引用，不进模型上下文）。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "StepMedia".
+ */
+export interface StepMedia {
+  kind: Kind;
+  url: Url;
 }
 /**
  * 步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。
@@ -769,7 +783,7 @@ export interface StepObservation {
  * via the `definition` "ObservationOption".
  */
 export interface ObservationOption {
-  kind?: Kind;
+  kind?: Kind1;
   label: Label;
   option_id: OptionId;
 }
@@ -859,7 +873,7 @@ export interface AwaitingInput {
   event_id: EventId16;
   input_token: InputToken;
   issue_id?: IssueId8;
-  kind: Kind1;
+  kind: Kind2;
   recorded_at: RecordedAt16;
   run_id: RunId16;
   seq: Seq16;

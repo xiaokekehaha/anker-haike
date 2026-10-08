@@ -132,5 +132,12 @@ class OfficialData:
     def tickets(self) -> list[Ticket]:
         return [Ticket.model_validate(t) for t in self._load("tickets.yaml")["tickets"]]
 
+    def version(self, name: str) -> str:
+        """生成文件头记录的源 xlsx sha256 前 12 位；知识库条目的 doc_version 用它，源文件一变就整体换版。"""
+        for line in (self.root / name).read_text(encoding="utf-8").splitlines()[:3]:
+            if "sha256=" in line:
+                return line.split("sha256=", 1)[1].strip()[:12]
+        return "unknown"
+
     def attachment(self, name: str) -> Path:
         return self.root / "attachments" / name

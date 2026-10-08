@@ -26,16 +26,16 @@ class Knowledge:
         self.calls.append((kb, query, allow))
         hits = (
             []
-            if kb != "kb_manual"
+            if kb != "kb_qa"
             else [
                 Hit(
                     "c12",
-                    "manual",
+                    "qa-rv-0272",
                     "c12",
-                    "manual_rv_v1",
-                    "2026-09-12.1",
+                    "rv-0272",
+                    "test",
                     kb,
-                    "翻转主机取出滚刷，割断缠绕的毛发",
+                    "Turn the robot over, take out the roller brush, and clean the hair on both ends.",
                     0.9,
                 )
             ]
@@ -101,13 +101,13 @@ class Conversation:
 REPORT = {
     "primary_intent": "report_problem",
     "device_relation": "other",
-    "product_hints": ["X9 Pro"],
+    "product_hints": ["X10 Pro Omni"],
     "facts": [
         {"value": "不吸了", "quote": "不吸了"},
         {"value": "滚刷缠头发", "quote": "滚刷缠了头发"},
     ],
 }
-REPORT_TEXT = "X9 Pro不吸了，滚刷缠了头发"
+REPORT_TEXT = "X10 Pro Omni不吸了，滚刷缠了头发"
 
 
 @pytest.fixture
@@ -117,7 +117,7 @@ async def conversation(mem_runtime):
     models["diagnose.synthesize"].script = [
         {
             "hypotheses": [
-                {"plan_id": "rv_suction_hair_wrap", "confidence": 0.9, "evidence_ids": ["c12"]}
+                {"plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["c12"]}
             ]
         }
     ]

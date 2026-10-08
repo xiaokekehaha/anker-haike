@@ -55,6 +55,17 @@ export function StepCard({ item, active, disabled, onFeedback, onHover }: Props)
       </header>
       {item.seen && <p className={styles.seen} data-kind="vision-echo">{item.seen}</p>}
       <p className={styles.instruction}>{item.step.instruction}</p>
+      {(item.step.media?.length ?? 0) > 0 && (
+        <ul className={styles.stepMedia} aria-label="官方图示">
+          {item.step.media!.map((m) => (
+            <li key={m.url}>
+              {m.kind === 'image'
+                ? <a href={m.url} target="_blank" rel="noreferrer"><img src={m.url} alt="官方操作图示" loading="lazy" /></a>
+                : <a href={m.url} target="_blank" rel="noreferrer">{m.kind === 'video' ? '▶ 观看官方操作视频' : '查看官方说明'}</a>}
+            </li>
+          ))}
+        </ul>
+      )}
       <p className={styles.expected}><span>预期结果</span>{item.step.expected_result}</p>
       {item.step.caution && <p className={styles.caution} role="note">⚠ {item.step.caution}</p>}
       {answered ? (

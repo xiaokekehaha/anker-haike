@@ -16,7 +16,6 @@ import app.conversation.interpret as semantic
 from app.actions.runtime import configure
 from app.actions.store import ExecutionNeedsReview
 from app.catalog import ProductCatalog
-from app.catalog.service import CatalogConfig
 from app.conversation.interpret import TurnInterpretation
 from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
@@ -24,28 +23,12 @@ from app.main import app
 from app.sessions.cards import set_catalog
 from app.settings import settings
 
-# 产品目录要到 S4 才按 PN 重建；这里先用官方 PN 的最小目录。
-CATALOG = {
-    "version": "test-official",
-    "categories": {
-        "robot_vacuum": {"name": "扫地机器人", "line": "Anker eufy", "in_scope": True},
-        "breast_pump": {"name": "吸奶器", "line": "Anker eufy", "in_scope": True},
-    },
-    "products": [
-        {"sku": "T8D04", "name": "eufy Wearable Breast Pump S1 Pro", "category": "breast_pump", "aliases": ["S1 Pro"]},
-        {"sku": "T2351", "name": "eufy Clean X10 Pro Omni", "category": "robot_vacuum", "aliases": ["X10 Pro"]},
-        {"sku": "T2080", "name": "eufy Robot Vacuum S1 Pro", "category": "robot_vacuum", "aliases": ["S1 Pro"]},
-        {"sku": "T2292", "name": "eufy Auto-Empty C10", "category": "robot_vacuum", "aliases": ["C10"]},
-        {"sku": "T2353", "name": "eufy Robot Vacuum Omni E25", "category": "robot_vacuum", "aliases": ["E25"]},
-    ],
-}
-
 
 @pytest.fixture
 async def l3_runtime(mem_runtime, monkeypatch):
     monkeypatch.setenv("HAIKE_LLM", "off")
     monkeypatch.setattr(settings, "demo_today", date(2026, 10, 8))
-    set_catalog(ProductCatalog.from_config(CatalogConfig.model_validate(CATALOG)))
+    set_catalog(ProductCatalog.from_yaml(settings.catalog_config_path))
     set_image_store(InMemoryImageStore())
     services = configure(memory=True)
     app.state.l3_services = services

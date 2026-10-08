@@ -3,7 +3,8 @@
 solved → 结束；not_solved → executed+1、advanced+1；cannot_do → skipped+1（不计 executed）。
 cannot_do 记录阻碍并返回 reassess；真实执行后按 next_on 推进。EXHAUSTED 只标记计划耗尽，
 下一动作由 diagnose.decision.decide_next 依据更新后的事实决定（design §3.2）。
-CP-verify：R1 executed ≥ 4、R1c executed+skipped ≥ 6；连续无法操作由选择器减负，不自动升级。
+CP-verify：R1 executed ≥ 10、R1c executed+skipped ≥ 12（跨指南防失控）；正常结束是指南走完 → 质保判断。
+官方 Q&A 指南最长 8 步，旧的「满 4 步转人工」会把指南拦腰截断。
 """
 
 from __future__ import annotations
@@ -25,7 +26,7 @@ from app.plans.library import PlanLibrary
 
 Feedback = Literal["solved", "not_solved", "cannot_do"]
 SWITCH_CONFIDENCE = 0.3
-LIMITS = {"R1": 4, "R1c": 6}
+LIMITS = {"R1": 10, "R1c": 12}
 
 
 @dataclass

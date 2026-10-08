@@ -106,7 +106,7 @@ async def seeded(db):
             "awaiting_user",
             "step_feedback",
             "robot_vacuum",
-            "EUFY-S1-PRO",
+            "T2080",
             now - timedelta(hours=8),
             1,
         ),

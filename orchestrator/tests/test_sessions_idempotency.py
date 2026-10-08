@@ -12,7 +12,7 @@ from app.sessions import sse
 from app.sessions.locks import InMemorySessionLock, LockTimeout
 from tests.message_form import action_body, message_form
 
-MULTI = "我的 S1 Pro 不吸了"
+MULTI = "我的 S1 Pro 报错 E23"
 
 
 def _client():
@@ -26,7 +26,7 @@ async def _to_pending(client):
     return sid, pending
 
 
-def _action(pending, sku="EUFY-S1-PRO", action_id=None, **over):
+def _action(pending, sku="T2080", action_id=None, **over):
     return {
         "action_id": action_id or uuid.uuid4().hex,
         "input_token": pending["input_token"],
@@ -86,8 +86,8 @@ async def test_two_different_actions_are_serialized_not_rejected(mem_runtime, mo
     monkeypatch.setenv("PLACEHOLDER_NODE_DELAY_S", "0.4")
     async with _client() as client:
         sid, pending = await _to_pending(client)
-        a1 = _action(pending, "EUFY-S1-PRO")
-        a2 = _action(pending, "EUFY-BP-S1-PRO")
+        a1 = _action(pending, "T2080")
+        a2 = _action(pending, "T8D04")
         t1 = asyncio.create_task(client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", a1)))
         await asyncio.sleep(0.05)
         t2 = asyncio.create_task(client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", a2)))
@@ -97,7 +97,7 @@ async def test_two_different_actions_are_serialized_not_rejected(mem_runtime, mo
     assert r2.json()["code"] == "run_active"  # 串行后 version 已前进（08 §4 先校 version）
     assert r2.json()["snapshot"]["pending_input"]["kind"] == "select_product"  # 票 34：步骤卡
     state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
-    assert state.values["product_confirmed"]["sku"] == "EUFY-S1-PRO"
+    assert state.values["product_confirmed"]["sku"] == "T2080"
 
 
 async def test_placeholder_execute_backfill_three_steps(mem_runtime, monkeypatch):
@@ -154,7 +154,7 @@ async def test_lock_released_after_409_and_replay(mem_runtime, monkeypatch):
         replay = await client.post(f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", body))
         assert replay.status_code == 200 and replay.headers["x-input-replayed"] == "true"
         after = await client.post(
-            f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "EUFY-BP-S1-PRO"))
+            f"/sessions/{sid}/actions", json=await action_body(client, f"/sessions/{sid}/actions", _action(pending, "T8D04"))
         )
     assert after.status_code == 409  # 不是 503 lock_timeout
 

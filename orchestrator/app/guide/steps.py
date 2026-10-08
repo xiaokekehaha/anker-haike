@@ -178,6 +178,7 @@ async def prepare_step(
                 "evidence_ids": evidence_ids,
                 "primary_evidence_id": primary_id,
                 "observations": _open_observations(step, state, library),
+                "media": step_media(plan.plan_id, step_id),
             },
             card_id=card_id,
             plan_cursor={
@@ -255,6 +256,18 @@ def _open_observations(step: PlanStep, state: dict[str, Any], library: PlanLibra
         for o in step.observations
         if o.observation_id not in known
     ]
+
+
+def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:
+    """官方 Q&A 步骤附带的图片 / 视频链接；非 Q&A 计划（测试夹具）为空。"""
+    from app.plans.qa import guide_of
+
+    guide = guide_of(plan_id)
+    if guide is None:
+        return []
+    index = int(step_id.removeprefix("s")) - 1 if step_id.startswith("s") and step_id[1:].isdigit() else -1
+    media = guide.steps[index].media if guide.kind == "steps" and 0 <= index < len(guide.steps) else guide.media
+    return [{"url": m.url, "kind": m.kind} for m in media]
 
 
 def step_no_of(plan: Plan, step_id: str) -> int:

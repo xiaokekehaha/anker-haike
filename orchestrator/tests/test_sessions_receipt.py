@@ -47,7 +47,7 @@ async def _send(client, sid: str, text: str, receipt_images: int = 0, purpose: s
 
 async def _regular_escalation(client, sid: str, reason: str = "R6", text: str = "还是不行"):
     """先跑一轮正常对话（产品已确认），再注入常规升级原因并发下一条消息 → 进入 escalate 子流程。"""
-    await _send(client, sid, "扫地机 X10 不吸了")
+    await _send(client, sid, "扫地机 X10 报错 6025")
     return await escalate_on_feedback(client, sid, reason)
 
 
@@ -115,7 +115,7 @@ async def test_skip_receipt_goes_to_summary_not_collected(mem_runtime):
     assert summary["receipt"]["status"] == "not_collected"
     assert summary["receipt"]["next_step"] == "请准备购买凭证，人工协助核实"
     assert summary["receipt"]["verified_facts"] == {} and summary["receipt"]["conflicts"] == []
-    assert summary["product"] == "eufy X10 Pro Omni"  # 已确认产品带进摘要
+    assert summary["product"] == "eufy Clean X10 Pro Omni"  # 已确认产品带进摘要
     assert resumed[-1]["reason"] == "completed"
     st = (await app.state.session_graph.aget_state(_cfg(sid))).values
     assert st["receipt"]["status"] == "not_collected" and st["receipt"]["skipped_reason"] == "later"
@@ -185,7 +185,7 @@ async def test_receipt_image_outside_upload_receipt_is_not_a_receipt(mem_runtime
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             events = await _send(
-                client, sid, "扫地机 X10 不吸了", receipt_images=1, purpose="receipt"
+                client, sid, "扫地机 X10 报错 6025", receipt_images=1, purpose="receipt"
             )
     finally:
         set_image_store(None)
@@ -204,7 +204,7 @@ async def test_r6_mention_enters_receipt_flow_on_regular_escalation(mem_runtime)
     try:
         async with _client() as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            first = await _send(client, sid, "扫地机 X10 不吸了，我想申请保修")
+            first = await _send(client, sid, "扫地机 X10 报错 6025，我想申请保修")
             assert "escalate" not in [s for s, _ in _progress(first)]  # R6 本身不升级
             st = (await app.state.session_graph.aget_state(_cfg(sid))).values
             assert any(f["rule_id"] == "R6" for f in st["safety_flags"])

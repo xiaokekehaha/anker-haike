@@ -84,3 +84,32 @@ query输入 → 意图识别 → <服务边界判断> --N--> 转人工
 - 「服务边界判断」对应现有范围外 R8 → 转人工；「意图识别」对应 intake。
 - 黄框规则 1 原文为「显示送达的包裹**一般情况下**不再补发」，findings 转写漏了「一般情况下」；D3（送达但称未收到 → 承运商调查单转人工）与此一致。
 - D8 ①（向主办方确认缺失节点）撤销。
+
+## 2026-10-08 S4 进度（未提交）
+
+已完成：
+- 知识库：WeKnora `haike_kb_qa` 872 条（一条 Q&A 一知识，1500 字不父子）；旧三库删除（快照 20261008T062043Z）；`make kb-ingest` 末尾 REINDEX（ParadeDB bm25 批量删除后失效）。
+- `app/official/qa_index.py`：错误码 + PN 精确索引（420 键）；Q&A → 指南 steps 410 / answer 427 / warranty 38（「先重启，仍未解决 → 质保」25 条拆成两步）。
+- `app/official/message.py`：首封解析（App 报错 / RMA / 邮件，英荷德法西，PN / SN / 码 / 订单 / 国家 / 商家）。
+- `app/plans/qa.py`：Q&A 生成 872 个计划取代 plans.yaml；plans.yaml、fault_cards.yaml、app/faultcards、app/plans/store.py 已删；settings / Dockerfile 去掉对应路径；seed_cli 只剩 products。
+- retrieve：错误码精确命中（qa_exact 证据）→ 未收录码 R5 code_miss → 硬件故障 Q&A 直接进质保（R6）→ 其余语义检索，候选 = 命中 Q&A 的计划。
+- 排障未解决（R1/R2）→ service_context 质保判断（SOP「确认是否进入换货」）；R1 上限 10、R1c 12。
+- 消歧：首封 PN 直接锁产品；吸奶器 / SoloCam 单品类自动确认；有现象描述或错误码即继续（不强制中文症状码）。
+- 产品目录 8 个 PN；前端首屏 3 品类 + 真实工单示例；步骤卡显示 Q&A 图片 / 视频（契约 TroubleshootStep.media）；证据来源标签改为官方 Q&A。
+- 63 单评测集 `data/eval/tickets/cases.yaml` + `app/evaluation/tickets.py`：35 单 SOP 终点可确定性判定，全部通过。
+- 冒烟（无模型）：T18/T27 3212 → qa_rv_0147 步骤卡；T11 EB1L → qa_rv_0481；T14 4090 → 质保（收凭证）；T13 5116 → R5。
+
+进行中：三个子代理分组修旧测试（引擎测试用 tests/fixtures/engine_plans.yaml 夹具；目录 / 会话 / 知识库测试换新 PN 与 kb_qa；巡检 / bakeoff / 杂项）。tests/test_zz_smoke.py 是临时冒烟，提交前删除或转正。
+
+仍待（见 remaining_work.md）：旧知识模块与语料目录删除（faq / official / anchors / reachability / snapshot / ingest 拆分）、symptom_taxonomy 与问诊简化、多语回复与双语显示（C1–C4、E4）、载入工单入口（E3）、回放与 bake-off 重做、文档与 CI 收尾。
+
+### 2026-10-08 测试清理（第 1 步收尾）
+
+- 依据：自建计划库 plans.yaml、故障卡、症状问诊族、范围外 / 目录级品类（储能、拓展坞、耳机、充电器）已删，测这些机制的用例没有修的对象。
+- 删除 17 个测试文件：test_plans、test_faultcards、test_diagnose、test_diagnose_grade、test_diagnostic_loop、test_guide、test_retrieve_p0、test_knowledge_parent、test_conversation_retrieval、test_diagnostic_next_action、test_conversation_diagnostic、test_conversation_evidence_next_action、test_conversation_scope_conflict、test_conversation_operation_conditions、test_conversation_observation_deadlock、test_conversation_intake_output，以及 sessions_clarify / sessions_human / vision_graph 中依赖已删品类与问诊族的用例。
+- 协议层测试（冲突 409、幂等、凭证、人工、读图、生命周期）保留，只把自建 SKU 换成官方 PN、把「不吸了」换成带官方错误码的消息（离线无模型时只有错误码路径能确定性出步骤卡）。
+- 新增 test_conversation_official_tickets：T18 / T11 / T16 出官方步骤卡，T14 直进质保（R6），T13 未收录码转人工（R5）。tests/fake_qa.py 提供返回真实 Q&A 的假检索。
+- 顺带修了两处真实缺陷：中文「报错 6025」「错误码 E23」认不出错误码（INLINE_CODE 只认英文关键词）；已记录错误码的会话下一轮被当成「无现象」重新问诊（described 未看 error_codes）。
+- 多轮排障推进已补一条：T28 重启 → 未解决 → 质保步 → 未解决 → R6 进入订单 / 凭证收集。
+- 删测试后的覆盖缺口：语义检索候选排序、读图与文字冲突以外的读图联动。按 remaining_work.md D4/D5 用 63 单回放补，不恢复旧用例。
+- 结果：后端 780 passed / 1 skipped，ruff 0；前端 typecheck 0、232 passed；contracts 94 passed。

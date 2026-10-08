@@ -19,14 +19,13 @@ class ContentReranker(DashScopeReranker):
 
 async def test_eighth_candidate_and_text_beyond_snippet_reach_reranker():
     server = FakeWeKnora()
-    server.kbs["manual"] = {"id": "manual"}
-    server.kbs["tickets"] = {"id": "tickets"}
+    server.kbs["qa"] = {"id": "qa"}
     for index in range(12):
         content = "滚刷维护说明。" + "前言。" * 200
         content += "唯一支持缠绕处置" if index == 7 else "无关章节"
         kid = f"{index:08d}-manual"
         server.knowledge[kid] = {
-            "id": kid, "knowledge_base_id": "manual", "title": f"手册 {index}",
+            "id": kid, "knowledge_base_id": "qa", "title": f"手册 {index}",
             "content": content, "parse_status": "completed",
             "custom_metadata": {
                 "doc_id": f"manual-{index:02}", "doc_version": "v1", "scope": "category_generic",
@@ -36,14 +35,14 @@ async def test_eighth_candidate_and_text_beyond_snippet_reach_reranker():
     cfg = RetrievalConfig(rerank=RerankConfig(enabled=True))
     reranker = ContentReranker(api_key="test")
     async with WeKnoraClient("http://weknora.test", "sk-test", transport=server.transport()) as client:
-        adapter = WeKnoraKnowledgeAdapter(client, {"kb_manual": "manual", "kb_tickets": "tickets"})
+        adapter = WeKnoraKnowledgeAdapter(client, {"kb_qa": "qa"})
         await adapter.refresh_index()
         result = await search_round(
             adapter, "滚刷", KnowledgeScope("category_only", "robot_vacuum"),
             cfg.retrieval.candidate_k, cfg=cfg, round_no=1, session_id="s", run_id="r",
             reranker=reranker,
         )
-    hits = result.results["kb_manual"].hits
+    hits = result.results["kb_qa"].hits
     assert len(hits) == 12 and hits[0].doc_id == "manual-07"
     assert "手册 7" in reranker.documents[7] and "唯一支持缠绕处置" in reranker.documents[7]
     assert "唯一支持缠绕处置" not in hits[0].snippet

@@ -1,113 +1,32 @@
-# 产品目录 seed（票 19）。规则服务只在这里做型号精确 + 别名模糊匹配，不用模型猜型号（03 §1.3）。
-# 2026-09-17 起按安克官网（anker.com.cn/brands）五大产品线组织品类：line 为产品线，name 为官网品类名。
-# 深度品类（有 symptom_taxonomy / plans / fault_cards / 知识库）：扫地机器人、移动电源、充电器、无线耳机、音箱、家庭安防摄像头、吸奶器。
-# 其余为目录品类：能识别、能记录，进入排障时按「缺少适用的排查资料」诚实结束（R5）。
-# home_storage 例外（in_scope: false）：家用 / 阳台储能涉及电工安装与并网，售后走专业渠道，不做自助排障。
-# aliases 是配置化别名表，进入 L4 内存缓存；比较时忽略大小写、空格与连字符。
-# SKU 编码与型号名取自公开渠道，作演示种子，不保证与官方 SKU 一一对应。
-version: 2026-09-17.2
+# 产品目录：只收主办方资料包内的产品（data/official：订单 SKU、Q&A 的 PN、63 单工单的产品名）。
+# sku 字段取产品 PN（订单 SKU 前缀，如 T8D04121 → T8D04），与 Q&A 的 PN 列一致；订单完整 SKU 由 pn_of 归一。
+# aliases 只放客户会说的写法（工单原文、订单描述、Q&A 三级目录），比较时忽略大小写、空格与连字符。
+# 「S1 Pro」同时是扫地机（T2080）与吸奶器（T8D04）：同一别名返回两个候选，由产品卡片消歧（赛题能力「产品消歧」）。
+# keywords 补了工单里出现的荷 / 德 / 法 / 西语品类词，客户只说品类时也能缩小到品类。
+version: 2026-10-08.1
 categories:
-  # ---- Anker Charging（移动电源与配件）----
-  power_bank:       {name: 移动电源, line: Anker Charging, in_scope: true, keywords: [移动电源, 充电宝, 户外充电宝, 磁吸充电宝, power bank, powercore]}
-  charger:          {name: 充电器, line: Anker Charging, in_scope: true, keywords: [充电器, 充电头, 快充头, 氮化镓, GaN, 适配器, charger]}
-  cable:            {name: 数据线, line: Anker Charging, in_scope: true, keywords: [数据线, 充电线, 快充线, Type-C 线, 双头线, cable, powerline]}
-  wireless_charger: {name: 无线充电器, line: Anker Charging, in_scope: true, keywords: [无线充电器, 无线充, 磁吸充电器, 磁吸无线充, MagGo, wireless charger]}
-  charging_station: {name: 充电站, line: Anker Charging, in_scope: true, keywords: [充电站, 桌面充电站, 多口充电站, 插线板, charging station]}
-  hub:              {name: 集线器与拓展坞, line: Anker Charging, in_scope: true, keywords: [拓展坞, 扩展坞, 集线器, 转接器, hub, docking]}
-  # ---- Anker SOLIX（家用与便携能源）----
-  portable_power_station: {name: 便携储能, line: Anker SOLIX, in_scope: true, keywords: [户外电源, 便携储能, 移动储能, 储能电源, power station, SOLIX C, SOLIX F]}
-  home_storage:     {name: 家用储能, line: Anker SOLIX, in_scope: false, keywords: [阳台光储, 家用储能, 光伏储能, 太阳能储能, 户用储能, solarbank]}
-  # ---- Anker eufy（智能家居）----
-  security_cam:     {name: 家庭安防摄像头, line: Anker eufy, in_scope: true, keywords: [摄像头, 监控, 门铃, 可视门铃, 安防, 摄像机, eufycam, solocam]}
-  robot_vacuum:     {name: 扫地机器人, line: Anker eufy, in_scope: true, keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, 机器人, robovac, robot vacuum]}
-  robot_mower:      {name: 割草机器人, line: Anker eufy, in_scope: true, keywords: [割草机器人, 割草机, 除草机器人, mower]}
-  breast_pump:      {name: 吸奶器, line: Anker eufy, in_scope: true, keywords: [吸奶器, 电动吸奶器, 穿戴吸奶器, breast pump]}
-  baby_monitor:     {name: 婴儿监视器, line: Anker eufy, in_scope: true, keywords: [婴儿监视器, 婴儿监护器, 宝宝监控, 宝宝监视器, baby monitor]}
-  smart_scale:      {name: 智能体重秤, line: Anker eufy, in_scope: true, keywords: [体重秤, 体脂秤, 智能秤, smart scale]}
-  # ---- Anker soundcore（影音）----
-  earbuds:          {name: 无线耳机, line: Anker soundcore, in_scope: true, keywords: [耳机, 蓝牙耳机, 无线耳机, 真无线耳机, 耳塞, earbuds, liberty]}
-  headphones:       {name: 头戴式耳机, line: Anker soundcore, in_scope: true, keywords: [头戴式耳机, 头戴耳机, 头戴式, 降噪耳机, headphones]}
-  sleep_earbuds:    {name: 睡眠耳机, line: Anker soundcore, in_scope: true, keywords: [睡眠耳机, 助眠耳机, 睡觉耳机, sleep earbuds]}
-  speaker:          {name: 音箱, line: Anker soundcore, in_scope: true, keywords: [音箱, 音响, 蓝牙音箱, 低音炮, speaker, soundbar]}
-  projector:        {name: 便携投影仪, line: Anker soundcore, in_scope: true, keywords: [投影仪, 投影机, 便携投影, 投影, projector, nebula, capsule]}
-  # ---- Anker eufyMake（创意工具）----
-  uv_printer:       {name: UV 打印机, line: Anker eufyMake, in_scope: true, keywords: [UV打印机, UV 打印机, 打印机, uv printer, eufymake]}
+  robot_vacuum:
+    name: 扫地机器人
+    line: Anker eufy
+    in_scope: true
+    keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, robovac, robot vacuum, vacuum, hoover, mop, robotstofzuiger, stofzuiger, Saugroboter, Staubsauger, aspirateur, aspirateur robot, robot aspirador, aspiradora]
+  breast_pump:
+    name: 吸奶器
+    line: Anker eufy
+    in_scope: true
+    keywords: [吸奶器, 电动吸奶器, 穿戴吸奶器, breast pump, pump, borstkolf, Milchpumpe, tire-lait, sacaleches]
+  security_cam:
+    name: 家庭安防摄像头
+    line: Anker eufy
+    in_scope: true
+    keywords: [摄像头, 监控, 安防, 摄像机, camera, cameras, security camera, solocam, beveiligingscamera, Kamera, caméra, cámara]
 
 products:
-  # ---- 扫地机器人 ----
-  - {sku: EUFY-X10-PRO-OMNI, name: eufy X10 Pro Omni, category: robot_vacuum, aliases: [X10 Pro Omni, X10 Pro, X10, X], image: /img/x10.png}
-  - {sku: EUFY-X9-PRO,       name: eufy X9 Pro,       category: robot_vacuum, aliases: [X9 Pro, X9]}
-  - {sku: EUFY-X8-PRO-SES,   name: eufy X8 Pro SES,   category: robot_vacuum, aliases: [X8 Pro SES, X8 Pro, X8]}
-  - {sku: EUFY-S1-PRO,       name: eufy S1 Pro 扫地机器人, category: robot_vacuum, aliases: [S1 Pro, S1, Omni S1 Pro]}
-  - {sku: EUFY-L60-HYBRID,   name: eufy L60 Hybrid,   category: robot_vacuum, aliases: [L60 Hybrid, L60]}
-  - {sku: EUFY-L50-SES,      name: eufy L50 SES,      category: robot_vacuum, aliases: [L50 SES, L50]}
-  - {sku: EUFY-G50-HYBRID,   name: eufy G50 Hybrid,   category: robot_vacuum, aliases: [G50 Hybrid, G50]}
-  - {sku: EUFY-G40-HYBRID,   name: eufy G40 Hybrid+,  category: robot_vacuum, aliases: [G40 Hybrid, G40 Hybrid+, G40]}
-  - {sku: EUFY-G30-VERGE,    name: eufy RoboVac G30 Verge, category: robot_vacuum, aliases: [G30 Verge, G30]}
-  - {sku: EUFY-G20-HYBRID,   name: eufy RoboVac G20 Hybrid, category: robot_vacuum, aliases: [G20 Hybrid, G20]}
-  - {sku: EUFY-30C-MAX,      name: eufy RoboVac 30C MAX, category: robot_vacuum, aliases: [30C MAX, 30C]}
-  - {sku: EUFY-25C,          name: eufy RoboVac 25C,  category: robot_vacuum, aliases: [25C]}
-  - {sku: EUFY-15C-MAX,      name: eufy RoboVac 15C MAX, category: robot_vacuum, aliases: [15C MAX, 15C]}
-  - {sku: EUFY-11S-MAX,      name: eufy RoboVac 11S MAX, category: robot_vacuum, aliases: [11S MAX, 11S]}
-  - {sku: EUFY-E20,          name: eufy E20 三合一, category: robot_vacuum, aliases: [E20, 三合一]}
-  # ---- 吸奶器（S1 Pro 与扫地机同名异类，消歧演示 A2）----
-  - {sku: EUFY-BP-S1-PRO,    name: eufy S1 Pro 吸奶器, category: breast_pump, aliases: [S1 Pro, 吸奶器 S1 Pro, S1 Pro 吸奶器]}
-  - {sku: EUFY-BP-E10,       name: eufy E10 吸奶器,   category: breast_pump, aliases: [E10]}
-  # ---- 移动电源 ----
-  - {sku: ANKER-A1257,       name: Anker Prime 20000mAh 200W 充电宝, category: power_bank, aliases: [A1257, Prime 20000, 20000 充电宝, Prime 充电宝]}
-  - {sku: ANKER-A1695,       name: Anker Nano 10000mAh 充电宝, category: power_bank, aliases: [A1695, Nano 充电宝, Nano 10000]}
-  - {sku: ANKER-A1289,       name: Anker 737 PowerCore 24K, category: power_bank, aliases: [A1289, 737 充电宝, PowerCore 24K]}
-  - {sku: ANKER-A1611,       name: Anker Zolo 20000mAh 充电宝, category: power_bank, aliases: [A1611, Zolo 20000]}
-  # ---- 充电器 ----
-  - {sku: ANKER-A2337,       name: Anker Nano 65W 充电器, category: charger, aliases: [A2337, Nano 65W, 65W 充电头]}
-  - {sku: ANKER-A2340,       name: Anker Prime 100W 充电器, category: charger, aliases: [A2340, Prime 100W, 100W 充电头]}
-  - {sku: ANKER-A2673,       name: Anker Nano 30W 充电器, category: charger, aliases: [A2673, Nano 30W, 30W 充电头]}
-  - {sku: ANKER-A2148,       name: Anker 736 Nano II 100W, category: charger, aliases: [A2148, 736 充电器, Nano II 100W]}
-  # ---- 数据线 ----
-  - {sku: ANKER-A8856,       name: Anker USB-C to USB-C 240W 数据线, category: cable, aliases: [A8856, 240W 数据线, 240W 线]}
-  - {sku: ANKER-A8121,       name: Anker PowerLine III 数据线, category: cable, aliases: [A8121, PowerLine III]}
-  # ---- 无线充电器 ----
-  - {sku: ANKER-A25M3,       name: Anker MagGo 三合一无线充电器, category: wireless_charger, aliases: [A25M3, MagGo 3合1, MagGo 三合一]}
-  - {sku: ANKER-A2559,       name: Anker 315 无线充电器, category: wireless_charger, aliases: [A2559, 315 无线充]}
-  # ---- 充电站 ----
-  - {sku: ANKER-A9128,       name: Anker Prime 240W 充电站, category: charging_station, aliases: [A9128, Prime 240W, 240W 充电站]}
-  - {sku: ANKER-A9133,       name: Anker 727 充电站, category: charging_station, aliases: [A9133, 727 充电站]}
-  # ---- 集线器与拓展坞 ----
-  - {sku: ANKER-A8383,       name: Anker 555 USB-C 八合一集线器, category: hub, aliases: [A8383, 555 Hub, 555 集线器]}
-  - {sku: ANKER-A8397,       name: Anker 675 拓展坞, category: hub, aliases: [A8397, 675 拓展坞, 675 Docking]}
-  # ---- 便携储能 ----
-  - {sku: ANKER-A1761,       name: Anker SOLIX C1000 便携储能, category: portable_power_station, aliases: [A1761, SOLIX C1000, C1000 户外电源]}
-  - {sku: ANKER-A1780,       name: Anker SOLIX F2000 便携储能, category: portable_power_station, aliases: [A1780, SOLIX F2000, F2000 户外电源]}
-  # ---- 家用储能（范围外）----
-  - {sku: ANKER-A17C1,       name: Anker SOLIX Solarbank 2 Pro 阳台光储, category: home_storage, aliases: [A17C1, Solarbank 2 Pro, Solarbank]}
-  # ---- 家庭安防摄像头 ----
-  - {sku: EUFY-T8213,        name: eufy SoloCam S340, category: security_cam, aliases: [S340, SoloCam S340, T8213]}
-  - {sku: EUFY-T8160,        name: eufy eufyCam 3 (S330), category: security_cam, aliases: [T8160, eufyCam 3, S330]}
-  - {sku: EUFY-T8210,        name: eufy 可视门铃 E340, category: security_cam, aliases: [T8210, E340, 门铃 E340]}
-  - {sku: EUFY-T8441,        name: eufy 室内摄像头 C220, category: security_cam, aliases: [T8441, C220, Indoor Cam C220]}
-  # ---- 割草机器人 ----
-  - {sku: EUFY-T2551,        name: eufy E15 割草机器人, category: robot_mower, aliases: [T2551, E15 割草机, 割草机器人 E15]}
-  # ---- 婴儿监视器 ----
-  - {sku: EUFY-T8300,        name: eufy SpaceView 婴儿监视器, category: baby_monitor, aliases: [T8300, SpaceView]}
-  # ---- 智能体重秤 ----
-  - {sku: EUFY-T9140,        name: eufy Smart Scale P2 Pro, category: smart_scale, aliases: [T9140, P2 Pro 体重秤, Smart Scale P2 Pro]}
-  # ---- 无线耳机 ----
-  - {sku: SOUNDCORE-A3961,   name: soundcore Liberty 4, category: earbuds, aliases: [Liberty 4, A3961]}
-  - {sku: SOUNDCORE-A3953,   name: soundcore Liberty 4 NC, category: earbuds, aliases: [Liberty 4 NC, A3953]}
-  - {sku: SOUNDCORE-A3948,   name: soundcore Liberty 5, category: earbuds, aliases: [Liberty 5, A3948]}
-  - {sku: SOUNDCORE-A3955,   name: soundcore AeroFit Pro, category: earbuds, aliases: [AeroFit Pro, A3955]}
-  - {sku: SOUNDCORE-A3947,   name: soundcore P40i, category: earbuds, aliases: [P40i, A3947]}
-  # ---- 头戴式耳机 ----
-  - {sku: SOUNDCORE-A3035,   name: soundcore Space One, category: headphones, aliases: [Space One, A3035]}
-  - {sku: SOUNDCORE-A3040,   name: soundcore Space Q45, category: headphones, aliases: [Space Q45, Q45, A3040]}
-  # ---- 睡眠耳机 ----
-  - {sku: SOUNDCORE-A6610,   name: soundcore Sleep A20, category: sleep_earbuds, aliases: [Sleep A20, A6610]}
-  # ---- 音箱 ----
-  - {sku: SOUNDCORE-A3130,   name: soundcore Motion 300, category: speaker, aliases: [Motion 300, A3130]}
-  - {sku: SOUNDCORE-A3143,   name: soundcore Boom 2, category: speaker, aliases: [Boom 2, A3143]}
-  - {sku: SOUNDCORE-A3127,   name: soundcore Motion+, category: speaker, aliases: [Motion+, Motion Plus, A3127]}
-  # ---- 便携投影仪 ----
-  - {sku: NEBULA-D2426,      name: Nebula Capsule 3, category: projector, aliases: [Capsule 3, D2426]}
-  - {sku: NEBULA-D2350,      name: Nebula Mars 3 Air, category: projector, aliases: [Mars 3 Air, D2350]}
-  # ---- UV 打印机 ----
-  - {sku: EUFYMAKE-E1,       name: eufyMake UV 打印机 E1, category: uv_printer, aliases: [UV Printer E1, eufyMake E1]}
+  - {sku: T2080, name: eufy Robot Vacuum Omni S1 Pro, category: robot_vacuum, aliases: [S1 Pro, Omni S1 Pro, S1 Pro Omni, S1, T2080, T2080A, T2071]}
+  - {sku: T2351, name: eufy Clean X10 Pro Omni, category: robot_vacuum, aliases: [X10 Pro Omni, X10 Pro, X10, T2351]}
+  - {sku: T2352, name: eufy Robot Vacuum Omni E28, category: robot_vacuum, aliases: [Omni E28, E28, T2352]}
+  - {sku: T2353, name: eufy Robot Vacuum Omni E25, category: robot_vacuum, aliases: [Omni E25, E25, T2353]}
+  - {sku: T2280, name: eufy Robot Vacuum Omni C20, category: robot_vacuum, aliases: [Omni C20, omni c 20, C20, T2280]}
+  - {sku: T2292, name: eufy Robot Vacuum Auto-Empty C10, category: robot_vacuum, aliases: [Auto-Empty C10, C10, T2292]}
+  - {sku: T8D04, name: eufy Wearable Breast Pump S1 Pro, category: breast_pump, aliases: [S1 Pro, S1 Pro Breast Pump, S1 Pro Wearable Breast Pump, Heated Wearable Breast Pump S1 Pro, Wearable Breast Pump S1 Pro, S1 pump, T8D04, T8D02, T8D03]}
+  - {sku: T8170, name: eufy SoloCam S340, category: security_cam, aliases: [SoloCam S340, S340, T8170]}

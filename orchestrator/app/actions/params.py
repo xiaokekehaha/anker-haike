@@ -3,7 +3,7 @@ import re
 # 主办方编号格式：订单 Anker016；运单 Anker1234567 / Anker1234567-3（工单里也出现 "Anker 1234567-4"）；
 # 服务单 SRV-XXXXXXXXXXXX（本系统生成）。
 ORDER_NO = re.compile(r"(?<![A-Za-z0-9])Anker\d{3}(?![\d-])", re.IGNORECASE)
-TRACKING_NO = re.compile(r"(?<![A-Za-z0-9])Anker ?\d{7}(?:-\d{1,3})?(?![\d-])", re.IGNORECASE)
+TRACKING_NO = re.compile(r"(?<![A-Za-z0-9])Anker ?\d{7}(?:-\d{1,3})?(?![\w-])", re.IGNORECASE)
 SERVICE_ORDER_NO = re.compile(r"(?<![A-Z0-9-])SRV-[A-Z0-9]{6,32}(?![A-Z0-9-])", re.IGNORECASE)
 IDENTIFIER = re.compile(f"{SERVICE_ORDER_NO.pattern}|{TRACKING_NO.pattern}|{ORDER_NO.pattern}", re.IGNORECASE)
 

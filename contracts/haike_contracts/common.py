@@ -115,6 +115,13 @@ class ObservationAnswer(Strict):
     option_id: str
 
 
+class StepMedia(Strict):
+    """官方 Q&A 步骤里附带的图片 / 视频 / 文章链接（原样引用，不进模型上下文）。"""
+
+    url: str
+    kind: Literal["image", "video", "link"]
+
+
 class TroubleshootStep(Strict):
     """step_card 的唯一层级：step 对象（08 §5）。"""
 
@@ -132,6 +139,7 @@ class TroubleshootStep(Strict):
     primary_evidence_id: str | None = None
     # 可选：需要判别结果的步骤声明其观察问题；旧客户端忽略该字段仍可只反馈三态
     observations: list[StepObservation] = Field(default_factory=list)
+    media: list[StepMedia] = Field(default_factory=list)
 
 
 class EvidenceItem(Strict):

@@ -16,7 +16,7 @@ from app.sessions import sse
 from app.sessions.manager import RunManager
 from tests.message_form import action_body, message_form
 
-MULTI = "我的 S1 Pro 不吸了"
+MULTI = "我的 S1 Pro 报错 E23"
 
 
 def _client():
@@ -29,7 +29,7 @@ async def _to_pending(client):
     return sid, next(e for e in events if e["type"] == "awaiting_input")
 
 
-def _action(pending, sku="EUFY-S1-PRO", **over):
+def _action(pending, sku="T2080", **over):
     return {
         "action_id": uuid.uuid4().hex,
         "input_token": pending["input_token"],
@@ -127,7 +127,7 @@ async def test_terminal_input_replays_without_reexecution_and_new_id_can_continu
         final = (await client.get(f"/sessions/{sid}")).json()
         assert final["version"] == pending["version"] + 1
         assert final["pending_input"]["kind"] == "step_feedback"
-        assert next(i for i in final["timeline"] if i["kind"] == "product_card")["selected_sku"] == "EUFY-S1-PRO"
+        assert next(i for i in final["timeline"] if i["kind"] == "product_card")["selected_sku"] == "T2080"
         assert calls == 2
 
 
@@ -144,4 +144,4 @@ async def test_stale_version_when_pending_consumed_and_snapshot_shows_result(mem
     assert snap.pending_input.kind == "step_feedback" and snap.pending_input.card_id != pending["card_id"]
     assert snap.version == sse.parse(first.text)[-1]["version"]
     card = next(i for i in snap.timeline if i.kind == "product_card")
-    assert card.selected_sku == "EUFY-S1-PRO"
+    assert card.selected_sku == "T2080"

@@ -11,16 +11,20 @@ from app.diagnose.query import category_label
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.sessions.cards import get_catalog
-from app.settings import settings
 
 Adaptor = Callable[[ModelRouter, Sample, str], Awaitable[tuple[float, dict[str, Any]]]]
 _plans: PlanLibrary | None = None
+# 样本没写来源时按官方 Q&A 库（kb_qa）的一条命中处理；doc_id 是 Q&A 条目 id
+DEFAULT_SOURCE = "kb_qa"
+DEFAULT_DOC_ID = "rv-0272"
 
 
 def plans() -> PlanLibrary:
     global _plans
     if _plans is None:
-        _plans = PlanLibrary.from_yaml(settings.plans_config_path)
+        from app.plans.runtime import get_plan_library
+
+        _plans = get_plan_library()
     return _plans
 
 
@@ -74,8 +78,8 @@ def _evidence_items(raw: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         {
             "evidence_id": e["id"],
-            "source": e.get("source", "kb_manual"),
-            "doc_id": e.get("doc_id", "manual_rv_v1"),
+            "source": e.get("source", DEFAULT_SOURCE),
+            "doc_id": e.get("doc_id", DEFAULT_DOC_ID),
             "doc_version": "bakeoff",
             "chunk_id": e["id"],
             "snippet": e["snippet"],
@@ -97,7 +101,11 @@ async def run_synthesize(router: ModelRouter, s: Sample, lane: str) -> tuple[flo
     )
     if not category:
         raise ValueError(f"bakeoff 样本 {s.id} 缺少 category，且 sku / product 不在目录里")
-    allowed = lib.allowed_for(category=category, sku=sku)
+    # 与生产 _synthesize_step 同口径：候选只取证据命中的官方 Q&A 对应的计划（plan_id = qa_<doc_id>）
+    evidence = _evidence_items(s.input.get("evidence") or [])
+    allowed_by_id = {p.plan_id: p for p in lib.allowed_for(category=category, sku=sku)}
+    hit_ids = dict.fromkeys("qa_" + str(e["doc_id"]).replace("-", "_") for e in evidence)
+    allowed = [allowed_by_id[i] for i in hit_ids if i in allowed_by_id]
     state = {
         "text": s.input["text"],
         "symptoms": s.input.get("symptoms") or [],
@@ -108,7 +116,7 @@ async def run_synthesize(router: ModelRouter, s: Sample, lane: str) -> tuple[flo
         router,
         state=state,
         allowed=allowed,
-        evidence=_evidence_items(s.input.get("evidence") or []),
+        evidence=evidence,
         observations=s.input.get("observations") or [],
         budget_ms=20_000,
         max_hypotheses=3,
@@ -138,7 +146,6 @@ async def run_stream(router: ModelRouter, s: Sample, lane: str) -> tuple[float, 
             summary=_summary(s),
             evidence=_evidence_items(s.input.get("evidence") or []),
             knowledge_status=s.input.get("knowledge_status", "ok"),
-            fault_card=s.input.get("fault_card"),
         )
     out = await stream_to_writer(
         lambda _ev: None,
@@ -166,7 +173,7 @@ async def run_summary(router: ModelRouter, s: Sample, lane: str) -> tuple[float,
 
     base = EscalationSummary.model_validate(
         {
-            "product": s.input.get("product", "eufy X10 Pro Omni"),
+            "product": s.input.get("product", "eufy Clean X10 Pro Omni"),
             "problem": s.input["problem"],
             "observations": [],
             "hypotheses": [],
@@ -228,9 +235,9 @@ async def run_grade(router: ModelRouter, s: Sample, lane: str) -> tuple[float, d
             evidence_id=h["id"],
             knowledge_id="k",
             chunk_id=h["id"],
-            doc_id=h.get("doc_id", "manual_rv_v1"),
+            doc_id=h.get("doc_id", DEFAULT_DOC_ID),
             doc_version="bakeoff",
-            source=h.get("source", "kb_manual"),
+            source=h.get("source", DEFAULT_SOURCE),
             snippet=h["snippet"],
             score=float(h.get("score", 0.5)),
         )

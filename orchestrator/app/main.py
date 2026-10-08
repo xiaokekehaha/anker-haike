@@ -14,7 +14,6 @@ from app.admin.router import router as admin_router
 from app.analytics.runtime import close_analytics, open_analytics
 from app.catalog import ProductCatalog
 from app.diagnose.config import get_retrieval_config
-from app.faultcards.runtime import get_fault_card_library
 from app.health.router import router as health_router
 from app.images.runtime import close_image_store, open_image_store
 from app.models import ModelRegistry, ModelRouter, load_models_config
@@ -23,7 +22,7 @@ from app.models.probe import ModelProbes
 from app.models.runtime import set_model_router
 from app.observability.alerts import build_from_settings, health_watch_loop, set_alert_manager
 from app.observability.runtime import LangfuseExporter, configure_logging, set_exporter
-from app.plans import PlanLibrary
+from app.plans.runtime import get_plan_library
 from app.replay.runtime import get_replay_package
 from app.retention import retention_loop
 from app.sessions.router import router as sessions_router
@@ -61,20 +60,18 @@ async def _lifespan(app: FastAPI):
     log.info("models %s", app.state.model_registry.describe())
     # 票 19 / 31：产品目录与排障计划进 L4 内存缓存；计划 next_on / 证据引用不合法时启动失败
     app.state.catalog = ProductCatalog.from_yaml(settings.catalog_config_path)
-    app.state.plans = PlanLibrary.from_yaml(settings.plans_config_path)
+    # 排障计划由官方 Q&A 生成；Q&A 解析或计划校验不通过时启动失败
+    app.state.plans = get_plan_library()
     dealer_directory()  # 启动即加载经销商名录，数据有误时启动失败
-    app.state.fault_cards = (
-        get_fault_card_library()
-    )  # 票 33：故障卡 ≤ 800 token、plan_id 合法，否则启动失败
     # 检索编排配置同样在启动期校验：retrieval.yaml 与镜像内代码不成对时（典型是 make rollback
     # 只换 config 不换镜像）进程直接起不来，而不是 /health 200、走到诊断节点才 node_failed
     get_retrieval_config()
     log.info(
-        "catalog v%s products=%d; plans v%s ids=%s",
+        "catalog v%s products=%d; plans v%s count=%d",
         app.state.catalog.version,
         len(app.state.catalog.products),
         app.state.plans.version,
-        app.state.plans.plan_ids,
+        len(app.state.plans.plan_ids),
     )
     # 票 05：会话存储 + LangGraph PostgresSaver；数据库不可用时不阻止启动，sessions 接口返回 503
     await open_session_runtime(app)

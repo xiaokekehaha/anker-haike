@@ -162,7 +162,7 @@ async def test_normal_message_still_goes_to_reply(mem_runtime):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
             resp = await client.post(
-                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 吸力变小了"})
+                f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 Pro Omni 滚刷不转了，App 显示 error 2112"})
             )
     finally:
         set_rules_service(None)

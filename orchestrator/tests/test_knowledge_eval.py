@@ -24,7 +24,7 @@ def test_case_state_and_scope_confirmed_and_category_only():
     c = {
         "id": "x",
         "product_state": "confirmed_sku",
-        "sku": "EUFY-X9-PRO",
+        "sku": "T2351",
         "category": "robot_vacuum",
         "text": "不吸",
         "symptoms": ["不吸"],
@@ -32,10 +32,10 @@ def test_case_state_and_scope_confirmed_and_category_only():
     st, sc = case_state(c), case_scope(c)
     assert (
         sc.product_state == "confirmed_sku"
-        and sc.sku == "EUFY-X9-PRO"
+        and sc.sku == "T2351"
         and sc.category == "robot_vacuum"
     )
-    assert build_query(st) == "EUFY-X9-PRO 不吸"
+    assert build_query(st) == "T2351 不吸"
     c2 = {
         "id": "y",
         "product_state": "category_only",
@@ -66,7 +66,7 @@ def test_merge_top_k_puts_counter_evidence_last_and_caps():
 
 
 def test_case_without_category_resolves_confirmed_sku_from_catalog():
-    case = {"id": "sku-only", "product_state": "confirmed_sku", "sku": "EUFY-X9-PRO"}
+    case = {"id": "sku-only", "product_state": "confirmed_sku", "sku": "T2351"}
     assert case_scope(case).category == "robot_vacuum"
     assert case_state(case)["product_confirmed"]["category"] == "robot_vacuum"
 

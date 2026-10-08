@@ -168,10 +168,10 @@ def test_complaint_flag_follows_strategy_action_not_only_level():
 
 
 def test_skip_optional_clarify_skips_the_model_card():
-    state = {"text": "充电宝充不进电", "category": "power_bank"}
-    assert differentiated_candidates(get_catalog(), "power_bank", state)
+    state = {"text": "扫地机报错了", "category": "robot_vacuum"}
+    assert differentiated_candidates(get_catalog(), "robot_vacuum", state)
     skipped = {**state, "emotion_actions": ["skip_optional_clarify", "prefer_proposal_over_more_steps"]}
-    assert differentiated_candidates(get_catalog(), "power_bank", skipped) == []
+    assert differentiated_candidates(get_catalog(), "robot_vacuum", skipped) == []
 
 
 def test_tasks_order_dedupe_and_inline_completion():
@@ -213,7 +213,7 @@ def test_vision_vocabulary_quality_and_prior():
             ]
         )
     )
-    assert signature_plans(result) == ["rv_suction_hair_wrap"]
+    assert signature_plans(result) == ["qa_rv_0272", "qa_rv_0189", "qa_rv_0408"]
     assert (
         result["findings"][1]["part"] == "其他"
         and result["findings"][1]["raw"]["part"] == "未知零件"
@@ -273,10 +273,10 @@ def test_category_parts_are_confirmable_hints_from_known_parts():
     )
     # 按 finding 归因：没命中签名的观察也保留，plan_ids 为空
     assert [(f["part"], ids) for f, ids in signature_matches(wrapped)] == [
-        ("滚刷", ["rv_suction_hair_wrap"]),
+        ("滚刷", ["qa_rv_0272", "qa_rv_0189", "qa_rv_0408"]),
         ("轮组", []),
     ]
-    assert signature_plans(wrapped) == ["rv_suction_hair_wrap"]
+    assert signature_plans(wrapped) == ["qa_rv_0272", "qa_rv_0189", "qa_rv_0408"]
 
 
 def test_model_hint_readable_is_derived_not_self_reported():

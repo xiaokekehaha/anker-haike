@@ -2003,6 +2003,31 @@
       "title": "StepCardItem",
       "type": "object"
     },
+    "StepMedia": {
+      "additionalProperties": false,
+      "description": "官方 Q&A 步骤里附带的图片 / 视频 / 文章链接（原样引用，不进模型上下文）。",
+      "properties": {
+        "kind": {
+          "enum": [
+            "image",
+            "video",
+            "link"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "kind"
+      ],
+      "title": "StepMedia",
+      "type": "object"
+    },
     "StepObservation": {
       "additionalProperties": false,
       "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
@@ -2245,6 +2270,13 @@
         "instruction": {
           "title": "Instruction",
           "type": "string"
+        },
+        "media": {
+          "items": {
+            "$ref": "#/$defs/StepMedia"
+          },
+          "title": "Media",
+          "type": "array"
         },
         "observations": {
           "items": {

@@ -19,32 +19,33 @@ def catalog() -> ProductCatalog:
 
 
 def test_seed_config_shape(catalog):
-    assert len(catalog.products) >= 20
-    # 2026-09-17 多品类：只有家用储能（电工安装、专业售后）留在范围外；每个品类都标注官网产品线
-    out_of_scope = [p for p in catalog.products if not p.in_scope]
-    assert {p.category for p in out_of_scope} == {"home_storage"}
-    assert {spec.line for spec in catalog.categories.values()} == {
-        "Anker Charging", "Anker SOLIX", "Anker eufy", "Anker soundcore", "Anker eufyMake",
+    # 2026-10-08 只收主办方资料包内的 8 款产品，sku 即 PN；三个品类都在范围内
+    assert {p.sku for p in catalog.products} == {
+        "T2080", "T2351", "T2352", "T2353", "T2280", "T2292", "T8D04", "T8170",
     }
+    assert all(p.in_scope for p in catalog.products)
+    assert set(catalog.categories) == {"robot_vacuum", "breast_pump", "security_cam"}
+    assert {spec.line for spec in catalog.categories.values()} == {"Anker eufy"}
     assert len({p.sku for p in catalog.products}) == len(catalog.products)
 
 
 @pytest.mark.parametrize(
     ("query", "expected"),
     [
-        ("S1 Pro", ["EUFY-BP-S1-PRO", "EUFY-S1-PRO"]),  # 同名异类：两个候选都在范围内，按名称稳定排序
-        ("扫地机 X", ["EUFY-X10-PRO-OMNI"]),  # 单命中
+        ("S1 Pro", ["T2080", "T8D04"]),  # 同名异类：两个候选都在范围内，按名称稳定排序
+        ("扫地机 X10", ["T2351"]),  # 单命中
         ("随便", []),  # 零命中
         ("扫地机器人", []),  # 只有品类词
         ("", []),
-        ("x10 pro omni", ["EUFY-X10-PRO-OMNI"]),
-        ("EUFY-X9-PRO", ["EUFY-X9-PRO"]),
-        ("我的 eufy X8 Pro 吸力变小了", ["EUFY-X8-PRO-SES"]),
-        ("吸奶器s1pro", ["EUFY-BP-S1-PRO"]),
-        ("X10 和 X9 哪个", ["EUFY-X10-PRO-OMNI", "EUFY-X9-PRO"]),
-        ("扫地机 X8Pro", ["EUFY-X8-PRO-SES"]),
-        ("扫地机 G30 Verg", ["EUFY-G30-VERGE"]),  # 模糊
-        ("充电宝 A1257", ["ANKER-A1257"]),
+        ("x10 pro omni", ["T2351"]),
+        ("T2351", ["T2351"]),
+        ("T8D04121", ["T8D04"]),  # 订单完整 SKU 按 PN 前缀归一
+        ("T2351V11-F", ["T2351"]),
+        ("我的 eufy E28 吸力变小了", ["T2352"]),
+        ("吸奶器s1pro", ["T2080", "T8D04"]),  # 目录只按别名匹配，品类词不参与排除；由产品卡片消歧
+        ("E28 和 E25 哪个", ["T2353", "T2352"]),
+        ("扫地机 X10 Pro Omin", ["T2351"]),  # 模糊
+        ("充电宝 A1257", []),  # 目录外产品
     ],
 )
 def test_lookup_product(catalog, query, expected):
@@ -61,8 +62,8 @@ def test_candidates_carry_in_scope_and_contract_shape(catalog):
 def test_category_hint(catalog):
     assert catalog.category_hint("我家扫地机不吸了") == "robot_vacuum"
     assert catalog.category_hint("吸奶器坏了") == "breast_pump"
-    # 2026-09-17 会话 cd45df：目录里只有一个机器人品类，单说「机器人」就该认出来
-    assert catalog.category_hint("我的机器人有问题") == "robot_vacuum"
+    assert catalog.category_hint("摄像头离线了") == "security_cam"
+    assert catalog.category_hint("充电宝坏了") is None  # 目录外品类
     assert catalog.category_hint("随便") is None
 
 
@@ -85,13 +86,13 @@ def test_reload_only_when_version_changes(tmp_path):
     p.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
     cat = ProductCatalog.from_yaml(p)
     data["products"].append(
-        {"sku": "NEW-1", "name": "eufy Z1", "category": "robot_vacuum", "aliases": ["Z1"]}
+        {"sku": "T9999", "name": "eufy Z1", "category": "robot_vacuum", "aliases": ["Z1"]}
     )
     p.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
     assert cat.reload(p) is False and cat.lookup_product("Z1") == []  # 版本没变不重载
     data["version"] = "2099.1"
     p.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
-    assert cat.reload(p) is True and cat.lookup_product("Z1")[0].sku == "NEW-1"
+    assert cat.reload(p) is True and cat.lookup_product("Z1")[0].sku == "T9999"
 
 
 # ---- products 表（本机 / Compose 的 postgres 可连时运行）----
@@ -134,7 +135,7 @@ async def test_seed_products_is_idempotent(catalog):
         loaded = await store.load_from_db(pool, catalog.categories)
         assert loaded.version == catalog.version
         assert {p.sku for p in loaded.products} == {p.sku for p in catalog.products}
-        assert {c.sku for c in loaded.lookup_product("S1 Pro")} == {"EUFY-S1-PRO", "EUFY-BP-S1-PRO"}
-        assert any(not p.in_scope and p.category == "home_storage" for p in loaded.products)
+        assert {c.sku for c in loaded.lookup_product("S1 Pro")} == {"T2080", "T8D04"}
+        assert all(p.in_scope for p in loaded.products)
     finally:
         await pool.close()

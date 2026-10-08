@@ -316,7 +316,7 @@ async def test_findings_without_evidence_do_not_raise_a_plan_prior(tmp_path):
     )
     store, refs = await _store_with(1)
     out = await observe_images(router, store, session_id="s", refs=refs, text="", lane="domestic")
-    assert signature_plans(out.fault_localization) == ["rv_suction_filter_clog"]
+    assert signature_plans(out.fault_localization) == ["qa_rv_0306", "qa_rv_0016"]
 
 
 # ---- 阶段 2：图文冲突由代码层在两个独立结论之间比对 ----

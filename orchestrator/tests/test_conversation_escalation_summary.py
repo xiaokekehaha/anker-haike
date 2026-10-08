@@ -1,4 +1,8 @@
-"""会话 c9e11：无法操作后不自动烧计划；用户要求人工时，摘要保留真实反馈。"""
+"""会话 c9e11：无法操作后不自动烧计划；用户要求人工时，摘要保留真实反馈。
+
+2026-10-08 起改用主办方 App 报错格式（S1 Pro T2080 + E3 边刷缠绕 → 官方 Q&A rv-0426）：
+PN 直接锁定型号，错误码精确命中官方步骤，不再出型号卡、不依赖外部知识库。
+"""
 
 from haike_contracts.common import EscalationSummary
 
@@ -9,55 +13,38 @@ from tests import conversation_runtime
 
 conversation = conversation_runtime.conversation
 
+APP_REPORT = """Product Name: S1 Pro
+Product PN: T2080A
+Product SN: 12345678A
+Problem Type: ERROR
+Problem Code: 21037332-
+Problem Push: E3: Side brush tangled, please clean.
+Problem Description: E3: Side brush tangled, please clean."""
 
-async def test_power_bank_skipped_steps_keep_product_and_feedback(
+
+async def test_skipped_steps_keep_product_and_feedback(
     conversation: conversation_runtime.Conversation,
 ):
     set_knowledge_adapter(None)
-    first = await conversation.send(
-        "我的移动电源出问题了：",
+    rows = await conversation.send(
+        APP_REPORT,
         {
             "primary_intent": "report_problem",
             "device_relation": "other",
-            "device_category": "power_bank",
-            "product_hints": ["移动电源"],
-            "facts": [{"value": "出问题了", "quote": "出问题了"}],
+            "device_category": "robot_vacuum",
+            "product_hints": ["S1 Pro"],
+            "facts": [{"value": "边刷缠绕", "quote": "Side brush tangled"}],
         },
     )
-    # A1289 有型号专属计划：先问一次型号（spec 2026-09-19-0810 T1）；选「不确定」退回品类通用路径
-    card = next(e for e in first if e["type"] == "product_card")
-    assert [c["sku"] for c in card["candidates"]] == ["ANKER-A1289"] and card["allow_unknown"] is True
-    before = await conversation.snapshot()
-    pending = before["pending_input"]
-    first = conversation.check(await conversation.client.post(
-        f"/sessions/{conversation.sid}/actions",
-        json={
-            "action_id": "model-unknown", "expected_version": before["version"],
-            "target_issue_id": before["active_issue_id"], "card_id": pending["card_id"],
-            "input_token": pending["input_token"], "kind": "select_product", "payload": {"sku": None},
-        },
-    ))
-    # 词表有「自身回充慢」后先问充电方向，再问输出反应
-    assert "给充电宝本身充电的时候吗" in "".join(e.get("delta", "") for e in first)
-    # 后续使用既有问答解析与预写计划，不依赖模型润色或外部知识库。
+    # PN 锁定型号：「S1 Pro」虽同名（扫地机 / 吸奶器），也不出产品卡
+    assert not any(e["type"] == "product_card" for e in rows)
+    card = next(e for e in rows if e["type"] == "step_card")
+    assert card["step"]["plan_id"] == "qa_rv_0426" and card["step"]["step_id"] == "s1"
+    state = await conversation.state()
+    assert state["product_confirmed"]["sku"] == "T2080" and state["product_state"] == "confirmed_sku"
+    # 后续使用预写计划，不依赖模型润色或外部知识库。
     router = get_model_router()
     set_model_router(None)
-    before = await conversation.snapshot()
-    response = await conversation.client.post(
-        f"/sessions/{conversation.sid}/messages",
-        data={"input_id": "not-self-charging", "expected_version": before["version"], "text": "没有"},
-    )
-    assert "充电宝有输出反应吗" in "".join(e.get("delta", "") for e in conversation.check(response))
-    before = await conversation.snapshot()
-    response = await conversation.client.post(
-        f"/sessions/{conversation.sid}/messages",
-        data={"input_id": "no-output", "expected_version": before["version"], "text": "没有"},
-    )
-    rows = conversation.check(response)
-    card = next(e for e in rows if e["type"] == "step_card")
-    assert card["step"]["plan_id"] == "pb_port_debris" and card["step"]["step_id"] == "s1"
-    state = await conversation.state()
-    assert state["category"] == "power_bank" and state["product_state"] == "category_only"
     before = await conversation.snapshot()
     pending = before["pending_input"]
     rows = conversation.check(await conversation.client.post(
@@ -76,17 +63,15 @@ async def test_power_bank_skipped_steps_keep_product_and_feedback(
     rows = await conversation.send("我要人工客服", {"primary_intent": "request_human", "human_request_quote": "我要人工客服"})
     event = next(e for e in rows if e["type"] == "escalation_summary")
     summary = EscalationSummary.model_validate(event["summary"])
-    assert summary.product == "移动电源（型号未确认）"
+    assert "S1 Pro" in summary.product and "型号未确认" not in summary.product
     assert [step.feedback for step in summary.steps] == ["cannot_do"]
     assert summary.reason.rule_id == "R3"
-    assert any("用户回答：没有" in observation for observation in summary.observations)
     reply = "".join(e.get("delta", "") for e in rows)
     assert "复制给人工客服" in reply
     copied = summary_to_text(summary)
-    assert "【排查记录】清理充电宝输出接口（无法操作）" in copied
-    assert not any(word in reply + copied for word in ("扫地机器人", "已完成", "已试步骤", "已经做过", "cannot_do"))
-    # 型号只在最初问过一次；之后的补充与反馈都不再出产品卡
-    assert not any(e["type"] == "product_card" for output in conversation.outputs[1:] for e in output)
+    assert "（无法操作）" in copied
+    assert not any(word in reply + copied for word in ("吸奶器", "已完成", "已试步骤", "已经做过", "cannot_do"))
+    assert not any(e["type"] == "product_card" for output in conversation.outputs for e in output)
     snapshot = await conversation.snapshot()
     assert snapshot["stage"] == "escalate"
     assert snapshot["timeline"][-1]["summary"] == event["summary"]

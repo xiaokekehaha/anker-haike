@@ -1,7 +1,8 @@
 import type { EvidenceItem } from '../types/snapshot';
 import styles from './Cards.module.css';
 
-const SOURCE: Record<string, string> = { kb_manual: '说明书 / 手册', kb_tickets: '历史工单', fault_card: '产品故障卡', approved_plan: '预写排障资料' };
+// 证据只来自官方 Q&A：qa_exact 是错误码精确命中，kb_qa 是知识库检索，approved_plan 是检索未召回时本地发布的同一条 Q&A 原文。
+const SOURCE: Record<string, string> = { qa_exact: '官方 Q&A · 错误码', kb_qa: '官方 Q&A', approved_plan: '官方 Q&A' };
 
 function Item({ e, highlighted, primary }: { e: EvidenceItem; highlighted: boolean; primary?: boolean }) {
   return (

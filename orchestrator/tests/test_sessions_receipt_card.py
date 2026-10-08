@@ -54,7 +54,7 @@ def _cfg(sid: str):
 
 async def _to_confirm_card(client, sid: str, n_images: int = 1):
     """一轮正常对话 → 注入 R1 → 进入 collect_receipt → 上传凭证 → OCR → receipt_card。"""
-    r = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 不吸了"}))
+    r = await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "扫地机 X10 报错 6025"}))
     assert r.status_code == 200
     await escalate_on_feedback(client, sid, "R6")
     files = [

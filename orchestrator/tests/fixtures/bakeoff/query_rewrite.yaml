@@ -1,10 +1,10 @@
 # query.rewrite：口语 → 说明书用语的一句检索查询；validate_rewrite 在生产函数里拒绝越界改写，评测统计「被接受且含目标词」的比例。
 cases:
-  - {id: debris,     input: {original: 扫完地上还是一堆渣, text: 它跑完了，地上还是一堆渣, symptoms: [地上有渣], product: eufy X10 Pro Omni},  expect: {must_contain_any: [碎屑, 残留, 清洁效果, 渣]}}
-  - {id: weak,       input: {original: 吸不起来东西, text: 感觉吸不起来东西了, symptoms: [吸不起来], product: eufy L60 Hybrid},          expect: {must_contain_any: [吸力, 吸不起]}}
-  - {id: brush,      input: {original: 刷子上全是头发, text: 底下那个刷子上全是头发, symptoms: [刷子头发], product: eufy X9 Pro},          expect: {must_contain_any: [滚刷, 刷子, 毛发, 头发]}}
-  - {id: side,       input: {original: 侧刷不转, text: 旁边那个小刷子不转了, symptoms: [侧刷不转], product: eufy G30 Verge},                expect: {must_contain_any: [边刷, 侧刷]}}
-  - {id: bin,        input: {original: 垃圾盒装不上, text: 垃圾盒怎么都装不上去, symptoms: [垃圾盒装不上], product: eufy X9 Pro},          expect: {must_contain_any: [尘盒, 垃圾盒]}}
-  - {id: negation,   input: {original: 不是吸力小是有异响, text: 不是吸力小，是有异响, symptoms: [异响], product: eufy X10 Pro Omni},       expect: {must_contain_any: [异响]}}
-  - {id: english,    input: {original: 扫不干净, text: 扫不干净 clean effect bad, symptoms: [扫不干净], product: eufy L50 SES},            expect: {must_contain_any: [清洁效果, 残留, 扫不干净, 碎屑]}}
-  - {id: filter,     input: {original: 过滤网很脏, text: 那个过滤网很脏很脏, symptoms: [过滤网脏], product: eufy L60 Hybrid},              expect: {must_contain_any: [滤网, 过滤网]}}
+  - {id: debris,     input: {original: 扫完地上还是一堆渣, text: 它跑完了，地上还是一堆渣, symptoms: [地上有渣], product: eufy Clean X10 Pro Omni},  expect: {must_contain_any: [碎屑, 残留, 清洁效果, 渣]}}
+  - {id: weak,       input: {original: 吸不起来东西, text: 感觉吸不起来东西了, symptoms: [吸不起来], product: eufy Robot Vacuum Omni E28},          expect: {must_contain_any: [吸力, 吸不起]}}
+  - {id: brush,      input: {original: 刷子上全是头发, text: 底下那个刷子上全是头发, symptoms: [刷子头发], product: eufy Robot Vacuum Omni C20},          expect: {must_contain_any: [滚刷, 刷子, 毛发, 头发]}}
+  - {id: side,       input: {original: 侧刷不转, text: 旁边那个小刷子不转了, symptoms: [侧刷不转], product: eufy Robot Vacuum Omni E25},                expect: {must_contain_any: [边刷, 侧刷]}}
+  - {id: bin,        input: {original: 垃圾盒装不上, text: 垃圾盒怎么都装不上去, symptoms: [垃圾盒装不上], product: eufy Robot Vacuum Omni C20},          expect: {must_contain_any: [尘盒, 垃圾盒]}}
+  - {id: negation,   input: {original: 不是吸力小是有异响, text: 不是吸力小，是有异响, symptoms: [异响], product: eufy Clean X10 Pro Omni},       expect: {must_contain_any: [异响]}}
+  - {id: english,    input: {original: 扫不干净, text: 扫不干净 clean effect bad, symptoms: [扫不干净], product: eufy Robot Vacuum Auto-Empty C10},            expect: {must_contain_any: [清洁效果, 残留, 扫不干净, 碎屑]}}
+  - {id: filter,     input: {original: 过滤网很脏, text: 那个过滤网很脏很脏, symptoms: [过滤网脏], product: eufy Robot Vacuum Omni E28},              expect: {must_contain_any: [滤网, 过滤网]}}

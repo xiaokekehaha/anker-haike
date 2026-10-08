@@ -44,8 +44,6 @@ ENV PATH="/srv/.venv/bin:$PATH" STATIC_DIR=/srv/static \
     CONFIG_DIR=/srv/config OFFICIAL_DATA_DIR=/srv/data/official \
     MODELS_CONFIG_PATH=/srv/config/models.yaml \
     CATALOG_CONFIG_PATH=/srv/config/products.yaml \
-    PLANS_CONFIG_PATH=/srv/config/plans.yaml \
-    FAULT_CARDS_CONFIG_PATH=/srv/config/fault_cards.yaml \
     RULES_CONFIG_PATH=/srv/config/rules/safety_terms.yaml \
     RETRIEVAL_CONFIG_PATH=/srv/config/retrieval.yaml \
     CONVERSATION_CONFIG_PATH=/srv/config/conversation.yaml \

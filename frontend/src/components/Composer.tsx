@@ -200,9 +200,9 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
   const keyHint = offline || touchPrimary ? null : 'Enter 发送，Shift+Enter 换行，截图可直接粘贴到输入框。';
   const label = receipt ? '凭证备注（选填）' : observing ? '回答上方的问题' : rediagnose ? '补充新情况或纠正' : '描述你的问题';
   const placeholder = receipt ? '可补充购买平台、店铺或其他需要说明的信息…'
-    : rediagnose ? '也可以直接描述结果，例如：其实还有异响 / 说错了，我的是 X10…'
+    : rediagnose ? '也可以直接描述结果，例如：其实还有异响 / 说错了，我的是 Omni E28…'
     : observing ? '选项之外的情况，用自己的话说…'
-    : '一句话说说设备型号和遇到的问题，例如：我的耳机只有一边有声音，重置后还是不行…';
+    : '说说设备型号和问题，例如：Omni E25 报 3212 错误，滚刷拖布卡住了；也可以直接贴 App 报错或订单号…';
 
   return (
     <form className={styles.composer} onSubmit={(e) => { e.preventDefault(); void submit(); }} aria-label={receipt ? '上传购买凭证' : '发送消息'}>

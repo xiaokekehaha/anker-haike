@@ -37,7 +37,7 @@ async def test_refresh_preserves_order_sources_and_answer_time(conversation):
     last_intake = c.models["intake"].calls[-1]
     messages = "\n".join(str(m.content) for m in last_intake["messages"])
     # 上一轮以事实原话 + 步骤卡进入下一轮上下文（整句不再重复投影，见 10 号文档的预算收敛）
-    assert "滚刷缠了头发" in messages and "检查并清理滚刷" in messages
+    assert "滚刷" in messages and "qa_rv_0272" in messages and "Turn the robot over" in messages
     assert after["timeline"][0]["at"] in messages
 
 

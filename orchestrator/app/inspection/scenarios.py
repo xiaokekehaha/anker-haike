@@ -21,32 +21,43 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from haike_contracts.actions import parse_action
 
 from app.diagnose import should_rewrite
 from app.diagnose.config import get_retrieval_config
 from app.inspection.harness import (
+    A1_PLAN,
+    A1_TEXT,
     EMPTY_SCOPE,
-    INTAKE_X9,
+    INTAKE_A1,
     NO_MATCH,
     OBS_HAIR,
     OBS_SMOKE,
+    OK_A1,
     OK_HAIR,
     REDX,
-    SYNTH_HAIR,
+    SYNTH_A1,
     UNAVAILABLE,
     Events,
     Harness,
     ScriptedAdapter,
+    hit,
     rewrite_config,
 )
+from app.knowledge.adapter import ToolResult
 from app.replay.package import ReplayIncompatible, load_package
 from app.replay.runtime import versions_now
 from app.sessions.clarify import FIXED_QUESTIONS
 from app.sessions.manager import RunManager
 from app.settings import settings
 
-A1_TEXT = "eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发"
-A1_SCRIPTS = {"intake": [INTAKE_X9] * 4, "diagnose.synthesize": [SYNTH_HAIR] * 4, "reply.stream": [["好的，"], ["好的，"], ["好的，"], ["好的，"]]}
+# A1 = 主办方工单 T11（S1 Pro App 报错 EB1L → 官方 Q&A rv-0481，5 步），见 harness.A1_TEXT
+A1_SCRIPTS = {"intake": [INTAKE_A1] * 4, "diagnose.synthesize": [SYNTH_A1] * 4, "reply.stream": [["好的，"], ["好的，"], ["好的，"], ["好的，"]]}
+# 没有错误码的扫地机描述：候选只能来自 kb_qa 语义检索（X10 Pro Omni 滚刷缠发 → rv-0272）
+HAIR_TEXT = "eufy X10 Pro Omni 扫地机不吸了，滚刷缠了很多头发"
+INTAKE_HAIR = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+               "facts": [{"value": "不吸了", "quote": "$current"}, {"value": "滚刷缠头发", "quote": "$current"}]}
+SYNTH_HAIR = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.85, "evidence_ids": ["c21"]}]}
 
 
 @dataclass
@@ -117,12 +128,12 @@ def _metrics(h: Harness, *runs: str) -> dict[str, Any]:
 
 @scenario("duplicate_action", "boundary", "重复提交同一动作：一次执行一次重放，状态只推进一次", "08 §3–4；票 22")
 async def scn_duplicate_action(ctx: Ctx):
-    async with Harness(ctx.dir("dup"), scripts={"intake": [{**INTAKE_X9, "product_hints": ["S1 Pro"]}], **{k: v for k, v in A1_SCRIPTS.items() if k != "intake"}}) as h:
+    async with Harness(ctx.dir("dup"), scripts={"intake": [{**INTAKE_A1, "facts": [{"value": "不吸了", "quote": "$current"}]}], **{k: v for k, v in A1_SCRIPTS.items() if k != "intake"}}) as h:
         sid = await h.new_session()
         ev = await h.send(sid, "我的 S1 Pro 不吸了")
         p = h.pending(ev)
         _check(p["kind"] == "select_product", f"应等待产品卡：{p}")
-        body = h.select(p, "EUFY-S1-PRO")
+        body = h.select(p, "T2080")
         r1 = await h.action(sid, body)
         r2 = await h.action(sid, body)
         _check(r1.status_code == 200 and r2.status_code == 200, f"{r1.status_code}/{r2.status_code} {r2.headers.get('_body')}")
@@ -136,21 +147,24 @@ async def scn_duplicate_action(ctx: Ctx):
         return {"runs": len(runs), "replayed": True, "version": r1.done.get("version"), **_metrics(h, ev.run_id, r1.run_id)}
 
 
-@scenario("cannot_do_x3", "boundary", "连续三次「无法操作」→ R1b 升级并进入凭证收集", "09 §3.4；票 35 / 39")
+@scenario("cannot_do_x3", "boundary", "「无法操作」不计执行、不烧计划，先追问操作限制；请求人工时摘要保留真实反馈", "09 §3.4；票 35 / 39；会话 c9e11 / 7a0077")
 async def scn_cannot_do_x3(ctx: Ctx):
+    # 原「连续三次无法操作 → R1b」已随操作条件追问（operation_conditions）移除：无法操作是可逆的限制，
+    # 不是排障失败；场景名保留以维持巡检目录。
     async with Harness(ctx.dir("cd3"), scripts=A1_SCRIPTS) as h:
         sid, _ev, p = await _a1_to_step_card(h)
-        last = None
-        for i in range(3):
-            last = await h.action(sid, h.feedback(p, "cannot_do"))
-            _check(last.status_code == 200, f"第 {i+1} 次 cannot_do 失败：{last.headers.get('_body')}")
-            if last.done["reason"] == "awaiting_input" and h.pending(last)["kind"] == "step_feedback":
-                p = h.pending(last)
+        last = await h.action(sid, h.feedback(p, "cannot_do"))
+        _check(last.status_code == 200, f"cannot_do 失败：{last.headers.get('_body')}")
+        _check("step_card" not in last.types and "escalation_summary" not in last.types, f"不应自动换卡或升级：{last.types}")
         st = await h.state(sid)
-        _check(st["counters"]["skipped"] == 3 and st["counters"]["executed"] == 0, f"计数器 {st['counters']}")
-        _check(st["escalate_reason"] == "R1b", f"应 R1b，实际 {st['escalate_reason']}")
-        _check(h.pending(last)["kind"] == "upload_receipt", "R1b 常规升级应先收集凭证")
-        return {"counters": st["counters"], "escalate_reason": st["escalate_reason"], "steps_executed": len(st["steps_executed"])}
+        _check(st["counters"]["skipped"] == 1 and st["counters"]["executed"] == 0, f"计数器 {st['counters']}")
+        _check(not st["steps_executed"] and not st["exhausted_plans"], "无法操作不算已执行、不消耗计划")
+        _check(st["substage"] == "await_operation_conditions" and last.text(), f"应追问操作限制：{st['substage']}")
+        r = await h.action(sid, h.request_human(version=(await h.snapshot(sid))["version"]))
+        summary = r.first("escalation_summary")
+        _check(summary is not None and summary["summary"]["reason"]["rule_id"] == "R3", f"应 R3 摘要：{r.types}")
+        _check([s["feedback"] for s in summary["summary"]["steps"]] == ["cannot_do"], summary["summary"]["steps"])
+        return {"counters": st["counters"], "substage": st["substage"], "summary_steps": summary["summary"]["steps"]}
 
 
 @scenario("safety_first_sentence", "boundary", "首句风险报告 → 一次语义判断后 R4，零检索", "09 §1；票 15")
@@ -168,25 +182,29 @@ async def scn_safety_first(ctx: Ctx):
 
 @scenario("safety_mid_text", "boundary", "排障中途文本出现安全词 → rediagnose 路径 R4，不检索", "09 §1；票 37")
 async def scn_safety_mid(ctx: Ctx):
-    async with Harness(ctx.dir("sf2"), scripts=A1_SCRIPTS) as h:
+    safety = {"primary_intent": "report_problem", "device_relation": "current", "device_safety_assertion": "reported",
+              "device_safety_quote": "$current", "facts": [{"value": "烧焦味", "quote": "$current"}]}
+    async with Harness(ctx.dir("sf2"), scripts={**A1_SCRIPTS, "intake": [INTAKE_A1, safety]}) as h:
         sid, _ev, p = await _a1_to_step_card(h)
         fb = await h.action(sid, h.feedback(p, "not_solved"))  # 先执行一步，摘要里应带这条记录
         _check(fb.status_code == 200 and h.pending(fb)["kind"] == "step_feedback", "应下发第二张卡")
         n_calls, n_search = len(h.fake.tasks_called), len(h.adapter.calls)
         ev2 = await h.send(sid, "刚才拆的时候闻到烧焦味了")
-        _check(ev2.progress and ev2.progress[0] == ("intake", "rediagnose"), f"应走 rediagnose：{ev2.progress}")
+        stages = [s for s, _ in ev2.progress]
+        # 2026-10 起中途补充统一走 intake（语义解释一次）后直接分流，不再有单独的 rediagnose 子阶段
+        _check(stages[:1] == ["intake"] and "escalate" in stages and "diagnose" not in stages, f"应 intake → escalate：{ev2.progress}")
         summary = ev2.first("escalation_summary")
         _check(summary is not None and summary["summary"]["reason"]["rule_id"] == "R4", "应 R4")
-        _check(len(h.fake.tasks_called) == n_calls and len(h.adapter.calls) == n_search, "R4 不应调模型 / 检索")
+        _check(h.fake.tasks_called[n_calls:] == ["intake"] and len(h.adapter.calls) == n_search, f"R4 只应有一次语义判断、不检索：{h.fake.tasks_called[n_calls:]}")
         _check(len(summary["summary"]["steps"]) == 1, "摘要应含已下发步骤记录")
         return {"rule": "R4", "steps_in_summary": len(summary["summary"]["steps"])}
 
 
 @scenario("safety_image_observation", "boundary", "图片观察含冒烟 → CP-in R4，不再检索 / 汇总", "09 §1；票 30")
 async def scn_safety_image(ctx: Ctx):
-    async with Harness(ctx.dir("sf3"), scripts={"intake": [INTAKE_X9], "diagnose.vision": [OBS_SMOKE]}) as h:
+    async with Harness(ctx.dir("sf3"), scripts={"intake": [INTAKE_HAIR], "diagnose.vision": [OBS_SMOKE]}) as h:
         sid = await h.new_session()
-        ev = await h.send(sid, "扫地机 X9 有点味道", images=1)
+        ev = await h.send(sid, "扫地机 X10 Pro Omni 有点味道", images=1)
         summary = ev.first("escalation_summary")
         _check(summary is not None and summary["summary"]["reason"]["rule_id"] == "R4", f"应 R4：{ev.types}")
         _check("retrieve" not in [s for _, s in ev.progress], "不应检索")
@@ -203,46 +221,50 @@ def _ocr(order_no: str | None, seller: str | None, conf: float) -> dict:
 
 
 async def _to_receipt_card(h: Harness, ocr: dict) -> tuple[str, dict, Events]:
-    """A1 → cannot_do ×3（R1b）→ upload_receipt → 上传凭证图 → OCR → receipt_card。"""
+    """A1 → 官方 5 步全部 not_solved（R2）→ SOP 订单质保判断查不到订单 → upload_receipt → 上传凭证图 → OCR → receipt_card。"""
     h.fake.by_task["warranty.receipt_ocr"] = [json.dumps(ocr, ensure_ascii=False)]
+    h.fake.by_task.setdefault("intake", []).append(json.dumps({"primary_intent": "supplement", "device_relation": "current"}))
     sid, ev, p = await _a1_to_step_card(h)
     last = ev
-    for _ in range(3):
-        last = await h.action(sid, h.feedback(p, "cannot_do"))
-        if h.pending(last)["kind"] == "step_feedback":
-            p = h.pending(last)
-    _check(h.pending(last)["kind"] == "upload_receipt", "应等待凭证上传")
+    for _ in range(6):
+        last = await h.action(sid, h.feedback(p, "not_solved"))
+        if h.pending(last)["kind"] != "step_feedback":
+            break
+        p = h.pending(last)
+    _check(h.pending(last)["kind"] == "upload_receipt", f"应等待凭证上传：{h.pending(last)['kind']}")
     up = await h.send(sid, "订单截图", images=1, purpose="receipt")
     card = up.first("receipt_card")
     _check(card is not None and h.pending(up)["kind"] == "confirm_receipt", f"应出凭证确认卡：{up.types}")
     return sid, h.pending(up), up
 
 
-@scenario("wrong_device_receipt", "boundary", "上传另一台设备的订单凭证 → order_product_mismatch，只列事实不下结论", "09 §5；票 41")
+@scenario("wrong_device_receipt", "boundary", "S1 Pro 扫地机会话上传吸奶器订单（Anker016）→ order_product_mismatch，只列事实不下结论", "09 §5；票 41")
 async def scn_wrong_device_receipt(ctx: Ctx):
     async with Harness(ctx.dir("rc1"), scripts=A1_SCRIPTS) as h:
-        sid, p, _up = await _to_receipt_card(h, _ocr("Anker002", "任意店铺", 0.95))
-        fields = {"order_no": "Anker002", "seller": "任意店铺", "country": None, "purchase_date": "2026-03-15", "amount": None}
+        sid, p, _up = await _to_receipt_card(h, _ocr("Anker016", "任意店铺", 0.95))
+        fields = {"order_no": "Anker016", "seller": "任意店铺", "country": None, "purchase_date": "2026-03-15", "amount": None}
         r = await h.action(sid, h.card_action(p, "confirm_receipt", {"fields": fields, "edited": []}))
         _check(r.status_code == 200, r.headers.get("_body"))
-        summary = r.first("escalation_summary")["summary"]
-        _check(summary["receipt"]["status"] == "order_product_mismatch", f"status={summary['receipt']['status']}")
-        _check(summary["receipt"].get("conflicts"), "应记录产品冲突")
-        return {"receipt_status": summary["receipt"]["status"], "conflicts": summary["receipt"].get("conflicts")}
+        receipt = (await h.state(sid))["receipt"]
+        _check(receipt.get("conflicts"), "应记录产品冲突")
+        _check(receipt["status"] == "order_product_mismatch", f"status={receipt['status']} reply={r.text()[:120]}")
+        _check("质保期内" not in r.text(), f"不得按另一台设备的订单下质保结论：{r.text()[:120]}")
+        return {"receipt_status": receipt["status"], "conflicts": receipt.get("conflicts")}
 
 
-@scenario("low_confidence_order_hit", "boundary", "OCR 低置信订单号恰好命中他人订单 → 未经确认修改不得核实，needs_manual_check", "09 §5；票 41")
+@scenario("low_confidence_order_hit", "boundary", "OCR 低置信订单号恰好命中一张同型号订单（Anker002）→ 未经确认修改不得核实，needs_manual_check", "09 §5；票 41")
 async def scn_low_conf_order(ctx: Ctx):
     async with Harness(ctx.dir("rc2"), scripts=A1_SCRIPTS) as h:
-        sid, p, up = await _to_receipt_card(h, _ocr("Anker016", "京东", 0.5))
+        sid, p, up = await _to_receipt_card(h, _ocr("Anker002", "Amazon", 0.5))
         card = up.first("receipt_card")
         _check(card["confidence"]["order_no"] == 0.5, "卡片应带低置信")
-        fields = {"order_no": "Anker016", "seller": "京东", "country": None, "purchase_date": "2026-03-15", "amount": None}
+        fields = {"order_no": "Anker002", "seller": "Amazon", "country": None, "purchase_date": "2026-03-15", "amount": None}
         r = await h.action(sid, h.card_action(p, "confirm_receipt", {"fields": fields, "edited": []}))
-        summary = r.first("escalation_summary")["summary"]
-        _check(summary["receipt"]["status"] == "needs_manual_check", f"status={summary['receipt']['status']}")
-        _check("order_verified" not in json.dumps(summary["receipt"]), "低置信未修改不得判 verified")
-        return {"receipt_status": summary["receipt"]["status"], "confidence": card["confidence"]["order_no"]}
+        _check(r.status_code == 200, r.headers.get("_body"))
+        receipt = (await h.state(sid))["receipt"]
+        _check(receipt["status"] == "needs_manual_check", f"status={receipt['status']} reply={r.text()[:120]}")
+        _check("质保期内" not in r.text(), f"低置信未修改不得核实订单：{r.text()[:120]}")
+        return {"receipt_status": receipt["status"], "confidence": card["confidence"]["order_no"]}
 
 
 @scenario("disconnect_refresh_after_feedback", "boundary", "反馈已提交后断网刷新：run 继续、快照可恢复、续接不漏不重、同 action_id 重放", "08 §6–7；票 08 / 23")
@@ -250,7 +272,8 @@ async def scn_disconnect_refresh(ctx: Ctx):
     async with Harness(ctx.dir("dc"), scripts=A1_SCRIPTS) as h:
         sid, _ev, p = await _a1_to_step_card(h)
         body = h.feedback(p, "not_solved")
-        handle = await h.manager.start(sid, entry_action=body)
+        # 与 HTTP 入口同口径：动作先经契约解析（补默认字段）再入账，重试的 payload 摘要才一致
+        handle = await h.manager.start(sid, entry_action=parse_action(body).model_dump(mode="json"))
         sub = h.manager.subscribe(sid, handle.run_id, after_seq=0)
         first = await anext(sub)
         await sub.aclose()  # 断网
@@ -294,31 +317,38 @@ async def scn_restart(ctx: Ctx):
         return {"orphans_fixed": len(fixed), "last_error": snap["last_error"]["code"], "continued": True}
 
 
-@scenario("weknora_down", "boundary", "WeKnora 断开：tool_call failed，按预写计划继续出卡", "09 §4；票 28 / 33")
+@scenario("weknora_down", "boundary", "WeKnora 断开：tool_call failed，错误码仍由本地官方 Q&A 索引精确命中并出卡", "09 §4；票 28 / 33")
 async def scn_weknora_down(ctx: Ctx):
     async with Harness(ctx.dir("wk"), scripts=A1_SCRIPTS, adapter=ScriptedAdapter({}, default=UNAVAILABLE)) as h:
         sid = await h.new_session()
         ev = await h.send(sid, A1_TEXT)
         tools = ev.all("tool_call")
         _check(any(t["status"] == "failed" for t in tools), f"应有 failed tool_call：{tools}")
-        _check("step_card" in ev.types, "知识库不可用仍应按标准流程出卡")
+        card = ev.first("step_card")
+        _check(card is not None and card["step"]["plan_id"] == A1_PLAN, f"知识库不可用仍应按错误码出官方步骤：{ev.types}")
         st = await h.state(sid)
         _check(st["knowledge_status"] == "unavailable", st["knowledge_status"])
-        _check(st["diagnose_outcome"]["mode"] == "standard_flow", st["diagnose_outcome"])
+        _check(st["diagnose_outcome"]["mode"] == "exact_code", st["diagnose_outcome"])
         return {"knowledge_status": st["knowledge_status"], "mode": st["diagnose_outcome"]["mode"], **_metrics(h, ev.run_id)}
 
 
 @scenario("all_models_down", "boundary", "全部模型不可用：流程降级完成、不崩溃，告警 model_chain_failed 触发", "04 §1；票 11 / 50")
 async def scn_all_models_down(ctx: Ctx):
-    async with Harness(ctx.dir("md"), fail_all_models=True) as h:
+    # 不用 A1（T11 原文）：其 Push 文案「Click to contact customer service」在模型不可用时被规则兜底当成转人工（见报告）
+    text = "eufy Omni E28 扫地机不吸了，App 显示 error 3212"
+    async with Harness(ctx.dir("md"), fail_all_models=True, adapter=ScriptedAdapter({}, default=NO_MATCH)) as h:
         sid = await h.new_session()
-        ev = await h.send(sid, A1_TEXT)
+        ev = await h.send(sid, text)
         _check(ev.done["reason"] in ("awaiting_input", "completed"), f"run 应正常结束：{ev.done}")
         _check("error" not in ev.types, f"不应有 error 事件：{ev.types}")
-        _check("step_card" in ev.types, "产品可由规则查表确认、检索有证据 → 仍应出卡（改写用原文）")
+        card = ev.first("step_card")
+        _check(card is not None and card["step"]["plan_id"] == "qa_rv_0147",
+               f"型号由规则查表确认、错误码由本地官方 Q&A 精确命中 → 仍应出卡：{ev.types}")
         st = await h.state(sid)
-        _check(all(t["model_used"] == "skipped" or t.get("model_used") in (None, "skipped") for t in st["model_trace"]) or True, "trace")
-        _check(h.alerts.rules["model_chain_failed"].fired_total >= 1, "应触发 model_chain_failed 告警")
+        _check(st["product_confirmed"]["sku"] == "T2352", st.get("product_confirmed"))
+        if h.alerts.rules["model_chain_failed"].fired_total < 1:
+            await h.send(sid, "还是不行")  # 告警按连续失败 ≥ 3 次计：再来一轮语义解释失败
+        _check(h.alerts.rules["model_chain_failed"].fired_total >= 1, f"应触发 model_chain_failed 告警：{h.fake.tasks_called}")
         return {"model_calls_attempted": len(h.fake.tasks_called), "alert_fired": h.alerts.rules["model_chain_failed"].fired_total,
                 "done": ev.done["reason"], **_metrics(h, ev.run_id)}
 
@@ -345,9 +375,14 @@ async def scn_replay_mismatch(ctx: Ctx):
 # ====================== routing（09 §1.1）======================
 
 
+INTAKE_VAGUE = {"primary_intent": "report_problem", "device_relation": "current", "facts": []}
+INTAKE_NO_SUCTION = {"primary_intent": "report_problem", "device_relation": "current", "facts": [{"value": "不吸了", "quote": "$current"}]}
+
+
 @scenario("vague_input", "routing", "模糊输入「这个又不行了」无上下文 → 追问品类 / 型号，不检索", "09 §1.1；票 24")
 async def scn_vague(ctx: Ctx):
-    async with Harness(ctx.dir("vg"), no_router=True) as h:
+    # 语义解释由模型给出（无产品、无现象）；规则兜底认不出「这个又不行了」是报障，那是另一条降级路径
+    async with Harness(ctx.dir("vg"), scripts={"intake": [INTAKE_VAGUE]}) as h:
         sid = await h.new_session()
         ev = await h.send(sid, "这个又不行了")
         _check(ev.text() == FIXED_QUESTIONS["product"], ev.text())
@@ -356,7 +391,7 @@ async def scn_vague(ctx: Ctx):
         return {"clarification": st["clarification"], "question": ev.text()}
 
 
-@scenario("product_ambiguity", "routing", "「S1 Pro 不吸了」→ 产品确认卡两候选（含范围外标记）", "09 §2；票 20 / 21")
+@scenario("product_ambiguity", "routing", "「S1 Pro 不吸了」→ 产品确认卡两候选（扫地机 T2080 / 吸奶器 T8D04）", "09 §2；票 20 / 21")
 async def scn_ambiguity(ctx: Ctx):
     async with Harness(ctx.dir("amb"), no_router=True) as h:
         sid = await h.new_session()
@@ -371,18 +406,20 @@ async def scn_ambiguity(ctx: Ctx):
 async def scn_correction(ctx: Ctx):
     # 重诊后让另一计划排首位：步骤卡 card_id = uuid5(session, plan, step)，同计划同步骤会得到同一张卡（只是版本更新），
     # 换计划才能同时验证 stale_version 与 stale_card 两条 409
-    synth_clog_first = {"hypotheses": [
-        {"plan_id": "rv_suction_filter_clog", "confidence": 0.8, "evidence_ids": ["c15"]},
-        {"plan_id": "rv_suction_hair_wrap", "confidence": 0.5, "evidence_ids": ["c12"]},
-    ]}
-    scripts = {**A1_SCRIPTS, "intake": [INTAKE_X9, {**REDX, "product_hints": ["X10"]}],
-               "diagnose.synthesize": [SYNTH_HAIR, synth_clog_first]}
-    async with Harness(ctx.dir("corr"), scripts=scripts, adapter=ScriptedAdapter({"kb_manual": [OK_HAIR(), OK_HAIR()]})) as h:
-        sid, _ev, p = await _a1_to_step_card(h)
+    # X10 Pro Omni 滚刷缠发（rv-0272）→ 纠正为 Omni E28：新型号检索命中 E28 的滚刷卡住条目（rv-0189），计划随之更换
+    e28_hit = ToolResult("ok", [hit("c22", "Omni E28 has 2112 Error: Roller brush stuck. Check whether the rolling brush is entangled with hair.", doc="rv-0189")], allowed_count=2)
+    synth_e28 = {"hypotheses": [{"plan_id": "qa_rv_0189", "confidence": 0.8, "evidence_ids": ["c22"]}]}
+    scripts = {**A1_SCRIPTS, "intake": [INTAKE_HAIR, {**REDX, "product_hints": ["Omni E28"]}],
+               "diagnose.synthesize": [SYNTH_HAIR, synth_e28]}
+    async with Harness(ctx.dir("corr"), scripts=scripts, adapter=ScriptedAdapter({"kb_qa": [OK_HAIR(), e28_hit]})) as h:
+        sid = await h.new_session()
+        ev1 = await h.send(sid, HAIR_TEXT)
+        _check("step_card" in ev1.types, f"首轮应出步骤卡：{ev1.types}")
+        p = h.pending(ev1)
         before = await h.state(sid)
-        ev2 = await h.send(sid, "说错了，我的是 X10")
+        ev2 = await h.send(sid, "说错了，我的是 Omni E28")
         st = await h.state(sid)
-        _check(st["product_confirmed"]["sku"].startswith("EUFY-X10"), f"应重新确认 X10：{st['product_confirmed']}")
+        _check(st["product_confirmed"]["sku"] == "T2352", f"应重新确认 Omni E28：{st['product_confirmed']}")
         _check("disambiguate" in [s for s, _ in ev2.progress], "应经过 disambiguate")
         _check(h.adapter.calls[-1][2].sku == st["product_confirmed"]["sku"], "检索 scope 应为新 SKU")
         _check(st["counters"] == before["counters"], "计数不变")
@@ -412,7 +449,8 @@ async def scn_request_human(ctx: Ctx):
 
 @scenario("two_clarifications_then_r7", "routing", "品类不明连续两次追问仍不明 → R7 升级；摘要记录澄清经过", "09 §1.1；票 24")
 async def scn_r7(ctx: Ctx):
-    async with Harness(ctx.dir("r7"), no_router=True) as h:
+    scripts = {"intake": [INTAKE_NO_SUCTION, INTAKE_NO_SUCTION, INTAKE_VAGUE]}
+    async with Harness(ctx.dir("r7"), scripts=scripts) as h:
         sid = await h.new_session()
         texts = []
         for msg in ("机器不吸了", "就是不吸", "不知道"):
@@ -437,7 +475,7 @@ async def scn_rejected(ctx: Ctx):
         _check(unknown_kind.status_code == 422, "未知 kind 应 422")
         stale = await h.action(sid, h.feedback(p, "solved", version=p["version"] + 5))
         _check(stale.status_code == 409 and '"stale_version"' in stale.headers["_body"], "stale_version")
-        wrong_kind = await h.action(sid, h.card_action(p, "select_product", {"sku": "EUFY-X9-PRO"}))
+        wrong_kind = await h.action(sid, h.card_action(p, "select_product", {"sku": "T2351"}))
         _check(wrong_kind.status_code == 409 and '"not_allowed_now"' in wrong_kind.headers["_body"], "not_allowed_now")
         after = await h.state(sid)
         _check(after["counters"] == before["counters"] and after["plan_cursor"] == before["plan_cursor"], "状态不应变化")
@@ -452,8 +490,8 @@ async def scn_rejected(ctx: Ctx):
 def _decision_table() -> dict[str, str]:
     cfg_on = get_retrieval_config().query_rewrite.model_copy(update={"enabled": True})
     base = {
-        "cfg": cfg_on, "per_kb_status": {"kb_manual": "no_match", "kb_tickets": "no_match"},
-        "allowed_counts": {"kb_manual": 2, "kb_tickets": 30}, "has_hits": False, "remaining_ms": 20000,
+        "cfg": cfg_on, "per_kb_status": {"kb_qa": "no_match"},
+        "allowed_counts": {"kb_qa": 30}, "has_hits": False, "remaining_ms": 20000,
         "quota_used": False, "product_state": "confirmed_sku", "router_available": True,
     }
     rows = {
@@ -462,8 +500,8 @@ def _decision_table() -> dict[str, str]:
         "hits_sufficient": {"has_hits": True, "coverage": "sufficient"},
         "hits_insufficient": {"has_hits": True, "coverage": "insufficient"},
         "hits_assessment_unknown": {"has_hits": True},
-        "partial_unavailable": {"per_kb_status": {"kb_manual": "no_match", "kb_tickets": "unavailable"}},
-        "empty_scope": {"allowed_counts": {"kb_manual": 0, "kb_tickets": 0}},
+        "kb_unavailable": {"per_kb_status": {"kb_qa": "unavailable"}},
+        "empty_scope": {"allowed_counts": {"kb_qa": 0}},
         "unknown_product": {"product_state": "unknown"},
         "quota_used": {"quota_used": True},
         "budget_insufficient": {"remaining_ms": 7999},
@@ -499,11 +537,11 @@ def _rewrite_stats(st: dict, h: Harness, ev: Events) -> dict[str, Any]:
     }
 
 
-INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current", "symptom_code": "suction_low"}]}
-DEBRIS_TEXT = "eufy X9 Pro 它跑完了，地上还是一堆渣"
+INTAKE_DEBRIS = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"], "facts": [{"value": "跑完了地上还是一堆渣", "quote": "$current", "symptom_code": "suction_low"}]}
+DEBRIS_TEXT = "eufy X10 Pro Omni 它跑完了，地上还是一堆渣"
 REWRITE_GOOD = {"query": "扫地机器人 清扫后残留碎屑 清洁效果差"}
 REWRITE_BAD = {"query": "扫地机器人 清扫后残留碎屑 电机损坏"}  # 新增原因词 → 拒绝
-SYNTH_ONE = {"hypotheses": [{"plan_id": "rv_suction_hair_wrap", "confidence": 0.7, "evidence_ids": ["c12"]}]}
+SYNTH_ONE = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.7, "evidence_ids": ["c21"]}]}
 
 
 @scenario("rewrite_decision_table", "rewrite", "改写决策表：十一种上下文的触发 / 跳过原因（充分性取代「有命中即不改写」）", "09 §4.1；票 32")
@@ -511,7 +549,7 @@ async def scn_rewrite_table(ctx: Ctx):
     table = _decision_table()
     expect = {"normal_no_match": "triggered", "disabled": "disabled", "hits_sufficient": "sufficient",
               "hits_insufficient": "triggered", "hits_assessment_unknown": "triggered",
-              "partial_unavailable": "unavailable", "empty_scope": "empty_scope",
+              "kb_unavailable": "unavailable", "empty_scope": "empty_scope",
               "unknown_product": "product_state", "quota_used": "quota_used", "router_unavailable": "router_unavailable"}
     for k, v in expect.items():
         _check(table[k] == v, f"{k}: {table[k]} != {v}")
@@ -519,7 +557,7 @@ async def scn_rewrite_table(ctx: Ctx):
     return table
 
 
-@scenario("rewrite_off_no_call", "rewrite", "开关关闭：真实无命中不调 query.rewrite，回退标准流程", "03 §1.4.2；票 32")
+@scenario("rewrite_off_no_call", "rewrite", "开关关闭：真实无命中不调 query.rewrite，一轮即走无候选出口（R5）", "03 §1.4.2；票 32")
 async def scn_rewrite_off(ctx: Ctx):
     async with Harness(ctx.dir("rw0"), scripts={"intake": [INTAKE_DEBRIS], "query.rewrite": [REWRITE_GOOD], "reply.stream": [["好"]]},
                        adapter=ScriptedAdapter({}, default=NO_MATCH), retrieval=rewrite_config(False)) as h:
@@ -529,14 +567,15 @@ async def scn_rewrite_off(ctx: Ctx):
         stats = _rewrite_stats(st, h, ev)
         _check(stats["rewrite_invokes"] == 0 and stats["retrieval_rounds"] == 1, stats)
         _check(stats["decision"]["reason"] == "disabled", stats["decision"])
-        _check(stats["fallback"] == "standard_flow" and "step_card" in ev.types, stats)
+        # 计划全部来自官方 Q&A 命中：无命中即无候选计划，不再有「品类通用预写计划」可回退
+        _check(stats["fallback"] == "escalate" and "step_card" not in ev.types, stats)
         return stats
 
 
 @scenario("rewrite_on_no_match_rescued", "rewrite", "开关开启：真实无命中 → 一次改写 → 同 scope 第二轮命中 → 计划来自证据", "03 §1.4.2；票 32")
 async def scn_rewrite_on_ok(ctx: Ctx):
     async with Harness(ctx.dir("rw1"), scripts={"intake": [INTAKE_DEBRIS], "query.rewrite": [REWRITE_GOOD], "diagnose.synthesize": [SYNTH_ONE], "reply.stream": [["好"]]},
-                       adapter=ScriptedAdapter({"kb_manual": [NO_MATCH(), OK_HAIR()], "kb_tickets": [NO_MATCH(), NO_MATCH()]}), retrieval=rewrite_config(True)) as h:
+                       adapter=ScriptedAdapter({"kb_qa": [NO_MATCH(), OK_HAIR()]}), retrieval=rewrite_config(True)) as h:
         sid = await h.new_session()
         ev = await h.send(sid, DEBRIS_TEXT)
         st = await h.state(sid)
@@ -544,8 +583,8 @@ async def scn_rewrite_on_ok(ctx: Ctx):
         _check(stats["rewrite_invokes"] == 1 and stats["retrieval_rounds"] == 2 and stats["rewrite_used"] is True, stats)
         _check(stats["rewrite_result"]["accepted"] is True, stats["rewrite_result"])
         scopes = {(c[2].product_state, c[2].sku) for c in h.adapter.calls}
-        _check(scopes == {("confirmed_sku", "EUFY-X9-PRO")}, f"scope 应不变：{scopes}")
-        _check(stats["knowledge_status"] == "ok" and stats["plan"] == "rv_suction_hair_wrap", stats)
+        _check(scopes == {("confirmed_sku", "T2351")}, f"scope 应不变：{scopes}")
+        _check(stats["knowledge_status"] == "ok" and stats["plan"] == "qa_rv_0272", stats)
         return stats
 
 
@@ -561,10 +600,11 @@ async def scn_rewrite_empty_scope(ctx: Ctx):
         return stats
 
 
-@scenario("rewrite_on_partial_unavailable", "rewrite", "开关开启，一库 no_match 一库 unavailable → 不改写（部分故障不算正常无命中）", "09 §4.1")
+@scenario("rewrite_on_partial_unavailable", "rewrite", "开关开启，知识库 unavailable → 不改写（故障不算正常无命中）", "09 §4.1")
 async def scn_rewrite_partial(ctx: Ctx):
+    # 2026-10-08 起只有一个库（kb_qa），「一库 no_match 一库 unavailable」退化为整库 unavailable；决策表仍覆盖该原因
     async with Harness(ctx.dir("rw3"), scripts={"intake": [INTAKE_DEBRIS], "query.rewrite": [REWRITE_GOOD], "reply.stream": [["好"]]},
-                       adapter=ScriptedAdapter({"kb_manual": [NO_MATCH()], "kb_tickets": [UNAVAILABLE()]}), retrieval=rewrite_config(True)) as h:
+                       adapter=ScriptedAdapter({"kb_qa": [UNAVAILABLE()]}), retrieval=rewrite_config(True)) as h:
         sid = await h.new_session()
         ev = await h.send(sid, DEBRIS_TEXT)
         stats = _rewrite_stats(await h.state(sid), h, ev)
@@ -583,7 +623,7 @@ async def scn_rewrite_invalid(ctx: Ctx):
         stats = _rewrite_stats(await h.state(sid), h, ev)
         _check(stats["rewrite_invokes"] == 1 and stats["retrieval_rounds"] == 1, stats)
         _check(stats["rewrite_result"]["accepted"] is False, stats["rewrite_result"])
-        _check(stats["fallback"] == "standard_flow", stats)
+        _check(stats["fallback"] == "escalate", stats)
         return stats
 
 
@@ -604,7 +644,7 @@ async def scn_rewrite_second_empty(ctx: Ctx):
 @scenario("rewrite_on_budget_insufficient", "rewrite", "剩余预算不足 → 跳过改写（决策表 budget）", "08 §8；09 §4.1")
 async def scn_rewrite_budget(ctx: Ctx):
     cfg_on = get_retrieval_config().query_rewrite.model_copy(update={"enabled": True})
-    d = should_rewrite(cfg=cfg_on, per_kb_status={"kb_manual": "no_match", "kb_tickets": "no_match"}, allowed_counts={"kb_manual": 2, "kb_tickets": 30},
+    d = should_rewrite(cfg=cfg_on, per_kb_status={"kb_qa": "no_match"}, allowed_counts={"kb_qa": 30},
                        has_hits=False, remaining_ms=cfg_on.min_remaining_ms - 1, quota_used=False, product_state="confirmed_sku", router_available=True)
     _check(d.triggered is False and d.reason.startswith("budget"), d)
     return {"reason": d.reason, "min_remaining_ms": cfg_on.min_remaining_ms}
@@ -613,7 +653,7 @@ async def scn_rewrite_budget(ctx: Ctx):
 @scenario("rewrite_on_image_contention", "rewrite", "图片补检索与改写共享名额：含图 run 至多两轮检索，不叠加成三轮", "03 §1.4.1 规则 4；票 30 / 32")
 async def scn_rewrite_image(ctx: Ctx):
     async with Harness(ctx.dir("rw6"), scripts={"intake": [INTAKE_DEBRIS], "diagnose.vision": [OBS_HAIR], "query.rewrite": [REWRITE_GOOD], "diagnose.synthesize": [SYNTH_ONE], "reply.stream": [["好"]]},
-                       adapter=ScriptedAdapter({"kb_manual": [NO_MATCH(), OK_HAIR()], "kb_tickets": [NO_MATCH(), NO_MATCH()]}), retrieval=rewrite_config(True)) as h:
+                       adapter=ScriptedAdapter({"kb_qa": [NO_MATCH(), OK_HAIR()]}), retrieval=rewrite_config(True)) as h:
         sid = await h.new_session()
         ev = await h.send(sid, DEBRIS_TEXT, images=1)
         st = await h.state(sid)
@@ -656,8 +696,8 @@ async def scn_late_after_cancel(ctx: Ctx):
 @scenario("five_concurrent_a1", "concurrency", "5 并发 A1（stub 模型）：通过率、card_ready_ms / first_visible_ms 分布", "04 §2、§5；票 45")
 async def scn_concurrency(ctx: Ctx):
     n = 5
-    scripts = {"intake": [INTAKE_X9] * n, "diagnose.synthesize": [SYNTH_HAIR] * n, "reply.stream": [["好的，"]] * n}
-    adapter = ScriptedAdapter({"kb_manual": [OK_HAIR() for _ in range(n)]})
+    scripts = {"intake": [INTAKE_A1] * n, "diagnose.synthesize": [SYNTH_A1] * n, "reply.stream": [["好的，"]] * n}
+    adapter = ScriptedAdapter({"kb_qa": [OK_A1() for _ in range(n)]})
     async with Harness(ctx.dir("cc"), scripts=scripts, adapter=adapter) as h:
         sids = [await h.new_session() for _ in range(n)]
         t0 = time.perf_counter()
@@ -706,7 +746,7 @@ async def scn_live_a1(ctx: Ctx):
     _check(ctx.live_url is not None, "未指定 --live，跳过")
     out = await _live_a1(ctx.live_url)
     _check("step_card" in out["types"], f"真实 A1 未出步骤卡：{out['types']}")
-    _check(out["step"]["plan_id"] == "rv_suction_hair_wrap", f"语义样例：首卡应为滚刷缠发计划，实际 {out['step']}")
+    _check(out["step"]["plan_id"] == A1_PLAN, f"语义样例：EB1L 首卡应为官方 Q&A rv-0481，实际 {out['step']}")
     return out
 
 

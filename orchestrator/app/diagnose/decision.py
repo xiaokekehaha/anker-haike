@@ -239,6 +239,16 @@ def known_symptom_codes(state, *, category=None) -> list[str]:
     return [c for c in codes if c in known] if known else codes
 
 
+def described(state, issue) -> bool:
+    """本问题已有可检索的现象：模型抽取的现象事实、intake 现象、或消息里的错误码 / 结构化问题描述。"""
+    from app.official.message import parse_message
+
+    if _active_facts(issue) or state.get("error_codes") or [s for s in state.get("symptoms") or [] if str(s).strip()]:
+        return True
+    parsed = parse_message(state.get("text") or "")
+    return bool(parsed.codes or (parsed.description and len(parsed.description.strip()) >= 6))
+
+
 def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
     raw_interview = state.get("symptom_interview")
@@ -306,6 +316,9 @@ def decide_symptoms(state, *, available_plans=()) -> DiagnosticDecision:
             "symptom_evidence_available",
             selected=[p for p in eligible if set(codes).intersection(p.symptom_codes)],
         )
+    if described(state, issue):
+        # 官方 Q&A 是英文、客户多语言：现象不必先归入中文症状词表，有描述或错误码就交给检索。
+        return result("continue", "symptom_described")
     if not taxonomy_for(category)["families"]:
         # 该品类没有症状词表（目录级品类）：没有判别题可问，按「缺少适用的澄清问题」诚实结束，
         # 不拿别的品类的判别题去问用户

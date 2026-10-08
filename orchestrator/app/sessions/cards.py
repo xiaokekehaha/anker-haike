@@ -45,13 +45,12 @@ def set_catalog(catalog: ProductCatalog | None) -> None:
 
 
 def get_plans() -> PlanLibrary:
-    """预写计划库（票 24：category_only 需要该品类存在 category_generic 计划才允许继续）。"""
-    global _plans
-    if _plans is None:
-        from app.settings import settings
+    """排障计划库：与 app.plans.runtime 同一份（官方 Q&A 生成）；测试可用 set_plans 单独注入。"""
+    if _plans is not None:
+        return _plans
+    from app.plans.runtime import get_plan_library
 
-        _plans = PlanLibrary.from_yaml(settings.plans_config_path)
-    return _plans
+    return get_plan_library()
 
 
 def set_plans(plans: PlanLibrary | None) -> None:

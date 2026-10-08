@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 1d3e396a0657f500a971be6d6f96c4a7fc45b32de11495d409aa77e7147dc26f
+// SHA-256: 6203cbf1fad0a5c03e05892726ac31a03e8b5fc595543ec910bff47b4d7bc5fb
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -2562,6 +2562,31 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "StepCard",
       "type": "object"
     },
+    "StepMedia": {
+      "additionalProperties": false,
+      "description": "官方 Q&A 步骤里附带的图片 / 视频 / 文章链接（原样引用，不进模型上下文）。",
+      "properties": {
+        "kind": {
+          "enum": [
+            "image",
+            "video",
+            "link"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "kind"
+      ],
+      "title": "StepMedia",
+      "type": "object"
+    },
     "StepObservation": {
       "additionalProperties": false,
       "description": "步骤要收集的检查结果：一个问题与有限选项。功能是否恢复仍由 feedback 三态表达。",
@@ -2770,6 +2795,13 @@ export const serverEventSchema = z.fromJSONSchema({
         "instruction": {
           "title": "Instruction",
           "type": "string"
+        },
+        "media": {
+          "items": {
+            "$ref": "#/$defs/StepMedia"
+          },
+          "title": "Media",
+          "type": "array"
         },
         "observations": {
           "items": {

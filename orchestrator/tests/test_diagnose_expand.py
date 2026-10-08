@@ -31,7 +31,7 @@ def test_multiple_hits_yield_single_replacements_then_full():
 
 def test_no_variant_when_canonical_already_present_or_no_hit():
     assert expand_queries("扫地机器人 尘盒 吸力下降", SYN, 2) == []
-    assert expand_queries("EUFY-X10-PRO-OMNI 冒烟", SYN, 2) == []
+    assert expand_queries("T2351 冒烟", SYN, 2) == []
     assert expand_queries("", SYN, 2) == [] and expand_queries("不吸", {}, 2) == []
     assert expand_queries("不吸", SYN, 0) == []
 
@@ -49,11 +49,11 @@ def test_variants_never_add_model_tokens_or_numbers():
 
 def test_repo_synonyms_expand_eval_style_queries():
     syn = get_retrieval_config().query_rewrite.synonyms
-    assert expand_queries("EUFY-X10-PRO-OMNI 不吸", syn, 2) == ["EUFY-X10-PRO-OMNI 吸力下降"]
-    v = expand_queries("EUFY-X10-PRO-OMNI 侧刷不动", syn, 2)
-    assert v == ["EUFY-X10-PRO-OMNI 边刷不动"]
+    assert expand_queries("T2351 不吸", syn, 2) == ["T2351 吸力下降"]
+    v = expand_queries("T2351 侧刷不动", syn, 2)
+    assert v == ["T2351 边刷不动"]
     # 歧义的「刷子」不能被自动定位到滚刷，保留给理解/澄清层处理。
-    v2 = expand_queries("EUFY-X10-PRO-OMNI 侧面那个小刷子不动了", syn, 2)
+    v2 = expand_queries("T2351 侧面那个小刷子不动了", syn, 2)
     assert v2 == []
 
 

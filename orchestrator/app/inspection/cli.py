@@ -43,7 +43,6 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-findings", action="store_true", help="不回填 findings.md")
     ns = ap.parse_args(sys.argv[1:] if argv is None else argv)
     # 与单测同一套默认：stub 模式下不加载故障卡（票 33 的故障卡路径由其单测覆盖），不发任何网络请求
-    os.environ.setdefault("HAIKE_FAULT_CARDS", "off")
     os.environ.setdefault("HAIKE_LLM", "off")
     os.environ.setdefault("HAIKE_KNOWLEDGE", "off")
 

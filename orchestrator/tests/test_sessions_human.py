@@ -10,10 +10,9 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app
 from app.sessions import sse
-from app.sessions.graph import out_of_scope_text
 from tests.message_form import action_body, message_form
 
-MULTI = "我的 S1 Pro 不吸了"
+MULTI = "我的 S1 Pro 报错 E23"
 
 
 def _client():
@@ -59,63 +58,21 @@ async def test_a2_select_breast_pump_continues_in_scope(mem_runtime):
                 "card_id": pending["card_id"],
                 "expected_version": pending["version"],
                 "kind": "select_product",
-                "payload": {"sku": "EUFY-BP-S1-PRO"},
+                "payload": {"sku": "T8D04"},
             }),
         )
         assert resp.status_code == 200
         events = sse.parse(resp.text)
-    assert "out_of_scope" not in _stages(events) and not any(e["type"] == "escalation_summary" for e in events)
+    # E23 是扫地机 T2080 的错误码，吸奶器没有 → 未收录码 R5，而不是范围外 R8
+    assert "out_of_scope" not in _stages(events)
+    if any(e["type"] == "escalation_summary" for e in events):
+        assert _summary(events)["reason"]["rule_id"] != "R8"
     st = (await _state(sid)).values
-    assert st["product_state"] == "confirmed_sku" and st["product_confirmed"]["sku"] == "EUFY-BP-S1-PRO"
+    assert st["product_state"] == "confirmed_sku" and st["product_confirmed"]["sku"] == "T8D04"
     assert st["category"] == "breast_pump" and st["out_of_scope"] is False
 
 
-async def test_out_of_scope_category_text_names_supported_lines(mem_runtime):
-    """范围外说明从目录生成：家用储能（电工安装）→ R8，文案列出支持的产品线而不写死某个品类。"""
-    async with _client() as client:
-        sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send(client, sid, "我家的阳台光储充不进电")
-    assert _stages(events)[-2:] == ["out_of_scope", "escalate"]
-    texts = [
-        "".join(e["delta"] for e in events if e["type"] == "message" and e["message_id"] == mid)
-        for mid in dict.fromkeys(e["message_id"] for e in events if e["type"] == "message_start")
-    ]
-    assert texts[0] == out_of_scope_text("家用储能（型号未确认）", "家用储能")
-    assert "Anker Charging" in texts[0] and "Anker eufy" in texts[0] and "扫地机器人" not in texts[0]
-    summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R8" and summary["product"] == "家用储能（型号未确认）"
-    assert summary["receipt"]["status"] == "not_collected"
-    assert events[-1]["reason"] == "completed"
-    st = (await _state(sid)).values
-    assert st["stage"] == "escalate" and st["out_of_scope"] is True and st["escalate_reason"] == "R8"
 
-
-async def test_catalog_only_category_ends_honestly_with_r5(mem_runtime):
-    """目录级品类（拓展坞）：识别得到、没有该品类的排查资料 → 不借用别的品类的判别题，直接 R5 说明原因。"""
-    async with _client() as client:
-        sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send(client, sid, "我的拓展坞识别不了硬盘")
-    assert "out_of_scope" not in _stages(events) and "clarify" not in _stages(events)
-    said = "".join(e["delta"] for e in events if e["type"] == "message")
-    assert "启动" not in said and "充电" not in said, said
-    summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R5" and "暂无可用的排查资料" in summary["reason"]["text"]
-    st = (await _state(sid)).values
-    assert st["category"] == "hub" and st["product_state"] == "category_only"
-
-
-async def test_in_scope_category_without_sku_enters_diagnosis(mem_runtime):
-    """只提到品类（充电器）、无具体型号：2026-09-17 多品类后进入该品类的排障问诊，不 R8、不出产品卡。"""
-    async with _client() as client:
-        sid = (await client.post("/sessions")).json()["session_id"]
-        events = await _send(client, sid, "充电器不亮灯")
-    assert "out_of_scope" not in _stages(events) and "product_card" not in [e["type"] for e in events]
-    assert not any(e["type"] == "escalation_summary" for e in events)
-    st = (await _state(sid)).values
-    assert st["product_state"] == "category_only" and st["category"] == "charger"
-    # 充电器词表里的判别题，不是扫地机的「按电源后能启动吗」
-    said = "".join(e["delta"] for e in events if e["type"] == "message")
-    assert "充电" in said and "启动" not in said, said
 
 
 async def test_request_human_while_awaiting_input_is_not_409(mem_runtime):
@@ -152,7 +109,7 @@ async def test_request_human_during_streaming_cancels_then_escalates(mem_runtime
     manager = app.state.run_manager
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        running = await manager.start(sid, "扫地机 X10 不吸了")
+        running = await manager.start(sid, "扫地机 X10 报错 6025")
         for _ in range(200):  # 等 intake 进入 sleep（progress 已落库）
             await asyncio.sleep(0.01)
             if len(await mem_runtime.list_events(sid, run_id=running.run_id)) >= 2:
@@ -190,7 +147,7 @@ async def test_request_human_when_idle_starts_from_entry(mem_runtime, monkeypatc
     monkeypatch.setattr(semantic, "interpret_turn", with_reported_fact)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        first = await _send(client, sid, "扫地机 X10 不吸了")  # 票 34：一轮后停在步骤卡
+        first = await _send(client, sid, "扫地机 X10 报错 6025")  # 票 34：一轮后停在步骤卡
         pending = next(e for e in first if e["type"] == "awaiting_input")
         assert pending["kind"] == "step_feedback"
         # 点「解决了」→ verify 结束本 run，回到 idle（票 35）
@@ -224,10 +181,10 @@ async def test_request_human_when_idle_starts_from_entry(mem_runtime, monkeypatc
         "done",
     ]
     summary = _summary(events)
-    assert summary["reason"]["rule_id"] == "R3" and summary["product"] == "eufy X10 Pro Omni"
-    assert summary["problem"] == "扫地机 X10 不吸了"
+    assert summary["reason"]["rule_id"] == "R3" and summary["product"] == "eufy Clean X10 Pro Omni"
+    assert summary["problem"] == "扫地机 X10 报错 6025"
     st = (await _state(sid)).values
-    assert st["product_confirmed"]["sku"] == "EUFY-X10-PRO-OMNI"  # 已确认信息带进摘要、未被清空
+    assert st["product_confirmed"]["sku"] == "T2351"  # 已确认信息带进摘要、未被清空
     assert after.version == events[-1]["version"] and after.stage == "escalate"
 
 

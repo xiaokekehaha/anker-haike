@@ -44,13 +44,13 @@ cases:
     expect:
       findings_include: [{part: 滚刷, phenomenon: 缠绕}]
       findings_exclude: [{part: 滤网, phenomenon: 堵塞}]
-      plan: rv_suction_hair_wrap
+      plan: qa_rv_0272
   - id: scene_no_text
     image: {kind: scene, seed: 7}
     input: {text: ""}
     expect:
       findings_include: [{part: 滚刷, phenomenon: 缠绕}]
-      plan: rv_suction_hair_wrap
+      plan: qa_rv_0272
 
   # A1/A2 幻觉率：完好部件不得被报出故障现象（只允许 正常 / 不可辨）。
   - id: normal_brush
@@ -66,19 +66,19 @@ cases:
   - id: sig_brush_hair
     image: {kind: parts, part: roller_brush, hair: true, seed: 23, label: 滚刷}
     input: {text: ""}
-    expect: {findings_include: [{part: 滚刷, plan: rv_suction_hair_wrap}], plan: rv_suction_hair_wrap}
+    expect: {findings_include: [{part: 滚刷, plan: qa_rv_0272}], plan: qa_rv_0272}
   - id: sig_side_brush
     image: {kind: parts, part: side_brush, hair: true, seed: 24, label: 边刷}
     input: {text: ""}
-    expect: {findings_include: [{part: 边刷, plan: rv_suction_side_brush}], plan: rv_suction_side_brush}
+    expect: {findings_include: [{part: 边刷, plan: qa_rv_0426}], plan: qa_rv_0426}
   - id: sig_filter_clog
     image: {kind: parts, part: filter, dust: true, dust_count: 900, seed: 25, label: 滤网}
     input: {text: ""}
-    expect: {findings_include: [{part: 滤网, plan: rv_suction_filter_clog}], plan: rv_suction_filter_clog}
+    expect: {findings_include: [{part: 滤网, plan: qa_rv_0306}], plan: qa_rv_0306}
   - id: sig_dustbin_full
     image: {kind: parts, part: dustbin, fill_level: 0.95, seed: 26, label: 尘盒}
     input: {text: ""}
-    expect: {findings_include: [{part: 尘盒, plan: rv_suction_dustbin_full}], plan: rv_suction_dustbin_full}
+    expect: {findings_include: [{part: 尘盒, plan: qa_rv_0057}], plan: qa_rv_0057}
 
   # A3：可用判定。模糊 / 过暗的图应判 usable=false（阶段 3 的像素门控上线前，这里只考模型自评）。
   - id: quality_blurry

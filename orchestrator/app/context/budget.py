@@ -42,3 +42,16 @@ def budget_error(messages, spec, *, task=None, schema=None, schema_in_messages=F
     if spec.context_window and tokens + images * 16384 + output_tokens > spec.context_window:
         return "input/schema/images/output exceeds model context window"
     return None
+
+
+def fit_prompt_budget(parts: list[str], *, budget: int) -> tuple[list[str], bool]:
+    """按顺序保留片段直到累计 token 达上限；返回 (保留的片段, 是否截断)。"""
+    used = 0
+    kept: list[str] = []
+    for part in parts:
+        n = estimate_tokens(part)
+        if used + n > budget:
+            return kept, True
+        used += n
+        kept.append(part)
+    return kept, False

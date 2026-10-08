@@ -33,17 +33,19 @@ def test_head_is_single_and_latest():
 
 
 def test_baseline_covers_every_store_ddl():
-    """各 store 的 DDL 建的表，基线迁移必须一张不落（结构唯一来源是 migrations/）。"""
+    """各 store 的 DDL 建的表，基线迁移必须一张不落（结构唯一来源是 migrations/）。
+
+    plans 表仍由基线建，但计划改由官方 Q&A 在内存生成（app.plans.qa），已没有 store 写它；
+    session_actions 由 0005 删除。基线里除这两张外不应再有无主的表。
+    """
     from app.catalog import store as catalog_store
-    from app.plans import store as plans_store
     from app.sessions import store as sessions_store
 
     baseline = _baseline_module()
     migrated = _tables_in("\n".join(baseline.STATEMENTS))
-    expected = (
-        _tables_in(sessions_store.DDL) | _tables_in(catalog_store.DDL) | _tables_in(plans_store.DDL)
-    )
+    expected = _tables_in(sessions_store.DDL) | _tables_in(catalog_store.DDL)
     assert expected <= migrated, expected - migrated
+    assert migrated - expected == {"plans", "session_actions"}
     assert set(baseline.BUSINESS_TABLES) == migrated
 
 

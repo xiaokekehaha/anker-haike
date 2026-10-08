@@ -9,7 +9,7 @@ from itertools import zip_longest
 
 from app.knowledge.adapter import Hit, context_window
 
-SOURCE_PRIORITY = {"kb_manual": 0, "kb_faq": 1, "fault_card": 2, "kb_tickets": 3}
+SOURCE_PRIORITY = {"qa_exact": 0, "kb_qa": 1}
 OUTCOME_LABELS = {"solved": "，已解决工单", "unsolved": "，未解决工单", "unknown": "，结果未知工单"}
 
 

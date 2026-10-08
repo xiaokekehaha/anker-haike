@@ -48,10 +48,10 @@ def test_build_summary_without_model_and_contract_shape():
 
 
 def test_category_only_product_follows_catalog_category():
-    """会话 c9e11（2026-09-17）：移动电源 category_only 的摘要被写成「扫地机器人（型号未确认）」。"""
-    base = {"messages": [{"role": "user", "text": "充电宝充不了电"}], "product_state": "category_only"}
-    assert build_summary({**base, "category": "power_bank"}, reason="R2", lane="domestic").product == "移动电源（型号未确认）"
-    assert build_summary({**base, "category": "earbuds"}, reason="R2", lane="domestic").product == "无线耳机（型号未确认）"
+    """会话 c9e11（2026-09-17）：非扫地机 category_only 的摘要被写成「扫地机器人（型号未确认）」。"""
+    base = {"messages": [{"role": "user", "text": "吸奶器吸力很弱"}], "product_state": "category_only"}
+    assert build_summary({**base, "category": "breast_pump"}, reason="R2", lane="domestic").product == "吸奶器（型号未确认）"
+    assert build_summary({**base, "category": "security_cam"}, reason="R2", lane="domestic").product == "家庭安防摄像头（型号未确认）"
     # 品类缺失时不猜品类
     assert build_summary(base, reason="R2", lane="domestic").product == "未确认"
 

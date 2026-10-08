@@ -22,6 +22,7 @@ from httpx import ASGITransport, AsyncClient
 from langgraph.checkpoint.memory import InMemorySaver
 from pydantic import Field
 
+from app.actions.runtime import configure as configure_services
 from app.diagnose.config import RetrievalConfig, get_retrieval_config, set_retrieval_config
 from app.images.runtime import set_image_store
 from app.images.store import InMemoryImageStore
@@ -34,7 +35,7 @@ from app.models.registry import ModelRegistry
 from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
 from app.observability.alerts import AlertManager, Thresholds, set_alert_manager
-from app.plans import PlanLibrary
+from app.plans.qa import qa_plan_library
 from app.plans.runtime import set_plan_library
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
@@ -70,12 +71,21 @@ lanes:
 """
 
 # ---- 常用脚本 ----
-INTAKE_X9 = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X9 Pro"], "facts": [{"value": "不吸了", "quote": "$current"}, {"value": "滚刷缠头发", "quote": "$current"}]}
-INTAKE_X10 = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10"], "facts": [{"value": "不吸了", "quote": "$current"}]}
-INTAKE_NONE = {"primary_intent": "report_problem", "device_relation": "current", "facts": [{"value": "不吸了", "quote": "$current"}]}
-SYNTH_HAIR = {"hypotheses": [
-    {"plan_id": "rv_suction_hair_wrap", "confidence": 0.85, "evidence_ids": ["c12"]},
-    {"plan_id": "rv_suction_filter_clog", "confidence": 0.4, "evidence_ids": ["c15"]},
+# A1 主路径 = 主办方工单 T11 原文：S1 Pro App 结构化报错，PN T2080A 锁定型号，EB1L 精确命中官方 Q&A rv-0481（5 步）。
+A1_TEXT = """Product Name: S1 Pro
+Product PN: T2080A
+Product SN: 12345678A
+Problem Type: ERROR
+Problem Code: 21037332-
+Problem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.
+Problem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.
+Problem Upload Images: []"""
+A1_PLAN = "qa_rv_0481"
+A1_EVIDENCE = "qa:rv-0481"  # 错误码精确命中的本地证据 id（source=qa_exact）
+INTAKE_A1 = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["S1 Pro"],
+             "facts": [{"value": "EB1L 加清水异常，任务结束", "quote": "$current"}]}
+SYNTH_A1 = {"hypotheses": [
+    {"plan_id": A1_PLAN, "confidence": 0.9, "evidence_ids": [A1_EVIDENCE]},
 ]}
 REDX = {"primary_intent": "correct", "device_relation": "current", "product_hints": [], "facts": []}
 OBS_SMOKE = {"observations": ["smoke coming out of the vent", "外壳发黑"], "visible_parts": ["机身"]}
@@ -157,12 +167,24 @@ def make_router(tmp_dir, scripts: dict[str, list[Any]] | None = None, *, fail_al
     return router, fake
 
 
-def hit(eid: str, snippet: str, score: float = 0.4, doc: str = "manual_rv_v1", kb: str = "kb_manual") -> Hit:
-    return Hit(eid, "k-" + doc, eid, doc, "2026-09-12.1", kb, snippet, score)
+def hit(eid: str, snippet: str, score: float = 0.4, doc: str = "rv-0481", kb: str = "kb_qa") -> Hit:
+    """kb_qa 命中：doc 是官方 Q&A 条目 id，对应计划 qa_<doc>。"""
+    return Hit(eid, "k-" + doc, eid, doc, "2026-10-08.1", kb, snippet, score)
+
+
+def OK_A1() -> ToolResult:
+    """EB1L 加清水异常的语义命中（rv-0481）+ 一条相关度低的 S1 Pro 条目（rv-0408 滚刷堵塞）。"""
+    return ToolResult("ok", [
+        hit("c12", "S1 Pro has EB1L: robot injecting clean water abnormally. Check the seal ring of the clean water tank outlet."),
+        hit("c15", "S1 Pro has E1: Roller brush blocked. Remove the roller brush guard and check for foreign objects.", 0.2, doc="rv-0408"),
+    ], allowed_count=2)
 
 
 def OK_HAIR() -> ToolResult:
-    return ToolResult("ok", [hit("c12", "翻转主机取出滚刷，割断缠绕的毛发"), hit("c15", "取出滤网清洗", 0.2)], allowed_count=2)
+    """X10 Pro Omni 滚刷缠发 / 卡住（rv-0272）的语义命中：没有错误码时只能靠检索拿到候选。"""
+    return ToolResult("ok", [
+        hit("c21", "X10 Pro Omni roller brush stuck: turn the robot over, take out the roller brush, and clean the hair on both ends.", doc="rv-0272"),
+    ], allowed_count=2)
 
 
 def NO_MATCH() -> ToolResult:
@@ -262,7 +284,7 @@ class Harness:
         self.manager = RunManager(self.store, self.graph)
         self.images = InMemoryImageStore()
         self.router, self.fake = (None, None) if no_router else make_router(tmp_dir, scripts, fail_all=fail_all_models)
-        self.adapter = adapter if adapter is not None else ScriptedAdapter({"kb_manual": [OK_HAIR()]})
+        self.adapter = adapter if adapter is not None else ScriptedAdapter({"kb_qa": [OK_A1()]})
         self.retrieval = retrieval
         self.alerts = AlertManager([], Thresholds(model_fail_streak=3, cooldown_s=0))
         self.metrics = MetricCapture()
@@ -275,11 +297,13 @@ class Harness:
         app.state.run_manager = self.manager
         app.state.session_lock = InMemorySessionLock()
         app.state.image_store = self.images
+        # 与线上一致：业务服务（主办方订单 + 服务单 + 案件）始终就绪，规则兜底解释与 SOP 质保分流依赖它
+        app.state.l3_services = configure_services(memory=True)
         set_image_store(self.images)
         set_model_router(self.router)
         set_knowledge_adapter(self.adapter)
         set_rules_service(RulesService(CONFIG_DIR / "rules" / "safety_terms.yaml", hot_reload=False))
-        set_plan_library(PlanLibrary.from_yaml(CONFIG_DIR / "plans.yaml"))
+        set_plan_library(qa_plan_library())
         set_retrieval_config(self.retrieval)
         set_alert_manager(self.alerts)
         logging.getLogger("observability").addHandler(self.metrics)
@@ -297,6 +321,8 @@ class Harness:
         set_knowledge_adapter(None)
         set_model_router(None)
         set_image_store(None)
+        configure_services(None)
+        app.state.l3_services = None
         app.state.image_store = None
         app.state.session_store = None
         app.state.session_graph = None

@@ -19,14 +19,15 @@ from typing import Any, Literal, Protocol
 import httpx
 import yaml
 
-from app.knowledge.ingest import KB_MANUAL, KB_TICKETS, sku_list_of
+from app.knowledge.ingest import sku_list_of
+from app.knowledge.official_qa import KB_QA
 from app.knowledge.weknora_client import WeKnoraClient, WeKnoraError
 
 log = logging.getLogger("knowledge.adapter")
 
 ProductState = Literal["confirmed_sku", "category_only", "unknown"]
 Status = Literal["ok", "no_match", "unavailable", "replay"]
-KbName = Literal["kb_manual", "kb_tickets"]
+KbName = Literal["kb_qa"]
 
 CANDIDATE_CHARS = 4000  # 单条候选正文上限，不按展示摘要总字数删除候选
 SNIPPET_CHARS = 400
@@ -272,7 +273,7 @@ class WeKnoraKnowledgeAdapter:
         self.client = client
         self.kb_ids = {k: v for k, v in kb_ids.items() if k in (KB_ALIASES)}
         self.snippet_chars = snippet_chars
-        self.index: dict[KbName, list[IndexEntry]] = {"kb_manual": [], "kb_tickets": []}
+        self.index: dict[KbName, list[IndexEntry]] = {"kb_qa": []}
         self.index_loaded_at: float | None = None
         # 阶段 4：手册库子块缓存 knowledge_id → [chunk dict]（工单单块，不缓存）
         self.chunks: dict[str, list[dict[str, Any]]] = {}
@@ -282,7 +283,7 @@ class WeKnoraKnowledgeAdapter:
     async def refresh_index(self) -> dict[str, int]:
         """启动时拉取全部 knowledge 元数据，按 (scope, sku_list, category) 建索引；知识入库后需重刷。"""
         counts: dict[str, int] = {}
-        for kb in ("kb_manual", "kb_tickets"):
+        for kb in ("kb_qa",):
             kb_id = self.kb_ids.get(kb)
             if not kb_id:
                 continue
@@ -297,7 +298,7 @@ class WeKnoraKnowledgeAdapter:
         log.info("knowledge index refreshed %s", counts)
         return counts
 
-    async def refresh_chunks(self, kb: KbName = "kb_manual") -> int:
+    async def refresh_chunks(self, kb: KbName = "kb_qa") -> int:
         """拉取手册库每份知识的子块列表（阶段 4 父块扩展用）；失败只记日志，扩展退化为不扩展。"""
         n = 0
         for e in self.index.get(kb, []):
@@ -318,7 +319,7 @@ class WeKnoraKnowledgeAdapter:
         for h in hits:
             if len(done) >= max_items:
                 break
-            if h.source != "kb_manual" or h.full_text:
+            if h.source != "kb_qa" or h.full_text:
                 continue
             chunks = self.chunks.get(h.knowledge_id)
             if not chunks:
@@ -451,4 +452,4 @@ class WeKnoraKnowledgeAdapter:
         )
 
 
-KB_ALIASES = {"kb_manual", "kb_tickets", "kb_faq", KB_MANUAL, KB_TICKETS}
+KB_ALIASES = {"kb_qa", KB_QA}

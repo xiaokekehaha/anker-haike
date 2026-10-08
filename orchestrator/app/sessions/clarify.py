@@ -29,8 +29,8 @@ CLARIFY_BUDGET_MS = 4000
 CLARIFY_PROMPT_VERSION = "2026-09-15.1"
 
 FIXED_QUESTIONS: dict[str, str] = {
-    "product": "请告诉我设备的品类，例如扫地机器人、吸奶器或充电宝；知道型号也可以一起提供。",
-    "symptom": "请具体描述一下故障现象：是吸力变弱、无法启动、有异响，还是其他情况？",
+    "product": "请告诉我设备的品类和型号，例如扫地机器人 X10 Pro Omni、Omni E25 / E28、S1 Pro，吸奶器 S1 Pro，或 SoloCam S340 摄像头。",
+    "symptom": "请具体描述一下故障现象，或告诉我 App 里显示的错误码（例如 3212、E41）。",
     "conflict": "您之前确认的是 {confirmed}，这次提到的是 {mentioned}，请问需要排查的是哪一台？",
 }
 
@@ -73,7 +73,15 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     confirmed = state.get("product_confirmed") or None
 
     # ---- 1) 产品 ----
-    cands = _lookup(catalog, text, hints)
+    # App 报错 / RMA 表单里的 PN（T2080A、T8D04121…）是设备自报的型号：直接按 PN 锁定，「S1 Pro」同名也不再出卡
+    from app.official.message import parse_message
+
+    parsed_pn = parse_message(text).pn
+    pinned = catalog.get(parsed_pn) if parsed_pn else None
+    if pinned is None and parsed_pn:
+        pinned = next(iter(catalog.lookup_product(parsed_pn)), None)
+        pinned = catalog.get(pinned.sku) if pinned else None
+    cands = [pinned.to_candidate().model_dump()] if pinned and pinned.in_scope else _lookup(catalog, text, hints)
     category = catalog.category_hint(text) or next(
         (catalog.category_hint(h) for h in hints if catalog.category_hint(h)), None
     )
@@ -154,7 +162,12 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
         else:
             update["product_candidates"] = []
             # 用户放弃卡片、原文含品类词、或历史线索含品类词 → category_only；方案覆盖不影响品类事实
-            if category and category in catalog.categories:
+            only = [p for p in catalog.products if p.category == category and p.in_scope] if category else []
+            if len(only) == 1:
+                # 品类下只有一款产品（吸奶器 T8D04、SoloCam S340）：品类即型号，直接确认，不出型号卡
+                update.update(_confirm(only[0].to_candidate().model_dump()))
+                confirmed = update["product_confirmed"]
+            elif category and category in catalog.categories:
                 spec = catalog.categories.get(category)
                 update.update(
                     {

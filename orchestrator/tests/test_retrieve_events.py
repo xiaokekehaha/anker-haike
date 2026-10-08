@@ -31,9 +31,9 @@ class FakeAdapter:
             evidence_id="chunk-c12",
             knowledge_id="k1",
             chunk_id="chunk-c12",
-            doc_id="manual_rv_v1",
+            doc_id="rv-0272",
             doc_version="2026-09-12.1",
-            source="kb_manual",
+            source="kb_qa",
             snippet="翻转主机，按下滚刷盖两侧卡扣取出滚刷……",
             score=0.42,
         )
@@ -59,7 +59,7 @@ async def _run(text: str, adapter):
 
 async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     ad = FakeAdapter("ok")
-    _, _, events, snap, state = await _run("eufy X9 Pro 扫地机不吸了，滚刷缠了很多头发", ad)
+    _, _, events, snap, state = await _run("eufy X10 Pro Omni 扫地机不吸了，滚刷缠了很多头发", ad)
     for e in events:
         parse_event(e)
     types = [e["type"] for e in events]
@@ -79,12 +79,12 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     # 检索范围来自确认的产品；查询用抽取到的症状，本测试模型关闭 → 退回原文
     kb, query, scope = ad.calls[0]
     assert (kb, scope.product_state, scope.sku, scope.category) == (
-        "kb_manual",
+        "kb_qa",
         "confirmed_sku",
-        "EUFY-X9-PRO",
+        "T2351",
         "robot_vacuum",
     )
-    assert query.startswith("eufy X9 Pro")
+    assert query.startswith("eufy Clean X10 Pro Omni")
     assert state.values["knowledge_status"] == "ok" and "chunk-c12" in state.values["evidence"]
     kinds = [i["kind"] for i in snap["timeline"]]
     assert "tool" in kinds and "evidence" in kinds  # 时间线出现工具行与来源列表
@@ -101,13 +101,13 @@ async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             e1 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 不吸了"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了"}))
                 ).text
             )
             after_first = len(ad.calls)
             e2 = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 还是不吸"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 还是不吸"}))
                 ).text
             )
             state = await app.state.session_graph.aget_state({"configurable": {"thread_id": sid}})
@@ -118,31 +118,28 @@ async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
     def ids(events):
         return [i["evidence_id"] for e in events if e["type"] == "evidence" for i in e["items"]]
 
-    # chunk-c12 的正文就是 c12 那段已审核原文 → 锚点认得出，不再发一条内容重复的本地副本
-    assert ids(e1) == ["chunk-c12"]
+    # 检索命中 + 命中 Q&A 生成的计划步骤（approved_plan）
+    assert ids(e1)[0] == "chunk-c12" and all(i.startswith("plan:rv-0272#") for i in ids(e1)[1:])
     # 复述没有改变事实修订号与计划库版本 → retrieval_basis 未变，既不重新检索，也不重发同一条证据。
     # 前端按 first_seq 与 id upsert 进常驻时间线，首轮那条仍在，用户侧看不到差别。
     assert ids(e2) == [] and len(ad.calls) == after_first
-    assert list(state.values["evidence"]) == ["chunk-c12"]  # 累积去重，可被 step.evidence_ids 引用
+    assert next(iter(state.values["evidence"])) == "chunk-c12"  # 累积去重，可被 step.evidence_ids 引用
 
 
 async def test_unavailable_marks_failed_but_flow_continues(mem_runtime):
-    _, _, events, snap, state = await _run("eufy X9 Pro 不吸了", FakeAdapter("unavailable"))
+    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了", FakeAdapter("unavailable"))
     tools = [e for e in events if e["type"] == "tool_call"]
     assert [t["status"] for t in tools] == ["started", "failed"] and "暂不可用" in tools[1][
         "summary"
     ]
-    assert all(i["source"] == "approved_plan" for e in events if e["type"] == "evidence" for i in e["items"])
-    assert events[-1]["type"] == "done" and events[-1]["reason"] == "awaiting_input"
-    assert "diagnose" in [e["stage"] for e in events if e["type"] == "progress"]
-    assert state.values["knowledge_status"] == "unavailable" and snap["stage"] in (
-        "diagnose",
-        "guide",
-    )
+    # 没有错误码、知识库又不可用：没有可依据的官方 Q&A，不编步骤，整理摘要转人工
+    assert not [e for e in events if e["type"] == "step_card"]
+    assert events[-1]["type"] == "done" and any(e["type"] == "escalation_summary" for e in events)
+    assert state.values["knowledge_status"] == "unavailable"
 
 
 async def test_no_match_has_text_marker(mem_runtime):
-    _, _, events, _, state = await _run("eufy X9 Pro 不吸了", FakeAdapter("no_match"))
+    _, _, events, _, state = await _run("eufy X10 Pro Omni 不吸了", FakeAdapter("no_match"))
     finished = [e for e in events if e["type"] == "tool_call" and e["status"] == "finished"]
     assert finished and finished[0]["summary"] == "未找到匹配知识，按标准排障流程"
     assert state.values["knowledge_status"] == "no_match"
@@ -156,13 +153,13 @@ async def test_adapter_disabled_is_failed_tool_call(mem_runtime):
             sid = (await client.post("/sessions")).json()["session_id"]
             events = sse.parse(
                 (
-                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X9 Pro 不吸了"}))
+                    await client.post(f"/sessions/{sid}/messages", data=await message_form(client, f"/sessions/{sid}/messages", {"text": "X10 Pro Omni 不吸了"}))
                 ).text
             )
     finally:
         set_rules_service(None)
     assert [e["status"] for e in events if e["type"] == "tool_call"] == ["started", "failed"]
-    assert events[-1]["reason"] == "awaiting_input"  # 标准流程步骤卡
+    assert any(e["type"] == "escalation_summary" for e in events)  # 无知识依据 → 转人工，不给自编步骤
 
 
 async def test_unknown_product_does_not_retrieve(mem_runtime):

@@ -17,7 +17,7 @@ from app.knowledge.adapter import Hit, KnowledgeScope, ToolResult
 from app.knowledge.faq import LocalFaqIndex
 from app.knowledge.rerank import DashScopeReranker, rerank_trace
 
-WEKNORA_KBS = ("kb_manual", "kb_tickets")
+WEKNORA_KBS = ("kb_qa",)
 _STATUS_RANK = {"ok": 0, "replay": 0, "no_match": 1, "unavailable": 2}
 
 
@@ -217,7 +217,7 @@ async def search_round(
     return RoundOutcome(results=results, trace=trace, queries=queries)
 
 
-KB_PRIORITY = {"kb_manual": 0, "kb_faq": 1, "kb_tickets": 2}
+KB_PRIORITY = {"kb_qa": 0}
 
 
 def interleave_kbs(

@@ -55,8 +55,10 @@ kb-official-build: ## 校验来源哈希、型号与语义单元长度，生成�
 	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official build
 kb-official-verify: ## 实测官方批次的来源元数据、完整切块、型号隔离与逐条 Top-5 召回
 	cd orchestrator && uv run --env-file ../.env python -m app.knowledge.official_verify
-kb-ingest: ## 幂等导入 kb_manual / faq / kb_tickets 并写 manifest（PRUNE=1 清理多余条目；RECREATE_KB=1 换 embedding 时删库重建）
-	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(PRUNE),--prune,) $(if $(RECREATE_KB),--recreate-kb,)
+kb-ingest: ## 官方 Q&A 幂等导入 haike_kb_qa（一条 Q&A 一个知识），删除旧中文手册 / FAQ / 合成工单库，写 manifest；结束后重建 BM25 索引
+	cd orchestrator && uv run --env-file ../.env haike-kb ingest $(if $(KEEP_LEGACY),--keep-legacy,)
+	@# WeKnora v0.8.0 + ParadeDB：批量删除知识后 bm25 索引会残留失效行指针（item_pointer_is_valid 断言），关键词检索 500；重建即恢复
+	$(COMPOSE) exec -T postgres sh -c 'psql -U "$$POSTGRES_USER" -d "$${POSTGRES_DB:-WeKnora}" -c "REINDEX INDEX embeddings_search_idx;"'
 
 kb-eval: ## 检索评测（ARM=A|B|C，默认 A）：data/eval/retrieval/cases.yaml → reports/retrieval/
 	cd orchestrator && uv run --env-file ../.env haike-kb eval --arm $(or $(ARM),A)

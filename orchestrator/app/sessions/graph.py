@@ -20,6 +20,7 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from app.context.budget import fit_prompt_budget
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
@@ -32,22 +33,19 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
-from app.diagnose.decision import constrain_plans, selected_symptom_codes
+from app.diagnose.decision import constrain_plans
 from app.diagnose.grade import apply_assessment, grade_hits
-from app.diagnose.localization import part_categories, signature_matches, signature_plans
+from app.diagnose.localization import part_categories, signature_matches
 from app.diagnose.observations import record_observations
 from app.diagnose.query import category_label, product_term
 from app.diagnose.vision import observe_images
 from app.emotion.policy import complaint_flagged, evaluate_emotion
 from app.escalation.polish import polish_summary
 from app.escalation.summary import build_summary, reassurance_text
-from app.faultcards import fit_prompt_budget
-from app.faultcards.runtime import get_fault_card_library
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
 from app.images.runtime import current_image_store
 from app.knowledge.adapter import Hit, KnowledgeScope
 from app.knowledge.context import pack_hits, select_hits
-from app.knowledge.faq import get_faq_index
 from app.knowledge.rerank import DashScopeReranker
 from app.knowledge.runtime import ensure_index, get_knowledge_adapter
 from app.knowledge.search import interleave_kbs, search_round
@@ -186,9 +184,8 @@ class SessionState(TypedDict, total=False):
         str | None
     )  # grade 的 coverage（sufficient / insufficient / none / unknown），未评分为 None
     query: str | None
-    # 票 33：故障卡预加载 {key, doc_version, tokens, text} 与本 run 命中的 plan_id；diagnose_outcome ∈ evidence|standard_flow|escalate
-    fault_card: dict[str, Any] | None
-    fault_card_hits: list[str]
+    # 客户消息里的错误码（精确命中官方 Q&A 的依据）；diagnose_outcome ∈ evidence|exact_code|warranty|escalate
+    error_codes: list[str]
     diagnose_outcome: dict[str, Any] | None
     plan_cursor: dict[str, Any] | None
     # 票 34 / 35（09 §3.3）：steps_executed [{plan_id, step_id, card_id, title, instruction_src, feedback, note?, ts}]；
@@ -421,10 +418,6 @@ async def vision(state: SessionState) -> SessionState:
         if len(categories) == 1:
             update["visual_product"] = {"category": categories.pop(), "image_ids": out.used_image_ids}
     if out.fault_localization is not None:
-        # 注意：不要在这里写 fault_card_hits —— 那个键存的是检索给出的 chunk_id，
-        # 而签名映射给的是 plan_id，两种语义混在一个键里。签名先验真正的消费点在 retrieve
-        # （见 `signature_plans(state['fault_localization'], card.faults)`），它直接读 fault_localization，
-        # 所以这里只要把定位结果放进状态就够了。
         update.update(
             fault_localization=out.fault_localization,
             image_quality=out.fault_localization["image_quality"],
@@ -1679,6 +1672,44 @@ def knowledge_scope_of(state: SessionState) -> KnowledgeScope:
     return KnowledgeScope(ps, category, product.get("sku") if ps == "confirmed_sku" else None, category_skus=category_skus)  # type: ignore[arg-type]
 
 
+def exact_code_hits(state: SessionState, scope: KnowledgeScope) -> dict[str, Any]:
+    """客户消息里的错误码在官方 Q&A 里的精确命中（按已确认型号；型号未定时按码反查唯一型号族）。
+
+    返回 codes / evidence（本地证据，source=qa_exact）/ warranty（命中条目为硬件故障结论时的计划 id）/
+    miss（报了码但官方未收录）。
+    """
+    from app.official.message import parse_message
+    from app.official.qa_index import get_qa_index
+
+    index = get_qa_index()
+    texts = [state.get("text") or "", *[str(s) for s in state.get("symptoms") or []]]
+    codes: list[str] = list(dict.fromkeys(c for t in texts for c in parse_message(t).codes))
+    codes += [c for c in state.get("error_codes") or [] if c not in codes]
+    if not codes:
+        return {"codes": [], "evidence": [], "warranty": None, "miss": False}
+    guides = []
+    for code in codes:
+        guides += [g for g in index.lookup(scope.sku, code) if g.visible and g not in guides]
+    if not guides:
+        return {"codes": codes, "evidence": [], "warranty": None, "miss": True}
+    evidence = [
+        {
+            "evidence_id": f"qa:{g.qa_id}",
+            "source": "qa_exact",
+            "doc_id": g.qa_id,
+            "doc_version": index.version,
+            "chunk_id": g.qa_id,
+            "snippet": g.answer[:400] if g.kind != "steps" else " ".join(st.text for st in g.steps)[:400],
+            "score": 1.0,
+            "status": "ok",
+            "knowledge_title": g.title,
+        }
+        for g in guides
+    ]
+    warranty = next((g.plan_id for g in guides if g.kind == "warranty"), None)
+    return {"codes": codes, "evidence": evidence, "warranty": warranty if len(guides) == 1 else None, "miss": False}
+
+
 def retrieval_query(state: SessionState) -> str:
     """规范化查询（03 §1.4.1）：已确认产品 / 品类 + 有效症状；症状为空退回原文；unknown 返回空串。"""
     return build_query(dict(state))
@@ -1725,7 +1756,6 @@ async def _search_round(
         round_no=round_no,
         session_id=session_id,
         run_id=run_id,
-        faq_index=get_faq_index() if rcfg.faq.enabled else None,
         reranker=_reranker(rcfg) if rcfg.rerank.enabled else None,
         allow_rerank=allow_rerank,
     )
@@ -1891,34 +1921,57 @@ async def retrieve(state: SessionState) -> SessionState:
                 }
             ],
         }
-    # 票 33：产品确认后预加载故障卡（≤ 800 token 常驻），按症状 / 查询命中的条目作为 fault_card 证据
-    fc_lib = get_fault_card_library()
-    card = fc_lib.for_scope(sku=scope.sku, category=scope.category) if fc_lib else None
-    fault_card_state = None
-    fc_evidence: list[dict[str, Any]] = []
-    if card is not None:
-        fc_hits = card.match([query, *[str(s) for s in state.get("symptoms") or []]], symptom_codes=state.get("symptom_codes") or [])
-        signature_ids=signature_plans(state.get('fault_localization'), card.faults)
-        fc_hits=[*[f for f in card.faults if f.plan_id in signature_ids], *[f for f in fc_hits if f.plan_id not in signature_ids]]
-        allowed_ids = {
-            p.plan_id for p in constrain_plans(state, get_plan_library().allowed_for(
-                category=scope.category, sku=scope.sku,
-            ))
+    # 错误码精确命中（官方 Q&A 标题里的码 + 型号）：先于语义检索，作为本地证据进入排序与步骤主引用。
+    exact = exact_code_hits(state, scope)
+    fc_evidence: list[dict[str, Any]] = exact["evidence"]
+    if exact["miss"]:
+        # 客户报了错误码、官方 Q&A 未收录：不拿相近码顶替（T13 的 5116 ≠ 5112），如实说明后转人工。
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "code_miss",
+            "query": query,
+            "error_codes": exact["codes"],
+            "plans_ranked": [],
+            "diagnose_outcome": {"mode": "escalate", "reason": "R5", "knowledge_status": "code_miss",
+                                 "codes": exact["codes"]},
+            "escalate_reason": "R5",
+            "plan_cursor": None,
+            "observations": [*(state.get("observations") or []),
+                             "错误码 " + "、".join(exact["codes"]) + " 未在官方知识库收录，需人工核实"],
+            "retrieval_trace": [{"round": 0, "status": "code_miss", "codes": exact["codes"],
+                                 "session_id": session_id, "run_id": run_id}],
         }
-        fc_hits = [f for f in fc_hits if f.plan_id in allowed_ids]
-        fault_card_state = {
-            "key": card.key,
-            "doc_version": card.doc_version,
-            "tokens": card.tokens(),
-            "text": card.render(fc_hits),
+    if exact["warranty"]:
+        # 官方 Q&A 判定为硬件故障（hardware malfunction / warranty service）：不发排障步骤，直接进质保判断。
+        items = [{k: v for k, v in it.items() if k != "knowledge_title"} for it in fc_evidence]
+        writer({"type": "evidence", "items": items})
+        for it in items:
+            evidence[it["evidence_id"]] = it
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "ok",
+            "evidence": evidence,
+            "current_evidence_ids": [it["evidence_id"] for it in fc_evidence],
+            "query": query,
+            "error_codes": exact["codes"],
+            "plans_ranked": [{"plan_id": exact["warranty"], "version": 1, "confidence": 1.0,
+                              "evidence_ids": [it["evidence_id"] for it in fc_evidence], "source": "exact_code"}],
+            "diagnose_outcome": {"mode": "warranty", "reason": "hardware_malfunction", "plan_id": exact["warranty"]},
+            "escalate_reason": "R6",
+            "plan_cursor": None,
+            "observations": [*(state.get("observations") or []),
+                             "官方知识判定为硬件故障（" + exact["warranty"] + "），按 SOP 进入质保判断"],
+            "retrieval_trace": [{"round": 0, "status": "exact_code_warranty", "codes": exact["codes"],
+                                 "plan_id": exact["warranty"], "session_id": session_id, "run_id": run_id}],
         }
-        fc_evidence = card.evidence_items(fc_hits)
     local_hits = [
         Hit(
             evidence_id=it["evidence_id"], knowledge_id=it["doc_id"], chunk_id=it["chunk_id"],
             doc_id=it["doc_id"], doc_version=it["doc_version"], source=it["source"],
             snippet=it["snippet"], score=it["score"], content=it["snippet"],
-            knowledge_title=f"故障卡 {it['doc_id']}",
+            knowledge_title=it.get("knowledge_title") or it["doc_id"],
         )
         for it in fc_evidence
     ]
@@ -1943,7 +1996,7 @@ async def retrieve(state: SessionState) -> SessionState:
             }
         )
         for it in fc_evidence:
-            evidence[it["evidence_id"]] = it
+            evidence[it["evidence_id"]] = {k: v for k, v in it.items() if k != "knowledge_title"}
         selection = pack_hits(
             local_hits, max_items=rcfg.retrieval.final_k,
             max_chars=rcfg.retrieval.context_chars, item_chars=rcfg.retrieval.item_chars,
@@ -1955,7 +2008,7 @@ async def retrieve(state: SessionState) -> SessionState:
             _diagnose_outcome(
                 plans.get("plans_ranked") or [],
                 knowledge_status="unavailable",
-                fault_card_hits=[e["chunk_id"] for e in fc_evidence],
+                exact_hits=[e["chunk_id"] for e in fc_evidence],
                 exhausted_plans=state.get("exhausted_plans") or [],
             )
         )
@@ -1965,8 +2018,7 @@ async def retrieve(state: SessionState) -> SessionState:
             "knowledge_status": "unavailable",
             "evidence": evidence,
             "current_evidence_ids": list(round_evidence),
-            "fault_card": fault_card_state,
-            "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
+            "error_codes": exact["codes"],
             "query": query,
             "retrieval_trace": [
                 {
@@ -2246,14 +2298,14 @@ async def retrieve(state: SessionState) -> SessionState:
         "session_id": session_id, "run_id": run_id,
     })
     for it in fc_evidence:
-        evidence.setdefault(it["evidence_id"], it)
+        evidence.setdefault(it["evidence_id"], {k: v for k, v in it.items() if k != "knowledge_title"})
     plans = await _synthesize_step(state, round_evidence, lane, rcfg)
     trace += plans.pop("retrieval_trace", [])
     plans.update(
         _diagnose_outcome(
             plans.get("plans_ranked") or [],
             knowledge_status=status,
-            fault_card_hits=[e["chunk_id"] for e in fc_evidence],
+            exact_hits=[e["chunk_id"] for e in fc_evidence],
             exhausted_plans=sorted(effective_exhausted(state)),
         )
     )
@@ -2272,8 +2324,7 @@ async def retrieve(state: SessionState) -> SessionState:
             if assessment is not None and assessment.status == "graded"
             else None
         ),
-        "fault_card": fault_card_state,
-        "fault_card_hits": [e["chunk_id"] for e in fc_evidence],
+        "error_codes": exact["codes"],
         # 本次候选依据的事实修订号与计划库版本；两者都没变时 _after_product 不再重新检索
         "retrieval_basis": {
             "issue_revision": ((state.get("issues") or {}).get(state.get("active_issue_id")) or {}).get("issue_revision"),
@@ -2286,24 +2337,20 @@ async def retrieve(state: SessionState) -> SessionState:
 async def _synthesize_step(
     state: SessionState, round_evidence: dict[str, dict[str, Any]], lane: str, rcfg
 ) -> dict[str, Any]:
+    """候选计划 = 本轮命中的官方 Q&A 对应的计划（错误码精确命中优先，其次检索命中），由模型在其中排序。"""
     scope = knowledge_scope_of(state)
-    codes = set(state.get("symptom_codes") or [])
-    chosen = set(selected_symptom_codes(state))
-    library = get_plan_library().allowed_for(category=scope.category, sku=scope.sku)
-    if chosen:
-        # 用户在问诊里亲自选定的现象是事实：码外计划不进模型可选集合（票 19），没有码内计划就按 R5 如实结束，
-        # 否则模型会被迫从无关计划里挑（会话 e84456：选了「拖地异常」却下发了四步吸力排查）
-        allowed = [p for p in library if chosen.intersection(p.symptom_codes)]
-    else:
-        # 自由文本的粗分类只决定候选顺序（码内优先），不把码外计划删掉，
-        # 否则分类一错，正确的计划模型永远看不到（会话 37cea3：「很慢」被归入 pb_no_input）
-        allowed = sorted(library, key=lambda p: not codes.intersection(p.symptom_codes))
-    allowed = constrain_plans(state, allowed)
+    library = get_plan_library()
+    allowed_by_id = {p.plan_id: p for p in library.allowed_for(category=scope.category, sku=scope.sku)}
+    hit_ids: list[str] = []
+    for item in round_evidence.values():
+        plan_id = "qa_" + str(item.get("doc_id") or "").replace("-", "_")
+        if plan_id in allowed_by_id and plan_id not in hit_ids:
+            hit_ids.append(plan_id)
+    allowed = constrain_plans(state, [allowed_by_id[i] for i in hit_ids])
     out = await synthesize(
         get_model_router(),
         state=dict(state),
         allowed=allowed,
-        symptom_codes=sorted(codes),
         evidence=list(round_evidence.values()),
         observations=list(state.get("image_observations") or []),
         budget_ms=min(rcfg.synthesize.budget_ms, max(1000, _remaining_ms(state) - 2000)),
@@ -2328,7 +2375,7 @@ async def _synthesize_step(
 
 
 def _diagnose_outcome(
-    plans_ranked: list[dict[str, Any]], *, knowledge_status: str, fault_card_hits: list[str],
+    plans_ranked: list[dict[str, Any]], *, knowledge_status: str, exact_hits: list[str],
     exhausted_plans: list[str] = (),
 ) -> dict[str, Any]:
     """票 33 / 09 §4：有假设 → 进 guide；来源 synthesize（有证据）或 standard_flow（预写计划默认顺序）；无适用计划 → R5。"""
@@ -2354,11 +2401,11 @@ def _diagnose_outcome(
     mode = (
         "standard_flow"
         if first.get("source") == "standard_flow"
-        else ("fault_card" if fault_card_hits and knowledge_status != "ok" else "evidence")
+        else ("exact_code" if exact_hits else "evidence")
     )
     note = {
         "evidence": None,
-        "fault_card": "依据产品故障卡",
+        "exact_code": "依据官方错误码说明",
         "standard_flow": "按标准排障流程"
         if knowledge_status == "no_match"
         else "知识库暂不可用，按标准排障流程",
@@ -2627,11 +2674,13 @@ async def escalate(state: SessionState) -> SessionState:
 
 
 def route_escalate(state: SessionState) -> str:
-    if receipt_mod.diagnostic_only(state):
-        return "summarize"
     from app.actions.runtime import get_services
+    # 主办方 SOP：排障后仍未解决 → 确认是否进入换货 / 退款 → 订单质保判断。
+    # 质保节点给出换货单卡片，客户在卡片上确认或暂不办理，这一步就是「确认是否进入换货流程」。
     if get_services() is not None and state.get("product_state") == "confirmed_sku" and state.get("escalate_reason") in {"R1","R1b","R1c","R2","R6"}:
         return "service_context"
+    if receipt_mod.diagnostic_only(state):
+        return "summarize"
     s = dict(state)
     if receipt_mod.has_uploaded(s):
         return "receipt_extract"
@@ -2827,8 +2876,7 @@ async def reply(state: SessionState) -> SessionState:
         for eid in state.get("current_evidence_ids", [])
         if eid in (state.get("evidence") or {})
     ]
-    # 票 33：故障卡常驻上下文；总输入 ≤ 8k token，超出先裁证据
-    card_text = (state.get("fault_card") or {}).get("text")
+    # 总输入 ≤ 8k token，超出先裁证据
     kept, _ = fit_prompt_budget([e.get("snippet", "") for e in evidence_items], budget=6000)
     primary, fallback = reply_messages(
         state.get("text", ""),
@@ -2836,7 +2884,6 @@ async def reply(state: SessionState) -> SessionState:
         summary={**_state_summary(state), "flow_note": outcome.get("note")},
         evidence=evidence_items[: len(kept)],
         knowledge_status=state.get("knowledge_status"),
-        fault_card=card_text,
     )
     message_id = uuid.uuid5(
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:reply"
