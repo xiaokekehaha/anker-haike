@@ -274,10 +274,10 @@ def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product
     symptoms = [f for f in facts if f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"]
     if state.get("escalate_reason") == "R4":
         kind = "safety"
-    elif remedy in NOT_EXECUTABLE:
-        kind = "order_change"
     elif remedy == "parts_purchase":
         kind = "parts_purchase"
+    elif remedy in NOT_EXECUTABLE:
+        kind = "order_change"
     elif state.get("warranty"):
         kind = "warranty_review"
     elif symptoms or parse_message(state.get("text") or "").problem_text:
@@ -307,9 +307,14 @@ def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product
             known["package_status"] = status.value
     if order_no:
         known["order_no"] = order_no
-    condition = next((t["quote"] for t in tasks if t.get("intent") in NOT_EXECUTABLE and t.get("quote")), None)
+    condition = next((t["quote"] for t in tasks if t.get("intent") in {"order_change", "address_update"} and t.get("quote")), None)
     if condition:
         known["condition"] = condition
+    if kind == "parts_purchase":
+        part = next((f.get("subject") or f["value"] for f in facts if f["kind"] == "symptom" and f.get("subject")), None) \
+            or next((t["quote"] for t in tasks if t.get("intent") == "parts_purchase" and t.get("quote")), None)
+        if part:
+            known["part"] = part
     parsed = parse_message(state.get("text") or "")
     if parsed.login_country:
         known["login_country"] = parsed.login_country

@@ -95,8 +95,8 @@ def pending_tasks(snapshot: dict[str, Any]) -> list[str]:
     ]
 
 
-# 本系统办不了、只能转人工的诉求（暂缓发货 / 取消 / 改购 / 改地址），见 app.conversation.tasks.NOT_EXECUTABLE
-HANDOFF_REQUESTS = {"order_change", "address_update"}
+# 本系统办不了、只能转人工的诉求（暂缓发货 / 取消 / 改购 / 改地址 / 配件采购），见 app.conversation.tasks.NOT_EXECUTABLE
+HANDOFF_REQUESTS = {"order_change", "address_update", "parts_purchase"}
 
 
 def terminals_of(snapshot: dict[str, Any], *, case_status: str | None, review_requested: str | None, handoff: bool,
@@ -133,13 +133,16 @@ def _terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_
                  question_cards: int = 0) -> str:
     if "R4" in escalate_reasons:
         return "safety_human"
+    low = said.casefold()
     if "carrier_investigation" in service_types:
+        return "logistics_delivered"
+    if "delivered on" in low and ("don't see a separate shipment" in low or "differs from what you received" in low):
+        # 送达记录已答，但客户问的对象 / 描述与记录不一致：先告知差异再澄清，不直接给承运商调查（T47 / T2，7.1 复核）
         return "logistics_delivered"
     if "reship" in service_types:
         return "logistics_reship"
     if {"replace", "refund"} & set(service_types):
         return "warranty_replace"
-    low = said.casefold()
     if "超过质保期" in said or "out of warranty" in low or "warranty has expired" in low:
         return "out_of_warranty"
     if "授权经销商" in said or "authorized" in low and "dealer" in low:
@@ -193,7 +196,7 @@ def intents_accepted(case: dict[str, Any]) -> set[str]:
 
 
 INTENT_GROUP = {
-    "report_problem": "report_problem", "complaint": "complaint", "supplement": "report_problem",
+    "report_problem": "report_problem", "complaint": "complaint", "supplement": "report_problem", "parts_purchase": "parts_purchase",
     "logistics_query": "logistics_query", "order_query": "order_query", "warranty_query": "report_problem",
     "replacement_request": "replacement_request", "refund_request": "replacement_request",
     "product_question": "report_problem", "explain": "report_problem",

@@ -26,7 +26,7 @@
 as_of: '2026-10-08'
 cases:
 - {id: T1, intent: logistics_query, language: en, order_no: Anker001, sop: logistics_delivered, forbid: [reship]}
-- {id: T2, intent: logistics_query, language: en, order_no: Anker002, sop: logistics_delivered, forbid: [reship]}
+- {id: T2, intent: logistics_query, language: en, order_no: Anker002, sop: logistics_delivered, forbid: [reship], note: 客户称 -2 是配件、-3 是主机，订单记录相反；两条记录照答并告知差异、请客户确认，不自动互换（2026-10-09 7.1 复核）}
 - {id: T3, intent: logistics_query, language: en, order_no: Anker003, sop: logistics_delivered, forbid: [reship]}
 - {id: T4, intent: logistics_query, language: en, order_no: Anker004, sop: logistics_delivered, forbid: [reship]}
 - {id: T5, intent: logistics_query, language: en, order_no: Anker005, sop: logistics_reship, note: 预计 9/30 送达，按 10/08 已逾期未送达}
@@ -71,7 +71,7 @@ cases:
 - {id: T44, intent: replacement_request, language: en, sop: warranty_by_qa, qa_gold: [bp-0127, bp-0039], note: 充电盒针脚卡死；原文要求保修换货，无订单（2026-10-08 复核）}
 - {id: T45, intent: report_problem, language: en, sop: safety_human, note: 加热烫伤；Aeroflow 授权经销商 12 个月保内}
 - {id: T46, intent: report_problem, language: en, order_no: Anker013, sop: warranty_replace, qa_gold: [bp-0123], note: 电机异响；异响不等于无吸力，吸力条目不作金标；首卡应为事实问句（2026-10-09 复核）}
-- {id: T47, intent: logistics_query, language: en, order_no: Anker010, sop: logistics_delivered, note: 问的是 Hub 配件，订单只有吸奶器且已送达 → 不编造}
+- {id: T47, intent: logistics_query, language: en, order_no: Anker010, sop: logistics_delivered, note: 问的是 Hub 配件 T8D02181-80，订单只有整机 T8D04121 且已送达；答复须说明无 Hub 发货记录并索取配件订单 / 案件号，旧整机签收不等于 Hub 签收（2026-10-09 7.1 复核）}
 - {id: T48, intent: report_problem, language: en, sop: explain, note: 吸奶器绿灯含义（附图，外壳有裂纹）}
 - {id: T49, intent: replacement_request, language: en, sop: dealer_check, note: 保险渠道购买，未给商家}
 - {id: T50, intent: report_problem, language: en, sop: clarify, note: 「the left one does work」是肯定句，须先确认哪一侧、什么现象；未确认不得执行无吸力方案（2026-10-09 复核，取代 10-08 的笔误读法）}
@@ -87,4 +87,4 @@ cases:
 - {id: T60, intent: report_problem, language: en, sop: clarify, note: 辱骂 + App；含「想让它正常清扫」的故障诉求（2026-10-08 Fable 裁定）}
 - {id: T61, intent: report_problem, language: en, sop: clarify, note: 提前两小时启动 + 清洁记录缺失须保留；rv-0551/rv-0522 是无法启动方向，不作金标（2026-10-09 复核）}
 - {id: T62, intent: report_problem, language: en, sop: troubleshoot, note: C20 不走直线}
-- {id: T63, intent: report_problem, language: en, sop: clarify, note: 无型号，刷罩断裂与配件购买；正文同时报故障（2026-10-08 复核）}
+- {id: T63, intent: parts_purchase, intent_alt: report_problem, language: en, sop: clarify, sop_also: [order_change_human], note: 无型号；买不到刷罩是配件采购诉求交人工（交接须保留部件与故障），刷罩断裂与清洁差另列故障（2026-10-09 第三批）}

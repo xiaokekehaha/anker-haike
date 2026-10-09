@@ -127,11 +127,15 @@ def logistics_intent(monkeypatch):
 
 
 async def test_t2_one_order_with_two_tracking_numbers_is_not_ambiguous(l3_runtime, logistics_intent):
-    # T2：一个订单号 + 两个运单号（配件包与主机分开发）是同一订单的两个包裹，不应追问「哪个订单」
-    rows, state = await _first_turn("T2")
-    assert state["case_order_no"] == "Anker002"
-    card = next(e for e in rows if e["type"] == "proposal_card")
-    assert [o["type"] for o in card["options"]] == ["carrier_investigation"]
+    # T2：一个订单号 + 两个运单号（配件包与主机分开发）是同一订单的两个包裹，不应追问「哪个订单」。
+    # 2026-10-09 7.1 复核：客户称 -2 是配件、-3 是主机，与订单记录相反 —— 两条记录照答、告知差异并请客户确认，
+    # 不自动互换运单，也不在对象未确认前直接给承运商调查方案。
+    rows, _ = await _first_turn("T2")
+    text = said(rows)
+    assert "Anker002" in text and "Anker1234567-2" in text and "Anker1234567-3" in text
+    assert "differs" in text and "confirm" in text.casefold()
+    assert not any(e["type"] == "proposal_card" for e in rows)
+    assert "which order" not in text.casefold()
 
 
 async def test_t45_safety_handoff_keeps_dealer_and_serial_facts(l3_runtime, report_intent):
@@ -671,3 +675,43 @@ async def test_t11_degraded_path_does_not_read_push_text_as_human_request(l3_run
     assert state["turn_decision"]["escalation_trigger"] is None
     assert state["turn_decision"]["primary_intent"] != "request_human"
     assert not [e for e in rows if e["type"] == "escalation_summary"]
+
+
+async def test_t63_parts_purchase_is_handed_off_with_the_fault_kept(l3_runtime, monkeypatch):
+    """第三批 I8（T63）：买不到刷罩是配件采购诉求，本系统办不了 → 交人工并保留型号未知、刷罩断裂与清洁差三项；
+    不能只交接故障而丢掉购买诉求。"""
+    async def interpret(router, state, **kwargs):
+        return TurnInterpretation(
+            primary_intent="parts_purchase", secondary_intents=["report_problem"], device_relation="current",
+            facts=[
+                {"value": "brush guard snaps off the clips", "quote": "the brush guard just snaps off the clips that hold it in", "subject": "brush guard"},
+                {"value": "doesn't clean very well", "quote": "It doesn’t clean very well"},
+            ],
+        ), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    rows, state = await _first_turn("T63")
+    text = said(rows)
+    assert "brush guard" in text.casefold() and "colleague" in text.casefold()
+    assert "free" not in text.casefold()
+    case = await l3_runtime.cases.store.get(state["case_id"])
+    assert case["status"] == "awaiting_approval"
+    assert [e["payload"]["requested"] for e in case["events"] if e["type"] == "review_requested"] == ["parts_purchase"]
+    summary = [e["payload"] for e in case["events"] if e["type"] == "handoff_summary"][-1]
+    assert summary["business"]["kind"] == "parts_purchase"
+    assert "brush guard" in summary["business"]["known"].get("part", "").casefold()
+    assert "product" in summary["business"]["missing"]
+    assert "brush guard snaps off" in summary["problem"]
+    queue = {t["intent"]: t["status"] for t in state["task_queue"]}
+    assert queue["parts_purchase"] == "waiting_human"
+
+
+def test_a_parts_purchase_request_is_kept_whatever_the_model_reads():
+    """T63 第三批实测：模型只读到刷罩断裂的故障，「can't get a brush guard anywhere」这个采购诉求被丢掉。"""
+    from app.conversation.interpret import logistics_correction
+
+    fixed = logistics_correction(TurnInterpretation(primary_intent="report_problem", secondary_intents=["complaint"]), TICKETS["T63"])
+    assert "parts_purchase" in fixed.secondary_intents and fixed.primary_intent == "report_problem"
+    # 没有采购原话的故障描述不受影响
+    plain = TurnInterpretation(primary_intent="report_problem")
+    assert logistics_correction(plain, "The brush guard snapped off and it doesn't clean well.") == plain

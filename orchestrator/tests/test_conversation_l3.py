@@ -458,3 +458,29 @@ async def test_t9_summary_is_refreshed_with_logistics_after_handoff(l3_runtime, 
         assert "If you have not shipped" in business["known"]["condition"]
         assert "not shipped" in business["known"]["package_status"]
         assert "If you have not shipped" in latest["reason"]["text"]
+
+
+async def test_t47_hub_query_is_not_answered_with_the_old_main_unit_delivery(l3_runtime):
+    """第三批 I8（T47）：客户问 Hub 配件 T8D02181-80 的运单，订单 Anker010 只有整机 T8D04121 的旧包裹。
+    旧整机签收照样告知，但要说明没有 Hub 的发货记录并索取配件订单 / 案件号，不给承运商调查方案。"""
+    text = "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010"
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, text))
+        said_text = said(rows)
+        assert "delivered on 2025-12-07" in said_text
+        assert "T8D02181-80" in said_text and "don't see a separate shipment" in said_text
+        assert "carrier investigation" not in said_text.casefold()
+        assert not any(e["type"] == "proposal_card" for e in rows)
+
+
+async def test_t2_conflicting_package_description_is_flagged_not_swapped(l3_runtime):
+    text = ("I am reaching out regarding my order Anker002. I have received one package today with tracking number Anker1234567-2. "
+            "The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. "
+            "When trying to track Anker1234567-3, UPS says the label has been created.")
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, text))
+        said_text = said(rows)
+        assert "Anker1234567-2" in said_text and "Anker1234567-3" in said_text
+        assert "differs" in said_text and "confirm" in said_text.casefold()

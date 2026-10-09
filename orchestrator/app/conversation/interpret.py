@@ -47,6 +47,7 @@ type Intent = Literal[
     "replacement_request",
     "refund_request",
     "confirm_received",
+    "parts_purchase",
     "rate",
     "unknown",
 ]
@@ -127,7 +128,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-09.3"  # 事实带对象 / 极性 / 时机，已做操作独立成类，设备文案不算用户请求
+INTERPRET_PROMPT_VERSION = "2026-10-09.4"  # 新增 parts_purchase 意图
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。
@@ -170,12 +171,25 @@ ORDER_CHANGE_WORDS = re.compile(
 )
 
 
+# 「买不到 / 哪里能买 / 想买」某个零件：模型稳定地只读到故障（T63 第三批实测），配件采购诉求被整个丢掉。
+PARTS_PURCHASE_WORDS = re.compile(
+    r"(?:can'?t|cannot|couldn'?t|unable to|where (?:can|do) i|how (?:can|do) i|want to|need to|would like to|looking to)\s+"
+    r"(?:get|buy|order|find|purchase|source)\s+(?:a |an |the |some |new |replacement |spare )*"
+    r"(?:brush guard|filter|brush|roller|hose|tube|tubing|valve|shield|mop|pad|part|parts|accessor\w*|spare\w*|kit|cover|guard|battery|charger|cable|bottle|flange|diaphragm)"
+    r"|买不到|哪里(?:能|可以)买|想买(?:个|一个)?(?:配件|零件|滤网|刷|滚刷|软管)",
+    re.IGNORECASE,
+)
+
+
 def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
     """模型把物流诉求判成别的意图时，按原话里的客观线索纠正。
 
     几条都只在**原话**上判断，不看会话状态：纠的是这一句被读错，不是推翻用户后续的说法。
     """
     meaning = constrain_requests(meaning, text)
+    if PARTS_PURCHASE_WORDS.search(text.replace("’", "'")) and "parts_purchase" not in (meaning.primary_intent, *meaning.secondary_intents):
+        # 保留模型读到的故障诉求，把配件采购作为并列诉求补进队列（优先级由 tasks 决定）
+        meaning = meaning.model_copy(update={"secondary_intents": [*meaning.secondary_intents, "parts_purchase"]})
     # 主办方工单里的撇号多数是中文输入法的 ’（63 单里 15 处），而不是 '。
     # 在入口统一成 '，下面所有模式只需写一种写法（T9 的「don’t」曾因此整条漏掉）。
     text = text.replace("’", "'").replace("ʼ", "'")
@@ -230,7 +244,7 @@ emotion_level 需要 emotion_cues 里的原话支撑，calm 也一样；短答�
 business_subject.active_subject 是最近选择或查询的业务对象，active_subject_id 是其 ID。「这笔订单、上面的订单」及普通短追问沿用该焦点，business_reference 用 current 且 subject_id 留空；不要因为本轮省略编号要求重填。service_case 是正在办理的案件，可以属于另一笔订单；不能用案件订单覆盖聊天焦点。业务缺参和不同订单的案件隔离由服务端处理，clarification 只用于意图或对象确实歧义。
 business_reference 是唯一的对象选择：问正在办理的案件/退款/换货订单用 relation=case（服务端绑定 service_case.order_no）；问正在排障的设备用 issue；这两种不填写 subject_id。明确换查另一笔尚无编号的订单用 other 且 subject_id 留空；只有用户明确回指其他已知对象时才从 business_subject.subjects 选择 subject_id；存在多个已知对象而无法区分指向时用 ambiguous；尚无订单对象/编号时保持 null，不从设备名称推断多订单。quote 必须是本条逐字原话，模型不输出或编造订单/运单编号。
 对事实追问填写 answer_request：fields 只选择本轮所问字段，quote 是当前逐字原话，不输出答案值。对象只在 business_reference 中选择，answer_request 不重复选择对象。询问型号/渠道/平台/购买日/购买地/金额属于订单事实，使用地来自用户，物流状态/单号来自物流，现象/已做步骤来自问题记录，方案/案件状态来自办理记录。结合 conversation_view 识别已知与缺失，不把另一对象事实当作当前事实；问题中没重述已知信息无需追问。只有事实问答才填写 answer_request，操作解释和一般建议保持空。
-查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。order_change 只用于客户明确要求改变订单本身的履约：暂缓发货、取消订单、把已下单的型号换成别的。问「东西到哪了 / 发货了没 / 什么时候到」仍然是 logistics_query，不是 order_change。
+查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。买配件 / 买不到零件是 parts_purchase。order_change 只用于客户明确要求改变订单本身的履约：暂缓发货、取消订单、把已下单的型号换成别的。问「东西到哪了 / 发货了没 / 什么时候到」仍然是 logistics_query，不是 order_change。
 情绪分 calm/dissatisfied/angry/complaint_risk 四级，emotion_cues 仅引用当前原话。单纯表达不满、催促或提出投诉用 complaint 意图；例如“再不解决我就去平台投诉”是 complaint + complaint_risk，不含转人工请求。只有明确要求接入人工客服才 request_human，且须填写 human_request_quote，不能从用户情绪或你认为需要人工推导此操作。情绪策略与实际转人工请求相互独立。
 收货地址、产品 SN、购买商家、购买国家（ISO 代码）抽为 facts(kind=context, context_field=对应字段, value=原样, quote=当前原话)。购买日期能确定到某天时抽为 context_field=purchase_date，value=YYYY-MM-DD（相对说法按当前时间换算），只到月份不抽。一句多诉求放 secondary_intents。只有用户明确指定队列中存在的任务且能给出其 target_task_id，才用 resume_task；否则即使说「继续、先处理」，仍按其明确的退款、换货、查询等业务诉求分类，由服务端恢复对应订单的案件。不得生成 task_id。
 逐一识别本轮每个独立诉求，不因涉及另一设备或另一订单而省略其中任何一项；只把第一个诉求放 primary_intent，其余按原话出现顺序放 secondary_intents，服务端负责业务优先级排序。new_issue 仅表示用户明确要求新建问题，不能替代已经说清的换货、退款、排障等业务意图。查购买日期/渠道/型号属于 order_query，查保修期限属于 warranty_query，同一句同时问两者时保留两个意图。

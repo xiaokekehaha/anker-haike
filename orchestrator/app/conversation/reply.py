@@ -221,8 +221,22 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
                         },
                     )
                 return {}
+            if result.error:
+                # 流式回复失败（T35 超时）：被中断的那条已标 aborted，失败说明另起一条，不让半段输出看起来像完整建议
+                return stream_failed(state, writer, result.error)
         except ContextBudgetExceeded:
             pass
+    say_text(state, writer, mid, text)
+    return {}
+
+
+STREAM_FAILED_TEXT = (
+    "I couldn't finish that answer just now, so please don't act on the partial text above. "
+    "You can send your question again and I'll try again."
+)
+
+
+def say_text(state: dict, writer, mid: str, text: str) -> None:
     writer(
         {
             "type": "message_start",
@@ -233,4 +247,10 @@ history_selection.source_entry_ids 是本轮服务端定位的回查目标，优
     )
     writer({"type": "message", "message_id": mid, "delta": text})
     writer({"type": "message_end", "message_id": mid, "status": "completed"})
+
+
+def stream_failed(state: dict, writer, error: str) -> dict:
+    """失败状态有自己的消息和可重试入口；快照 last_error 记录失败（第三批 I9）。"""
+    writer({"type": "error", "code": "reply_stream_failed", "message": error[:200], "recoverable": True, "retry_with_same_action": False})
+    say_text(state, writer, stable_id(state["input_id"], "stream_failed"), STREAM_FAILED_TEXT)
     return {}

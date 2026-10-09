@@ -31,3 +31,38 @@ def test_live_status_refresh_and_issue_facts_have_distinct_owners():
     state["business_context"] = business.accept("Anker013", "b").model_dump()
     assert "symptoms" not in conversation_view(state)["fields"]
     assert conversation_view(state, "issue")["fields"]["symptoms"]["value"] == ["不吸"]
+
+
+# ---- 第三批 I8：客户问的配件 SKU 与订单商品不一致（T47）；客户陈述与订单记录冲突（T2）----
+
+from app.conversation.answers import record_mismatch_note
+
+
+def test_hub_query_against_main_unit_order_is_not_reported_as_shipped():
+    """T47：客户问 T8D02181-80 Hub，订单只有 T8D04121 整机：旧整机签收不等于 Hub 签收。"""
+    note = record_mismatch_note(
+        "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nOrder: Anker010",
+        order_skus=["T8D04121"], packages=[{"tracking_no": "Anker1234567-13", "skus": ["T8D04121"], "status": "delivered"}],
+    )
+    assert note is not None
+    assert "T8D02181-80" in note and "T8D04121" in note
+    assert "don't see a separate shipment" in note
+    assert "order number" in note.casefold() or "case" in note.casefold()
+
+
+def test_matching_sku_has_no_note():
+    assert record_mismatch_note("Where is my order Anker010? SKU: T8D04121", order_skus=["T8D04121"], packages=[]) is None
+    assert record_mismatch_note("Where is my order Anker010?", order_skus=["T8D04121"], packages=[]) is None
+
+
+def test_customer_package_description_conflicting_with_record_is_flagged():
+    """T2：客户说 -2 是配件、-3 是主机；订单记录相反。答复要告知差异并澄清，不自动互换运单。"""
+    note = record_mismatch_note(
+        "I have received one package with tracking number Anker1234567-2. The package only contains the replacement accessories kit. "
+        "I have not received the Eufy S1 robot vacuum yet. Tracking Anker1234567-3, UPS says label created.",
+        order_skus=["T2080GA1", "T29C2001"],
+        packages=[{"tracking_no": "Anker1234567-2", "skus": ["T2080GA1"], "status": "delivered", "description": "S1 Pro Omni robot vacuum"},
+                  {"tracking_no": "Anker1234567-3", "skus": ["T29C2001"], "status": "delivered", "description": "S1 PRO REPLACEMENT ACCESSORY KIT"}],
+    )
+    assert note is not None and "Anker1234567-2" in note and "differs" in note
+    assert "confirm" in note.casefold()

@@ -2918,6 +2918,10 @@ async def reply(state: SessionState) -> SessionState:
             }
         )
         offer_human_after_stream(dict(state), out.text, writer)
+    elif out.error:
+        from app.conversation.reply import stream_failed
+
+        stream_failed(dict(state), writer, out.error)
     return {
         "stage": "diagnose",
         "visible_messages": msgs,

@@ -13,6 +13,8 @@ PRIORITY = {
     # 暂缓发货 / 取消订单 / 改买：本系统不能改订单，但诉求有时效性（东西可能正要发出），
     # 所以和其他办理类诉求同级，排在查询之前。
     "order_change": 1,
+    # 买不到配件（T63 刷罩）：没有配件目录接口，只能登记给人工；和其他办理类同级
+    "parts_purchase": 1,
     "report_problem": 2,
     "logistics_query": 3,
     "warranty_query": 3,
@@ -25,6 +27,7 @@ LABELS = {
     "refund_request": "refund request",
     "address_update": "address change",
     "order_change": "order change",
+    "parts_purchase": "spare part purchase",
     "report_problem": "device troubleshooting",
     "logistics_query": "delivery status",
     "warranty_query": "warranty check",
@@ -37,9 +40,9 @@ TRAILING = {"complaint", "social"}
 
 # 要走办理流程（而不是查询）的业务诉求。本系统只能提交预定义服务单，
 # 改地址与改订单（暂缓发货 / 取消 / 改买）都超出它能执行的范围，由人工办理。
-REMEDY_INTENTS = frozenset({"replacement_request", "refund_request", "address_update", "order_change"})
+REMEDY_INTENTS = frozenset({"replacement_request", "refund_request", "address_update", "order_change", "parts_purchase"})
 # 其中本系统完全不能执行、只能如实说明并转人工的那些
-NOT_EXECUTABLE = frozenset({"address_update", "order_change"})
+NOT_EXECUTABLE = frozenset({"address_update", "order_change", "parts_purchase"})
 
 
 def ordered_intents(primary, secondary):

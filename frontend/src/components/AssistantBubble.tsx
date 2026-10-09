@@ -18,7 +18,7 @@ export function AssistantBubble({ item, cont = false }: { item: AssistantMessage
           </Markdown>
         </div>
         {item.status === 'streaming' && <span className={styles.cursor} aria-label="正在输入" />}
-        {item.status === 'aborted' && <p className={styles.abortNote}>这段回复中断了，正在换用备用方式重新生成…</p>}
+        {item.status === 'aborted' && <p className={styles.abortNote} role="status">这段回复没有完成，上面的内容不完整，请以后续说明为准。</p>}
         {item.status === 'replaced' && <p className={styles.abortNote}>此回复已被后续答复替换</p>}
       </div>
     </div>

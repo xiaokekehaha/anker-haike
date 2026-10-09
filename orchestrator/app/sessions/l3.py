@@ -21,6 +21,7 @@ from app.actions.store import ExecutionBusy, ExecutionNeedsReview
 from app.backends import logistics
 from app.backends.protocol import BackendError
 from app.cases.service import case_event
+from app.conversation.answers import record_mismatch_note
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.quotes import quoted
@@ -36,17 +37,21 @@ from app.warranty.service import decide_by_dealer, decide_by_order, today
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
 LOGISTICS_FIELDS = {"logistics_status", "updated_at", "carrier", "tracking_no", "order_no"}
 REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund",
-                    "address_update": "address_update", "order_change": "order_change"}
+                    "address_update": "address_update", "order_change": "order_change",
+                    "parts_purchase": "parts_purchase"}
 # 本系统执行不了的诉求：客户可见说明（英文，D2）与转人工摘要里的内部原因（中文）。
 # 关键是不能声称已经办好 —— 订单改没改只有人工知道。
 NOT_EXECUTABLE_TEXT = {
     "address_update": "Address changes need to be verified by a colleague, so I've passed your request to our team.",
     "order_change": "I can't change or hold an order myself, so I've passed your request to a colleague who can. "
                     "Please note the order may already be in process.",
+    "parts_purchase": "I can't look up spare-part availability or place a parts order here, so I've passed your request "
+                      "(including the part you need) to a colleague who can check it for you.",
 }
 NOT_EXECUTABLE_HANDOFF = {
     "address_update": "修改地址需人工核实办理",
     "order_change": "暂缓发货 / 取消 / 改购需人工办理",
+    "parts_purchase": "配件采购需人工核实型号与库存",
 }
 TYPE_NAMES = {
     "replace": "replacement request",
@@ -660,7 +665,12 @@ async def hand_off_request(state, remedy):
         reason=NOT_EXECUTABLE_HANDOFF[remedy], summary_of=summary_of,
     )
     emit_case(state, row)
-    say(state, NOT_EXECUTABLE_TEXT[remedy])
+    text = NOT_EXECUTABLE_TEXT[remedy]
+    if remedy == "parts_purchase":
+        part = (summary_of(row).get("business") or {}).get("known", {}).get("part")
+        if part:
+            text = text.replace("(including the part you need)", f"(the {part})")
+    say(state, text)
     return {"requested_remedy": remedy, "stage": "awaiting_human", "pending_card": None, "case_status": row["status"],
             **waiting_human(remedy)}
 
@@ -765,6 +775,15 @@ async def consult(state):
             order = await services.backend.get_order(receipt["order_no"])
             verdict = logistics.verdict(order, as_of(state))
             logistics_note = f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages) + "\n" + logistics.sop_text(order, as_of(state))
+            # 客户问的配件 / 描述的包裹内容与订单记录对不上：先说差异，不把旧整机签收当成配件已发（T47 / T2）
+            mismatch = record_mismatch_note(
+                state.get("text") or "", order_skus=[line.sku for line in order.lines],
+                packages=[{"tracking_no": p.tracking_no, "skus": list(p.skus), "status": p.status,
+                           "description": " ".join(line.description for line in order.lines if line.sku in p.skus)} for p in order.packages],
+            )
+            if mismatch:
+                logistics_note = logistics_note.rsplit("\n", 1)[0] + "\n" + mismatch
+                verdict = "mismatch"  # 不再按送达 / 补发 SOP 直接给方案，等客户确认查询对象
             if intent == "logistics_query" and verdict in {"reship_eligible", "delivered"}:
                 # 物流工单的典型诉求就是「没收到」（主办方 11 单全部如此）：直接按 SOP 给出补发 / 承运商调查方案，客户可暂不办理。
                 offer = "reship" if verdict == "reship_eligible" else "carrier_investigation"

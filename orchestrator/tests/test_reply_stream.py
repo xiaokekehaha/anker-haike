@@ -187,3 +187,24 @@ def test_prompt_templates_are_versioned_and_wrap_injection():
         and "每个步骤不超过两句" in human
     )
     assert fallback[0][1].endswith(SIMPLIFIED_LAYER) and primary[0][1] != fallback[0][1]
+
+
+async def test_stream_failure_leaves_an_aborted_message_and_a_separate_status(mem_runtime, tmp_path):
+    """第三批 I9（T35）：流式超时不能用同一条消息接一段兜底文案假装完整；
+    中断的消息标 aborted，失败说明另起一条，快照 last_error 记录失败。"""
+    router, _ = make_router(
+        tmp_path,
+        fast=[DIALOGUE_TURN],
+        main=[["半", TimeoutError()]],
+        backup=[TimeoutError(), TimeoutError()],
+    )
+    events, snap = await run_text(router, DIALOGUE_TEXT)
+    ends = [e for e in events if e["type"] == "message_end"]
+    assert [e["status"] for e in ends] == ["aborted", "completed"]
+    aborted_id = ends[0]["message_id"]
+    assert ends[1]["message_id"] != aborted_id
+    notice = next(e for e in events if e["type"] == "message" and e["message_id"] == ends[1]["message_id"])
+    assert "couldn't finish" in notice["delta"] and "try again" in notice["delta"]
+    assert snap["last_error"] and snap["last_error"]["code"] == "reply_stream_failed" and snap["last_error"]["recoverable"]
+    bubbles = [i for i in snap["timeline"] if i["kind"] == "assistant_message"]
+    assert bubbles[-2]["status"] == "aborted" and bubbles[-1]["status"] == "completed"
