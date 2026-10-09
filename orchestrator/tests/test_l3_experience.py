@@ -7,7 +7,7 @@ from app.analytics.l3 import episode, metrics
 from app.cases.service import CaseService
 from app.cases.store import CaseConflict
 from app.conversation.reply import OFFER_HUMAN, acknowledge_current_turn, offer_human_after_stream
-from app.conversation.tasks import enqueue, next_task, ordered_intents
+from app.conversation.tasks import CONSULT_ONLY, enqueue, next_task, ordered_intents, settle
 from app.diagnose.localization import (
     normalize,
     part_categories,
@@ -338,3 +338,46 @@ def test_a_task_waiting_for_a_colleague_releases_the_queue_but_is_not_done():
     # 客户把同一句话再说一遍：等人工的任务不再当成新任务加入
     again, _ = enqueue(queue, "order_change", ["logistics_query"], "If you have not shipped, don't", "i2")
     assert [t["status"] for t in again if t["intent"] == "order_change"] == ["waiting_human"]
+
+
+async def test_hand_off_is_deduplicated_by_request_content():
+    """交接 = 状态 + 诉求记录 + 摘要一次写入；同一诉求重试不重复，改口记为变更，驳回后可再入队。"""
+    cases = CaseService()
+    row = await cases.open("s", "i", {"sku": "T2292"})
+    summary = {"reason": {"rule_id": "R6", "text": "x"}}
+    row = await cases.hand_off(row["case_id"], requested="order_change", quote="hold it", input_id="i1",
+                               reason="需人工", summary_of=lambda r: summary)
+    assert row["status"] == "awaiting_approval"
+    assert [e["type"] for e in row["events"]] == ["status_changed", "review_requested", "handoff_summary"]
+    again = await cases.hand_off(row["case_id"], requested="order_change", quote="hold it", input_id="i2",
+                                 reason="需人工", summary_of=lambda r: summary)
+    assert again["revision"] == row["revision"]
+    changed = await cases.hand_off(row["case_id"], requested="order_change", quote="cancel it", input_id="i3",
+                                   reason="需人工", summary_of=lambda r: {**summary, "reason": {"rule_id": "R6", "text": "cancel it"}})
+    assert [e["type"] for e in changed["events"]][-2:] == ["request_changed", "handoff_summary"]
+    assert changed["events"][-2]["payload"]["quote"] == "cancel it"
+    await cases.decide(row["case_id"], decision_id="d1", decision="reject", actor="agent:a",
+                       expected_revision=changed["revision"], note="no")
+    after = await cases.hand_off(row["case_id"], requested="order_change", quote="cancel it again", input_id="i4",
+                                 reason="需人工", summary_of=lambda r: summary)
+    assert after["status"] == "awaiting_approval"
+    assert [e["payload"]["to"] for e in after["events"] if e["type"] == "status_changed"][-3:] == ["rejected", "proposing", "awaiting_approval"]
+
+
+def test_waiting_for_a_colleague_only_lets_read_only_tasks_continue():
+    """等人工时只推进查询类任务：排障、办理要等人工结论；人工决定后 settle 关联任务。"""
+    queue, _ = enqueue([], "replacement_request", ["report_problem", "logistics_query"], "换货，顺便排查，物流到哪了", "i")
+    queue, task = next_task(queue, "replacement_request", outcome="waiting_human", only=CONSULT_ONLY)
+    assert task["intent"] == "logistics_query"
+    assert {t["intent"]: t["status"] for t in queue} == {
+        "replacement_request": "waiting_human", "report_problem": "pending", "logistics_query": "active"}
+    queue, task = next_task(queue, "logistics_query", only=CONSULT_ONLY)
+    assert task is None and {t["intent"]: t["status"] for t in queue}["report_problem"] == "pending"
+    settled = settle(queue, "replacement_request", "done")
+    assert {t["intent"]: t["status"] for t in settled}["replacement_request"] == "done"
+    # 等人工的诉求改口：任务原话跟着更新，不另起一个任务
+    queue, _ = enqueue([], "order_change", ["logistics_query"], "hold it", "a")
+    queue, _ = next_task(queue, "order_change", outcome="waiting_human")
+    queue, _ = enqueue(queue, "order_change", [], "cancel it", "b")
+    held = [t for t in queue if t["intent"] == "order_change"]
+    assert [(t["status"], t["quote"]) for t in held] == [("waiting_human", "cancel it")]

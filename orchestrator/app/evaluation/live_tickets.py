@@ -30,7 +30,7 @@ import time
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 import httpx
 import yaml
@@ -92,7 +92,14 @@ def terminals_of(snapshot: dict[str, Any], *, case_status: str | None, review_re
                                    service_types=service_types, step_cards=step_cards, said=said, has_code=has_code)]
 
 
-def sop_passed(case: dict[str, Any], reached: list[str]) -> bool:
+class SopExpectation(TypedDict, total=False):
+    """评测集一单的终点标注：sop 必达，多诉求单的其余必达终点写在 sop_also。"""
+
+    sop: str
+    sop_also: list[str]
+
+
+def sop_passed(case: SopExpectation, reached: list[str]) -> bool:
     """标注 sop 与 sop_also 的每个终点都要到达；单终点单沿用 ACCEPT 的等价集合。"""
     required = [case["sop"], *(case.get("sop_also") or [])]
     return all(set(reached) & ACCEPT.get(sop, {sop}) for sop in required)

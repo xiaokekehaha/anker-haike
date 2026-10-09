@@ -75,8 +75,6 @@ def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
         ):
             task["business_reference"] = business.reference()
     incoming = [i for i in ordered_intents(primary, secondary) if i in TASK_INTENTS]
-    if not secondary:
-        return result, None
     reference = business.reference()
 
     def identity(intent, ref):
@@ -86,6 +84,15 @@ def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
             ref.get("subject_id"),
             tuple(sorted(ref.get("candidate_ids", []))),
         )
+
+    # 等人工的诉求改口（暂停 → 取消整单）：原话跟着更新，不另起任务；单独一句改口也要更新
+    for task in result:
+        if task["status"] == "waiting_human" and identity(task["intent"], task_business(task, business).reference()) in {
+            identity(i, reference) for i in incoming
+        }:
+            task["quote"] = text
+    if not secondary:
+        return result, None
 
     # 等人工的诉求（waiting_human）已经在队列里：客户再说一遍不算新任务，否则会重复入队。
     existing = {
@@ -131,10 +138,16 @@ def announces_order(incoming: list[str]) -> bool:
     return len(incoming) > 1 and not set(incoming) <= CONSULT_ONLY
 
 
-def next_task(tasks, completed_intent, *, business=None, task_id=None, outcome="done"):
+def settle(tasks, intent, outcome):
+    """人工结论回来：等人工的该类诉求按结论收尾（批准 / 驳回都算本轮办结，请补充则回 pending）。"""
+    return [{**t, "status": outcome} if t["status"] == "waiting_human" and t["intent"] == intent else t for t in tasks]
+
+
+def next_task(tasks, completed_intent, *, business=None, task_id=None, outcome="done", only=None):
     """把刚处理完的任务记为 outcome（done = 业务已办结；waiting_human = 已交人工、本轮不再推进），再挑下一个。
 
     waiting_human 不是 done：诉求还没解决，但机器人已无事可做，不该让后面的任务一直 pending（T9）。
+    only 限定本轮可推进的意图：等人工时只继续查询类任务，排障 / 办理要等人工结论。
     """
     result = deepcopy(tasks)
     for task in result:
@@ -152,7 +165,7 @@ def next_task(tasks, completed_intent, *, business=None, task_id=None, outcome="
             task["status"] = outcome
     if any(t["status"] == "active" for t in result):
         return result, None
-    candidates = [t for t in result if t["status"] == "pending"]
+    candidates = [t for t in result if t["status"] == "pending" and (only is None or t["intent"] in only)]
     if not candidates:
         return result, None
     chosen = min(candidates, key=lambda t: PRIORITY[t["intent"]])

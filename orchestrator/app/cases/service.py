@@ -362,6 +362,34 @@ class CaseService:
 
         return await self.store.mutate(case_id, apply)
 
+    async def hand_off(self, case_id, *, requested, quote, input_id, reason, summary_of):
+        """本系统办不了的诉求交人工：进队列、记诉求、写摘要，一次写入。
+
+        诉求的身份是「类型 + 客户原话」：同一诉求重试不重复写；同类型但原话变了（暂停 → 取消整单）
+        记 request_changed 并重写摘要，人工看到的是最新要求；人工驳回后客户再提，先回 proposing 再入队。
+        summary_of(row) 在写入时生成摘要，摘要里的案件状态因此是入队后的状态。
+        """
+
+        def apply(row):
+            last = next(
+                (e["payload"] for e in reversed(row["events"]) if e["type"] in {"review_requested", "request_changed"}),
+                None,
+            )
+            queued = row["status"] == "awaiting_approval" and last and last["requested"] == requested
+            if queued and last.get("quote", quote) == quote and any(e["type"] == "handoff_summary" for e in row["events"]):
+                return
+            if row["status"] == "rejected":
+                _transition(row, "proposing", "客户再次提出诉求")
+            if row["status"] != "awaiting_approval":
+                _transition(row, "awaiting_approval", reason)
+            if last is None or last["requested"] != requested:
+                _event(row, "review_requested", {"requested": requested, "quote": quote}, "system")
+            elif last.get("quote") != quote:
+                _event(row, "request_changed", {"input_id": input_id, "quote": quote, "requested": requested}, "user")
+            _event(row, "handoff_summary", summary_of(row), "system")
+
+        return await self.store.mutate(case_id, apply)
+
     async def record_review_request(self, case_id, requested):
         """What the customer asked for when the case went to review; a later change is judged against it."""
 

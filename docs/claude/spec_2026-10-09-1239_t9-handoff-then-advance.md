@@ -34,3 +34,21 @@ T9 一句话两个诉求：问 Anker008 主机物流；未发货则先暂停。2
   - 任务队列 order_change=waiting_human、logistics_query=done，无待办卡片；
   - 评测终点 `order_change_human + logistics_presale`，意图 / SOP 100%，幻觉 0，单次 4.0–4.7 秒。
   三次同样输入只说明样本稳定，确定性回归仍以上述单测为准。
+
+## 2026-10-09 13:15 复核（round3）后的补修
+
+复核报告 [round3-1315/report.md](../planning/2026-10-09-0828_official-case-evaluation/round3-1315/report.md) 四项 Spec 缺陷中三项与现场多轮操作相关，本轮修复；存储半途失败一项需要数据库在两次写入之间中断，比赛碰不到，不做。
+
+根因是粒度错配：诉求的身份是「类型 + 原话」，上一轮按类型去重；任务能否推进取决于等待原因，上一轮按优先级推进；人工结论回来时没有更新关联任务。
+
+改动
+- `app/cases/service.py`：新增 `CaseService.hand_off`，一次 `mutate` 完成进队列、记诉求、写摘要。同一诉求重试不重复写；同类型原话变了记 `request_changed` 并重写摘要；案件已 `rejected` 时先回 `proposing` 再入队，避免非法迁移。
+- `app/conversation/tasks.py`：`next_task` 加 `only` 参数限定可推进的意图；新增 `settle` 按人工结论收尾等人工的任务；`enqueue` 对等人工任务的改口只更新原话，不另起任务。
+- `app/sessions/l3.py`：`hand_off_request` 改调 `CaseService.hand_off`；`advance_tasks` 在有任务等人工时只推进查询类任务，排障与办理保持 pending、阶段保持 awaiting_human；`apply_human_decision` 用 `settle` 更新关联任务（批准 / 驳回记 done，要求补充回 pending）。
+- `app/evaluation/live_tickets.py`：评测用例终点标注改为 `SopExpectation` TypedDict，去掉 `dict[str, Any]`。
+- 测试文件函数内导入移到顶层。
+
+回归
+- `tests/test_conversation_official_tickets.py`：改口后人工看到最新原话且只有一份等人工任务；驳回后任务收尾、再提诉求重新入队且迁移链为 awaiting_approval → rejected → proposing → awaiting_approval；换货卡上请人工后不推进排障、阶段保持 awaiting_human。
+- `tests/test_l3_experience.py`：`hand_off` 去重 / 改口 / 驳回后再入队；等人工时只推进查询类任务、`settle` 与改口更新。
+- 相关 7 个测试文件 124 条通过，ruff 零告警。

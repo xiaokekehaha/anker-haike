@@ -1,6 +1,9 @@
 """63 单主办方工单确定性评测（data/eval/tickets/cases.yaml）：事实层与物流 / 质保 / 错误码三类 SOP 终点。"""
 
+import yaml
+
 from app.evaluation.cli import run
+from app.evaluation.live_tickets import CASES, sop_passed, terminals_of
 
 
 def test_ticket_eval_passes_and_covers_deterministic_sop_branches():
@@ -16,8 +19,6 @@ def test_handoff_terminal_needs_persisted_evidence_not_wording():
 
     T9 一句两诉求，必须同时到达两个终点：暂缓已交接 + 预售发货日已答。
     """
-    from app.evaluation.live_tickets import sop_passed, terminals_of
-
     claimed = "I can't change or hold an order myself, so I've passed your request to a colleague who can."
     answered = claimed + " Package: pre-order, not shipped yet, expected to ship on 2026-10-20"
     common = {"escalate_reasons": [], "service_types": [], "step_cards": 0}
@@ -26,10 +27,6 @@ def test_handoff_terminal_needs_persisted_evidence_not_wording():
     assert terminals_of({}, case_status="open", review_requested=None, handoff=False, said=answered, **common) == ["logistics_presale"]
     reached = terminals_of({}, case_status="awaiting_approval", review_requested="order_change", handoff=True, said=answered, **common)
     assert reached == ["order_change_human", "logistics_presale"]
-    import yaml
-
-    from app.evaluation.live_tickets import CASES
-
     t9 = next(c for c in yaml.safe_load(CASES.read_text(encoding="utf-8"))["cases"] if c["id"] == "T9")
     assert t9["sop"] == "logistics_presale" and t9["sop_also"] == ["order_change_human"]
     assert sop_passed(t9, reached)

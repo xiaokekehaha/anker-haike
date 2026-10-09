@@ -24,7 +24,7 @@ from app.cases.service import case_event
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.reduce import stable_id
-from app.conversation.tasks import NOT_EXECUTABLE, REMEDY_INTENTS
+from app.conversation.tasks import NOT_EXECUTABLE, REMEDY_INTENTS, settle
 from app.emotion.policy import complaint_flagged
 from app.escalation.summary import build_summary
 from app.official.message import parse_message
@@ -628,23 +628,21 @@ async def hand_off_request(state, remedy):
 
     顺序不能反：话术「已转交」必须以案件进入 awaiting_approval、记录了诉求、写了交接摘要为前提
     （2026-10-09 T9 三次复测：只说了这句话，案件仍 open、无交接，物流查询也被丢掉）。
-    同一诉求再说一遍：状态迁移、review_requested 都按内容去重，不会重复入队。
+    去重、改口、驳回后再提都在 CaseService.hand_off 里按「类型 + 原话」处理。
     交接摘要保留客户原话 —— 「if you have not shipped」这样的条件由人工核实，不由机器人改写。
     """
-    services = require_services()
-    row = await services.cases.store.get(state["case_id"])
-    queued = next((e["payload"]["requested"] for e in reversed(row["events"])
-                   if e["type"] in {"review_requested", "request_changed"}), None)
-    if not (row["status"] == "awaiting_approval" and queued == remedy):
-        row = await services.cases.transition(
-            state["case_id"], "awaiting_approval", NOT_EXECUTABLE_HANDOFF[remedy],
-            complaint_risk=complaint_flagged(state), priority="high" if complaint_flagged(state) else "normal",
-        )
-        row = await services.cases.record_review_request(state["case_id"], remedy)
-        row = await _record_handoff(
-            {**state, "requested_remedy": remedy}, row, NOT_EXECUTABLE_HANDOFF[remedy] + "：" + (state.get("text") or ""),
-        )
-        emit_case(state, row)
+    quote = state.get("text") or ""
+
+    def summary_of(row):
+        summary = build_summary({**state, "requested_remedy": remedy}, reason="R6", lane=os.environ.get("MODEL_LANE", "domestic"))
+        summary.reason.text = NOT_EXECUTABLE_HANDOFF[remedy] + "：" + quote
+        return summary.model_dump(mode="json")
+
+    row = await require_services().cases.hand_off(
+        state["case_id"], requested=remedy, quote=quote, input_id=state["input_id"],
+        reason=NOT_EXECUTABLE_HANDOFF[remedy], summary_of=summary_of,
+    )
+    emit_case(state, row)
     say(state, NOT_EXECUTABLE_TEXT[remedy])
     return {"requested_remedy": remedy, "stage": "awaiting_human", "pending_card": None, "case_status": row["status"],
             **waiting_human(remedy)}
@@ -970,17 +968,22 @@ async def apply_human_decision(state):
     decision = next(d for d in row["decisions"] if d["decision_id"] == state["human_decision_id"])
     emit_case(state, row)
     say(state, "Reply from our team: " + decision["note"])
+    requested = next((e["payload"]["requested"] for e in reversed(row["events"])
+                      if e["type"] in {"review_requested", "request_changed"}), None)
+    intent = INTENT_OF_REMEDY.get(requested or state.get("requested_remedy"))
+    tasks = settle(state.get("task_queue") or [], intent, "pending" if decision["decision"] == "request_info" else "done") if intent else state.get("task_queue") or []
+    settled = {"task_queue": tasks}
     if decision["decision"] == "approve":
         proposal = dict(row.get("proposal") or state.get("proposal") or {})
         chosen = next((o for o in proposal.get("options", []) if o["option_id"] == decision.get("option_id")), None)
         if chosen and not (row.get("external_refs") or {}).get("service_order_no"):
             # 人工批准了尚未提交的服务单（例如闸门缺证据转人工后，人工核实补齐）：按原方案提交。
             proposal.update(chosen_option_id=chosen["option_id"], user_confirmed=True, status="confirmed")
-            return {"proposal": proposal, "human_request_info": False, "l3_route": "authorize"}
-        return {"stage": "done", "human_request_info": False, "l3_route": "commit_issue"}
+            return {**settled, "proposal": proposal, "human_request_info": False, "l3_route": "authorize"}
+        return {**settled, "stage": "done", "human_request_info": False, "l3_route": "commit_issue"}
     if decision["decision"] == "reject":
-        return {"stage": "done", "l3_route": "commit_issue"}
-    return {"stage": "context", "human_request_info": True, "pending_card": None, "l3_route": "commit_issue"}
+        return {**settled, "stage": "done", "l3_route": "commit_issue"}
+    return {**settled, "stage": "context", "human_request_info": True, "pending_card": None, "l3_route": "commit_issue"}
 
 
 async def prepare_retake(state):
@@ -1028,8 +1031,11 @@ async def advance_tasks(state):
     business = BusinessContext.restore(state)
     decision = state.get("turn_decision") or {}
     completed_business = business.for_order(state["case_order_no"]) if state.get("case_order_no") and (decision.get("answer_scope") in {"case", "issue"} or completed in REMEDY_INTENTS) else business
+    outcome = state.get("task_outcome") or "done"
+    # 等人工时只继续查询类任务；排障 / 办理要等人工结论，否则会把 awaiting_human 覆盖掉（round3 P2）
+    waiting = outcome == "waiting_human" or any(t["status"] == "waiting_human" for t in state.get("task_queue") or [])
     tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business,
-                            task_id=decision.get("task_id"), outcome=state.get("task_outcome") or "done")
+                            task_id=decision.get("task_id"), outcome=outcome, only=CONSULT_INTENTS if waiting else None)
     update = {"task_queue": tasks, "completed_task_intent": None, "task_outcome": None}
     if task:
         say(state, "Next up: " + LABELS[task["intent"]] + ".")

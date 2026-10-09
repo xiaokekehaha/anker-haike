@@ -1,5 +1,8 @@
 """主办方真实工单首封消息走完整会话图（无模型、无知识库）：错误码精确命中官方 Q&A、硬件故障直进质保、未收录码转人工。"""
 
+import asyncio
+import uuid
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 
@@ -8,8 +11,9 @@ from app.conversation.interpret import TurnInterpretation
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.official.models import OfficialData
+from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
 from tests.fake_qa import QAHitAdapter
-from tests.test_conversation_l3 import act, events, said, send, state_of
+from tests.test_conversation_l3 import act, events, interpret_as, said, send, state_of
 from tests.test_conversation_l3 import l3_runtime as l3_runtime  # noqa: PLC0414
 
 TICKETS = {t.id: t.body for t in OfficialData().tickets}
@@ -485,8 +489,6 @@ async def _case_detail(client, rows):
 @pytest.mark.parametrize(("primary", "secondary"), [("order_change", ["logistics_query"]), ("logistics_query", ["order_change"])])
 async def test_t9_hold_request_is_queued_and_the_shipping_question_is_still_answered(l3_runtime, monkeypatch, primary, secondary):
     """无论模型先读到哪半句：暂缓诉求真正进人工队列，物流事实照样答，两者缺一不可。"""
-    from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
-
     _t9_intent(monkeypatch, primary, secondary)
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
@@ -536,3 +538,110 @@ async def test_a_hold_request_alone_is_queued_and_the_turn_ends_cleanly(l3_runti
         assert (await _case_detail(client, rows))["status"] == "awaiting_approval"
         snap = (await client.get(f"/sessions/{sid}")).json()
         assert snap["pending_input"] is None and snap["active_run"] is None
+
+
+# ---------------------------------------------------------------------------
+# 2026-10-09 13:15 复核（round3）：交接去重粒度与等人工后的推进规则
+#
+# 诉求的身份是「类型 + 原话 + 条件」，不是类型；任务能否继续取决于等待原因，不是优先级。
+# 上一轮按类型去重、按优先级推进，于是：改口被吞、请人工后排障被推进、
+# 人工驳回后任务仍等人工且再提诉求撞非法迁移。存储半途失败的情形与比赛无关，不在此覆盖。
+# ---------------------------------------------------------------------------
+
+HOLD = "If you have not shipped Anker008, hold it and tell me its shipping date."
+CANCEL = "Actually cancel my whole Anker008 order instead of holding it."
+
+
+def _order_change_intents(monkeypatch):
+    async def interpret(router, state, **kwargs):
+        text = state.get("text") or ""
+        if state.get("entry") == "message" and text == HOLD:
+            return TurnInterpretation(primary_intent="order_change", secondary_intents=["logistics_query"], device_relation="current"), {"source": "test"}
+        if state.get("entry") == "message" and text == CANCEL:
+            return TurnInterpretation(primary_intent="order_change", device_relation="current"), {"source": "test"}
+        return TurnInterpretation(primary_intent="supplement", device_relation="current"), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+
+
+async def _queue_of(sid):
+    state = await state_of(sid)
+    return [(t["intent"], t["status"], t["quote"]) for t in state["issues"][state["active_issue_id"]]["task_queue"]]
+
+
+async def _decide(client, sid, decision):
+    case = next(c for c in (await client.get("/admin/api/cases/queue")).json()["items"] if c["session_id"] == sid)
+    response = await client.post(f"/admin/api/cases/{case['case_id']}/decision", json={
+        "decision_id": str(uuid.uuid4()), "expected_revision": case["revision"], "decision": decision, "note": "handled",
+    })
+    assert response.status_code == 200, response.text
+    for _ in range(100):
+        if not app.state.run_manager.is_live(response.json()["run_id"]):
+            break
+        await asyncio.sleep(0.01)
+    return case["case_id"]
+
+
+async def test_a_changed_hold_request_reaches_the_desk_not_the_old_one(l3_runtime, monkeypatch):
+    """P1：先要暂停、再改成取消整单 —— 同属 order_change，但不是同一个诉求。人工必须看到最新原话。"""
+    _order_change_intents(monkeypatch)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        first = events(await send(client, sid, HOLD))
+        rows = events(await send(client, sid, CANCEL))
+        assert not any(e["type"] == "error" for e in rows), rows
+        case = await _case_detail(client, first)
+        assert case["status"] == "awaiting_approval"
+        kinds = [e["type"] for e in case["events"]]
+        assert kinds.count("review_requested") == 1 and kinds.count("request_changed") == 1, kinds
+        assert kinds.count("handoff_summary") == 2
+        assert CANCEL in case["handoff_summary"]["reason"]["text"]
+        queue = await _queue_of(sid)
+        held = [q for q in queue if q[0] == "order_change"]
+        assert held == [("order_change", "waiting_human", CANCEL)], queue
+
+
+async def test_a_rejected_hold_request_settles_its_task_and_a_new_request_queues_again(l3_runtime, monkeypatch):
+    """P2：人工驳回后任务不能仍 waiting_human；客户再提同类诉求要能重新入队，不能撞非法迁移。"""
+    _order_change_intents(monkeypatch)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events(await send(client, sid, HOLD))
+        case_id = await _decide(client, sid, "reject")
+        state = await state_of(sid)
+        assert state["stage"] == "done"
+        assert [q[:2] for q in await _queue_of(sid)] == [("order_change", "done"), ("logistics_query", "done")]
+        rows = events(await send(client, sid, CANCEL))
+        assert not any(e["type"] == "error" for e in rows), [e for e in rows if e["type"] == "error"]
+        assert "passed your request" in said(rows)
+        case = (await client.get(f"/admin/api/cases/{case_id}")).json()
+        assert case["status"] == "awaiting_approval"
+        transitions = [e["payload"]["to"] for e in case["events"] if e["type"] == "status_changed"]
+        assert transitions == ["awaiting_approval", "rejected", "proposing", "awaiting_approval"], transitions
+        assert CANCEL in case["handoff_summary"]["reason"]["text"]
+        # 已驳回的旧诉求保持 done，不会被新一句改回等人工；单意图一轮不建新任务，案件本身就是人工队列
+        assert [q[:2] for q in await _queue_of(sid)] == [("order_change", "done"), ("logistics_query", "done")]
+
+
+async def test_asking_for_a_colleague_does_not_start_the_pending_troubleshooting(l3_runtime, monkeypatch):
+    """P2：换货单上请人工处理后，排在后面的排障任务不能被自动推进；只有查询类任务可以继续。"""
+    text = "左侧吸奶器没有吸力，订单 Anker016，我要换货，顺便帮我排查一下"
+    interpret_as(monkeypatch, {
+        text: TurnInterpretation(primary_intent="replacement_request", secondary_intents=["report_problem"], device_relation="current"),
+        "SN: T8D04121ABCD": TurnInterpretation(primary_intent="supplement", facts=[
+            {"kind": "context", "context_field": "serial_number", "value": "T8D04121ABCD", "quote": "SN: T8D04121ABCD"},
+        ]),
+    })
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await send(client, sid, text)
+        await send(client, sid, "照片", images=1)
+        await send(client, sid, "SN: T8D04121ABCD")
+        snap = (await client.get(f"/sessions/{sid}")).json()
+        assert (snap.get("pending_input") or {}).get("kind") == "confirm_proposal", snap.get("pending_input")
+        rows = events(await act(client, sid, "decline_proposal", {"reason": "request_human"}))
+        assert "Next up" not in said(rows), said(rows)
+        assert not any(e["type"] == "step_card" for e in rows)
+        state = await state_of(sid)
+        assert state["stage"] == "awaiting_human"
+        assert [q[:2] for q in await _queue_of(sid)] == [("replacement_request", "waiting_human"), ("report_problem", "pending")]
