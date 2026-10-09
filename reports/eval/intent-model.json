@@ -2,17 +2,16 @@
   "kind": "intent",
   "mode": "model",
   "source": "synthetic_independent_text_gold",
-  "dataset_sha256": "b4cabb20ed2a393cb03ea07a6fb4f21347b56e5c2fd037e0b516666e584529d9",
+  "dataset_sha256": "be6548b3d01dad10c5014f3b00074850f4f7bd4cd9e8a85ceaa9ddff5c057c15",
   "versions": {
-    "policy_version": "2026-09-14.1",
-    "actions_version": "2026-09-14.1",
-    "prompt_ver": "system=2026-09-14.1;interpret=2026-09-14.3;reply=2026-09-12.1;guide=2026-09-12.1;clarify=2026-09-13.1;vision=2026-09-14.1;ocr=2026-09-12.1;summary=2026-09-12.1",
-    "models_ver": "2026-09-13.5",
-    "kb_ver": "2026-09-12.1+text-embedding-v4",
-    "rules_ver": "2026-09-12.1"
+    "actions_version": "2026-10-08.1",
+    "prompt_ver": "system=2026-09-25.1;interpret=2026-10-09.1;reply=2026-10-08.1;guide=2026-09-12.1;clarify=2026-09-15.1;vision=2026-10-09.1;ocr=2026-10-08.1;summary=2026-09-12.1",
+    "models_ver": "2026-09-18.2",
+    "kb_ver": "0cc02e6531d6+text-embedding-v4",
+    "rules_ver": "2026-10-08.1"
   },
   "lane": "domestic",
-  "at": "2026-09-14T11:37:36.606514+00:00",
+  "at": "2026-10-09T04:00:07.003856+00:00",
   "planned": 40,
   "cases": [
     {
@@ -30,17 +29,17 @@
         "order": [
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 3891
+      "latency_ms": 3577
     },
     {
       "id": "logistics_query-2",
       "family": "logistics_query",
-      "text": "帮我查物流 DEMO-X10-001",
+      "text": "帮我查物流 Anker001",
       "expected": {
         "primary_intent": "logistics_query"
       },
@@ -52,12 +51,12 @@
         "order": [
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2362
+      "latency_ms": 3310
     },
     {
       "id": "logistics_query-3",
@@ -74,12 +73,12 @@
         "order": [
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2081
+      "latency_ms": 1132
     },
     {
       "id": "logistics_query-4",
@@ -96,12 +95,12 @@
         "order": [
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2135
+      "latency_ms": 2268
     },
     {
       "id": "logistics_query-5",
@@ -123,7 +122,7 @@
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1868
+      "latency_ms": 2719
     },
     {
       "id": "warranty_query-1",
@@ -140,12 +139,12 @@
         "order": [
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2566
+      "latency_ms": 1597
     },
     {
       "id": "warranty_query-2",
@@ -162,12 +161,12 @@
         "order": [
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2063
+      "latency_ms": 1165
     },
     {
       "id": "warranty_query-3",
@@ -184,17 +183,17 @@
         "order": [
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2249
+      "latency_ms": 1322
     },
     {
       "id": "warranty_query-4",
       "family": "warranty_query",
-      "text": "查一下 DEMO-X10-001 的保修期限。",
+      "text": "查一下 Anker001 的保修期限。",
       "expected": {
         "primary_intent": "warranty_query"
       },
@@ -206,12 +205,12 @@
         "order": [
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2431
+      "latency_ms": 2102
     },
     {
       "id": "warranty_query-5",
@@ -228,17 +227,17 @@
         "order": [
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1233
+      "latency_ms": 1098
     },
     {
       "id": "order_query-1",
       "family": "order_query",
-      "text": "帮我查一下订单 DEMO-X10-001 的购买信息。",
+      "text": "帮我查一下订单 Anker001 的购买信息。",
       "expected": {
         "primary_intent": "order_query"
       },
@@ -250,12 +249,12 @@
         "order": [
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2139
+      "latency_ms": 1475
     },
     {
       "id": "order_query-2",
@@ -272,12 +271,12 @@
         "order": [
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1273
+      "latency_ms": 3255
     },
     {
       "id": "order_query-3",
@@ -294,12 +293,12 @@
         "order": [
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2185
+      "latency_ms": 1262
     },
     {
       "id": "order_query-4",
@@ -316,12 +315,12 @@
         "order": [
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2073
+      "latency_ms": 1586
     },
     {
       "id": "order_query-5",
@@ -338,12 +337,12 @@
         "order": [
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2074
+      "latency_ms": 1487
     },
     {
       "id": "address_update-1",
@@ -360,12 +359,12 @@
         "order": [
           "address_update"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2063
+      "latency_ms": 2821
     },
     {
       "id": "address_update-2",
@@ -382,12 +381,12 @@
         "order": [
           "address_update"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2107
+      "latency_ms": 3175
     },
     {
       "id": "address_update-3",
@@ -404,12 +403,12 @@
         "order": [
           "address_update"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2673
+      "latency_ms": 3914
     },
     {
       "id": "address_update-4",
@@ -426,12 +425,12 @@
         "order": [
           "address_update"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1962
+      "latency_ms": 2974
     },
     {
       "id": "address_update-5",
@@ -448,12 +447,12 @@
         "order": [
           "address_update"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1950
+      "latency_ms": 2907
     },
     {
       "id": "replacement_request-1",
@@ -470,12 +469,12 @@
         "order": [
           "replacement_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2264
+      "latency_ms": 3018
     },
     {
       "id": "replacement_request-2",
@@ -492,12 +491,12 @@
         "order": [
           "replacement_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2225
+      "latency_ms": 766
     },
     {
       "id": "replacement_request-3",
@@ -514,12 +513,12 @@
         "order": [
           "replacement_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1656
+      "latency_ms": 715
     },
     {
       "id": "replacement_request-4",
@@ -536,12 +535,12 @@
         "order": [
           "replacement_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2129
+      "latency_ms": 2430
     },
     {
       "id": "replacement_request-5",
@@ -558,12 +557,12 @@
         "order": [
           "replacement_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1916
+      "latency_ms": 2690
     },
     {
       "id": "refund_request-1",
@@ -580,12 +579,12 @@
         "order": [
           "refund_request"
         ],
-        "emotion_level": "dissatisfied",
-        "model_emotion_level": "dissatisfied"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2474
+      "latency_ms": 2980
     },
     {
       "id": "refund_request-2",
@@ -602,12 +601,12 @@
         "order": [
           "refund_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1962
+      "latency_ms": 707
     },
     {
       "id": "refund_request-3",
@@ -624,12 +623,12 @@
         "order": [
           "refund_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2287
+      "latency_ms": 1412
     },
     {
       "id": "refund_request-4",
@@ -646,12 +645,12 @@
         "order": [
           "refund_request"
         ],
-        "emotion_level": "dissatisfied",
-        "model_emotion_level": "dissatisfied"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1940
+      "latency_ms": 2337
     },
     {
       "id": "refund_request-5",
@@ -668,12 +667,12 @@
         "order": [
           "refund_request"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2142
+      "latency_ms": 1460
     },
     {
       "id": "confirm_received-1",
@@ -695,7 +694,7 @@
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2020
+      "latency_ms": 2080
     },
     {
       "id": "confirm_received-2",
@@ -712,12 +711,12 @@
         "order": [
           "confirm_received"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1796
+      "latency_ms": 2372
     },
     {
       "id": "confirm_received-3",
@@ -734,12 +733,12 @@
         "order": [
           "confirm_received"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2159
+      "latency_ms": 2273
     },
     {
       "id": "confirm_received-4",
@@ -756,12 +755,12 @@
         "order": [
           "confirm_received"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2215
+      "latency_ms": 1831
     },
     {
       "id": "confirm_received-5",
@@ -778,12 +777,12 @@
         "order": [
           "confirm_received"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2335
+      "latency_ms": 1298
     },
     {
       "id": "rate-1",
@@ -800,12 +799,12 @@
         "order": [
           "rate"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1885
+      "latency_ms": 614
     },
     {
       "id": "rate-2",
@@ -822,12 +821,12 @@
         "order": [
           "rate"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1972
+      "latency_ms": 2147
     },
     {
       "id": "rate-3",
@@ -837,19 +836,21 @@
         "primary_intent": "rate"
       },
       "actual": {
-        "primary_intent": "rate",
+        "primary_intent": "product_question",
         "intents": [
-          "rate"
+          "product_question"
         ],
         "order": [
-          "rate"
+          "product_question"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
-      "errors": [],
+      "errors": [
+        "primary_intent"
+      ],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1678
+      "latency_ms": 2164
     },
     {
       "id": "rate-4",
@@ -871,7 +872,7 @@
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1705
+      "latency_ms": 1561
     },
     {
       "id": "rate-5",
@@ -881,26 +882,28 @@
         "primary_intent": "rate"
       },
       "actual": {
-        "primary_intent": "rate",
+        "primary_intent": "complaint",
         "intents": [
-          "rate"
+          "complaint"
         ],
         "order": [
-          "rate"
+          "complaint"
         ],
         "emotion_level": "dissatisfied",
         "model_emotion_level": "dissatisfied"
       },
-      "errors": [],
+      "errors": [
+        "primary_intent"
+      ],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2887
+      "latency_ms": 2544
     }
   ],
   "total": 40,
-  "passed": 40,
+  "passed": 38,
   "complete": true,
   "field_accuracy": {
-    "primary_intent": 1.0
+    "primary_intent": 0.95
   },
-  "accuracy": 1.0
+  "accuracy": 0.95
 }

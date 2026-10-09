@@ -2,17 +2,16 @@
   "kind": "routing",
   "mode": "model",
   "source": "synthetic_independent_text_gold",
-  "dataset_sha256": "f586379f79b574bb6f5b819f3620236e9e6dd64d128c0f80b6f1f880948c0571",
+  "dataset_sha256": "602bb222dcc63583abc3e39b8f3a3c2cae809ba0bc5fc154842d18869f1e09dd",
   "versions": {
-    "policy_version": "2026-09-14.1",
-    "actions_version": "2026-09-14.1",
-    "prompt_ver": "system=2026-09-14.1;interpret=2026-09-14.3;reply=2026-09-12.1;guide=2026-09-12.1;clarify=2026-09-13.1;vision=2026-09-14.1;ocr=2026-09-12.1;summary=2026-09-12.1",
-    "models_ver": "2026-09-13.5",
-    "kb_ver": "2026-09-12.1+text-embedding-v4",
-    "rules_ver": "2026-09-12.1"
+    "actions_version": "2026-10-08.1",
+    "prompt_ver": "system=2026-09-25.1;interpret=2026-10-09.1;reply=2026-10-08.1;guide=2026-09-12.1;clarify=2026-09-15.1;vision=2026-10-09.1;ocr=2026-10-08.1;summary=2026-09-12.1",
+    "models_ver": "2026-09-18.2",
+    "kb_ver": "0cc02e6531d6+text-embedding-v4",
+    "rules_ver": "2026-10-08.1"
   },
   "lane": "domestic",
-  "at": "2026-09-14T11:25:33.314038+00:00",
+  "at": "2026-10-09T03:59:25.818436+00:00",
   "planned": 20,
   "cases": [
     {
@@ -39,12 +38,12 @@
           "report_problem",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 5352
+      "latency_ms": 3114
     },
     {
       "id": "multi-02",
@@ -70,12 +69,12 @@
           "replacement_request",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1627
+      "latency_ms": 1584
     },
     {
       "id": "multi-03",
@@ -101,12 +100,12 @@
           "refund_request",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1331
+      "latency_ms": 1370
     },
     {
       "id": "multi-04",
@@ -132,12 +131,12 @@
           "address_update",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2557
+      "latency_ms": 2439
     },
     {
       "id": "multi-05",
@@ -163,12 +162,12 @@
           "report_problem",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2294
+      "latency_ms": 1822
     },
     {
       "id": "multi-06",
@@ -194,12 +193,12 @@
           "replacement_request",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1632
+      "latency_ms": 2012
     },
     {
       "id": "multi-07",
@@ -225,12 +224,12 @@
           "refund_request",
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1846
+      "latency_ms": 1413
     },
     {
       "id": "multi-08",
@@ -256,12 +255,12 @@
           "address_update",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2017
+      "latency_ms": 1514
     },
     {
       "id": "multi-09",
@@ -287,12 +286,12 @@
           "order_query",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1675
+      "latency_ms": 1484
     },
     {
       "id": "multi-10",
@@ -318,12 +317,12 @@
           "logistics_query",
           "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1505
+      "latency_ms": 1758
     },
     {
       "id": "multi-11",
@@ -349,17 +348,17 @@
           "refund_request",
           "report_problem"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2105
+      "latency_ms": 3386
     },
     {
       "id": "multi-12",
       "family": "multi_intent",
-      "text": "我要申请换货，另一台耳机只有左侧没声音，请排查。",
+      "text": "我要申请换货，另一台吸奶器左边没有吸力，请排查。",
       "expected": {
         "intents": [
           "replacement_request",
@@ -380,12 +379,12 @@
           "replacement_request",
           "report_problem"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 3052
+      "latency_ms": 2698
     },
     {
       "id": "multi-13",
@@ -411,12 +410,12 @@
           "address_update",
           "report_problem"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 3667
+      "latency_ms": 1772
     },
     {
       "id": "multi-14",
@@ -442,12 +441,12 @@
           "warranty_query",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1549
+      "latency_ms": 2333
     },
     {
       "id": "multi-15",
@@ -477,12 +476,12 @@
           "refund_request",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1971
+      "latency_ms": 1329
     },
     {
       "id": "multi-16",
@@ -512,12 +511,12 @@
           "replacement_request",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1436
+      "latency_ms": 2105
     },
     {
       "id": "multi-17",
@@ -544,15 +543,17 @@
         ],
         "order": [
           "report_problem",
-          "order_query",
-          "warranty_query"
+          "warranty_query",
+          "order_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
-      "errors": [],
+      "errors": [
+        "order"
+      ],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2367
+      "latency_ms": 2266
     },
     {
       "id": "multi-18",
@@ -582,12 +583,12 @@
           "order_query",
           "logistics_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1732
+      "latency_ms": 1803
     },
     {
       "id": "multi-19",
@@ -613,12 +614,12 @@
           "logistics_query",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 1577
+      "latency_ms": 1986
     },
     {
       "id": "multi-20",
@@ -648,20 +649,20 @@
           "report_problem",
           "warranty_query"
         ],
-        "emotion_level": "calm",
-        "model_emotion_level": "calm"
+        "emotion_level": null,
+        "model_emotion_level": null
       },
       "errors": [],
       "model": "dashscope/qwen3.7-flash",
-      "latency_ms": 2074
+      "latency_ms": 1942
     }
   ],
   "total": 20,
-  "passed": 20,
+  "passed": 19,
   "complete": true,
   "field_accuracy": {
-    "intents": 1.0,
-    "order": 1.0
+    "order": 0.95,
+    "intents": 1.0
   },
-  "accuracy": 1.0
+  "accuracy": 0.95
 }

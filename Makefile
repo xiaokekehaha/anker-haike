@@ -5,12 +5,12 @@ help: ## 列出命令
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
 ## ---- 容器 ----
-up: ## 构建并拉起全部容器
-	$(COMPOSE) up -d --build
+up: ## 构建并拉起全部容器（含 WeKnora 网页 8081）
+	$(COMPOSE) --profile ui up -d --build
 down: ## 停止容器，保留数据
-	$(COMPOSE) down
+	$(COMPOSE) --profile ui down
 reset: ## 停止容器并删除全部数据卷（需二次确认）
-	@read -p "将删除 postgres / redis / weknora 全部数据，继续? [y/N] " a && [ "$$a" = "y" ] && $(COMPOSE) down -v
+	@read -p "将删除 postgres / redis / weknora 全部数据，继续? [y/N] " a && [ "$$a" = "y" ] && $(COMPOSE) --profile ui down -v
 logs: ## 跟随日志
 	$(COMPOSE) logs -f --tail=100
 ps: ## 容器状态
@@ -41,9 +41,9 @@ bakeoff: ## bake-off 评测（票 42）：make bakeoff [TASK=intake] [ALIAS=deep
 
 .PHONY: contracts contracts-check contracts-test
 ## ---- 参考数据（票 19 / 31）----
-seed: ## 写入 products / plans 参考数据到 PostgreSQL（幂等）：make seed [WHAT=products|plans]
+seed: ## 写入 products 参考数据到 PostgreSQL（幂等）：make seed [WHAT=products|all]
 	cd orchestrator && uv run --env-file ../.env haike-seed $(or $(WHAT),all)
-plans-schema: ## 输出排障计划 JSON Schema（--enum 收窄 plan_id）
+plans-schema: ## 输出排障计划 JSON Schema（计划由官方 Q&A 生成；--enum 收窄 plan_id）
 	cd orchestrator && uv run haike-plans-schema --enum
 
 ## ---- 知识库（票 26）----

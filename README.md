@@ -27,7 +27,7 @@ make health                 # 查看聚合健康
 | http://localhost:8000 | 编排服务与前端 |
 | http://localhost:8000/health | 聚合健康：db / redis / weknora / models（按通道） |
 | http://localhost:8080 | WeKnora API |
-| http://localhost:8081 | WeKnora 网页（需 `docker compose --profile ui up -d`，用于建 tenant、取 API key） |
+| http://localhost:8081 | WeKnora 网页（`make up` 一并启动；登录后经 nginx 代理 `/api/` 到 8080，用于查看知识库、建 tenant、取 API key） |
 
 停止：`make down`（保留数据）。重置全部数据：`make reset`。首次拉起 WeKnora 镜像与 docreader 约需数分钟。
 
