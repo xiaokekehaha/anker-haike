@@ -14,3 +14,13 @@
 - 17:05 §6 契约 HandoffBusiness / PendingRequest，make contracts；摘要 problem 回退链、login_country、handoff_business；advance_tasks 在交接后查询完成且已知事实变化时重写交接摘要（T9 两条摘要）；前端 SummaryCard 业务四行。
 - 17:10 §7 评测标签 T46 / T50 / T52 / T61；驱动器 done_with_pending_tasks、r3_from_device_text、first_card_forbidden；节点摘要带 human_request_source。
 - 17:14 intake schema 超 2560 token 上限：精简新字段描述与提示词后恢复。ci-local 全绿：898 passed、契约 90、前端 226。未提交。
+- 17:18 提交 a32a1f3 / 7707bf4；make up 重建（镜像 ad8866e）；63 单复测后台启动（并发 2）。
+- 17:25 离线扫描 875 条 Q&A 的 1364 段：非 action 段不到 11%，question 只有 3 段。写第二批规格 docs/claude/spec_2026-10-09-1725_official-63-batch2-step-kinds.md。
+- 17:13–17:35 第一批 63 单复测（镜像 ad8866e，并发 2，报告存 retest-1713/）：intent 98%、sop 81%（首测驱动器口径 sop 为空，不可比）；8 个错误案例全部改变路径：T11/T18/T22/T30/T31 进入正确方案，T50/T52/T61 改为澄清。
+- 复测新回归三类：(a) 设备级主语（left pump / stofzuiger / eufy omni c 20）被当成部件与候选冲突，T55/T36/T40/T54/T62 等 7 单误澄清；(b) T34 模型把「cannot use them」抽成症状、主语 maps 丢在检索词外，R5；(c) T51/T53 过保后推进排障时 requested_remedy 未清，又绕回已关闭案件；T29/T38 排障后过保仍 done_with_pending。
+- 17:45 修复：synthesize 主语冲突只认部件词；build_query 拼入主语；advance_tasks 推进排障清 requested_remedy；已关闭案件的交接只记录不入队。ci-local 全绿（909 passed）。make up 重建（镜像 c58057c），后台复跑 25 单。
+- 17:32–17:38 25 单复跑（镜像 c58057c，报告存 retest-1732/）：T36/T40/T54/T56 恢复出卡；T51/T53 过保后排障出卡且队列无 pending；T9 不变。仍有：T34 引文被模型纠正拼写（siscovered→discovered）致症状丢失；T29「Water tray」对「cleaning tray」被判对象冲突；T29/T38 排障走完过保时 active 的是 report_problem，remedy_closed 没把它记 done；T52 候选模型直接判 supported 绕过主语核对（预期）；T55 补 SN 那轮进 consult 没回到换货流程（既有问题，记入待办）。
+- 17:50 修复：quoted 允许 ≥4 词引文去掉首词或末词后匹配；主语冲突改比较部件中心词（case 对 pump 冲突、tray 对 tray 不冲突），pump 作为部件词、品类词加填充词按整机；remedy_closed 以当前 active 任务为准。ci-local 后端 912 passed；前端 App.test 在全量下偶发失败、单跑通过，与本次改动无关。
+- 17:45–17:50 15 单复跑（镜像 d4d66f6，报告存 retest-1745/）：T29/T34/T38 恢复；T40/T54 仍因主语冲突误澄清（产品名含 pump 被当部件；detergent 对 bottle 被当对象不同）；T61 候选只有无法启动方向，模型返回空 → R5（T61 的「提前」目前无官方条目，交人工是可接受结果，评测标签 clarify 过严，待下一批标签复核）。
+- 17:55 修复：目录认得的产品名且未点名部件按整机；耗材与介质不进部件词表。ci-local 全绿 916 passed。make up（第四次）后启动第二次全量 63 单复测。
+- 17:56–18:00 第二次全量 63 单复测（镜像 d4d66f6 后再建，报告存 retest-1756/）：intent 98%（仅 T58 情绪单读成 report_problem）、sop 90%、forbid 0。8 个首测错误案例全部到达预期终点：T11/T22/T30/T31/T34 进入正确方案并出卡，T50/T52/T61 停在澄清。回归保护集 T1–T10、T12、T13、T14、T32、T45、T55 全部保持。剩余 6 单（T21/T39/T43/T56/T57/T62）均为模型发出的 needs_confirmation 事实问句，驱动器按口径停在问句、记为 explain；问句内容与官方资料相符，不是错误路径。
