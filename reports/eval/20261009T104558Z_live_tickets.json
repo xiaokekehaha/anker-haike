@@ -1,0 +1,154 @@
+{
+ "summary": {
+  "cases": 6,
+  "errors": 0,
+  "intent_accuracy": "100%",
+  "sop_accuracy": "100%",
+  "sop_exact": "50%",
+  "sop_via_alternate": 3,
+  "bot_closed_rate": "100% (2/2)",
+  "service_order_submitted": 1,
+  "hallucination_cases": 0,
+  "median_seconds": 7.5
+ },
+ "rows": [
+  {
+   "id": "T1",
+   "session_id": "a1b0ccb1e73b48f4b25bcd65e835b74d",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "logistics_query",
+   "intent_ok": true,
+   "sop_expected": "logistics_delivered",
+   "bot_closable": false,
+   "sop_also": [],
+   "terminal": "logistics_delivered",
+   "sop_ok": true,
+   "service_order": true,
+   "human": true,
+   "self_served": false,
+   "step_cards": 0,
+   "escalate_reasons": [
+    "awaiting_approval"
+   ],
+   "hallucination": [],
+   "first_reply": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carr",
+   "seconds": 7.7
+  },
+  {
+   "id": "T2",
+   "session_id": "2b3f3db12a064141b0aaf3cbf9af9d7e",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "logistics_query",
+   "intent_ok": true,
+   "sop_expected": "logistics_delivered",
+   "bot_closable": false,
+   "sop_also": [],
+   "terminal": "logistics_delivered",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [],
+   "hallucination": [],
+   "first_reply": "Order Anker002:\n• ANPOST Anker1234567-2: delivered on 2026-09-21 (T2080GA1)\n• UPS Anker1234567-3: delivered on 2026-09-24 (T29C2001)\nOur record for Anker1234567-2 differs from what you received: it is listed as the main unit, while you mention the accessory kit. I've kept both records as they are; p",
+   "seconds": 7.5
+  },
+  {
+   "id": "T9",
+   "session_id": "58e447c7d9ae4fcb8acccfd5d0bf95a8",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "order_change",
+   "intent_ok": true,
+   "sop_expected": "logistics_presale",
+   "bot_closable": true,
+   "sop_also": [
+    "order_change_human"
+   ],
+   "terminal": "order_change_human + logistics_presale",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [
+    "awaiting_approval"
+   ],
+   "hallucination": [],
+   "first_reply": "I'll handle your requests in this order: order change → delivery status.I can't change or hold an order myself, so I've passed your request to a colleague who can. Please note the order may already be in process.Next up: delivery status.Order Anker008:\n• Package: pre-order, not shipped yet, expected",
+   "seconds": 4.4
+  },
+  {
+   "id": "T35",
+   "session_id": "b0cb0e575b58488d96ea0625919c3eb7",
+   "language": "en",
+   "intent_expected": "report_problem",
+   "intent_actual": "report_problem",
+   "intent_ok": true,
+   "sop_expected": "explain",
+   "bot_closable": true,
+   "sop_also": [],
+   "terminal": "troubleshoot",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 1,
+   "escalate_reasons": [
+    "solved"
+   ],
+   "hallucination": [],
+   "first_reply": "Great, the issue is resolved! After following the steps, your eufy Robot Vacuum Omni E25 should work normally now. Regular maintenance as described in the manual helps prevent this. If anything else comes up, just come back here.Thank you for your feedback. You can check your case progress at any ti",
+   "seconds": 8.0
+  },
+  {
+   "id": "T47",
+   "session_id": "5e6235a949284999ba2d132b10f9a39c",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "logistics_query",
+   "intent_ok": true,
+   "sop_expected": "logistics_delivered",
+   "bot_closable": false,
+   "sop_also": [],
+   "terminal": "logistics_delivered",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [],
+   "hallucination": [],
+   "first_reply": "Order Anker010:\n• Amazon Logistics Anker1234567-13: delivered on 2025-12-07 (T8D04121)\nThe order record shows T8D04121; I don't see a separate shipment for T8D02181-80. If this part came from a separate order or a service replacement, please share that order number or case number and I'll check it.N",
+   "seconds": 5.5
+  },
+  {
+   "id": "T63",
+   "session_id": "6e8c4e6366ae445da0647501c3ea0b19",
+   "language": "en",
+   "intent_expected": "parts_purchase",
+   "intent_actual": "parts_purchase",
+   "intent_ok": true,
+   "sop_expected": "clarify",
+   "bot_closable": false,
+   "sop_also": [
+    "order_change_human"
+   ],
+   "terminal": "order_change_human + explain",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [
+    "awaiting_approval"
+   ],
+   "hallucination": [],
+   "first_reply": "I'll handle your requests in this order: spare part purchase → device troubleshooting.I can't look up spare-part availability or place a parts order here, so I've passed your request (the brush guard) to a colleague who can check it for you.",
+   "seconds": 5.3
+  }
+ ]
+}
