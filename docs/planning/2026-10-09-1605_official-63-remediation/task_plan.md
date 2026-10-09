@@ -3,8 +3,8 @@
 0. 前置：ci-local 通过并提交今日两轮未提交改动：complete（fbefd7a、bf29496）
 1. 第一批：事实来源与极性、适用性核对、T31 路由、澄清先于交接、过保继续任务、摘要按事实生成、评测标签：complete（ci-local 全绿，待评审提交）
 2. 第二批：步骤类型离线分类、计划与契约、卡片按类型渲染、已做操作进排障历史：complete（b07d550，复测 sop 84% 全量 / 88% 受影响集）
-3. 第三批：T47 SKU 比对、parts_purchase、回复范围与流式失败状态：pending
+3. 第三批：T47 SKU 比对、parts_purchase、回复范围与流式失败状态：complete（受影响集复跑全过）
 4. 每批后 63 单复跑 + 变体测试 + 回归保护集：第一批复跑 complete（变体测试未做）
 
 ## Next Step
-第一批、第二批均已提交并复测。第三批（I8 / I9：T47 SKU 比对、parts_purchase、T35 回复范围与流式失败）等用户确认后实施；T61 标签与 needs_confirmation 问句终点的评分口径待复核。
+三批均已提交并复测。剩余：全量 63 单终测；变体测试（同义 / 否定 / 顺序互换）未做；T61 标签与 needs_confirmation 问句终点的评分口径待复核；T55 补 SN 轮路由进 consult 的既有问题待办。
