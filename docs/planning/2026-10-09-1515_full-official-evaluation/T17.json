@@ -1,0 +1,2207 @@
+{
+  "id": "T17",
+  "input": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "resumed": false,
+          "event_id": "ab691d63157545d69176387fcdc392e9",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:48.494941+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "a97eaa8cc2484f48bf774f23d56776e8",
+          "input_id": "ebda8bdd89f4410aa0fd9a0fb52edf1c",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:17:48.494941+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 3,
+          "event_id": "d8f3b38f9e4a4490859a95379758e95f",
+          "recorded_at": "2026-10-09T07:17:48.514158+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 4,
+          "event_id": "9de57f044c76445d8ee42be4f8ce7212",
+          "recorded_at": "2026-10-09T07:17:52.133449+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 5,
+          "event_id": "c88bf300347948a3b4e1699f436f27a9",
+          "recorded_at": "2026-10-09T07:17:52.140920+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8188914ecd6a54999fc7c141c4c2ecd3",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 6,
+          "event_id": "ff803fd594234036b2ab6386d6a3c3e6",
+          "recorded_at": "2026-10-09T07:17:52.142778+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8188914ecd6a54999fc7c141c4c2ecd3",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 7,
+          "event_id": "f2ae89d2c9a84dd5b0f1addf0c4a7bfb",
+          "recorded_at": "2026-10-09T07:17:52.786700+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 8,
+          "event_id": "1dac893e654f4c1a93b7ba021e75e702",
+          "recorded_at": "2026-10-09T07:17:54.808022+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 9,
+          "event_id": "03ab292a68414666acc9f3e6ad059821",
+          "recorded_at": "2026-10-09T07:17:54.816623+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "input_id": "ebda8bdd89f4410aa0fd9a0fb52edf1c",
+          "resolved_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "title": "The portable deep cleaning machine is incorrectly positioned.",
+              "status": "open"
+            }
+          ],
+          "event_id": "d6f1eeae5f1e5555bb135789b418e439",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:17:54.843302+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "source": "kb_qa",
+              "doc_id": "rv-0498",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "snippet": "what should I do when T2352 Omni E28 has 6063 Error: The portable deep cleaning machine is incorrectly positioned, preventing the robot from operating. Please adjust its position/The portable deep cleaning machine is incorrectly positioned?\n1. Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "source": "kb_qa",
+              "doc_id": "rv-0489",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "snippet": "What should I do if T2352 Omni E28 has 8000-The base station task cannot be executed properly/The base station task cannot be executed/Portable deep cleaning is positioned incorrectly/Base station tasks cannot be executed normally?\nCheck that the Portable Deep Cleaner is properly placed on the charging base and plugged in. Ensure the white ring light remains steadily illuminated. Video reference: ",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+              "source": "kb_qa",
+              "doc_id": "rv-0491",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+              "snippet": "What should I do when T2352 Omni E28 Portable Deep Cleaner(PDC) Abnormal /Portable Deep Cleaner(PDC) No Suction /Portable Deep Cleaner(PDC) Error or portable mop section is not working?\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our",
+              "score": 0.015656565656565653,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+              "source": "kb_qa",
+              "doc_id": "rv-0486",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+              "snippet": "What should i do whenT2352 Omni E28 Portable deep cleaning(PDC) hose back flow water?\nPlease note that some dirty water may be present in the hose after the portable deep cleaner has been used if it has not been fully recycled into the dirty water tank. The design has increased the mechanism of delayed shutdown of the fan, but there is still a small amount of dirty water that cannot be completely ",
+              "score": 0.015415111940298508,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+              "source": "kb_qa",
+              "doc_id": "rv-0485",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+              "snippet": "What should I do when my T2352 Omni E28's Portable deep cleaning(PDC) has a lot of water left on the fabric after use?\nThis portable deep cleaning is designed for external extrusion recovery of dirty water. The product is intended for use in cases where standard methods of dirty water recovery are difficult to implement, such as in situations where the fabric bottom of the water is not easily acce",
+              "score": 0.015063145809414464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "23d91477-153f-4c4f-9756-99741170aa16",
+              "source": "kb_qa",
+              "doc_id": "rv-0499",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "23d91477-153f-4c4f-9756-99741170aa16",
+              "snippet": "What should I do when T2352 Omni E28 Water leaking from the base station /Water leaking from the base station onto the floor /Water leaking from the base station all over the place /Water leaking from the portable deep cleaner(PDC) onto the machine and onto the floor?\nThe issue of the portable deep cleaner leaking from the bottom has been optimized by our engineering team, and new accessories have",
+              "score": 0.014981617647058822,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+              "source": "kb_qa",
+              "doc_id": "rv-0499",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+              "snippet": "The video link below will guide you on how to pick and place the portable deep cleaner(PDC): Base Station Base Leakage please follow the following steps to troubleshoot:\n1. Please check if the base station dirty water tank snap is snapped into place and make sure that you hear a clicking sound;\nThe video link below will guide you through the process of checking that the clasp is in place",
+              "score": 0.014935897435897436,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+              "source": "kb_qa",
+              "doc_id": "rv-0493",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+              "snippet": "what should I do when T2352 Omni E28 has 7035 Error: Return failed. Please check if the base station or charging dock is plugged in./Failed to return, please check whether the base station is powered on or not？？\nPlease follow these troubleshooting steps: Check if the portable deep cleaner is placed on the base station dock and plugged in. Ensure the white ring light remains steadily lit. Tips: Whe",
+              "score": 0.014556692242114236,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+              "source": "kb_qa",
+              "doc_id": "rv-0487",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+              "snippet": "What should I do When T2352 Omni E28 the fan does not stop immediately after pressing the Portable deep cleaning(PDC) power button?\nRegarding the issue where the fan does not stop immediately after pressing the power button on your Portable Deep Cleaner: This is actually a designed safety feature! To ensure any residual wastewater in the hose is fully drawn into the tank and doesn't flow back towa",
+              "score": 0.014347826086956523,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+              "source": "kb_qa",
+              "doc_id": "rv-0198",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7011 Error: Robot is on the carpet, please move to outside of the carpet and start./Robot mistakenly on the carpet?\nIf the carpet detection sensor at the bottom of the cleaning machine still reports an error after cleaning, please enable the log switch in the APP. Our team of engineers will help resolve the issue.",
+              "score": 0.014264597191426458,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0492",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+              "snippet": "What should I do if my T2352 Omni E28 Portable Deep Cleaner lack of suction power？\nPlease check if the dirty water tank of the base station is full, empty the dirty water tank, ensure that the dirty water tank buckle is fastened in place, and make sure a \"click\" sound is heard.<>",
+              "score": 0.01408450704225352,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+              "source": "kb_qa",
+              "doc_id": "rv-0488",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+              "snippet": "What should I do when the T2352 Omni E28 Portable deep cleaning(PDC) brush head sticks to the bristles?\nSticky hair problem suggests that after each use with the help of a tool brush to clean the brush head planted hairs, to avoid the accumulation of long-term increase in the difficulty of cleaning; we will send you a maintenance kit to help you better accessory cleaning; Tips: Considering the cle",
+              "score": 0.013972431077694233,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+              "source": "kb_qa",
+              "doc_id": "rv-0174",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+              "snippet": "What should I do when T2353 Omni E25/T2352 Omni E28 Repeat cleaning Overlapping cleaning tracks/Cleaning in the same place/Cleaning again in an area already cleaned/repeatedly going over the same area？\nThis problem requires the technical team through your cleaning records combined with the actual scene specific analysis of the reasons in order to give accurate troubleshooting, please provide the d",
+              "score": 0.013170498084291188,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+              "source": "kb_qa",
+              "doc_id": "rv-0150",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7050 error / Certain zones were not cleaned as they could not be accessed/ Cannot reach the target area to start cleaning?\nThe robot vacuum cleaner detected that some areas could not be reached and did not clean. Please check whether the door was closed during the cleaning task or there were obstacles blocking the machine operation; please o",
+              "score": 0.012904761904761903,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+              "source": "kb_qa",
+              "doc_id": "rv-0167",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7061 Error:Unfinished cleaning tasks remain. Please return the robot to the floor without a base station to continue when executing multi-floor tasks?\nWhen executing multi-floor tasks, if the machine is running on a floor without a base station and the task of returning to the base station is triggered, the cleaning task will be suspended. If",
+              "score": 0.012564463197374589,
+              "status": "ok"
+            }
+          ],
+          "event_id": "2cb70628c8265a829b96020c2323e150",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:17:54.844572+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "pending_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "f8453e6a6e0858d6b8c76a65e4c8f770",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:17:54.849920+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0498",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Lift the portable deep cleaner, press the microswitch on th…",
+            "instruction": "Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep cleaner and press the dirty water tank by hand to ensure it is properly placed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+            "evidence_ids": [
+              "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "qa:rv-0498"
+            ],
+            "primary_evidence_id": "qa:rv-0498",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/PDC-pick-and-place.mp4",
+                "kind": "video"
+              }
+            ]
+          },
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "event_id": "9d100deef94a515aa0bf0cd0644ac65c",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:17:54.850992+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+          "version": 1,
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 15,
+          "event_id": "177dc50201d74409a30e3de5936843c1",
+          "recorded_at": "2026-10-09T07:17:54.855316+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "1b0ce4e464bb5ae4a1ab51853c8c7b25",
+          "recorded_at": "2026-10-09T07:17:54.862004+00:00",
+          "run_id": "9c08517b0d12488d99db651ed3426d1b",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "resumed": false,
+          "event_id": "d114ad0306dc409c8e4e7660c7a37dd9",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:54.892696+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "a0b9f03f3e3f4f388bb1904969c33111",
+            "target_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "expected_version": 1
+          },
+          "event_id": "8dfdd5a1a0c543829eff4fcfbbc619ef",
+          "input_id": "a0b9f03f3e3f4f388bb1904969c33111",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:17:54.892696+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 19,
+          "event_id": "750cca76cc9c4b64a923169f1b1951b0",
+          "recorded_at": "2026-10-09T07:17:54.909422+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 20,
+          "event_id": "392eab0209b54bffa328c6b9f1bdebb7",
+          "recorded_at": "2026-10-09T07:17:54.918253+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "input_id": "a0b9f03f3e3f4f388bb1904969c33111",
+          "resolved_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "title": "The portable deep cleaning machine is incorrectly positioned.",
+              "status": "open"
+            }
+          ],
+          "event_id": "45337b6c0c5f50f4809380d8e5039790",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:17:54.935224+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "pending_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "a9b8afcb70295ea0ae456a959e284308",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:17:54.936006+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "pending_id": "e4f19270525c5bffab669eee20e8ce28",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "68122ad3058a5e3d9332d05fafc3d746",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:17:54.936876+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "e4f19270525c5bffab669eee20e8ce28",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0498",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Check if the power plug of the base station is properly plu…",
+            "instruction": "Check if the power plug of the base station is properly plugged in. A loose power connection may cause the machine to misinterpret that the portable deep cleaner is not properly placed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+            "evidence_ids": [
+              "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "qa:rv-0498"
+            ],
+            "primary_evidence_id": "qa:rv-0498",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Plug-in-the-power-cord.jpeg",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "event_id": "3c9b1497e5765bbf833186be50b32a32",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:17:54.937635+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "card_id": "e4f19270525c5bffab669eee20e8ce28",
+          "version": 2,
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 26,
+          "event_id": "50eb3155c27042cfaef42a5b90037691",
+          "recorded_at": "2026-10-09T07:17:54.938511+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "77ed2a3f0b9a5c7f91b658c583180f74",
+          "recorded_at": "2026-10-09T07:17:54.939485+00:00",
+          "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "resumed": false,
+          "event_id": "62a0158e5a004cae8414167cb7cd3307",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:54.956260+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "e4f19270525c5bffab669eee20e8ce28",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "7639ef82dd50433a95d4c941ab36632b",
+            "target_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "expected_version": 2
+          },
+          "event_id": "de678d2fe1194b4b8c716ced17b1f8c2",
+          "input_id": "7639ef82dd50433a95d4c941ab36632b",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:17:54.956260+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 30,
+          "event_id": "6e3609266a3a4d52a271fc768015cd50",
+          "recorded_at": "2026-10-09T07:17:54.965866+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 31,
+          "event_id": "479b3b35dc234ee281a69a22fff0b954",
+          "recorded_at": "2026-10-09T07:17:54.971046+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "input_id": "7639ef82dd50433a95d4c941ab36632b",
+          "resolved_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "title": "The portable deep cleaning machine is incorrectly positioned.",
+              "status": "open"
+            }
+          ],
+          "event_id": "ccfab743a41e5bbab2993546e9760d4b",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:17:54.993673+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "pending_id": "e4f19270525c5bffab669eee20e8ce28",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "84ef57b35251585788f360157bd078bd",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:17:54.994495+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+          "case_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:17:54.965937+00:00",
+          "event_id": "ffcf111bbff65082bf2226afc9a32b39",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:17:54.995351+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "33618dff8f4751098ef7c56e472863e6",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "reply_to_input_id": "7639ef82dd50433a95d4c941ab36632b",
+          "event_id": "c5ed7f4210405557b2794ead29c279db",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:17:54.996547+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "33618dff8f4751098ef7c56e472863e6",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "5c88bd9d3a2a59a0b74f4869900ebe40",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:17:54.997423+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "33618dff8f4751098ef7c56e472863e6",
+          "status": "completed",
+          "event_id": "acaab678ab7d59e9b879089bea933bdb",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:17:54.998480+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "pending_id": "87c57b8252775fed9dbca613d5d0c2fc",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "895ec12823085f51ac87e0371fe28924",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:17:54.999275+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "card_id": "87c57b8252775fed9dbca613d5d0c2fc",
+          "version": 3,
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 40,
+          "event_id": "84d42168f0d040a2a800eadd4a6732ab",
+          "recorded_at": "2026-10-09T07:17:55.000309+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "84ba9e7d425359b590044b4b4a04e6e9",
+          "recorded_at": "2026-10-09T07:17:55.001175+00:00",
+          "run_id": "5d360489ec624f189a373aeaa0eb9128",
+          "seq": 41,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:17:48.370998+08:00",
+  "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+      "kind": "upload_receipt",
+      "card_id": "87c57b8252775fed9dbca613d5d0c2fc",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:17:48.494941+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "user_message",
+        "id": "ebda8bdd89f4410aa0fd9a0fb52edf1c",
+        "text": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:17:52.142778+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "8188914ecd6a54999fc7c141c4c2ecd3",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:17:54.844811Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+            "source": "kb_qa",
+            "doc_id": "rv-0498",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+            "snippet": "what should I do when T2352 Omni E28 has 6063 Error: The portable deep cleaning machine is incorrectly positioned, preventing the robot from operating. Please adjust its position/The portable deep cleaning machine is incorrectly positioned?\n1. Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+            "source": "kb_qa",
+            "doc_id": "rv-0489",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+            "snippet": "What should I do if T2352 Omni E28 has 8000-The base station task cannot be executed properly/The base station task cannot be executed/Portable deep cleaning is positioned incorrectly/Base station tasks cannot be executed normally?\nCheck that the Portable Deep Cleaner is properly placed on the charging base and plugged in. Ensure the white ring light remains steadily illuminated. Video reference: ",
+            "score": 0.016129032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+            "source": "kb_qa",
+            "doc_id": "rv-0491",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+            "snippet": "What should I do when T2352 Omni E28 Portable Deep Cleaner(PDC) Abnormal /Portable Deep Cleaner(PDC) No Suction /Portable Deep Cleaner(PDC) Error or portable mop section is not working?\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our",
+            "score": 0.015656565656565653,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+            "source": "kb_qa",
+            "doc_id": "rv-0486",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+            "snippet": "What should i do whenT2352 Omni E28 Portable deep cleaning(PDC) hose back flow water?\nPlease note that some dirty water may be present in the hose after the portable deep cleaner has been used if it has not been fully recycled into the dirty water tank. The design has increased the mechanism of delayed shutdown of the fan, but there is still a small amount of dirty water that cannot be completely ",
+            "score": 0.015415111940298508,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+            "source": "kb_qa",
+            "doc_id": "rv-0485",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+            "snippet": "What should I do when my T2352 Omni E28's Portable deep cleaning(PDC) has a lot of water left on the fabric after use?\nThis portable deep cleaning is designed for external extrusion recovery of dirty water. The product is intended for use in cases where standard methods of dirty water recovery are difficult to implement, such as in situations where the fabric bottom of the water is not easily acce",
+            "score": 0.015063145809414464,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "23d91477-153f-4c4f-9756-99741170aa16",
+            "source": "kb_qa",
+            "doc_id": "rv-0499",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "23d91477-153f-4c4f-9756-99741170aa16",
+            "snippet": "What should I do when T2352 Omni E28 Water leaking from the base station /Water leaking from the base station onto the floor /Water leaking from the base station all over the place /Water leaking from the portable deep cleaner(PDC) onto the machine and onto the floor?\nThe issue of the portable deep cleaner leaking from the bottom has been optimized by our engineering team, and new accessories have",
+            "score": 0.014981617647058822,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+            "source": "kb_qa",
+            "doc_id": "rv-0499",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+            "snippet": "The video link below will guide you on how to pick and place the portable deep cleaner(PDC): Base Station Base Leakage please follow the following steps to troubleshoot:\n1. Please check if the base station dirty water tank snap is snapped into place and make sure that you hear a clicking sound;\nThe video link below will guide you through the process of checking that the clasp is in place",
+            "score": 0.014935897435897436,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+            "source": "kb_qa",
+            "doc_id": "rv-0493",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+            "snippet": "what should I do when T2352 Omni E28 has 7035 Error: Return failed. Please check if the base station or charging dock is plugged in./Failed to return, please check whether the base station is powered on or not？？\nPlease follow these troubleshooting steps: Check if the portable deep cleaner is placed on the base station dock and plugged in. Ensure the white ring light remains steadily lit. Tips: Whe",
+            "score": 0.014556692242114236,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+            "source": "kb_qa",
+            "doc_id": "rv-0487",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+            "snippet": "What should I do When T2352 Omni E28 the fan does not stop immediately after pressing the Portable deep cleaning(PDC) power button?\nRegarding the issue where the fan does not stop immediately after pressing the power button on your Portable Deep Cleaner: This is actually a designed safety feature! To ensure any residual wastewater in the hose is fully drawn into the tank and doesn't flow back towa",
+            "score": 0.014347826086956523,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+            "source": "kb_qa",
+            "doc_id": "rv-0198",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7011 Error: Robot is on the carpet, please move to outside of the carpet and start./Robot mistakenly on the carpet?\nIf the carpet detection sensor at the bottom of the cleaning machine still reports an error after cleaning, please enable the log switch in the APP. Our team of engineers will help resolve the issue.",
+            "score": 0.014264597191426458,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+            "source": "kb_qa",
+            "doc_id": "rv-0492",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+            "snippet": "What should I do if my T2352 Omni E28 Portable Deep Cleaner lack of suction power？\nPlease check if the dirty water tank of the base station is full, empty the dirty water tank, ensure that the dirty water tank buckle is fastened in place, and make sure a \"click\" sound is heard.<>",
+            "score": 0.01408450704225352,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+            "source": "kb_qa",
+            "doc_id": "rv-0488",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+            "snippet": "What should I do when the T2352 Omni E28 Portable deep cleaning(PDC) brush head sticks to the bristles?\nSticky hair problem suggests that after each use with the help of a tool brush to clean the brush head planted hairs, to avoid the accumulation of long-term increase in the difficulty of cleaning; we will send you a maintenance kit to help you better accessory cleaning; Tips: Considering the cle",
+            "score": 0.013972431077694233,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+            "source": "kb_qa",
+            "doc_id": "rv-0174",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+            "snippet": "What should I do when T2353 Omni E25/T2352 Omni E28 Repeat cleaning Overlapping cleaning tracks/Cleaning in the same place/Cleaning again in an area already cleaned/repeatedly going over the same area？\nThis problem requires the technical team through your cleaning records combined with the actual scene specific analysis of the reasons in order to give accurate troubleshooting, please provide the d",
+            "score": 0.013170498084291188,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+            "source": "kb_qa",
+            "doc_id": "rv-0150",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7050 error / Certain zones were not cleaned as they could not be accessed/ Cannot reach the target area to start cleaning?\nThe robot vacuum cleaner detected that some areas could not be reached and did not clean. Please check whether the door was closed during the cleaning task or there were obstacles blocking the machine operation; please o",
+            "score": 0.012904761904761903,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+            "source": "kb_qa",
+            "doc_id": "rv-0167",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7061 Error:Unfinished cleaning tasks remain. Please return the robot to the floor without a base station to continue when executing multi-floor tasks?\nWhen executing multi-floor tasks, if the machine is running on a floor without a base station and the task of returning to the base station is triggered, the cleaning task will be suspended. If",
+            "score": 0.012564463197374589,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:17:54.850992+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "step_card",
+        "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0498",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Lift the portable deep cleaner, press the microswitch on th…",
+          "instruction": "Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep cleaner and press the dirty water tank by hand to ensure it is properly placed.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+          "evidence_ids": [
+            "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+            "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+            "qa:rv-0498"
+          ],
+          "primary_evidence_id": "qa:rv-0498",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/PDC-pick-and-place.mp4",
+              "kind": "video"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:17:54.892696+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "action",
+        "id": "a0b9f03f3e3f4f388bb1904969c33111",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:17:54.937635+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "step_card",
+        "card_id": "e4f19270525c5bffab669eee20e8ce28",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0498",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Check if the power plug of the base station is properly plu…",
+          "instruction": "Check if the power plug of the base station is properly plugged in. A loose power connection may cause the machine to misinterpret that the portable deep cleaner is not properly placed.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+          "evidence_ids": [
+            "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+            "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+            "qa:rv-0498"
+          ],
+          "primary_evidence_id": "qa:rv-0498",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Plug-in-the-power-cord.jpeg",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:17:54.956260+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "action",
+        "id": "7639ef82dd50433a95d4c941ab36632b",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:17:54.995351+00:00",
+        "first_seq": 35,
+        "last_seq": 35,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "case_changed",
+        "card_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+        "version": 3,
+        "case_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:17:54.965937+00:00"
+      },
+      {
+        "at": "2026-10-09T07:17:54.996547+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "assistant_message",
+        "message_id": "33618dff8f4751098ef7c56e472863e6",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "7639ef82dd50433a95d4c941ab36632b",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+    "issues": [
+      {
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "status": "open",
+        "title": "The portable deep cleaning machine is incorrectly positioned.",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 41,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 6.56,
+  "journey": {
+    "session": {
+      "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:17:48.497013Z",
+      "last_run_at": "2026-10-09T07:17:55.001755Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning mac",
+      "product_state": "confirmed_sku",
+      "sku": "T2352",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0498"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 44,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:17:55.001755Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "9c08517b0d12488d99db651ed3426d1b",
+        "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:17:48.497013Z",
+        "ended_at": "2026-10-09T07:17:54.863776Z",
+        "duration_ms": 6483,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6471,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3714,
+            "tokens_in": 4191,
+            "tokens_out": 321,
+            "error_type": null,
+            "created_at": "2026-10-09T07:17:52.102940Z"
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1996,
+            "tokens_in": 4384,
+            "tokens_out": 126,
+            "error_type": null,
+            "created_at": "2026-10-09T07:17:54.778770Z"
+          }
+        ],
+        "tokens_in": 8575,
+        "tokens_out": 447,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:48.497013Z",
+            "duration_ms": 3741,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3340,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 207,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5740
+                    }
+                  ],
+                  "actual_input_tokens": 4191
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:52.238326Z",
+            "duration_ms": 19,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:17:52.257328Z",
+            "duration_ms": 2662,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0498",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 4890,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 207,
+                    "history": 0,
+                    "authority": 4327
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 228,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 193,
+                    "timezone": 7,
+                    "task_data": 3537,
+                    "issue_index": 150,
+                    "step_attempts": 2,
+                    "active_issue_id": 28,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5368
+                    }
+                  ],
+                  "actual_input_tokens": 4384
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:17:54.919396Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0498",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:17:54.930774Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:54.930781Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "9c08517b0d12488d99db651ed3426d1b",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 152,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 629,
+            "query": "The portable deep cleaning machine is incorrectly positioned",
+            "created_at": "2026-10-09T07:17:52.766800Z"
+          }
+        ]
+      },
+      {
+        "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+        "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:17:54.894265Z",
+        "ended_at": "2026-10-09T07:17:54.940080Z",
+        "duration_ms": 45,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 44,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:54.894265Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0498",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:54.904163Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0498",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:17:54.907858Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0498",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:17:54.914285Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d69d49674d694b2e80a5c5f62a69848f",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:54.914293Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "5d360489ec624f189a373aeaa0eb9128",
+        "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:17:54.957326Z",
+        "ended_at": "2026-10-09T07:17:55.001749Z",
+        "duration_ms": 44,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 40,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:54.957326Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0498",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:54.963257Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:17:54.964690Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:17:54.965482Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:17:54.968694Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:17:54.969244Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "5d360489ec624f189a373aeaa0eb9128",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:54.969701Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "kind": "upload_receipt",
+        "card_id": "87c57b8252775fed9dbca613d5d0c2fc",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:17:48.494941+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "user_message",
+          "id": "ebda8bdd89f4410aa0fd9a0fb52edf1c",
+          "text": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:17:52.142778+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "8188914ecd6a54999fc7c141c4c2ecd3",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:17:54.844811Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "source": "kb_qa",
+              "doc_id": "rv-0498",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "snippet": "what should I do when T2352 Omni E28 has 6063 Error: The portable deep cleaning machine is incorrectly positioned, preventing the robot from operating. Please adjust its position/The portable deep cleaning machine is incorrectly positioned?\n1. Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "source": "kb_qa",
+              "doc_id": "rv-0489",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "snippet": "What should I do if T2352 Omni E28 has 8000-The base station task cannot be executed properly/The base station task cannot be executed/Portable deep cleaning is positioned incorrectly/Base station tasks cannot be executed normally?\nCheck that the Portable Deep Cleaner is properly placed on the charging base and plugged in. Ensure the white ring light remains steadily illuminated. Video reference: ",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+              "source": "kb_qa",
+              "doc_id": "rv-0491",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+              "snippet": "What should I do when T2352 Omni E28 Portable Deep Cleaner(PDC) Abnormal /Portable Deep Cleaner(PDC) No Suction /Portable Deep Cleaner(PDC) Error or portable mop section is not working?\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our",
+              "score": 0.015656565656565653,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+              "source": "kb_qa",
+              "doc_id": "rv-0486",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+              "snippet": "What should i do whenT2352 Omni E28 Portable deep cleaning(PDC) hose back flow water?\nPlease note that some dirty water may be present in the hose after the portable deep cleaner has been used if it has not been fully recycled into the dirty water tank. The design has increased the mechanism of delayed shutdown of the fan, but there is still a small amount of dirty water that cannot be completely ",
+              "score": 0.015415111940298508,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+              "source": "kb_qa",
+              "doc_id": "rv-0485",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+              "snippet": "What should I do when my T2352 Omni E28's Portable deep cleaning(PDC) has a lot of water left on the fabric after use?\nThis portable deep cleaning is designed for external extrusion recovery of dirty water. The product is intended for use in cases where standard methods of dirty water recovery are difficult to implement, such as in situations where the fabric bottom of the water is not easily acce",
+              "score": 0.015063145809414464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "23d91477-153f-4c4f-9756-99741170aa16",
+              "source": "kb_qa",
+              "doc_id": "rv-0499",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "23d91477-153f-4c4f-9756-99741170aa16",
+              "snippet": "What should I do when T2352 Omni E28 Water leaking from the base station /Water leaking from the base station onto the floor /Water leaking from the base station all over the place /Water leaking from the portable deep cleaner(PDC) onto the machine and onto the floor?\nThe issue of the portable deep cleaner leaking from the bottom has been optimized by our engineering team, and new accessories have",
+              "score": 0.014981617647058822,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+              "source": "kb_qa",
+              "doc_id": "rv-0499",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+              "snippet": "The video link below will guide you on how to pick and place the portable deep cleaner(PDC): Base Station Base Leakage please follow the following steps to troubleshoot:\n1. Please check if the base station dirty water tank snap is snapped into place and make sure that you hear a clicking sound;\nThe video link below will guide you through the process of checking that the clasp is in place",
+              "score": 0.014935897435897436,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+              "source": "kb_qa",
+              "doc_id": "rv-0493",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+              "snippet": "what should I do when T2352 Omni E28 has 7035 Error: Return failed. Please check if the base station or charging dock is plugged in./Failed to return, please check whether the base station is powered on or not？？\nPlease follow these troubleshooting steps: Check if the portable deep cleaner is placed on the base station dock and plugged in. Ensure the white ring light remains steadily lit. Tips: Whe",
+              "score": 0.014556692242114236,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+              "source": "kb_qa",
+              "doc_id": "rv-0487",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+              "snippet": "What should I do When T2352 Omni E28 the fan does not stop immediately after pressing the Portable deep cleaning(PDC) power button?\nRegarding the issue where the fan does not stop immediately after pressing the power button on your Portable Deep Cleaner: This is actually a designed safety feature! To ensure any residual wastewater in the hose is fully drawn into the tank and doesn't flow back towa",
+              "score": 0.014347826086956523,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+              "source": "kb_qa",
+              "doc_id": "rv-0198",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7011 Error: Robot is on the carpet, please move to outside of the carpet and start./Robot mistakenly on the carpet?\nIf the carpet detection sensor at the bottom of the cleaning machine still reports an error after cleaning, please enable the log switch in the APP. Our team of engineers will help resolve the issue.",
+              "score": 0.014264597191426458,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0492",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+              "snippet": "What should I do if my T2352 Omni E28 Portable Deep Cleaner lack of suction power？\nPlease check if the dirty water tank of the base station is full, empty the dirty water tank, ensure that the dirty water tank buckle is fastened in place, and make sure a \"click\" sound is heard.<>",
+              "score": 0.01408450704225352,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+              "source": "kb_qa",
+              "doc_id": "rv-0488",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+              "snippet": "What should I do when the T2352 Omni E28 Portable deep cleaning(PDC) brush head sticks to the bristles?\nSticky hair problem suggests that after each use with the help of a tool brush to clean the brush head planted hairs, to avoid the accumulation of long-term increase in the difficulty of cleaning; we will send you a maintenance kit to help you better accessory cleaning; Tips: Considering the cle",
+              "score": 0.013972431077694233,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+              "source": "kb_qa",
+              "doc_id": "rv-0174",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+              "snippet": "What should I do when T2353 Omni E25/T2352 Omni E28 Repeat cleaning Overlapping cleaning tracks/Cleaning in the same place/Cleaning again in an area already cleaned/repeatedly going over the same area？\nThis problem requires the technical team through your cleaning records combined with the actual scene specific analysis of the reasons in order to give accurate troubleshooting, please provide the d",
+              "score": 0.013170498084291188,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+              "source": "kb_qa",
+              "doc_id": "rv-0150",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7050 error / Certain zones were not cleaned as they could not be accessed/ Cannot reach the target area to start cleaning?\nThe robot vacuum cleaner detected that some areas could not be reached and did not clean. Please check whether the door was closed during the cleaning task or there were obstacles blocking the machine operation; please o",
+              "score": 0.012904761904761903,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+              "source": "kb_qa",
+              "doc_id": "rv-0167",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7061 Error:Unfinished cleaning tasks remain. Please return the robot to the floor without a base station to continue when executing multi-floor tasks?\nWhen executing multi-floor tasks, if the machine is running on a floor without a base station and the task of returning to the base station is triggered, the cleaning task will be suspended. If",
+              "score": 0.012564463197374589,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:17:54.850992+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "step_card",
+          "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0498",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Lift the portable deep cleaner, press the microswitch on th…",
+            "instruction": "Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep cleaner and press the dirty water tank by hand to ensure it is properly placed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+            "evidence_ids": [
+              "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "qa:rv-0498"
+            ],
+            "primary_evidence_id": "qa:rv-0498",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/PDC-pick-and-place.mp4",
+                "kind": "video"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:17:54.892696+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "action",
+          "id": "a0b9f03f3e3f4f388bb1904969c33111",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:17:54.937635+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "step_card",
+          "card_id": "e4f19270525c5bffab669eee20e8ce28",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0498",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Check if the power plug of the base station is properly plu…",
+            "instruction": "Check if the power plug of the base station is properly plugged in. A loose power connection may cause the machine to misinterpret that the portable deep cleaner is not properly placed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+            "evidence_ids": [
+              "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+              "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+              "qa:rv-0498"
+            ],
+            "primary_evidence_id": "qa:rv-0498",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Plug-in-the-power-cord.jpeg",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:17:54.956260+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "action",
+          "id": "7639ef82dd50433a95d4c941ab36632b",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:17:54.995351+00:00",
+          "first_seq": 35,
+          "last_seq": 35,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "case_changed",
+          "card_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+          "version": 3,
+          "case_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:17:54.965937+00:00"
+        },
+        {
+          "at": "2026-10-09T07:17:54.996547+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "assistant_message",
+          "message_id": "33618dff8f4751098ef7c56e472863e6",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "7639ef82dd50433a95d4c941ab36632b",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+      "issues": [
+        {
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "status": "open",
+          "title": "The portable deep cleaning machine is incorrectly positioned.",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 41,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+      "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+      "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+      "sku": "T2352",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:17:54.965937+00:00",
+      "updated_at": "2026-10-09T07:17:54.965937+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "a256eb8396f44fdb9eeb85b7e02713d0",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+          "kind": "upload_receipt",
+          "card_id": "87c57b8252775fed9dbca613d5d0c2fc",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:17:48.494941+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "user_message",
+            "id": "ebda8bdd89f4410aa0fd9a0fb52edf1c",
+            "text": "Product Name: Omni E28\nProduct PN: T2352\nProduct SN:\nProblem Type: warning\nProblem Code: 6063-The portable deep cleaning machine is incorrectly positioned.\nProblem Push: The portable deep cleaning machine is incorrectly positioned.\nProblem Description: The portable deep cleaning machine is incorrectly positioned.\nProblem Upload Images: null",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:17:52.142778+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "8188914ecd6a54999fc7c141c4c2ecd3",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:17:54.844811Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+                "source": "kb_qa",
+                "doc_id": "rv-0498",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+                "snippet": "what should I do when T2352 Omni E28 has 6063 Error: The portable deep cleaning machine is incorrectly positioned, preventing the robot from operating. Please adjust its position/The portable deep cleaning machine is incorrectly positioned?\n1. Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+                "source": "kb_qa",
+                "doc_id": "rv-0489",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+                "snippet": "What should I do if T2352 Omni E28 has 8000-The base station task cannot be executed properly/The base station task cannot be executed/Portable deep cleaning is positioned incorrectly/Base station tasks cannot be executed normally?\nCheck that the Portable Deep Cleaner is properly placed on the charging base and plugged in. Ensure the white ring light remains steadily illuminated. Video reference: ",
+                "score": 0.016129032258064516,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+                "source": "kb_qa",
+                "doc_id": "rv-0491",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "8b3b0d2f-7085-48e9-aa5e-8f5d941b5026",
+                "snippet": "What should I do when T2352 Omni E28 Portable Deep Cleaner(PDC) Abnormal /Portable Deep Cleaner(PDC) No Suction /Portable Deep Cleaner(PDC) Error or portable mop section is not working?\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our",
+                "score": 0.015656565656565653,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+                "source": "kb_qa",
+                "doc_id": "rv-0486",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "bbcd6b4a-e0ce-400a-8801-7a6c07eb5fcc",
+                "snippet": "What should i do whenT2352 Omni E28 Portable deep cleaning(PDC) hose back flow water?\nPlease note that some dirty water may be present in the hose after the portable deep cleaner has been used if it has not been fully recycled into the dirty water tank. The design has increased the mechanism of delayed shutdown of the fan, but there is still a small amount of dirty water that cannot be completely ",
+                "score": 0.015415111940298508,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+                "source": "kb_qa",
+                "doc_id": "rv-0485",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6b430899-58c0-4fdb-a6b3-c35f0aabb9e5",
+                "snippet": "What should I do when my T2352 Omni E28's Portable deep cleaning(PDC) has a lot of water left on the fabric after use?\nThis portable deep cleaning is designed for external extrusion recovery of dirty water. The product is intended for use in cases where standard methods of dirty water recovery are difficult to implement, such as in situations where the fabric bottom of the water is not easily acce",
+                "score": 0.015063145809414464,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "23d91477-153f-4c4f-9756-99741170aa16",
+                "source": "kb_qa",
+                "doc_id": "rv-0499",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "23d91477-153f-4c4f-9756-99741170aa16",
+                "snippet": "What should I do when T2352 Omni E28 Water leaking from the base station /Water leaking from the base station onto the floor /Water leaking from the base station all over the place /Water leaking from the portable deep cleaner(PDC) onto the machine and onto the floor?\nThe issue of the portable deep cleaner leaking from the bottom has been optimized by our engineering team, and new accessories have",
+                "score": 0.014981617647058822,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+                "source": "kb_qa",
+                "doc_id": "rv-0499",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "79e989db-532a-4d4c-b89e-3eb0fdf2bbe6",
+                "snippet": "The video link below will guide you on how to pick and place the portable deep cleaner(PDC): Base Station Base Leakage please follow the following steps to troubleshoot:\n1. Please check if the base station dirty water tank snap is snapped into place and make sure that you hear a clicking sound;\nThe video link below will guide you through the process of checking that the clasp is in place",
+                "score": 0.014935897435897436,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+                "source": "kb_qa",
+                "doc_id": "rv-0493",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "074a6d3a-a76d-49fd-8e75-234600ca044d",
+                "snippet": "what should I do when T2352 Omni E28 has 7035 Error: Return failed. Please check if the base station or charging dock is plugged in./Failed to return, please check whether the base station is powered on or not？？\nPlease follow these troubleshooting steps: Check if the portable deep cleaner is placed on the base station dock and plugged in. Ensure the white ring light remains steadily lit. Tips: Whe",
+                "score": 0.014556692242114236,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+                "source": "kb_qa",
+                "doc_id": "rv-0487",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "cddaf800-e3e9-4f9d-96b7-8b044a46669c",
+                "snippet": "What should I do When T2352 Omni E28 the fan does not stop immediately after pressing the Portable deep cleaning(PDC) power button?\nRegarding the issue where the fan does not stop immediately after pressing the power button on your Portable Deep Cleaner: This is actually a designed safety feature! To ensure any residual wastewater in the hose is fully drawn into the tank and doesn't flow back towa",
+                "score": 0.014347826086956523,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+                "source": "kb_qa",
+                "doc_id": "rv-0198",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d4bc63e2-3603-4fed-ac55-c0219b833647",
+                "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7011 Error: Robot is on the carpet, please move to outside of the carpet and start./Robot mistakenly on the carpet?\nIf the carpet detection sensor at the bottom of the cleaning machine still reports an error after cleaning, please enable the log switch in the APP. Our team of engineers will help resolve the issue.",
+                "score": 0.014264597191426458,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+                "source": "kb_qa",
+                "doc_id": "rv-0492",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ee9ed050-a662-45c3-b942-fe1abd5c25f6",
+                "snippet": "What should I do if my T2352 Omni E28 Portable Deep Cleaner lack of suction power？\nPlease check if the dirty water tank of the base station is full, empty the dirty water tank, ensure that the dirty water tank buckle is fastened in place, and make sure a \"click\" sound is heard.<>",
+                "score": 0.01408450704225352,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+                "source": "kb_qa",
+                "doc_id": "rv-0488",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6fc4adf9-f280-4fd6-81d8-16c98ef25aff",
+                "snippet": "What should I do when the T2352 Omni E28 Portable deep cleaning(PDC) brush head sticks to the bristles?\nSticky hair problem suggests that after each use with the help of a tool brush to clean the brush head planted hairs, to avoid the accumulation of long-term increase in the difficulty of cleaning; we will send you a maintenance kit to help you better accessory cleaning; Tips: Considering the cle",
+                "score": 0.013972431077694233,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+                "source": "kb_qa",
+                "doc_id": "rv-0174",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "372d05a5-30d6-43ff-9766-a4d028e2f069",
+                "snippet": "What should I do when T2353 Omni E25/T2352 Omni E28 Repeat cleaning Overlapping cleaning tracks/Cleaning in the same place/Cleaning again in an area already cleaned/repeatedly going over the same area？\nThis problem requires the technical team through your cleaning records combined with the actual scene specific analysis of the reasons in order to give accurate troubleshooting, please provide the d",
+                "score": 0.013170498084291188,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+                "source": "kb_qa",
+                "doc_id": "rv-0150",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a11286b9-e9ce-4676-a91c-5abf60532e24",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7050 error / Certain zones were not cleaned as they could not be accessed/ Cannot reach the target area to start cleaning?\nThe robot vacuum cleaner detected that some areas could not be reached and did not clean. Please check whether the door was closed during the cleaning task or there were obstacles blocking the machine operation; please o",
+                "score": 0.012904761904761903,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+                "source": "kb_qa",
+                "doc_id": "rv-0167",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "8b5b732a-7db9-4e0b-b76a-ef721e994f44",
+                "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7061 Error:Unfinished cleaning tasks remain. Please return the robot to the floor without a base station to continue when executing multi-floor tasks?\nWhen executing multi-floor tasks, if the machine is running on a floor without a base station and the task of returning to the base station is triggered, the cleaning task will be suspended. If",
+                "score": 0.012564463197374589,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:17:54.850992+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "step_card",
+            "card_id": "174fb4dbe94d5fcf9f3ec5f024121bcf",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0498",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Lift the portable deep cleaner, press the microswitch on th…",
+              "instruction": "Lift the portable deep cleaner, press the microswitch on the base station to check if it can press down and spring back normally. Put back the portable deep cleaner and press the dirty water tank by hand to ensure it is properly placed.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+              "evidence_ids": [
+                "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+                "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+                "qa:rv-0498"
+              ],
+              "primary_evidence_id": "qa:rv-0498",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/PDC-pick-and-place.mp4",
+                  "kind": "video"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:17:54.892696+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "action",
+            "id": "a0b9f03f3e3f4f388bb1904969c33111",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:17:54.937635+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "step_card",
+            "card_id": "e4f19270525c5bffab669eee20e8ce28",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0498",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Check if the power plug of the base station is properly plu…",
+              "instruction": "Check if the power plug of the base station is properly plugged in. A loose power connection may cause the machine to misinterpret that the portable deep cleaner is not properly placed.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": "When repositioning the portable deep cleaner, make sure the hose is properly stored. Avoid pinching the power cord or bumping into walls during placement.",
+              "evidence_ids": [
+                "3a203bf7-742a-42b7-a5cd-f1b14dda988d",
+                "fed9cb7b-50e4-4ec4-b59a-1e37763dabc1",
+                "qa:rv-0498"
+              ],
+              "primary_evidence_id": "qa:rv-0498",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Plug-in-the-power-cord.jpeg",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:17:54.956260+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "action",
+            "id": "7639ef82dd50433a95d4c941ab36632b",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:17:54.995351+00:00",
+            "first_seq": 35,
+            "last_seq": 35,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "case_changed",
+            "card_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+            "version": 3,
+            "case_id": "f6349612-407f-58c5-86fe-2c1307e39177",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:17:54.965937+00:00"
+          },
+          {
+            "at": "2026-10-09T07:17:54.996547+00:00",
+            "first_seq": 36,
+            "last_seq": 38,
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "kind": "assistant_message",
+            "message_id": "33618dff8f4751098ef7c56e472863e6",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "7639ef82dd50433a95d4c941ab36632b",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+        "issues": [
+          {
+            "issue_id": "fe7cdf3d6bf850e3bfc98055ae3b5ca3",
+            "status": "open",
+            "title": "The portable deep cleaning machine is incorrectly positioned.",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 41,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

@@ -1,0 +1,1273 @@
+{
+  "id": "T11",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "resumed": false,
+          "event_id": "d87c23891c154d3fb1b28c07d63f4438",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:00.151747+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "1f52fc4ebfd64b828e65efa25b50b01f",
+          "input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:00.151747+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 3,
+          "event_id": "c766fc0649c74d9086fd4c6b9b591467",
+          "recorded_at": "2026-10-09T07:23:00.256724+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 4,
+          "event_id": "e0ad7de8d8294d5ab51ab4b818b98f67",
+          "recorded_at": "2026-10-09T07:23:03.971527+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 5,
+          "event_id": "57e7687176cf42dfadabc02a014c6bc1",
+          "recorded_at": "2026-10-09T07:23:03.981960+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "5d36502f775f536784807e4698b482d7",
+          "input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+          "resolved_issue_id": "5d36502f775f536784807e4698b482d7",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "5d36502f775f536784807e4698b482d7",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "748d3a01a25c598bb441c2c4a01b288b",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 7,
+          "recorded_at": "2026-10-09T07:23:03.996007+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "用户明确要求人工服务；命中词：contact customer service",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:03.975791+00:00",
+          "event_id": "de48ffd3efee5c5e8e0f0e6941411e44",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 8,
+          "recorded_at": "2026-10-09T07:23:03.996985+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+          "reply_to_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "event_id": "3dcf1887caba509583d588253cbe44fa",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:23:03.998492+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+          "delta": "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "ec6d7582b6ed543b8797fba2d0c55771",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:23:03.999483+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+          "status": "completed",
+          "event_id": "d50f9f1594f35ad7affac339bb84ad0c",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:04.000634+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "849a33846222508284224f2a5f12066f",
+          "summary": {
+            "product": "未确认（线索：S1 Pro）",
+            "problem": "The robot encountered an error while adding clean water. Task ended.",
+            "observations": [
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678A"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R3",
+              "text": "用户明确要求人工服务；命中词：contact customer service",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "status": "pending",
+                "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+          "revision": 1,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "updated_at": "2026-10-09T07:23:00.151747+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "c59e18feeba1564dac8f049cfc59942e",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:04.001562+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+          "revision": 1,
+          "card_id": "849a33846222508284224f2a5f12066f",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-09T07:23:00.151747+00:00",
+          "event_id": "b9396d4e89065273864178bd1cc9a607",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:04.003344+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "2bc6e32388bf545ab68276c1420cc7e7",
+          "recorded_at": "2026-10-09T07:23:04.004621+00:00",
+          "run_id": "0540f1e1ca3546e3a700c476a885c466",
+          "seq": 14,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:00.059354+08:00",
+  "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:00.151747+00:00",
+        "first_seq": 2,
+        "last_seq": 7,
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "kind": "user_message",
+        "id": "64a93ffc7d4b47518ef0571d2eb43d18",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:03.996985+00:00",
+        "first_seq": 8,
+        "last_seq": 8,
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "kind": "case_changed",
+        "card_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+        "version": 1,
+        "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "用户明确要求人工服务；命中词：contact customer service",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:23:03.975791+00:00"
+      },
+      {
+        "at": "2026-10-09T07:23:03.998492+00:00",
+        "first_seq": 9,
+        "last_seq": 11,
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "kind": "assistant_message",
+        "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+        "text": "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:23:04.001562+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "kind": "escalation_summary",
+        "card_id": "849a33846222508284224f2a5f12066f",
+        "summary": {
+          "product": "未确认（线索：S1 Pro）",
+          "problem": "The robot encountered an error while adding clean water. Task ended.",
+          "observations": [
+            "客户填写的产品：S1 Pro / T2080",
+            "客户填写的 SN：12345678A"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R3",
+            "text": "用户明确要求人工服务；命中词：contact customer service",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+              "intent": "report_problem",
+              "status": "pending",
+              "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+              "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:23:00.151747+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "5d36502f775f536784807e4698b482d7",
+    "issues": [
+      {
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "status": "open",
+        "title": "The robot encountered an error while adding clean water. Task ended.",
+        "task_queue": [
+          {
+            "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+            "intent": "report_problem",
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "status": "pending",
+            "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 14,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "5d36502f775f536784807e4698b482d7",
+        "kind": "escalation_summary",
+        "card_id": "849a33846222508284224f2a5f12066f",
+        "summary": {
+          "product": "未确认（线索：S1 Pro）",
+          "problem": "The robot encountered an error while adding clean water. Task ended.",
+          "observations": [
+            "客户填写的产品：S1 Pro / T2080",
+            "客户填写的 SN：12345678A"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R3",
+            "text": "用户明确要求人工服务；命中词：contact customer service",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+              "intent": "report_problem",
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+              "status": "pending",
+              "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:23:00.151747+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "visible_text": "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 3.89,
+  "journey": {
+    "session": {
+      "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:00.157850Z",
+      "last_run_at": "2026-10-09T07:23:04.005578Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: [REDACTED]A\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. C",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 3847,
+      "model_calls": 1,
+      "tokens_in": 4233,
+      "tokens_out": 334,
+      "raw_available_until": "2026-10-16T07:23:04.005578Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "0540f1e1ca3546e3a700c476a885c466",
+        "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:00.157850Z",
+        "ended_at": "2026-10-09T07:23:04.005569Z",
+        "duration_ms": 3847,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 3843,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "0540f1e1ca3546e3a700c476a885c466",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3693,
+            "tokens_in": 4233,
+            "tokens_out": 334,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:03.945436Z"
+          }
+        ],
+        "tokens_in": 4233,
+        "tokens_out": 334,
+        "node_count": 4,
+        "nodes": [
+          {
+            "run_id": "0540f1e1ca3546e3a700c476a885c466",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:00.157850Z",
+            "duration_ms": 3810,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "request_human",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3380,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 247,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5780
+                    }
+                  ],
+                  "actual_input_tokens": 4233
+                }
+              ],
+              "escalate_reason": "R3",
+              "target_issue_id": "5d36502f775f536784807e4698b482d7",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": "R3"
+            }
+          },
+          {
+            "run_id": "0540f1e1ca3546e3a700c476a885c466",
+            "idx": 2,
+            "node": "escalate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:03.967963Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "0540f1e1ca3546e3a700c476a885c466",
+            "idx": 3,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:23:03.969864Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize"
+            }
+          },
+          {
+            "run_id": "0540f1e1ca3546e3a700c476a885c466",
+            "idx": 4,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-09T07:23:03.979065Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:00.151747+00:00",
+          "first_seq": 2,
+          "last_seq": 7,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "kind": "user_message",
+          "id": "64a93ffc7d4b47518ef0571d2eb43d18",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:03.996985+00:00",
+          "first_seq": 8,
+          "last_seq": 8,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "kind": "case_changed",
+          "card_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "version": 1,
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "用户明确要求人工服务；命中词：contact customer service",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:03.975791+00:00"
+        },
+        {
+          "at": "2026-10-09T07:23:03.998492+00:00",
+          "first_seq": 9,
+          "last_seq": 11,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "kind": "assistant_message",
+          "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+          "text": "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:23:04.001562+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "kind": "escalation_summary",
+          "card_id": "849a33846222508284224f2a5f12066f",
+          "summary": {
+            "product": "未确认（线索：S1 Pro）",
+            "problem": "The robot encountered an error while adding clean water. Task ended.",
+            "observations": [
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678A"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R3",
+              "text": "用户明确要求人工服务；命中词：contact customer service",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "intent": "report_problem",
+                "status": "pending",
+                "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:23:00.151747+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "5d36502f775f536784807e4698b482d7",
+      "issues": [
+        {
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "status": "open",
+          "title": "The robot encountered an error while adding clean water. Task ended.",
+          "task_queue": [
+            {
+              "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+              "intent": "report_problem",
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+              "status": "pending",
+              "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 14,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "5d36502f775f536784807e4698b482d7",
+          "kind": "escalation_summary",
+          "card_id": "849a33846222508284224f2a5f12066f",
+          "summary": {
+            "product": "未确认（线索：S1 Pro）",
+            "problem": "The robot encountered an error while adding clean water. Task ended.",
+            "observations": [
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678A"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R3",
+              "text": "用户明确要求人工服务；命中词：contact customer service",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "status": "pending",
+                "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:23:00.151747+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "intent": "request_human",
+  "cases": [
+    {
+      "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+      "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+      "issue_id": "5d36502f775f536784807e4698b482d7",
+      "sku": null,
+      "category": null,
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:23:03.971418+00:00",
+      "updated_at": "2026-10-09T07:23:03.975791+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 2860,
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "用户明确要求人工服务；命中词：contact customer service"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:03.975619+00:00"
+        },
+        {
+          "id": 2861,
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:03.975635+00:00"
+        },
+        {
+          "id": 2862,
+          "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "用户明确要求人工服务；命中词：contact customer service",
+              "cause": null,
+              "rule_id": "R3"
+            },
+            "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "problem": "The robot encountered an error while adding clean water. Task ended.",
+            "product": "未确认（线索：S1 Pro）",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "intent": "report_problem",
+                "status": "pending",
+                "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678A"
+            ],
+            "emotion_track": [],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:03.975791+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "用户明确要求人工服务；命中词：contact customer service",
+          "cause": null,
+          "rule_id": "R3"
+        },
+        "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+        "emotion": {
+          "level": null,
+          "strategy": "normal"
+        },
+        "problem": "The robot encountered an error while adding clean water. Task ended.",
+        "product": "未确认（线索：S1 Pro）",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "intent": "report_problem",
+            "status": "pending",
+            "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+            "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [
+          "客户填写的产品：S1 Pro / T2080",
+          "客户填写的 SN：12345678A"
+        ],
+        "emotion_track": [],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "6f3b652bd6d045db94bbb31040d829b1",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-09T07:23:00.151747+00:00",
+            "first_seq": 2,
+            "last_seq": 7,
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "kind": "user_message",
+            "id": "64a93ffc7d4b47518ef0571d2eb43d18",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:23:03.996985+00:00",
+            "first_seq": 8,
+            "last_seq": 8,
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "kind": "case_changed",
+            "card_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "version": 1,
+            "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "用户明确要求人工服务；命中词：contact customer service",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:23:03.975791+00:00"
+          },
+          {
+            "at": "2026-10-09T07:23:03.998492+00:00",
+            "first_seq": 9,
+            "last_seq": 11,
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "kind": "assistant_message",
+            "message_id": "3e4cfa9af2f55f5b9f03d55b0b062426",
+            "text": "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:23:04.001562+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "kind": "escalation_summary",
+            "card_id": "849a33846222508284224f2a5f12066f",
+            "summary": {
+              "product": "未确认（线索：S1 Pro）",
+              "problem": "The robot encountered an error while adding clean water. Task ended.",
+              "observations": [
+                "客户填写的产品：S1 Pro / T2080",
+                "客户填写的 SN：12345678A"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R3",
+                "text": "用户明确要求人工服务；命中词：contact customer service",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                  "intent": "report_problem",
+                  "status": "pending",
+                  "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                  "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:23:00.151747+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "5d36502f775f536784807e4698b482d7",
+        "issues": [
+          {
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "status": "open",
+            "title": "The robot encountered an error while adding clean water. Task ended.",
+            "task_queue": [
+              {
+                "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "status": "pending",
+                "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 14,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "5d36502f775f536784807e4698b482d7",
+            "kind": "escalation_summary",
+            "card_id": "849a33846222508284224f2a5f12066f",
+            "summary": {
+              "product": "未确认（线索：S1 Pro）",
+              "problem": "The robot encountered an error while adding clean water. Task ended.",
+              "observations": [
+                "客户填写的产品：S1 Pro / T2080",
+                "客户填写的 SN：12345678A"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R3",
+                "text": "用户明确要求人工服务；命中词：contact customer service",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "d03f416b-3867-5ed8-b80d-a33e38890e60",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "ab4ab7ded553557fab2f8a2c0f2c0081",
+                  "intent": "report_problem",
+                  "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                  "status": "pending",
+                  "created_input_id": "64a93ffc7d4b47518ef0571d2eb43d18",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "61569b1120f05491a789fcb50af6c2e1",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:23:00.151747+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ]
+}

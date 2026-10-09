@@ -1,0 +1,933 @@
+{
+  "id": "T5",
+  "input": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "resumed": false,
+          "event_id": "61e76694dbc44b1fbc9a1b3992d4c841",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:25.074845+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "payload": {
+            "kind": "message",
+            "text": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "3d3ce2c1d6884640b8f521d6e2c92dfd",
+          "input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:17:25.074845+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 3,
+          "event_id": "4bcacff87bdf42ce9f6cc6d2dae31272",
+          "recorded_at": "2026-10-09T07:17:25.116413+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "consult",
+          "substage": null,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 4,
+          "event_id": "2144cf95b86e4fad903cfbcf5effd698",
+          "recorded_at": "2026-10-09T07:17:27.819834+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "5477bae7-a734-4e1e-b484-68b2506c73c1",
+          "name": "logistics.query",
+          "status": "started",
+          "summary": "Checking our after-sales tool",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 5,
+          "event_id": "eb1027bd796b4741a9c4b9ed9a1a8b5d",
+          "recorded_at": "2026-10-09T07:17:27.839121+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "5477bae7-a734-4e1e-b484-68b2506c73c1",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 6,
+          "event_id": "48fac640001f4c639950886621751164",
+          "recorded_at": "2026-10-09T07:17:27.848351+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 7,
+          "event_id": "e85e7e7d86e54a9c9e70083357def8ba",
+          "recorded_at": "2026-10-09T07:17:27.857008+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "propose",
+          "substage": null,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 8,
+          "event_id": "d59cbc99e0744d01a0b8adf241a396dc",
+          "recorded_at": "2026-10-09T07:17:27.868895+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "propose",
+          "substage": null,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 9,
+          "event_id": "e6aa05f1db334cc6b23f25bd970180b8",
+          "recorded_at": "2026-10-09T07:17:27.880122+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "resolved_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+              "title": "待描述的问题",
+              "status": "draft"
+            }
+          ],
+          "event_id": "5234d2c90c5c5529ac9cf715ff72c1df",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:17:27.924394+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "80bcea406767598bb27063136c514208",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "event_id": "217394844e7a5581b024b96f1586dc2b",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:17:27.926013+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "80bcea406767598bb27063136c514208",
+          "delta": "Order Anker005:\n• FedEx Anker1234567-6: in transit, estimated delivery 2026-09-30 (T2353112)\n• USPS Anker1234567-7: delivered on 2026-09-15 (T291HA11)",
+          "event_id": "f7fbf3a7b1b7519fae16c86a836d0fa8",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:17:27.926819+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "80bcea406767598bb27063136c514208",
+          "status": "completed",
+          "event_id": "6adbf0ff080b52a3ba0cf94e5c9add31",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:17:27.933498+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "version": 1,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker005"
+          },
+          "updated_at": "2026-10-09T07:17:27.861758+00:00",
+          "event_id": "456d09f6b041592e95b2caeb1624505d",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:17:27.934361+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "version": 1,
+          "status": "awaiting_confirmation",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker005"
+          },
+          "updated_at": "2026-10-09T07:17:27.874376+00:00",
+          "event_id": "5c40549cf3845203ad0c27b23ed2528c",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:17:27.936071+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "event_id": "4ffec92fd51f5d34b99e318db4ddd4f1",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:17:27.937360+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+          "delta": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+          "event_id": "20c7103a31a65e7ab5cdb478210ca7fd",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 18,
+          "recorded_at": "2026-10-09T07:17:27.938213+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+          "status": "completed",
+          "event_id": "8d1e118a655b5b319065abb42f76ac6f",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 19,
+          "recorded_at": "2026-10-09T07:17:27.941466+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "pending_id": "da62fe5acc5c5e4592056efd920be63b",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "4fc6e36659ba5863b709e66bd3a0b4a7",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:17:27.942575+00:00"
+        },
+        {
+          "type": "proposal_card",
+          "card_id": "da62fe5acc5c5e4592056efd920be63b",
+          "version": 1,
+          "options": [
+            {
+              "option_id": "reship",
+              "type": "reship",
+              "title": "Submit a reship request",
+              "detail": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+              "source": "sop"
+            }
+          ],
+          "decision_summary": "",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "event_id": "277f4b8f21d757f68a63727affa42157",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:17:27.945033+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "confirm_proposal",
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "card_id": "da62fe5acc5c5e4592056efd920be63b",
+          "version": 1,
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 22,
+          "event_id": "a767d45a625042b08001129a5bd04316",
+          "recorded_at": "2026-10-09T07:17:27.947402+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "c53aabe59b895cedb338fa163ade19bd",
+          "recorded_at": "2026-10-09T07:17:27.948879+00:00",
+          "run_id": "435e38d9cd31446d9116f6d27f51c825",
+          "seq": 23,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:17:24.977508+08:00",
+  "session_id": "e66fda86b109405eaf576ba35059a50b",
+  "stop_reason": "awaiting_confirm_proposal",
+  "snapshot": {
+    "session_id": "e66fda86b109405eaf576ba35059a50b",
+    "version": 1,
+    "stage": "propose",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+      "kind": "confirm_proposal",
+      "card_id": "da62fe5acc5c5e4592056efd920be63b",
+      "version": 1
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:17:25.074845+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "user_message",
+        "id": "ff37b5ea78624b5a939b6714dd05dce8",
+        "text": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:17:27.839121+00:00",
+        "first_seq": 5,
+        "last_seq": 6,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "5477bae7-a734-4e1e-b484-68b2506c73c1",
+        "name": "logistics.query",
+        "status": "finished",
+        "summary": "After-sales tool responded"
+      },
+      {
+        "at": "2026-10-09T07:17:27.926013+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "assistant_message",
+        "message_id": "80bcea406767598bb27063136c514208",
+        "text": "Order Anker005:\n• FedEx Anker1234567-6: in transit, estimated delivery 2026-09-30 (T2353112)\n• USPS Anker1234567-7: delivered on 2026-09-15 (T291HA11)",
+        "status": "completed",
+        "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:17:27.934361+00:00",
+        "first_seq": 15,
+        "last_seq": 16,
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "case_changed",
+        "card_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+        "version": 1,
+        "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+        "status": "awaiting_confirmation",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {
+          "order_no": "Anker005"
+        },
+        "updated_at": "2026-10-09T07:17:27.874376+00:00"
+      },
+      {
+        "at": "2026-10-09T07:17:27.937360+00:00",
+        "first_seq": 17,
+        "last_seq": 19,
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "assistant_message",
+        "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+        "text": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+        "status": "completed",
+        "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:17:27.945033+00:00",
+        "first_seq": 21,
+        "last_seq": 21,
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "proposal_card",
+        "card_id": "da62fe5acc5c5e4592056efd920be63b",
+        "version": 1,
+        "options": [
+          {
+            "option_id": "reship",
+            "type": "reship",
+            "title": "Submit a reship request",
+            "detail": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+            "source": "sop"
+          }
+        ],
+        "decision_summary": "",
+        "retry": false,
+        "chosen_option_id": null,
+        "declined_reason": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+    "issues": [
+      {
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "status": "draft",
+        "title": "待描述的问题",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 23,
+    "latest_summaries": []
+  },
+  "visible_text": "Order Anker005:\n• FedEx Anker1234567-6: in transit, estimated delivery 2026-09-30 (T2353112)\n• USPS Anker1234567-7: delivered on 2026-09-15 (T291HA11)This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 2.9,
+  "journey": {
+    "session": {
+      "session_id": "e66fda86b109405eaf576ba35059a50b",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:17:25.078325Z",
+      "last_run_at": "2026-10-09T07:17:27.955179Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number [REDACTED]",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": "order_verified",
+      "outcome": "awaiting_user",
+      "outcome_reason": "confirm_proposal",
+      "outcome_at": null,
+      "total_latency_ms": 2876,
+      "model_calls": 1,
+      "tokens_in": 4146,
+      "tokens_out": 282,
+      "raw_available_until": "2026-10-16T07:17:27.955179Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "435e38d9cd31446d9116f6d27f51c825",
+        "session_id": "e66fda86b109405eaf576ba35059a50b",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:17:25.078325Z",
+        "ended_at": "2026-10-09T07:17:27.955174Z",
+        "duration_ms": 2876,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "propose",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 2854,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2693,
+            "tokens_in": 4146,
+            "tokens_out": 282,
+            "error_type": null,
+            "created_at": "2026-10-09T07:17:27.798577Z"
+          }
+        ],
+        "tokens_in": 4146,
+        "tokens_out": 282,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:25.078325Z",
+            "duration_ms": 2740,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "logistics_query",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3288,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 155,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5688
+                    }
+                  ],
+                  "actual_input_tokens": 4146
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 2,
+            "node": "consult",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:27.818975Z",
+            "duration_ms": 38,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 3,
+            "node": "service_context",
+            "prev_node": "consult",
+            "started_at": "2026-10-09T07:17:27.856996Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "category": "robot_vacuum",
+              "product_state": "confirmed_sku",
+              "receipt_status": "order_verified",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 4,
+            "node": "propose",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:17:27.868631Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "propose",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 5,
+            "node": "advance_tasks",
+            "prev_node": "propose",
+            "started_at": "2026-10-09T07:17:27.876735Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "advance_tasks",
+            "started_at": "2026-10-09T07:17:27.877425Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "435e38d9cd31446d9116f6d27f51c825",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:27.878032Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "e66fda86b109405eaf576ba35059a50b",
+      "version": 1,
+      "stage": "propose",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "kind": "confirm_proposal",
+        "card_id": "da62fe5acc5c5e4592056efd920be63b",
+        "version": 1
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:17:25.074845+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "user_message",
+          "id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "text": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:17:27.839121+00:00",
+          "first_seq": 5,
+          "last_seq": 6,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "5477bae7-a734-4e1e-b484-68b2506c73c1",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded"
+        },
+        {
+          "at": "2026-10-09T07:17:27.926013+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "assistant_message",
+          "message_id": "80bcea406767598bb27063136c514208",
+          "text": "Order Anker005:\n• FedEx Anker1234567-6: in transit, estimated delivery 2026-09-30 (T2353112)\n• USPS Anker1234567-7: delivered on 2026-09-15 (T291HA11)",
+          "status": "completed",
+          "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:17:27.934361+00:00",
+          "first_seq": 15,
+          "last_seq": 16,
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "case_changed",
+          "card_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "version": 1,
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "status": "awaiting_confirmation",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker005"
+          },
+          "updated_at": "2026-10-09T07:17:27.874376+00:00"
+        },
+        {
+          "at": "2026-10-09T07:17:27.937360+00:00",
+          "first_seq": 17,
+          "last_seq": 19,
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "assistant_message",
+          "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+          "text": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+          "status": "completed",
+          "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:17:27.945033+00:00",
+          "first_seq": 21,
+          "last_seq": 21,
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "proposal_card",
+          "card_id": "da62fe5acc5c5e4592056efd920be63b",
+          "version": 1,
+          "options": [
+            {
+              "option_id": "reship",
+              "type": "reship",
+              "title": "Submit a reship request",
+              "detail": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+              "source": "sop"
+            }
+          ],
+          "decision_summary": "",
+          "retry": false,
+          "chosen_option_id": null,
+          "declined_reason": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+      "issues": [
+        {
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "status": "draft",
+          "title": "待描述的问题",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 23,
+      "latest_summaries": []
+    }
+  },
+  "intent": "logistics_query",
+  "cases": [
+    {
+      "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+      "session_id": "e66fda86b109405eaf576ba35059a50b",
+      "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "awaiting_confirmation",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": {
+        "status": "offered",
+        "options": [
+          {
+            "type": "reship",
+            "title": "Submit a reship request",
+            "detail": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+            "source": "sop",
+            "option_id": "reship"
+          }
+        ],
+        "excluded": [],
+        "user_confirmed": false,
+        "chosen_option_id": null
+      },
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {
+        "order_no": "Anker005"
+      },
+      "opened_at": "2026-10-09T07:17:27.851910+00:00",
+      "updated_at": "2026-10-09T07:17:27.874376+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 2792,
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "seq": 1,
+          "type": "order_identified",
+          "payload": {
+            "order_no": "Anker005"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:17:27.861758+00:00"
+        },
+        {
+          "id": 2795,
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "seq": 2,
+          "type": "status_changed",
+          "payload": {
+            "to": "proposing",
+            "from": "open",
+            "reason": "按 SOP 生成服务单方案"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:17:27.870281+00:00"
+        },
+        {
+          "id": 2796,
+          "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+          "seq": 3,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_confirmation",
+            "from": "proposing",
+            "reason": "等待客户确认提交"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:17:27.874376+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "e66fda86b109405eaf576ba35059a50b",
+        "version": 1,
+        "stage": "propose",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+          "kind": "confirm_proposal",
+          "card_id": "da62fe5acc5c5e4592056efd920be63b",
+          "version": 1
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:17:25.074845+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "kind": "user_message",
+            "id": "ff37b5ea78624b5a939b6714dd05dce8",
+            "text": "Can you give me an update on the delivery of the above number from your company. Thank you.Order Number Anker005",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:17:27.839121+00:00",
+            "first_seq": 5,
+            "last_seq": 6,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "5477bae7-a734-4e1e-b484-68b2506c73c1",
+            "name": "logistics.query",
+            "status": "finished",
+            "summary": "After-sales tool responded"
+          },
+          {
+            "at": "2026-10-09T07:17:27.926013+00:00",
+            "first_seq": 12,
+            "last_seq": 14,
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "kind": "assistant_message",
+            "message_id": "80bcea406767598bb27063136c514208",
+            "text": "Order Anker005:\n• FedEx Anker1234567-6: in transit, estimated delivery 2026-09-30 (T2353112)\n• USPS Anker1234567-7: delivered on 2026-09-15 (T291HA11)",
+            "status": "completed",
+            "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:17:27.934361+00:00",
+            "first_seq": 15,
+            "last_seq": 16,
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "kind": "case_changed",
+            "card_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+            "version": 1,
+            "case_id": "f0caf03a-4bb8-5acc-abc4-d6f506fddd76",
+            "status": "awaiting_confirmation",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {
+              "order_no": "Anker005"
+            },
+            "updated_at": "2026-10-09T07:17:27.874376+00:00"
+          },
+          {
+            "at": "2026-10-09T07:17:27.937360+00:00",
+            "first_seq": 17,
+            "last_seq": 19,
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "kind": "assistant_message",
+            "message_id": "fff4bb93ca8952c9bf0603445507bb45",
+            "text": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+            "status": "completed",
+            "reply_to_input_id": "ff37b5ea78624b5a939b6714dd05dce8",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:17:27.945033+00:00",
+            "first_seq": 21,
+            "last_seq": 21,
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "kind": "proposal_card",
+            "card_id": "da62fe5acc5c5e4592056efd920be63b",
+            "version": 1,
+            "options": [
+              {
+                "option_id": "reship",
+                "type": "reship",
+                "title": "Submit a reship request",
+                "detail": "This package hasn't arrived by its estimated delivery date of 2026-09-30, so under our after-sales policy we can arrange a reship for you. Once submitted, a colleague will arrange it.",
+                "source": "sop"
+              }
+            ],
+            "decision_summary": "",
+            "retry": false,
+            "chosen_option_id": null,
+            "declined_reason": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+        "issues": [
+          {
+            "issue_id": "13db69e0509650c58836e26fc5d2d9bb",
+            "status": "draft",
+            "title": "待描述的问题",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 23,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

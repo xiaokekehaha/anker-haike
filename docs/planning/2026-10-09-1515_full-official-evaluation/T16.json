@@ -1,0 +1,2205 @@
+{
+  "id": "T16",
+  "input": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "resumed": false,
+          "event_id": "f366f77458a64eb8bd01c8d84076f6dc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:46.209222+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "45b6f47c35a64f2da8effeb4a34dbf6b",
+          "input_id": "f6465e7a0933417691431c491d1a146a",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:17:46.209222+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 3,
+          "event_id": "06a47da6a17e4d48ba886b56dc1dd249",
+          "recorded_at": "2026-10-09T07:17:46.228636+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 4,
+          "event_id": "d4bd0cf727a14216b6a326b37c1b94b6",
+          "recorded_at": "2026-10-09T07:17:49.143228+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 5,
+          "event_id": "7b499883acd444dc9d9362df55ff1745",
+          "recorded_at": "2026-10-09T07:17:49.152396+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "432a24d1d27f57928003d12ae8dfc494",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 6,
+          "event_id": "81d4bb50782f4e049f812247b241efb9",
+          "recorded_at": "2026-10-09T07:17:49.155746+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "432a24d1d27f57928003d12ae8dfc494",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 7,
+          "event_id": "50b70a470a7142fdb6f04f409183740d",
+          "recorded_at": "2026-10-09T07:17:49.388668+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 8,
+          "event_id": "6b61ee24520645c1971cfbd11a739037",
+          "recorded_at": "2026-10-09T07:17:51.519480+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 9,
+          "event_id": "2e4a6803b58b4eb29dc655ee2ad4f82b",
+          "recorded_at": "2026-10-09T07:17:51.554104+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "input_id": "f6465e7a0933417691431c491d1a146a",
+          "resolved_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "title": "The dust box or filter is not in place.",
+              "status": "open"
+            }
+          ],
+          "event_id": "bc4c33b6d574551b9aa92052077902fc",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:17:51.663921+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "source": "kb_qa",
+              "doc_id": "rv-0056",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports alert:2310 The dust collector and filter is not in place, please install the dust collector and filter, the dust box or filter is not in place?\n1. Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;\n2. If the filter is installed correctly, f",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+              "source": "kb_qa",
+              "doc_id": "rv-0057",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor dust collection, dust collection blockage, or dust box blockage?\n1. If the dust box is blocked, check whether the dust box is full and whether the dust collection channel is blocked.\n2. If there are no abnormalities with the dust box and dust collection channel, we recommend that you enable pet mode in the app, clean the dust box and",
+              "score": 0.015949820788530467,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+              "source": "kb_qa",
+              "doc_id": "rv-0253",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6113:No dust bag installed in the station. Please install the dust bag before starting the dust emptying?\n1. Please check whether the dust bag is installed properly.\n2. If the dust bag has been installed but the error message in the app cannot be cleared, make sure to plug in and out the dust bag again while the robot is on the base station, a",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0217",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+              "score": 0.015552884615384614,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+              "source": "kb_qa",
+              "doc_id": "rv-0248",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+              "snippet": "What should I do if my X10 Pro Omni T2351 base station makes noise or has abnormal dust collection noise?\n1. We recommend that you set the Do Not Disturb mode or start cleaning before leaving home or going to bed so that dust collection can be completed automatically when no one is home.\n2. If the dust collection noise suddenly becomes louder and muffled, it may be that the dust box/dust bag is fi",
+              "score": 0.015367965367965367,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0260",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+              "score": 0.014981617647058822,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+              "source": "kb_qa",
+              "doc_id": "rv-0246",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111: The station's lid is not closed/dustbin Not Secured?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+              "source": "kb_qa",
+              "doc_id": "rv-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6114:Suction fan of the self-empty station is cooling, please try dust emptying 15mins later?\n1. To protect the station fan and prevent it from overheating, please wait for 15 minutes and try again.\n2. If the error message still appears after you start the dust collection task after 15 minutes, please try unplugging and unplugging the power of",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "source": "kb_qa",
+              "doc_id": "rv-0242",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+              "score": 0.013619047619047617,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+              "source": "kb_qa",
+              "doc_id": "rv-0220",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111:The station's lid is not closed, please check?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+              "score": 0.01358904109589041,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+              "source": "kb_qa",
+              "doc_id": "rv-0071",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+              "snippet": "Can the dust bag be reused? An overview of the X10 Pro Omni and X8 Pro SES dust bag features\nThe X10 Pro Omni and X8 Pro SES models support the Self-emptying feature, so you do not have to manually empty the robot's dustbin. The dust bag of the X10 Pro Omni and X8 Pro SES model boasts an impressive usage time that lasts up to 45 days, depending on the frequency and intensity of usage. Despite bein",
+              "score": 0.013257575757575756,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+              "source": "kb_qa",
+              "doc_id": "rv-0225",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6030:The station's cleaning tray is not installed, please check?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.",
+              "score": 0.013030303030303031,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "source": "kb_qa",
+              "doc_id": "rv-0270",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+              "score": 0.01286732742131803,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0236",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+              "score": 0.012845499645641389,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+              "score": 0.012617146824019439,
+              "status": "ok"
+            }
+          ],
+          "event_id": "ed142e76a40b53faa351ad92915d8e5a",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:17:51.665095+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "pending_id": "3901b2762d565948b34c7e2d142592e5",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "98ae2b9a75e755a0a596a653c9c9bc4d",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:17:51.669532+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "3901b2762d565948b34c7e2d142592e5",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0056",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Take out the dust collector, open the dust collector cover,…",
+            "instruction": "Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "qa:rv-0056"
+            ],
+            "primary_evidence_id": "qa:rv-0056",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/install-the-filter.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "event_id": "4c3e6e835aef5193aa8ce663cc0707d0",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:17:51.670596+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "card_id": "3901b2762d565948b34c7e2d142592e5",
+          "version": 1,
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 15,
+          "event_id": "eab88b4f599c468abe00cc050111c402",
+          "recorded_at": "2026-10-09T07:17:51.671509+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "22e6f5aad1b05977974e0ee15aab1292",
+          "recorded_at": "2026-10-09T07:17:51.672746+00:00",
+          "run_id": "a1fc064f726941e1af987bed1c56e774",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "resumed": false,
+          "event_id": "5a2f9c81e8c542c1a831bd0bf6eb8cbd",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:51.696612+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "3901b2762d565948b34c7e2d142592e5",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "16b9830af38c4a8b99a747ef34f4fe5f",
+            "target_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "expected_version": 1
+          },
+          "event_id": "aa220e1a3d424f9d819eef07d140c1f1",
+          "input_id": "16b9830af38c4a8b99a747ef34f4fe5f",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:17:51.696612+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 19,
+          "event_id": "aee90060249b48288fc544caf8ce7a40",
+          "recorded_at": "2026-10-09T07:17:51.709731+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 20,
+          "event_id": "e4a7193ff71940cd927f79e805a66c48",
+          "recorded_at": "2026-10-09T07:17:51.712592+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "input_id": "16b9830af38c4a8b99a747ef34f4fe5f",
+          "resolved_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "title": "The dust box or filter is not in place.",
+              "status": "open"
+            }
+          ],
+          "event_id": "a8486360c0185652adf58987aff186a9",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:17:51.737295+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "pending_id": "3901b2762d565948b34c7e2d142592e5",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "07fe5464831f55feacd3491ab22369cb",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:17:51.738140+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "pending_id": "6e1b33308d8552d6b2069b63a1b866ea",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "7050be2a68e8501c9822817cecc7273d",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:17:51.741348+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0056",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the filter is installed correctly, further check whether…",
+            "instruction": "If the filter is installed correctly, further check whether there is a magnet in the position shown in the picture.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "qa:rv-0056"
+            ],
+            "primary_evidence_id": "qa:rv-0056",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/magnet-on-the-filter.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "event_id": "55791612be7e5a119957155191d29d09",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:17:51.742132+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+          "version": 2,
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 26,
+          "event_id": "63783d9668884c8ea11b42efdcfb73e9",
+          "recorded_at": "2026-10-09T07:17:51.742825+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "2e9a9feff59e5d7c9398aa6099d36879",
+          "recorded_at": "2026-10-09T07:17:51.744747+00:00",
+          "run_id": "0e81f3379c204a3e9f107485fb557234",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "resumed": false,
+          "event_id": "5752f05ebd114f5091bd9895203c8f40",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:17:51.763771+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "efacc2597895421ba2458d369d620c6e",
+            "target_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "expected_version": 2
+          },
+          "event_id": "2cbb508c75e148478c0aabffb9b99a3b",
+          "input_id": "efacc2597895421ba2458d369d620c6e",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:17:51.763771+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 30,
+          "event_id": "c4e95044ffa748bba7ac97d262007004",
+          "recorded_at": "2026-10-09T07:17:51.777800+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 31,
+          "event_id": "dee12f6a69f84c5bbebf4ff8bc5fc78d",
+          "recorded_at": "2026-10-09T07:17:51.783200+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "input_id": "efacc2597895421ba2458d369d620c6e",
+          "resolved_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "title": "The dust box or filter is not in place.",
+              "status": "open"
+            }
+          ],
+          "event_id": "f11cefa0f2495ee5b4e2decd31d50081",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:17:51.813548+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "pending_id": "6e1b33308d8552d6b2069b63a1b866ea",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "caea94612fd25ccf8fda0ecb199ed91d",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:17:51.814364+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+          "case_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:17:51.777733+00:00",
+          "event_id": "3e67b5e598fd5625af0dc060b2a200d2",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:17:51.815168+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "reply_to_input_id": "efacc2597895421ba2458d369d620c6e",
+          "event_id": "c932cd5bc57157a4a89d09f26d4f8e16",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:17:51.817894+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "c14fbf9c92355ad5a3f8ac2de5cbca8d",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:17:51.818724+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+          "status": "completed",
+          "event_id": "bbffc48c58b85f038b8d00f5e64d32e2",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:17:51.819889+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "pending_id": "e527dfab01a85d76a980c032119c609a",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "d0c31dc4142c58dc8ff6db68376716b9",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:17:51.820736+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "card_id": "e527dfab01a85d76a980c032119c609a",
+          "version": 3,
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 40,
+          "event_id": "37341125be824e028344f936cc759750",
+          "recorded_at": "2026-10-09T07:17:51.821144+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "8650252cd9025de68e5d1c853fa53f12",
+          "recorded_at": "2026-10-09T07:17:51.821937+00:00",
+          "run_id": "15bb24238c1941838b02c6737e7dad04",
+          "seq": 41,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:17:46.103918+08:00",
+  "session_id": "e563cc2aacf8449083787135aad770ec",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "e563cc2aacf8449083787135aad770ec",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+      "kind": "upload_receipt",
+      "card_id": "e527dfab01a85d76a980c032119c609a",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:17:46.209222+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "user_message",
+        "id": "f6465e7a0933417691431c491d1a146a",
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:17:49.155746+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "432a24d1d27f57928003d12ae8dfc494",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:17:51.665339Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+            "source": "kb_qa",
+            "doc_id": "rv-0056",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports alert:2310 The dust collector and filter is not in place, please install the dust collector and filter, the dust box or filter is not in place?\n1. Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;\n2. If the filter is installed correctly, f",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+            "source": "kb_qa",
+            "doc_id": "rv-0057",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+            "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor dust collection, dust collection blockage, or dust box blockage?\n1. If the dust box is blocked, check whether the dust box is full and whether the dust collection channel is blocked.\n2. If there are no abnormalities with the dust box and dust collection channel, we recommend that you enable pet mode in the app, clean the dust box and",
+            "score": 0.015949820788530467,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+            "source": "kb_qa",
+            "doc_id": "rv-0253",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6113:No dust bag installed in the station. Please install the dust bag before starting the dust emptying?\n1. Please check whether the dust bag is installed properly.\n2. If the dust bag has been installed but the error message in the app cannot be cleared, make sure to plug in and out the dust bag again while the robot is on the base station, a",
+            "score": 0.015638148667601683,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+            "source": "kb_qa",
+            "doc_id": "rv-0217",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+            "score": 0.015552884615384614,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+            "source": "kb_qa",
+            "doc_id": "rv-0248",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+            "snippet": "What should I do if my X10 Pro Omni T2351 base station makes noise or has abnormal dust collection noise?\n1. We recommend that you set the Do Not Disturb mode or start cleaning before leaving home or going to bed so that dust collection can be completed automatically when no one is home.\n2. If the dust collection noise suddenly becomes louder and muffled, it may be that the dust box/dust bag is fi",
+            "score": 0.015367965367965367,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+            "source": "kb_qa",
+            "doc_id": "rv-0260",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+            "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+            "score": 0.014981617647058822,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+            "source": "kb_qa",
+            "doc_id": "rv-0246",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111: The station's lid is not closed/dustbin Not Secured?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+            "score": 0.014823284823284823,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+            "source": "kb_qa",
+            "doc_id": "rv-0224",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6114:Suction fan of the self-empty station is cooling, please try dust emptying 15mins later?\n1. To protect the station fan and prevent it from overheating, please wait for 15 minutes and try again.\n2. If the error message still appears after you start the dust collection task after 15 minutes, please try unplugging and unplugging the power of",
+            "score": 0.014395129615082481,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+            "source": "kb_qa",
+            "doc_id": "rv-0242",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+            "score": 0.013619047619047617,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+            "source": "kb_qa",
+            "doc_id": "rv-0220",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111:The station's lid is not closed, please check?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+            "score": 0.01358904109589041,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+            "source": "kb_qa",
+            "doc_id": "rv-0071",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+            "snippet": "Can the dust bag be reused? An overview of the X10 Pro Omni and X8 Pro SES dust bag features\nThe X10 Pro Omni and X8 Pro SES models support the Self-emptying feature, so you do not have to manually empty the robot's dustbin. The dust bag of the X10 Pro Omni and X8 Pro SES model boasts an impressive usage time that lasts up to 45 days, depending on the frequency and intensity of usage. Despite bein",
+            "score": 0.013257575757575756,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+            "source": "kb_qa",
+            "doc_id": "rv-0225",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6030:The station's cleaning tray is not installed, please check?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.",
+            "score": 0.013030303030303031,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+            "source": "kb_qa",
+            "doc_id": "rv-0270",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+            "score": 0.01286732742131803,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+            "source": "kb_qa",
+            "doc_id": "rv-0236",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+            "score": 0.012845499645641389,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+            "source": "kb_qa",
+            "doc_id": "rv-0244",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+            "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+            "score": 0.012617146824019439,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:17:51.670596+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "step_card",
+        "card_id": "3901b2762d565948b34c7e2d142592e5",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0056",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Take out the dust collector, open the dust collector cover,…",
+          "instruction": "Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+            "qa:rv-0056"
+          ],
+          "primary_evidence_id": "qa:rv-0056",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/install-the-filter.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:17:51.696612+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "action",
+        "id": "16b9830af38c4a8b99a747ef34f4fe5f",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:17:51.742132+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "step_card",
+        "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0056",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If the filter is installed correctly, further check whether…",
+          "instruction": "If the filter is installed correctly, further check whether there is a magnet in the position shown in the picture.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+            "qa:rv-0056"
+          ],
+          "primary_evidence_id": "qa:rv-0056",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/magnet-on-the-filter.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:17:51.763771+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "action",
+        "id": "efacc2597895421ba2458d369d620c6e",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:17:51.815168+00:00",
+        "first_seq": 35,
+        "last_seq": 35,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "case_changed",
+        "card_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+        "version": 3,
+        "case_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:17:51.777733+00:00"
+      },
+      {
+        "at": "2026-10-09T07:17:51.817894+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "assistant_message",
+        "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "efacc2597895421ba2458d369d620c6e",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+    "issues": [
+      {
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "status": "open",
+        "title": "The dust box or filter is not in place.",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 41,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 5.7,
+  "journey": {
+    "session": {
+      "session_id": "e563cc2aacf8449083787135aad770ec",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:17:46.211242Z",
+      "last_run_at": "2026-10-09T07:17:51.822565Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Descri",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0056"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 57,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:17:51.822565Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "a1fc064f726941e1af987bed1c56e774",
+        "session_id": "e563cc2aacf8449083787135aad770ec",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:17:46.211242Z",
+        "ended_at": "2026-10-09T07:17:51.673667Z",
+        "duration_ms": 5578,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 5576,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3023,
+            "tokens_in": 4205,
+            "tokens_out": 353,
+            "error_type": null,
+            "created_at": "2026-10-09T07:17:49.130099Z"
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 2,
+            "fallback_used": true,
+            "stream": false,
+            "latency_ms": 2100,
+            "tokens_in": 4638,
+            "tokens_out": 104,
+            "error_type": "hypotheses.0.rationale: String should have at most 80 characters",
+            "created_at": "2026-10-09T07:17:51.484820Z"
+          }
+        ],
+        "tokens_in": 8843,
+        "tokens_out": 457,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:46.211242Z",
+            "duration_ms": 3047,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3348,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 215,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5748
+                    }
+                  ],
+                  "actual_input_tokens": 4205
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:49.258465Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:17:49.268796Z",
+            "duration_ms": 2357,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0056",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5233,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 215,
+                    "history": 0,
+                    "authority": 4662
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 467,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 188,
+                    "timezone": 7,
+                    "task_data": 3663,
+                    "issue_index": 155,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "schema_error",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5711
+                    },
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5767
+                    }
+                  ],
+                  "actual_input_tokens": 4638
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:17:51.626004Z",
+            "duration_ms": 28,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0056",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:17:51.654197Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:51.654216Z",
+            "duration_ms": 73,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "a1fc064f726941e1af987bed1c56e774",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 224,
+            "query": "The dust box or filter is not in place",
+            "created_at": "2026-10-09T07:17:49.369563Z"
+          }
+        ]
+      },
+      {
+        "run_id": "0e81f3379c204a3e9f107485fb557234",
+        "session_id": "e563cc2aacf8449083787135aad770ec",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:17:51.698280Z",
+        "ended_at": "2026-10-09T07:17:51.745284Z",
+        "duration_ms": 46,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 44,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "0e81f3379c204a3e9f107485fb557234",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:51.698280Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0056",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "0e81f3379c204a3e9f107485fb557234",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:51.707397Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0056",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0e81f3379c204a3e9f107485fb557234",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:17:51.708775Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0056",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0e81f3379c204a3e9f107485fb557234",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:17:51.711142Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "0e81f3379c204a3e9f107485fb557234",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:51.711556Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "15bb24238c1941838b02c6737e7dad04",
+        "session_id": "e563cc2aacf8449083787135aad770ec",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:17:51.764854Z",
+        "ended_at": "2026-10-09T07:17:51.822560Z",
+        "duration_ms": 57,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 54,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:17:51.764854Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0056",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:17:51.774718Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:17:51.776283Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:17:51.777351Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:17:51.780647Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:17:51.780979Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "15bb24238c1941838b02c6737e7dad04",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:17:51.781497Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "e563cc2aacf8449083787135aad770ec",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "kind": "upload_receipt",
+        "card_id": "e527dfab01a85d76a980c032119c609a",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:17:46.209222+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "user_message",
+          "id": "f6465e7a0933417691431c491d1a146a",
+          "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:17:49.155746+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "432a24d1d27f57928003d12ae8dfc494",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:17:51.665339Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "source": "kb_qa",
+              "doc_id": "rv-0056",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports alert:2310 The dust collector and filter is not in place, please install the dust collector and filter, the dust box or filter is not in place?\n1. Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;\n2. If the filter is installed correctly, f",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+              "source": "kb_qa",
+              "doc_id": "rv-0057",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor dust collection, dust collection blockage, or dust box blockage?\n1. If the dust box is blocked, check whether the dust box is full and whether the dust collection channel is blocked.\n2. If there are no abnormalities with the dust box and dust collection channel, we recommend that you enable pet mode in the app, clean the dust box and",
+              "score": 0.015949820788530467,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+              "source": "kb_qa",
+              "doc_id": "rv-0253",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6113:No dust bag installed in the station. Please install the dust bag before starting the dust emptying?\n1. Please check whether the dust bag is installed properly.\n2. If the dust bag has been installed but the error message in the app cannot be cleared, make sure to plug in and out the dust bag again while the robot is on the base station, a",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0217",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+              "score": 0.015552884615384614,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+              "source": "kb_qa",
+              "doc_id": "rv-0248",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+              "snippet": "What should I do if my X10 Pro Omni T2351 base station makes noise or has abnormal dust collection noise?\n1. We recommend that you set the Do Not Disturb mode or start cleaning before leaving home or going to bed so that dust collection can be completed automatically when no one is home.\n2. If the dust collection noise suddenly becomes louder and muffled, it may be that the dust box/dust bag is fi",
+              "score": 0.015367965367965367,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0260",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+              "score": 0.014981617647058822,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+              "source": "kb_qa",
+              "doc_id": "rv-0246",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111: The station's lid is not closed/dustbin Not Secured?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+              "source": "kb_qa",
+              "doc_id": "rv-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6114:Suction fan of the self-empty station is cooling, please try dust emptying 15mins later?\n1. To protect the station fan and prevent it from overheating, please wait for 15 minutes and try again.\n2. If the error message still appears after you start the dust collection task after 15 minutes, please try unplugging and unplugging the power of",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "source": "kb_qa",
+              "doc_id": "rv-0242",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+              "score": 0.013619047619047617,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+              "source": "kb_qa",
+              "doc_id": "rv-0220",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111:The station's lid is not closed, please check?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+              "score": 0.01358904109589041,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+              "source": "kb_qa",
+              "doc_id": "rv-0071",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+              "snippet": "Can the dust bag be reused? An overview of the X10 Pro Omni and X8 Pro SES dust bag features\nThe X10 Pro Omni and X8 Pro SES models support the Self-emptying feature, so you do not have to manually empty the robot's dustbin. The dust bag of the X10 Pro Omni and X8 Pro SES model boasts an impressive usage time that lasts up to 45 days, depending on the frequency and intensity of usage. Despite bein",
+              "score": 0.013257575757575756,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+              "source": "kb_qa",
+              "doc_id": "rv-0225",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6030:The station's cleaning tray is not installed, please check?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.",
+              "score": 0.013030303030303031,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "source": "kb_qa",
+              "doc_id": "rv-0270",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+              "score": 0.01286732742131803,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0236",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+              "score": 0.012845499645641389,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+              "score": 0.012617146824019439,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:17:51.670596+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "step_card",
+          "card_id": "3901b2762d565948b34c7e2d142592e5",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0056",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Take out the dust collector, open the dust collector cover,…",
+            "instruction": "Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "qa:rv-0056"
+            ],
+            "primary_evidence_id": "qa:rv-0056",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/install-the-filter.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:17:51.696612+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "action",
+          "id": "16b9830af38c4a8b99a747ef34f4fe5f",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:17:51.742132+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "step_card",
+          "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0056",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the filter is installed correctly, further check whether…",
+            "instruction": "If the filter is installed correctly, further check whether there is a magnet in the position shown in the picture.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+              "qa:rv-0056"
+            ],
+            "primary_evidence_id": "qa:rv-0056",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/magnet-on-the-filter.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:17:51.763771+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "action",
+          "id": "efacc2597895421ba2458d369d620c6e",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:17:51.815168+00:00",
+          "first_seq": 35,
+          "last_seq": 35,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "case_changed",
+          "card_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+          "version": 3,
+          "case_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:17:51.777733+00:00"
+        },
+        {
+          "at": "2026-10-09T07:17:51.817894+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "assistant_message",
+          "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "efacc2597895421ba2458d369d620c6e",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+      "issues": [
+        {
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "status": "open",
+          "title": "The dust box or filter is not in place.",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 41,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+      "session_id": "e563cc2aacf8449083787135aad770ec",
+      "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:17:51.777733+00:00",
+      "updated_at": "2026-10-09T07:17:51.777733+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "e563cc2aacf8449083787135aad770ec",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+          "kind": "upload_receipt",
+          "card_id": "e527dfab01a85d76a980c032119c609a",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:17:46.209222+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "user_message",
+            "id": "f6465e7a0933417691431c491d1a146a",
+            "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\nProblem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\nProblem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:17:49.155746+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "432a24d1d27f57928003d12ae8dfc494",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:17:51.665339Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+                "source": "kb_qa",
+                "doc_id": "rv-0056",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports alert:2310 The dust collector and filter is not in place, please install the dust collector and filter, the dust box or filter is not in place?\n1. Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;\n2. If the filter is installed correctly, f",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+                "source": "kb_qa",
+                "doc_id": "rv-0057",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1d7c0961-b8df-4d8c-82be-d93dc019cc67",
+                "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor dust collection, dust collection blockage, or dust box blockage?\n1. If the dust box is blocked, check whether the dust box is full and whether the dust collection channel is blocked.\n2. If there are no abnormalities with the dust box and dust collection channel, we recommend that you enable pet mode in the app, clean the dust box and",
+                "score": 0.015949820788530467,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+                "source": "kb_qa",
+                "doc_id": "rv-0253",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0030d44f-c784-44b4-b4aa-f649faa940f1",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6113:No dust bag installed in the station. Please install the dust bag before starting the dust emptying?\n1. Please check whether the dust bag is installed properly.\n2. If the dust bag has been installed but the error message in the app cannot be cleared, make sure to plug in and out the dust bag again while the robot is on the base station, a",
+                "score": 0.015638148667601683,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+                "source": "kb_qa",
+                "doc_id": "rv-0217",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+                "score": 0.015552884615384614,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+                "source": "kb_qa",
+                "doc_id": "rv-0248",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3185e131-317b-4f80-9866-042aa2e9d350",
+                "snippet": "What should I do if my X10 Pro Omni T2351 base station makes noise or has abnormal dust collection noise?\n1. We recommend that you set the Do Not Disturb mode or start cleaning before leaving home or going to bed so that dust collection can be completed automatically when no one is home.\n2. If the dust collection noise suddenly becomes louder and muffled, it may be that the dust box/dust bag is fi",
+                "score": 0.015367965367965367,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+                "source": "kb_qa",
+                "doc_id": "rv-0260",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+                "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+                "score": 0.014981617647058822,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+                "source": "kb_qa",
+                "doc_id": "rv-0246",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c6fdba61-1e8a-4625-b9c0-b01ba7563579",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111: The station's lid is not closed/dustbin Not Secured?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+                "score": 0.014823284823284823,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+                "source": "kb_qa",
+                "doc_id": "rv-0224",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c8a40858-8a29-4f1e-9cf8-26e4c8fc8c9c",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6114:Suction fan of the self-empty station is cooling, please try dust emptying 15mins later?\n1. To protect the station fan and prevent it from overheating, please wait for 15 minutes and try again.\n2. If the error message still appears after you start the dust collection task after 15 minutes, please try unplugging and unplugging the power of",
+                "score": 0.014395129615082481,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+                "source": "kb_qa",
+                "doc_id": "rv-0242",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+                "score": 0.013619047619047617,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+                "source": "kb_qa",
+                "doc_id": "rv-0220",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e80ab20c-ad73-4347-9ba9-c23aa41e4521",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6111:The station's lid is not closed, please check?\nCheck whether the dust collection station's lid is properly closed and make sure that the lid is not lifted up.",
+                "score": 0.01358904109589041,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+                "source": "kb_qa",
+                "doc_id": "rv-0071",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "8f6cc007-1ab8-434c-a160-ebdcbf97dd01",
+                "snippet": "Can the dust bag be reused? An overview of the X10 Pro Omni and X8 Pro SES dust bag features\nThe X10 Pro Omni and X8 Pro SES models support the Self-emptying feature, so you do not have to manually empty the robot's dustbin. The dust bag of the X10 Pro Omni and X8 Pro SES model boasts an impressive usage time that lasts up to 45 days, depending on the frequency and intensity of usage. Despite bein",
+                "score": 0.013257575757575756,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+                "source": "kb_qa",
+                "doc_id": "rv-0225",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3dd2cd07-1888-435d-ba5b-8a3061755cf2",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 6030:The station's cleaning tray is not installed, please check?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.",
+                "score": 0.013030303030303031,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+                "source": "kb_qa",
+                "doc_id": "rv-0270",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+                "score": 0.01286732742131803,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+                "source": "kb_qa",
+                "doc_id": "rv-0236",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+                "score": 0.012845499645641389,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+                "source": "kb_qa",
+                "doc_id": "rv-0244",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+                "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+                "score": 0.012617146824019439,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:17:51.670596+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "step_card",
+            "card_id": "3901b2762d565948b34c7e2d142592e5",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0056",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Take out the dust collector, open the dust collector cover,…",
+              "instruction": "Take out the dust collector, open the dust collector cover, and check whether the filter is installed. If the filter is not installed, install it and try again;",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+                "qa:rv-0056"
+              ],
+              "primary_evidence_id": "qa:rv-0056",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/install-the-filter.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:17:51.696612+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "action",
+            "id": "16b9830af38c4a8b99a747ef34f4fe5f",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:17:51.742132+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "step_card",
+            "card_id": "6e1b33308d8552d6b2069b63a1b866ea",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0056",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If the filter is installed correctly, further check whether…",
+              "instruction": "If the filter is installed correctly, further check whether there is a magnet in the position shown in the picture.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "18ca66e7-17fc-4fe8-a4d5-a8863c3638e7",
+                "qa:rv-0056"
+              ],
+              "primary_evidence_id": "qa:rv-0056",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/magnet-on-the-filter.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:17:51.763771+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "action",
+            "id": "efacc2597895421ba2458d369d620c6e",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:17:51.815168+00:00",
+            "first_seq": 35,
+            "last_seq": 35,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "case_changed",
+            "card_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+            "version": 3,
+            "case_id": "92235ea8-c416-5085-8348-06dae992fe6d",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:17:51.777733+00:00"
+          },
+          {
+            "at": "2026-10-09T07:17:51.817894+00:00",
+            "first_seq": 36,
+            "last_seq": 38,
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "kind": "assistant_message",
+            "message_id": "b2c015feaca15aca97c7e121dfb3393d",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "efacc2597895421ba2458d369d620c6e",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+        "issues": [
+          {
+            "issue_id": "36cfa504565b55628a0ed97fa78f58a0",
+            "status": "open",
+            "title": "The dust box or filter is not in place.",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 41,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

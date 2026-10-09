@@ -1,0 +1,2198 @@
+{
+  "id": "T22",
+  "input": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "resumed": false,
+          "event_id": "c08dff5607504ca5a8036860e3bd7626",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:04.043676+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "payload": {
+            "kind": "message",
+            "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "1b41545ab447479aaef7c91d4258b7ee",
+          "input_id": "3c159aa658f1457c8489c11fa4f78c8f",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:04.043676+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 3,
+          "event_id": "492f2c336ac5451cb098936fde2ceacf",
+          "recorded_at": "2026-10-09T07:23:04.058303+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 4,
+          "event_id": "78bc8b47353646e9afe534a30c0a8912",
+          "recorded_at": "2026-10-09T07:23:08.291566+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 5,
+          "event_id": "35a29abb35bf4a9cafe6a78fc6ace342",
+          "recorded_at": "2026-10-09T07:23:08.299668+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "d4d4eaa0dde553549a70d0a557c266b5",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 6,
+          "event_id": "101d2a105d7140cdbc91906bf879e6ce",
+          "recorded_at": "2026-10-09T07:23:08.302273+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "d4d4eaa0dde553549a70d0a557c266b5",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 7,
+          "event_id": "7496db10e3934d52a00302f57cc19de9",
+          "recorded_at": "2026-10-09T07:23:08.521176+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 8,
+          "event_id": "a6d52d959cea492888156f71d7a1d6e4",
+          "recorded_at": "2026-10-09T07:23:10.111456+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 9,
+          "event_id": "78a409caf47c465c90c4d00053234088",
+          "recorded_at": "2026-10-09T07:23:10.124439+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "input_id": "3c159aa658f1457c8489c11fa4f78c8f",
+          "resolved_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "ed613d8c216755f4b39c47c00622b6e1",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:10.148453+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.014427767354596622,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "source": "kb_qa",
+              "doc_id": "rv-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+              "score": 0.014172043010752687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "source": "kb_qa",
+              "doc_id": "rv-0105",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.013790322580645161,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "source": "kb_qa",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+              "score": 0.013731048933809935,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+              "source": "kb_qa",
+              "doc_id": "rv-0068",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+              "snippet": "I am trying to buy the Eufy X10 Pro Omni, but I receive an error stating it cannot be delivered to Ireland on the payment page.\nRegretfully, due to new shipping regulations, we currently are not able to sell items to Ireland directly from our official websites. If you want to have the item shipped to Ireland, we are wondering if you are willing to purchase from our official store on Amazon.uk or A",
+              "score": 0.013668032786885245,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "source": "kb_qa",
+              "doc_id": "rv-0250",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+              "score": 0.013562858633281168,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "source": "kb_qa",
+              "doc_id": "rv-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+              "score": 0.013324420677361854,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "source": "kb_qa",
+              "doc_id": "rv-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+              "score": 0.013093008739076154,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+              "source": "kb_qa",
+              "doc_id": "rv-0247",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+              "snippet": "What should I do if my X10 Pro Omni T2351 wet the carpet?\n1. The machine identifies the floor material using the carpet detection sensor at the bottom.\n2. When the sensor detects a carpet, the robot automatically lifts the mop pads and enters pure vacuuming mode; however, since the carpet detection sensor is located toward the front of the machine, when it is near the edge of the carpet, the floor",
+              "score": 0.012970348534766776,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+              "source": "kb_qa",
+              "doc_id": "rv-0104",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7010:Entered a No-Go Zone by mistake, please check, Stray into a restricted area?\n1. If the robot is identified as being in the no-go zone set on the map, please move the robot outside the no-go zone and start it.\n2. There may be carpets or obstacles at the edge of the no-go zone, causing the robot to slip/get stuck. During the escape pro",
+              "score": 0.012702702702702703,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0101",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7033: Failed to return to station/failed to return to the base station?\n1. Please make sure that the station is powered on normally and the white light of the base station is on.\n2. Please check whether the robot is blocked by the door or obstacles, and make sure that the door is open during the cleaning process.\n3. If the map on the app ",
+              "score": 0.012650265585686328,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+              "source": "kb_qa",
+              "doc_id": "rv-0092",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7050:Certain zones were not cleaned as they could not be accessed?\n1. The robot detects that some areas cannot be reached and is not cleaned. Please check whether there are large obstacles, closed doors, incorrectly set virtual walls/no-go zones, or pets that continue to block the robot on the cleaning path.\n2. If the map on the app does not m",
+              "score": 0.012525879917184264,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+              "source": "kb_qa",
+              "doc_id": "rv-0103",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7011:On the carpet by mistake, please check, Stray onto the carpet?\n1. There may be obstacles on the edge of the carpet, causing the robot to enter the carpet by mistake when escaping. Please move the robot outside the carpet and remove the obstacles on the edge of the carpet.\n2. Please check whether the carpet detection sensor at the bot",
+              "score": 0.01237208081868276,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0240",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+              "score": 0.012095141700404858,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+              "source": "kb_qa",
+              "doc_id": "rv-0091",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7052:Route unavailable, unable to reach the target point?\n1. If the cleaning path planning fails or route unavailable and you are unable to reach the selected area for cleaning, please first check for obstacles, closed doors, incorrect virtual walls/no-go zones, or pets blocking the area. If any of these are found, please adjust them and try a",
+              "score": 0.012067142479513612,
+              "status": "ok"
+            }
+          ],
+          "event_id": "41547aeb1de4528288a5c1f84218810d",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:10.150015+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "pending_id": "5af93047a399506e9ba31117d3568c16",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "83af1c15b6af50a3b71f8358b310b627",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:10.155598+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "5af93047a399506e9ba31117d3568c16",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "If the robot is often stuck on the edge of stairs or furnit…",
+            "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "432f7f00-cf25-4485-8a81-59890d682521",
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": []
+          },
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "event_id": "e46dbafc169f577388c160754ba9b25c",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:23:10.157023+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "card_id": "5af93047a399506e9ba31117d3568c16",
+          "version": 1,
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 15,
+          "event_id": "6819994a3aee4d828b4844083204b2cc",
+          "recorded_at": "2026-10-09T07:23:10.158227+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "4f5b51979bec557f99ddefb721732df4",
+          "recorded_at": "2026-10-09T07:23:10.159802+00:00",
+          "run_id": "e81c5c468663461e8f32b9457284b461",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "resumed": false,
+          "event_id": "a14001f0531040cfbff002a3eb9867dc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:10.199165+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "5af93047a399506e9ba31117d3568c16",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "e55dc4df66f14ae7b0d167046495ecf1",
+            "target_issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "expected_version": 1
+          },
+          "event_id": "1cf0e04226a34c70a4cd25cb7c75ecce",
+          "input_id": "e55dc4df66f14ae7b0d167046495ecf1",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:10.199165+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 19,
+          "event_id": "6626c1f0825743a99c693c978f4fcb3c",
+          "recorded_at": "2026-10-09T07:23:10.212002+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 20,
+          "event_id": "cf9469ce02314920a75ffac88363ae47",
+          "recorded_at": "2026-10-09T07:23:10.214839+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "input_id": "e55dc4df66f14ae7b0d167046495ecf1",
+          "resolved_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "dca04a8467a354cf9237e63d89d89093",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:23:10.232835+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "pending_id": "5af93047a399506e9ba31117d3568c16",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "8822003cbd235a14ba13b3d5521a5f69",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:23:10.233664+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "pending_id": "f912c170690e55a3ba0b33b8cb5264e7",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "47aba2076f85531aa5796e8a352d9693",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:23:10.234375+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the robot continues to display errors on flat ground, pl…",
+            "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "432f7f00-cf25-4485-8a81-59890d682521",
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": []
+          },
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "event_id": "3b630d285dcd59278e1b44f1a07ecfd1",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:23:10.235123+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+          "version": 2,
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 26,
+          "event_id": "2fc09601b7dd4b2299f3327a81c3e4b7",
+          "recorded_at": "2026-10-09T07:23:10.236411+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9f65d88cb8f055d4a89227b0bae709a4",
+          "recorded_at": "2026-10-09T07:23:10.237216+00:00",
+          "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "resumed": false,
+          "event_id": "161466c92bc34250a0b63a3df566860c",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:10.256634+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "ead5f276911a456a845b23f3b6b9d982",
+            "target_issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "expected_version": 2
+          },
+          "event_id": "7cf8bef3caf941f1958f5e9058bd49ae",
+          "input_id": "ead5f276911a456a845b23f3b6b9d982",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:10.256634+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 30,
+          "event_id": "b6e6695c69774926be5d6aa23a9f4710",
+          "recorded_at": "2026-10-09T07:23:10.268108+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 31,
+          "event_id": "7a6bd4ca4f4f4da684aa9d2f2878e27b",
+          "recorded_at": "2026-10-09T07:23:10.275230+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "input_id": "ead5f276911a456a845b23f3b6b9d982",
+          "resolved_issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "a6e7efde75f25d2bbdd689e6cf1a942d",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:23:10.293059+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "pending_id": "f912c170690e55a3ba0b33b8cb5264e7",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "b23243d9f31451b1a1495cae01a97632",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:23:10.294199+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+          "case_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:10.268028+00:00",
+          "event_id": "8a74d42f60865e568d85052f9da784a6",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:23:10.295114+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "reply_to_input_id": "ead5f276911a456a845b23f3b6b9d982",
+          "event_id": "6acf95e790d955fd89eb027471eb1c34",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:23:10.296440+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "b456a58c7d475b7582d68e64138994e2",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:23:10.297279+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+          "status": "completed",
+          "event_id": "28e7283475145f2790d561118954c91c",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:23:10.298500+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "pending_id": "6b606638c7fe5fc78bbcaaeeee2337e2",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "6b0ce8e84e7c525cac7ffdf4802ffa74",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:23:10.299302+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "card_id": "6b606638c7fe5fc78bbcaaeeee2337e2",
+          "version": 3,
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 40,
+          "event_id": "aa780274c2324257b0516393a314eeb4",
+          "recorded_at": "2026-10-09T07:23:10.299708+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "264851a202d95e97847d99511d930063",
+          "recorded_at": "2026-10-09T07:23:10.300549+00:00",
+          "run_id": "a18281ae87b646d49ec8e21ecd611720",
+          "seq": 41,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:03.961996+08:00",
+  "session_id": "e24d3987c1804eb68080274d900a3463",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "e24d3987c1804eb68080274d900a3463",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "160ba2ee433d5708a03deed99362da6e",
+      "kind": "upload_receipt",
+      "card_id": "6b606638c7fe5fc78bbcaaeeee2337e2",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:04.043676+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "user_message",
+        "id": "3c159aa658f1457c8489c11fa4f78c8f",
+        "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:08.302273+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "d4d4eaa0dde553549a70d0a557c266b5",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:23:10.150352Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "source": "kb_qa",
+            "doc_id": "rv-0102",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+            "score": 0.014427767354596622,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+            "source": "kb_qa",
+            "doc_id": "rv-0066",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+            "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+            "score": 0.014172043010752687,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+            "source": "kb_qa",
+            "doc_id": "rv-0105",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "score": 0.013790322580645161,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+            "source": "kb_qa",
+            "doc_id": "rv-0106",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+            "score": 0.013731048933809935,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+            "source": "kb_qa",
+            "doc_id": "rv-0068",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+            "snippet": "I am trying to buy the Eufy X10 Pro Omni, but I receive an error stating it cannot be delivered to Ireland on the payment page.\nRegretfully, due to new shipping regulations, we currently are not able to sell items to Ireland directly from our official websites. If you want to have the item shipped to Ireland, we are wondering if you are willing to purchase from our official store on Amazon.uk or A",
+            "score": 0.013668032786885245,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+            "source": "kb_qa",
+            "doc_id": "rv-0250",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+            "score": 0.013562858633281168,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+            "source": "kb_qa",
+            "doc_id": "rv-0107",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+            "score": 0.013324420677361854,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+            "source": "kb_qa",
+            "doc_id": "rv-0263",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+            "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+            "score": 0.013093008739076154,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+            "source": "kb_qa",
+            "doc_id": "rv-0247",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+            "snippet": "What should I do if my X10 Pro Omni T2351 wet the carpet?\n1. The machine identifies the floor material using the carpet detection sensor at the bottom.\n2. When the sensor detects a carpet, the robot automatically lifts the mop pads and enters pure vacuuming mode; however, since the carpet detection sensor is located toward the front of the machine, when it is near the edge of the carpet, the floor",
+            "score": 0.012970348534766776,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+            "source": "kb_qa",
+            "doc_id": "rv-0104",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7010:Entered a No-Go Zone by mistake, please check, Stray into a restricted area?\n1. If the robot is identified as being in the no-go zone set on the map, please move the robot outside the no-go zone and start it.\n2. There may be carpets or obstacles at the edge of the no-go zone, causing the robot to slip/get stuck. During the escape pro",
+            "score": 0.012702702702702703,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+            "source": "kb_qa",
+            "doc_id": "rv-0101",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7033: Failed to return to station/failed to return to the base station?\n1. Please make sure that the station is powered on normally and the white light of the base station is on.\n2. Please check whether the robot is blocked by the door or obstacles, and make sure that the door is open during the cleaning process.\n3. If the map on the app ",
+            "score": 0.012650265585686328,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+            "source": "kb_qa",
+            "doc_id": "rv-0092",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7050:Certain zones were not cleaned as they could not be accessed?\n1. The robot detects that some areas cannot be reached and is not cleaned. Please check whether there are large obstacles, closed doors, incorrectly set virtual walls/no-go zones, or pets that continue to block the robot on the cleaning path.\n2. If the map on the app does not m",
+            "score": 0.012525879917184264,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+            "source": "kb_qa",
+            "doc_id": "rv-0103",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7011:On the carpet by mistake, please check, Stray onto the carpet?\n1. There may be obstacles on the edge of the carpet, causing the robot to enter the carpet by mistake when escaping. Please move the robot outside the carpet and remove the obstacles on the edge of the carpet.\n2. Please check whether the carpet detection sensor at the bot",
+            "score": 0.01237208081868276,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+            "source": "kb_qa",
+            "doc_id": "rv-0240",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+            "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+            "score": 0.012095141700404858,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+            "source": "kb_qa",
+            "doc_id": "rv-0091",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7052:Route unavailable, unable to reach the target point?\n1. If the cleaning path planning fails or route unavailable and you are unable to reach the selected area for cleaning, please first check for obstacles, closed doors, incorrect virtual walls/no-go zones, or pets blocking the area. If any of these are found, please adjust them and try a",
+            "score": 0.012067142479513612,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:23:10.157023+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "step_card",
+        "card_id": "5af93047a399506e9ba31117d3568c16",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0106",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "If the robot is often stuck on the edge of stairs or furnit…",
+          "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "432f7f00-cf25-4485-8a81-59890d682521",
+            "qa:rv-0106"
+          ],
+          "primary_evidence_id": "qa:rv-0106",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:10.199165+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "action",
+        "id": "e55dc4df66f14ae7b0d167046495ecf1",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:10.235123+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "step_card",
+        "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0106",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If the robot continues to display errors on flat ground, pl…",
+          "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "432f7f00-cf25-4485-8a81-59890d682521",
+            "qa:rv-0106"
+          ],
+          "primary_evidence_id": "qa:rv-0106",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:10.256634+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "action",
+        "id": "ead5f276911a456a845b23f3b6b9d982",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:10.295114+00:00",
+        "first_seq": 35,
+        "last_seq": 35,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "case_changed",
+        "card_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+        "version": 3,
+        "case_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:23:10.268028+00:00"
+      },
+      {
+        "at": "2026-10-09T07:23:10.296440+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "assistant_message",
+        "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "ead5f276911a456a845b23f3b6b9d982",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+    "issues": [
+      {
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "status": "open",
+        "title": "Wiel raakt de grond niet",
+        "task_queue": [
+          {
+            "task_id": "71036d78a38c5b4bab4805790de6d4bf",
+            "intent": "report_problem",
+            "quote": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+            "status": "active",
+            "created_input_id": "3c159aa658f1457c8489c11fa4f78c8f",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 41,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 6.34,
+  "journey": {
+    "session": {
+      "session_id": "e24d3987c1804eb68080274d900a3463",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:04.045890Z",
+      "last_run_at": "2026-10-09T07:23:10.301255Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLa",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0106"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 43,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:23:10.301255Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "e81c5c468663461e8f32b9457284b461",
+        "session_id": "e24d3987c1804eb68080274d900a3463",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:04.045890Z",
+        "ended_at": "2026-10-09T07:23:10.161155Z",
+        "duration_ms": 6231,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6228,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 4201,
+            "tokens_in": 4341,
+            "tokens_out": 387,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:08.255990Z"
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1676,
+            "tokens_in": 4738,
+            "tokens_out": 301,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:10.073259Z"
+          }
+        ],
+        "tokens_in": 9079,
+        "tokens_out": 688,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:04.045890Z",
+            "duration_ms": 4236,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3486,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 353,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5886
+                    }
+                  ],
+                  "actual_input_tokens": 4341
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:08.281990Z",
+            "duration_ms": 17,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:23:08.299621Z",
+            "duration_ms": 1916,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0106",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5317,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 353,
+                    "history": 0,
+                    "authority": 4608
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 225,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 195,
+                    "timezone": 7,
+                    "task_data": 3825,
+                    "issue_index": 147,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5795
+                    }
+                  ],
+                  "actual_input_tokens": 4738
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:23:10.216121Z",
+            "duration_ms": 20,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:10.237037Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:10.237046Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "e81c5c468663461e8f32b9457284b461",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0144,
+            "latency_ms": 203,
+            "query": "Wiel raakt de grond niet",
+            "created_at": "2026-10-09T07:23:08.497785Z"
+          }
+        ]
+      },
+      {
+        "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+        "session_id": "e24d3987c1804eb68080274d900a3463",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:23:10.200836Z",
+        "ended_at": "2026-10-09T07:23:10.237972Z",
+        "duration_ms": 37,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 35,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:10.200836Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:10.209367Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:10.210999Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:10.213874Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e03a7aff4f914a06ae7afc0983b61ab1",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:10.213879Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "a18281ae87b646d49ec8e21ecd611720",
+        "session_id": "e24d3987c1804eb68080274d900a3463",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:23:10.258069Z",
+        "ended_at": "2026-10-09T07:23:10.301243Z",
+        "duration_ms": 43,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 40,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:10.258069Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "160ba2ee433d5708a03deed99362da6e",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:10.265249Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:10.266782Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:23:10.267712Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:23:10.271211Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:23:10.271704Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "a18281ae87b646d49ec8e21ecd611720",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:10.272114Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "e24d3987c1804eb68080274d900a3463",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "kind": "upload_receipt",
+        "card_id": "6b606638c7fe5fc78bbcaaeeee2337e2",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:04.043676+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "user_message",
+          "id": "3c159aa658f1457c8489c11fa4f78c8f",
+          "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:08.302273+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "d4d4eaa0dde553549a70d0a557c266b5",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:23:10.150352Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.014427767354596622,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "source": "kb_qa",
+              "doc_id": "rv-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+              "score": 0.014172043010752687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "source": "kb_qa",
+              "doc_id": "rv-0105",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.013790322580645161,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "source": "kb_qa",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+              "score": 0.013731048933809935,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+              "source": "kb_qa",
+              "doc_id": "rv-0068",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+              "snippet": "I am trying to buy the Eufy X10 Pro Omni, but I receive an error stating it cannot be delivered to Ireland on the payment page.\nRegretfully, due to new shipping regulations, we currently are not able to sell items to Ireland directly from our official websites. If you want to have the item shipped to Ireland, we are wondering if you are willing to purchase from our official store on Amazon.uk or A",
+              "score": 0.013668032786885245,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "source": "kb_qa",
+              "doc_id": "rv-0250",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+              "score": 0.013562858633281168,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "source": "kb_qa",
+              "doc_id": "rv-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+              "score": 0.013324420677361854,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "source": "kb_qa",
+              "doc_id": "rv-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+              "score": 0.013093008739076154,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+              "source": "kb_qa",
+              "doc_id": "rv-0247",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+              "snippet": "What should I do if my X10 Pro Omni T2351 wet the carpet?\n1. The machine identifies the floor material using the carpet detection sensor at the bottom.\n2. When the sensor detects a carpet, the robot automatically lifts the mop pads and enters pure vacuuming mode; however, since the carpet detection sensor is located toward the front of the machine, when it is near the edge of the carpet, the floor",
+              "score": 0.012970348534766776,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+              "source": "kb_qa",
+              "doc_id": "rv-0104",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7010:Entered a No-Go Zone by mistake, please check, Stray into a restricted area?\n1. If the robot is identified as being in the no-go zone set on the map, please move the robot outside the no-go zone and start it.\n2. There may be carpets or obstacles at the edge of the no-go zone, causing the robot to slip/get stuck. During the escape pro",
+              "score": 0.012702702702702703,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0101",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7033: Failed to return to station/failed to return to the base station?\n1. Please make sure that the station is powered on normally and the white light of the base station is on.\n2. Please check whether the robot is blocked by the door or obstacles, and make sure that the door is open during the cleaning process.\n3. If the map on the app ",
+              "score": 0.012650265585686328,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+              "source": "kb_qa",
+              "doc_id": "rv-0092",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7050:Certain zones were not cleaned as they could not be accessed?\n1. The robot detects that some areas cannot be reached and is not cleaned. Please check whether there are large obstacles, closed doors, incorrectly set virtual walls/no-go zones, or pets that continue to block the robot on the cleaning path.\n2. If the map on the app does not m",
+              "score": 0.012525879917184264,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+              "source": "kb_qa",
+              "doc_id": "rv-0103",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7011:On the carpet by mistake, please check, Stray onto the carpet?\n1. There may be obstacles on the edge of the carpet, causing the robot to enter the carpet by mistake when escaping. Please move the robot outside the carpet and remove the obstacles on the edge of the carpet.\n2. Please check whether the carpet detection sensor at the bot",
+              "score": 0.01237208081868276,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0240",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+              "score": 0.012095141700404858,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+              "source": "kb_qa",
+              "doc_id": "rv-0091",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7052:Route unavailable, unable to reach the target point?\n1. If the cleaning path planning fails or route unavailable and you are unable to reach the selected area for cleaning, please first check for obstacles, closed doors, incorrect virtual walls/no-go zones, or pets blocking the area. If any of these are found, please adjust them and try a",
+              "score": 0.012067142479513612,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:23:10.157023+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "step_card",
+          "card_id": "5af93047a399506e9ba31117d3568c16",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "If the robot is often stuck on the edge of stairs or furnit…",
+            "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "432f7f00-cf25-4485-8a81-59890d682521",
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:10.199165+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "action",
+          "id": "e55dc4df66f14ae7b0d167046495ecf1",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:10.235123+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "step_card",
+          "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the robot continues to display errors on flat ground, pl…",
+            "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "432f7f00-cf25-4485-8a81-59890d682521",
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:10.256634+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "action",
+          "id": "ead5f276911a456a845b23f3b6b9d982",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:10.295114+00:00",
+          "first_seq": 35,
+          "last_seq": 35,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "case_changed",
+          "card_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+          "version": 3,
+          "case_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:10.268028+00:00"
+        },
+        {
+          "at": "2026-10-09T07:23:10.296440+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "assistant_message",
+          "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "ead5f276911a456a845b23f3b6b9d982",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+      "issues": [
+        {
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "status": "open",
+          "title": "Wiel raakt de grond niet",
+          "task_queue": [
+            {
+              "task_id": "71036d78a38c5b4bab4805790de6d4bf",
+              "intent": "report_problem",
+              "quote": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+              "status": "active",
+              "created_input_id": "3c159aa658f1457c8489c11fa4f78c8f",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 41,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+      "session_id": "e24d3987c1804eb68080274d900a3463",
+      "issue_id": "160ba2ee433d5708a03deed99362da6e",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:23:10.268028+00:00",
+      "updated_at": "2026-10-09T07:23:10.268028+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "e24d3987c1804eb68080274d900a3463",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "160ba2ee433d5708a03deed99362da6e",
+          "kind": "upload_receipt",
+          "card_id": "6b606638c7fe5fc78bbcaaeeee2337e2",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:23:04.043676+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "user_message",
+            "id": "3c159aa658f1457c8489c11fa4f78c8f",
+            "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:23:08.302273+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "d4d4eaa0dde553549a70d0a557c266b5",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:23:10.150352Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+                "source": "kb_qa",
+                "doc_id": "rv-0102",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+                "score": 0.014427767354596622,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+                "source": "kb_qa",
+                "doc_id": "rv-0066",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+                "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+                "score": 0.014172043010752687,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+                "source": "kb_qa",
+                "doc_id": "rv-0105",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+                "score": 0.013790322580645161,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+                "source": "kb_qa",
+                "doc_id": "rv-0106",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+                "score": 0.013731048933809935,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+                "source": "kb_qa",
+                "doc_id": "rv-0068",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "2e147ece-8ad5-4c5a-bd5a-4a6924a1743e",
+                "snippet": "I am trying to buy the Eufy X10 Pro Omni, but I receive an error stating it cannot be delivered to Ireland on the payment page.\nRegretfully, due to new shipping regulations, we currently are not able to sell items to Ireland directly from our official websites. If you want to have the item shipped to Ireland, we are wondering if you are willing to purchase from our official store on Amazon.uk or A",
+                "score": 0.013668032786885245,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+                "source": "kb_qa",
+                "doc_id": "rv-0250",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+                "score": 0.013562858633281168,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+                "source": "kb_qa",
+                "doc_id": "rv-0107",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+                "score": 0.013324420677361854,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+                "source": "kb_qa",
+                "doc_id": "rv-0263",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+                "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+                "score": 0.013093008739076154,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+                "source": "kb_qa",
+                "doc_id": "rv-0247",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "807215b1-51b6-48af-961c-4eb8b7cb287a",
+                "snippet": "What should I do if my X10 Pro Omni T2351 wet the carpet?\n1. The machine identifies the floor material using the carpet detection sensor at the bottom.\n2. When the sensor detects a carpet, the robot automatically lifts the mop pads and enters pure vacuuming mode; however, since the carpet detection sensor is located toward the front of the machine, when it is near the edge of the carpet, the floor",
+                "score": 0.012970348534766776,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+                "source": "kb_qa",
+                "doc_id": "rv-0104",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "39b0baa7-e39c-4e0a-84e3-d85498b53b4f",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7010:Entered a No-Go Zone by mistake, please check, Stray into a restricted area?\n1. If the robot is identified as being in the no-go zone set on the map, please move the robot outside the no-go zone and start it.\n2. There may be carpets or obstacles at the edge of the no-go zone, causing the robot to slip/get stuck. During the escape pro",
+                "score": 0.012702702702702703,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+                "source": "kb_qa",
+                "doc_id": "rv-0101",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3888f6af-36f1-430d-8e3b-9a3655d9f2f4",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7033: Failed to return to station/failed to return to the base station?\n1. Please make sure that the station is powered on normally and the white light of the base station is on.\n2. Please check whether the robot is blocked by the door or obstacles, and make sure that the door is open during the cleaning process.\n3. If the map on the app ",
+                "score": 0.012650265585686328,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+                "source": "kb_qa",
+                "doc_id": "rv-0092",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "23f6dbe8-6c64-4bb9-85f4-956364945abb",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7050:Certain zones were not cleaned as they could not be accessed?\n1. The robot detects that some areas cannot be reached and is not cleaned. Please check whether there are large obstacles, closed doors, incorrectly set virtual walls/no-go zones, or pets that continue to block the robot on the cleaning path.\n2. If the map on the app does not m",
+                "score": 0.012525879917184264,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+                "source": "kb_qa",
+                "doc_id": "rv-0103",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ae29acad-306f-4c82-a25c-0a5e4cc489dc",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7011:On the carpet by mistake, please check, Stray onto the carpet?\n1. There may be obstacles on the edge of the carpet, causing the robot to enter the carpet by mistake when escaping. Please move the robot outside the carpet and remove the obstacles on the edge of the carpet.\n2. Please check whether the carpet detection sensor at the bot",
+                "score": 0.01237208081868276,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+                "source": "kb_qa",
+                "doc_id": "rv-0240",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+                "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+                "score": 0.012095141700404858,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+                "source": "kb_qa",
+                "doc_id": "rv-0091",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "14ab9466-a0e8-419f-bd3a-1a5a08cc6a6b",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 7052:Route unavailable, unable to reach the target point?\n1. If the cleaning path planning fails or route unavailable and you are unable to reach the selected area for cleaning, please first check for obstacles, closed doors, incorrect virtual walls/no-go zones, or pets blocking the area. If any of these are found, please adjust them and try a",
+                "score": 0.012067142479513612,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:23:10.157023+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "step_card",
+            "card_id": "5af93047a399506e9ba31117d3568c16",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0106",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "If the robot is often stuck on the edge of stairs or furnit…",
+              "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "432f7f00-cf25-4485-8a81-59890d682521",
+                "qa:rv-0106"
+              ],
+              "primary_evidence_id": "qa:rv-0106",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:10.199165+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "action",
+            "id": "e55dc4df66f14ae7b0d167046495ecf1",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:10.235123+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "step_card",
+            "card_id": "f912c170690e55a3ba0b33b8cb5264e7",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0106",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If the robot continues to display errors on flat ground, pl…",
+              "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "432f7f00-cf25-4485-8a81-59890d682521",
+                "qa:rv-0106"
+              ],
+              "primary_evidence_id": "qa:rv-0106",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:10.256634+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "action",
+            "id": "ead5f276911a456a845b23f3b6b9d982",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:10.295114+00:00",
+            "first_seq": 35,
+            "last_seq": 35,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "case_changed",
+            "card_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+            "version": 3,
+            "case_id": "f03e53b5-3fa3-52a0-b313-f4c7a8e7db15",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:23:10.268028+00:00"
+          },
+          {
+            "at": "2026-10-09T07:23:10.296440+00:00",
+            "first_seq": 36,
+            "last_seq": 38,
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "kind": "assistant_message",
+            "message_id": "5cd26219ec1a510888c45e2f593d4ad1",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "ead5f276911a456a845b23f3b6b9d982",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "160ba2ee433d5708a03deed99362da6e",
+        "issues": [
+          {
+            "issue_id": "160ba2ee433d5708a03deed99362da6e",
+            "status": "open",
+            "title": "Wiel raakt de grond niet",
+            "task_queue": [
+              {
+                "task_id": "71036d78a38c5b4bab4805790de6d4bf",
+                "intent": "report_problem",
+                "quote": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+                "status": "active",
+                "created_input_id": "3c159aa658f1457c8489c11fa4f78c8f",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 41,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

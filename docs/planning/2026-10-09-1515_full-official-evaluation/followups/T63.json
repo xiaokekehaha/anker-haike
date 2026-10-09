@@ -1,0 +1,1484 @@
+{
+  "id": "T63",
+  "input": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "resumed": false,
+          "event_id": "dbd2f8f7d0f24f438b3fba3b615c03bf",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:32.623918+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "payload": {
+            "kind": "message",
+            "text": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "e7accde222d945f8a810dd1a9353d67a",
+          "input_id": "780cb2651e90489fbc8480552c7692eb",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:32.623918+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 3,
+          "event_id": "c48ff6c3863b4399808d073807cffe71",
+          "recorded_at": "2026-10-09T07:23:32.641925+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 4,
+          "event_id": "2182f1be05f64d3ab4c9082ba33c1387",
+          "recorded_at": "2026-10-09T07:23:36.248936+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 5,
+          "event_id": "bead4b9e53b0466a85dcb8252ea88c0b",
+          "recorded_at": "2026-10-09T07:23:36.255171+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "decdb03804df5e6388a8a3c1a02e8a3e",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 6,
+          "event_id": "36a88bd01a0f403daf724ba3252f671f",
+          "recorded_at": "2026-10-09T07:23:36.258040+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "decdb03804df5e6388a8a3c1a02e8a3e",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "未找到匹配的官方说明",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 7,
+          "event_id": "99515bafab744ae7ba2531b7edda8fa5",
+          "recorded_at": "2026-10-09T07:23:36.268406+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 8,
+          "event_id": "5b0868e7f4cc44679ba6cffe40e9f3ab",
+          "recorded_at": "2026-10-09T07:23:36.272619+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 9,
+          "event_id": "6cf528f3566c415780304072f5834525",
+          "recorded_at": "2026-10-09T07:23:37.397105+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "input_id": "780cb2651e90489fbc8480552c7692eb",
+          "resolved_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+              "title": "brush guard just snaps off the clips that hold it in、doesn’t clean very well、detangle elements don’t work properly any more",
+              "status": "open"
+            }
+          ],
+          "event_id": "55ab7906b63c50feb3e047e7b0ab1c1f",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:37.411517+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:37.384801+00:00",
+          "event_id": "43803ccace775dbcbe92c46209484d53",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:37.413561+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "9129e1f826ba5c38985cbd392de280fb",
+          "reply_to_input_id": "780cb2651e90489fbc8480552c7692eb",
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "event_id": "55860ae8c6a35c43a7703bbedc717b84",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:37.416621+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "9129e1f826ba5c38985cbd392de280fb",
+          "delta": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "9dec844d2c995e0d8870c0c0e3f63a19",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:23:37.418103+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "9129e1f826ba5c38985cbd392de280fb",
+          "status": "completed",
+          "event_id": "98d0fc09d0d75e12b3a9ef42c41d5f07",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:23:37.419799+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "00f7da413b705fb98430420a921a7a96",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                "intent": "report_problem",
+                "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                "status": "active",
+                "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "780cb2651e90489fbc8480552c7692eb",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null
+          },
+          "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+          "revision": 1,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "updated_at": "2026-10-09T07:23:32.623918+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "cd9e7c84cb8a5eafa0b6d1db5028f388",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:23:37.420849+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+          "revision": 1,
+          "card_id": "00f7da413b705fb98430420a921a7a96",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-09T07:23:32.623918+00:00",
+          "event_id": "e8b1543ef9f75a27b87b3453d8b43b14",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:23:37.423135+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9bcf9a9b35e052a2b8131f5dc626b166",
+          "recorded_at": "2026-10-09T07:23:37.424880+00:00",
+          "run_id": "067c74ff9c6742779cf179bb2399787d",
+          "seq": 18,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:32.562127+08:00",
+  "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:32.623918+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "kind": "user_message",
+        "id": "780cb2651e90489fbc8480552c7692eb",
+        "text": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:36.258040+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "decdb03804df5e6388a8a3c1a02e8a3e",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "未找到匹配的官方说明"
+      },
+      {
+        "at": "2026-10-09T07:23:37.413561+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "kind": "case_changed",
+        "card_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+        "version": 1,
+        "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "当前产品的这一问题没有可用的排障计划",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:23:37.384801+00:00"
+      },
+      {
+        "at": "2026-10-09T07:23:37.416621+00:00",
+        "first_seq": 13,
+        "last_seq": 15,
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "kind": "assistant_message",
+        "message_id": "9129e1f826ba5c38985cbd392de280fb",
+        "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "780cb2651e90489fbc8480552c7692eb",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:23:37.420849+00:00",
+        "first_seq": 16,
+        "last_seq": 16,
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "kind": "escalation_summary",
+        "card_id": "00f7da413b705fb98430420a921a7a96",
+        "summary": {
+          "product": "扫地机器人（型号未确认）",
+          "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+          "observations": [],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+              "intent": "report_problem",
+              "status": "active",
+              "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+              "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "level": "angry",
+              "source": "model",
+              "input_id": "780cb2651e90489fbc8480552c7692eb"
+            }
+          ],
+          "draft_reply": null
+        },
+        "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:23:32.623918+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+    "issues": [
+      {
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "status": "open",
+        "title": "brush guard just snaps off the clips that hold it in、doesn’t clean very well、detangle elements don’t work properly any more",
+        "task_queue": [
+          {
+            "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+            "intent": "report_problem",
+            "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+            "status": "waiting_human",
+            "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 18,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "kind": "escalation_summary",
+        "card_id": "00f7da413b705fb98430420a921a7a96",
+        "summary": {
+          "product": "扫地机器人（型号未确认）",
+          "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+          "observations": [],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+              "intent": "report_problem",
+              "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+              "status": "active",
+              "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "input_id": "780cb2651e90489fbc8480552c7692eb",
+              "level": "angry",
+              "source": "model"
+            }
+          ],
+          "draft_reply": null
+        },
+        "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:23:32.623918+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "visible_text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 4.78,
+  "journey": {
+    "session": {
+      "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:32.627736Z",
+      "last_run_at": "2026-10-09T07:23:37.428349Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It ",
+      "product_state": "category_only",
+      "sku": null,
+      "category": "robot_vacuum",
+      "emotion_level": "angry",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "no_match",
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 4800,
+      "model_calls": 2,
+      "tokens_in": 5817,
+      "tokens_out": 342,
+      "raw_available_until": "2026-10-16T07:23:37.428349Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "067c74ff9c6742779cf179bb2399787d",
+        "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:32.627736Z",
+        "ended_at": "2026-10-09T07:23:37.428339Z",
+        "duration_ms": 4800,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 4791,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3571,
+            "tokens_in": 4184,
+            "tokens_out": 302,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:36.207997Z"
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "node": "summarize",
+            "task": "escalate.summary",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1108,
+            "tokens_in": 1633,
+            "tokens_out": 40,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:37.371682Z"
+          }
+        ],
+        "tokens_in": 5817,
+        "tokens_out": 342,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:32.627736Z",
+            "duration_ms": 3611,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "clarify",
+              "patch_count": 3,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3333,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 200,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5733
+                    }
+                  ],
+                  "actual_input_tokens": 4184
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:36.239460Z",
+            "duration_ms": 15,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "category_only"
+            }
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:23:36.255151Z",
+            "duration_ms": 17,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "escalate_reason": "R5",
+              "knowledge_status": "no_match",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 4,
+            "node": "escalate",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:23:36.272524Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 5,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:23:36.272548Z",
+            "duration_ms": 1118,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize",
+              "context_metrics": [
+                {
+                  "task": "escalate.summary",
+                  "event": "context_built",
+                  "tokens": 1646,
+                  "truncated": false,
+                  "max_tokens": 7687,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 215,
+                    "current": 200,
+                    "history": 0,
+                    "authority": 1231
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 675,
+                    "risks": 2,
+                    "handoff": 9,
+                    "decision": 222,
+                    "timezone": 7,
+                    "task_data": 50,
+                    "issue_index": 172,
+                    "step_attempts": 2,
+                    "active_issue_id": 28,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 42,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "escalate.summary",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 1743
+                    }
+                  ],
+                  "actual_input_tokens": 1633
+                }
+              ]
+            }
+          },
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-09T07:23:37.391451Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "067c74ff9c6742779cf179bb2399787d",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "no_match",
+            "allowed_count": 0,
+            "hits": 0,
+            "top_score": null,
+            "latency_ms": 0,
+            "query": "扫地机器人 brush guard just snaps off the clips that hold it in doesn’t clean very well detangle elements don’t work properly any more",
+            "created_at": "2026-10-09T07:23:36.252373Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:32.623918+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "kind": "user_message",
+          "id": "780cb2651e90489fbc8480552c7692eb",
+          "text": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:36.258040+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "decdb03804df5e6388a8a3c1a02e8a3e",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "未找到匹配的官方说明"
+        },
+        {
+          "at": "2026-10-09T07:23:37.413561+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "kind": "case_changed",
+          "card_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "version": 1,
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:37.384801+00:00"
+        },
+        {
+          "at": "2026-10-09T07:23:37.416621+00:00",
+          "first_seq": 13,
+          "last_seq": 15,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "kind": "assistant_message",
+          "message_id": "9129e1f826ba5c38985cbd392de280fb",
+          "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "780cb2651e90489fbc8480552c7692eb",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:23:37.420849+00:00",
+          "first_seq": 16,
+          "last_seq": 16,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "kind": "escalation_summary",
+          "card_id": "00f7da413b705fb98430420a921a7a96",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "780cb2651e90489fbc8480552c7692eb"
+              }
+            ],
+            "draft_reply": null
+          },
+          "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:23:32.623918+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+      "issues": [
+        {
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "status": "open",
+          "title": "brush guard just snaps off the clips that hold it in、doesn’t clean very well、detangle elements don’t work properly any more",
+          "task_queue": [
+            {
+              "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+              "intent": "report_problem",
+              "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+              "status": "waiting_human",
+              "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 18,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+          "kind": "escalation_summary",
+          "card_id": "00f7da413b705fb98430420a921a7a96",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                "intent": "report_problem",
+                "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                "status": "active",
+                "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "780cb2651e90489fbc8480552c7692eb",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null
+          },
+          "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:23:32.623918+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+      "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+      "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+      "sku": null,
+      "category": null,
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:23:37.378399+00:00",
+      "updated_at": "2026-10-09T07:23:37.384801+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 2866,
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "当前产品的这一问题没有可用的排障计划"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:37.384597+00:00"
+        },
+        {
+          "id": 2867,
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:37.384611+00:00"
+        },
+        {
+          "id": 2868,
+          "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null,
+              "rule_id": "R5"
+            },
+            "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+            "product": "扫地机器人（型号未确认）",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "780cb2651e90489fbc8480552c7692eb"
+              }
+            ],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:23:37.384801+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "当前产品的这一问题没有可用的排障计划",
+          "cause": null,
+          "rule_id": "R5"
+        },
+        "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+        "emotion": {
+          "level": "angry",
+          "strategy": "direct_resolution"
+        },
+        "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+        "product": "扫地机器人（型号未确认）",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+            "intent": "report_problem",
+            "status": "active",
+            "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+            "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [],
+        "emotion_track": [
+          {
+            "level": "angry",
+            "source": "model",
+            "input_id": "780cb2651e90489fbc8480552c7692eb"
+          }
+        ],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "b456dc38f5b44f9e9777f6a06d02fd09",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-09T07:23:32.623918+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "kind": "user_message",
+            "id": "780cb2651e90489fbc8480552c7692eb",
+            "text": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:23:36.258040+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "decdb03804df5e6388a8a3c1a02e8a3e",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "未找到匹配的官方说明"
+          },
+          {
+            "at": "2026-10-09T07:23:37.413561+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "kind": "case_changed",
+            "card_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "version": 1,
+            "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "当前产品的这一问题没有可用的排障计划",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:23:37.384801+00:00"
+          },
+          {
+            "at": "2026-10-09T07:23:37.416621+00:00",
+            "first_seq": 13,
+            "last_seq": 15,
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "kind": "assistant_message",
+            "message_id": "9129e1f826ba5c38985cbd392de280fb",
+            "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "780cb2651e90489fbc8480552c7692eb",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:23:37.420849+00:00",
+            "first_seq": 16,
+            "last_seq": 16,
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "kind": "escalation_summary",
+            "card_id": "00f7da413b705fb98430420a921a7a96",
+            "summary": {
+              "product": "扫地机器人（型号未确认）",
+              "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+              "observations": [],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                  "intent": "report_problem",
+                  "status": "active",
+                  "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                  "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "level": "angry",
+                  "source": "model",
+                  "input_id": "780cb2651e90489fbc8480552c7692eb"
+                }
+              ],
+              "draft_reply": null
+            },
+            "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:23:32.623918+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+        "issues": [
+          {
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "status": "open",
+            "title": "brush guard just snaps off the clips that hold it in、doesn’t clean very well、detangle elements don’t work properly any more",
+            "task_queue": [
+              {
+                "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                "intent": "report_problem",
+                "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                "status": "waiting_human",
+                "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 18,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "36fd1fceb48455279f5b88a0f6920b4b",
+            "kind": "escalation_summary",
+            "card_id": "00f7da413b705fb98430420a921a7a96",
+            "summary": {
+              "product": "扫地机器人（型号未确认）",
+              "problem": "brush guard just snaps off the clips that hold it in；doesn’t clean very well；detangle elements don’t work properly any more",
+              "observations": [],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "b69382af-bb13-52bb-9eb0-76ea940ffd7a",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "5c0f97aa32e9523ea7f11d8755334609",
+                  "intent": "report_problem",
+                  "quote": "Why is it I can’t get a brush guard anywhere for this model it’s very frustrating I have mine taped together. This is the worst model ever the brush guard just snaps off the clips that hold it in. It doesn’t clean very well. The detangle elements don’t work properly any more. Please help",
+                  "status": "active",
+                  "created_input_id": "780cb2651e90489fbc8480552c7692eb",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "input_id": "780cb2651e90489fbc8480552c7692eb",
+                  "level": "angry",
+                  "source": "model"
+                }
+              ],
+              "draft_reply": null
+            },
+            "summary_id": "de60ad447aa254beafdab76ff2e3e30b",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:23:32.623918+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ]
+}

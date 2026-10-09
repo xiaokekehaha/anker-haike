@@ -1,0 +1,3608 @@
+{
+  "id": "T52",
+  "input": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "resumed": false,
+          "event_id": "7b63299e72704d7aae9e41b11d3945d9",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:23.762152+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "payload": {
+            "kind": "message",
+            "text": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "ecedb98affe042da8eb22eec8eeec92f",
+          "input_id": "1ae1cfc3277b481792bd5fbe2bacedf4",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:23.762152+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 3,
+          "event_id": "dfd94d0ee932428c880822b5c2a4a6ca",
+          "recorded_at": "2026-10-09T07:23:23.780397+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 4,
+          "event_id": "00bb448a58634688a2cf83b4a34080c5",
+          "recorded_at": "2026-10-09T07:23:27.824488+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 5,
+          "event_id": "163563d202ec48b2b0049a4a1aa90c38",
+          "recorded_at": "2026-10-09T07:23:27.830962+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "c6a257ecf72f5a2f8f659bf00196e0d6",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 6,
+          "event_id": "e5432e11ac0e439c9d690f187ac2a08c",
+          "recorded_at": "2026-10-09T07:23:27.834823+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "c6a257ecf72f5a2f8f659bf00196e0d6",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 7,
+          "event_id": "e0bdeada96a3451cbf4e7ea8fe4fbee4",
+          "recorded_at": "2026-10-09T07:23:28.520189+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 8,
+          "event_id": "7f472e288a0f48768043ed3eca469951",
+          "recorded_at": "2026-10-09T07:23:30.426289+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 9,
+          "event_id": "2aa4dc7d29f54ab9a3e14bf75ee868ad",
+          "recorded_at": "2026-10-09T07:23:30.434906+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "1ae1cfc3277b481792bd5fbe2bacedf4",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "6d9cf788f7fb5d0abe15ea015efbada6",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:30.454907+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+              "source": "kb_qa",
+              "doc_id": "bp-0122",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor not charging?\n1. Bad charging cable:\n- Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally.\n- Check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and it is recommended to clean it.\n- Press and hold the breast pump switch key for 12 seconds to reset.\n2. Ch",
+              "score": 0.015823235923022094,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "source": "kb_qa",
+              "doc_id": "bp-0039",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case is not charging the pumps?\n1. Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.\n2. Clean Contact Po",
+              "score": 0.015515674693321217,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+              "source": "kb_qa",
+              "doc_id": "bp-0016",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't fully charge and stays at a low battery level?\n1. Check Charging Connection: Align the charging pins with the magnetic port. You should hear a click and see the indicator flash white.\n2. Confirm Charging Duration: Full pump charge takes 1.7 hours; full case charge takes 3.2 hours. When the internal indicator stays solid then turns off after 1",
+              "score": 0.015349264705882352,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+              "source": "kb_qa",
+              "doc_id": "bp-0067",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+              "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) is not charging in the case?\n1. Check the charging connection: Align the charging pins on the pump hub with the magnetic charging port inside the case. You should hear a click and see the charging indicator light flash white.\n2. Clean the magnetic charging contacts on both the pump and inside the case with a dry cloth.\n3. Ensure the charg",
+              "score": 0.015286470871449204,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+              "source": "kb_qa",
+              "doc_id": "bp-0127",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+              "score": 0.015220700152207,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "source": "kb_qa",
+              "doc_id": "bp-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+              "score": 0.014665334665334664,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+              "source": "kb_qa",
+              "doc_id": "bp-0010",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+              "snippet": "How do I troubleshoot when my Breast Pump S1 Pro (T8D04) shows a flashing red light?\n1. Red Light Meaning: When you press any button, a solid red light means battery is below 20%. Flashing red means below 10% and needs immediate charging.\n2. Solutions:\n- Charge using at least a 5V/1A adapter. Full charge takes 1.7 hours.\n- If you have a charging case, place the pump in a fully charged case. A full",
+              "score": 0.014545454545454545,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+              "source": "kb_qa",
+              "doc_id": "bp-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+              "snippet": "How long does it take to charge the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\nCharging Case only: It takes approximately 3.2 hours to fully charge the Charging Case alone. For optimal charging speed, it is recommended to use a power adapter with an output of at least 5V/2A. Charging Case + Pump simultaneously: If charging both the Charging Case and the breast pump unit at the same ",
+              "score": 0.014350945857795172,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+              "source": "kb_qa",
+              "doc_id": "bp-0065",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+              "snippet": "Does the charging case of eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection?\n1. The pump initiates recharging when battery voltage drops to 4.23V (max 4.35V).\n2. Both the pump and charging case have charging IC protection --- they stop charging and power off when fully charged to prevent overcharging.\n3. This protects the battery and extends both the pump and case lifespan.",
+              "score": 0.014294117647058823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+              "source": "kb_qa",
+              "doc_id": "bp-0121",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) leaking milk?\n1. Charging cable malfunction:\n- Try placing the breast pump horizontally in the charging compartment to see if it charges normally.\n- Check the magnetic charging head for glue or other foreign objects; cleaning is recommended.\n- Press and hold the breast pump's power button for 12 seconds to reset.\n2. Incompatible charging cable: Ensure the charg",
+              "score": 0.014135472370766487,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+              "source": "kb_qa",
+              "doc_id": "bp-0049",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+              "snippet": "What are the charging instructions for eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Charge with the 2-in-1 magnetic charging cable.\n2. Charge using the charging case.\nRecommended: Use a 5V/2A or higher adapter. Charge the pump fully before initial use. The pump will not operate while charging.",
+              "score": 0.014128559102674718,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+              "source": "kb_qa",
+              "doc_id": "bp-0011",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) while it's charging?\n1. Charging options: 2-in-1 magnetic charging cable or charging case. Use a 5V/2A or higher adapter. Fully charge before first use.\n2. The device cannot operate during charging.",
+              "score": 0.013948717948717947,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+              "source": "kb_qa",
+              "doc_id": "bp-0025",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't turn on at all?\n1. Device Reset: Press and hold the power button for 12 seconds to reset.\n2. Check Charging:\n- Reposition the pump in the charging case at a different angle.\n- Ensure proper magnetic alignment between the pump and case.\n- Try charging directly with the magnetic cable.\n- Try different chargers and cables to see if the charging ",
+              "score": 0.013633299629255139,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+              "source": "kb_qa",
+              "doc_id": "bp-0069",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+              "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection to extend battery lifespan?\n1. The pump initiates recharging when the battery voltage drops to 4.23V (maximum 4.35V).\n2. The pump stops charging and powers off when fully charged, preventing overcharging and extending battery lifespan.\n3. This automatic cutoff is an advantage over smartphones which may continue to trickle-charge.",
+              "score": 0.013163163163163162,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+              "source": "kb_qa",
+              "doc_id": "bp-0114",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+              "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+              "score": 0.01314647377938517,
+              "status": "ok"
+            }
+          ],
+          "event_id": "8cff92277bba5a5d9c3e5dcb622a0544",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:30.456244+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "a7533a4a839951f7b0ef55da7f92261a",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "ad5c6164d5975c74a0bfb55d96797bd7",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:30.462063+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check Charging Connection: Align the pump hub charging pins…",
+            "instruction": "Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "0f42b0f1ce3654e3bf17ac930c016c48",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:23:30.464118+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+          "version": 1,
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 15,
+          "event_id": "c9e5937f0319423789a8b7fbf375c1d2",
+          "recorded_at": "2026-10-09T07:23:30.465216+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "3178b0684dc153209182015880009e45",
+          "recorded_at": "2026-10-09T07:23:30.467185+00:00",
+          "run_id": "2fdde85895eb42778f968b7fe33c281b",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "resumed": false,
+          "event_id": "34a236ac6cd54c81b7c5f6e6cc51e5ee",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.527753+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "45ee802f3bc4492b825746b45b5f525f",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 1
+          },
+          "event_id": "2c47df38b314471bb674ec0c3abcc41e",
+          "input_id": "45ee802f3bc4492b825746b45b5f525f",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.527753+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 19,
+          "event_id": "52815a0356de4be292d6947b8629cbed",
+          "recorded_at": "2026-10-09T07:23:30.540690+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 20,
+          "event_id": "443003d8025a48cdbc373a6c3aa99d97",
+          "recorded_at": "2026-10-09T07:23:30.543415+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "45ee802f3bc4492b825746b45b5f525f",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "36bd5b2a14d451fca8e350ba1794b58f",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:23:30.570274+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "a7533a4a839951f7b0ef55da7f92261a",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "bcd13a5e45eb57b9b6693716068fb98c",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:23:30.571357+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "9b8355b79f5951b7971ad9557f978006",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:23:30.572381+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Clean Contact Points: Check if the magnetic contacts on bot…",
+            "instruction": "Clean Contact Points: Check if the magnetic contacts on both the case and pump have adhesive residue, dust, or debris. Clean with a dry cloth or cotton swab.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "480fd7c45f93563ba8f6a3904cea48fd",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:23:30.573286+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+          "version": 2,
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 26,
+          "event_id": "8a0996e9a87e4d8cb5abd8ac8ce3dbbb",
+          "recorded_at": "2026-10-09T07:23:30.574094+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "50afafa65b6e52baacb5287ee7957329",
+          "recorded_at": "2026-10-09T07:23:30.576057+00:00",
+          "run_id": "946b76f942ed4c20b8353898695fc803",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "resumed": false,
+          "event_id": "ff4231e105d84735bc835d7366a28bf2",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.596207+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "019de2a612af44f7bd2161b298ab5a64",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 2
+          },
+          "event_id": "c042051af11c48b296a45781380f7461",
+          "input_id": "019de2a612af44f7bd2161b298ab5a64",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.596207+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 30,
+          "event_id": "63c6d8cf7e05427b878f57009c2c2681",
+          "recorded_at": "2026-10-09T07:23:30.610941+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 31,
+          "event_id": "04ffb22e2aba4f9482b4d9b8f3836f02",
+          "recorded_at": "2026-10-09T07:23:30.614005+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "019de2a612af44f7bd2161b298ab5a64",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "522a9f7295235fe9a9e5a41ac4cf391f",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:23:30.638396+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "85c7069e15465db5b9ed03012c02dbbd",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:23:30.641943+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "17d2ba0e223651c999d4d8baf006b404",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "6de19fcad7a05b4fbcacef35e774d1d9",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:23:30.643209+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "17d2ba0e223651c999d4d8baf006b404",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Confirm Charging Duration: The case takes 3.2 hours to full…",
+            "instruction": "Confirm Charging Duration: The case takes 3.2 hours to fully charge itself; charging the pump takes 1.7 hours. When the internal indicator stays solid then turns off after 10 minutes, the pump is fully charged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "4086894d966c571386a673fdc32ceb49",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:23:30.644301+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "17d2ba0e223651c999d4d8baf006b404",
+          "version": 3,
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 37,
+          "event_id": "7073cf1b0bf0432195228afefd7be36b",
+          "recorded_at": "2026-10-09T07:23:30.645163+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "43dd7ac52eed5bfd8f121dd66c06af7c",
+          "recorded_at": "2026-10-09T07:23:30.646238+00:00",
+          "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+          "seq": 38,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 39,
+          "type": "run_started",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "resumed": false,
+          "event_id": "5321d3e82581455ea97f087cc5950497",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.663085+00:00"
+        },
+        {
+          "seq": 40,
+          "type": "input_received",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "17d2ba0e223651c999d4d8baf006b404",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 3
+          },
+          "event_id": "9a11955abb464e16b8bddd856ef4b589",
+          "input_id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.663085+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 41,
+          "event_id": "5fde8ab16a8a49a19080a4633e2db067",
+          "recorded_at": "2026-10-09T07:23:30.673696+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 42,
+          "event_id": "0b4bae49de9a49a5833db368fb9bc248",
+          "recorded_at": "2026-10-09T07:23:30.675824+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "852d85e96d2f5243a10fd3099344b1af",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:23:30.703006+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "17d2ba0e223651c999d4d8baf006b404",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "bb9c17717d0e597bafc8fb743cfc75af",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:23:30.703906+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "3754cb2c12b95c148e52411f0d8c440a",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "504bc54f6b3c544ba20ff108944d4e6b",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:23:30.704816+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Reset Device: Press and hold the pump power button for 12 s…",
+            "instruction": "Reset Device: Press and hold the pump power button for 12 seconds to reset, then try charging again.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "bbddeb6a111f503a9024f107295861a6",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:23:30.705667+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+          "version": 4,
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 48,
+          "event_id": "acdc8549ed144ff4a97c4933f3eb4f8a",
+          "recorded_at": "2026-10-09T07:23:30.706339+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d472a7af2356516ba09d7a8478b2f590",
+          "recorded_at": "2026-10-09T07:23:30.707250+00:00",
+          "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+          "seq": 49,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 50,
+          "type": "run_started",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "resumed": false,
+          "event_id": "915c8618e0374cdb81a3a81e89336008",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.724034+00:00"
+        },
+        {
+          "seq": 51,
+          "type": "input_received",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "d5f5a3d66b884e82ab1b103320aab996",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 4
+          },
+          "event_id": "d2f8913aeb524520be7c79a89e3f51ac",
+          "input_id": "d5f5a3d66b884e82ab1b103320aab996",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.724034+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 52,
+          "event_id": "46817ef3174647199dd7bcd3fc210efc",
+          "recorded_at": "2026-10-09T07:23:30.734919+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 53,
+          "event_id": "ab3ab33dd7cb43fc8567890b2af0a078",
+          "recorded_at": "2026-10-09T07:23:30.737919+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "d5f5a3d66b884e82ab1b103320aab996",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 5,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "0b6d114ce2a15fae895143a4fa8b2fc0",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 55,
+          "recorded_at": "2026-10-09T07:23:30.770318+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "3754cb2c12b95c148e52411f0d8c440a",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 5,
+          "event_id": "a184268a3ce15de0b23369b3ceb8c49b",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 56,
+          "recorded_at": "2026-10-09T07:23:30.771375+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "9a2faadc815550eebb577a7b18317894",
+          "status": "active",
+          "reason": "presented",
+          "version": 5,
+          "event_id": "7e2cc77ebbbe5145806bfcdef950fc49",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 57,
+          "recorded_at": "2026-10-09T07:23:30.772446+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "9a2faadc815550eebb577a7b18317894",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Cross-Test: Place the other pump in this case, or place thi…",
+            "instruction": "Cross-Test: Place the other pump in this case, or place this pump in another working case, to identify whether the issue is with the case or pump.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "1cac361fd3ec5f6dbf2d8fad15a6a16c",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 58,
+          "recorded_at": "2026-10-09T07:23:30.773443+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "9a2faadc815550eebb577a7b18317894",
+          "version": 5,
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 59,
+          "event_id": "43839092f0ce4bbc9cf87328489182ed",
+          "recorded_at": "2026-10-09T07:23:30.774187+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "17d3928eeb4c5ce9bc85b028b6610d3e",
+          "recorded_at": "2026-10-09T07:23:30.775106+00:00",
+          "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+          "seq": 60,
+          "reason": "awaiting_input",
+          "version": 5
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 61,
+          "type": "run_started",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "resumed": false,
+          "event_id": "b304d776057042348dad432e53611b9f",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.791143+00:00"
+        },
+        {
+          "seq": 62,
+          "type": "input_received",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "9a2faadc815550eebb577a7b18317894",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "aadff0b81b32453695028ff57537e9db",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 5
+          },
+          "event_id": "1789a1d32e5248f7a8b834434f5295e8",
+          "input_id": "aadff0b81b32453695028ff57537e9db",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.791143+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 63,
+          "event_id": "04b3f0309f3140f29f5f545bce0400bf",
+          "recorded_at": "2026-10-09T07:23:30.803441+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 64,
+          "event_id": "e8758e134f474964afeb41a849975fd8",
+          "recorded_at": "2026-10-09T07:23:30.806177+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "aadff0b81b32453695028ff57537e9db",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 6,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "ac62caafa9125d56b890fc1265f5b435",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 66,
+          "recorded_at": "2026-10-09T07:23:30.835629+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "9a2faadc815550eebb577a7b18317894",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 6,
+          "event_id": "1450f82a2435507fabba55b64e91a60c",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 67,
+          "recorded_at": "2026-10-09T07:23:30.837097+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "7715daf1cbf15f9e815efefcdc0178fa",
+          "status": "active",
+          "reason": "presented",
+          "version": 6,
+          "event_id": "4611fbf897e15522bcf9e4d3acc9a921",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 68,
+          "recorded_at": "2026-10-09T07:23:30.838123+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+          "version": 6,
+          "step": {
+            "step_id": "s6",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 6,
+            "title": "Try using a charger with at least 5V-2A output.",
+            "instruction": "Try using a charger with at least 5V-2A output.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "event_id": "957f238423295a22b7df7f46146c0765",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 69,
+          "recorded_at": "2026-10-09T07:23:30.839183+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+          "version": 6,
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 70,
+          "event_id": "e6b14c00fda74bb997ed2e6f65d45d4f",
+          "recorded_at": "2026-10-09T07:23:30.839891+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d13b5c1d4bc858169d11f9c66f67c2d4",
+          "recorded_at": "2026-10-09T07:23:30.840864+00:00",
+          "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+          "seq": 71,
+          "reason": "awaiting_input",
+          "version": 6
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 72,
+          "type": "run_started",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "resumed": false,
+          "event_id": "2033ec6216f44eb38ed74e253efa2098",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:30.858369+00:00"
+        },
+        {
+          "seq": 73,
+          "type": "input_received",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+            "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "expected_version": 6
+          },
+          "event_id": "2adebb485f644e338b5b4a500e1f9642",
+          "input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:30.858369+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 74,
+          "event_id": "088fe8b96f574b87b9c2c15b94059374",
+          "recorded_at": "2026-10-09T07:23:30.870748+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 75,
+          "event_id": "5d00108df6ed4f1f8de263af4b620f31",
+          "recorded_at": "2026-10-09T07:23:30.881511+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+          "resolved_issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 7,
+          "issues": [
+            {
+              "issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "title": "charging case will not charge、cannot charge pump motors",
+              "status": "open"
+            }
+          ],
+          "event_id": "08fba8be2d86537584b47494682639f3",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 77,
+          "recorded_at": "2026-10-09T07:23:30.907766+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "7715daf1cbf15f9e815efefcdc0178fa",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 7,
+          "event_id": "5a5e272b1846573ba00edbeab8b1f65f",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 78,
+          "recorded_at": "2026-10-09T07:23:30.909273+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+          "case_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "version": 7,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:30.870682+00:00",
+          "event_id": "add24598782356f0a93b503be9e68864",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 79,
+          "recorded_at": "2026-10-09T07:23:30.910479+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "e4265b8db21854fc90bba71bff70dbff",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "reply_to_input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+          "event_id": "6121dfe09e6d594bb326cef4362c6828",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 80,
+          "recorded_at": "2026-10-09T07:23:30.912747+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "e4265b8db21854fc90bba71bff70dbff",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "d9ca05f1cfd95a1eb3e6e1836c90dc1c",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 81,
+          "recorded_at": "2026-10-09T07:23:30.914720+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "e4265b8db21854fc90bba71bff70dbff",
+          "status": "completed",
+          "event_id": "829be92ca2b1597b93151fc3edb41963",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 82,
+          "recorded_at": "2026-10-09T07:23:30.916076+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "pending_id": "45d9c2c9e5355fac89ded77cbce5f2b8",
+          "status": "active",
+          "reason": "presented",
+          "version": 7,
+          "event_id": "132e723043d4524299f3ca5692f84456",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 83,
+          "recorded_at": "2026-10-09T07:23:30.917367+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "card_id": "45d9c2c9e5355fac89ded77cbce5f2b8",
+          "version": 7,
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 84,
+          "event_id": "16198012d32744ec9e8b2e51764f0c6b",
+          "recorded_at": "2026-10-09T07:23:30.918026+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b7d0fc448a125c0f98769e8d5deb24ef",
+          "recorded_at": "2026-10-09T07:23:30.919218+00:00",
+          "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+          "seq": 85,
+          "reason": "awaiting_input",
+          "version": 7
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:23.683753+08:00",
+  "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+    "version": 7,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "d16d6201bf895fb58345bb83144f3850",
+      "kind": "upload_receipt",
+      "card_id": "45d9c2c9e5355fac89ded77cbce5f2b8",
+      "version": 7
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:23.762152+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "user_message",
+        "id": "1ae1cfc3277b481792bd5fbe2bacedf4",
+        "text": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:27.834823+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "c6a257ecf72f5a2f8f659bf00196e0d6",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:23:30.456496Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+            "source": "kb_qa",
+            "doc_id": "bp-0122",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor not charging?\n1. Bad charging cable:\n- Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally.\n- Check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and it is recommended to clean it.\n- Press and hold the breast pump switch key for 12 seconds to reset.\n2. Ch",
+            "score": 0.015823235923022094,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "source": "kb_qa",
+            "doc_id": "bp-0039",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case is not charging the pumps?\n1. Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.\n2. Clean Contact Po",
+            "score": 0.015515674693321217,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+            "source": "kb_qa",
+            "doc_id": "bp-0016",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't fully charge and stays at a low battery level?\n1. Check Charging Connection: Align the charging pins with the magnetic port. You should hear a click and see the indicator flash white.\n2. Confirm Charging Duration: Full pump charge takes 1.7 hours; full case charge takes 3.2 hours. When the internal indicator stays solid then turns off after 1",
+            "score": 0.015349264705882352,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+            "source": "kb_qa",
+            "doc_id": "bp-0067",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+            "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) is not charging in the case?\n1. Check the charging connection: Align the charging pins on the pump hub with the magnetic charging port inside the case. You should hear a click and see the charging indicator light flash white.\n2. Clean the magnetic charging contacts on both the pump and inside the case with a dry cloth.\n3. Ensure the charg",
+            "score": 0.015286470871449204,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+            "source": "kb_qa",
+            "doc_id": "bp-0127",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+            "score": 0.015220700152207,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+            "source": "kb_qa",
+            "doc_id": "bp-0100",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+            "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+            "score": 0.014665334665334664,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+            "source": "kb_qa",
+            "doc_id": "bp-0010",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+            "snippet": "How do I troubleshoot when my Breast Pump S1 Pro (T8D04) shows a flashing red light?\n1. Red Light Meaning: When you press any button, a solid red light means battery is below 20%. Flashing red means below 10% and needs immediate charging.\n2. Solutions:\n- Charge using at least a 5V/1A adapter. Full charge takes 1.7 hours.\n- If you have a charging case, place the pump in a fully charged case. A full",
+            "score": 0.014545454545454545,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+            "source": "kb_qa",
+            "doc_id": "bp-0066",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+            "snippet": "How long does it take to charge the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\nCharging Case only: It takes approximately 3.2 hours to fully charge the Charging Case alone. For optimal charging speed, it is recommended to use a power adapter with an output of at least 5V/2A. Charging Case + Pump simultaneously: If charging both the Charging Case and the breast pump unit at the same ",
+            "score": 0.014350945857795172,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+            "source": "kb_qa",
+            "doc_id": "bp-0065",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+            "snippet": "Does the charging case of eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection?\n1. The pump initiates recharging when battery voltage drops to 4.23V (max 4.35V).\n2. Both the pump and charging case have charging IC protection --- they stop charging and power off when fully charged to prevent overcharging.\n3. This protects the battery and extends both the pump and case lifespan.",
+            "score": 0.014294117647058823,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+            "source": "kb_qa",
+            "doc_id": "bp-0121",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) leaking milk?\n1. Charging cable malfunction:\n- Try placing the breast pump horizontally in the charging compartment to see if it charges normally.\n- Check the magnetic charging head for glue or other foreign objects; cleaning is recommended.\n- Press and hold the breast pump's power button for 12 seconds to reset.\n2. Incompatible charging cable: Ensure the charg",
+            "score": 0.014135472370766487,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+            "source": "kb_qa",
+            "doc_id": "bp-0049",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+            "snippet": "What are the charging instructions for eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Charge with the 2-in-1 magnetic charging cable.\n2. Charge using the charging case.\nRecommended: Use a 5V/2A or higher adapter. Charge the pump fully before initial use. The pump will not operate while charging.",
+            "score": 0.014128559102674718,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+            "source": "kb_qa",
+            "doc_id": "bp-0011",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+            "snippet": "Can I use my Breast Pump S1 Pro (T8D04) while it's charging?\n1. Charging options: 2-in-1 magnetic charging cable or charging case. Use a 5V/2A or higher adapter. Fully charge before first use.\n2. The device cannot operate during charging.",
+            "score": 0.013948717948717947,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+            "source": "kb_qa",
+            "doc_id": "bp-0025",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't turn on at all?\n1. Device Reset: Press and hold the power button for 12 seconds to reset.\n2. Check Charging:\n- Reposition the pump in the charging case at a different angle.\n- Ensure proper magnetic alignment between the pump and case.\n- Try charging directly with the magnetic cable.\n- Try different chargers and cables to see if the charging ",
+            "score": 0.013633299629255139,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+            "source": "kb_qa",
+            "doc_id": "bp-0069",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+            "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection to extend battery lifespan?\n1. The pump initiates recharging when the battery voltage drops to 4.23V (maximum 4.35V).\n2. The pump stops charging and powers off when fully charged, preventing overcharging and extending battery lifespan.\n3. This automatic cutoff is an advantage over smartphones which may continue to trickle-charge.",
+            "score": 0.013163163163163162,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+            "source": "kb_qa",
+            "doc_id": "bp-0114",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+            "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+            "score": 0.01314647377938517,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:23:30.464118+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Check Charging Connection: Align the pump hub charging pins…",
+          "instruction": "Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.527753+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "45ee802f3bc4492b825746b45b5f525f",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.573286+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Clean Contact Points: Check if the magnetic contacts on bot…",
+          "instruction": "Clean Contact Points: Check if the magnetic contacts on both the case and pump have adhesive residue, dust, or debris. Clean with a dry cloth or cotton swab.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.596207+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "019de2a612af44f7bd2161b298ab5a64",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.644301+00:00",
+        "first_seq": 36,
+        "last_seq": 36,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "17d2ba0e223651c999d4d8baf006b404",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "Confirm Charging Duration: The case takes 3.2 hours to full…",
+          "instruction": "Confirm Charging Duration: The case takes 3.2 hours to fully charge itself; charging the pump takes 1.7 hours. When the internal indicator stays solid then turns off after 10 minutes, the pump is fully charged.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.663085+00:00",
+        "first_seq": 40,
+        "last_seq": 44,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.705667+00:00",
+        "first_seq": 47,
+        "last_seq": 47,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+        "version": 4,
+        "step": {
+          "step_id": "s4",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 4,
+          "title": "Reset Device: Press and hold the pump power button for 12 s…",
+          "instruction": "Reset Device: Press and hold the pump power button for 12 seconds to reset, then try charging again.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.724034+00:00",
+        "first_seq": 51,
+        "last_seq": 55,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "d5f5a3d66b884e82ab1b103320aab996",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.773443+00:00",
+        "first_seq": 58,
+        "last_seq": 58,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "9a2faadc815550eebb577a7b18317894",
+        "version": 5,
+        "step": {
+          "step_id": "s5",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 5,
+          "title": "Cross-Test: Place the other pump in this case, or place thi…",
+          "instruction": "Cross-Test: Place the other pump in this case, or place this pump in another working case, to identify whether the issue is with the case or pump.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.791143+00:00",
+        "first_seq": 62,
+        "last_seq": 66,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "aadff0b81b32453695028ff57537e9db",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.839183+00:00",
+        "first_seq": 69,
+        "last_seq": 69,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "step_card",
+        "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+        "version": 6,
+        "step": {
+          "step_id": "s6",
+          "plan_id": "qa_bp_0039",
+          "plan_version": 1,
+          "step_no": 6,
+          "title": "Try using a charger with at least 5V-2A output.",
+          "instruction": "Try using a charger with at least 5V-2A output.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "cf279fe7-4502-46bc-881f-088499c59a64"
+          ],
+          "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:30.858369+00:00",
+        "first_seq": 73,
+        "last_seq": 77,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "action",
+        "id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:30.910479+00:00",
+        "first_seq": 79,
+        "last_seq": 79,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "case_changed",
+        "card_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+        "version": 7,
+        "case_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:23:30.870682+00:00"
+      },
+      {
+        "at": "2026-10-09T07:23:30.912747+00:00",
+        "first_seq": 80,
+        "last_seq": 82,
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "assistant_message",
+        "message_id": "e4265b8db21854fc90bba71bff70dbff",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+    "issues": [
+      {
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "status": "open",
+        "title": "charging case will not charge、cannot charge pump motors",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 85,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 6,
+  "errors": [],
+  "seconds": 7.23,
+  "journey": {
+    "session": {
+      "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:23.763773Z",
+      "last_run_at": "2026-10-09T07:23:30.919940Z",
+      "runs": 7,
+      "user_messages": 1,
+      "first_question": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+      "product_state": "confirmed_sku",
+      "sku": "T8D04",
+      "category": "breast_pump",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_bp_0039",
+        "qa_bp_0067"
+      ],
+      "steps_executed": 6,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 59,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:23:30.919940Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "2fdde85895eb42778f968b7fe33c281b",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:23.763773Z",
+        "ended_at": "2026-10-09T07:23:30.468401Z",
+        "duration_ms": 6822,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6818,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 4022,
+            "tokens_in": 4136,
+            "tokens_out": 399,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:27.797153Z"
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2021,
+            "tokens_in": 4373,
+            "tokens_out": 301,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:30.405733Z"
+          }
+        ],
+        "tokens_in": 8509,
+        "tokens_out": 700,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:23.763773Z",
+            "duration_ms": 4055,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3283,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 150,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5683
+                    }
+                  ],
+                  "actual_input_tokens": 4136
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:27.819516Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "breast_pump",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:23:27.830927Z",
+            "duration_ms": 2709,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_bp_0039",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 4932,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 150,
+                    "history": 0,
+                    "authority": 4426
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 429,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 49,
+                    "decision": 188,
+                    "timezone": 7,
+                    "task_data": 3475,
+                    "issue_index": 142,
+                    "step_attempts": 2,
+                    "active_issue_id": 22,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 65,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5410
+                    }
+                  ],
+                  "actual_input_tokens": 4373
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:23:30.540152Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.549566Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.549577Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "2fdde85895eb42778f968b7fe33c281b",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 127,
+            "hits": 15,
+            "top_score": 0.0158,
+            "latency_ms": 624,
+            "query": "charging case will not charge cannot charge pump motors",
+            "created_at": "2026-10-09T07:23:28.452128Z"
+          }
+        ]
+      },
+      {
+        "run_id": "946b76f942ed4c20b8353898695fc803",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:23:30.529176Z",
+        "ended_at": "2026-10-09T07:23:30.576796Z",
+        "duration_ms": 47,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 45,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "946b76f942ed4c20b8353898695fc803",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.529176Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "946b76f942ed4c20b8353898695fc803",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.537769Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "946b76f942ed4c20b8353898695fc803",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.539392Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "946b76f942ed4c20b8353898695fc803",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.542955Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "946b76f942ed4c20b8353898695fc803",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.542960Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:23:30.598627Z",
+        "ended_at": "2026-10-09T07:23:30.647260Z",
+        "duration_ms": 48,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 46,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.598627Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.608346Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.609767Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.613102Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "0b08c070cfca4504b0aef0955cd414d9",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.613107Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 4,
+        "started_at": "2026-10-09T07:23:30.664940Z",
+        "ended_at": "2026-10-09T07:23:30.708140Z",
+        "duration_ms": 43,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 41,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.664940Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.671632Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s4",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.672679Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.675386Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "c04cd464e04d4e75a7d12e39922714f0",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.675391Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 5,
+        "started_at": "2026-10-09T07:23:30.725454Z",
+        "ended_at": "2026-10-09T07:23:30.775720Z",
+        "duration_ms": 50,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 48,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.725454Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.732118Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s5",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.733972Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.737454Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "9c8cf1c2be8a48ab9cdf0ec9033649f0",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.737458Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 6,
+        "started_at": "2026-10-09T07:23:30.794492Z",
+        "ended_at": "2026-10-09T07:23:30.841432Z",
+        "duration_ms": 46,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 45,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.794492Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.801126Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s6",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.802403Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:30.805749Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "26c7ff00b14b44c184d86ea676e400a3",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.805753Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "seq_no": 7,
+        "started_at": "2026-10-09T07:23:30.860748Z",
+        "ended_at": "2026-10-09T07:23:30.919933Z",
+        "duration_ms": 59,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 55,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:30.860748Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0039",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d16d6201bf895fb58345bb83144f3850",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:30.867880Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:30.869516Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:23:30.870420Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:23:30.875494Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:23:30.875805Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "26c0806f92014bd5a4b3e635a3f38041",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:30.876099Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+      "version": 7,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "kind": "upload_receipt",
+        "card_id": "45d9c2c9e5355fac89ded77cbce5f2b8",
+        "version": 7
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:23.762152+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "user_message",
+          "id": "1ae1cfc3277b481792bd5fbe2bacedf4",
+          "text": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:27.834823+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "c6a257ecf72f5a2f8f659bf00196e0d6",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:23:30.456496Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+              "source": "kb_qa",
+              "doc_id": "bp-0122",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor not charging?\n1. Bad charging cable:\n- Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally.\n- Check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and it is recommended to clean it.\n- Press and hold the breast pump switch key for 12 seconds to reset.\n2. Ch",
+              "score": 0.015823235923022094,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "source": "kb_qa",
+              "doc_id": "bp-0039",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case is not charging the pumps?\n1. Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.\n2. Clean Contact Po",
+              "score": 0.015515674693321217,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+              "source": "kb_qa",
+              "doc_id": "bp-0016",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't fully charge and stays at a low battery level?\n1. Check Charging Connection: Align the charging pins with the magnetic port. You should hear a click and see the indicator flash white.\n2. Confirm Charging Duration: Full pump charge takes 1.7 hours; full case charge takes 3.2 hours. When the internal indicator stays solid then turns off after 1",
+              "score": 0.015349264705882352,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+              "source": "kb_qa",
+              "doc_id": "bp-0067",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+              "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) is not charging in the case?\n1. Check the charging connection: Align the charging pins on the pump hub with the magnetic charging port inside the case. You should hear a click and see the charging indicator light flash white.\n2. Clean the magnetic charging contacts on both the pump and inside the case with a dry cloth.\n3. Ensure the charg",
+              "score": 0.015286470871449204,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+              "source": "kb_qa",
+              "doc_id": "bp-0127",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+              "score": 0.015220700152207,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "source": "kb_qa",
+              "doc_id": "bp-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+              "score": 0.014665334665334664,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+              "source": "kb_qa",
+              "doc_id": "bp-0010",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+              "snippet": "How do I troubleshoot when my Breast Pump S1 Pro (T8D04) shows a flashing red light?\n1. Red Light Meaning: When you press any button, a solid red light means battery is below 20%. Flashing red means below 10% and needs immediate charging.\n2. Solutions:\n- Charge using at least a 5V/1A adapter. Full charge takes 1.7 hours.\n- If you have a charging case, place the pump in a fully charged case. A full",
+              "score": 0.014545454545454545,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+              "source": "kb_qa",
+              "doc_id": "bp-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+              "snippet": "How long does it take to charge the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\nCharging Case only: It takes approximately 3.2 hours to fully charge the Charging Case alone. For optimal charging speed, it is recommended to use a power adapter with an output of at least 5V/2A. Charging Case + Pump simultaneously: If charging both the Charging Case and the breast pump unit at the same ",
+              "score": 0.014350945857795172,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+              "source": "kb_qa",
+              "doc_id": "bp-0065",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+              "snippet": "Does the charging case of eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection?\n1. The pump initiates recharging when battery voltage drops to 4.23V (max 4.35V).\n2. Both the pump and charging case have charging IC protection --- they stop charging and power off when fully charged to prevent overcharging.\n3. This protects the battery and extends both the pump and case lifespan.",
+              "score": 0.014294117647058823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+              "source": "kb_qa",
+              "doc_id": "bp-0121",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) leaking milk?\n1. Charging cable malfunction:\n- Try placing the breast pump horizontally in the charging compartment to see if it charges normally.\n- Check the magnetic charging head for glue or other foreign objects; cleaning is recommended.\n- Press and hold the breast pump's power button for 12 seconds to reset.\n2. Incompatible charging cable: Ensure the charg",
+              "score": 0.014135472370766487,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+              "source": "kb_qa",
+              "doc_id": "bp-0049",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+              "snippet": "What are the charging instructions for eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Charge with the 2-in-1 magnetic charging cable.\n2. Charge using the charging case.\nRecommended: Use a 5V/2A or higher adapter. Charge the pump fully before initial use. The pump will not operate while charging.",
+              "score": 0.014128559102674718,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+              "source": "kb_qa",
+              "doc_id": "bp-0011",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) while it's charging?\n1. Charging options: 2-in-1 magnetic charging cable or charging case. Use a 5V/2A or higher adapter. Fully charge before first use.\n2. The device cannot operate during charging.",
+              "score": 0.013948717948717947,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+              "source": "kb_qa",
+              "doc_id": "bp-0025",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't turn on at all?\n1. Device Reset: Press and hold the power button for 12 seconds to reset.\n2. Check Charging:\n- Reposition the pump in the charging case at a different angle.\n- Ensure proper magnetic alignment between the pump and case.\n- Try charging directly with the magnetic cable.\n- Try different chargers and cables to see if the charging ",
+              "score": 0.013633299629255139,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+              "source": "kb_qa",
+              "doc_id": "bp-0069",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+              "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection to extend battery lifespan?\n1. The pump initiates recharging when the battery voltage drops to 4.23V (maximum 4.35V).\n2. The pump stops charging and powers off when fully charged, preventing overcharging and extending battery lifespan.\n3. This automatic cutoff is an advantage over smartphones which may continue to trickle-charge.",
+              "score": 0.013163163163163162,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+              "source": "kb_qa",
+              "doc_id": "bp-0114",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+              "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+              "score": 0.01314647377938517,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:23:30.464118+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check Charging Connection: Align the pump hub charging pins…",
+            "instruction": "Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.527753+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "45ee802f3bc4492b825746b45b5f525f",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.573286+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Clean Contact Points: Check if the magnetic contacts on bot…",
+            "instruction": "Clean Contact Points: Check if the magnetic contacts on both the case and pump have adhesive residue, dust, or debris. Clean with a dry cloth or cotton swab.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.596207+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "019de2a612af44f7bd2161b298ab5a64",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.644301+00:00",
+          "first_seq": 36,
+          "last_seq": 36,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "17d2ba0e223651c999d4d8baf006b404",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Confirm Charging Duration: The case takes 3.2 hours to full…",
+            "instruction": "Confirm Charging Duration: The case takes 3.2 hours to fully charge itself; charging the pump takes 1.7 hours. When the internal indicator stays solid then turns off after 10 minutes, the pump is fully charged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.663085+00:00",
+          "first_seq": 40,
+          "last_seq": 44,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.705667+00:00",
+          "first_seq": 47,
+          "last_seq": 47,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Reset Device: Press and hold the pump power button for 12 s…",
+            "instruction": "Reset Device: Press and hold the pump power button for 12 seconds to reset, then try charging again.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.724034+00:00",
+          "first_seq": 51,
+          "last_seq": 55,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "d5f5a3d66b884e82ab1b103320aab996",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.773443+00:00",
+          "first_seq": 58,
+          "last_seq": 58,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "9a2faadc815550eebb577a7b18317894",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Cross-Test: Place the other pump in this case, or place thi…",
+            "instruction": "Cross-Test: Place the other pump in this case, or place this pump in another working case, to identify whether the issue is with the case or pump.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.791143+00:00",
+          "first_seq": 62,
+          "last_seq": 66,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "aadff0b81b32453695028ff57537e9db",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.839183+00:00",
+          "first_seq": 69,
+          "last_seq": 69,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "step_card",
+          "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+          "version": 6,
+          "step": {
+            "step_id": "s6",
+            "plan_id": "qa_bp_0039",
+            "plan_version": 1,
+            "step_no": 6,
+            "title": "Try using a charger with at least 5V-2A output.",
+            "instruction": "Try using a charger with at least 5V-2A output.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "cf279fe7-4502-46bc-881f-088499c59a64"
+            ],
+            "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:30.858369+00:00",
+          "first_seq": 73,
+          "last_seq": 77,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "action",
+          "id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:30.910479+00:00",
+          "first_seq": 79,
+          "last_seq": 79,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "case_changed",
+          "card_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+          "version": 7,
+          "case_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:30.870682+00:00"
+        },
+        {
+          "at": "2026-10-09T07:23:30.912747+00:00",
+          "first_seq": 80,
+          "last_seq": 82,
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "assistant_message",
+          "message_id": "e4265b8db21854fc90bba71bff70dbff",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+      "issues": [
+        {
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "status": "open",
+          "title": "charging case will not charge、cannot charge pump motors",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 85,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+      "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+      "issue_id": "d16d6201bf895fb58345bb83144f3850",
+      "sku": "T8D04",
+      "category": "breast_pump",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:23:30.870682+00:00",
+      "updated_at": "2026-10-09T07:23:30.870682+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "96f0bb081d304d69bcf7b08f88fefb16",
+        "version": 7,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "d16d6201bf895fb58345bb83144f3850",
+          "kind": "upload_receipt",
+          "card_id": "45d9c2c9e5355fac89ded77cbce5f2b8",
+          "version": 7
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:23:23.762152+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "user_message",
+            "id": "1ae1cfc3277b481792bd5fbe2bacedf4",
+            "text": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:23:27.834823+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "c6a257ecf72f5a2f8f659bf00196e0d6",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:23:30.456496Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+                "source": "kb_qa",
+                "doc_id": "bp-0122",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ab23872d-a79b-4fa4-b938-c376f4c8a799",
+                "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor not charging?\n1. Bad charging cable:\n- Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally.\n- Check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and it is recommended to clean it.\n- Press and hold the breast pump switch key for 12 seconds to reset.\n2. Ch",
+                "score": 0.015823235923022094,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "source": "kb_qa",
+                "doc_id": "bp-0039",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case is not charging the pumps?\n1. Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.\n2. Clean Contact Po",
+                "score": 0.015515674693321217,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+                "source": "kb_qa",
+                "doc_id": "bp-0016",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "8c50c30a-88f3-486f-8eec-c81793c18d5d",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't fully charge and stays at a low battery level?\n1. Check Charging Connection: Align the charging pins with the magnetic port. You should hear a click and see the indicator flash white.\n2. Confirm Charging Duration: Full pump charge takes 1.7 hours; full case charge takes 3.2 hours. When the internal indicator stays solid then turns off after 1",
+                "score": 0.015349264705882352,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+                "source": "kb_qa",
+                "doc_id": "bp-0067",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "cf279fe7-4502-46bc-881f-088499c59a64",
+                "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) is not charging in the case?\n1. Check the charging connection: Align the charging pins on the pump hub with the magnetic charging port inside the case. You should hear a click and see the charging indicator light flash white.\n2. Clean the magnetic charging contacts on both the pump and inside the case with a dry cloth.\n3. Ensure the charg",
+                "score": 0.015286470871449204,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+                "source": "kb_qa",
+                "doc_id": "bp-0127",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+                "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+                "score": 0.015220700152207,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+                "source": "kb_qa",
+                "doc_id": "bp-0100",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+                "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+                "score": 0.014665334665334664,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+                "source": "kb_qa",
+                "doc_id": "bp-0010",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "83cc9345-c1af-40ba-b6b9-dd66f1d9b78a",
+                "snippet": "How do I troubleshoot when my Breast Pump S1 Pro (T8D04) shows a flashing red light?\n1. Red Light Meaning: When you press any button, a solid red light means battery is below 20%. Flashing red means below 10% and needs immediate charging.\n2. Solutions:\n- Charge using at least a 5V/1A adapter. Full charge takes 1.7 hours.\n- If you have a charging case, place the pump in a fully charged case. A full",
+                "score": 0.014545454545454545,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+                "source": "kb_qa",
+                "doc_id": "bp-0066",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e662367f-0510-4388-8fd3-16e5c1c5e961",
+                "snippet": "How long does it take to charge the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\nCharging Case only: It takes approximately 3.2 hours to fully charge the Charging Case alone. For optimal charging speed, it is recommended to use a power adapter with an output of at least 5V/2A. Charging Case + Pump simultaneously: If charging both the Charging Case and the breast pump unit at the same ",
+                "score": 0.014350945857795172,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+                "source": "kb_qa",
+                "doc_id": "bp-0065",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "13de56bd-6f5a-46d0-85ed-1afd2b41d003",
+                "snippet": "Does the charging case of eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection?\n1. The pump initiates recharging when battery voltage drops to 4.23V (max 4.35V).\n2. Both the pump and charging case have charging IC protection --- they stop charging and power off when fully charged to prevent overcharging.\n3. This protects the battery and extends both the pump and case lifespan.",
+                "score": 0.014294117647058823,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+                "source": "kb_qa",
+                "doc_id": "bp-0121",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "79e86e92-2a99-4b9d-a6f8-0d581da64176",
+                "snippet": "Why is my Breast Pump S1 Pro (T8D04) leaking milk?\n1. Charging cable malfunction:\n- Try placing the breast pump horizontally in the charging compartment to see if it charges normally.\n- Check the magnetic charging head for glue or other foreign objects; cleaning is recommended.\n- Press and hold the breast pump's power button for 12 seconds to reset.\n2. Incompatible charging cable: Ensure the charg",
+                "score": 0.014135472370766487,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+                "source": "kb_qa",
+                "doc_id": "bp-0049",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4612bc02-5ea3-4e30-b07a-3d53a2bbe176",
+                "snippet": "What are the charging instructions for eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Charge with the 2-in-1 magnetic charging cable.\n2. Charge using the charging case.\nRecommended: Use a 5V/2A or higher adapter. Charge the pump fully before initial use. The pump will not operate while charging.",
+                "score": 0.014128559102674718,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+                "source": "kb_qa",
+                "doc_id": "bp-0011",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f0bf9816-d2c7-47cb-9f42-9a1564b4d1cd",
+                "snippet": "Can I use my Breast Pump S1 Pro (T8D04) while it's charging?\n1. Charging options: 2-in-1 magnetic charging cable or charging case. Use a 5V/2A or higher adapter. Fully charge before first use.\n2. The device cannot operate during charging.",
+                "score": 0.013948717948717947,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+                "source": "kb_qa",
+                "doc_id": "bp-0025",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "966a2244-58db-4fd9-9602-5dabdff8ec2f",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) won't turn on at all?\n1. Device Reset: Press and hold the power button for 12 seconds to reset.\n2. Check Charging:\n- Reposition the pump in the charging case at a different angle.\n- Ensure proper magnetic alignment between the pump and case.\n- Try charging directly with the magnetic cable.\n- Try different chargers and cables to see if the charging ",
+                "score": 0.013633299629255139,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+                "source": "kb_qa",
+                "doc_id": "bp-0069",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6de05175-63c0-41f0-bc59-44fe7667d8fb",
+                "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) have battery protection to extend battery lifespan?\n1. The pump initiates recharging when the battery voltage drops to 4.23V (maximum 4.35V).\n2. The pump stops charging and powers off when fully charged, preventing overcharging and extending battery lifespan.\n3. This automatic cutoff is an advantage over smartphones which may continue to trickle-charge.",
+                "score": 0.013163163163163162,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+                "source": "kb_qa",
+                "doc_id": "bp-0114",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+                "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+                "score": 0.01314647377938517,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:23:30.464118+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "a7533a4a839951f7b0ef55da7f92261a",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Check Charging Connection: Align the pump hub charging pins…",
+              "instruction": "Check Charging Connection: Align the pump hub charging pins with the magnetic charging port inside the case. After releasing, the pump should fully seat in the slot with a click sound, and the case indicator light should flash white. If the light doesn't flash, adjust the pin position.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.527753+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "45ee802f3bc4492b825746b45b5f525f",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.573286+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "0ac89a8be8b450d7ba9b996231fc47a9",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Clean Contact Points: Check if the magnetic contacts on bot…",
+              "instruction": "Clean Contact Points: Check if the magnetic contacts on both the case and pump have adhesive residue, dust, or debris. Clean with a dry cloth or cotton swab.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.596207+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "019de2a612af44f7bd2161b298ab5a64",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.644301+00:00",
+            "first_seq": 36,
+            "last_seq": 36,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "17d2ba0e223651c999d4d8baf006b404",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "Confirm Charging Duration: The case takes 3.2 hours to full…",
+              "instruction": "Confirm Charging Duration: The case takes 3.2 hours to fully charge itself; charging the pump takes 1.7 hours. When the internal indicator stays solid then turns off after 10 minutes, the pump is fully charged.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.663085+00:00",
+            "first_seq": 40,
+            "last_seq": 44,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "730ef1a7eeec4ddd8f4c3c5bc4ec94bd",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.705667+00:00",
+            "first_seq": 47,
+            "last_seq": 47,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "3754cb2c12b95c148e52411f0d8c440a",
+            "version": 4,
+            "step": {
+              "step_id": "s4",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 4,
+              "title": "Reset Device: Press and hold the pump power button for 12 s…",
+              "instruction": "Reset Device: Press and hold the pump power button for 12 seconds to reset, then try charging again.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.724034+00:00",
+            "first_seq": 51,
+            "last_seq": 55,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "d5f5a3d66b884e82ab1b103320aab996",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.773443+00:00",
+            "first_seq": 58,
+            "last_seq": 58,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "9a2faadc815550eebb577a7b18317894",
+            "version": 5,
+            "step": {
+              "step_id": "s5",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 5,
+              "title": "Cross-Test: Place the other pump in this case, or place thi…",
+              "instruction": "Cross-Test: Place the other pump in this case, or place this pump in another working case, to identify whether the issue is with the case or pump.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.791143+00:00",
+            "first_seq": 62,
+            "last_seq": 66,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "aadff0b81b32453695028ff57537e9db",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.839183+00:00",
+            "first_seq": 69,
+            "last_seq": 69,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "step_card",
+            "card_id": "7715daf1cbf15f9e815efefcdc0178fa",
+            "version": 6,
+            "step": {
+              "step_id": "s6",
+              "plan_id": "qa_bp_0039",
+              "plan_version": 1,
+              "step_no": 6,
+              "title": "Try using a charger with at least 5V-2A output.",
+              "instruction": "Try using a charger with at least 5V-2A output.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "5a3aa09e-2bf1-4b02-8be8-532635844783",
+                "cf279fe7-4502-46bc-881f-088499c59a64"
+              ],
+              "primary_evidence_id": "5a3aa09e-2bf1-4b02-8be8-532635844783",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:30.858369+00:00",
+            "first_seq": 73,
+            "last_seq": 77,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "action",
+            "id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:30.910479+00:00",
+            "first_seq": 79,
+            "last_seq": 79,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "case_changed",
+            "card_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+            "version": 7,
+            "case_id": "a8c4ab38-b565-5b68-befb-f421dc3412e6",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:23:30.870682+00:00"
+          },
+          {
+            "at": "2026-10-09T07:23:30.912747+00:00",
+            "first_seq": 80,
+            "last_seq": 82,
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "kind": "assistant_message",
+            "message_id": "e4265b8db21854fc90bba71bff70dbff",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "e0e0f8c8b5ed4a59ad0d8f239f396a9e",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "d16d6201bf895fb58345bb83144f3850",
+        "issues": [
+          {
+            "issue_id": "d16d6201bf895fb58345bb83144f3850",
+            "status": "open",
+            "title": "charging case will not charge、cannot charge pump motors",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 85,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

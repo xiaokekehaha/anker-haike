@@ -1,0 +1,2578 @@
+{
+  "id": "T26",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "resumed": false,
+          "event_id": "ea85c9991b474035b9524adbc17d89cd",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:19.701921+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "12ca05c4a4724af18fe847bca5400b6b",
+          "input_id": "5ff0c43dd0fd426abce64497e03fd3ec",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:19.701921+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 3,
+          "event_id": "096d5d81ff3f4245a17dfaf4accc31da",
+          "recorded_at": "2026-10-09T07:18:19.719704+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 4,
+          "event_id": "bdbd884d4822499094ec713e9ae87346",
+          "recorded_at": "2026-10-09T07:18:23.417757+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 5,
+          "event_id": "a8b7bc50c43a4e04b3cd4f46e9aeed56",
+          "recorded_at": "2026-10-09T07:18:23.444024+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "9203287642b8551fb71b57f20fbee41b",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 6,
+          "event_id": "063353acb9c040ad89bbbaf7adcb15f2",
+          "recorded_at": "2026-10-09T07:18:23.448749+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "9203287642b8551fb71b57f20fbee41b",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 7,
+          "event_id": "41420f78278740989b33462eb4d3cc5f",
+          "recorded_at": "2026-10-09T07:18:23.735736+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 8,
+          "event_id": "99863689782c4a0796c855cdac8544c7",
+          "recorded_at": "2026-10-09T07:18:24.659425+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 9,
+          "event_id": "d4cca517e58242ffba804e67784978f8",
+          "recorded_at": "2026-10-09T07:18:24.669265+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_id": "5ff0c43dd0fd426abce64497e03fd3ec",
+          "resolved_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "title": "E23: Robot clean water level abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "59089385de985c358ea4760a5584da22",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:18:24.693270+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "source": "kb_qa",
+              "doc_id": "rv-0063",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "source": "kb_qa",
+              "doc_id": "rv-0484",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015873015873015872,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "source": "kb_qa",
+              "doc_id": "rv-0458",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015456730769230768,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+              "source": "kb_qa",
+              "doc_id": "rv-0482",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot sewage pump component malfunction/shows a \"waste water drainage error\" and flashes red?\n1. Remove the robot's magnetic cover, take out the robot's dirty water reservoir, and check whether the dirty water sink is blocked. If it is blocked, please clean the ",
+              "score": 0.015083672546359114,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "source": "kb_qa",
+              "doc_id": "rv-0457",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+              "score": 0.01504708904109589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+              "source": "kb_qa",
+              "doc_id": "rv-0481",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+              "snippet": "what should I do when T2080 S1 Pro has EB1L: The robot encountered an error while adding clean water. Task ended/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean wate",
+              "score": 0.014343865090133745,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+              "source": "kb_qa",
+              "doc_id": "rv-0456",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+              "snippet": "what should I do when T2080 S1 pro has EB17: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+              "score": 0.013807285546415981,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+              "source": "kb_qa",
+              "doc_id": "rv-0469",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB33 Auto Water and Drainage Module clean water pump abnormal/Clean water pump of Auto Water and Drainage Module is in error/The clean water pump of the auto water modules is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.013703208556149732,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+              "source": "kb_qa",
+              "doc_id": "rv-0460",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+              "snippet": "what should I do when T2080 S1 pro has EB16: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+              "score": 0.013619047619047617,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+              "source": "kb_qa",
+              "doc_id": "rv-0425",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+              "snippet": "what should I do when T2080 S1 Pro has EB1K: Robot adding clean water error, task paused. Click to view the error reason/Error when refilling robot with clean water/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station. Check the sealing ring of the water outlet hole to ensure it is installed correctly. Shine a flashlight into the clean water tank hose to che",
+              "score": 0.013370786516853934,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.013293650793650793,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+              "source": "kb_qa",
+              "doc_id": "rv-0468",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB31 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/Auto Water and Drainage Module dirty water pump error?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.01300207039337474,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+              "source": "kb_qa",
+              "doc_id": "rv-0446",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+              "snippet": "what should I do when T2080 S1 Pro has EB1C: Base station dirty water pump abnormal, task ended. Click to contact customer service for assistance/Base station dirty water pump error/Base station sewage pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added.",
+              "score": 0.012749445676274944,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+              "source": "kb_qa",
+              "doc_id": "rv-0466",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+              "snippet": "what should I do when T2080 S1 pro has: EB32 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/The dirty water pump of the auto water and drainage module is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.012743770314192849,
+              "status": "ok"
+            }
+          ],
+          "event_id": "e4ed5441c63c5855bb35d7e993654d45",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:18:24.694686+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "38b04b6367c15ba9915e1d1578209816",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "3873c7741493502c8f1bd2da363528a6",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:18:24.700081+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "38b04b6367c15ba9915e1d1578209816",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the robot from the base station, remove the robot's…",
+            "instruction": "Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Shake-the-robot-vertically..png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "event_id": "5bf053d5b04a5b4590d64e7aa1ce9332",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:18:24.701465+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "card_id": "38b04b6367c15ba9915e1d1578209816",
+          "version": 1,
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 15,
+          "event_id": "fe81a9f7eed0471b909a75b725419972",
+          "recorded_at": "2026-10-09T07:18:24.702710+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d3a59cd1e1c353508af85af2b8aae4a2",
+          "recorded_at": "2026-10-09T07:18:24.704312+00:00",
+          "run_id": "7914db1811214c62a6aca32029647b07",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "resumed": false,
+          "event_id": "6f1e44ac3f0b461f8c31b853f536ef03",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:24.739680+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "38b04b6367c15ba9915e1d1578209816",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "38873287ecba4932bc6dfd41b68d9d9f",
+            "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "expected_version": 1
+          },
+          "event_id": "b626aa3b0276485dbdf4d913bcfc6be1",
+          "input_id": "38873287ecba4932bc6dfd41b68d9d9f",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:24.739680+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 19,
+          "event_id": "064b6268d1874a53912e7ca837a7e7db",
+          "recorded_at": "2026-10-09T07:18:24.759335+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 20,
+          "event_id": "41540a02c0ce4e1cb474048906203ee3",
+          "recorded_at": "2026-10-09T07:18:24.761737+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_id": "38873287ecba4932bc6dfd41b68d9d9f",
+          "resolved_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "title": "E23: Robot clean water level abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "367458d98ce85c30894e7be7800de1e7",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:18:24.785159+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "38b04b6367c15ba9915e1d1578209816",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "9cdc16af60bc5e8aa16ddaf2f259d3ed",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:18:24.786282+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "917606f3c6325556b7f825e508dd88a4",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:18:24.787428+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Inspect the recharge sensors' lens where the water filling…",
+            "instruction": "Inspect the recharge sensors' lens where the water filling interface is located for any protrusions or damage.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "event_id": "bf4384307b4c5ff6ba0693c5b5556dbe",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:18:24.791402+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+          "version": 2,
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 26,
+          "event_id": "6ffccf061be3419d8ba4c9f418c3c306",
+          "recorded_at": "2026-10-09T07:18:24.792159+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b9eee93053b95665b828d72ec45feead",
+          "recorded_at": "2026-10-09T07:18:24.793157+00:00",
+          "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "resumed": false,
+          "event_id": "dc61cde8939749ada4c6b8a4d65f6795",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:24.814457+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "c5edcfaba2ee4b65b601420f16929000",
+            "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "expected_version": 2
+          },
+          "event_id": "42614b5464de4390a456bad9216555a9",
+          "input_id": "c5edcfaba2ee4b65b601420f16929000",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:24.814457+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 30,
+          "event_id": "6a47d8ceab8841e1b960675c2edf2c50",
+          "recorded_at": "2026-10-09T07:18:24.827215+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 31,
+          "event_id": "48703888061043eb8710611a7d9a2394",
+          "recorded_at": "2026-10-09T07:18:24.831040+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_id": "c5edcfaba2ee4b65b601420f16929000",
+          "resolved_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "title": "E23: Robot clean water level abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "e9800faa111e5c5a98ef9dc0607e4502",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:18:24.849860+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "ef139565375555fdad65851a5c0cd8a4",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:18:24.850867+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "05dedb62a33155ac9221adef600ea33c",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "83e7d59c3f8f5405adff6dcb2750b871",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:18:24.851827+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "05dedb62a33155ac9221adef600ea33c",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "We would like to confirm with you whether you have ever add…",
+            "instruction": "We would like to confirm with you whether you have ever added third-party disinfectant or cleaning fluid directly to the base station clean water tank. After shaking the base station's clean water tank, check for foam. If foam is present, remove the base station's clean water tank, then simultaneously hold down the mode switch button and the start/pause button for 3 seconds to drain the water from the robot's clean water tank. Empty the liquid from the base station's clean water tank, refill it with tap water, and then perform the cleaning task.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": []
+          },
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "event_id": "88bcf3f9995352e2a518b5d6196aa268",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:18:24.856402+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "card_id": "05dedb62a33155ac9221adef600ea33c",
+          "version": 3,
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 37,
+          "event_id": "ca3d21d3af3d4d32a12202bccf9a8409",
+          "recorded_at": "2026-10-09T07:18:24.857092+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "cca8158007ec54509dfd9b6643006f74",
+          "recorded_at": "2026-10-09T07:18:24.858069+00:00",
+          "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+          "seq": 38,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 39,
+          "type": "run_started",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "resumed": false,
+          "event_id": "8600e3633ac24bc69424dee3f9b6a63c",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:24.881973+00:00"
+        },
+        {
+          "seq": 40,
+          "type": "input_received",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "05dedb62a33155ac9221adef600ea33c",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "550f8d970e014f378e4df0a891030879",
+            "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "expected_version": 3
+          },
+          "event_id": "bcd73f10951c4cad9942b82bd008728c",
+          "input_id": "550f8d970e014f378e4df0a891030879",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:24.881973+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 41,
+          "event_id": "52cb7cf2dbd244a187ccee876f1be4dc",
+          "recorded_at": "2026-10-09T07:18:24.892407+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 42,
+          "event_id": "fe8ada5d0ace4b1bb19ee2f65c4f0665",
+          "recorded_at": "2026-10-09T07:18:24.898463+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "input_id": "550f8d970e014f378e4df0a891030879",
+          "resolved_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "title": "E23: Robot clean water level abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "1fa74b121c455c8f9aad3d9a58c7bb96",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:18:24.919575+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "05dedb62a33155ac9221adef600ea33c",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "38829a8fc2455577812ec8e44e37fec7",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:18:24.920633+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+          "case_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "version": 4,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:24.892376+00:00",
+          "event_id": "6efc6bccd9d854fc994b7eec08c45c10",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:18:24.921536+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "reply_to_input_id": "550f8d970e014f378e4df0a891030879",
+          "event_id": "07485f5d9b705e01abad29a3f90c1ab0",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:18:24.922900+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "da8aa77932885538ae0fbafe7791f1f7",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 48,
+          "recorded_at": "2026-10-09T07:18:24.923816+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+          "status": "completed",
+          "event_id": "d8bb2020c7795e37ba0c4a278fa8cd6d",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 49,
+          "recorded_at": "2026-10-09T07:18:24.926028+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "pending_id": "75e42499aee05482bb6ec984fd999916",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "d2051c78b81a54e9b7bfa2731f6b32e5",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 50,
+          "recorded_at": "2026-10-09T07:18:24.926969+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "card_id": "75e42499aee05482bb6ec984fd999916",
+          "version": 4,
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 51,
+          "event_id": "3a566d3cd1ca4c7dac9960348518c8ae",
+          "recorded_at": "2026-10-09T07:18:24.927749+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9646c155a22a50e9906b928656d0bb7a",
+          "recorded_at": "2026-10-09T07:18:24.929066+00:00",
+          "run_id": "d807b188ef474becb976f8ff4ebf838f",
+          "seq": 52,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:19.684513+08:00",
+  "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+    "version": 4,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+      "kind": "upload_receipt",
+      "card_id": "75e42499aee05482bb6ec984fd999916",
+      "version": 4
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:19.701921+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "user_message",
+        "id": "5ff0c43dd0fd426abce64497e03fd3ec",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:18:23.448749+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "9203287642b8551fb71b57f20fbee41b",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:18:24.695024Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "source": "kb_qa",
+            "doc_id": "rv-0063",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+            "source": "kb_qa",
+            "doc_id": "rv-0484",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+            "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+            "score": 0.016129032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "source": "kb_qa",
+            "doc_id": "rv-0453",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.015873015873015872,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+            "source": "kb_qa",
+            "doc_id": "rv-0458",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+            "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.015456730769230768,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+            "source": "kb_qa",
+            "doc_id": "rv-0482",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+            "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot sewage pump component malfunction/shows a \"waste water drainage error\" and flashes red?\n1. Remove the robot's magnetic cover, take out the robot's dirty water reservoir, and check whether the dirty water sink is blocked. If it is blocked, please clean the ",
+            "score": 0.015083672546359114,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+            "source": "kb_qa",
+            "doc_id": "rv-0457",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+            "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+            "score": 0.01504708904109589,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+            "source": "kb_qa",
+            "doc_id": "rv-0481",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+            "snippet": "what should I do when T2080 S1 Pro has EB1L: The robot encountered an error while adding clean water. Task ended/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean wate",
+            "score": 0.014343865090133745,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+            "source": "kb_qa",
+            "doc_id": "rv-0456",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+            "snippet": "what should I do when T2080 S1 pro has EB17: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+            "score": 0.013807285546415981,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+            "source": "kb_qa",
+            "doc_id": "rv-0469",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+            "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB33 Auto Water and Drainage Module clean water pump abnormal/Clean water pump of Auto Water and Drainage Module is in error/The clean water pump of the auto water modules is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+            "score": 0.013703208556149732,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+            "source": "kb_qa",
+            "doc_id": "rv-0460",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+            "snippet": "what should I do when T2080 S1 pro has EB16: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+            "score": 0.013619047619047617,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+            "source": "kb_qa",
+            "doc_id": "rv-0425",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+            "snippet": "what should I do when T2080 S1 Pro has EB1K: Robot adding clean water error, task paused. Click to view the error reason/Error when refilling robot with clean water/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station. Check the sealing ring of the water outlet hole to ensure it is installed correctly. Shine a flashlight into the clean water tank hose to che",
+            "score": 0.013370786516853934,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "source": "kb_qa",
+            "doc_id": "rv-0436",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+            "score": 0.013293650793650793,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+            "source": "kb_qa",
+            "doc_id": "rv-0468",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+            "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB31 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/Auto Water and Drainage Module dirty water pump error?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+            "score": 0.01300207039337474,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+            "source": "kb_qa",
+            "doc_id": "rv-0446",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+            "snippet": "what should I do when T2080 S1 Pro has EB1C: Base station dirty water pump abnormal, task ended. Click to contact customer service for assistance/Base station dirty water pump error/Base station sewage pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added.",
+            "score": 0.012749445676274944,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+            "source": "kb_qa",
+            "doc_id": "rv-0466",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+            "snippet": "what should I do when T2080 S1 pro has: EB32 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/The dirty water pump of the auto water and drainage module is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+            "score": 0.012743770314192849,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:24.701465+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "step_card",
+        "card_id": "38b04b6367c15ba9915e1d1578209816",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0063",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Remove the robot from the base station, remove the robot's…",
+          "instruction": "Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "qa:rv-0063"
+          ],
+          "primary_evidence_id": "qa:rv-0063",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+              "kind": "image"
+            },
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Shake-the-robot-vertically..png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:24.739680+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "action",
+        "id": "38873287ecba4932bc6dfd41b68d9d9f",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:24.791402+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "step_card",
+        "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0063",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Inspect the recharge sensors' lens where the water filling…",
+          "instruction": "Inspect the recharge sensors' lens where the water filling interface is located for any protrusions or damage.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "qa:rv-0063"
+          ],
+          "primary_evidence_id": "qa:rv-0063",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:24.814457+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "action",
+        "id": "c5edcfaba2ee4b65b601420f16929000",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:24.856402+00:00",
+        "first_seq": 36,
+        "last_seq": 36,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "step_card",
+        "card_id": "05dedb62a33155ac9221adef600ea33c",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_rv_0063",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "We would like to confirm with you whether you have ever add…",
+          "instruction": "We would like to confirm with you whether you have ever added third-party disinfectant or cleaning fluid directly to the base station clean water tank. After shaking the base station's clean water tank, check for foam. If foam is present, remove the base station's clean water tank, then simultaneously hold down the mode switch button and the start/pause button for 3 seconds to drain the water from the robot's clean water tank. Empty the liquid from the base station's clean water tank, refill it with tap water, and then perform the cleaning task.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "qa:rv-0063"
+          ],
+          "primary_evidence_id": "qa:rv-0063",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:24.881973+00:00",
+        "first_seq": 40,
+        "last_seq": 44,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "action",
+        "id": "550f8d970e014f378e4df0a891030879",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:24.921536+00:00",
+        "first_seq": 46,
+        "last_seq": 46,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "case_changed",
+        "card_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+        "version": 4,
+        "case_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:18:24.892376+00:00"
+      },
+      {
+        "at": "2026-10-09T07:18:24.922900+00:00",
+        "first_seq": 47,
+        "last_seq": 49,
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "assistant_message",
+        "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "550f8d970e014f378e4df0a891030879",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+    "issues": [
+      {
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "status": "open",
+        "title": "E23: Robot clean water level abnormal, task ended.",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 52,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 3,
+  "errors": [],
+  "seconds": 5.18,
+  "journey": {
+    "session": {
+      "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:19.705173Z",
+      "last_run_at": "2026-10-09T07:18:24.929913Z",
+      "runs": 4,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E[REDACTED]\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact c",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0063"
+      ],
+      "steps_executed": 3,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 46,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:18:24.929913Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "7914db1811214c62a6aca32029647b07",
+        "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:19.705173Z",
+        "ended_at": "2026-10-09T07:18:24.705607Z",
+        "duration_ms": 5000,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 4997,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3652,
+            "tokens_in": 4226,
+            "tokens_out": 348,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:23.367788Z"
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 906,
+            "tokens_in": 4516,
+            "tokens_out": 106,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:24.633306Z"
+          }
+        ],
+        "tokens_in": 8742,
+        "tokens_out": 454,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:19.705173Z",
+            "duration_ms": 3701,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3371,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 238,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5771
+                    }
+                  ],
+                  "actual_input_tokens": 4226
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:23.406675Z",
+            "duration_ms": 37,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:23.444003Z",
+            "duration_ms": 1208,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0063",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5150,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 238,
+                    "history": 0,
+                    "authority": 4556
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 244,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 188,
+                    "timezone": 7,
+                    "task_data": 3754,
+                    "issue_index": 152,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5628
+                    }
+                  ],
+                  "actual_input_tokens": 4516
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:18:24.652073Z",
+            "duration_ms": 12,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:24.664445Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:24.664456Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "7914db1811214c62a6aca32029647b07",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 270,
+            "query": "E23: Robot clean water level abnormal, task ended",
+            "created_at": "2026-10-09T07:18:23.699218Z"
+          }
+        ]
+      },
+      {
+        "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+        "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:18:24.742723Z",
+        "ended_at": "2026-10-09T07:18:24.794178Z",
+        "duration_ms": 51,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 50,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:24.742723Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:24.755901Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0063",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:24.758384Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:24.760613Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "bdb71643a11445d1bee95cbf0077bab9",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:24.760913Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+        "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:18:24.815488Z",
+        "ended_at": "2026-10-09T07:18:24.858713Z",
+        "duration_ms": 43,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 41,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:24.815488Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:24.824631Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0063",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:24.826182Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:24.828979Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "2148dff27ab34bb1ab8420121ac406ce",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:24.828984Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "d807b188ef474becb976f8ff4ebf838f",
+        "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+        "seq_no": 4,
+        "started_at": "2026-10-09T07:18:24.883472Z",
+        "ended_at": "2026-10-09T07:18:24.929904Z",
+        "duration_ms": 46,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 42,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:24.883472Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0063",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:24.889786Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:24.891236Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:18:24.892149Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:18:24.895019Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:18:24.895562Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d807b188ef474becb976f8ff4ebf838f",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:24.895974Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+      "version": 4,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "kind": "upload_receipt",
+        "card_id": "75e42499aee05482bb6ec984fd999916",
+        "version": 4
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:19.701921+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "user_message",
+          "id": "5ff0c43dd0fd426abce64497e03fd3ec",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:18:23.448749+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "9203287642b8551fb71b57f20fbee41b",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:18:24.695024Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "source": "kb_qa",
+              "doc_id": "rv-0063",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "source": "kb_qa",
+              "doc_id": "rv-0484",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015873015873015872,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "source": "kb_qa",
+              "doc_id": "rv-0458",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015456730769230768,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+              "source": "kb_qa",
+              "doc_id": "rv-0482",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot sewage pump component malfunction/shows a \"waste water drainage error\" and flashes red?\n1. Remove the robot's magnetic cover, take out the robot's dirty water reservoir, and check whether the dirty water sink is blocked. If it is blocked, please clean the ",
+              "score": 0.015083672546359114,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "source": "kb_qa",
+              "doc_id": "rv-0457",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+              "score": 0.01504708904109589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+              "source": "kb_qa",
+              "doc_id": "rv-0481",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+              "snippet": "what should I do when T2080 S1 Pro has EB1L: The robot encountered an error while adding clean water. Task ended/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean wate",
+              "score": 0.014343865090133745,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+              "source": "kb_qa",
+              "doc_id": "rv-0456",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+              "snippet": "what should I do when T2080 S1 pro has EB17: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+              "score": 0.013807285546415981,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+              "source": "kb_qa",
+              "doc_id": "rv-0469",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB33 Auto Water and Drainage Module clean water pump abnormal/Clean water pump of Auto Water and Drainage Module is in error/The clean water pump of the auto water modules is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.013703208556149732,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+              "source": "kb_qa",
+              "doc_id": "rv-0460",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+              "snippet": "what should I do when T2080 S1 pro has EB16: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+              "score": 0.013619047619047617,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+              "source": "kb_qa",
+              "doc_id": "rv-0425",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+              "snippet": "what should I do when T2080 S1 Pro has EB1K: Robot adding clean water error, task paused. Click to view the error reason/Error when refilling robot with clean water/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station. Check the sealing ring of the water outlet hole to ensure it is installed correctly. Shine a flashlight into the clean water tank hose to che",
+              "score": 0.013370786516853934,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.013293650793650793,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+              "source": "kb_qa",
+              "doc_id": "rv-0468",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB31 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/Auto Water and Drainage Module dirty water pump error?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.01300207039337474,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+              "source": "kb_qa",
+              "doc_id": "rv-0446",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+              "snippet": "what should I do when T2080 S1 Pro has EB1C: Base station dirty water pump abnormal, task ended. Click to contact customer service for assistance/Base station dirty water pump error/Base station sewage pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added.",
+              "score": 0.012749445676274944,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+              "source": "kb_qa",
+              "doc_id": "rv-0466",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+              "snippet": "what should I do when T2080 S1 pro has: EB32 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/The dirty water pump of the auto water and drainage module is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.012743770314192849,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:24.701465+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "step_card",
+          "card_id": "38b04b6367c15ba9915e1d1578209816",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the robot from the base station, remove the robot's…",
+            "instruction": "Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Shake-the-robot-vertically..png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:24.739680+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "action",
+          "id": "38873287ecba4932bc6dfd41b68d9d9f",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:24.791402+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "step_card",
+          "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Inspect the recharge sensors' lens where the water filling…",
+            "instruction": "Inspect the recharge sensors' lens where the water filling interface is located for any protrusions or damage.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:24.814457+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "action",
+          "id": "c5edcfaba2ee4b65b601420f16929000",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:24.856402+00:00",
+          "first_seq": 36,
+          "last_seq": 36,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "step_card",
+          "card_id": "05dedb62a33155ac9221adef600ea33c",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0063",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "We would like to confirm with you whether you have ever add…",
+            "instruction": "We would like to confirm with you whether you have ever added third-party disinfectant or cleaning fluid directly to the base station clean water tank. After shaking the base station's clean water tank, check for foam. If foam is present, remove the base station's clean water tank, then simultaneously hold down the mode switch button and the start/pause button for 3 seconds to drain the water from the robot's clean water tank. Empty the liquid from the base station's clean water tank, refill it with tap water, and then perform the cleaning task.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "qa:rv-0063"
+            ],
+            "primary_evidence_id": "qa:rv-0063",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:24.881973+00:00",
+          "first_seq": 40,
+          "last_seq": 44,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "action",
+          "id": "550f8d970e014f378e4df0a891030879",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:24.921536+00:00",
+          "first_seq": 46,
+          "last_seq": 46,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "case_changed",
+          "card_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+          "version": 4,
+          "case_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:24.892376+00:00"
+        },
+        {
+          "at": "2026-10-09T07:18:24.922900+00:00",
+          "first_seq": 47,
+          "last_seq": 49,
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "assistant_message",
+          "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "550f8d970e014f378e4df0a891030879",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+      "issues": [
+        {
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "status": "open",
+          "title": "E23: Robot clean water level abnormal, task ended.",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 52,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+      "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+      "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:18:24.892376+00:00",
+      "updated_at": "2026-10-09T07:18:24.892376+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "732826a7484a44b98d3ec8413cc62bfa",
+        "version": 4,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+          "kind": "upload_receipt",
+          "card_id": "75e42499aee05482bb6ec984fd999916",
+          "version": 4
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:19.701921+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "user_message",
+            "id": "5ff0c43dd0fd426abce64497e03fd3ec",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E14300440\nProblem Type: ERROR\nProblem Code: 20972035-\nProblem Push: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:18:23.448749+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "9203287642b8551fb71b57f20fbee41b",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:18:24.695024Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "source": "kb_qa",
+                "doc_id": "rv-0063",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+                "source": "kb_qa",
+                "doc_id": "rv-0484",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+                "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+                "score": 0.016129032258064516,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "source": "kb_qa",
+                "doc_id": "rv-0453",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.015873015873015872,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+                "source": "kb_qa",
+                "doc_id": "rv-0458",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+                "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.015456730769230768,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+                "source": "kb_qa",
+                "doc_id": "rv-0482",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f3e85e39-4856-4097-a5cb-ecbba5223e13",
+                "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot sewage pump component malfunction/shows a \"waste water drainage error\" and flashes red?\n1. Remove the robot's magnetic cover, take out the robot's dirty water reservoir, and check whether the dirty water sink is blocked. If it is blocked, please clean the ",
+                "score": 0.015083672546359114,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+                "source": "kb_qa",
+                "doc_id": "rv-0457",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+                "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+                "score": 0.01504708904109589,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+                "source": "kb_qa",
+                "doc_id": "rv-0481",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "14f13e74-da85-4a2a-8f14-ed5e32da6b3b",
+                "snippet": "what should I do when T2080 S1 Pro has EB1L: The robot encountered an error while adding clean water. Task ended/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean wate",
+                "score": 0.014343865090133745,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+                "source": "kb_qa",
+                "doc_id": "rv-0456",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "2c13a4cb-b068-494a-b856-ba98627caf8a",
+                "snippet": "what should I do when T2080 S1 pro has EB17: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+                "score": 0.013807285546415981,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+                "source": "kb_qa",
+                "doc_id": "rv-0469",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0b0795a7-f2cb-49eb-8bb5-01593d0032f0",
+                "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB33 Auto Water and Drainage Module clean water pump abnormal/Clean water pump of Auto Water and Drainage Module is in error/The clean water pump of the auto water modules is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+                "score": 0.013703208556149732,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+                "source": "kb_qa",
+                "doc_id": "rv-0460",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "06f9c6e5-dd2d-4c7a-8959-eeb2a14ac43b",
+                "snippet": "what should I do when T2080 S1 pro has EB16: Base station clean water pump abnormal, task ended. Click to contact customer service for assistance/Base station clean water pump error/Base station water pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added, which may damage the water pump.",
+                "score": 0.013619047619047617,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+                "source": "kb_qa",
+                "doc_id": "rv-0425",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3b1ee4ba-21c8-47a1-9573-34bc9215a3b6",
+                "snippet": "what should I do when T2080 S1 Pro has EB1K: Robot adding clean water error, task paused. Click to view the error reason/Error when refilling robot with clean water/Robot injecting clean water abnormally?\n1. Remove the clean water tank from the base station. Check the sealing ring of the water outlet hole to ensure it is installed correctly. Shine a flashlight into the clean water tank hose to che",
+                "score": 0.013370786516853934,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "source": "kb_qa",
+                "doc_id": "rv-0436",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+                "score": 0.013293650793650793,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+                "source": "kb_qa",
+                "doc_id": "rv-0468",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "00d89cb2-99c6-4ea7-ba52-97ff891d5418",
+                "snippet": "what should I do when T2080 S1 pro has Abnormal alert: EB31 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/Auto Water and Drainage Module dirty water pump error?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+                "score": 0.01300207039337474,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+                "source": "kb_qa",
+                "doc_id": "rv-0446",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "db567316-386c-44d2-8725-78deeadfe0f8",
+                "snippet": "what should I do when T2080 S1 Pro has EB1C: Base station dirty water pump abnormal, task ended. Click to contact customer service for assistance/Base station dirty water pump error/Base station sewage pump malfunction?\nPlease confirm whether any third-party cleaning fluids or disinfectants have been added.",
+                "score": 0.012749445676274944,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+                "source": "kb_qa",
+                "doc_id": "rv-0466",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "64d181e3-0940-4eba-849c-5c4f38400635",
+                "snippet": "what should I do when T2080 S1 pro has: EB32 Auto Water and Drainage Module dirty water pump abnormal/Dirty water pump of Auto Water and Drainage Module is in error/The dirty water pump of the auto water and drainage module is abnormal?\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+                "score": 0.012743770314192849,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:24.701465+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "step_card",
+            "card_id": "38b04b6367c15ba9915e1d1578209816",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0063",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Remove the robot from the base station, remove the robot's…",
+              "instruction": "Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "qa:rv-0063"
+              ],
+              "primary_evidence_id": "qa:rv-0063",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                  "kind": "image"
+                },
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Shake-the-robot-vertically..png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:24.739680+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "action",
+            "id": "38873287ecba4932bc6dfd41b68d9d9f",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:24.791402+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "step_card",
+            "card_id": "d8bc4bdd49465c2c9208b0ae5b77c06e",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0063",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Inspect the recharge sensors' lens where the water filling…",
+              "instruction": "Inspect the recharge sensors' lens where the water filling interface is located for any protrusions or damage.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "qa:rv-0063"
+              ],
+              "primary_evidence_id": "qa:rv-0063",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:24.814457+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "action",
+            "id": "c5edcfaba2ee4b65b601420f16929000",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:24.856402+00:00",
+            "first_seq": 36,
+            "last_seq": 36,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "step_card",
+            "card_id": "05dedb62a33155ac9221adef600ea33c",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_rv_0063",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "We would like to confirm with you whether you have ever add…",
+              "instruction": "We would like to confirm with you whether you have ever added third-party disinfectant or cleaning fluid directly to the base station clean water tank. After shaking the base station's clean water tank, check for foam. If foam is present, remove the base station's clean water tank, then simultaneously hold down the mode switch button and the start/pause button for 3 seconds to drain the water from the robot's clean water tank. Empty the liquid from the base station's clean water tank, refill it with tap water, and then perform the cleaning task.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "qa:rv-0063"
+              ],
+              "primary_evidence_id": "qa:rv-0063",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:24.881973+00:00",
+            "first_seq": 40,
+            "last_seq": 44,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "action",
+            "id": "550f8d970e014f378e4df0a891030879",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:24.921536+00:00",
+            "first_seq": 46,
+            "last_seq": 46,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "case_changed",
+            "card_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+            "version": 4,
+            "case_id": "111ad933-acdd-5f94-b440-81ce02e73d2e",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:18:24.892376+00:00"
+          },
+          {
+            "at": "2026-10-09T07:18:24.922900+00:00",
+            "first_seq": 47,
+            "last_seq": 49,
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "kind": "assistant_message",
+            "message_id": "ccd3537df48d5387ad5fa286eef1876d",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "550f8d970e014f378e4df0a891030879",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+        "issues": [
+          {
+            "issue_id": "f416d44b9f9356008bb2a8dc553aff48",
+            "status": "open",
+            "title": "E23: Robot clean water level abnormal, task ended.",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 52,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

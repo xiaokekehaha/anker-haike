@@ -1,0 +1,2203 @@
+{
+  "id": "T40",
+  "input": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "resumed": false,
+          "event_id": "0f79f681964a4f1c96e6ebf789967201",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:11.087550+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "payload": {
+            "kind": "message",
+            "text": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "9ff2a4d4f117491ab6c0cb0bea0b7545",
+          "input_id": "cec0e8ef9b1247f19e8b3e1889a65339",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:11.087550+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 3,
+          "event_id": "078d0bd6a55847ebaa9edb5f26675b10",
+          "recorded_at": "2026-10-09T07:19:11.108040+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 4,
+          "event_id": "c2c121c4aec04155bdf4fe7aa2e4d8e0",
+          "recorded_at": "2026-10-09T07:19:14.032196+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 5,
+          "event_id": "fd8d136578b94c36a69a96ce0214426f",
+          "recorded_at": "2026-10-09T07:19:14.039723+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "input_id": "cec0e8ef9b1247f19e8b3e1889a65339",
+          "resolved_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "title": "floor detergent level has barley moved, not dispensing",
+              "status": "open"
+            }
+          ],
+          "event_id": "11ec10f2ca00516a87cb78cd58d4470e",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 7,
+          "recorded_at": "2026-10-09T07:19:14.063001+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "pending_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "a966864068705649a8b7c98c47cad5e5",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 8,
+          "recorded_at": "2026-10-09T07:19:14.064260+00:00"
+        },
+        {
+          "type": "product_card",
+          "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+          "version": 1,
+          "candidates": [
+            {
+              "sku": "T2080",
+              "name": "eufy Robot Vacuum Omni S1 Pro",
+              "category": "robot_vacuum",
+              "image": null,
+              "in_scope": true
+            },
+            {
+              "sku": "T8D04",
+              "name": "eufy Wearable Breast Pump S1 Pro",
+              "category": "breast_pump",
+              "image": null,
+              "in_scope": true
+            }
+          ],
+          "allow_unknown": false,
+          "note": null,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "event_id": "52861125e064549495f09c7db7bd5cb3",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:19:14.065282+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "select_product",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+          "version": 1,
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 10,
+          "event_id": "b692e6a035804d2b8f1940c22542d23b",
+          "recorded_at": "2026-10-09T07:19:14.066282+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9bc0b7231ffe537488744db5ece22caf",
+          "recorded_at": "2026-10-09T07:19:14.067668+00:00",
+          "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+          "seq": 11,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "select_product",
+        "payload": {
+          "sku": "T2080"
+        },
+        "source": "official_ticket_model"
+      },
+      "events": [
+        {
+          "seq": 12,
+          "type": "run_started",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "resumed": false,
+          "event_id": "59800b895d6b4e6cae9fb75220efc5f7",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:14.091417+00:00"
+        },
+        {
+          "seq": 13,
+          "type": "input_received",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "payload": {
+            "kind": "select_product",
+            "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+            "payload": {
+              "sku": "T2080"
+            },
+            "action_id": "34789b0097b645b3b1b4bae9cb383250",
+            "target_issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "expected_version": 1
+          },
+          "event_id": "d2ac3d1f6b5e4b96b430bd53ebf1757a",
+          "input_id": "34789b0097b645b3b1b4bae9cb383250",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:14.091417+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 14,
+          "event_id": "b8e6fa173537474aa907a2eca168acd0",
+          "recorded_at": "2026-10-09T07:19:14.102059+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8c7c8849fb935adb98e60cc1ef9ae141",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 15,
+          "event_id": "acd93441471d4e958963fec6ffe5b30c",
+          "recorded_at": "2026-10-09T07:19:14.103570+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8c7c8849fb935adb98e60cc1ef9ae141",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 16,
+          "event_id": "0029e16ac1e947dab1181204fb6c4d2a",
+          "recorded_at": "2026-10-09T07:19:14.347566+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 17,
+          "event_id": "ef121823c52144d6acd686200bcff50a",
+          "recorded_at": "2026-10-09T07:19:15.904984+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 18,
+          "event_id": "32de364ce620425699bfb74dc43ceba5",
+          "recorded_at": "2026-10-09T07:19:15.913561+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "input_id": "34789b0097b645b3b1b4bae9cb383250",
+          "resolved_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "title": "floor detergent level has barley moved, not dispensing",
+              "status": "open"
+            }
+          ],
+          "event_id": "5dd671baabb8590fa8cbd645176653a6",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:19:15.933601+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "pending_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+          "status": "consumed",
+          "reason": "select_product",
+          "version": 2,
+          "event_id": "63cf93ddf5d85dc6b31333462cf72501",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:19:15.935010+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+              "source": "kb_qa",
+              "doc_id": "rv-0371",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+              "snippet": "The eufy S1 Pro's cleaning solution level remains at 660ml after two weeks of use, despite multiple mop function runs and attempts to reinstall.\n1. The S1 Pro may use cleaning solution gradually, but if the level hasn't changed at all, it may not be dispensing properly.\n2. Suggested troubleshooting steps can be found at:",
+              "score": 0.016208355367530406,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "36770c98-5be5-4851-a000-c212e199fa86",
+              "source": "kb_qa",
+              "doc_id": "rv-0386",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "36770c98-5be5-4851-a000-c212e199fa86",
+              "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+              "score": 0.016162909836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+              "source": "kb_qa",
+              "doc_id": "rv-0387",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+              "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+              "score": 0.015726495726495725,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+              "source": "kb_qa",
+              "doc_id": "rv-0073",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+              "snippet": "How do I use eufy cleaning solution with my S1 Pro/T2080? My S1 Pro/T2080 is not dispensing cleaning liquid. The cleaning solution of S1 Pro/T2080 is not being dispensed.\nIn your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showi",
+              "score": 0.013810945273631841,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+              "source": "kb_qa",
+              "doc_id": "rv-0314",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+              "snippet": "After mopping, there are noticeable water streak on the floor for S1 Pro\n1. If the Mop Setting is set to deep, reduce it to standard or soft.\n2. If the rolling mop is dirty or worn out, replace it with a new one.",
+              "score": 0.01378248974008208,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+              "source": "kb_qa",
+              "doc_id": "rv-0478",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+              "snippet": "what should I do when T2080 S1 Pro Mopping leaves marks/Mopping left streaks on the floor/Leaves stains after mopping/there are residual water stains after mopping?\n1. Please assess the impact of side brushes and roller brushes on mopping performance: Remove both the roller brush and side brushes (or remove them individually for separate testing) and perform a mopping task. Confirm whether mopping",
+              "score": 0.012807881773399015,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5b46d085-6a58-4243-8479-b1572169b147",
+              "source": "kb_qa",
+              "doc_id": "rv-0382",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5b46d085-6a58-4243-8479-b1572169b147",
+              "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+              "score": 0.01252596053997923,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+              "source": "kb_qa",
+              "doc_id": "rv-0353",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\n-Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. -Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on both sides should be even. -Check if the dirty water tank filter is clogged w",
+              "score": 0.012335526315789472,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+              "source": "kb_qa",
+              "doc_id": "rv-0383",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+              "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+              "score": 0.01228964813870474,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "source": "kb_qa",
+              "doc_id": "rv-0302",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+              "score": 0.012285518188057652,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+              "source": "kb_qa",
+              "doc_id": "rv-0121",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+              "snippet": "What should I do if my S1/S1 Pro/T2080/T2071 cannot clean efficiently, drop more dirt at the end of a cleaning cycle? i'm experiencing an issue with the cleaning performance of my S1 Pro/T2080\n-If possible, please remove cluttered objects from the floor before running it to reduce the number of obstacles in the robot's cleaning path. -Consider merging smaller sections of each partition to decrease",
+              "score": 0.01212121212121212,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "source": "kb_qa",
+              "doc_id": "rv-0063",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+              "score": 0.011812536960378473,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+              "source": "kb_qa",
+              "doc_id": "rv-0122",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+              "snippet": "How do I get my S1/S1 Pro/T2080/T2071 to clean the upstairs if the base station is on a different floor? Navigating Multi-Level Cleaning with the S1 Series\nIn your case, please refer to the article and video below to navigate multiple floors. Hope it helps. Please let us know if you have any further needs.",
+              "score": 0.011688311688311689,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "source": "kb_qa",
+              "doc_id": "rv-0457",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+              "score": 0.011655011655011654,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+              "source": "kb_qa",
+              "doc_id": "rv-0352",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\nS1 Pro /T2080 leaves dirty water spots, Leaving water drops while mopping.\n- Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. - Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on ",
+              "score": 0.011265597147950088,
+              "status": "ok"
+            }
+          ],
+          "event_id": "463733f3c97c58259d7ceaa9314857e9",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:19:15.936430+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "pending_id": "af8d1c52b9265e88bab77d362d2e16c2",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "54a964662d4b5adb85491cc326042ca7",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:19:15.944526+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+          "version": 2,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0073",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "How do I use eufy cleaning solution with my S1 Pro/T2080?",
+            "instruction": "In your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showing the current state of the cleaning solution and how it is installed? This will help us diagnose the issue more accurately and provide you with the best possible solution.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "92959c9c-a4c3-4b0e-83d1-af17cb2b4816"
+            ],
+            "primary_evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+            "media": [
+              {
+                "url": "https://support.eufy.com/s/article/How-do-I-use-eufy-cleaning-solution-with-my-S1-Pro",
+                "kind": "link"
+              }
+            ]
+          },
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "event_id": "7df258cc243b5a59b7aab5e68b7017f8",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:19:15.947069+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+          "version": 2,
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 25,
+          "event_id": "d947e8a6395f451b9c4a64aa60cd4e1b",
+          "recorded_at": "2026-10-09T07:19:15.948340+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9c09f3c47d0a572ea2a2bfecf01beaff",
+          "recorded_at": "2026-10-09T07:19:15.949796+00:00",
+          "run_id": "e2c0785072634bb69e6950bbe243854e",
+          "seq": 26,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 27,
+          "type": "run_started",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "resumed": false,
+          "event_id": "5e1be902eee34f63a566f6c9865063f4",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:15.969938+00:00"
+        },
+        {
+          "seq": 28,
+          "type": "input_received",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "c65291f32789440e850af6f0de215bf2",
+            "target_issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "expected_version": 2
+          },
+          "event_id": "bb8769c78b8441089a650e65685877d9",
+          "input_id": "c65291f32789440e850af6f0de215bf2",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:15.969938+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 29,
+          "event_id": "d563d65b62eb4a0fa154994cb942a79f",
+          "recorded_at": "2026-10-09T07:19:15.981208+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 30,
+          "event_id": "03ff25ce8a38443480a9a27ef3a2c9bd",
+          "recorded_at": "2026-10-09T07:19:15.987069+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "input_id": "c65291f32789440e850af6f0de215bf2",
+          "resolved_issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "title": "floor detergent level has barley moved, not dispensing",
+              "status": "open"
+            }
+          ],
+          "event_id": "ff9b3a155bba5656bba40ee86e8866c8",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 32,
+          "recorded_at": "2026-10-09T07:19:16.011758+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "pending_id": "af8d1c52b9265e88bab77d362d2e16c2",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "1260bc640a7d5967a6ce2088566fc176",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:19:16.012626+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+          "case_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:15.981182+00:00",
+          "event_id": "294ddc4ceb845f43872b0b2741baae1d",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:19:16.013382+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "569ca30612545100b2755f2eba4b810e",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "reply_to_input_id": "c65291f32789440e850af6f0de215bf2",
+          "event_id": "85dc97dbf70e505ebf20aafe9b0acce1",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:19:16.014517+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "569ca30612545100b2755f2eba4b810e",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "db47cb1407c3562ea93e03fab44d1a27",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:19:16.015346+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "569ca30612545100b2755f2eba4b810e",
+          "status": "completed",
+          "event_id": "d628a2f543a857fcaefb61fa3446be6a",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:19:16.016446+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "pending_id": "75473fb318ac52a5959145eb0dd7bd5d",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "35bf95be44625703ada2fd72e5adbf4c",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:19:16.017287+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "card_id": "75473fb318ac52a5959145eb0dd7bd5d",
+          "version": 3,
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 39,
+          "event_id": "bb5a7cd47062409ab32d262933014653",
+          "recorded_at": "2026-10-09T07:19:16.017865+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "a3b15f7330405492a1757ba58f24c678",
+          "recorded_at": "2026-10-09T07:19:16.019289+00:00",
+          "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+          "seq": 40,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:11.055480+08:00",
+  "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "d70201170cb656c9bac747ef30935bd0",
+      "kind": "upload_receipt",
+      "card_id": "75473fb318ac52a5959145eb0dd7bd5d",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:11.087550+00:00",
+        "first_seq": 2,
+        "last_seq": 7,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "user_message",
+        "id": "cec0e8ef9b1247f19e8b3e1889a65339",
+        "text": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:19:14.065282+00:00",
+        "first_seq": 9,
+        "last_seq": 9,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "product_card",
+        "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+        "version": 1,
+        "candidates": [
+          {
+            "sku": "T2080",
+            "name": "eufy Robot Vacuum Omni S1 Pro",
+            "category": "robot_vacuum",
+            "image": null,
+            "in_scope": true
+          },
+          {
+            "sku": "T8D04",
+            "name": "eufy Wearable Breast Pump S1 Pro",
+            "category": "breast_pump",
+            "image": null,
+            "in_scope": true
+          }
+        ],
+        "allow_unknown": false,
+        "note": null,
+        "selected_sku": "T2080",
+        "selected_unknown": false
+      },
+      {
+        "at": "2026-10-09T07:19:14.091417+00:00",
+        "first_seq": 13,
+        "last_seq": 20,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "action",
+        "id": "34789b0097b645b3b1b4bae9cb383250",
+        "label": "选择产品",
+        "action_kind": "select_product"
+      },
+      {
+        "at": "2026-10-09T07:19:14.103570+00:00",
+        "first_seq": 15,
+        "last_seq": 16,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "8c7c8849fb935adb98e60cc1ef9ae141",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:19:15.936786Z",
+        "first_seq": 22,
+        "last_seq": 22,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+            "source": "kb_qa",
+            "doc_id": "rv-0371",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+            "snippet": "The eufy S1 Pro's cleaning solution level remains at 660ml after two weeks of use, despite multiple mop function runs and attempts to reinstall.\n1. The S1 Pro may use cleaning solution gradually, but if the level hasn't changed at all, it may not be dispensing properly.\n2. Suggested troubleshooting steps can be found at:",
+            "score": 0.016208355367530406,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "36770c98-5be5-4851-a000-c212e199fa86",
+            "source": "kb_qa",
+            "doc_id": "rv-0386",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "36770c98-5be5-4851-a000-c212e199fa86",
+            "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+            "score": 0.016162909836065574,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+            "source": "kb_qa",
+            "doc_id": "rv-0387",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+            "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+            "score": 0.015726495726495725,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+            "source": "kb_qa",
+            "doc_id": "rv-0073",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+            "snippet": "How do I use eufy cleaning solution with my S1 Pro/T2080? My S1 Pro/T2080 is not dispensing cleaning liquid. The cleaning solution of S1 Pro/T2080 is not being dispensed.\nIn your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showi",
+            "score": 0.013810945273631841,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+            "source": "kb_qa",
+            "doc_id": "rv-0314",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+            "snippet": "After mopping, there are noticeable water streak on the floor for S1 Pro\n1. If the Mop Setting is set to deep, reduce it to standard or soft.\n2. If the rolling mop is dirty or worn out, replace it with a new one.",
+            "score": 0.01378248974008208,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+            "source": "kb_qa",
+            "doc_id": "rv-0478",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+            "snippet": "what should I do when T2080 S1 Pro Mopping leaves marks/Mopping left streaks on the floor/Leaves stains after mopping/there are residual water stains after mopping?\n1. Please assess the impact of side brushes and roller brushes on mopping performance: Remove both the roller brush and side brushes (or remove them individually for separate testing) and perform a mopping task. Confirm whether mopping",
+            "score": 0.012807881773399015,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5b46d085-6a58-4243-8479-b1572169b147",
+            "source": "kb_qa",
+            "doc_id": "rv-0382",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5b46d085-6a58-4243-8479-b1572169b147",
+            "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+            "score": 0.01252596053997923,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+            "source": "kb_qa",
+            "doc_id": "rv-0353",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+            "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\n-Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. -Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on both sides should be even. -Check if the dirty water tank filter is clogged w",
+            "score": 0.012335526315789472,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+            "source": "kb_qa",
+            "doc_id": "rv-0383",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+            "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+            "score": 0.01228964813870474,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+            "source": "kb_qa",
+            "doc_id": "rv-0302",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+            "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+            "score": 0.012285518188057652,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+            "source": "kb_qa",
+            "doc_id": "rv-0121",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+            "snippet": "What should I do if my S1/S1 Pro/T2080/T2071 cannot clean efficiently, drop more dirt at the end of a cleaning cycle? i'm experiencing an issue with the cleaning performance of my S1 Pro/T2080\n-If possible, please remove cluttered objects from the floor before running it to reduce the number of obstacles in the robot's cleaning path. -Consider merging smaller sections of each partition to decrease",
+            "score": 0.01212121212121212,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "source": "kb_qa",
+            "doc_id": "rv-0063",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+            "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+            "score": 0.011812536960378473,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+            "source": "kb_qa",
+            "doc_id": "rv-0122",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+            "snippet": "How do I get my S1/S1 Pro/T2080/T2071 to clean the upstairs if the base station is on a different floor? Navigating Multi-Level Cleaning with the S1 Series\nIn your case, please refer to the article and video below to navigate multiple floors. Hope it helps. Please let us know if you have any further needs.",
+            "score": 0.011688311688311689,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+            "source": "kb_qa",
+            "doc_id": "rv-0457",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+            "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+            "score": 0.011655011655011654,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+            "source": "kb_qa",
+            "doc_id": "rv-0352",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+            "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\nS1 Pro /T2080 leaves dirty water spots, Leaving water drops while mopping.\n- Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. - Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on ",
+            "score": 0.011265597147950088,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:15.947069+00:00",
+        "first_seq": 24,
+        "last_seq": 24,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "step_card",
+        "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+        "version": 2,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0073",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "How do I use eufy cleaning solution with my S1 Pro/T2080?",
+          "instruction": "In your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showing the current state of the cleaning solution and how it is installed? This will help us diagnose the issue more accurately and provide you with the best possible solution.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "92959c9c-a4c3-4b0e-83d1-af17cb2b4816"
+          ],
+          "primary_evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+          "media": [
+            {
+              "url": "https://support.eufy.com/s/article/How-do-I-use-eufy-cleaning-solution-with-my-S1-Pro",
+              "kind": "link"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:15.969938+00:00",
+        "first_seq": 28,
+        "last_seq": 32,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "action",
+        "id": "c65291f32789440e850af6f0de215bf2",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:16.013382+00:00",
+        "first_seq": 34,
+        "last_seq": 34,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "case_changed",
+        "card_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+        "version": 3,
+        "case_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:19:15.981182+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:16.014517+00:00",
+        "first_seq": 35,
+        "last_seq": 37,
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "assistant_message",
+        "message_id": "569ca30612545100b2755f2eba4b810e",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "c65291f32789440e850af6f0de215bf2",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+    "issues": [
+      {
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "status": "open",
+        "title": "floor detergent level has barley moved, not dispensing",
+        "task_queue": [
+          {
+            "task_id": "462778877404547fb1b7727446645111",
+            "intent": "report_problem",
+            "quote": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+            "status": "active",
+            "created_input_id": "cec0e8ef9b1247f19e8b3e1889a65339",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 40,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 1,
+  "errors": [],
+  "seconds": 4.85,
+  "journey": {
+    "session": {
+      "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:11.092043Z",
+      "last_run_at": "2026-10-09T07:19:16.020224Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs th",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": "calm",
+      "fault_plan_ids": [
+        "qa_rv_0073",
+        "qa_rv_0371"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 48,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:19:16.020224Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+        "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:11.092043Z",
+        "ended_at": "2026-10-09T07:19:14.068577Z",
+        "duration_ms": 2976,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "disambiguate",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 2974,
+        "card_kind": "product_card",
+        "model_calls": [
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2904,
+            "tokens_in": 4197,
+            "tokens_out": 196,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:14.004916Z"
+          }
+        ],
+        "tokens_in": 4197,
+        "tokens_out": 196,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:11.092043Z",
+            "duration_ms": 2938,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3345,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 212,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5745
+                    }
+                  ],
+                  "actual_input_tokens": 4197
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:14.030263Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "decision": "continue",
+              "product_state": "unknown"
+            }
+          },
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "idx": 3,
+            "node": "prepare_card",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:14.036364Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "prepare_card",
+            "started_at": "2026-10-09T07:19:14.036373Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "01b64f0a281048edb1fcaefa0a3b8228",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:14.037525Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "e2c0785072634bb69e6950bbe243854e",
+        "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:19:14.092563Z",
+        "ended_at": "2026-10-09T07:19:15.950806Z",
+        "duration_ms": 1858,
+        "entry": "action:select_product",
+        "stage_from": "diagnose",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 1855,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1540,
+            "tokens_in": 5128,
+            "tokens_out": 283,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:15.883621Z"
+          }
+        ],
+        "tokens_in": 5128,
+        "tokens_out": 283,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:14.092563Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "answer_pending",
+              "escalate_reason": null,
+              "target_issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:14.099919Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "category": "robot_vacuum",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:14.100881Z",
+            "duration_ms": 1800,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0073",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5879,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 298,
+                    "history": 705,
+                    "authority": 4520
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 248,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 184,
+                    "timezone": 7,
+                    "task_data": 3675,
+                    "issue_index": 210,
+                    "step_attempts": 2,
+                    "active_issue_id": 20,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 6357
+                    }
+                  ],
+                  "actual_input_tokens": 5128
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:19:15.901245Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0073",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:15.910422Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:15.910434Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "e2c0785072634bb69e6950bbe243854e",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0162,
+            "latency_ms": 230,
+            "query": "floor detergent level has barley moved, not dispensing",
+            "created_at": "2026-10-09T07:19:14.331766Z"
+          }
+        ]
+      },
+      {
+        "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+        "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:19:15.971583Z",
+        "ended_at": "2026-10-09T07:19:16.020217Z",
+        "duration_ms": 48,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 44,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:15.971583Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0073",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "d70201170cb656c9bac747ef30935bd0",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:15.978224Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:15.979987Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:19:15.980899Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:19:15.984193Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:19:15.984646Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "016fb38652eb46d0b47a3fa8d27e5d0d",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:15.985085Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "kind": "upload_receipt",
+        "card_id": "75473fb318ac52a5959145eb0dd7bd5d",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:11.087550+00:00",
+          "first_seq": 2,
+          "last_seq": 7,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "user_message",
+          "id": "cec0e8ef9b1247f19e8b3e1889a65339",
+          "text": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:19:14.065282+00:00",
+          "first_seq": 9,
+          "last_seq": 9,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "product_card",
+          "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+          "version": 1,
+          "candidates": [
+            {
+              "sku": "T2080",
+              "name": "eufy Robot Vacuum Omni S1 Pro",
+              "category": "robot_vacuum",
+              "image": null,
+              "in_scope": true
+            },
+            {
+              "sku": "T8D04",
+              "name": "eufy Wearable Breast Pump S1 Pro",
+              "category": "breast_pump",
+              "image": null,
+              "in_scope": true
+            }
+          ],
+          "allow_unknown": false,
+          "note": null,
+          "selected_sku": "T2080",
+          "selected_unknown": false
+        },
+        {
+          "at": "2026-10-09T07:19:14.091417+00:00",
+          "first_seq": 13,
+          "last_seq": 20,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "action",
+          "id": "34789b0097b645b3b1b4bae9cb383250",
+          "label": "选择产品",
+          "action_kind": "select_product"
+        },
+        {
+          "at": "2026-10-09T07:19:14.103570+00:00",
+          "first_seq": 15,
+          "last_seq": 16,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "8c7c8849fb935adb98e60cc1ef9ae141",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:19:15.936786Z",
+          "first_seq": 22,
+          "last_seq": 22,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+              "source": "kb_qa",
+              "doc_id": "rv-0371",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+              "snippet": "The eufy S1 Pro's cleaning solution level remains at 660ml after two weeks of use, despite multiple mop function runs and attempts to reinstall.\n1. The S1 Pro may use cleaning solution gradually, but if the level hasn't changed at all, it may not be dispensing properly.\n2. Suggested troubleshooting steps can be found at:",
+              "score": 0.016208355367530406,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "36770c98-5be5-4851-a000-c212e199fa86",
+              "source": "kb_qa",
+              "doc_id": "rv-0386",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "36770c98-5be5-4851-a000-c212e199fa86",
+              "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+              "score": 0.016162909836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+              "source": "kb_qa",
+              "doc_id": "rv-0387",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+              "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+              "score": 0.015726495726495725,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+              "source": "kb_qa",
+              "doc_id": "rv-0073",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+              "snippet": "How do I use eufy cleaning solution with my S1 Pro/T2080? My S1 Pro/T2080 is not dispensing cleaning liquid. The cleaning solution of S1 Pro/T2080 is not being dispensed.\nIn your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showi",
+              "score": 0.013810945273631841,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+              "source": "kb_qa",
+              "doc_id": "rv-0314",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+              "snippet": "After mopping, there are noticeable water streak on the floor for S1 Pro\n1. If the Mop Setting is set to deep, reduce it to standard or soft.\n2. If the rolling mop is dirty or worn out, replace it with a new one.",
+              "score": 0.01378248974008208,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+              "source": "kb_qa",
+              "doc_id": "rv-0478",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+              "snippet": "what should I do when T2080 S1 Pro Mopping leaves marks/Mopping left streaks on the floor/Leaves stains after mopping/there are residual water stains after mopping?\n1. Please assess the impact of side brushes and roller brushes on mopping performance: Remove both the roller brush and side brushes (or remove them individually for separate testing) and perform a mopping task. Confirm whether mopping",
+              "score": 0.012807881773399015,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5b46d085-6a58-4243-8479-b1572169b147",
+              "source": "kb_qa",
+              "doc_id": "rv-0382",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5b46d085-6a58-4243-8479-b1572169b147",
+              "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+              "score": 0.01252596053997923,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+              "source": "kb_qa",
+              "doc_id": "rv-0353",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\n-Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. -Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on both sides should be even. -Check if the dirty water tank filter is clogged w",
+              "score": 0.012335526315789472,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+              "source": "kb_qa",
+              "doc_id": "rv-0383",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+              "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+              "score": 0.01228964813870474,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "source": "kb_qa",
+              "doc_id": "rv-0302",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+              "score": 0.012285518188057652,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+              "source": "kb_qa",
+              "doc_id": "rv-0121",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+              "snippet": "What should I do if my S1/S1 Pro/T2080/T2071 cannot clean efficiently, drop more dirt at the end of a cleaning cycle? i'm experiencing an issue with the cleaning performance of my S1 Pro/T2080\n-If possible, please remove cluttered objects from the floor before running it to reduce the number of obstacles in the robot's cleaning path. -Consider merging smaller sections of each partition to decrease",
+              "score": 0.01212121212121212,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "source": "kb_qa",
+              "doc_id": "rv-0063",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+              "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+              "score": 0.011812536960378473,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+              "source": "kb_qa",
+              "doc_id": "rv-0122",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+              "snippet": "How do I get my S1/S1 Pro/T2080/T2071 to clean the upstairs if the base station is on a different floor? Navigating Multi-Level Cleaning with the S1 Series\nIn your case, please refer to the article and video below to navigate multiple floors. Hope it helps. Please let us know if you have any further needs.",
+              "score": 0.011688311688311689,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "source": "kb_qa",
+              "doc_id": "rv-0457",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+              "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+              "score": 0.011655011655011654,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+              "source": "kb_qa",
+              "doc_id": "rv-0352",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\nS1 Pro /T2080 leaves dirty water spots, Leaving water drops while mopping.\n- Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. - Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on ",
+              "score": 0.011265597147950088,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:15.947069+00:00",
+          "first_seq": 24,
+          "last_seq": 24,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "step_card",
+          "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+          "version": 2,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0073",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "How do I use eufy cleaning solution with my S1 Pro/T2080?",
+            "instruction": "In your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showing the current state of the cleaning solution and how it is installed? This will help us diagnose the issue more accurately and provide you with the best possible solution.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "92959c9c-a4c3-4b0e-83d1-af17cb2b4816"
+            ],
+            "primary_evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+            "media": [
+              {
+                "url": "https://support.eufy.com/s/article/How-do-I-use-eufy-cleaning-solution-with-my-S1-Pro",
+                "kind": "link"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:15.969938+00:00",
+          "first_seq": 28,
+          "last_seq": 32,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "action",
+          "id": "c65291f32789440e850af6f0de215bf2",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:16.013382+00:00",
+          "first_seq": 34,
+          "last_seq": 34,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "case_changed",
+          "card_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+          "version": 3,
+          "case_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:15.981182+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:16.014517+00:00",
+          "first_seq": 35,
+          "last_seq": 37,
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "assistant_message",
+          "message_id": "569ca30612545100b2755f2eba4b810e",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "c65291f32789440e850af6f0de215bf2",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+      "issues": [
+        {
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "status": "open",
+          "title": "floor detergent level has barley moved, not dispensing",
+          "task_queue": [
+            {
+              "task_id": "462778877404547fb1b7727446645111",
+              "intent": "report_problem",
+              "quote": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+              "status": "active",
+              "created_input_id": "cec0e8ef9b1247f19e8b3e1889a65339",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 40,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+      "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+      "issue_id": "d70201170cb656c9bac747ef30935bd0",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:19:15.981182+00:00",
+      "updated_at": "2026-10-09T07:19:15.981182+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "8b2216253a66429ab4000b60e1ea2a6b",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "d70201170cb656c9bac747ef30935bd0",
+          "kind": "upload_receipt",
+          "card_id": "75473fb318ac52a5959145eb0dd7bd5d",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:19:11.087550+00:00",
+            "first_seq": 2,
+            "last_seq": 7,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "user_message",
+            "id": "cec0e8ef9b1247f19e8b3e1889a65339",
+            "text": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:19:14.065282+00:00",
+            "first_seq": 9,
+            "last_seq": 9,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "product_card",
+            "card_id": "da8dd3b7f9495a7d91bf1dda90151a47",
+            "version": 1,
+            "candidates": [
+              {
+                "sku": "T2080",
+                "name": "eufy Robot Vacuum Omni S1 Pro",
+                "category": "robot_vacuum",
+                "image": null,
+                "in_scope": true
+              },
+              {
+                "sku": "T8D04",
+                "name": "eufy Wearable Breast Pump S1 Pro",
+                "category": "breast_pump",
+                "image": null,
+                "in_scope": true
+              }
+            ],
+            "allow_unknown": false,
+            "note": null,
+            "selected_sku": "T2080",
+            "selected_unknown": false
+          },
+          {
+            "at": "2026-10-09T07:19:14.091417+00:00",
+            "first_seq": 13,
+            "last_seq": 20,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "action",
+            "id": "34789b0097b645b3b1b4bae9cb383250",
+            "label": "选择产品",
+            "action_kind": "select_product"
+          },
+          {
+            "at": "2026-10-09T07:19:14.103570+00:00",
+            "first_seq": 15,
+            "last_seq": 16,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "8c7c8849fb935adb98e60cc1ef9ae141",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:19:15.936786Z",
+            "first_seq": 22,
+            "last_seq": 22,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+                "source": "kb_qa",
+                "doc_id": "rv-0371",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "979d3cc7-ef6e-4295-a86a-9c715e65d036",
+                "snippet": "The eufy S1 Pro's cleaning solution level remains at 660ml after two weeks of use, despite multiple mop function runs and attempts to reinstall.\n1. The S1 Pro may use cleaning solution gradually, but if the level hasn't changed at all, it may not be dispensing properly.\n2. Suggested troubleshooting steps can be found at:",
+                "score": 0.016208355367530406,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "36770c98-5be5-4851-a000-c212e199fa86",
+                "source": "kb_qa",
+                "doc_id": "rv-0386",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "36770c98-5be5-4851-a000-c212e199fa86",
+                "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+                "score": 0.016162909836065574,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+                "source": "kb_qa",
+                "doc_id": "rv-0387",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7502af2e-9a7c-444a-910e-d66baffc4782",
+                "snippet": "What should I do if my S1 Pro/T2080 does not dispense water in Mopping mode?\nIf the roller mop is wet, then it indicates that the robot is functioning properly. The roller mop and indicator light should light up when the robot starts mopping, which shows that the robot is dispensing water properly. For further confirmation, please check if there are water streaks on the floor if you have a tiled f",
+                "score": 0.015726495726495725,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+                "source": "kb_qa",
+                "doc_id": "rv-0073",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+                "snippet": "How do I use eufy cleaning solution with my S1 Pro/T2080? My S1 Pro/T2080 is not dispensing cleaning liquid. The cleaning solution of S1 Pro/T2080 is not being dispensed.\nIn your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showi",
+                "score": 0.013810945273631841,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+                "source": "kb_qa",
+                "doc_id": "rv-0314",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e527a062-9e77-45d4-9454-a2b2ae6119a4",
+                "snippet": "After mopping, there are noticeable water streak on the floor for S1 Pro\n1. If the Mop Setting is set to deep, reduce it to standard or soft.\n2. If the rolling mop is dirty or worn out, replace it with a new one.",
+                "score": 0.01378248974008208,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+                "source": "kb_qa",
+                "doc_id": "rv-0478",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6e0f5b3a-1cf5-467a-8ca1-4cbff325d183",
+                "snippet": "what should I do when T2080 S1 Pro Mopping leaves marks/Mopping left streaks on the floor/Leaves stains after mopping/there are residual water stains after mopping?\n1. Please assess the impact of side brushes and roller brushes on mopping performance: Remove both the roller brush and side brushes (or remove them individually for separate testing) and perform a mopping task. Confirm whether mopping",
+                "score": 0.012807881773399015,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5b46d085-6a58-4243-8479-b1572169b147",
+                "source": "kb_qa",
+                "doc_id": "rv-0382",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5b46d085-6a58-4243-8479-b1572169b147",
+                "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+                "score": 0.01252596053997923,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+                "source": "kb_qa",
+                "doc_id": "rv-0353",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d28ead90-662d-44d2-94e8-4688cdbc6f1f",
+                "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\n-Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. -Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on both sides should be even. -Check if the dirty water tank filter is clogged w",
+                "score": 0.012335526315789472,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+                "source": "kb_qa",
+                "doc_id": "rv-0383",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c598d77d-ffc0-48e9-aab4-f44f0a0f5c14",
+                "snippet": "What should I do if my S1 Pro/T2080 is not mopping an area that previously had carpets?\nWhen the S1 Pro is asked to perform a mopping task in an area that previously had carpets, the robot will outline a map containing the removed carpets based on the current layout of the area. However, the robot will not mop the area where the carpets were placed. To solve the issue of the robot not mopping an a",
+                "score": 0.01228964813870474,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+                "source": "kb_qa",
+                "doc_id": "rv-0302",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+                "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+                "score": 0.012285518188057652,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+                "source": "kb_qa",
+                "doc_id": "rv-0121",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c1c6aa43-1bb8-4606-a670-340d361a0dde",
+                "snippet": "What should I do if my S1/S1 Pro/T2080/T2071 cannot clean efficiently, drop more dirt at the end of a cleaning cycle? i'm experiencing an issue with the cleaning performance of my S1 Pro/T2080\n-If possible, please remove cluttered objects from the floor before running it to reduce the number of obstacles in the robot's cleaning path. -Consider merging smaller sections of each partition to decrease",
+                "score": 0.01212121212121212,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "source": "kb_qa",
+                "doc_id": "rv-0063",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "068a1e5a-d78b-43d4-bd66-a4dee1cf8f89",
+                "snippet": "what should I do when T2080/S1 Pro has E23: Robot clean water level abnormal, task ended/Robot clean water capacity meter error/Robot clean water level sensor malfunction?\n1. Remove the robot from the base station, remove the robot's dirty water reservoir, flip the robot vertically 360 degrees and shake it, then return to the base station to see if it has recovered.\n2. Inspect the recharge sensors",
+                "score": 0.011812536960378473,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+                "source": "kb_qa",
+                "doc_id": "rv-0122",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9b351e70-2a26-4026-97c2-67a75aaea0e1",
+                "snippet": "How do I get my S1/S1 Pro/T2080/T2071 to clean the upstairs if the base station is on a different floor? Navigating Multi-Level Cleaning with the S1 Series\nIn your case, please refer to the article and video below to navigate multiple floors. Hope it helps. Please let us know if you have any further needs.",
+                "score": 0.011688311688311689,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+                "source": "kb_qa",
+                "doc_id": "rv-0457",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "78ff5ff7-99c2-4c9b-9121-f240ca779784",
+                "snippet": "what should I do when T2080 S1 pro has E22: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot drainage pump error/Robot sewage pump component malfunction?\nManually return the robot to the base station, then select the wash mop option via the app. Wait for the robot to complete the mop cleaning process, then stop the drying function. Remove the robo",
+                "score": 0.011655011655011654,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+                "source": "kb_qa",
+                "doc_id": "rv-0352",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6e0d9297-70ba-4503-984d-1f133ecba18a",
+                "snippet": "What should I do if my S1 Pro/T2080 leaks water and drops debris when mopping the floor?\nS1 Pro /T2080 leaves dirty water spots, Leaving water drops while mopping.\n- Lift the robot horizontally and check for dirt and potential leakage at the bottom of the dirty water tank. - Ensure that the dirty water tank is correctly installed. Please note that the red latch should be in place, and the gaps on ",
+                "score": 0.011265597147950088,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:15.947069+00:00",
+            "first_seq": 24,
+            "last_seq": 24,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "step_card",
+            "card_id": "af8d1c52b9265e88bab77d362d2e16c2",
+            "version": 2,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0073",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "How do I use eufy cleaning solution with my S1 Pro/T2080?",
+              "instruction": "In your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showing the current state of the cleaning solution and how it is installed? This will help us diagnose the issue more accurately and provide you with the best possible solution.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "92959c9c-a4c3-4b0e-83d1-af17cb2b4816"
+              ],
+              "primary_evidence_id": "92959c9c-a4c3-4b0e-83d1-af17cb2b4816",
+              "media": [
+                {
+                  "url": "https://support.eufy.com/s/article/How-do-I-use-eufy-cleaning-solution-with-my-S1-Pro",
+                  "kind": "link"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:15.969938+00:00",
+            "first_seq": 28,
+            "last_seq": 32,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "action",
+            "id": "c65291f32789440e850af6f0de215bf2",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:16.013382+00:00",
+            "first_seq": 34,
+            "last_seq": 34,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "case_changed",
+            "card_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+            "version": 3,
+            "case_id": "164a4961-eb3b-555c-9859-2c3f79e98154",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:19:15.981182+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:16.014517+00:00",
+            "first_seq": 35,
+            "last_seq": 37,
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "kind": "assistant_message",
+            "message_id": "569ca30612545100b2755f2eba4b810e",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "c65291f32789440e850af6f0de215bf2",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "d70201170cb656c9bac747ef30935bd0",
+        "issues": [
+          {
+            "issue_id": "d70201170cb656c9bac747ef30935bd0",
+            "status": "open",
+            "title": "floor detergent level has barley moved, not dispensing",
+            "task_queue": [
+              {
+                "task_id": "462778877404547fb1b7727446645111",
+                "intent": "report_problem",
+                "quote": "Dear Eufy,\n\nHope you are well!\nCan I just say we are absolutely loving your products, from your cctv to our S1 pro!\n\nBut I have noticed recently that the floor detergent level has barley moved…\n\nIs there any way for this to be fixed?\nAs it’s just simply not dispensing.\n\nKind regards,\nSam",
+                "status": "active",
+                "created_input_id": "cec0e8ef9b1247f19e8b3e1889a65339",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 40,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

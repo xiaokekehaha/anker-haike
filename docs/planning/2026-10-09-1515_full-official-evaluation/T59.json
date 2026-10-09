@@ -1,0 +1,638 @@
+{
+  "id": "T59",
+  "input": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "resumed": false,
+          "event_id": "b2cb5aeab07545e38ac697b2fed192dc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:20:06.215539+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "payload": {
+            "kind": "message",
+            "text": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "3912f86a798d49e7a26c4471d8ca5d9f",
+          "input_id": "bb26cfacb5a0454c8043c54020dd191c",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:20:06.215539+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 3,
+          "event_id": "acc796197118439d8e77279e59d056b2",
+          "recorded_at": "2026-10-09T07:20:06.251871+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 4,
+          "event_id": "200899adce1043a29821fdeaeaa39cb3",
+          "recorded_at": "2026-10-09T07:20:09.657123+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 5,
+          "event_id": "7192f84cb23445949df01cbb1b772713",
+          "recorded_at": "2026-10-09T07:20:09.667186+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "input_id": "bb26cfacb5a0454c8043c54020dd191c",
+          "resolved_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+              "title": "loosing connection",
+              "status": "open"
+            }
+          ],
+          "event_id": "a917ce60e85b5f1b9ff6c1e48c603f0e",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 7,
+          "recorded_at": "2026-10-09T07:20:09.679994+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+          "case_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "version": 1,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:20:09.657065+00:00",
+          "event_id": "48d1676564df5ec2987677c87bb47a8f",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 8,
+          "recorded_at": "2026-10-09T07:20:09.680883+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "5295c77cad705a3ba1a678801635e788",
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "reply_to_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+          "event_id": "06f8f9051f6357c2b87efa50c3fe2918",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:20:09.682151+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "5295c77cad705a3ba1a678801635e788",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "36781f1b29e25139b27d79b0f08a97a3",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:20:09.683383+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "5295c77cad705a3ba1a678801635e788",
+          "status": "completed",
+          "event_id": "29f1d2eafb095f56b736111aecc2d62f",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:20:09.684455+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "pending_id": "cdbf6613f1cd524296cba9120d1dee63",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "3cddbc46c41e51dba2dcccca9cb1694f",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:20:09.685739+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "card_id": "cdbf6613f1cd524296cba9120d1dee63",
+          "version": 1,
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 13,
+          "event_id": "9750e388a5a444558559c86d359994a0",
+          "recorded_at": "2026-10-09T07:20:09.686315+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "4b6143dea34e59c4b3aff8d4e7c65704",
+          "recorded_at": "2026-10-09T07:20:09.687442+00:00",
+          "run_id": "491123ba38d34f43a264687fe46ccfa6",
+          "seq": 14,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:20:06.109582+08:00",
+  "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+    "version": 1,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+      "kind": "upload_receipt",
+      "card_id": "cdbf6613f1cd524296cba9120d1dee63",
+      "version": 1
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:20:06.215539+00:00",
+        "first_seq": 2,
+        "last_seq": 7,
+        "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "kind": "user_message",
+        "id": "bb26cfacb5a0454c8043c54020dd191c",
+        "text": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:20:09.680883+00:00",
+        "first_seq": 8,
+        "last_seq": 8,
+        "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "kind": "case_changed",
+        "card_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+        "version": 1,
+        "case_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:20:09.657065+00:00"
+      },
+      {
+        "at": "2026-10-09T07:20:09.682151+00:00",
+        "first_seq": 9,
+        "last_seq": 11,
+        "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "kind": "assistant_message",
+        "message_id": "5295c77cad705a3ba1a678801635e788",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+    "issues": [
+      {
+        "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "status": "open",
+        "title": "loosing connection",
+        "task_queue": [
+          {
+            "task_id": "97c3ad6a8c2450e489e108b90d7c87f3",
+            "intent": "replacement_request",
+            "quote": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+            "status": "active",
+            "created_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 14,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 3.59,
+  "journey": {
+    "session": {
+      "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:20:06.218149Z",
+      "last_run_at": "2026-10-09T07:20:09.688349Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 3585,
+      "model_calls": 1,
+      "tokens_in": 4173,
+      "tokens_out": 249,
+      "raw_available_until": "2026-10-16T07:20:09.688349Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "491123ba38d34f43a264687fe46ccfa6",
+        "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:20:06.218149Z",
+        "ended_at": "2026-10-09T07:20:09.688339Z",
+        "duration_ms": 3585,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 3581,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3518,
+            "tokens_in": 4173,
+            "tokens_out": 249,
+            "error_type": null,
+            "created_at": "2026-10-09T07:20:09.645470Z"
+          }
+        ],
+        "tokens_in": 4173,
+        "tokens_out": 249,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:20:06.218149Z",
+            "duration_ms": 3553,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "replacement_request",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3320,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 187,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5720
+                    }
+                  ],
+                  "actual_input_tokens": 4173
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "idx": 2,
+            "node": "service_context",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:20:09.771963Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "idx": 3,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:20:09.779206Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:20:09.779848Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "491123ba38d34f43a264687fe46ccfa6",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:20:09.780477Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+      "version": 1,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "kind": "upload_receipt",
+        "card_id": "cdbf6613f1cd524296cba9120d1dee63",
+        "version": 1
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:20:06.215539+00:00",
+          "first_seq": 2,
+          "last_seq": 7,
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "kind": "user_message",
+          "id": "bb26cfacb5a0454c8043c54020dd191c",
+          "text": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:20:09.680883+00:00",
+          "first_seq": 8,
+          "last_seq": 8,
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "kind": "case_changed",
+          "card_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+          "version": 1,
+          "case_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:20:09.657065+00:00"
+        },
+        {
+          "at": "2026-10-09T07:20:09.682151+00:00",
+          "first_seq": 9,
+          "last_seq": 11,
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "kind": "assistant_message",
+          "message_id": "5295c77cad705a3ba1a678801635e788",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+      "issues": [
+        {
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "status": "open",
+          "title": "loosing connection",
+          "task_queue": [
+            {
+              "task_id": "97c3ad6a8c2450e489e108b90d7c87f3",
+              "intent": "replacement_request",
+              "quote": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+              "status": "active",
+              "created_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 14,
+      "latest_summaries": []
+    }
+  },
+  "intent": "replacement_request",
+  "cases": [
+    {
+      "case_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+      "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+      "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+      "sku": null,
+      "category": null,
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:20:09.657065+00:00",
+      "updated_at": "2026-10-09T07:20:09.657065+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "4bfa5f9dc6ed47b996c64200109c59d8",
+        "version": 1,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+          "kind": "upload_receipt",
+          "card_id": "cdbf6613f1cd524296cba9120d1dee63",
+          "version": 1
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:20:06.215539+00:00",
+            "first_seq": 2,
+            "last_seq": 7,
+            "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+            "kind": "user_message",
+            "id": "bb26cfacb5a0454c8043c54020dd191c",
+            "text": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:20:09.680883+00:00",
+            "first_seq": 8,
+            "last_seq": 8,
+            "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+            "kind": "case_changed",
+            "card_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+            "version": 1,
+            "case_id": "6c8ee832-abfd-55bb-aea1-8ef60aaa7f7c",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:20:09.657065+00:00"
+          },
+          {
+            "at": "2026-10-09T07:20:09.682151+00:00",
+            "first_seq": 9,
+            "last_seq": 11,
+            "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+            "kind": "assistant_message",
+            "message_id": "5295c77cad705a3ba1a678801635e788",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+        "issues": [
+          {
+            "issue_id": "3e2ac02cf94a5f8cbd4f6255f28f4776",
+            "status": "open",
+            "title": "loosing connection",
+            "task_queue": [
+              {
+                "task_id": "97c3ad6a8c2450e489e108b90d7c87f3",
+                "intent": "replacement_request",
+                "quote": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less for has been working pretty good. I wish you could just send me those for the 2 that is junk",
+                "status": "active",
+                "created_input_id": "bb26cfacb5a0454c8043c54020dd191c",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 14,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

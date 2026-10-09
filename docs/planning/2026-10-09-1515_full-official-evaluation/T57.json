@@ -1,0 +1,1129 @@
+{
+  "id": "T57",
+  "input": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "resumed": false,
+          "event_id": "b146bdcc4b1d4bd5a4ad80c5bbd8c985",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:59.175060+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "payload": {
+            "kind": "message",
+            "text": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "0f3a1c0acb444e7797000bb14fcbc267",
+          "input_id": "1391c7d412d04dc680c053b973a78735",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:59.175060+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 3,
+          "event_id": "a4a0a0dba899463c95af07bacde17a04",
+          "recorded_at": "2026-10-09T07:19:59.189785+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 4,
+          "event_id": "54bba10c978f4c73b6353bcda92c4e1f",
+          "recorded_at": "2026-10-09T07:20:02.527452+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 5,
+          "event_id": "46cb147733fa4b42a554ce3e10d2108a",
+          "recorded_at": "2026-10-09T07:20:02.534951+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "f7fc002a0a43577889f6b3dad1b8e08f",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 6,
+          "event_id": "f99b4d8d2a3d445196ad45bfc4b7ee2f",
+          "recorded_at": "2026-10-09T07:20:02.547156+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "f7fc002a0a43577889f6b3dad1b8e08f",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 7,
+          "event_id": "f1a422ea7f374ce7929e8564319f21be",
+          "recorded_at": "2026-10-09T07:20:02.764502+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": null,
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 8,
+          "event_id": "b7e14c14f18a407e842a2c18336f4992",
+          "recorded_at": "2026-10-09T07:20:06.100101+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "input_id": "1391c7d412d04dc680c053b973a78735",
+          "resolved_issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "1d0d36ef171e593faa81b58991656af2",
+              "title": "All of the cameras are not working except one、the system does not record any more",
+              "status": "open"
+            }
+          ],
+          "event_id": "4d6b8d7a99415387a422577f3150f9ce",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:20:06.131858+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+              "source": "kb_qa",
+              "doc_id": "bp-0228",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+              "snippet": "Why does SoloCam S340(T8170) sometimes miss recording events?\nSoloCam S340(T8170) may miss events if the person/object is outside the Activity Zone but still in the camera's viewing area --- the system will not record in that case. Also: object may have exceeded the PIR detection range, or sensitivity is too low. Increase detection sensitivity and check the working mode.",
+              "score": 0.015855532786885243,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "source": "kb_qa",
+              "doc_id": "bp-0154",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+              "score": 0.015576036866359447,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+              "source": "kb_qa",
+              "doc_id": "bp-0166",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+              "snippet": "Why has one of my SoloCam S340(T8170) cameras suddenly died?\n1. Power Cycle the Camera**: - Remove the camera from its mounting. - Hold the sync button for 10-15 seconds to reset it. - Try reconnecting it to your HomeBase.\n2. Check the Charging Status**: - Plug the camera into a charger and check for any LED lights. - If no lights appear, try a different charging cable and adapter.\n3. Reconnect to",
+              "score": 0.014545454545454545,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "source": "kb_qa",
+              "doc_id": "bp-0276",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+              "score": 0.01433676686987597,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "source": "kb_qa",
+              "doc_id": "bp-0223",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+              "score": 0.0134761441090555,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+              "source": "kb_qa",
+              "doc_id": "bp-0226",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+              "snippet": "Why does SoloCam S340(T8170) only record the end of an event?\nThe object may have moved too fast or was at the edge of the detection zone. Solution: Increase Motion Detection sensitivity to extend detection range so events are detected earlier. You can also set a shorter detection interval in Customize Recording mode.",
+              "score": 0.013329475308641973,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+              "source": "kb_qa",
+              "doc_id": "bp-0164",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+              "snippet": "Why is SoloCam S340(T8170) not functioning after the update, with no live view or recorded events even after reinstallation?\n1. Check the version of the Anker eufy app being used by going to Settings in the app, then About or App Information.\n2. If using version 5.0 or higher, be aware that there may be known issues that the technical team is working to resolve.\n3. Provide the app version to recei",
+              "score": 0.012947791164658634,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "source": "kb_qa",
+              "doc_id": "bp-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+              "score": 0.012685265911072361,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+              "source": "kb_qa",
+              "doc_id": "bp-0163",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+              "snippet": "Why won't SoloCam S340(T8170) connect to Bluetooth, show video on my phone, or send notifications for garden activity?\n1. Check Network Connection**\n- Ensure phone is connected to a stable Wi-Fi network, preferably 2.4GHz.\n- Switch between Wi-Fi and mobile data to see if the issue persists.\n2. Reset the Camera**\n- Press and hold the reset button for 10-15 seconds until a prompt is heard.\n- Set up ",
+              "score": 0.012543859649122805,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+              "source": "kb_qa",
+              "doc_id": "bp-0277",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+              "snippet": "My SoloCam S340 (T8170) firmware update failed\n1. Check the network connection\n- Ensure that your network is stable and has a strong signal. You can try moving the camera closer to the router or checking for any network interference.\n2. Check the camera LED status\n- Red and Blue alternately flashing: This indicates that the camera is currently updating. Please wait for about 5 minutes and then che",
+              "score": 0.012103174603174604,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+              "source": "kb_qa",
+              "doc_id": "bp-0167",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+              "snippet": "Why does the microphone on SoloCam S340(T8170) not work on my Android device?\n1. App Permissions:** - Go to phone settings → Apps → Anker eufy app → Permissions. - Ensure the app has permission to access the microphone.\n2. Restart Your Devices:** - Restart both the SoloCam S340 and the Motorola Razr 2024. - Try reconnecting to see if the issue persists.\n3. Network Connection:** - Ensure the camera",
+              "score": 0.011914622491239247,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+              "source": "kb_qa",
+              "doc_id": "bp-0220",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+              "snippet": "What happens if two SoloCam S340(T8170) cameras have the same name in Alexa or Google Assistant?\nIf two cameras have the same name, Alexa and Google Assistant cannot identify which one you are requesting. Please change one to a different, unique name.",
+              "score": 0.011909416748126424,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+              "source": "kb_qa",
+              "doc_id": "bp-0176",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+              "snippet": "What should I do if SoloCam S340(T8170) WiFi connection fails showing incorrect password?\n1. Confirm network compatibility. This device only supports 2.4GHz WiFi. Confirm the current connection is not on a 5G WiFi network.\n2. Verify password accuracy. Check whether the entered WiFi password is correct, paying attention to uppercase and lowercase letters and whether special characters are entered c",
+              "score": 0.011591629676601142,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "source": "kb_qa",
+              "doc_id": "bp-0151",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+              "score": 0.011556064073226544,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+              "source": "kb_qa",
+              "doc_id": "bp-0196",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+              "snippet": "Why is the anti-theft alarm on SoloCam S340(T8170) triggering too frequently (false alarm)?\nIf the anti-theft alarm on SoloCam S340(T8170) or other 3/3C cameras is triggering too frequently: This issue has been fixed in firmware version V3.1.8.6 or above. Solution: Update the camera firmware to V3.1.8.6 or later to resolve the false alarm issue.",
+              "score": 0.011494252873563218,
+              "status": "ok"
+            }
+          ],
+          "event_id": "88cf18f1318c5552b3540418510d219b",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:20:06.133400+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "97e41e7927915d379128e989e26371b3",
+          "reply_to_input_id": "1391c7d412d04dc680c053b973a78735",
+          "issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "event_id": "124ad19945755a84b82e00fb14cb2f78",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:20:06.139218+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "97e41e7927915d379128e989e26371b3",
+          "delta": "I'm sorry this hasn't been a good experience. Are the non-working cameras showing any LED lights when you plug them into a charger?",
+          "event_id": "f23527944334513793de99aff0774e45",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:20:06.144073+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "97e41e7927915d379128e989e26371b3",
+          "status": "completed",
+          "event_id": "3c2fc20e4d7b53b6b2051e9d493dd846",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:20:06.147497+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "441f02309eae5c6caaf551c0cd154305",
+          "recorded_at": "2026-10-09T07:20:06.148951+00:00",
+          "run_id": "64d536fb587a4afd9a1888e848447db9",
+          "seq": 15,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:59.162925+08:00",
+  "session_id": "c25ea998c6cc4b55908913a2af2eca9e",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "c25ea998c6cc4b55908913a2af2eca9e",
+    "version": 1,
+    "stage": "diagnose",
+    "substage": "retrieve",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:59.175060+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "1d0d36ef171e593faa81b58991656af2",
+        "kind": "user_message",
+        "id": "1391c7d412d04dc680c053b973a78735",
+        "text": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:20:02.547156+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "f7fc002a0a43577889f6b3dad1b8e08f",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:20:06.133697Z",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+            "source": "kb_qa",
+            "doc_id": "bp-0228",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+            "snippet": "Why does SoloCam S340(T8170) sometimes miss recording events?\nSoloCam S340(T8170) may miss events if the person/object is outside the Activity Zone but still in the camera's viewing area --- the system will not record in that case. Also: object may have exceeded the PIR detection range, or sensitivity is too low. Increase detection sensitivity and check the working mode.",
+            "score": 0.015855532786885243,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+            "source": "kb_qa",
+            "doc_id": "bp-0154",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+            "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+            "score": 0.015576036866359447,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+            "source": "kb_qa",
+            "doc_id": "bp-0166",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+            "snippet": "Why has one of my SoloCam S340(T8170) cameras suddenly died?\n1. Power Cycle the Camera**: - Remove the camera from its mounting. - Hold the sync button for 10-15 seconds to reset it. - Try reconnecting it to your HomeBase.\n2. Check the Charging Status**: - Plug the camera into a charger and check for any LED lights. - If no lights appear, try a different charging cable and adapter.\n3. Reconnect to",
+            "score": 0.014545454545454545,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+            "source": "kb_qa",
+            "doc_id": "bp-0276",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+            "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+            "score": 0.01433676686987597,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+            "source": "kb_qa",
+            "doc_id": "bp-0223",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+            "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+            "score": 0.0134761441090555,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+            "source": "kb_qa",
+            "doc_id": "bp-0226",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+            "snippet": "Why does SoloCam S340(T8170) only record the end of an event?\nThe object may have moved too fast or was at the edge of the detection zone. Solution: Increase Motion Detection sensitivity to extend detection range so events are detected earlier. You can also set a shorter detection interval in Customize Recording mode.",
+            "score": 0.013329475308641973,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+            "source": "kb_qa",
+            "doc_id": "bp-0164",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+            "snippet": "Why is SoloCam S340(T8170) not functioning after the update, with no live view or recorded events even after reinstallation?\n1. Check the version of the Anker eufy app being used by going to Settings in the app, then About or App Information.\n2. If using version 5.0 or higher, be aware that there may be known issues that the technical team is working to resolve.\n3. Provide the app version to recei",
+            "score": 0.012947791164658634,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+            "source": "kb_qa",
+            "doc_id": "bp-0224",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+            "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+            "score": 0.012685265911072361,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+            "source": "kb_qa",
+            "doc_id": "bp-0163",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+            "snippet": "Why won't SoloCam S340(T8170) connect to Bluetooth, show video on my phone, or send notifications for garden activity?\n1. Check Network Connection**\n- Ensure phone is connected to a stable Wi-Fi network, preferably 2.4GHz.\n- Switch between Wi-Fi and mobile data to see if the issue persists.\n2. Reset the Camera**\n- Press and hold the reset button for 10-15 seconds until a prompt is heard.\n- Set up ",
+            "score": 0.012543859649122805,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+            "source": "kb_qa",
+            "doc_id": "bp-0277",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+            "snippet": "My SoloCam S340 (T8170) firmware update failed\n1. Check the network connection\n- Ensure that your network is stable and has a strong signal. You can try moving the camera closer to the router or checking for any network interference.\n2. Check the camera LED status\n- Red and Blue alternately flashing: This indicates that the camera is currently updating. Please wait for about 5 minutes and then che",
+            "score": 0.012103174603174604,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+            "source": "kb_qa",
+            "doc_id": "bp-0167",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+            "snippet": "Why does the microphone on SoloCam S340(T8170) not work on my Android device?\n1. App Permissions:** - Go to phone settings → Apps → Anker eufy app → Permissions. - Ensure the app has permission to access the microphone.\n2. Restart Your Devices:** - Restart both the SoloCam S340 and the Motorola Razr 2024. - Try reconnecting to see if the issue persists.\n3. Network Connection:** - Ensure the camera",
+            "score": 0.011914622491239247,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+            "source": "kb_qa",
+            "doc_id": "bp-0220",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+            "snippet": "What happens if two SoloCam S340(T8170) cameras have the same name in Alexa or Google Assistant?\nIf two cameras have the same name, Alexa and Google Assistant cannot identify which one you are requesting. Please change one to a different, unique name.",
+            "score": 0.011909416748126424,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+            "source": "kb_qa",
+            "doc_id": "bp-0176",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+            "snippet": "What should I do if SoloCam S340(T8170) WiFi connection fails showing incorrect password?\n1. Confirm network compatibility. This device only supports 2.4GHz WiFi. Confirm the current connection is not on a 5G WiFi network.\n2. Verify password accuracy. Check whether the entered WiFi password is correct, paying attention to uppercase and lowercase letters and whether special characters are entered c",
+            "score": 0.011591629676601142,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "source": "kb_qa",
+            "doc_id": "bp-0151",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+            "score": 0.011556064073226544,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+            "source": "kb_qa",
+            "doc_id": "bp-0196",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+            "snippet": "Why is the anti-theft alarm on SoloCam S340(T8170) triggering too frequently (false alarm)?\nIf the anti-theft alarm on SoloCam S340(T8170) or other 3/3C cameras is triggering too frequently: This issue has been fixed in firmware version V3.1.8.6 or above. Solution: Update the camera firmware to V3.1.8.6 or later to resolve the false alarm issue.",
+            "score": 0.011494252873563218,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:20:06.139218+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "1d0d36ef171e593faa81b58991656af2",
+        "kind": "assistant_message",
+        "message_id": "97e41e7927915d379128e989e26371b3",
+        "text": "I'm sorry this hasn't been a good experience. Are the non-working cameras showing any LED lights when you plug them into a charger?",
+        "status": "completed",
+        "reply_to_input_id": "1391c7d412d04dc680c053b973a78735",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "1d0d36ef171e593faa81b58991656af2",
+    "issues": [
+      {
+        "issue_id": "1d0d36ef171e593faa81b58991656af2",
+        "status": "open",
+        "title": "All of the cameras are not working except one、the system does not record any more",
+        "task_queue": [
+          {
+            "task_id": "5def1c4598cb5dd7a2d94f75eac212f6",
+            "intent": "report_problem",
+            "quote": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+            "status": "active",
+            "created_input_id": "1391c7d412d04dc680c053b973a78735",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 15,
+    "latest_summaries": []
+  },
+  "visible_text": "I'm sorry this hasn't been a good experience. Are the non-working cameras showing any LED lights when you plug them into a charger?",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 6.93,
+  "journey": {
+    "session": {
+      "session_id": "c25ea998c6cc4b55908913a2af2eca9e",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:59.176789Z",
+      "last_run_at": "2026-10-09T07:20:06.150018Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the sy",
+      "product_state": "confirmed_sku",
+      "sku": "T8170",
+      "category": "security_cam",
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 1,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "clarifying",
+      "outcome_reason": "applicability",
+      "outcome_at": null,
+      "total_latency_ms": 6973,
+      "model_calls": 3,
+      "tokens_in": 11545,
+      "tokens_out": 878,
+      "raw_available_until": "2026-10-16T07:20:06.150018Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "64d536fb587a4afd9a1888e848447db9",
+        "session_id": "c25ea998c6cc4b55908913a2af2eca9e",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:59.176789Z",
+        "ended_at": "2026-10-09T07:20:06.149996Z",
+        "duration_ms": 6973,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "diagnose",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 6969,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3224,
+            "tokens_in": 4167,
+            "tokens_out": 258,
+            "error_type": null,
+            "created_at": "2026-10-09T07:20:02.410197Z"
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1855,
+            "tokens_in": 4414,
+            "tokens_out": 346,
+            "error_type": null,
+            "created_at": "2026-10-09T07:20:04.608918Z"
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1424,
+            "tokens_in": 2964,
+            "tokens_out": 274,
+            "error_type": null,
+            "created_at": "2026-10-09T07:20:06.061007Z"
+          }
+        ],
+        "tokens_in": 11545,
+        "tokens_out": 878,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:59.176789Z",
+            "duration_ms": 3342,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "clarify",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3311,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 178,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5711
+                    }
+                  ],
+                  "actual_input_tokens": 4167
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "1d0d36ef171e593faa81b58991656af2",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:20:02.519302Z",
+            "duration_ms": 15,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "security_cam",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:20:02.534931Z",
+            "duration_ms": 3560,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "decision": "clarify",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 4994,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 340,
+                    "current": 178,
+                    "history": 0,
+                    "authority": 4476
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 448,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 42,
+                    "decision": 218,
+                    "timezone": 7,
+                    "task_data": 3472,
+                    "issue_index": 157,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5472
+                    }
+                  ],
+                  "actual_input_tokens": 4414
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 3216,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 340,
+                    "current": 178,
+                    "history": 0,
+                    "authority": 2698
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 448,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 42,
+                    "decision": 218,
+                    "timezone": 7,
+                    "task_data": 1694,
+                    "issue_index": 157,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3694
+                    }
+                  ],
+                  "actual_input_tokens": 2964
+                }
+              ],
+              "escalate_reason": null,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "idx": 4,
+            "node": "clarify",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:20:06.095231Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "clarify",
+            "started_at": "2026-10-09T07:20:06.096576Z",
+            "duration_ms": 12,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "64d536fb587a4afd9a1888e848447db9",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 149,
+            "hits": 15,
+            "top_score": 0.0159,
+            "latency_ms": 212,
+            "query": "All of the cameras are not working except one the system does not record any more",
+            "created_at": "2026-10-09T07:20:02.742320Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c25ea998c6cc4b55908913a2af2eca9e",
+      "version": 1,
+      "stage": "diagnose",
+      "substage": "retrieve",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:59.175060+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "kind": "user_message",
+          "id": "1391c7d412d04dc680c053b973a78735",
+          "text": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:20:02.547156+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "f7fc002a0a43577889f6b3dad1b8e08f",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:20:06.133697Z",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+              "source": "kb_qa",
+              "doc_id": "bp-0228",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e607b41f-47a5-4505-8cdb-ed0db73a736a",
+              "snippet": "Why does SoloCam S340(T8170) sometimes miss recording events?\nSoloCam S340(T8170) may miss events if the person/object is outside the Activity Zone but still in the camera's viewing area --- the system will not record in that case. Also: object may have exceeded the PIR detection range, or sensitivity is too low. Increase detection sensitivity and check the working mode.",
+              "score": 0.015855532786885243,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "source": "kb_qa",
+              "doc_id": "bp-0154",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+              "score": 0.015576036866359447,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+              "source": "kb_qa",
+              "doc_id": "bp-0166",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "99874b96-a154-43a0-bc82-87aa8387b823",
+              "snippet": "Why has one of my SoloCam S340(T8170) cameras suddenly died?\n1. Power Cycle the Camera**: - Remove the camera from its mounting. - Hold the sync button for 10-15 seconds to reset it. - Try reconnecting it to your HomeBase.\n2. Check the Charging Status**: - Plug the camera into a charger and check for any LED lights. - If no lights appear, try a different charging cable and adapter.\n3. Reconnect to",
+              "score": 0.014545454545454545,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "source": "kb_qa",
+              "doc_id": "bp-0276",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+              "score": 0.01433676686987597,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "source": "kb_qa",
+              "doc_id": "bp-0223",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+              "score": 0.0134761441090555,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+              "source": "kb_qa",
+              "doc_id": "bp-0226",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8ea45b06-c771-48b5-b0a8-19b8e85029eb",
+              "snippet": "Why does SoloCam S340(T8170) only record the end of an event?\nThe object may have moved too fast or was at the edge of the detection zone. Solution: Increase Motion Detection sensitivity to extend detection range so events are detected earlier. You can also set a shorter detection interval in Customize Recording mode.",
+              "score": 0.013329475308641973,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+              "source": "kb_qa",
+              "doc_id": "bp-0164",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "33291f4d-db7a-4dea-949c-504e2ca7aec1",
+              "snippet": "Why is SoloCam S340(T8170) not functioning after the update, with no live view or recorded events even after reinstallation?\n1. Check the version of the Anker eufy app being used by going to Settings in the app, then About or App Information.\n2. If using version 5.0 or higher, be aware that there may be known issues that the technical team is working to resolve.\n3. Provide the app version to recei",
+              "score": 0.012947791164658634,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "source": "kb_qa",
+              "doc_id": "bp-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+              "score": 0.012685265911072361,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+              "source": "kb_qa",
+              "doc_id": "bp-0163",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "52e131fa-739b-42c7-bdec-ff622753bc6f",
+              "snippet": "Why won't SoloCam S340(T8170) connect to Bluetooth, show video on my phone, or send notifications for garden activity?\n1. Check Network Connection**\n- Ensure phone is connected to a stable Wi-Fi network, preferably 2.4GHz.\n- Switch between Wi-Fi and mobile data to see if the issue persists.\n2. Reset the Camera**\n- Press and hold the reset button for 10-15 seconds until a prompt is heard.\n- Set up ",
+              "score": 0.012543859649122805,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+              "source": "kb_qa",
+              "doc_id": "bp-0277",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f3752cc-6598-4325-accc-a1e2224abf28",
+              "snippet": "My SoloCam S340 (T8170) firmware update failed\n1. Check the network connection\n- Ensure that your network is stable and has a strong signal. You can try moving the camera closer to the router or checking for any network interference.\n2. Check the camera LED status\n- Red and Blue alternately flashing: This indicates that the camera is currently updating. Please wait for about 5 minutes and then che",
+              "score": 0.012103174603174604,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+              "source": "kb_qa",
+              "doc_id": "bp-0167",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c4d48372-a778-4c00-8e13-d39ac402b858",
+              "snippet": "Why does the microphone on SoloCam S340(T8170) not work on my Android device?\n1. App Permissions:** - Go to phone settings → Apps → Anker eufy app → Permissions. - Ensure the app has permission to access the microphone.\n2. Restart Your Devices:** - Restart both the SoloCam S340 and the Motorola Razr 2024. - Try reconnecting to see if the issue persists.\n3. Network Connection:** - Ensure the camera",
+              "score": 0.011914622491239247,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+              "source": "kb_qa",
+              "doc_id": "bp-0220",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "52a13bfb-385d-40c8-b3d0-be690cba2c7d",
+              "snippet": "What happens if two SoloCam S340(T8170) cameras have the same name in Alexa or Google Assistant?\nIf two cameras have the same name, Alexa and Google Assistant cannot identify which one you are requesting. Please change one to a different, unique name.",
+              "score": 0.011909416748126424,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+              "source": "kb_qa",
+              "doc_id": "bp-0176",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee7bbba3-b666-4fd9-b5e8-52b54ea8986d",
+              "snippet": "What should I do if SoloCam S340(T8170) WiFi connection fails showing incorrect password?\n1. Confirm network compatibility. This device only supports 2.4GHz WiFi. Confirm the current connection is not on a 5G WiFi network.\n2. Verify password accuracy. Check whether the entered WiFi password is correct, paying attention to uppercase and lowercase letters and whether special characters are entered c",
+              "score": 0.011591629676601142,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "source": "kb_qa",
+              "doc_id": "bp-0151",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+              "score": 0.011556064073226544,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+              "source": "kb_qa",
+              "doc_id": "bp-0196",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cd45d9fd-0c65-4dc7-b2ba-8b0b6eda3848",
+              "snippet": "Why is the anti-theft alarm on SoloCam S340(T8170) triggering too frequently (false alarm)?\nIf the anti-theft alarm on SoloCam S340(T8170) or other 3/3C cameras is triggering too frequently: This issue has been fixed in firmware version V3.1.8.6 or above. Solution: Update the camera firmware to V3.1.8.6 or later to resolve the false alarm issue.",
+              "score": 0.011494252873563218,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:20:06.139218+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "kind": "assistant_message",
+          "message_id": "97e41e7927915d379128e989e26371b3",
+          "text": "I'm sorry this hasn't been a good experience. Are the non-working cameras showing any LED lights when you plug them into a charger?",
+          "status": "completed",
+          "reply_to_input_id": "1391c7d412d04dc680c053b973a78735",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "1d0d36ef171e593faa81b58991656af2",
+      "issues": [
+        {
+          "issue_id": "1d0d36ef171e593faa81b58991656af2",
+          "status": "open",
+          "title": "All of the cameras are not working except one、the system does not record any more",
+          "task_queue": [
+            {
+              "task_id": "5def1c4598cb5dd7a2d94f75eac212f6",
+              "intent": "report_problem",
+              "quote": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not sure what you changed but the WiFi is fine and it is clearly an issue with the system.",
+              "status": "active",
+              "created_input_id": "1391c7d412d04dc680c053b973a78735",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 15,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": []
+}

@@ -1,0 +1,2929 @@
+{
+  "id": "T36",
+  "input": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "resumed": false,
+          "event_id": "7744e7e22e3b467b8935ecb755b38e4c",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:50.505447+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "payload": {
+            "kind": "message",
+            "text": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "bd3053b007164ddf82b1edc2d0768fed",
+          "input_id": "d9d11b3d07684e268b4e506a0bfb191a",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:50.505447+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 3,
+          "event_id": "159c14cbf9f44f1fbceb58260ffe637f",
+          "recorded_at": "2026-10-09T07:18:50.530474+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 4,
+          "event_id": "c8d8417d5a2c4aacb1f7fdf430017630",
+          "recorded_at": "2026-10-09T07:18:54.194050+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 5,
+          "event_id": "a9a5e64a6798449aa416fda80bdfdf1d",
+          "recorded_at": "2026-10-09T07:18:54.208466+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "b69b6519823c56738719b3862f593723",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 6,
+          "event_id": "49adc23de46f46bb9d313d543918f240",
+          "recorded_at": "2026-10-09T07:18:54.215698+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "b69b6519823c56738719b3862f593723",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 7,
+          "event_id": "6f1b6aeafda24f8f96c581dbf2db0d83",
+          "recorded_at": "2026-10-09T07:18:54.597464+00:00"
+        },
+        {
+          "type": "ping",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 8,
+          "event_id": "2eb650e2f5bd4693ba9f9e0016d7de3e",
+          "recorded_at": "2026-10-09T07:18:59.602391+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 9,
+          "event_id": "c74be247a3584901b590500ef9f90ea9",
+          "recorded_at": "2026-10-09T07:19:02.665957+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 10,
+          "event_id": "9024491f115c4bd497e11ef97ff14a10",
+          "recorded_at": "2026-10-09T07:19:02.672184+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_id": "d9d11b3d07684e268b4e506a0bfb191a",
+          "resolved_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "6b43492f197658879d3d9e6222edc629",
+              "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+              "status": "open"
+            }
+          ],
+          "event_id": "11bab49618685281bf9ba145b025909e",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:19:02.693953+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "source": "kb_qa",
+              "doc_id": "rv-0306",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "snippet": "Dustbin and filter maintenance for S1 Pro\n1. Remove the magnetic cover and lift the dustbin handle to remove it.\n2. Open the back cover, empty the trash, and close it.\n3. If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustb",
+              "score": 0.015855532786885243,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+              "source": "kb_qa",
+              "doc_id": "rv-0358",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+              "snippet": "What should I do if my S1 Pro/T2080's suction becomes weak?\n-Carefully clean the residual debris from the side brush, roller brush, dustbin, and high-performance filter inside the dustbin. -Check if the brush guard strip is intact; if it is damaged or missing, please replace it as soon as possible. Also, please inspect the dustbin outlet's foam seal to ensure it is not damaged.",
+              "score": 0.014640522875816991,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0616490b-d877-4e1f-99f2-194854492bff",
+              "source": "kb_qa",
+              "doc_id": "rv-0316",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0616490b-d877-4e1f-99f2-194854492bff",
+              "snippet": "Robot S1 Pro makes unusual noises during the cleaning process\n1. Swivel wheel noise: Dismantle the swivel wheel and check if there is dirt on the wheel and axle.\n2. Fan noise: Remove the dustbin and check if the dustbin, its filter, and the high-performance filter are clogged.\n3. Rolling brush noise: Check if the rolling brush is tangled with debris causing deformation. Inspect the brush roll cove",
+              "score": 0.014279148153822582,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+              "source": "kb_qa",
+              "doc_id": "rv-0337",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+              "snippet": "Why is the filter tray of the S1 Pro Uniclean™ Station dirty? How do I clean the filter tray?\nUsers may notice that the Uniclean™ Station's filter tray often becomes dirty, which is a normal phenomenon that shows the Uniclean™ Station is functioning properly. The S1 Pro robot is equipped with a self-cleaning mechanism that ensures its mopping pads remain clean. The filter tray collects debris and ",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0328",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+              "snippet": "The robot S1 Pro/T2080's dirty water reservoir frequently gets clogged.\n1. If there is an accumulation of dust or debris in your home, it is recommended to use vacuum only mode before using the mop mode.\n2. Regularly clean the dustbin, high-performance filter, and rolling brush to enhance the robot's cleaning performance and reduce the accumulation of debris on the red filter of dirty water reserv",
+              "score": 0.013025415444770282,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+              "source": "kb_qa",
+              "doc_id": "rv-0479",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+              "snippet": "what should I do when T2080 S1 Pro's Dirty water reservoir filter handle rusted/Dirty water reservoir rusted/handle of the small filter element of the sewage box is rusted?\nRusting of the steel wire handle on the dirty water reservoir filter is a normal phenomenon. Due to long-term erosion by dirty water, rusting is difficult to prevent, and this situation does not affect the normal operation of t",
+              "score": 0.01263003663003663,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+              "source": "kb_qa",
+              "doc_id": "rv-0127",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+              "snippet": "How often do I need to replace the dust bag in the Station for S1/T2071/T2080/S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending",
+              "score": 0.012488677536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "source": "kb_qa",
+              "doc_id": "rv-0302",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+              "score": 0.01206120612061206,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+              "source": "kb_qa",
+              "doc_id": "rv-0313",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+              "snippet": "The robot S1 Pro's mop cloth is not drying properly and is getting moldy\n1. If the local climate is humid and the rolling mop drying mode is set to quick, switch to the standard drying mode.\n2. If the rolling mop is dirty or worn out, replace it with a new one.\n3. If the base station's debris tray is overly dirty and blocking the drying airflow, clean the tray promptly.",
+              "score": 0.011978399607265586,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+              "source": "kb_qa",
+              "doc_id": "rv-0338",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+              "snippet": "How often do I need to replace the dust bag in the Uniclean™ Station for S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending on t",
+              "score": 0.011842105263157893,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+              "source": "kb_qa",
+              "doc_id": "rv-0411",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+              "snippet": "what should I do when T2080 S1 Pro has EB14: The robot water sink is blocked, please clean it in time to avoid leakage or odor/Please clean robot water sink filter/Robot roller water sink blocked?\n1. Remove the robot and the robot's dirty water reservoir. Remove the robot water sink and robot water sink filter, check whether the filter is clogged, and if so, clean the filter screen thoroughly and ",
+              "score": 0.011769278606965174,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+              "source": "kb_qa",
+              "doc_id": "rv-0368",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+              "snippet": "What should I do if the handle of the small filter element of the sewage box of my S1 Pro/T2080 is rusted? One of the hinges in the dirty water tank to have a potential build up of rust.\nSince the accessories are soaked in water, it is difficult to avoid rusting. Kindly please know that the rust does not affect its use，please do not worry. If you have more concerns, please let us know to see anyth",
+              "score": 0.01173218673218673,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+              "source": "kb_qa",
+              "doc_id": "rv-0471",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+              "snippet": "what should I do when T2080 S1 Pro has E0: Please install the dust bin and filter. Click to view the steps/Please install the dust bin and filter/Please install the dust bin and filter screen?\n1. Open the robot's magnetic cover and check whether the dust bin is installed. Check whether the magnet at the base of the dust bin is missing; use an iron object to verify if it has lost its magnetic prope",
+              "score": 0.011623931623931624,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+              "source": "kb_qa",
+              "doc_id": "rv-0345",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks debris during the dust collection process?\nWhen the S1 Pro is docked on the base station for dust collection, it should seamlessly transfer the debris from its dustbin into the dust bag. However, if you notice that debris is not being sucked into the dust bag and is rather leaking from the robot's brush outlet, please refer to the following troubleshooting",
+              "score": 0.01156862745098039,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+              "source": "kb_qa",
+              "doc_id": "rv-0428",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+              "snippet": "what should I do when T2080 S1 Pro has EB03: Base station dust emptying duct blocked, task ended/Base station air duct blocked/Blockage of base station dust collection duct?\n1. Remove the clean water tank, open the dust bag cover, check if the dust bag is installed, and ensure that the dust bag is properly installed; remove the dust bag, check if the dust port is blocked, and manually clean it if ",
+              "score": 0.0113682092555332,
+              "status": "ok"
+            }
+          ],
+          "event_id": "dbca67f6bd3b54f2a9dc8ecbe2d60a06",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:19:02.695455+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "7f224cebf08753ceaeb8fa7c6c7c1083",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:19:02.699421+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the magnetic cover and lift the dustbin handle to re…",
+            "instruction": "Remove the magnetic cover and lift the dustbin handle to remove it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "event_id": "4133afa937995fa0bcbbab5ad43ea716",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:19:02.700487+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+          "version": 1,
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 16,
+          "event_id": "1ff5863b3dc94bfab3213e775a474789",
+          "recorded_at": "2026-10-09T07:19:02.701724+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "3b5e3f087e3f56dbb1e73272e7c0f311",
+          "recorded_at": "2026-10-09T07:19:02.703209+00:00",
+          "run_id": "f065e284028d4c35a0cf6ba230773811",
+          "seq": 17,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 18,
+          "type": "run_started",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "resumed": false,
+          "event_id": "b52ef4ae74e040669adceae61ed9334c",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:02.729137+00:00"
+        },
+        {
+          "seq": 19,
+          "type": "input_received",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "f551e1859fbc4c6aaa2dea6a3263a579",
+            "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+            "expected_version": 1
+          },
+          "event_id": "7d799abb8021423c91a36d1926db928d",
+          "input_id": "f551e1859fbc4c6aaa2dea6a3263a579",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:02.729137+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 20,
+          "event_id": "9eb4868985524dac95c87c523e80d981",
+          "recorded_at": "2026-10-09T07:19:02.740495+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 21,
+          "event_id": "1c27a7ad29db4b40b8327e4f4d4a9fc7",
+          "recorded_at": "2026-10-09T07:19:02.744075+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_id": "f551e1859fbc4c6aaa2dea6a3263a579",
+          "resolved_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "6b43492f197658879d3d9e6222edc629",
+              "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+              "status": "open"
+            }
+          ],
+          "event_id": "4eb53f91d4515cb18a8bbb3b393717c4",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:19:02.762539+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "7e7c61a45ab053798c5963c24a40d0fe",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:19:02.763361+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "6ca2f8a99df05092a6041aca198459c8",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "4241f98d9e8252ecbb510f281ec46509",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:19:02.764162+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "6ca2f8a99df05092a6041aca198459c8",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Open the back cover, empty the trash, and close it.",
+            "instruction": "Open the back cover, empty the trash, and close it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "event_id": "00eede587063580189ec95794c319839",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 26,
+          "recorded_at": "2026-10-09T07:19:02.765502+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "card_id": "6ca2f8a99df05092a6041aca198459c8",
+          "version": 2,
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 27,
+          "event_id": "1e03c1fabf344ada9f4cce3cd6515a8d",
+          "recorded_at": "2026-10-09T07:19:02.766133+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ce2b17c38ed65d18bc069529ec9878a4",
+          "recorded_at": "2026-10-09T07:19:02.766889+00:00",
+          "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+          "seq": 28,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 29,
+          "type": "run_started",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "resumed": false,
+          "event_id": "43d57f5251e54e74b6f19f7fa31b9da7",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:02.783381+00:00"
+        },
+        {
+          "seq": 30,
+          "type": "input_received",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "6ca2f8a99df05092a6041aca198459c8",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "2c2d63418031413295d8fa2e8f03b060",
+            "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+            "expected_version": 2
+          },
+          "event_id": "0f8fbd812b9c4eea99c076e64b8806ab",
+          "input_id": "2c2d63418031413295d8fa2e8f03b060",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:02.783381+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 31,
+          "event_id": "524ce96ee2cd40ae8011665fd2e275cd",
+          "recorded_at": "2026-10-09T07:19:02.792340+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 32,
+          "event_id": "305cb5cbd8f944fc8d27aecd1d0d30c4",
+          "recorded_at": "2026-10-09T07:19:02.794573+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_id": "2c2d63418031413295d8fa2e8f03b060",
+          "resolved_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "6b43492f197658879d3d9e6222edc629",
+              "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+              "status": "open"
+            }
+          ],
+          "event_id": "5e244ff87e385a99bbc8d038638813c7",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:19:02.817181+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "6ca2f8a99df05092a6041aca198459c8",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "5af80def13925266a39530dd6361b876",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:19:02.818249+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "8c4e7805605b5912b45971463ed543bf",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "d46bddf97d515378ac072b9cc846e726",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:19:02.819058+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "8c4e7805605b5912b45971463ed543bf",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "If the robot's dust inlet is blocked, clean it as well.",
+            "instruction": "If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustbin filters. 3. Dry the filters and dustbin. If the high-performance filter is too dirty, replace it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "event_id": "26c763c0212c5d10926db11666b92e3b",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:19:02.820041+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "card_id": "8c4e7805605b5912b45971463ed543bf",
+          "version": 3,
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 38,
+          "event_id": "6ec903d2b03640a1a828bb5788d70264",
+          "recorded_at": "2026-10-09T07:19:02.820671+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "f8dcf620d6bc5419a4a0d78bb6905d8e",
+          "recorded_at": "2026-10-09T07:19:02.821471+00:00",
+          "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+          "seq": 39,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 40,
+          "type": "run_started",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "resumed": false,
+          "event_id": "6bb86c8a9a84436a89c915f411266ae8",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:02.836253+00:00"
+        },
+        {
+          "seq": 41,
+          "type": "input_received",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "8c4e7805605b5912b45971463ed543bf",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "885cdc9b52b446e59a79e955e394e152",
+            "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+            "expected_version": 3
+          },
+          "event_id": "2bd894a97f5b4c53b628ca78e1724bb6",
+          "input_id": "885cdc9b52b446e59a79e955e394e152",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:02.836253+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 42,
+          "event_id": "c23a06d93e40451193eb66226eac5b34",
+          "recorded_at": "2026-10-09T07:19:02.846192+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 43,
+          "event_id": "51c65d8450d24cf4aa3b06bd388a1269",
+          "recorded_at": "2026-10-09T07:19:02.848478+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_id": "885cdc9b52b446e59a79e955e394e152",
+          "resolved_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "6b43492f197658879d3d9e6222edc629",
+              "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+              "status": "open"
+            }
+          ],
+          "event_id": "bddad95c7e7c56a89d0785450f3a5e89",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:19:02.871348+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "8c4e7805605b5912b45971463ed543bf",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "2c9fdec0672e55c788504180ed8562e9",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:19:02.872203+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "d111030645d3500b85cb632a3ef3c63b",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:19:02.873062+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Reinstall the high-performance filter; the dustbin lid won'…",
+            "instruction": "Reinstall the high-performance filter; the dustbin lid won't close if it's missing. Note: Dry thoroughly before use to prevent bacteria and odors, or replace with a new filter.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "event_id": "9f86219438cf5ffcaacf806cef4a0d30",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 48,
+          "recorded_at": "2026-10-09T07:19:02.873911+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+          "version": 4,
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 49,
+          "event_id": "6863813d83734b8f9bc283219c652377",
+          "recorded_at": "2026-10-09T07:19:02.874560+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "8e33718b2328519d837c8ecd9ec95935",
+          "recorded_at": "2026-10-09T07:19:02.875702+00:00",
+          "run_id": "85e6387c78d64ada935ca30324b95a46",
+          "seq": 50,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 51,
+          "type": "run_started",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "resumed": false,
+          "event_id": "4a176bb8f3b64c1794f90cfc859ec165",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:02.898202+00:00"
+        },
+        {
+          "seq": 52,
+          "type": "input_received",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "e497352192ef4a67b7e32c1a973492a8",
+            "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+            "expected_version": 4
+          },
+          "event_id": "4f353c25ff1741c1a13f3b93e9d659e5",
+          "input_id": "e497352192ef4a67b7e32c1a973492a8",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:02.898202+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 53,
+          "event_id": "f19e06c269c441f8b760151a3fbbf6c5",
+          "recorded_at": "2026-10-09T07:19:02.908606+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 54,
+          "event_id": "650e109553e3459980aef0bd73de4d16",
+          "recorded_at": "2026-10-09T07:19:02.914423+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "input_id": "e497352192ef4a67b7e32c1a973492a8",
+          "resolved_issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 5,
+          "issues": [
+            {
+              "issue_id": "6b43492f197658879d3d9e6222edc629",
+              "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+              "status": "open"
+            }
+          ],
+          "event_id": "50fec50ce7725c45a43859de6b7d8a67",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 56,
+          "recorded_at": "2026-10-09T07:19:02.949587+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 5,
+          "event_id": "940db18834bd50c2b23a9aad11fa793c",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 57,
+          "recorded_at": "2026-10-09T07:19:02.950678+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+          "case_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "version": 5,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:02.908599+00:00",
+          "event_id": "7f0df28d15f657c99e26919a83a0f81f",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 58,
+          "recorded_at": "2026-10-09T07:19:02.951773+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "c552409034be55a79fb392067b08c85f",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "reply_to_input_id": "e497352192ef4a67b7e32c1a973492a8",
+          "event_id": "d5499003c291573ba36fdac97fb61274",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 59,
+          "recorded_at": "2026-10-09T07:19:02.953299+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "c552409034be55a79fb392067b08c85f",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "b90a3ce871d3534aa23b01674c7d0e92",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 60,
+          "recorded_at": "2026-10-09T07:19:02.954278+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "c552409034be55a79fb392067b08c85f",
+          "status": "completed",
+          "event_id": "1156db51073457258c5062e67c65477e",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 61,
+          "recorded_at": "2026-10-09T07:19:02.955959+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "pending_id": "44b1ff4457b25a5e82ee1c4d3e7f3012",
+          "status": "active",
+          "reason": "presented",
+          "version": 5,
+          "event_id": "cac1b6fbb0b25746bd65ee1c00ee8d54",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 62,
+          "recorded_at": "2026-10-09T07:19:02.956946+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "card_id": "44b1ff4457b25a5e82ee1c4d3e7f3012",
+          "version": 5,
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 63,
+          "event_id": "447ab5e806404538a4be2f7376e33866",
+          "recorded_at": "2026-10-09T07:19:02.957601+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "cb0462436b0c535283ef2ec25b2e9186",
+          "recorded_at": "2026-10-09T07:19:02.958516+00:00",
+          "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+          "seq": 64,
+          "reason": "awaiting_input",
+          "version": 5
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:50.441365+08:00",
+  "session_id": "c562676f5efc4300973159ba2897446d",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "c562676f5efc4300973159ba2897446d",
+    "version": 5,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "6b43492f197658879d3d9e6222edc629",
+      "kind": "upload_receipt",
+      "card_id": "44b1ff4457b25a5e82ee1c4d3e7f3012",
+      "version": 5
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:50.505447+00:00",
+        "first_seq": 2,
+        "last_seq": 12,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "user_message",
+        "id": "d9d11b3d07684e268b4e506a0bfb191a",
+        "text": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:18:54.215698+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "b69b6519823c56738719b3862f593723",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:19:02.695652Z",
+        "first_seq": 13,
+        "last_seq": 13,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "source": "kb_qa",
+            "doc_id": "rv-0306",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "snippet": "Dustbin and filter maintenance for S1 Pro\n1. Remove the magnetic cover and lift the dustbin handle to remove it.\n2. Open the back cover, empty the trash, and close it.\n3. If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustb",
+            "score": 0.015855532786885243,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+            "source": "kb_qa",
+            "doc_id": "rv-0358",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+            "snippet": "What should I do if my S1 Pro/T2080's suction becomes weak?\n-Carefully clean the residual debris from the side brush, roller brush, dustbin, and high-performance filter inside the dustbin. -Check if the brush guard strip is intact; if it is damaged or missing, please replace it as soon as possible. Also, please inspect the dustbin outlet's foam seal to ensure it is not damaged.",
+            "score": 0.014640522875816991,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0616490b-d877-4e1f-99f2-194854492bff",
+            "source": "kb_qa",
+            "doc_id": "rv-0316",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0616490b-d877-4e1f-99f2-194854492bff",
+            "snippet": "Robot S1 Pro makes unusual noises during the cleaning process\n1. Swivel wheel noise: Dismantle the swivel wheel and check if there is dirt on the wheel and axle.\n2. Fan noise: Remove the dustbin and check if the dustbin, its filter, and the high-performance filter are clogged.\n3. Rolling brush noise: Check if the rolling brush is tangled with debris causing deformation. Inspect the brush roll cove",
+            "score": 0.014279148153822582,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+            "source": "kb_qa",
+            "doc_id": "rv-0337",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+            "snippet": "Why is the filter tray of the S1 Pro Uniclean™ Station dirty? How do I clean the filter tray?\nUsers may notice that the Uniclean™ Station's filter tray often becomes dirty, which is a normal phenomenon that shows the Uniclean™ Station is functioning properly. The S1 Pro robot is equipped with a self-cleaning mechanism that ensures its mopping pads remain clean. The filter tray collects debris and ",
+            "score": 0.014204425711275025,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+            "source": "kb_qa",
+            "doc_id": "rv-0328",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+            "snippet": "The robot S1 Pro/T2080's dirty water reservoir frequently gets clogged.\n1. If there is an accumulation of dust or debris in your home, it is recommended to use vacuum only mode before using the mop mode.\n2. Regularly clean the dustbin, high-performance filter, and rolling brush to enhance the robot's cleaning performance and reduce the accumulation of debris on the red filter of dirty water reserv",
+            "score": 0.013025415444770282,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+            "source": "kb_qa",
+            "doc_id": "rv-0479",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+            "snippet": "what should I do when T2080 S1 Pro's Dirty water reservoir filter handle rusted/Dirty water reservoir rusted/handle of the small filter element of the sewage box is rusted?\nRusting of the steel wire handle on the dirty water reservoir filter is a normal phenomenon. Due to long-term erosion by dirty water, rusting is difficult to prevent, and this situation does not affect the normal operation of t",
+            "score": 0.01263003663003663,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+            "source": "kb_qa",
+            "doc_id": "rv-0127",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+            "snippet": "How often do I need to replace the dust bag in the Station for S1/T2071/T2080/S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending",
+            "score": 0.012488677536231884,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+            "source": "kb_qa",
+            "doc_id": "rv-0302",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+            "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+            "score": 0.01206120612061206,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+            "source": "kb_qa",
+            "doc_id": "rv-0313",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+            "snippet": "The robot S1 Pro's mop cloth is not drying properly and is getting moldy\n1. If the local climate is humid and the rolling mop drying mode is set to quick, switch to the standard drying mode.\n2. If the rolling mop is dirty or worn out, replace it with a new one.\n3. If the base station's debris tray is overly dirty and blocking the drying airflow, clean the tray promptly.",
+            "score": 0.011978399607265586,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+            "source": "kb_qa",
+            "doc_id": "rv-0338",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+            "snippet": "How often do I need to replace the dust bag in the Uniclean™ Station for S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending on t",
+            "score": 0.011842105263157893,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+            "source": "kb_qa",
+            "doc_id": "rv-0411",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+            "snippet": "what should I do when T2080 S1 Pro has EB14: The robot water sink is blocked, please clean it in time to avoid leakage or odor/Please clean robot water sink filter/Robot roller water sink blocked?\n1. Remove the robot and the robot's dirty water reservoir. Remove the robot water sink and robot water sink filter, check whether the filter is clogged, and if so, clean the filter screen thoroughly and ",
+            "score": 0.011769278606965174,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+            "source": "kb_qa",
+            "doc_id": "rv-0368",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+            "snippet": "What should I do if the handle of the small filter element of the sewage box of my S1 Pro/T2080 is rusted? One of the hinges in the dirty water tank to have a potential build up of rust.\nSince the accessories are soaked in water, it is difficult to avoid rusting. Kindly please know that the rust does not affect its use，please do not worry. If you have more concerns, please let us know to see anyth",
+            "score": 0.01173218673218673,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+            "source": "kb_qa",
+            "doc_id": "rv-0471",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+            "snippet": "what should I do when T2080 S1 Pro has E0: Please install the dust bin and filter. Click to view the steps/Please install the dust bin and filter/Please install the dust bin and filter screen?\n1. Open the robot's magnetic cover and check whether the dust bin is installed. Check whether the magnet at the base of the dust bin is missing; use an iron object to verify if it has lost its magnetic prope",
+            "score": 0.011623931623931624,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+            "source": "kb_qa",
+            "doc_id": "rv-0345",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+            "snippet": "What should I do if my S1 Pro/T2080 leaks debris during the dust collection process?\nWhen the S1 Pro is docked on the base station for dust collection, it should seamlessly transfer the debris from its dustbin into the dust bag. However, if you notice that debris is not being sucked into the dust bag and is rather leaking from the robot's brush outlet, please refer to the following troubleshooting",
+            "score": 0.01156862745098039,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+            "source": "kb_qa",
+            "doc_id": "rv-0428",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+            "snippet": "what should I do when T2080 S1 Pro has EB03: Base station dust emptying duct blocked, task ended/Base station air duct blocked/Blockage of base station dust collection duct?\n1. Remove the clean water tank, open the dust bag cover, check if the dust bag is installed, and ensure that the dust bag is properly installed; remove the dust bag, check if the dust port is blocked, and manually clean it if ",
+            "score": 0.0113682092555332,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:02.700487+00:00",
+        "first_seq": 15,
+        "last_seq": 15,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "step_card",
+        "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0306",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Remove the magnetic cover and lift the dustbin handle to re…",
+          "instruction": "Remove the magnetic cover and lift the dustbin handle to remove it.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+          ],
+          "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:02.729137+00:00",
+        "first_seq": 19,
+        "last_seq": 23,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "action",
+        "id": "f551e1859fbc4c6aaa2dea6a3263a579",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:02.765502+00:00",
+        "first_seq": 26,
+        "last_seq": 26,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "step_card",
+        "card_id": "6ca2f8a99df05092a6041aca198459c8",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0306",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Open the back cover, empty the trash, and close it.",
+          "instruction": "Open the back cover, empty the trash, and close it.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+          ],
+          "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:02.783381+00:00",
+        "first_seq": 30,
+        "last_seq": 34,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "action",
+        "id": "2c2d63418031413295d8fa2e8f03b060",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:02.820041+00:00",
+        "first_seq": 37,
+        "last_seq": 37,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "step_card",
+        "card_id": "8c4e7805605b5912b45971463ed543bf",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_rv_0306",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "If the robot's dust inlet is blocked, clean it as well.",
+          "instruction": "If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustbin filters. 3. Dry the filters and dustbin. If the high-performance filter is too dirty, replace it.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+          ],
+          "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:02.836253+00:00",
+        "first_seq": 41,
+        "last_seq": 45,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "action",
+        "id": "885cdc9b52b446e59a79e955e394e152",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:02.873911+00:00",
+        "first_seq": 48,
+        "last_seq": 48,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "step_card",
+        "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+        "version": 4,
+        "step": {
+          "step_id": "s4",
+          "plan_id": "qa_rv_0306",
+          "plan_version": 1,
+          "step_no": 4,
+          "title": "Reinstall the high-performance filter; the dustbin lid won'…",
+          "instruction": "Reinstall the high-performance filter; the dustbin lid won't close if it's missing. Note: Dry thoroughly before use to prevent bacteria and odors, or replace with a new filter.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+          ],
+          "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:02.898202+00:00",
+        "first_seq": 52,
+        "last_seq": 56,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "action",
+        "id": "e497352192ef4a67b7e32c1a973492a8",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:02.951773+00:00",
+        "first_seq": 58,
+        "last_seq": 58,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "case_changed",
+        "card_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+        "version": 5,
+        "case_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:19:02.908599+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:02.953299+00:00",
+        "first_seq": 59,
+        "last_seq": 61,
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "assistant_message",
+        "message_id": "c552409034be55a79fb392067b08c85f",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "e497352192ef4a67b7e32c1a973492a8",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+    "issues": [
+      {
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "status": "open",
+        "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+        "task_queue": [
+          {
+            "task_id": "37876c7446165de882880874222d36d9",
+            "intent": "report_problem",
+            "quote": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+            "status": "active",
+            "created_input_id": "d9d11b3d07684e268b4e506a0bfb191a",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 64,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 4,
+  "errors": [],
+  "seconds": 12.47,
+  "journey": {
+    "session": {
+      "session_id": "c562676f5efc4300973159ba2897446d",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:50.508780Z",
+      "last_run_at": "2026-10-09T07:19:02.959177Z",
+      "runs": 5,
+      "user_messages": 1,
+      "first_question": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervange",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [
+        "qa_rv_0127",
+        "qa_rv_0302",
+        "qa_rv_0306",
+        "qa_rv_0313",
+        "qa_rv_0316",
+        "qa_rv_0328",
+        "qa_rv_0337",
+        "qa_rv_0338",
+        "qa_rv_0358",
+        "qa_rv_0368",
+        "qa_rv_0411",
+        "qa_rv_0479"
+      ],
+      "steps_executed": 4,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 59,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:19:02.959177Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "f065e284028d4c35a0cf6ba230773811",
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:50.508780Z",
+        "ended_at": "2026-10-09T07:19:02.704262Z",
+        "duration_ms": 12195,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 12193,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3598,
+            "tokens_in": 4321,
+            "tokens_out": 295,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:54.124127Z"
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "error",
+            "attempts": 2,
+            "fallback_used": true,
+            "stream": false,
+            "latency_ms": 8052,
+            "tokens_in": null,
+            "tokens_out": null,
+            "error_type": "TimeoutError: ",
+            "created_at": "2026-10-09T07:19:02.642446Z"
+          }
+        ],
+        "tokens_in": 4321,
+        "tokens_out": 295,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:50.508780Z",
+            "duration_ms": 3665,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "clarify",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3460,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 327,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5860
+                    }
+                  ],
+                  "actual_input_tokens": 4321
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:54.174378Z",
+            "duration_ms": 34,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:54.208437Z",
+            "duration_ms": 8451,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0306",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5347,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 340,
+                    "current": 327,
+                    "history": 0,
+                    "authority": 4680
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 284,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 224,
+                    "timezone": 7,
+                    "task_data": 3775,
+                    "issue_index": 180,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "schema_error",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5825
+                    },
+                    {
+                      "alias": "deepseek",
+                      "outcome": "timeout",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5918
+                    }
+                  ]
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:19:02.659897Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:02.671209Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:02.671215Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "f065e284028d4c35a0cf6ba230773811",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0159,
+            "latency_ms": 368,
+            "query": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft",
+            "created_at": "2026-10-09T07:18:54.567160Z"
+          }
+        ]
+      },
+      {
+        "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:19:02.730398Z",
+        "ended_at": "2026-10-09T07:19:02.767411Z",
+        "duration_ms": 36,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 35,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:02.730398Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:02.738224Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:02.739562Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:02.742611Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "1d103b5fe303450bbbb8a2619f1bc336",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:02.742616Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:19:02.784546Z",
+        "ended_at": "2026-10-09T07:19:02.822017Z",
+        "duration_ms": 37,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 36,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:02.784546Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:02.790195Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:02.791463Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:02.793807Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "b8a4e864484f43dfb6152c5e421c2ceb",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:02.793811Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "85e6387c78d64ada935ca30324b95a46",
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "seq_no": 4,
+        "started_at": "2026-10-09T07:19:02.837487Z",
+        "ended_at": "2026-10-09T07:19:02.876269Z",
+        "duration_ms": 38,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 37,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "85e6387c78d64ada935ca30324b95a46",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:02.837487Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "85e6387c78d64ada935ca30324b95a46",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:02.843540Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s4",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "85e6387c78d64ada935ca30324b95a46",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:02.844992Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "85e6387c78d64ada935ca30324b95a46",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:02.847228Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "85e6387c78d64ada935ca30324b95a46",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:02.847658Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "seq_no": 5,
+        "started_at": "2026-10-09T07:19:02.899946Z",
+        "ended_at": "2026-10-09T07:19:02.959172Z",
+        "duration_ms": 59,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 55,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:02.899946Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0306",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "6b43492f197658879d3d9e6222edc629",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:02.905795Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:02.907319Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:19:02.908206Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:19:02.911396Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:19:02.911998Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "c5c8183e7e614ef598a5d35e5e6bd4ec",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:02.912517Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c562676f5efc4300973159ba2897446d",
+      "version": 5,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "6b43492f197658879d3d9e6222edc629",
+        "kind": "upload_receipt",
+        "card_id": "44b1ff4457b25a5e82ee1c4d3e7f3012",
+        "version": 5
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:50.505447+00:00",
+          "first_seq": 2,
+          "last_seq": 12,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "user_message",
+          "id": "d9d11b3d07684e268b4e506a0bfb191a",
+          "text": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:18:54.215698+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "b69b6519823c56738719b3862f593723",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:19:02.695652Z",
+          "first_seq": 13,
+          "last_seq": 13,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "source": "kb_qa",
+              "doc_id": "rv-0306",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "snippet": "Dustbin and filter maintenance for S1 Pro\n1. Remove the magnetic cover and lift the dustbin handle to remove it.\n2. Open the back cover, empty the trash, and close it.\n3. If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustb",
+              "score": 0.015855532786885243,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+              "source": "kb_qa",
+              "doc_id": "rv-0358",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+              "snippet": "What should I do if my S1 Pro/T2080's suction becomes weak?\n-Carefully clean the residual debris from the side brush, roller brush, dustbin, and high-performance filter inside the dustbin. -Check if the brush guard strip is intact; if it is damaged or missing, please replace it as soon as possible. Also, please inspect the dustbin outlet's foam seal to ensure it is not damaged.",
+              "score": 0.014640522875816991,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0616490b-d877-4e1f-99f2-194854492bff",
+              "source": "kb_qa",
+              "doc_id": "rv-0316",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0616490b-d877-4e1f-99f2-194854492bff",
+              "snippet": "Robot S1 Pro makes unusual noises during the cleaning process\n1. Swivel wheel noise: Dismantle the swivel wheel and check if there is dirt on the wheel and axle.\n2. Fan noise: Remove the dustbin and check if the dustbin, its filter, and the high-performance filter are clogged.\n3. Rolling brush noise: Check if the rolling brush is tangled with debris causing deformation. Inspect the brush roll cove",
+              "score": 0.014279148153822582,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+              "source": "kb_qa",
+              "doc_id": "rv-0337",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+              "snippet": "Why is the filter tray of the S1 Pro Uniclean™ Station dirty? How do I clean the filter tray?\nUsers may notice that the Uniclean™ Station's filter tray often becomes dirty, which is a normal phenomenon that shows the Uniclean™ Station is functioning properly. The S1 Pro robot is equipped with a self-cleaning mechanism that ensures its mopping pads remain clean. The filter tray collects debris and ",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0328",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+              "snippet": "The robot S1 Pro/T2080's dirty water reservoir frequently gets clogged.\n1. If there is an accumulation of dust or debris in your home, it is recommended to use vacuum only mode before using the mop mode.\n2. Regularly clean the dustbin, high-performance filter, and rolling brush to enhance the robot's cleaning performance and reduce the accumulation of debris on the red filter of dirty water reserv",
+              "score": 0.013025415444770282,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+              "source": "kb_qa",
+              "doc_id": "rv-0479",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+              "snippet": "what should I do when T2080 S1 Pro's Dirty water reservoir filter handle rusted/Dirty water reservoir rusted/handle of the small filter element of the sewage box is rusted?\nRusting of the steel wire handle on the dirty water reservoir filter is a normal phenomenon. Due to long-term erosion by dirty water, rusting is difficult to prevent, and this situation does not affect the normal operation of t",
+              "score": 0.01263003663003663,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+              "source": "kb_qa",
+              "doc_id": "rv-0127",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+              "snippet": "How often do I need to replace the dust bag in the Station for S1/T2071/T2080/S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending",
+              "score": 0.012488677536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "source": "kb_qa",
+              "doc_id": "rv-0302",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+              "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+              "score": 0.01206120612061206,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+              "source": "kb_qa",
+              "doc_id": "rv-0313",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+              "snippet": "The robot S1 Pro's mop cloth is not drying properly and is getting moldy\n1. If the local climate is humid and the rolling mop drying mode is set to quick, switch to the standard drying mode.\n2. If the rolling mop is dirty or worn out, replace it with a new one.\n3. If the base station's debris tray is overly dirty and blocking the drying airflow, clean the tray promptly.",
+              "score": 0.011978399607265586,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+              "source": "kb_qa",
+              "doc_id": "rv-0338",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+              "snippet": "How often do I need to replace the dust bag in the Uniclean™ Station for S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending on t",
+              "score": 0.011842105263157893,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+              "source": "kb_qa",
+              "doc_id": "rv-0411",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+              "snippet": "what should I do when T2080 S1 Pro has EB14: The robot water sink is blocked, please clean it in time to avoid leakage or odor/Please clean robot water sink filter/Robot roller water sink blocked?\n1. Remove the robot and the robot's dirty water reservoir. Remove the robot water sink and robot water sink filter, check whether the filter is clogged, and if so, clean the filter screen thoroughly and ",
+              "score": 0.011769278606965174,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+              "source": "kb_qa",
+              "doc_id": "rv-0368",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+              "snippet": "What should I do if the handle of the small filter element of the sewage box of my S1 Pro/T2080 is rusted? One of the hinges in the dirty water tank to have a potential build up of rust.\nSince the accessories are soaked in water, it is difficult to avoid rusting. Kindly please know that the rust does not affect its use，please do not worry. If you have more concerns, please let us know to see anyth",
+              "score": 0.01173218673218673,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+              "source": "kb_qa",
+              "doc_id": "rv-0471",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+              "snippet": "what should I do when T2080 S1 Pro has E0: Please install the dust bin and filter. Click to view the steps/Please install the dust bin and filter/Please install the dust bin and filter screen?\n1. Open the robot's magnetic cover and check whether the dust bin is installed. Check whether the magnet at the base of the dust bin is missing; use an iron object to verify if it has lost its magnetic prope",
+              "score": 0.011623931623931624,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+              "source": "kb_qa",
+              "doc_id": "rv-0345",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+              "snippet": "What should I do if my S1 Pro/T2080 leaks debris during the dust collection process?\nWhen the S1 Pro is docked on the base station for dust collection, it should seamlessly transfer the debris from its dustbin into the dust bag. However, if you notice that debris is not being sucked into the dust bag and is rather leaking from the robot's brush outlet, please refer to the following troubleshooting",
+              "score": 0.01156862745098039,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+              "source": "kb_qa",
+              "doc_id": "rv-0428",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+              "snippet": "what should I do when T2080 S1 Pro has EB03: Base station dust emptying duct blocked, task ended/Base station air duct blocked/Blockage of base station dust collection duct?\n1. Remove the clean water tank, open the dust bag cover, check if the dust bag is installed, and ensure that the dust bag is properly installed; remove the dust bag, check if the dust port is blocked, and manually clean it if ",
+              "score": 0.0113682092555332,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:02.700487+00:00",
+          "first_seq": 15,
+          "last_seq": 15,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "step_card",
+          "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the magnetic cover and lift the dustbin handle to re…",
+            "instruction": "Remove the magnetic cover and lift the dustbin handle to remove it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:02.729137+00:00",
+          "first_seq": 19,
+          "last_seq": 23,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "action",
+          "id": "f551e1859fbc4c6aaa2dea6a3263a579",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:02.765502+00:00",
+          "first_seq": 26,
+          "last_seq": 26,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "step_card",
+          "card_id": "6ca2f8a99df05092a6041aca198459c8",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Open the back cover, empty the trash, and close it.",
+            "instruction": "Open the back cover, empty the trash, and close it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:02.783381+00:00",
+          "first_seq": 30,
+          "last_seq": 34,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "action",
+          "id": "2c2d63418031413295d8fa2e8f03b060",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:02.820041+00:00",
+          "first_seq": 37,
+          "last_seq": 37,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "step_card",
+          "card_id": "8c4e7805605b5912b45971463ed543bf",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "If the robot's dust inlet is blocked, clean it as well.",
+            "instruction": "If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustbin filters. 3. Dry the filters and dustbin. If the high-performance filter is too dirty, replace it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:02.836253+00:00",
+          "first_seq": 41,
+          "last_seq": 45,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "action",
+          "id": "885cdc9b52b446e59a79e955e394e152",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:02.873911+00:00",
+          "first_seq": 48,
+          "last_seq": 48,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "step_card",
+          "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0306",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Reinstall the high-performance filter; the dustbin lid won'…",
+            "instruction": "Reinstall the high-performance filter; the dustbin lid won't close if it's missing. Note: Dry thoroughly before use to prevent bacteria and odors, or replace with a new filter.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+            ],
+            "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:02.898202+00:00",
+          "first_seq": 52,
+          "last_seq": 56,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "action",
+          "id": "e497352192ef4a67b7e32c1a973492a8",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:02.951773+00:00",
+          "first_seq": 58,
+          "last_seq": 58,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "case_changed",
+          "card_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+          "version": 5,
+          "case_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:02.908599+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:02.953299+00:00",
+          "first_seq": 59,
+          "last_seq": 61,
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "assistant_message",
+          "message_id": "c552409034be55a79fb392067b08c85f",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "e497352192ef4a67b7e32c1a973492a8",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+      "issues": [
+        {
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "status": "open",
+          "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+          "task_queue": [
+            {
+              "task_id": "37876c7446165de882880874222d36d9",
+              "intent": "report_problem",
+              "quote": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+              "status": "active",
+              "created_input_id": "d9d11b3d07684e268b4e506a0bfb191a",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 64,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+      "session_id": "c562676f5efc4300973159ba2897446d",
+      "issue_id": "6b43492f197658879d3d9e6222edc629",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:19:02.908599+00:00",
+      "updated_at": "2026-10-09T07:19:02.908599+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "c562676f5efc4300973159ba2897446d",
+        "version": 5,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "6b43492f197658879d3d9e6222edc629",
+          "kind": "upload_receipt",
+          "card_id": "44b1ff4457b25a5e82ee1c4d3e7f3012",
+          "version": 5
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:50.505447+00:00",
+            "first_seq": 2,
+            "last_seq": 12,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "user_message",
+            "id": "d9d11b3d07684e268b4e506a0bfb191a",
+            "text": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:18:54.215698+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "b69b6519823c56738719b3862f593723",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:19:02.695652Z",
+            "first_seq": 13,
+            "last_seq": 13,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+                "source": "kb_qa",
+                "doc_id": "rv-0306",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+                "snippet": "Dustbin and filter maintenance for S1 Pro\n1. Remove the magnetic cover and lift the dustbin handle to remove it.\n2. Open the back cover, empty the trash, and close it.\n3. If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustb",
+                "score": 0.015855532786885243,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+                "source": "kb_qa",
+                "doc_id": "rv-0358",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ea9427e5-b8b6-4e67-9b70-cb36240b517b",
+                "snippet": "What should I do if my S1 Pro/T2080's suction becomes weak?\n-Carefully clean the residual debris from the side brush, roller brush, dustbin, and high-performance filter inside the dustbin. -Check if the brush guard strip is intact; if it is damaged or missing, please replace it as soon as possible. Also, please inspect the dustbin outlet's foam seal to ensure it is not damaged.",
+                "score": 0.014640522875816991,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0616490b-d877-4e1f-99f2-194854492bff",
+                "source": "kb_qa",
+                "doc_id": "rv-0316",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0616490b-d877-4e1f-99f2-194854492bff",
+                "snippet": "Robot S1 Pro makes unusual noises during the cleaning process\n1. Swivel wheel noise: Dismantle the swivel wheel and check if there is dirt on the wheel and axle.\n2. Fan noise: Remove the dustbin and check if the dustbin, its filter, and the high-performance filter are clogged.\n3. Rolling brush noise: Check if the rolling brush is tangled with debris causing deformation. Inspect the brush roll cove",
+                "score": 0.014279148153822582,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+                "source": "kb_qa",
+                "doc_id": "rv-0337",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "104dc9df-6e3b-4ad8-b114-d024f099e19e",
+                "snippet": "Why is the filter tray of the S1 Pro Uniclean™ Station dirty? How do I clean the filter tray?\nUsers may notice that the Uniclean™ Station's filter tray often becomes dirty, which is a normal phenomenon that shows the Uniclean™ Station is functioning properly. The S1 Pro robot is equipped with a self-cleaning mechanism that ensures its mopping pads remain clean. The filter tray collects debris and ",
+                "score": 0.014204425711275025,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+                "source": "kb_qa",
+                "doc_id": "rv-0328",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "55e0af8c-66d8-45c2-87e4-6d7e3b1e4f6a",
+                "snippet": "The robot S1 Pro/T2080's dirty water reservoir frequently gets clogged.\n1. If there is an accumulation of dust or debris in your home, it is recommended to use vacuum only mode before using the mop mode.\n2. Regularly clean the dustbin, high-performance filter, and rolling brush to enhance the robot's cleaning performance and reduce the accumulation of debris on the red filter of dirty water reserv",
+                "score": 0.013025415444770282,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+                "source": "kb_qa",
+                "doc_id": "rv-0479",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "300c39d7-7a71-4d68-9eb8-828caa6014f9",
+                "snippet": "what should I do when T2080 S1 Pro's Dirty water reservoir filter handle rusted/Dirty water reservoir rusted/handle of the small filter element of the sewage box is rusted?\nRusting of the steel wire handle on the dirty water reservoir filter is a normal phenomenon. Due to long-term erosion by dirty water, rusting is difficult to prevent, and this situation does not affect the normal operation of t",
+                "score": 0.01263003663003663,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+                "source": "kb_qa",
+                "doc_id": "rv-0127",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "baee9567-26bb-4d7a-89b4-a8920bb7dad9",
+                "snippet": "How often do I need to replace the dust bag in the Station for S1/T2071/T2080/S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending",
+                "score": 0.012488677536231884,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+                "source": "kb_qa",
+                "doc_id": "rv-0302",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0daa4780-93ac-45f3-99c7-c45674524e12",
+                "snippet": "Robot S1 Pro emits an unusual odor during operation\n1. Remove the robot's dirty water reservoir, disassemble and separate the dirty water sink and red filter. Clean them with the provided tools, rinse the inside of the reservoir, and ensure everything is dry before reassembling.\n2. Remove the roller mop, soak it in hot water for 5 minutes without detergent, reattach it to the robot, and use the ro",
+                "score": 0.01206120612061206,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+                "source": "kb_qa",
+                "doc_id": "rv-0313",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ae1efb73-9fea-448a-aa57-c97eb39db096",
+                "snippet": "The robot S1 Pro's mop cloth is not drying properly and is getting moldy\n1. If the local climate is humid and the rolling mop drying mode is set to quick, switch to the standard drying mode.\n2. If the rolling mop is dirty or worn out, replace it with a new one.\n3. If the base station's debris tray is overly dirty and blocking the drying airflow, clean the tray promptly.",
+                "score": 0.011978399607265586,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+                "source": "kb_qa",
+                "doc_id": "rv-0338",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a6e22a25-5144-458c-88b2-05da0b28c66c",
+                "snippet": "How often do I need to replace the dust bag in the Uniclean™ Station for S1 Pro?\nPlease note that regularly replacing the dust bag in the Uniclean™ Station not only maintains the Uniclean™ Station's performance but also contributes to a cleaner and healthier home environment. Typically, a dust bag can last approximately two to three months; however, the specific time duration varies depending on t",
+                "score": 0.011842105263157893,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+                "source": "kb_qa",
+                "doc_id": "rv-0411",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d44fca31-ef54-4c5c-9d90-4315d89b96e6",
+                "snippet": "what should I do when T2080 S1 Pro has EB14: The robot water sink is blocked, please clean it in time to avoid leakage or odor/Please clean robot water sink filter/Robot roller water sink blocked?\n1. Remove the robot and the robot's dirty water reservoir. Remove the robot water sink and robot water sink filter, check whether the filter is clogged, and if so, clean the filter screen thoroughly and ",
+                "score": 0.011769278606965174,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+                "source": "kb_qa",
+                "doc_id": "rv-0368",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d3481322-126d-464f-8aad-53d9dd5959e2",
+                "snippet": "What should I do if the handle of the small filter element of the sewage box of my S1 Pro/T2080 is rusted? One of the hinges in the dirty water tank to have a potential build up of rust.\nSince the accessories are soaked in water, it is difficult to avoid rusting. Kindly please know that the rust does not affect its use，please do not worry. If you have more concerns, please let us know to see anyth",
+                "score": 0.01173218673218673,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+                "source": "kb_qa",
+                "doc_id": "rv-0471",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ed86ccf0-6357-469b-8985-5805d20c4657",
+                "snippet": "what should I do when T2080 S1 Pro has E0: Please install the dust bin and filter. Click to view the steps/Please install the dust bin and filter/Please install the dust bin and filter screen?\n1. Open the robot's magnetic cover and check whether the dust bin is installed. Check whether the magnet at the base of the dust bin is missing; use an iron object to verify if it has lost its magnetic prope",
+                "score": 0.011623931623931624,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+                "source": "kb_qa",
+                "doc_id": "rv-0345",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "93e15830-ed98-438c-9631-22ff2ac0ceeb",
+                "snippet": "What should I do if my S1 Pro/T2080 leaks debris during the dust collection process?\nWhen the S1 Pro is docked on the base station for dust collection, it should seamlessly transfer the debris from its dustbin into the dust bag. However, if you notice that debris is not being sucked into the dust bag and is rather leaking from the robot's brush outlet, please refer to the following troubleshooting",
+                "score": 0.01156862745098039,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+                "source": "kb_qa",
+                "doc_id": "rv-0428",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d343d2c8-aefe-460c-9bb5-cc8e426523d8",
+                "snippet": "what should I do when T2080 S1 Pro has EB03: Base station dust emptying duct blocked, task ended/Base station air duct blocked/Blockage of base station dust collection duct?\n1. Remove the clean water tank, open the dust bag cover, check if the dust bag is installed, and ensure that the dust bag is properly installed; remove the dust bag, check if the dust port is blocked, and manually clean it if ",
+                "score": 0.0113682092555332,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:02.700487+00:00",
+            "first_seq": 15,
+            "last_seq": 15,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "step_card",
+            "card_id": "e2423e5a2d8b577fac6ba355ebcbddc3",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0306",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Remove the magnetic cover and lift the dustbin handle to re…",
+              "instruction": "Remove the magnetic cover and lift the dustbin handle to remove it.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+              ],
+              "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:02.729137+00:00",
+            "first_seq": 19,
+            "last_seq": 23,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "action",
+            "id": "f551e1859fbc4c6aaa2dea6a3263a579",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:02.765502+00:00",
+            "first_seq": 26,
+            "last_seq": 26,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "step_card",
+            "card_id": "6ca2f8a99df05092a6041aca198459c8",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0306",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Open the back cover, empty the trash, and close it.",
+              "instruction": "Open the back cover, empty the trash, and close it.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+              ],
+              "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:02.783381+00:00",
+            "first_seq": 30,
+            "last_seq": 34,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "action",
+            "id": "2c2d63418031413295d8fa2e8f03b060",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:02.820041+00:00",
+            "first_seq": 37,
+            "last_seq": 37,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "step_card",
+            "card_id": "8c4e7805605b5912b45971463ed543bf",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_rv_0306",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "If the robot's dust inlet is blocked, clean it as well.",
+              "instruction": "If the robot's dust inlet is blocked, clean it as well. To clean the filters: 1. Open the dustbin lid and remove the high-performance filter. 2. Use the provided cleaning tool to clean both sides of the high-performance and dustbin filters. 3. Dry the filters and dustbin. If the high-performance filter is too dirty, replace it.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+              ],
+              "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:02.836253+00:00",
+            "first_seq": 41,
+            "last_seq": 45,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "action",
+            "id": "885cdc9b52b446e59a79e955e394e152",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:02.873911+00:00",
+            "first_seq": 48,
+            "last_seq": 48,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "step_card",
+            "card_id": "cfe2f1015f3c5602b3a7f298e1a7a757",
+            "version": 4,
+            "step": {
+              "step_id": "s4",
+              "plan_id": "qa_rv_0306",
+              "plan_version": 1,
+              "step_no": 4,
+              "title": "Reinstall the high-performance filter; the dustbin lid won'…",
+              "instruction": "Reinstall the high-performance filter; the dustbin lid won't close if it's missing. Note: Dry thoroughly before use to prevent bacteria and odors, or replace with a new filter.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46"
+              ],
+              "primary_evidence_id": "bec2734f-d0c9-4e2a-8ea4-4d44256b1e46",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:02.898202+00:00",
+            "first_seq": 52,
+            "last_seq": 56,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "action",
+            "id": "e497352192ef4a67b7e32c1a973492a8",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:02.951773+00:00",
+            "first_seq": 58,
+            "last_seq": 58,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "case_changed",
+            "card_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+            "version": 5,
+            "case_id": "1ec4fb28-7df3-5f2e-9444-b7023f17d43b",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:19:02.908599+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:02.953299+00:00",
+            "first_seq": 59,
+            "last_seq": 61,
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "kind": "assistant_message",
+            "message_id": "c552409034be55a79fb392067b08c85f",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "e497352192ef4a67b7e32c1a973492a8",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "6b43492f197658879d3d9e6222edc629",
+        "issues": [
+          {
+            "issue_id": "6b43492f197658879d3d9e6222edc629",
+            "status": "open",
+            "title": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft.",
+            "task_queue": [
+              {
+                "task_id": "37876c7446165de882880874222d36d9",
+                "intent": "report_problem",
+                "quote": "Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/0ed0adb7b6312f8008f289675b4ba700012896c4-OWJkYTc0ZDgtZTdlYi00YTQyLTk5YTMtMjRlYWZiOGI1MzY1\"]",
+                "status": "active",
+                "created_input_id": "d9d11b3d07684e268b4e506a0bfb191a",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 64,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

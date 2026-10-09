@@ -1,0 +1,3941 @@
+{
+  "id": "T54",
+  "input": "Eufy S1 pro breast pump not suctioning",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Eufy S1 pro breast pump not suctioning",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "resumed": false,
+          "event_id": "54844f33372841c5beaf4c72c0dad3df",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:49.290617+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "payload": {
+            "kind": "message",
+            "text": "Eufy S1 pro breast pump not suctioning",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "9ac0d3f610a94e3fb2e2deec1817f457",
+          "input_id": "324987ab3e5e463c95fe1f0614a84b5c",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:49.290617+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 3,
+          "event_id": "f5e6b563761e47948daa9fee1dad2154",
+          "recorded_at": "2026-10-09T07:19:49.302635+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 4,
+          "event_id": "c290dfdeb39f4a1ab2f211ffaec8a5c2",
+          "recorded_at": "2026-10-09T07:19:52.866979+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 5,
+          "event_id": "3b958f3250e54a318adbfb9b4ebada57",
+          "recorded_at": "2026-10-09T07:19:52.874095+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "787ea21ddf225103b788b54c8e11b77d",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 6,
+          "event_id": "97225208e21c44ccbe6bf529bfd67d1c",
+          "recorded_at": "2026-10-09T07:19:52.877915+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "787ea21ddf225103b788b54c8e11b77d",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 7,
+          "event_id": "0342aacec8c54711bdc78fe64b9bc31b",
+          "recorded_at": "2026-10-09T07:19:53.167915+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 8,
+          "event_id": "1de989dec16a4620aa8a102fbb00881d",
+          "recorded_at": "2026-10-09T07:19:55.031930+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 9,
+          "event_id": "4b8f5a3c313245899c076c07608a260e",
+          "recorded_at": "2026-10-09T07:19:55.040098+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "324987ab3e5e463c95fe1f0614a84b5c",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "ebaea95cdceb51a28ebb805bb5624c75",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:19:55.064729+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "source": "kb_qa",
+              "doc_id": "bp-0125",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) not suctioning?\n1. Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, dia",
+              "score": 0.015062960323117129,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+              "source": "kb_qa",
+              "doc_id": "bp-0110",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+              "snippet": "The device contains a metal ring that may be electrified; do not touch the internal components. Please confirm the disinfection tools and procedures. Avoid using incorrect disinfection methods that may damage the equipment.",
+              "score": 0.014484126984126985,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+              "source": "kb_qa",
+              "doc_id": "bp-0047",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+              "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) suction suddenly becomes weak or abnormal?\n1. Suction Standard & Expectations Our breast pump has a maximum suction of 40kPa, which complies with international standards and does not exceed this value in order to protect the mother's breast and capillary health. As a result, the suction may feel relatively gentle --- this is normal.\n2. Mo",
+              "score": 0.013939393939393939,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+              "source": "kb_qa",
+              "doc_id": "bp-0009",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+              "snippet": "How do I properly clean my Breast Pump S1 Pro (T8D04)?\n1. Before First Use: Sterilize all washable parts using one of these methods:\n- Boiling: Place parts in boiling water for no more than 5 minutes, stirring continuously to prevent sticking.\n- Steam sterilization.\n2. After Daily Use: Rinse all washable parts with warm soapy water and air dry.\n3. Dishwasher: Washable parts can go in the dishwashe",
+              "score": 0.013778409090909091,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+              "source": "kb_qa",
+              "doc_id": "bp-0086",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+              "snippet": "What should I do if I feel pain when using eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Make sure you selected the correct flange size for your nipple.\n2. Adjust the wearing position --- the nipple should be centered in the flange tunnel.\n3. Turn the suction level down, or try the 'Gentle Flow' mode from the app.\n4. Ensure the suction level is not set too high --- excessive suction causes breast pa",
+              "score": 0.0136144578313253,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "source": "kb_qa",
+              "doc_id": "bp-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+              "score": 0.013558352402745995,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+              "source": "kb_qa",
+              "doc_id": "bp-0043",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+              "score": 0.013333333333333332,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+              "source": "kb_qa",
+              "doc_id": "bp-0064",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+              "snippet": "How do I clean the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Clean the outside and inside of the case, including the magnetic charging ports, with a damp cloth.\n2. Allow to air dry completely before placing the pumps back in the case.\nDo not submerge in water or put in a dishwasher.",
+              "score": 0.013179487179487179,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "source": "kb_qa",
+              "doc_id": "bp-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+              "score": 0.012906777587472471,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "source": "kb_qa",
+              "doc_id": "bp-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+              "score": 0.01264705882352941,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+              "source": "kb_qa",
+              "doc_id": "bp-0094",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+              "snippet": "What is the recommended wash and sterilization method for eufy Wearable Breast Pump S1 Pro(T8D04)?\n-Before first use: Sanitize all washable parts by boiling in water for no more than 5 minutes. Swirl parts continuously while boiling to prevent damage. Steam sterilization is also supported. -For daily use: Rinse all parts in cold water first, wash with warm soapy water, rinse thoroughly, and air dr",
+              "score": 0.012238372093023255,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+              "source": "kb_qa",
+              "doc_id": "bp-0103",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+              "snippet": "How do I sterilize my Breast Pump S1 Pro (T8D04) parts safely?\n1. Steam Sterilization: You can steam sterilize the washable parts for 5 minutes.\n2. Boiling Sterilization: For the S1 model, before first use, you can boil the washable parts in boiling water for no more than 5 minutes. While cleaning, continuously rotate the parts to prevent them from sticking to the container and causing damage.\n3. ",
+              "score": 0.012130376344086022,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+              "source": "kb_qa",
+              "doc_id": "bp-0019",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case or parts melted?\n1. Cause: Incorrect sterilization is the main reason for melting or burning of pump parts including charging case components. The case contains plastic terminals, PCB boards, and other materials with different shrinkage rates from silicone.\n2. Solutions:\n- Confirm your sterilization tools and procedures are correct. A",
+              "score": 0.01208630759247242,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "source": "kb_qa",
+              "doc_id": "bp-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+              "score": 0.011951245820299859,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+              "source": "kb_qa",
+              "doc_id": "bp-0040",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has weak suction and low milk output?\n1. Check Accessories: Inspect the duckbill valve and diaphragm for cracks, gaps, holes, or tears. Replace if damaged.\n2. Confirm Assembly Seal: Ensure the duckbill valve, breast shield channel, diaphragm, and pump hub are correctly assembled and fully sealed.\n3. Adjust Wearing Position: Make sure the nipple is ",
+              "score": 0.011773380852894186,
+              "status": "ok"
+            }
+          ],
+          "event_id": "6ec97ad8da405628873f851c6d834887",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:19:55.065904+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "f5915af076495af085f953aac0510459",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:19:55.070592+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Inspect Key Components for Damage:\n- Check the duckbill val…",
+            "instruction": "Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "72882c53c24d5cd8b21ad6a4ec190ee7",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:19:55.071642+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+          "version": 1,
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 15,
+          "event_id": "10e5f62f64fc4293ad63277199a924f5",
+          "recorded_at": "2026-10-09T07:19:55.072588+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ca874451ae4f5432b6d70c8410fcfd7f",
+          "recorded_at": "2026-10-09T07:19:55.075270+00:00",
+          "run_id": "8bb96615b7c945caa547cfc941090dbd",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "resumed": false,
+          "event_id": "01f64eca03fa4b419f2e13cc044673a8",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.177395+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "77b2f349831f42bdb455e41d5a206acd",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 1
+          },
+          "event_id": "09f2450a83ce43beba771b7e19044467",
+          "input_id": "77b2f349831f42bdb455e41d5a206acd",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.177395+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 19,
+          "event_id": "b3c5ed10e31f45b18579298b084a0f29",
+          "recorded_at": "2026-10-09T07:19:55.191268+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 20,
+          "event_id": "1d9f2aba52e440ac9cdb9c33a8abb840",
+          "recorded_at": "2026-10-09T07:19:55.193762+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "77b2f349831f42bdb455e41d5a206acd",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "b675d6abe0ea58d5b1d84c216df7352e",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:19:55.211013+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "26705ff6752d5eab965086ec963f9202",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:19:55.211879+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "d75607be442c5cc9b981770bd094e289",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:19:55.212688+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Verify Assembly and Sealing:\n- Ensure that the assembly is…",
+            "instruction": "Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, diaphragm, and pump hub - are perfectly sealed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "480f4f1ae05b560394cc1e9f4eea1b01",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:19:55.214689+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+          "version": 2,
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 26,
+          "event_id": "50618df252c54eb6a92495e17fbf80ff",
+          "recorded_at": "2026-10-09T07:19:55.215533+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "3a6041ca057d5102986e2af5c2387782",
+          "recorded_at": "2026-10-09T07:19:55.216281+00:00",
+          "run_id": "0c2301eb998343618d9131046eeb02d4",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "resumed": false,
+          "event_id": "ad0789c6833c488abfd00d3257d21dbf",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.232658+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "f93933f5911f46d3a04ed7883aaf5c4c",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 2
+          },
+          "event_id": "4a93227b2dac4dedb4bfd6b16981e247",
+          "input_id": "f93933f5911f46d3a04ed7883aaf5c4c",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.232658+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 30,
+          "event_id": "f4b3ff548a72485992f2643f53ab632c",
+          "recorded_at": "2026-10-09T07:19:55.241531+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 31,
+          "event_id": "fc08cc9d08fa4275aaad50eed8515716",
+          "recorded_at": "2026-10-09T07:19:55.243688+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "f93933f5911f46d3a04ed7883aaf5c4c",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "6dc92845da305a20a49a795e0022257d",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:19:55.261819+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "49f03cec97995b69943b17ad5f833603",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:19:55.262730+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "468a2d43be125659a09d82b97d18d950",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "5f858dea237f582e9114a4b26380f15d",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:19:55.263497+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "468a2d43be125659a09d82b97d18d950",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Adjust Wearing Position:\n- Make sure your nipple is centere…",
+            "instruction": "Adjust Wearing Position:\n- Make sure your nipple is centered in the flange tunnel without being folded or suppressed. The pump should be securely sealed to your breast, and you should feel noticeable suction.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "0cc613f3f7d555d3b6e6ecb814aaa03f",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:19:55.264273+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "468a2d43be125659a09d82b97d18d950",
+          "version": 3,
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 37,
+          "event_id": "4ad3dcbf33cb4b01a97d616121d1dbd5",
+          "recorded_at": "2026-10-09T07:19:55.265050+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "84070a9d1dca5b58a4bdef7d8ca77c11",
+          "recorded_at": "2026-10-09T07:19:55.265976+00:00",
+          "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+          "seq": 38,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 39,
+          "type": "run_started",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "resumed": false,
+          "event_id": "ec4d1839b2e54b9581e5bf92caed3cdb",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.281132+00:00"
+        },
+        {
+          "seq": 40,
+          "type": "input_received",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "468a2d43be125659a09d82b97d18d950",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "0967c29b8238455b847d7867fbc49d5e",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 3
+          },
+          "event_id": "dac7aedbc45547ae825b733e98128440",
+          "input_id": "0967c29b8238455b847d7867fbc49d5e",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.281132+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 41,
+          "event_id": "b2512f60a9314d4baaa15ada476c3b98",
+          "recorded_at": "2026-10-09T07:19:55.290776+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 42,
+          "event_id": "321dc6cd3fa744b8a8c6446746429a09",
+          "recorded_at": "2026-10-09T07:19:55.293081+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "0967c29b8238455b847d7867fbc49d5e",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "4a23f32ffab85cc2ae347188184dffd5",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:19:55.309527+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "468a2d43be125659a09d82b97d18d950",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "92344a6a587755528733836a04b231c2",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:19:55.310345+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "ef1a87bf27bf5148928fa33c52e771e8",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "894d358fdc73533bb67772ecfefa2e0f",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:19:55.311127+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Try Different Flange/Insert Sizes:\n- Different flange or in…",
+            "instruction": "Try Different Flange/Insert Sizes:\n- Different flange or insert sizes can significantly impact your comfort and suction. Experiment with various sizes to find the best fit for your anatomy.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "a94ec0f35f4054539a53cbdf2908efde",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:19:55.311871+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+          "version": 4,
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 48,
+          "event_id": "ea9fc4e787d6469e91bb6d5943beda1b",
+          "recorded_at": "2026-10-09T07:19:55.312507+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "8503213ab64f557dbed4bedb3f857c22",
+          "recorded_at": "2026-10-09T07:19:55.314502+00:00",
+          "run_id": "77b31e0601214300b1c53ae764ec2e42",
+          "seq": 49,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 50,
+          "type": "run_started",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "resumed": false,
+          "event_id": "2b56a9ba278643958bcf9f8b5b36f23d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.330401+00:00"
+        },
+        {
+          "seq": 51,
+          "type": "input_received",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "195e1bc02271430285a299bc270a1d16",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 4
+          },
+          "event_id": "8ac06946fee244b3b016afb512c34bc2",
+          "input_id": "195e1bc02271430285a299bc270a1d16",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.330401+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 52,
+          "event_id": "fe4ea25834604869b6bbf381c456e05e",
+          "recorded_at": "2026-10-09T07:19:55.339435+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 53,
+          "event_id": "042a9958d8544a4e9c9cbba808a853b0",
+          "recorded_at": "2026-10-09T07:19:55.341782+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "195e1bc02271430285a299bc270a1d16",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 5,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "6ee5c91f6b6758638e1cb76d21662066",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 55,
+          "recorded_at": "2026-10-09T07:19:55.360537+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "ef1a87bf27bf5148928fa33c52e771e8",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 5,
+          "event_id": "4b4059f6e2d450ee839ba68e6b8a68f8",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 56,
+          "recorded_at": "2026-10-09T07:19:55.361413+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "ee66de690dfc55b0b5477c8df0abb777",
+          "status": "active",
+          "reason": "presented",
+          "version": 5,
+          "event_id": "5bc091511cce52ba93292dd0489e8673",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 57,
+          "recorded_at": "2026-10-09T07:19:55.362254+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Increase Suction Level:\n- Adjust the suction level to the m…",
+            "instruction": "Increase Suction Level:\n- Adjust the suction level to the maximum comfortable setting. This balance is crucial for effective pumping.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "21523735223854f1980f5c44d7f5193b",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 58,
+          "recorded_at": "2026-10-09T07:19:55.363126+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+          "version": 5,
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 59,
+          "event_id": "eb923683cf164ee3b2358e4bf8418db1",
+          "recorded_at": "2026-10-09T07:19:55.363899+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "fef262ad77a557988394c2e749c443fa",
+          "recorded_at": "2026-10-09T07:19:55.364767+00:00",
+          "run_id": "64e189118bcb49f6a23460f3c3589fff",
+          "seq": 60,
+          "reason": "awaiting_input",
+          "version": 5
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 61,
+          "type": "run_started",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "resumed": false,
+          "event_id": "bf2ac6f56f9c4345bb06ba7f74fea676",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.381874+00:00"
+        },
+        {
+          "seq": 62,
+          "type": "input_received",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "8410dbf247954d0194bc9ccbf10f2c10",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 5
+          },
+          "event_id": "28de0e5dc42c4cd98afc93e8c7e83b61",
+          "input_id": "8410dbf247954d0194bc9ccbf10f2c10",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.381874+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 63,
+          "event_id": "bdd7bb6f8cf741bf8fbc56cc01c20a55",
+          "recorded_at": "2026-10-09T07:19:55.391027+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 64,
+          "event_id": "6662bb45f0df471aafd7c79dafef3644",
+          "recorded_at": "2026-10-09T07:19:55.393169+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "8410dbf247954d0194bc9ccbf10f2c10",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 6,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "1c3d04a2d482535d8822057338d6058c",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 66,
+          "recorded_at": "2026-10-09T07:19:55.409810+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "ee66de690dfc55b0b5477c8df0abb777",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 6,
+          "event_id": "520c681a78c8536bb755ed30f1b53114",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 67,
+          "recorded_at": "2026-10-09T07:19:55.410881+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "16f3f32c918b5f1b8c3397af67428afa",
+          "status": "active",
+          "reason": "presented",
+          "version": 6,
+          "event_id": "659b538ffc2256c5beeee0be0ac97dd1",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 68,
+          "recorded_at": "2026-10-09T07:19:55.411798+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+          "version": 6,
+          "step": {
+            "step_id": "s6",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 6,
+            "title": "Restore Factory Settings:\n- Press and hold the \"power butto…",
+            "instruction": "Restore Factory Settings:\n- Press and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds to restore the device to factory settings. After restoring, try using the breast pump again. If the problem persists, proceed to the next step.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "ebb477dbd6f35f97b477b85e0ed0b770",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 69,
+          "recorded_at": "2026-10-09T07:19:55.412715+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+          "version": 6,
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 70,
+          "event_id": "93cf83f7152d4f2f86c3d622e4fb9afd",
+          "recorded_at": "2026-10-09T07:19:55.413330+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "643ac65ff83e57de9485f7a6bca709e0",
+          "recorded_at": "2026-10-09T07:19:55.414140+00:00",
+          "run_id": "60865100160f4de2934cf4dc0c44025b",
+          "seq": 71,
+          "reason": "awaiting_input",
+          "version": 6
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 72,
+          "type": "run_started",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "resumed": false,
+          "event_id": "b20f7e5cfeec40218b9a3d5c0afed72d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.430524+00:00"
+        },
+        {
+          "seq": 73,
+          "type": "input_received",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 6
+          },
+          "event_id": "82847b3db62f49f7a8c2b26628c7b411",
+          "input_id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.430524+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 74,
+          "event_id": "a6071f65c9bb407c84f78c13590c8825",
+          "recorded_at": "2026-10-09T07:19:55.440416+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 75,
+          "event_id": "0fb6bab2f36a464c8580cfc3484de349",
+          "recorded_at": "2026-10-09T07:19:55.442706+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 7,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "86ce9c48bc895bc59e56f5858482cb74",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 77,
+          "recorded_at": "2026-10-09T07:19:55.461275+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "16f3f32c918b5f1b8c3397af67428afa",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 7,
+          "event_id": "0b4640f0eb215f0aa01fff1ea36c81b6",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 78,
+          "recorded_at": "2026-10-09T07:19:55.462238+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "da022599b8fd5a1b8cd4f6054965e80b",
+          "status": "active",
+          "reason": "presented",
+          "version": 7,
+          "event_id": "13e4e98485965616aea512f3a5a496e1",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 79,
+          "recorded_at": "2026-10-09T07:19:55.463180+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+          "version": 7,
+          "step": {
+            "step_id": "s7",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 7,
+            "title": "Check if the Main Unit is Working Properly:\n- Remove the ma…",
+            "instruction": "Check if the Main Unit is Working Properly:\n- Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cover). If there is no suction, further troubleshooting may be needed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "event_id": "eff09cf9a032530fa279bd005f0aa796",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 80,
+          "recorded_at": "2026-10-09T07:19:55.464061+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+          "version": 7,
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 81,
+          "event_id": "2a921c0490714ae997047a877ea27c36",
+          "recorded_at": "2026-10-09T07:19:55.464944+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ff7603edd18b5e8aa2aeb18f2577edd8",
+          "recorded_at": "2026-10-09T07:19:55.465782+00:00",
+          "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+          "seq": 82,
+          "reason": "awaiting_input",
+          "version": 7
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 83,
+          "type": "run_started",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "resumed": false,
+          "event_id": "a721af0120654ba3bc2e3df6c7a8937a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:55.482740+00:00"
+        },
+        {
+          "seq": 84,
+          "type": "input_received",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "94cc654f82224379925b93df755c8897",
+            "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "expected_version": 7
+          },
+          "event_id": "8b98680eba064d8dada94426f8766ec2",
+          "input_id": "94cc654f82224379925b93df755c8897",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:55.482740+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 85,
+          "event_id": "d3053b838a8e490999d76f4b81c9ec2d",
+          "recorded_at": "2026-10-09T07:19:55.492406+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 86,
+          "event_id": "f0e075317e7848d5af0dbce95301967d",
+          "recorded_at": "2026-10-09T07:19:55.498138+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "input_id": "94cc654f82224379925b93df755c8897",
+          "resolved_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 8,
+          "issues": [
+            {
+              "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "title": "not suctioning",
+              "status": "open"
+            }
+          ],
+          "event_id": "086b1b5051795ababf340910bb14860a",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 88,
+          "recorded_at": "2026-10-09T07:19:55.516054+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "da022599b8fd5a1b8cd4f6054965e80b",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 8,
+          "event_id": "9901fc1ff08959268fbb900bc97cee55",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 89,
+          "recorded_at": "2026-10-09T07:19:55.517485+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+          "case_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "version": 8,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:55.492322+00:00",
+          "event_id": "d9cf5692c4c65f9cacbd53fc423d9485",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 90,
+          "recorded_at": "2026-10-09T07:19:55.518476+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "5e5944e201175cd7805ef418992f5911",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "reply_to_input_id": "94cc654f82224379925b93df755c8897",
+          "event_id": "bc75aebf8ba45524b9818cecf720ef5f",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 91,
+          "recorded_at": "2026-10-09T07:19:55.520088+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "5e5944e201175cd7805ef418992f5911",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "1b9aeb22e0d45aa1ab5635740a044dda",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 92,
+          "recorded_at": "2026-10-09T07:19:55.521092+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "5e5944e201175cd7805ef418992f5911",
+          "status": "completed",
+          "event_id": "29162e622eaa5114a6ddeb56ff247c74",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 93,
+          "recorded_at": "2026-10-09T07:19:55.522329+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "pending_id": "268b5cea72f359e8aaad465e62b6f3a7",
+          "status": "active",
+          "reason": "presented",
+          "version": 8,
+          "event_id": "bd19bfbf7760561ab8957cac41ba6303",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 94,
+          "recorded_at": "2026-10-09T07:19:55.523315+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "card_id": "268b5cea72f359e8aaad465e62b6f3a7",
+          "version": 8,
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 95,
+          "event_id": "ef14b15a052e4c5ab67bf082087d1b9b",
+          "recorded_at": "2026-10-09T07:19:55.523728+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d0ef4ee4064a520aaec4c2d89a0ff789",
+          "recorded_at": "2026-10-09T07:19:55.524537+00:00",
+          "run_id": "41db1066d9084f8e8d4497bacba50b16",
+          "seq": 96,
+          "reason": "awaiting_input",
+          "version": 8
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:49.276974+08:00",
+  "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+    "version": 8,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+      "kind": "upload_receipt",
+      "card_id": "268b5cea72f359e8aaad465e62b6f3a7",
+      "version": 8
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:49.290617+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "user_message",
+        "id": "324987ab3e5e463c95fe1f0614a84b5c",
+        "text": "Eufy S1 pro breast pump not suctioning",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:19:52.877915+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "787ea21ddf225103b788b54c8e11b77d",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:19:55.066217Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "source": "kb_qa",
+            "doc_id": "bp-0125",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) not suctioning?\n1. Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, dia",
+            "score": 0.015062960323117129,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+            "source": "kb_qa",
+            "doc_id": "bp-0110",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+            "snippet": "The device contains a metal ring that may be electrified; do not touch the internal components. Please confirm the disinfection tools and procedures. Avoid using incorrect disinfection methods that may damage the equipment.",
+            "score": 0.014484126984126985,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+            "source": "kb_qa",
+            "doc_id": "bp-0047",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+            "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) suction suddenly becomes weak or abnormal?\n1. Suction Standard & Expectations Our breast pump has a maximum suction of 40kPa, which complies with international standards and does not exceed this value in order to protect the mother's breast and capillary health. As a result, the suction may feel relatively gentle --- this is normal.\n2. Mo",
+            "score": 0.013939393939393939,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+            "source": "kb_qa",
+            "doc_id": "bp-0009",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+            "snippet": "How do I properly clean my Breast Pump S1 Pro (T8D04)?\n1. Before First Use: Sterilize all washable parts using one of these methods:\n- Boiling: Place parts in boiling water for no more than 5 minutes, stirring continuously to prevent sticking.\n- Steam sterilization.\n2. After Daily Use: Rinse all washable parts with warm soapy water and air dry.\n3. Dishwasher: Washable parts can go in the dishwashe",
+            "score": 0.013778409090909091,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+            "source": "kb_qa",
+            "doc_id": "bp-0086",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+            "snippet": "What should I do if I feel pain when using eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Make sure you selected the correct flange size for your nipple.\n2. Adjust the wearing position --- the nipple should be centered in the flange tunnel.\n3. Turn the suction level down, or try the 'Gentle Flow' mode from the app.\n4. Ensure the suction level is not set too high --- excessive suction causes breast pa",
+            "score": 0.0136144578313253,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+            "source": "kb_qa",
+            "doc_id": "bp-0093",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+            "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+            "score": 0.013558352402745995,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+            "source": "kb_qa",
+            "doc_id": "bp-0043",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+            "score": 0.013333333333333332,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+            "source": "kb_qa",
+            "doc_id": "bp-0064",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+            "snippet": "How do I clean the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Clean the outside and inside of the case, including the magnetic charging ports, with a damp cloth.\n2. Allow to air dry completely before placing the pumps back in the case.\nDo not submerge in water or put in a dishwasher.",
+            "score": 0.013179487179487179,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+            "source": "kb_qa",
+            "doc_id": "bp-0120",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+            "score": 0.012906777587472471,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+            "source": "kb_qa",
+            "doc_id": "bp-0112",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+            "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+            "score": 0.01264705882352941,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+            "source": "kb_qa",
+            "doc_id": "bp-0094",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+            "snippet": "What is the recommended wash and sterilization method for eufy Wearable Breast Pump S1 Pro(T8D04)?\n-Before first use: Sanitize all washable parts by boiling in water for no more than 5 minutes. Swirl parts continuously while boiling to prevent damage. Steam sterilization is also supported. -For daily use: Rinse all parts in cold water first, wash with warm soapy water, rinse thoroughly, and air dr",
+            "score": 0.012238372093023255,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+            "source": "kb_qa",
+            "doc_id": "bp-0103",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+            "snippet": "How do I sterilize my Breast Pump S1 Pro (T8D04) parts safely?\n1. Steam Sterilization: You can steam sterilize the washable parts for 5 minutes.\n2. Boiling Sterilization: For the S1 model, before first use, you can boil the washable parts in boiling water for no more than 5 minutes. While cleaning, continuously rotate the parts to prevent them from sticking to the container and causing damage.\n3. ",
+            "score": 0.012130376344086022,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+            "source": "kb_qa",
+            "doc_id": "bp-0019",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case or parts melted?\n1. Cause: Incorrect sterilization is the main reason for melting or burning of pump parts including charging case components. The case contains plastic terminals, PCB boards, and other materials with different shrinkage rates from silicone.\n2. Solutions:\n- Confirm your sterilization tools and procedures are correct. A",
+            "score": 0.01208630759247242,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+            "source": "kb_qa",
+            "doc_id": "bp-0117",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+            "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+            "score": 0.011951245820299859,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+            "source": "kb_qa",
+            "doc_id": "bp-0040",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has weak suction and low milk output?\n1. Check Accessories: Inspect the duckbill valve and diaphragm for cracks, gaps, holes, or tears. Replace if damaged.\n2. Confirm Assembly Seal: Ensure the duckbill valve, breast shield channel, diaphragm, and pump hub are correctly assembled and fully sealed.\n3. Adjust Wearing Position: Make sure the nipple is ",
+            "score": 0.011773380852894186,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:55.071642+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Inspect Key Components for Damage:\n- Check the duckbill val…",
+          "instruction": "Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.177395+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "77b2f349831f42bdb455e41d5a206acd",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.214689+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Verify Assembly and Sealing:\n- Ensure that the assembly is…",
+          "instruction": "Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, diaphragm, and pump hub - are perfectly sealed.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.232658+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "f93933f5911f46d3a04ed7883aaf5c4c",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.264273+00:00",
+        "first_seq": 36,
+        "last_seq": 36,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "468a2d43be125659a09d82b97d18d950",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "Adjust Wearing Position:\n- Make sure your nipple is centere…",
+          "instruction": "Adjust Wearing Position:\n- Make sure your nipple is centered in the flange tunnel without being folded or suppressed. The pump should be securely sealed to your breast, and you should feel noticeable suction.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.281132+00:00",
+        "first_seq": 40,
+        "last_seq": 44,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "0967c29b8238455b847d7867fbc49d5e",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.311871+00:00",
+        "first_seq": 47,
+        "last_seq": 47,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+        "version": 4,
+        "step": {
+          "step_id": "s4",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 4,
+          "title": "Try Different Flange/Insert Sizes:\n- Different flange or in…",
+          "instruction": "Try Different Flange/Insert Sizes:\n- Different flange or insert sizes can significantly impact your comfort and suction. Experiment with various sizes to find the best fit for your anatomy.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.330401+00:00",
+        "first_seq": 51,
+        "last_seq": 55,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "195e1bc02271430285a299bc270a1d16",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.363126+00:00",
+        "first_seq": 58,
+        "last_seq": 58,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+        "version": 5,
+        "step": {
+          "step_id": "s5",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 5,
+          "title": "Increase Suction Level:\n- Adjust the suction level to the m…",
+          "instruction": "Increase Suction Level:\n- Adjust the suction level to the maximum comfortable setting. This balance is crucial for effective pumping.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.381874+00:00",
+        "first_seq": 62,
+        "last_seq": 66,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "8410dbf247954d0194bc9ccbf10f2c10",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.412715+00:00",
+        "first_seq": 69,
+        "last_seq": 69,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+        "version": 6,
+        "step": {
+          "step_id": "s6",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 6,
+          "title": "Restore Factory Settings:\n- Press and hold the \"power butto…",
+          "instruction": "Restore Factory Settings:\n- Press and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds to restore the device to factory settings. After restoring, try using the breast pump again. If the problem persists, proceed to the next step.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.430524+00:00",
+        "first_seq": 73,
+        "last_seq": 77,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.464061+00:00",
+        "first_seq": 80,
+        "last_seq": 80,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "step_card",
+        "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+        "version": 7,
+        "step": {
+          "step_id": "s7",
+          "plan_id": "qa_bp_0125",
+          "plan_version": 1,
+          "step_no": 7,
+          "title": "Check if the Main Unit is Working Properly:\n- Remove the ma…",
+          "instruction": "Check if the Main Unit is Working Properly:\n- Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cover). If there is no suction, further troubleshooting may be needed.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+          ],
+          "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:55.482740+00:00",
+        "first_seq": 84,
+        "last_seq": 88,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "action",
+        "id": "94cc654f82224379925b93df755c8897",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:55.518476+00:00",
+        "first_seq": 90,
+        "last_seq": 90,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "case_changed",
+        "card_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+        "version": 8,
+        "case_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:19:55.492322+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:55.520088+00:00",
+        "first_seq": 91,
+        "last_seq": 93,
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "assistant_message",
+        "message_id": "5e5944e201175cd7805ef418992f5911",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "94cc654f82224379925b93df755c8897",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+    "issues": [
+      {
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "status": "open",
+        "title": "not suctioning",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 96,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 7,
+  "errors": [],
+  "seconds": 6.17,
+  "journey": {
+    "session": {
+      "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:49.292589Z",
+      "last_run_at": "2026-10-09T07:19:55.525584Z",
+      "runs": 8,
+      "user_messages": 1,
+      "first_question": "Eufy S1 pro breast pump not suctioning",
+      "product_state": "confirmed_sku",
+      "sku": "T8D04",
+      "category": "breast_pump",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_bp_0125"
+      ],
+      "steps_executed": 7,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 41,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:19:55.525584Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "8bb96615b7c945caa547cfc941090dbd",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:49.292589Z",
+        "ended_at": "2026-10-09T07:19:55.076187Z",
+        "duration_ms": 5783,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 5779,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3534,
+            "tokens_in": 4133,
+            "tokens_out": 318,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:52.833376Z"
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1849,
+            "tokens_in": 4228,
+            "tokens_out": 292,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:55.007570Z"
+          }
+        ],
+        "tokens_in": 8361,
+        "tokens_out": 610,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:49.292589Z",
+            "duration_ms": 3568,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3273,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 140,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5673
+                    }
+                  ],
+                  "actual_input_tokens": 4133
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:52.860722Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "breast_pump",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:52.874075Z",
+            "duration_ms": 2147,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_bp_0125",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 4786,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 140,
+                    "history": 0,
+                    "authority": 4290
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 218,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 49,
+                    "decision": 195,
+                    "timezone": 7,
+                    "task_data": 3504,
+                    "issue_index": 149,
+                    "step_attempts": 2,
+                    "active_issue_id": 28,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 65,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5264
+                    }
+                  ],
+                  "actual_input_tokens": 4228
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:19:55.021097Z",
+            "duration_ms": 18,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.039171Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.039178Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "8bb96615b7c945caa547cfc941090dbd",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 127,
+            "hits": 15,
+            "top_score": 0.0151,
+            "latency_ms": 264,
+            "query": "not suctioning",
+            "created_at": "2026-10-09T07:19:53.134696Z"
+          }
+        ]
+      },
+      {
+        "run_id": "0c2301eb998343618d9131046eeb02d4",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:19:55.179139Z",
+        "ended_at": "2026-10-09T07:19:55.216786Z",
+        "duration_ms": 37,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 36,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "0c2301eb998343618d9131046eeb02d4",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.179139Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "0c2301eb998343618d9131046eeb02d4",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.189065Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0c2301eb998343618d9131046eeb02d4",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.190369Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0c2301eb998343618d9131046eeb02d4",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.192851Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "0c2301eb998343618d9131046eeb02d4",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.192856Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:19:55.233779Z",
+        "ended_at": "2026-10-09T07:19:55.266525Z",
+        "duration_ms": 32,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 31,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.233779Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.239514Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.240648Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.242868Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "6b3c5325a1ca47c89ab5c7b80633de1e",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.242873Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "77b31e0601214300b1c53ae764ec2e42",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 4,
+        "started_at": "2026-10-09T07:19:55.282203Z",
+        "ended_at": "2026-10-09T07:19:55.314987Z",
+        "duration_ms": 32,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 30,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "77b31e0601214300b1c53ae764ec2e42",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.282203Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "77b31e0601214300b1c53ae764ec2e42",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.288604Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s4",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "77b31e0601214300b1c53ae764ec2e42",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.289828Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "77b31e0601214300b1c53ae764ec2e42",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.291889Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "77b31e0601214300b1c53ae764ec2e42",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.292298Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "64e189118bcb49f6a23460f3c3589fff",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 5,
+        "started_at": "2026-10-09T07:19:55.331612Z",
+        "ended_at": "2026-10-09T07:19:55.365280Z",
+        "duration_ms": 33,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 32,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "64e189118bcb49f6a23460f3c3589fff",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.331612Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "64e189118bcb49f6a23460f3c3589fff",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.337422Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s5",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "64e189118bcb49f6a23460f3c3589fff",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.338546Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "64e189118bcb49f6a23460f3c3589fff",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.340580Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "64e189118bcb49f6a23460f3c3589fff",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.341027Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "60865100160f4de2934cf4dc0c44025b",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 6,
+        "started_at": "2026-10-09T07:19:55.383384Z",
+        "ended_at": "2026-10-09T07:19:55.414649Z",
+        "duration_ms": 31,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 30,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "60865100160f4de2934cf4dc0c44025b",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.383384Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "60865100160f4de2934cf4dc0c44025b",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.388909Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s6",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "60865100160f4de2934cf4dc0c44025b",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.390095Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "60865100160f4de2934cf4dc0c44025b",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.392764Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "60865100160f4de2934cf4dc0c44025b",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.392768Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 7,
+        "started_at": "2026-10-09T07:19:55.432060Z",
+        "ended_at": "2026-10-09T07:19:55.466362Z",
+        "duration_ms": 34,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 33,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.432060Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.438098Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s7",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.439459Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:55.442282Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "0b020ab3936947e0a5bc9965cc7a7254",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.442286Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "41db1066d9084f8e8d4497bacba50b16",
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "seq_no": 8,
+        "started_at": "2026-10-09T07:19:55.483826Z",
+        "ended_at": "2026-10-09T07:19:55.525578Z",
+        "duration_ms": 41,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 38,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:55.483826Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0125",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:55.489865Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:55.491106Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:19:55.492022Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:19:55.495204Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:19:55.495743Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "41db1066d9084f8e8d4497bacba50b16",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:55.496145Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+      "version": 8,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "kind": "upload_receipt",
+        "card_id": "268b5cea72f359e8aaad465e62b6f3a7",
+        "version": 8
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:49.290617+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "user_message",
+          "id": "324987ab3e5e463c95fe1f0614a84b5c",
+          "text": "Eufy S1 pro breast pump not suctioning",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:19:52.877915+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "787ea21ddf225103b788b54c8e11b77d",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:19:55.066217Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "source": "kb_qa",
+              "doc_id": "bp-0125",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) not suctioning?\n1. Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, dia",
+              "score": 0.015062960323117129,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+              "source": "kb_qa",
+              "doc_id": "bp-0110",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+              "snippet": "The device contains a metal ring that may be electrified; do not touch the internal components. Please confirm the disinfection tools and procedures. Avoid using incorrect disinfection methods that may damage the equipment.",
+              "score": 0.014484126984126985,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+              "source": "kb_qa",
+              "doc_id": "bp-0047",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+              "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) suction suddenly becomes weak or abnormal?\n1. Suction Standard & Expectations Our breast pump has a maximum suction of 40kPa, which complies with international standards and does not exceed this value in order to protect the mother's breast and capillary health. As a result, the suction may feel relatively gentle --- this is normal.\n2. Mo",
+              "score": 0.013939393939393939,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+              "source": "kb_qa",
+              "doc_id": "bp-0009",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+              "snippet": "How do I properly clean my Breast Pump S1 Pro (T8D04)?\n1. Before First Use: Sterilize all washable parts using one of these methods:\n- Boiling: Place parts in boiling water for no more than 5 minutes, stirring continuously to prevent sticking.\n- Steam sterilization.\n2. After Daily Use: Rinse all washable parts with warm soapy water and air dry.\n3. Dishwasher: Washable parts can go in the dishwashe",
+              "score": 0.013778409090909091,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+              "source": "kb_qa",
+              "doc_id": "bp-0086",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+              "snippet": "What should I do if I feel pain when using eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Make sure you selected the correct flange size for your nipple.\n2. Adjust the wearing position --- the nipple should be centered in the flange tunnel.\n3. Turn the suction level down, or try the 'Gentle Flow' mode from the app.\n4. Ensure the suction level is not set too high --- excessive suction causes breast pa",
+              "score": 0.0136144578313253,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "source": "kb_qa",
+              "doc_id": "bp-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+              "score": 0.013558352402745995,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+              "source": "kb_qa",
+              "doc_id": "bp-0043",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+              "score": 0.013333333333333332,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+              "source": "kb_qa",
+              "doc_id": "bp-0064",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+              "snippet": "How do I clean the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Clean the outside and inside of the case, including the magnetic charging ports, with a damp cloth.\n2. Allow to air dry completely before placing the pumps back in the case.\nDo not submerge in water or put in a dishwasher.",
+              "score": 0.013179487179487179,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "source": "kb_qa",
+              "doc_id": "bp-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+              "score": 0.012906777587472471,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "source": "kb_qa",
+              "doc_id": "bp-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+              "score": 0.01264705882352941,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+              "source": "kb_qa",
+              "doc_id": "bp-0094",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+              "snippet": "What is the recommended wash and sterilization method for eufy Wearable Breast Pump S1 Pro(T8D04)?\n-Before first use: Sanitize all washable parts by boiling in water for no more than 5 minutes. Swirl parts continuously while boiling to prevent damage. Steam sterilization is also supported. -For daily use: Rinse all parts in cold water first, wash with warm soapy water, rinse thoroughly, and air dr",
+              "score": 0.012238372093023255,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+              "source": "kb_qa",
+              "doc_id": "bp-0103",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+              "snippet": "How do I sterilize my Breast Pump S1 Pro (T8D04) parts safely?\n1. Steam Sterilization: You can steam sterilize the washable parts for 5 minutes.\n2. Boiling Sterilization: For the S1 model, before first use, you can boil the washable parts in boiling water for no more than 5 minutes. While cleaning, continuously rotate the parts to prevent them from sticking to the container and causing damage.\n3. ",
+              "score": 0.012130376344086022,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+              "source": "kb_qa",
+              "doc_id": "bp-0019",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case or parts melted?\n1. Cause: Incorrect sterilization is the main reason for melting or burning of pump parts including charging case components. The case contains plastic terminals, PCB boards, and other materials with different shrinkage rates from silicone.\n2. Solutions:\n- Confirm your sterilization tools and procedures are correct. A",
+              "score": 0.01208630759247242,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "source": "kb_qa",
+              "doc_id": "bp-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+              "score": 0.011951245820299859,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+              "source": "kb_qa",
+              "doc_id": "bp-0040",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has weak suction and low milk output?\n1. Check Accessories: Inspect the duckbill valve and diaphragm for cracks, gaps, holes, or tears. Replace if damaged.\n2. Confirm Assembly Seal: Ensure the duckbill valve, breast shield channel, diaphragm, and pump hub are correctly assembled and fully sealed.\n3. Adjust Wearing Position: Make sure the nipple is ",
+              "score": 0.011773380852894186,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:55.071642+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Inspect Key Components for Damage:\n- Check the duckbill val…",
+            "instruction": "Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.177395+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "77b2f349831f42bdb455e41d5a206acd",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.214689+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Verify Assembly and Sealing:\n- Ensure that the assembly is…",
+            "instruction": "Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, diaphragm, and pump hub - are perfectly sealed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.232658+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "f93933f5911f46d3a04ed7883aaf5c4c",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.264273+00:00",
+          "first_seq": 36,
+          "last_seq": 36,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "468a2d43be125659a09d82b97d18d950",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Adjust Wearing Position:\n- Make sure your nipple is centere…",
+            "instruction": "Adjust Wearing Position:\n- Make sure your nipple is centered in the flange tunnel without being folded or suppressed. The pump should be securely sealed to your breast, and you should feel noticeable suction.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.281132+00:00",
+          "first_seq": 40,
+          "last_seq": 44,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "0967c29b8238455b847d7867fbc49d5e",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.311871+00:00",
+          "first_seq": 47,
+          "last_seq": 47,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Try Different Flange/Insert Sizes:\n- Different flange or in…",
+            "instruction": "Try Different Flange/Insert Sizes:\n- Different flange or insert sizes can significantly impact your comfort and suction. Experiment with various sizes to find the best fit for your anatomy.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.330401+00:00",
+          "first_seq": 51,
+          "last_seq": 55,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "195e1bc02271430285a299bc270a1d16",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.363126+00:00",
+          "first_seq": 58,
+          "last_seq": 58,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Increase Suction Level:\n- Adjust the suction level to the m…",
+            "instruction": "Increase Suction Level:\n- Adjust the suction level to the maximum comfortable setting. This balance is crucial for effective pumping.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.381874+00:00",
+          "first_seq": 62,
+          "last_seq": 66,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "8410dbf247954d0194bc9ccbf10f2c10",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.412715+00:00",
+          "first_seq": 69,
+          "last_seq": 69,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+          "version": 6,
+          "step": {
+            "step_id": "s6",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 6,
+            "title": "Restore Factory Settings:\n- Press and hold the \"power butto…",
+            "instruction": "Restore Factory Settings:\n- Press and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds to restore the device to factory settings. After restoring, try using the breast pump again. If the problem persists, proceed to the next step.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.430524+00:00",
+          "first_seq": 73,
+          "last_seq": 77,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.464061+00:00",
+          "first_seq": 80,
+          "last_seq": 80,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "step_card",
+          "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+          "version": 7,
+          "step": {
+            "step_id": "s7",
+            "plan_id": "qa_bp_0125",
+            "plan_version": 1,
+            "step_no": 7,
+            "title": "Check if the Main Unit is Working Properly:\n- Remove the ma…",
+            "instruction": "Check if the Main Unit is Working Properly:\n- Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cover). If there is no suction, further troubleshooting may be needed.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+            ],
+            "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:55.482740+00:00",
+          "first_seq": 84,
+          "last_seq": 88,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "action",
+          "id": "94cc654f82224379925b93df755c8897",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:55.518476+00:00",
+          "first_seq": 90,
+          "last_seq": 90,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "case_changed",
+          "card_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+          "version": 8,
+          "case_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:55.492322+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:55.520088+00:00",
+          "first_seq": 91,
+          "last_seq": 93,
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "assistant_message",
+          "message_id": "5e5944e201175cd7805ef418992f5911",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "94cc654f82224379925b93df755c8897",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+      "issues": [
+        {
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "status": "open",
+          "title": "not suctioning",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 96,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+      "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+      "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+      "sku": "T8D04",
+      "category": "breast_pump",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:19:55.492322+00:00",
+      "updated_at": "2026-10-09T07:19:55.492322+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "a0435d6090fc4bb5a24c89e57fe5df1a",
+        "version": 8,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+          "kind": "upload_receipt",
+          "card_id": "268b5cea72f359e8aaad465e62b6f3a7",
+          "version": 8
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:19:49.290617+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "user_message",
+            "id": "324987ab3e5e463c95fe1f0614a84b5c",
+            "text": "Eufy S1 pro breast pump not suctioning",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:19:52.877915+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "787ea21ddf225103b788b54c8e11b77d",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:19:55.066217Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+                "source": "kb_qa",
+                "doc_id": "bp-0125",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+                "snippet": "Why is my Breast Pump S1 Pro (T8D04) not suctioning?\n1. Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, dia",
+                "score": 0.015062960323117129,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+                "source": "kb_qa",
+                "doc_id": "bp-0110",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "97149261-8a2c-482b-86f4-02c0013bc139",
+                "snippet": "The device contains a metal ring that may be electrified; do not touch the internal components. Please confirm the disinfection tools and procedures. Avoid using incorrect disinfection methods that may damage the equipment.",
+                "score": 0.014484126984126985,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+                "source": "kb_qa",
+                "doc_id": "bp-0047",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d4d26dc4-e27b-4c44-8abf-3844e08c9445",
+                "snippet": "What should I do if eufy Wearable Breast Pump S1 Pro(T8D04) suction suddenly becomes weak or abnormal?\n1. Suction Standard & Expectations Our breast pump has a maximum suction of 40kPa, which complies with international standards and does not exceed this value in order to protect the mother's breast and capillary health. As a result, the suction may feel relatively gentle --- this is normal.\n2. Mo",
+                "score": 0.013939393939393939,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+                "source": "kb_qa",
+                "doc_id": "bp-0009",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "97b473d8-0a54-4929-b1e1-761ba5e4cd02",
+                "snippet": "How do I properly clean my Breast Pump S1 Pro (T8D04)?\n1. Before First Use: Sterilize all washable parts using one of these methods:\n- Boiling: Place parts in boiling water for no more than 5 minutes, stirring continuously to prevent sticking.\n- Steam sterilization.\n2. After Daily Use: Rinse all washable parts with warm soapy water and air dry.\n3. Dishwasher: Washable parts can go in the dishwashe",
+                "score": 0.013778409090909091,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+                "source": "kb_qa",
+                "doc_id": "bp-0086",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a537e61f-828a-47aa-9253-bf8e2321ade3",
+                "snippet": "What should I do if I feel pain when using eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Make sure you selected the correct flange size for your nipple.\n2. Adjust the wearing position --- the nipple should be centered in the flange tunnel.\n3. Turn the suction level down, or try the 'Gentle Flow' mode from the app.\n4. Ensure the suction level is not set too high --- excessive suction causes breast pa",
+                "score": 0.0136144578313253,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+                "source": "kb_qa",
+                "doc_id": "bp-0093",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+                "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+                "score": 0.013558352402745995,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+                "source": "kb_qa",
+                "doc_id": "bp-0043",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+                "score": 0.013333333333333332,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+                "source": "kb_qa",
+                "doc_id": "bp-0064",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "340bb47b-54a5-41b1-a938-ba151abb90c9",
+                "snippet": "How do I clean the charging case of eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Clean the outside and inside of the case, including the magnetic charging ports, with a damp cloth.\n2. Allow to air dry completely before placing the pumps back in the case.\nDo not submerge in water or put in a dishwasher.",
+                "score": 0.013179487179487179,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+                "source": "kb_qa",
+                "doc_id": "bp-0120",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+                "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+                "score": 0.012906777587472471,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+                "source": "kb_qa",
+                "doc_id": "bp-0112",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+                "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+                "score": 0.01264705882352941,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+                "source": "kb_qa",
+                "doc_id": "bp-0094",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "241fe1bf-aaa8-4351-84bf-64fa6204d099",
+                "snippet": "What is the recommended wash and sterilization method for eufy Wearable Breast Pump S1 Pro(T8D04)?\n-Before first use: Sanitize all washable parts by boiling in water for no more than 5 minutes. Swirl parts continuously while boiling to prevent damage. Steam sterilization is also supported. -For daily use: Rinse all parts in cold water first, wash with warm soapy water, rinse thoroughly, and air dr",
+                "score": 0.012238372093023255,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+                "source": "kb_qa",
+                "doc_id": "bp-0103",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4abeb4c0-20e2-40a4-9ab8-df2b513e4db4",
+                "snippet": "How do I sterilize my Breast Pump S1 Pro (T8D04) parts safely?\n1. Steam Sterilization: You can steam sterilize the washable parts for 5 minutes.\n2. Boiling Sterilization: For the S1 model, before first use, you can boil the washable parts in boiling water for no more than 5 minutes. While cleaning, continuously rotate the parts to prevent them from sticking to the container and causing damage.\n3. ",
+                "score": 0.012130376344086022,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+                "source": "kb_qa",
+                "doc_id": "bp-0019",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c5be245f-69d9-46d2-be2a-bc7721ce5000",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) charging case or parts melted?\n1. Cause: Incorrect sterilization is the main reason for melting or burning of pump parts including charging case components. The case contains plastic terminals, PCB boards, and other materials with different shrinkage rates from silicone.\n2. Solutions:\n- Confirm your sterilization tools and procedures are correct. A",
+                "score": 0.01208630759247242,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+                "source": "kb_qa",
+                "doc_id": "bp-0117",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+                "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+                "score": 0.011951245820299859,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+                "source": "kb_qa",
+                "doc_id": "bp-0040",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "580247a1-27cb-4183-9cf8-b9b2e39fef27",
+                "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has weak suction and low milk output?\n1. Check Accessories: Inspect the duckbill valve and diaphragm for cracks, gaps, holes, or tears. Replace if damaged.\n2. Confirm Assembly Seal: Ensure the duckbill valve, breast shield channel, diaphragm, and pump hub are correctly assembled and fully sealed.\n3. Adjust Wearing Position: Make sure the nipple is ",
+                "score": 0.011773380852894186,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:55.071642+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "f77ca49cbc4c50258c4620d5e9ebb3df",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Inspect Key Components for Damage:\n- Check the duckbill val…",
+              "instruction": "Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.177395+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "77b2f349831f42bdb455e41d5a206acd",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.214689+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "80b7a0a9c50253eb9a6c145e3b8e3a40",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Verify Assembly and Sealing:\n- Ensure that the assembly is…",
+              "instruction": "Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, diaphragm, and pump hub - are perfectly sealed.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.232658+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "f93933f5911f46d3a04ed7883aaf5c4c",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.264273+00:00",
+            "first_seq": 36,
+            "last_seq": 36,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "468a2d43be125659a09d82b97d18d950",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "Adjust Wearing Position:\n- Make sure your nipple is centere…",
+              "instruction": "Adjust Wearing Position:\n- Make sure your nipple is centered in the flange tunnel without being folded or suppressed. The pump should be securely sealed to your breast, and you should feel noticeable suction.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.281132+00:00",
+            "first_seq": 40,
+            "last_seq": 44,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "0967c29b8238455b847d7867fbc49d5e",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.311871+00:00",
+            "first_seq": 47,
+            "last_seq": 47,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "ef1a87bf27bf5148928fa33c52e771e8",
+            "version": 4,
+            "step": {
+              "step_id": "s4",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 4,
+              "title": "Try Different Flange/Insert Sizes:\n- Different flange or in…",
+              "instruction": "Try Different Flange/Insert Sizes:\n- Different flange or insert sizes can significantly impact your comfort and suction. Experiment with various sizes to find the best fit for your anatomy.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.330401+00:00",
+            "first_seq": 51,
+            "last_seq": 55,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "195e1bc02271430285a299bc270a1d16",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.363126+00:00",
+            "first_seq": 58,
+            "last_seq": 58,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "ee66de690dfc55b0b5477c8df0abb777",
+            "version": 5,
+            "step": {
+              "step_id": "s5",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 5,
+              "title": "Increase Suction Level:\n- Adjust the suction level to the m…",
+              "instruction": "Increase Suction Level:\n- Adjust the suction level to the maximum comfortable setting. This balance is crucial for effective pumping.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.381874+00:00",
+            "first_seq": 62,
+            "last_seq": 66,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "8410dbf247954d0194bc9ccbf10f2c10",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.412715+00:00",
+            "first_seq": 69,
+            "last_seq": 69,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "16f3f32c918b5f1b8c3397af67428afa",
+            "version": 6,
+            "step": {
+              "step_id": "s6",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 6,
+              "title": "Restore Factory Settings:\n- Press and hold the \"power butto…",
+              "instruction": "Restore Factory Settings:\n- Press and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds to restore the device to factory settings. After restoring, try using the breast pump again. If the problem persists, proceed to the next step.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.430524+00:00",
+            "first_seq": 73,
+            "last_seq": 77,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "4d6b15bc4a984ecd9a62bd35aa1a4731",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.464061+00:00",
+            "first_seq": 80,
+            "last_seq": 80,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "step_card",
+            "card_id": "da022599b8fd5a1b8cd4f6054965e80b",
+            "version": 7,
+            "step": {
+              "step_id": "s7",
+              "plan_id": "qa_bp_0125",
+              "plan_version": 1,
+              "step_no": 7,
+              "title": "Check if the Main Unit is Working Properly:\n- Remove the ma…",
+              "instruction": "Check if the Main Unit is Working Properly:\n- Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cover). If there is no suction, further troubleshooting may be needed.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e7abb7b7-4535-4e23-8bca-a387a5b786bc"
+              ],
+              "primary_evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:55.482740+00:00",
+            "first_seq": 84,
+            "last_seq": 88,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "action",
+            "id": "94cc654f82224379925b93df755c8897",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:55.518476+00:00",
+            "first_seq": 90,
+            "last_seq": 90,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "case_changed",
+            "card_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+            "version": 8,
+            "case_id": "2afaab06-56fd-56b2-bb66-11f34067b9ff",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:19:55.492322+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:55.520088+00:00",
+            "first_seq": 91,
+            "last_seq": 93,
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "kind": "assistant_message",
+            "message_id": "5e5944e201175cd7805ef418992f5911",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "94cc654f82224379925b93df755c8897",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+        "issues": [
+          {
+            "issue_id": "31b12a87660f5ad1aa42f8a2f71506bd",
+            "status": "open",
+            "title": "not suctioning",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 96,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

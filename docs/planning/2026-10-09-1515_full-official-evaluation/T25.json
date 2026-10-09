@@ -1,0 +1,2180 @@
+{
+  "id": "T25",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "resumed": false,
+          "event_id": "81070469fdaa4319a38452be531d87c9",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:15.088986+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "e5c0e7fd7ad54b32ac06a8556d4425bd",
+          "input_id": "713be9b637b64cda89835860c2ef3286",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:15.088986+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 3,
+          "event_id": "b096af24b6fc4aaa95ada6e98356f3c1",
+          "recorded_at": "2026-10-09T07:18:15.101752+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 4,
+          "event_id": "0c70cc6fe9b74fe8a328bf79f1faf84e",
+          "recorded_at": "2026-10-09T07:18:18.499323+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 5,
+          "event_id": "0782735b0e0647c2abfc4dabda9b2352",
+          "recorded_at": "2026-10-09T07:18:18.509113+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0fad56a9636750aaab69398bae02a63f",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 6,
+          "event_id": "608086a878684d349570c45568cfaa8f",
+          "recorded_at": "2026-10-09T07:18:18.512193+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0fad56a9636750aaab69398bae02a63f",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 7,
+          "event_id": "db07fa43dc81411192a6227a451bd365",
+          "recorded_at": "2026-10-09T07:18:18.717844+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 8,
+          "event_id": "86d5bc52745443e6a4cb6bfdbd131846",
+          "recorded_at": "2026-10-09T07:18:19.858678+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 9,
+          "event_id": "a80c9868a36143038bfe9b9e8c5f737b",
+          "recorded_at": "2026-10-09T07:18:19.862869+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "input_id": "713be9b637b64cda89835860c2ef3286",
+          "resolved_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "title": "E53: TrueAI sensor abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "dd4cc1b1a79c54c1b176abf6af5aa87c",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:18:19.876699+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "source": "kb_qa",
+              "doc_id": "rv-0451",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "source": "kb_qa",
+              "doc_id": "rv-0449",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.01605222734254992,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "source": "kb_qa",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+              "score": 0.015415111940298508,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+              "source": "kb_qa",
+              "doc_id": "rv-0437",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+              "snippet": "what should I do when T2080 S1 Pro has E50: LiDAR abnormal, task ended. Please try restarting or contact customer service for assistance/Ladar error/No lidar data?\n1. Restart the robot and see if the corresponding error message disappears.\n2. Pick up the robot and check if there is a blue light rotating on the LiDAR.",
+              "score": 0.015277777777777776,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "source": "kb_qa",
+              "doc_id": "rv-0138",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+              "score": 0.014832427536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "source": "kb_qa",
+              "doc_id": "rv-0434",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014102564102564101,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+              "source": "kb_qa",
+              "doc_id": "rv-0405",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: E5G: Infrared obstacle avoidance sensor has no data. Click to contact customer service for assistance/No data from the infrared obstacle avoidance sensor\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.01401918976545842,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "source": "kb_qa",
+              "doc_id": "rv-0463",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013947368421052632,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "source": "kb_qa",
+              "doc_id": "rv-0447",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+              "score": 0.013874755381604695,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013871224165341811,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "source": "kb_qa",
+              "doc_id": "rv-0459",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013859154929577464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+              "source": "kb_qa",
+              "doc_id": "rv-0464",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+              "snippet": "what should I do when T2080 S1 pro has E5B: Lidar overheat, cleaning end, task ended. Click to contact customer service for assistance/Ladar module overheat/Laser Lidar overheating?\nIf your robot vacuum cleaner displays this prompt, it is generally due to normal overheating. The robot will automatically resume the last cleaning task after the temperature drops, without the need for task interventi",
+              "score": 0.01378248974008208,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "source": "kb_qa",
+              "doc_id": "rv-0455",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013589743589743589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "source": "kb_qa",
+              "doc_id": "rv-0458",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013336680053547524,
+              "status": "ok"
+            }
+          ],
+          "event_id": "85f0443dab6a5c4c9d5651937a1523da",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:18:19.877582+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "pending_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "a456eba3511554bab3bdac5a029524eb",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:18:19.881988+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0451",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check if there is any dirt on the 3D MATRIX EYE sensor and…",
+            "instruction": "Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "qa:rv-0451"
+            ],
+            "primary_evidence_id": "qa:rv-0451",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/3d-Matrix-eye.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "event_id": "89b1465010425d4b8f048bc2c956a027",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:18:19.882917+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+          "version": 1,
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 15,
+          "event_id": "7fd80a4f4b8341ddb661d4cc04b91006",
+          "recorded_at": "2026-10-09T07:18:19.883808+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "63fbc8e33fc5561bab7c6800ebabcbcc",
+          "recorded_at": "2026-10-09T07:18:19.885102+00:00",
+          "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "resumed": false,
+          "event_id": "b57beef6816146828e3e338495877882",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:19.899167+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "d5a1d3e0afa04238a9baadc35f040c76",
+            "target_issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "expected_version": 1
+          },
+          "event_id": "bc6a5c1cae274d75a50db7b9bd8eda3f",
+          "input_id": "d5a1d3e0afa04238a9baadc35f040c76",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:19.899167+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 19,
+          "event_id": "c2cacac3626843d2a9719d726a90063c",
+          "recorded_at": "2026-10-09T07:18:19.908181+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 20,
+          "event_id": "9922f1ad08494f12953f0bac89edf589",
+          "recorded_at": "2026-10-09T07:18:19.910438+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "input_id": "d5a1d3e0afa04238a9baadc35f040c76",
+          "resolved_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "title": "E53: TrueAI sensor abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "7acf3d57aaf455419afaeeeae89a47cf",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:18:19.929734+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "pending_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "622ca9700c755f7db19a2580cfe8b6ac",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:18:19.930486+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "pending_id": "d00428c824cc578987c4e79b4a53d51f",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "a42b070fb45a5e85befe446fa535c246",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:18:19.931203+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "d00428c824cc578987c4e79b4a53d51f",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0451",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Restart the robot and see if the corresponding error messag…",
+            "instruction": "Restart the robot and see if the corresponding error message disappears.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "qa:rv-0451"
+            ],
+            "primary_evidence_id": "qa:rv-0451",
+            "media": []
+          },
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "event_id": "822c851fc17158fd95b69b0849910c7c",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:18:19.931915+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "card_id": "d00428c824cc578987c4e79b4a53d51f",
+          "version": 2,
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 26,
+          "event_id": "65f1d62e90c04c0d812b3d6b9b52eada",
+          "recorded_at": "2026-10-09T07:18:19.932520+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "34e0ad85c1db5aef9e2cc6f095d581df",
+          "recorded_at": "2026-10-09T07:18:19.933371+00:00",
+          "run_id": "c367681592ef46fb820c32af141c5b7d",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "resumed": false,
+          "event_id": "265ba9bbd47e4f25a58036f3b16956bc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:19.947437+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "d00428c824cc578987c4e79b4a53d51f",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "f6c0d8f92714441fa3202732ec56565e",
+            "target_issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "expected_version": 2
+          },
+          "event_id": "85c8df03258948e584f2404c01fce52f",
+          "input_id": "f6c0d8f92714441fa3202732ec56565e",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:19.947437+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 30,
+          "event_id": "ae79008c622341f4bf41ba6aecebe9b4",
+          "recorded_at": "2026-10-09T07:18:19.956296+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 31,
+          "event_id": "b65cbab8b01e4cd19698b1b9db7ba093",
+          "recorded_at": "2026-10-09T07:18:19.961112+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "input_id": "f6c0d8f92714441fa3202732ec56565e",
+          "resolved_issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "title": "E53: TrueAI sensor abnormal, task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "2ccf24053b34525db45e65703a8037d4",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:18:19.981418+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "pending_id": "d00428c824cc578987c4e79b4a53d51f",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "a166ca7668675006ad2ba76e1f58a309",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:18:19.982184+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+          "case_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:19.956242+00:00",
+          "event_id": "e5107240412757beaa4a85e465743711",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:18:19.982924+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "reply_to_input_id": "f6c0d8f92714441fa3202732ec56565e",
+          "event_id": "d5f7414741bd52d6804102c48af9241f",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:18:19.983977+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "c8688ef42a87591699e7fb99ce14d3ea",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:18:19.985085+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+          "status": "completed",
+          "event_id": "e4eeb057077f5fa69ac34eb75c49523c",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:18:19.986141+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "pending_id": "61efe5bade22566c95823a02908e1b6d",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "d523fcc7a496542c9cbe84b52f475806",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:18:19.986930+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "card_id": "61efe5bade22566c95823a02908e1b6d",
+          "version": 3,
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 40,
+          "event_id": "946da88465424c419ca3a9e2fe056d24",
+          "recorded_at": "2026-10-09T07:18:19.987506+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "0c1109fd9b1c514fb1a81ec71a5e45a1",
+          "recorded_at": "2026-10-09T07:18:19.988321+00:00",
+          "run_id": "dc7b04132a8a4b50872332392d6abc81",
+          "seq": 41,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:14.998579+08:00",
+  "session_id": "62172670ccda4a39996f2cecb088ae89",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "62172670ccda4a39996f2cecb088ae89",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "8646adc8c69f5658b1623d25d623e549",
+      "kind": "upload_receipt",
+      "card_id": "61efe5bade22566c95823a02908e1b6d",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:15.088986+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "user_message",
+        "id": "713be9b637b64cda89835860c2ef3286",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:18:18.512193+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "0fad56a9636750aaab69398bae02a63f",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-09T07:18:19.877751Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "source": "kb_qa",
+            "doc_id": "rv-0451",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+            "source": "kb_qa",
+            "doc_id": "rv-0449",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+            "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.01605222734254992,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "source": "kb_qa",
+            "doc_id": "rv-0436",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+            "score": 0.01544477028347996,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+            "source": "kb_qa",
+            "doc_id": "rv-0439",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+            "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+            "score": 0.015415111940298508,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+            "source": "kb_qa",
+            "doc_id": "rv-0437",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+            "snippet": "what should I do when T2080 S1 Pro has E50: LiDAR abnormal, task ended. Please try restarting or contact customer service for assistance/Ladar error/No lidar data?\n1. Restart the robot and see if the corresponding error message disappears.\n2. Pick up the robot and check if there is a blue light rotating on the LiDAR.",
+            "score": 0.015277777777777776,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+            "source": "kb_qa",
+            "doc_id": "rv-0138",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+            "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+            "score": 0.014832427536231884,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+            "source": "kb_qa",
+            "doc_id": "rv-0434",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+            "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.014102564102564101,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+            "source": "kb_qa",
+            "doc_id": "rv-0405",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+            "snippet": "what should I do when T2080 S1 pro has Abnormal alert: E5G: Infrared obstacle avoidance sensor has no data. Click to contact customer service for assistance/No data from the infrared obstacle avoidance sensor\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+            "score": 0.01401918976545842,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+            "source": "kb_qa",
+            "doc_id": "rv-0463",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+            "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013947368421052632,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+            "source": "kb_qa",
+            "doc_id": "rv-0447",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+            "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+            "score": 0.013874755381604695,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "source": "kb_qa",
+            "doc_id": "rv-0453",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013871224165341811,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+            "source": "kb_qa",
+            "doc_id": "rv-0459",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+            "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013859154929577464,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+            "source": "kb_qa",
+            "doc_id": "rv-0464",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+            "snippet": "what should I do when T2080 S1 pro has E5B: Lidar overheat, cleaning end, task ended. Click to contact customer service for assistance/Ladar module overheat/Laser Lidar overheating?\nIf your robot vacuum cleaner displays this prompt, it is generally due to normal overheating. The robot will automatically resume the last cleaning task after the temperature drops, without the need for task interventi",
+            "score": 0.01378248974008208,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+            "source": "kb_qa",
+            "doc_id": "rv-0455",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+            "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013589743589743589,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+            "source": "kb_qa",
+            "doc_id": "rv-0458",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+            "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013336680053547524,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:19.882917+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "step_card",
+        "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0451",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Check if there is any dirt on the 3D MATRIX EYE sensor and…",
+          "instruction": "Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "qa:rv-0451"
+          ],
+          "primary_evidence_id": "qa:rv-0451",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/3d-Matrix-eye.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:19.899167+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "action",
+        "id": "d5a1d3e0afa04238a9baadc35f040c76",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:19.931915+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "step_card",
+        "card_id": "d00428c824cc578987c4e79b4a53d51f",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0451",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Restart the robot and see if the corresponding error messag…",
+          "instruction": "Restart the robot and see if the corresponding error message disappears.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "qa:rv-0451"
+          ],
+          "primary_evidence_id": "qa:rv-0451",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:19.947437+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "action",
+        "id": "f6c0d8f92714441fa3202732ec56565e",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:19.982924+00:00",
+        "first_seq": 35,
+        "last_seq": 35,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "case_changed",
+        "card_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+        "version": 3,
+        "case_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:18:19.956242+00:00"
+      },
+      {
+        "at": "2026-10-09T07:18:19.983977+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "assistant_message",
+        "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "f6c0d8f92714441fa3202732ec56565e",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+    "issues": [
+      {
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "status": "open",
+        "title": "E53: TrueAI sensor abnormal, task ended.",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 41,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 5.0,
+  "journey": {
+    "session": {
+      "session_id": "62172670ccda4a39996f2cecb088ae89",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:15.090090Z",
+      "last_run_at": "2026-10-09T07:18:19.988893Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E[REDACTED]\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or con",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0451"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 40,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:18:19.988893Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+        "session_id": "62172670ccda4a39996f2cecb088ae89",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:15.090090Z",
+        "ended_at": "2026-10-09T07:18:19.885890Z",
+        "duration_ms": 4914,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 4912,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3374,
+            "tokens_in": 4232,
+            "tokens_out": 352,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:18.471897Z"
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1251,
+            "tokens_in": 4606,
+            "tokens_out": 93,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:19.847980Z"
+          }
+        ],
+        "tokens_in": 8838,
+        "tokens_out": 445,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:15.090090Z",
+            "duration_ms": 3406,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3373,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 240,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5773
+                    }
+                  ],
+                  "actual_input_tokens": 4232
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:18.496373Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:18.506349Z",
+            "duration_ms": 1468,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0451",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5178,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 240,
+                    "history": 0,
+                    "authority": 4582
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 239,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 185,
+                    "timezone": 7,
+                    "task_data": 3792,
+                    "issue_index": 148,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5656
+                    }
+                  ],
+                  "actual_input_tokens": 4606
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:18:19.974671Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0451",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:19.979742Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:19.979750Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "b0a0e9b0fc7b4dabb5eba068a621ff03",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 202,
+            "query": "E53: TrueAI sensor abnormal, task ended",
+            "created_at": "2026-10-09T07:18:18.706549Z"
+          }
+        ]
+      },
+      {
+        "run_id": "c367681592ef46fb820c32af141c5b7d",
+        "session_id": "62172670ccda4a39996f2cecb088ae89",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:18:19.900244Z",
+        "ended_at": "2026-10-09T07:18:19.933894Z",
+        "duration_ms": 33,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 32,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "c367681592ef46fb820c32af141c5b7d",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:19.900244Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0451",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "c367681592ef46fb820c32af141c5b7d",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:19.906095Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0451",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c367681592ef46fb820c32af141c5b7d",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:19.907323Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0451",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c367681592ef46fb820c32af141c5b7d",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:19.909532Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "c367681592ef46fb820c32af141c5b7d",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:19.909536Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "dc7b04132a8a4b50872332392d6abc81",
+        "session_id": "62172670ccda4a39996f2cecb088ae89",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:18:19.948357Z",
+        "ended_at": "2026-10-09T07:18:19.988888Z",
+        "duration_ms": 40,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 37,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:19.948357Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0451",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "8646adc8c69f5658b1623d25d623e549",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:19.953900Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:19.955271Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:18:19.956040Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:18:19.958729Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:18:19.959035Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "dc7b04132a8a4b50872332392d6abc81",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:19.959651Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "62172670ccda4a39996f2cecb088ae89",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "kind": "upload_receipt",
+        "card_id": "61efe5bade22566c95823a02908e1b6d",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:15.088986+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "user_message",
+          "id": "713be9b637b64cda89835860c2ef3286",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:18:18.512193+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "0fad56a9636750aaab69398bae02a63f",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-09T07:18:19.877751Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "source": "kb_qa",
+              "doc_id": "rv-0451",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "source": "kb_qa",
+              "doc_id": "rv-0449",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.01605222734254992,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "source": "kb_qa",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+              "score": 0.015415111940298508,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+              "source": "kb_qa",
+              "doc_id": "rv-0437",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+              "snippet": "what should I do when T2080 S1 Pro has E50: LiDAR abnormal, task ended. Please try restarting or contact customer service for assistance/Ladar error/No lidar data?\n1. Restart the robot and see if the corresponding error message disappears.\n2. Pick up the robot and check if there is a blue light rotating on the LiDAR.",
+              "score": 0.015277777777777776,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "source": "kb_qa",
+              "doc_id": "rv-0138",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+              "score": 0.014832427536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "source": "kb_qa",
+              "doc_id": "rv-0434",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014102564102564101,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+              "source": "kb_qa",
+              "doc_id": "rv-0405",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: E5G: Infrared obstacle avoidance sensor has no data. Click to contact customer service for assistance/No data from the infrared obstacle avoidance sensor\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+              "score": 0.01401918976545842,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "source": "kb_qa",
+              "doc_id": "rv-0463",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013947368421052632,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "source": "kb_qa",
+              "doc_id": "rv-0447",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+              "score": 0.013874755381604695,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013871224165341811,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "source": "kb_qa",
+              "doc_id": "rv-0459",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013859154929577464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+              "source": "kb_qa",
+              "doc_id": "rv-0464",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+              "snippet": "what should I do when T2080 S1 pro has E5B: Lidar overheat, cleaning end, task ended. Click to contact customer service for assistance/Ladar module overheat/Laser Lidar overheating?\nIf your robot vacuum cleaner displays this prompt, it is generally due to normal overheating. The robot will automatically resume the last cleaning task after the temperature drops, without the need for task interventi",
+              "score": 0.01378248974008208,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "source": "kb_qa",
+              "doc_id": "rv-0455",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013589743589743589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "source": "kb_qa",
+              "doc_id": "rv-0458",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+              "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013336680053547524,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:19.882917+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "step_card",
+          "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0451",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check if there is any dirt on the 3D MATRIX EYE sensor and…",
+            "instruction": "Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "qa:rv-0451"
+            ],
+            "primary_evidence_id": "qa:rv-0451",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/3d-Matrix-eye.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:19.899167+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "action",
+          "id": "d5a1d3e0afa04238a9baadc35f040c76",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:19.931915+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "step_card",
+          "card_id": "d00428c824cc578987c4e79b4a53d51f",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0451",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Restart the robot and see if the corresponding error messag…",
+            "instruction": "Restart the robot and see if the corresponding error message disappears.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "qa:rv-0451"
+            ],
+            "primary_evidence_id": "qa:rv-0451",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:19.947437+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "action",
+          "id": "f6c0d8f92714441fa3202732ec56565e",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:19.982924+00:00",
+          "first_seq": 35,
+          "last_seq": 35,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "case_changed",
+          "card_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+          "version": 3,
+          "case_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:19.956242+00:00"
+        },
+        {
+          "at": "2026-10-09T07:18:19.983977+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "assistant_message",
+          "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "f6c0d8f92714441fa3202732ec56565e",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+      "issues": [
+        {
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "status": "open",
+          "title": "E53: TrueAI sensor abnormal, task ended.",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 41,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+      "session_id": "62172670ccda4a39996f2cecb088ae89",
+      "issue_id": "8646adc8c69f5658b1623d25d623e549",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:18:19.956242+00:00",
+      "updated_at": "2026-10-09T07:18:19.956242+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "62172670ccda4a39996f2cecb088ae89",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "8646adc8c69f5658b1623d25d623e549",
+          "kind": "upload_receipt",
+          "card_id": "61efe5bade22566c95823a02908e1b6d",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:15.088986+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "user_message",
+            "id": "713be9b637b64cda89835860c2ef3286",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E47300524\nProblem Type: ERROR\nProblem Code: 20972803-\nProblem Push: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:18:18.512193+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "0fad56a9636750aaab69398bae02a63f",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-09T07:18:19.877751Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "source": "kb_qa",
+                "doc_id": "rv-0451",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+                "source": "kb_qa",
+                "doc_id": "rv-0449",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+                "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.01605222734254992,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "source": "kb_qa",
+                "doc_id": "rv-0436",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+                "score": 0.01544477028347996,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+                "source": "kb_qa",
+                "doc_id": "rv-0439",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+                "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+                "score": 0.015415111940298508,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+                "source": "kb_qa",
+                "doc_id": "rv-0437",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4d5ea10d-61da-40e4-a561-c846e8bb3bdf",
+                "snippet": "what should I do when T2080 S1 Pro has E50: LiDAR abnormal, task ended. Please try restarting or contact customer service for assistance/Ladar error/No lidar data?\n1. Restart the robot and see if the corresponding error message disappears.\n2. Pick up the robot and check if there is a blue light rotating on the LiDAR.",
+                "score": 0.015277777777777776,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+                "source": "kb_qa",
+                "doc_id": "rv-0138",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+                "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+                "score": 0.014832427536231884,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+                "source": "kb_qa",
+                "doc_id": "rv-0434",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+                "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.014102564102564101,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+                "source": "kb_qa",
+                "doc_id": "rv-0405",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "bef74bc9-eb15-427c-89a8-b46ca1833a9a",
+                "snippet": "what should I do when T2080 S1 pro has Abnormal alert: E5G: Infrared obstacle avoidance sensor has no data. Click to contact customer service for assistance/No data from the infrared obstacle avoidance sensor\nRestart the robot and unplug the base station power cord to restart and see if the corresponding error disappears.",
+                "score": 0.01401918976545842,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+                "source": "kb_qa",
+                "doc_id": "rv-0463",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+                "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013947368421052632,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+                "source": "kb_qa",
+                "doc_id": "rv-0447",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+                "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+                "score": 0.013874755381604695,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "source": "kb_qa",
+                "doc_id": "rv-0453",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013871224165341811,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+                "source": "kb_qa",
+                "doc_id": "rv-0459",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+                "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013859154929577464,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+                "source": "kb_qa",
+                "doc_id": "rv-0464",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7d49726a-b9ca-4a29-adba-3edbe1e767b2",
+                "snippet": "what should I do when T2080 S1 pro has E5B: Lidar overheat, cleaning end, task ended. Click to contact customer service for assistance/Ladar module overheat/Laser Lidar overheating?\nIf your robot vacuum cleaner displays this prompt, it is generally due to normal overheating. The robot will automatically resume the last cleaning task after the temperature drops, without the need for task interventi",
+                "score": 0.01378248974008208,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+                "source": "kb_qa",
+                "doc_id": "rv-0455",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+                "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013589743589743589,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+                "source": "kb_qa",
+                "doc_id": "rv-0458",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "21fe7b7b-47ec-4066-aed7-ed4f0e0f5e10",
+                "snippet": "what should I do when T2080 S1 pro has EB34: Auto Water and Drainage Module clean water pump abnormal, task ended. Click to contactcustomer service for assistance/Clean water pump of Auto Water and Drainage Module is in error/Smart water replacement module clear water pump malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013336680053547524,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:19.882917+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "step_card",
+            "card_id": "54a1dfc6c2265d13a3f682c20d5d69bc",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0451",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Check if there is any dirt on the 3D MATRIX EYE sensor and…",
+              "instruction": "Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "qa:rv-0451"
+              ],
+              "primary_evidence_id": "qa:rv-0451",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/3d-Matrix-eye.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:19.899167+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "action",
+            "id": "d5a1d3e0afa04238a9baadc35f040c76",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:19.931915+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "step_card",
+            "card_id": "d00428c824cc578987c4e79b4a53d51f",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0451",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Restart the robot and see if the corresponding error messag…",
+              "instruction": "Restart the robot and see if the corresponding error message disappears.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "qa:rv-0451"
+              ],
+              "primary_evidence_id": "qa:rv-0451",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:19.947437+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "action",
+            "id": "f6c0d8f92714441fa3202732ec56565e",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:19.982924+00:00",
+            "first_seq": 35,
+            "last_seq": 35,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "case_changed",
+            "card_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+            "version": 3,
+            "case_id": "edbc4fdc-103f-5d84-b611-578019b8085f",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:18:19.956242+00:00"
+          },
+          {
+            "at": "2026-10-09T07:18:19.983977+00:00",
+            "first_seq": 36,
+            "last_seq": 38,
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "kind": "assistant_message",
+            "message_id": "2ddcfddacaed57d186eea82bb67f77aa",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "f6c0d8f92714441fa3202732ec56565e",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "8646adc8c69f5658b1623d25d623e549",
+        "issues": [
+          {
+            "issue_id": "8646adc8c69f5658b1623d25d623e549",
+            "status": "open",
+            "title": "E53: TrueAI sensor abnormal, task ended.",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 41,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

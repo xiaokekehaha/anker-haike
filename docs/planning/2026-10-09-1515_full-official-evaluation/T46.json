@@ -1,0 +1,2175 @@
+{
+  "id": "T46",
+  "input": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+  "attachments": [
+    "T46.jpg"
+  ],
+  "turns": [
+    {
+      "input": {
+        "text": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+        "attachments": [
+          "T46.jpg"
+        ],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "resumed": false,
+          "event_id": "83ace988fea541b3b0ebf00c7bfb0aa6",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:29.484828+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "payload": {
+            "kind": "message",
+            "text": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+            "images": [
+              {
+                "mime": "image/jpeg",
+                "size": 136298,
+                "sha256": "0bf55a63bdcaf3a19051b78a4c5082a4cdee2dd811ab88139fe502dc41509527",
+                "purpose": "fault",
+                "image_id": "e472a76d3f635d909912ed207fed38b3",
+                "created_at": "2026-10-09T07:19:29.474381+00:00"
+              }
+            ],
+            "purpose": "fault",
+            "image_ids": [
+              "e472a76d3f635d909912ed207fed38b3"
+            ],
+            "target_issue_id": null,
+            "attachment_hashes": [
+              "0bf55a63bdcaf3a19051b78a4c5082a4cdee2dd811ab88139fe502dc41509527"
+            ],
+            "evaluation_source": "replay"
+          },
+          "event_id": "2f973eaaaa034d33b278dfcb2a2fa524",
+          "input_id": "bc966f1526454552987aa966df0519fa",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:29.484828+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 3,
+          "event_id": "f8b2cee574444ab3a45c37faa8fdefb7",
+          "recorded_at": "2026-10-09T07:19:29.503025+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 4,
+          "event_id": "c7c5b3be042148e794c2cfcba10cbb39",
+          "recorded_at": "2026-10-09T07:19:31.947849+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "vision",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 5,
+          "event_id": "6eeda5550d0f4c4db300242f167d371b",
+          "recorded_at": "2026-10-09T07:19:31.957123+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "be665b6a585d508fbbacbdec17605815",
+          "name": "diagnose.vision",
+          "status": "started",
+          "summary": "识别 1 张故障照片",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 6,
+          "event_id": "c240b4a5a4d546d690aa2c070cc32e5c",
+          "recorded_at": "2026-10-09T07:19:32.034695+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "be665b6a585d508fbbacbdec17605815",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "手机屏幕显示订单详情页；商品为 eufy 安防加热穿戴设备；订单号 Anker013，总价 $349.98；下单日期 2026 年 8 月 27 日；页面含退换货与客服按钮",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 7,
+          "event_id": "373694b5b01548908e46c01d62b0de22",
+          "recorded_at": "2026-10-09T07:19:33.316006+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 8,
+          "event_id": "a28c72ada84d45df8773f3520a101484",
+          "recorded_at": "2026-10-09T07:19:33.326015+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 9,
+          "event_id": "a7a9fce9a6714c8abd3102922d4398c2",
+          "recorded_at": "2026-10-09T07:19:33.328688+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "2c464a1380155202b2223efd6a251abb",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 10,
+          "event_id": "bfe88d9236eb405aaddc0428217e543b",
+          "recorded_at": "2026-10-09T07:19:33.333491+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "2c464a1380155202b2223efd6a251abb",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 30 条来源（部分截断）（已补检索）",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 11,
+          "event_id": "c51eb5cd2b6542a982e55baf23457ec8",
+          "recorded_at": "2026-10-09T07:19:33.890866+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 12,
+          "event_id": "8329c0712b39488b84811c0ae8c499f8",
+          "recorded_at": "2026-10-09T07:19:35.205627+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 13,
+          "event_id": "27d7148e8c5449c2b808459cacd7e39f",
+          "recorded_at": "2026-10-09T07:19:35.208789+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "47ffc2d93503564c821b93e51275f9dd",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "reply_to_input_id": "bc966f1526454552987aa966df0519fa",
+          "event_id": "31e5acf1e9da5c94b6143ec8776843c5",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:19:35.227027+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "47ffc2d93503564c821b93e51275f9dd",
+          "delta": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "event_id": "eed6cd38903b5415b4fbbd73de3a20bc",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:19:35.227827+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "47ffc2d93503564c821b93e51275f9dd",
+          "status": "completed",
+          "event_id": "c456c07e76765399a52479739cd5b3a0",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:19:35.228960+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "input_id": "bc966f1526454552987aa966df0519fa",
+          "resolved_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+              "title": "Motor making awful noise.",
+              "status": "open"
+            }
+          ],
+          "event_id": "82e0a11783e55d169475c34fb3918aa2",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 18,
+          "recorded_at": "2026-10-09T07:19:35.229798+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+              "source": "kb_qa",
+              "doc_id": "bp-0123",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor keep making abnormal noise?\n1. Identify the Problem\n1. Is the noise continuous or intermittent?\n2. When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)\n3. Is it accompanied by decreased suction or other performance abnormalities?\n4. Please record a short video or audio clip (at least 10 seconds) to help us remote",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+              "source": "kb_qa",
+              "doc_id": "bp-0036",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) is making abnormal noise while pumping?\n1. First identify the noise details:\n- Is the noise continuous or intermittent?\n- When does it occur: at startup, during pumping, or only at high settings?\n- Is it accompanied by reduced suction or other issues?\n- Record a video or audio clip of at least 10 seconds.\n2. Self-troubleshooting steps (in order):\n-",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+              "source": "kb_qa",
+              "doc_id": "bp-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor make a clicking sound but no suction?\n1. Restore factory settings:\nPress and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds. The device will restore to factory settings. After restoring factory settings, try using the breast pump again. If the problem persists, proceed to the next step.\n2. Check if the main unit is working",
+              "score": 0.015522875816993463,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+              "source": "kb_qa",
+              "doc_id": "bp-0111",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor shutting off mid-session?\n1. Insufficient Battery Power: Even if the battery indicator shows sufficient power, the actual battery level may be low or the discharge may be abnormal.\n2. Poor Motor Contact: Poor contact in the internal air pump can cause intermittent operation.\n3. Hardware Failure: The motor or pump assembly may be faulty.\n4. Software Error:",
+              "score": 0.015456730769230768,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+              "source": "kb_qa",
+              "doc_id": "bp-0034",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+              "snippet": "Can I get a replacement for the main motor unit of my Breast Pump S1 Pro (T8D04)?\n1. You can purchase replacement washable parts for the breast pump separately, but the pump hub (motor unit) may not be available for individual purchase.\n2. Warranty Policy: The pump hub has a 1-year warranty. If your device is within the warranty period, the customer service team can assist.\n3. If the device is out",
+              "score": 0.015367965367965367,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "source": "kb_qa",
+              "doc_id": "bp-0123",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "snippet": "- If the noise persists after the above self-checks, please inform us.\n- Please first confirm according to the instructions in Steps One and Two, and provide us with the results (text + video/audio). We will provide you with further solutions as soon as possible.",
+              "score": 0.014404609475032009,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "source": "kb_qa",
+              "doc_id": "bp-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+              "source": "kb_qa",
+              "doc_id": "bp-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) smell like burning plastic or chemicals?\nThe burning plastic or chemical smell from your Breast Pump S1 Pro (T8D04) may be due to incorrect sterilization methods, which can cause the flanges to burn and melt, rendering the equipment unusable. Reason: The heating pads in the speaker cover, plastic terminals, PCB, and two-shot silicone shrinkage are inconsisten",
+              "score": 0.014163306451612902,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+              "source": "kb_qa",
+              "doc_id": "bp-0101",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) causing a rash or allergic reaction?\n1. Material sensitivity: Although the breast pump uses food-grade materials that are BPA, BPS, and BPF free, individual sensitivities may still cause reactions. Make sure to check for any signs of irritation or discomfort when using the pump for the first time. If you experience a rash or allergic reaction, it is recommended",
+              "score": 0.013846153846153847,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+              "source": "kb_qa",
+              "doc_id": "bp-0020",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) left and right motors perform differently?\n1. Check Assembly: Confirm that both sides have silicone breast shields, duckbill valves, and elasticity bowls correctly installed with no damage or reversal.\n2. Test Pump Hub Suction: Separate each pump hub from the cup, place on your palm, and compare suction between left and right.\n3. Reset Device: Pres",
+              "score": 0.012713472485768502,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "source": "kb_qa",
+              "doc_id": "bp-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+              "score": 0.012458333333333332,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+              "source": "kb_qa",
+              "doc_id": "bp-0028",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has a burning smell?\n1. A new S1 Pro may have a slight smell from the silicone vulcanization process and low molecular siloxane volatilization. This is normal and safe.\n2. To eliminate the odor:\n- Boil all silicone parts for 5 minutes (also serves as first-use sterilization)\n- Or let parts air out for a few hours\nBoth methods will completely elimin",
+              "score": 0.012435003872109746,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "source": "kb_qa",
+              "doc_id": "bp-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+              "score": 0.012344074844074843,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+              "source": "kb_qa",
+              "doc_id": "bp-0110",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have a burning smell?\nThe burnt smell emanating from your S1 Pro (T8D04) breast pump is likely due to improper sterilization, which can cause the pump's bell cover to burn and melt, rendering the device unusable. Possible Causes: Incorrect Sterilization Method: Using high-temperature sterilization methods such as microwave ovens can cause the flange to melt, ",
+              "score": 0.012334053720284037,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "source": "kb_qa",
+              "doc_id": "bp-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+              "score": 0.012240259740259739,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+              "source": "kb_qa",
+              "doc_id": "bp-0002",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+              "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) reconnect to the Anker eufy app?\n1. Ensure Bluetooth is enabled on your phone and the app has Bluetooth permissions.\n2. Restart the pump and force close the app, then reopen and try again.\n3. For Android: Add the app to the battery whitelist to prevent background killing.\n4. If the issue persists, remove the pump from the app and re-add it.",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+              "source": "kb_qa",
+              "doc_id": "bp-0003",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+              "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) be added (bound) to the Anker eufy app?\n1. Ensure the pump is turned on and the LED is lit.\n2. Enable Bluetooth on your phone and ensure the app has Bluetooth permissions.\n3. Keep the phone close to the pump (within 1 meter) during pairing.\n4. Restart the pump and relaunch the app, then retry.\n5. Update the Anker eufy app to the latest version.",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+              "source": "kb_qa",
+              "doc_id": "bp-0058",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+              "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) emit harmful radiation?\nNo, eufy Wearable Breast Pump S1 Pro(T8D04) does not emit harmful radiation. The eufy Wearable Breast Pump series has passed the SAR (Specific Absorption Rate) test, confirming the radiation poses no risk to health.",
+              "score": 0.01529032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+              "source": "kb_qa",
+              "doc_id": "bp-0057",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+              "snippet": "Has eufy Wearable Breast Pump S1 Pro(T8D04) passed Prop 65 certification?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) has passed California Proposition 65 (Prop 65) certification, meeting California's standards for chemical exposure safety.",
+              "score": 0.01486111111111111,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d9629940-e39e-4063-9d50-efe69519696f",
+              "source": "kb_qa",
+              "doc_id": "bp-0092",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d9629940-e39e-4063-9d50-efe69519696f",
+              "snippet": "Can I use a dishwasher to clean eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nYes, the washable parts of eufy Wearable Breast Pump S1 Pro(T8D04) are dishwasher-safe, but top rack only.",
+              "score": 0.0145021645021645,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+              "source": "kb_qa",
+              "doc_id": "bp-0095",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+              "snippet": "Is eufy Wearable Breast Pump S1 Pro(T8D04) HSA/FSA eligible?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is HSA/FSA eligible on Amazon.",
+              "score": 0.014254516577327774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "source": "kb_qa",
+              "doc_id": "bp-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+              "score": 0.014151464897733553,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+              "source": "kb_qa",
+              "doc_id": "bp-0055",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+              "snippet": "Is it safe to refrigerate eufy Wearable Breast Pump S1 Pro(T8D04) parts without the batteries (fridge hack)?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not put the pump hub in the fridge as it contains electronic components including the battery.",
+              "score": 0.014140017286084702,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "629b90de-3560-40d3-b722-50663afca3b1",
+              "source": "kb_qa",
+              "doc_id": "bp-0001",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "629b90de-3560-40d3-b722-50663afca3b1",
+              "snippet": "How do I use the custom rhythm feature on eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Open the Anker eufy app (eufy Baby app) and connect to the pump.\n2. Go to pump settings and find 'Custom Rhythm' or 'Rhythm Adjustment'.\n3. Adjust the mode (expression/stimulation) and duration for each segment.\n4. You can save up to 5 custom rhythm profiles.\nThe custom rhythm allows you to tailor the pumping pat",
+              "score": 0.013568521031207599,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+              "source": "kb_qa",
+              "doc_id": "bp-0073",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+              "snippet": "Can I store eufy Wearable Breast Pump S1 Pro(T8D04) parts in the fridge between sessions?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not store the pump hub in the fridge as it contains electronic components.",
+              "score": 0.013488372093023256,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+              "source": "kb_qa",
+              "doc_id": "bp-0054",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+              "snippet": "Why does eufy Wearable Breast Pump S1 Pro(T8D04) have an unusual odor when new?\nSome customers may notice a slight odor when first unpacking eufy Wearable Breast Pump S1 Pro(T8D04). This is completely normal and safe. The smell comes from curing agents and low molecular weight siloxanes used during the silicone vulcanization process. Since all parts are sealed in airtight packaging, the odor is mo",
+              "score": 0.013355342136854742,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+              "source": "kb_qa",
+              "doc_id": "bp-0004",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+              "snippet": "How do I check the battery level of eufy Wearable Breast Pump S1 Pro(T8D04)?\neufy Wearable Breast Pump S1 Pro(T8D04) has a low battery reminder. When pressing any button on the hub, if the battery light lights up red, the battery level is below 20% and needs to be charged. You can also check the battery level in the Anker eufy app.",
+              "score": 0.013151969981238272,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+              "source": "kb_qa",
+              "doc_id": "bp-0044",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+              "snippet": "How do I upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04) (device log not opened)?\nPlease refer to the eufy Baby app in-app guide for instructions on how to enable and upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04).![]()",
+              "score": 0.013028413028413028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+              "source": "kb_qa",
+              "doc_id": "bp-0046",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+              "snippet": "How do I check the firmware version of eufy Wearable Breast Pump S1 Pro(T8D04)?\nPlease open the eufy Baby App and follow the steps shown in the image to view.![]()",
+              "score": 0.012983091787439614,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+              "source": "kb_qa",
+              "doc_id": "bp-0005",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+              "snippet": "How much extra battery does the heating function consume on eufy Wearable Breast Pump S1 Pro(T8D04)?\nThe heating function on eufy Wearable Breast Pump S1 Pro(T8D04) consumes additional battery depending on the selected duration: - 5 minutes: ~10% more battery - 10 minutes (default): ~20% more battery - 15 minutes: ~30% more battery The Anker eufy app will display an estimated battery consumption w",
+              "score": 0.012878787878787878,
+              "status": "ok"
+            }
+          ],
+          "event_id": "8ad6093a89a65c81b8c963767fabbf95",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 19,
+          "recorded_at": "2026-10-09T07:19:35.230747+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "pending_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "57b8a393412659548b036913834f694f",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:19:35.236631+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0123",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Identify the Problem",
+            "instruction": "Identify the Problem",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "b52939ec-687e-4569-b2d2-e407ee3244ea"
+            ],
+            "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "media": []
+          },
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "event_id": "1635a29836e2574b9b7531e714643cdf",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:19:35.237693+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "card_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+          "version": 1,
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 22,
+          "event_id": "272d9c024be24f65ab838b3b7e8bddc1",
+          "recorded_at": "2026-10-09T07:19:35.238522+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "119d1f9c873c5c5387045303621774a9",
+          "recorded_at": "2026-10-09T07:19:35.239699+00:00",
+          "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+          "seq": 23,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 24,
+          "type": "run_started",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "resumed": false,
+          "event_id": "823c77c0fd384d08ab6984b0a605606d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:35.259234+00:00"
+        },
+        {
+          "seq": 25,
+          "type": "input_received",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "203abcdb997340478fbbe99f2ff1c66c",
+            "target_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+            "expected_version": 1
+          },
+          "event_id": "517ca1f20ef24cdba8b5d240e3e26647",
+          "input_id": "203abcdb997340478fbbe99f2ff1c66c",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:35.259234+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 26,
+          "event_id": "777a04dc21d94c569dd27bfb39b06c4d",
+          "recorded_at": "2026-10-09T07:19:35.276190+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 27,
+          "event_id": "470d51e846b14849aa475a8f83e6cc97",
+          "recorded_at": "2026-10-09T07:19:35.278961+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "input_id": "203abcdb997340478fbbe99f2ff1c66c",
+          "resolved_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+              "title": "Motor making awful noise.",
+              "status": "open"
+            }
+          ],
+          "event_id": "5c691a2978175524a5ff637706b83d6f",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 29,
+          "recorded_at": "2026-10-09T07:19:35.302379+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "pending_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "29ee93cf2c92510c9cd386ca7757518a",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 30,
+          "recorded_at": "2026-10-09T07:19:35.303274+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "pending_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "0efcb055c7765f48b9c1ce7e6ad6b613",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 31,
+          "recorded_at": "2026-10-09T07:19:35.304132+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0123",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Is the noise continuous or intermittent?",
+            "instruction": "Is the noise continuous or intermittent?",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "b52939ec-687e-4569-b2d2-e407ee3244ea"
+            ],
+            "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "media": []
+          },
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "event_id": "9457dad1962652edb0f83d0051cb4765",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 32,
+          "recorded_at": "2026-10-09T07:19:35.304898+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+          "version": 2,
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 33,
+          "event_id": "c9bda24015df48ad8f29aec9f7d41679",
+          "recorded_at": "2026-10-09T07:19:35.305596+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "082565e60b7c5e4cba59d3fc8492cdcc",
+          "recorded_at": "2026-10-09T07:19:35.306509+00:00",
+          "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+          "seq": 34,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:29.451861+08:00",
+  "session_id": "645756093d394151bdf816c47b2c3c21",
+  "stop_reason": "fact_question_requires_customer_answer",
+  "snapshot": {
+    "session_id": "645756093d394151bdf816c47b2c3c21",
+    "version": 2,
+    "stage": "guide",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+      "kind": "step_feedback",
+      "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:29.484828+00:00",
+        "first_seq": 2,
+        "last_seq": 18,
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "user_message",
+        "id": "bc966f1526454552987aa966df0519fa",
+        "text": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+        "image_ids": [
+          "e472a76d3f635d909912ed207fed38b3"
+        ],
+        "images": [
+          {
+            "image_id": "e472a76d3f635d909912ed207fed38b3",
+            "purpose": "fault",
+            "sha256": "0bf55a63bdcaf3a19051b78a4c5082a4cdee2dd811ab88139fe502dc41509527",
+            "mime": "image/jpeg",
+            "size": 136298
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:32.034695+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "be665b6a585d508fbbacbdec17605815",
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "手机屏幕显示订单详情页；商品为 eufy 安防加热穿戴设备；订单号 Anker013，总价 $349.98；下单日期 2026 年 8 月 27 日；页面含退换货与客服按钮"
+      },
+      {
+        "at": "2026-10-09T07:19:33.333491+00:00",
+        "first_seq": 10,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "2c464a1380155202b2223efd6a251abb",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 30 条来源（部分截断）（已补检索）"
+      },
+      {
+        "at": "2026-10-09T07:19:35.227027+00:00",
+        "first_seq": 15,
+        "last_seq": 17,
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "assistant_message",
+        "message_id": "47ffc2d93503564c821b93e51275f9dd",
+        "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+        "status": "completed",
+        "reply_to_input_id": "bc966f1526454552987aa966df0519fa",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:19:35.230962Z",
+        "first_seq": 19,
+        "last_seq": 19,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "source": "kb_qa",
+            "doc_id": "bp-0123",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor keep making abnormal noise?\n1. Identify the Problem\n1. Is the noise continuous or intermittent?\n2. When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)\n3. Is it accompanied by decreased suction or other performance abnormalities?\n4. Please record a short video or audio clip (at least 10 seconds) to help us remote",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+            "source": "kb_qa",
+            "doc_id": "bp-0036",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) is making abnormal noise while pumping?\n1. First identify the noise details:\n- Is the noise continuous or intermittent?\n- When does it occur: at startup, during pumping, or only at high settings?\n- Is it accompanied by reduced suction or other issues?\n- Record a video or audio clip of at least 10 seconds.\n2. Self-troubleshooting steps (in order):\n-",
+            "score": 0.016129032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+            "source": "kb_qa",
+            "doc_id": "bp-0102",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor make a clicking sound but no suction?\n1. Restore factory settings:\nPress and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds. The device will restore to factory settings. After restoring factory settings, try using the breast pump again. If the problem persists, proceed to the next step.\n2. Check if the main unit is working",
+            "score": 0.015522875816993463,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+            "source": "kb_qa",
+            "doc_id": "bp-0111",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor shutting off mid-session?\n1. Insufficient Battery Power: Even if the battery indicator shows sufficient power, the actual battery level may be low or the discharge may be abnormal.\n2. Poor Motor Contact: Poor contact in the internal air pump can cause intermittent operation.\n3. Hardware Failure: The motor or pump assembly may be faulty.\n4. Software Error:",
+            "score": 0.015456730769230768,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+            "source": "kb_qa",
+            "doc_id": "bp-0034",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+            "snippet": "Can I get a replacement for the main motor unit of my Breast Pump S1 Pro (T8D04)?\n1. You can purchase replacement washable parts for the breast pump separately, but the pump hub (motor unit) may not be available for individual purchase.\n2. Warranty Policy: The pump hub has a 1-year warranty. If your device is within the warranty period, the customer service team can assist.\n3. If the device is out",
+            "score": 0.015367965367965367,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+            "source": "kb_qa",
+            "doc_id": "bp-0123",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+            "snippet": "- If the noise persists after the above self-checks, please inform us.\n- Please first confirm according to the instructions in Steps One and Two, and provide us with the results (text + video/audio). We will provide you with further solutions as soon as possible.",
+            "score": 0.014404609475032009,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+            "source": "kb_qa",
+            "doc_id": "bp-0112",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+            "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+            "score": 0.014204425711275025,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+            "source": "kb_qa",
+            "doc_id": "bp-0107",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) smell like burning plastic or chemicals?\nThe burning plastic or chemical smell from your Breast Pump S1 Pro (T8D04) may be due to incorrect sterilization methods, which can cause the flanges to burn and melt, rendering the equipment unusable. Reason: The heating pads in the speaker cover, plastic terminals, PCB, and two-shot silicone shrinkage are inconsisten",
+            "score": 0.014163306451612902,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+            "source": "kb_qa",
+            "doc_id": "bp-0101",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+            "snippet": "Why is my Breast Pump S1 Pro (T8D04) causing a rash or allergic reaction?\n1. Material sensitivity: Although the breast pump uses food-grade materials that are BPA, BPS, and BPF free, individual sensitivities may still cause reactions. Make sure to check for any signs of irritation or discomfort when using the pump for the first time. If you experience a rash or allergic reaction, it is recommended",
+            "score": 0.013846153846153847,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+            "source": "kb_qa",
+            "doc_id": "bp-0020",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) left and right motors perform differently?\n1. Check Assembly: Confirm that both sides have silicone breast shields, duckbill valves, and elasticity bowls correctly installed with no damage or reversal.\n2. Test Pump Hub Suction: Separate each pump hub from the cup, place on your palm, and compare suction between left and right.\n3. Reset Device: Pres",
+            "score": 0.012713472485768502,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+            "source": "kb_qa",
+            "doc_id": "bp-0120",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+            "score": 0.012458333333333332,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+            "source": "kb_qa",
+            "doc_id": "bp-0028",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+            "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has a burning smell?\n1. A new S1 Pro may have a slight smell from the silicone vulcanization process and low molecular siloxane volatilization. This is normal and safe.\n2. To eliminate the odor:\n- Boil all silicone parts for 5 minutes (also serves as first-use sterilization)\n- Or let parts air out for a few hours\nBoth methods will completely elimin",
+            "score": 0.012435003872109746,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+            "source": "kb_qa",
+            "doc_id": "bp-0117",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+            "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+            "score": 0.012344074844074843,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+            "source": "kb_qa",
+            "doc_id": "bp-0110",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+            "snippet": "Why does my Breast Pump S1 Pro (T8D04) have a burning smell?\nThe burnt smell emanating from your S1 Pro (T8D04) breast pump is likely due to improper sterilization, which can cause the pump's bell cover to burn and melt, rendering the device unusable. Possible Causes: Incorrect Sterilization Method: Using high-temperature sterilization methods such as microwave ovens can cause the flange to melt, ",
+            "score": 0.012334053720284037,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+            "source": "kb_qa",
+            "doc_id": "bp-0100",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+            "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+            "score": 0.012240259740259739,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+            "source": "kb_qa",
+            "doc_id": "bp-0002",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+            "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) reconnect to the Anker eufy app?\n1. Ensure Bluetooth is enabled on your phone and the app has Bluetooth permissions.\n2. Restart the pump and force close the app, then reopen and try again.\n3. For Android: Add the app to the battery whitelist to prevent background killing.\n4. If the issue persists, remove the pump from the app and re-add it.",
+            "score": 0.015887174541947928,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+            "source": "kb_qa",
+            "doc_id": "bp-0003",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+            "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) be added (bound) to the Anker eufy app?\n1. Ensure the pump is turned on and the LED is lit.\n2. Enable Bluetooth on your phone and ensure the app has Bluetooth permissions.\n3. Keep the phone close to the pump (within 1 meter) during pairing.\n4. Restart the pump and relaunch the app, then retry.\n5. Update the Anker eufy app to the latest version.",
+            "score": 0.015625,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+            "source": "kb_qa",
+            "doc_id": "bp-0058",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+            "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) emit harmful radiation?\nNo, eufy Wearable Breast Pump S1 Pro(T8D04) does not emit harmful radiation. The eufy Wearable Breast Pump series has passed the SAR (Specific Absorption Rate) test, confirming the radiation poses no risk to health.",
+            "score": 0.01529032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+            "source": "kb_qa",
+            "doc_id": "bp-0057",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+            "snippet": "Has eufy Wearable Breast Pump S1 Pro(T8D04) passed Prop 65 certification?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) has passed California Proposition 65 (Prop 65) certification, meeting California's standards for chemical exposure safety.",
+            "score": 0.01486111111111111,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d9629940-e39e-4063-9d50-efe69519696f",
+            "source": "kb_qa",
+            "doc_id": "bp-0092",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d9629940-e39e-4063-9d50-efe69519696f",
+            "snippet": "Can I use a dishwasher to clean eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nYes, the washable parts of eufy Wearable Breast Pump S1 Pro(T8D04) are dishwasher-safe, but top rack only.",
+            "score": 0.0145021645021645,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+            "source": "kb_qa",
+            "doc_id": "bp-0095",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+            "snippet": "Is eufy Wearable Breast Pump S1 Pro(T8D04) HSA/FSA eligible?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is HSA/FSA eligible on Amazon.",
+            "score": 0.014254516577327774,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+            "source": "kb_qa",
+            "doc_id": "bp-0093",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+            "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+            "score": 0.014151464897733553,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+            "source": "kb_qa",
+            "doc_id": "bp-0055",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+            "snippet": "Is it safe to refrigerate eufy Wearable Breast Pump S1 Pro(T8D04) parts without the batteries (fridge hack)?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not put the pump hub in the fridge as it contains electronic components including the battery.",
+            "score": 0.014140017286084702,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "629b90de-3560-40d3-b722-50663afca3b1",
+            "source": "kb_qa",
+            "doc_id": "bp-0001",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "629b90de-3560-40d3-b722-50663afca3b1",
+            "snippet": "How do I use the custom rhythm feature on eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Open the Anker eufy app (eufy Baby app) and connect to the pump.\n2. Go to pump settings and find 'Custom Rhythm' or 'Rhythm Adjustment'.\n3. Adjust the mode (expression/stimulation) and duration for each segment.\n4. You can save up to 5 custom rhythm profiles.\nThe custom rhythm allows you to tailor the pumping pat",
+            "score": 0.013568521031207599,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+            "source": "kb_qa",
+            "doc_id": "bp-0073",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+            "snippet": "Can I store eufy Wearable Breast Pump S1 Pro(T8D04) parts in the fridge between sessions?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not store the pump hub in the fridge as it contains electronic components.",
+            "score": 0.013488372093023256,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+            "source": "kb_qa",
+            "doc_id": "bp-0054",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+            "snippet": "Why does eufy Wearable Breast Pump S1 Pro(T8D04) have an unusual odor when new?\nSome customers may notice a slight odor when first unpacking eufy Wearable Breast Pump S1 Pro(T8D04). This is completely normal and safe. The smell comes from curing agents and low molecular weight siloxanes used during the silicone vulcanization process. Since all parts are sealed in airtight packaging, the odor is mo",
+            "score": 0.013355342136854742,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+            "source": "kb_qa",
+            "doc_id": "bp-0004",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+            "snippet": "How do I check the battery level of eufy Wearable Breast Pump S1 Pro(T8D04)?\neufy Wearable Breast Pump S1 Pro(T8D04) has a low battery reminder. When pressing any button on the hub, if the battery light lights up red, the battery level is below 20% and needs to be charged. You can also check the battery level in the Anker eufy app.",
+            "score": 0.013151969981238272,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+            "source": "kb_qa",
+            "doc_id": "bp-0044",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+            "snippet": "How do I upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04) (device log not opened)?\nPlease refer to the eufy Baby app in-app guide for instructions on how to enable and upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04).![]()",
+            "score": 0.013028413028413028,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+            "source": "kb_qa",
+            "doc_id": "bp-0046",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+            "snippet": "How do I check the firmware version of eufy Wearable Breast Pump S1 Pro(T8D04)?\nPlease open the eufy Baby App and follow the steps shown in the image to view.![]()",
+            "score": 0.012983091787439614,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+            "source": "kb_qa",
+            "doc_id": "bp-0005",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+            "snippet": "How much extra battery does the heating function consume on eufy Wearable Breast Pump S1 Pro(T8D04)?\nThe heating function on eufy Wearable Breast Pump S1 Pro(T8D04) consumes additional battery depending on the selected duration: - 5 minutes: ~10% more battery - 10 minutes (default): ~20% more battery - 15 minutes: ~30% more battery The Anker eufy app will display an estimated battery consumption w",
+            "score": 0.012878787878787878,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:35.237693+00:00",
+        "first_seq": 21,
+        "last_seq": 21,
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "step_card",
+        "card_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_bp_0123",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Identify the Problem",
+          "instruction": "Identify the Problem",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+            "b52939ec-687e-4569-b2d2-e407ee3244ea"
+          ],
+          "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:35.259234+00:00",
+        "first_seq": 25,
+        "last_seq": 29,
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "action",
+        "id": "203abcdb997340478fbbe99f2ff1c66c",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:35.304898+00:00",
+        "first_seq": 32,
+        "last_seq": 32,
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "step_card",
+        "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_bp_0123",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Is the noise continuous or intermittent?",
+          "instruction": "Is the noise continuous or intermittent?",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+            "b52939ec-687e-4569-b2d2-e407ee3244ea"
+          ],
+          "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "media": []
+        },
+        "seen": null,
+        "feedback": null,
+        "note": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+    "issues": [
+      {
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "status": "open",
+        "title": "Motor making awful noise.",
+        "task_queue": [
+          {
+            "task_id": "d3a271a5dc425624b48255340f416759",
+            "intent": "report_problem",
+            "quote": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+            "status": "active",
+            "created_input_id": "bc966f1526454552987aa966df0519fa",
+            "business_reference": {
+              "status": "resolved",
+              "subject_id": "da7f2aae78865948bec0216e9158103a",
+              "candidate_ids": []
+            }
+          },
+          {
+            "task_id": "e0288cdff8bb54d28eaaca35441c0fea",
+            "intent": "warranty_query",
+            "quote": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+            "status": "pending",
+            "created_input_id": "bc966f1526454552987aa966df0519fa",
+            "business_reference": {
+              "status": "resolved",
+              "subject_id": "da7f2aae78865948bec0216e9158103a",
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 34,
+    "latest_summaries": []
+  },
+  "visible_text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 6.17,
+  "journey": {
+    "session": {
+      "session_id": "645756093d394151bdf816c47b2c3c21",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:29.488933Z",
+      "last_run_at": "2026-10-09T07:19:35.307108Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: [REDACTED]\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful no",
+      "product_state": "confirmed_sku",
+      "sku": "T8D04",
+      "category": "breast_pump",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_bp_0036",
+        "qa_bp_0123"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "step_feedback",
+      "outcome_at": null,
+      "total_latency_ms": 46,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:19:35.307108Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+        "session_id": "645756093d394151bdf816c47b2c3c21",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:29.488933Z",
+        "ended_at": "2026-10-09T07:19:35.240537Z",
+        "duration_ms": 5751,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 5739,
+        "card_ready_ms": 5749,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2426,
+            "tokens_in": 4213,
+            "tokens_out": 198,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:31.924038Z"
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "node": "vision",
+            "task": "diagnose.vision",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1254,
+            "tokens_in": 2465,
+            "tokens_out": 129,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:33.257839Z"
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1302,
+            "tokens_in": 5407,
+            "tokens_out": 184,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:35.187277Z"
+          }
+        ],
+        "tokens_in": 12085,
+        "tokens_out": 511,
+        "node_count": 8,
+        "nodes": [
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:29.488933Z",
+            "duration_ms": 2457,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3356,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 223,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5756
+                    }
+                  ],
+                  "actual_input_tokens": 4213
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:31.946809Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "decision": "read_images"
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 3,
+            "node": "vision",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:31.957090Z",
+            "duration_ms": 1368,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "vision",
+              "vision_status": "ok",
+              "context_metrics": [
+                {
+                  "task": "diagnose.vision",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 2382
+                    }
+                  ],
+                  "actual_input_tokens": 2465
+                }
+              ],
+              "context_revision": 2
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 4,
+            "node": "disambiguate",
+            "prev_node": "vision",
+            "started_at": "2026-10-09T07:19:33.326000Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "breast_pump",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 5,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:33.328669Z",
+            "duration_ms": 1865,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_bp_0123",
+              "substage": "retrieve",
+              "rewrite_used": true,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 6200,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 223,
+                    "history": 0,
+                    "authority": 5621
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 1473,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 49,
+                    "decision": 183,
+                    "timezone": 7,
+                    "task_data": 3650,
+                    "issue_index": 135,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 99,
+                    "context_revision": 2,
+                    "conversation_view": 97,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 6678
+                    }
+                  ],
+                  "actual_input_tokens": 5407
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 6,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:19:35.194358Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0123",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 7,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:35.208193Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "idx": 8,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:35.208199Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 127,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 245,
+            "query": "Motor making awful noise",
+            "created_at": "2026-10-09T07:19:33.569619Z"
+          },
+          {
+            "run_id": "d4565dc0fb0540178f86fbfde32c1523",
+            "node": "retrieve",
+            "round": 2,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 127,
+            "hits": 15,
+            "top_score": 0.0159,
+            "latency_ms": 290,
+            "query": "Motor making awful noise 手机屏幕显示订单详情页 商品为 eufy 安防加热穿戴设备 订单号 [REDACTED]，总价 $349.98 下单日期 2026 年 8 月 27 日 页面含退换货与客服按钮",
+            "created_at": "2026-10-09T07:19:33.860907Z"
+          }
+        ]
+      },
+      {
+        "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+        "session_id": "645756093d394151bdf816c47b2c3c21",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:19:35.260618Z",
+        "ended_at": "2026-10-09T07:19:35.307101Z",
+        "duration_ms": 46,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 45,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:35.260618Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0123",
+              "category": "breast_pump",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": true,
+              "product_state": "confirmed_sku",
+              "vision_status": "ok",
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:35.267513Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0123",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:35.268930Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0123",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:35.277922Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "0f501e2faafd4f0bb9b5fa410d9c4588",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:35.277926Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "645756093d394151bdf816c47b2c3c21",
+      "version": 2,
+      "stage": "guide",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+        "kind": "step_feedback",
+        "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:29.484828+00:00",
+          "first_seq": 2,
+          "last_seq": 18,
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "kind": "user_message",
+          "id": "bc966f1526454552987aa966df0519fa",
+          "text": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+          "image_ids": [
+            "e472a76d3f635d909912ed207fed38b3"
+          ],
+          "images": [
+            {
+              "image_id": "e472a76d3f635d909912ed207fed38b3",
+              "purpose": "fault",
+              "sha256": "0bf55a63bdcaf3a19051b78a4c5082a4cdee2dd811ab88139fe502dc41509527",
+              "mime": "image/jpeg",
+              "size": 136298
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:32.034695+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "be665b6a585d508fbbacbdec17605815",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "手机屏幕显示订单详情页；商品为 eufy 安防加热穿戴设备；订单号 Anker013，总价 $349.98；下单日期 2026 年 8 月 27 日；页面含退换货与客服按钮"
+        },
+        {
+          "at": "2026-10-09T07:19:33.333491+00:00",
+          "first_seq": 10,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "2c464a1380155202b2223efd6a251abb",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 30 条来源（部分截断）（已补检索）"
+        },
+        {
+          "at": "2026-10-09T07:19:35.227027+00:00",
+          "first_seq": 15,
+          "last_seq": 17,
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "kind": "assistant_message",
+          "message_id": "47ffc2d93503564c821b93e51275f9dd",
+          "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "status": "completed",
+          "reply_to_input_id": "bc966f1526454552987aa966df0519fa",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:19:35.230962Z",
+          "first_seq": 19,
+          "last_seq": 19,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+              "source": "kb_qa",
+              "doc_id": "bp-0123",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor keep making abnormal noise?\n1. Identify the Problem\n1. Is the noise continuous or intermittent?\n2. When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)\n3. Is it accompanied by decreased suction or other performance abnormalities?\n4. Please record a short video or audio clip (at least 10 seconds) to help us remote",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+              "source": "kb_qa",
+              "doc_id": "bp-0036",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) is making abnormal noise while pumping?\n1. First identify the noise details:\n- Is the noise continuous or intermittent?\n- When does it occur: at startup, during pumping, or only at high settings?\n- Is it accompanied by reduced suction or other issues?\n- Record a video or audio clip of at least 10 seconds.\n2. Self-troubleshooting steps (in order):\n-",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+              "source": "kb_qa",
+              "doc_id": "bp-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor make a clicking sound but no suction?\n1. Restore factory settings:\nPress and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds. The device will restore to factory settings. After restoring factory settings, try using the breast pump again. If the problem persists, proceed to the next step.\n2. Check if the main unit is working",
+              "score": 0.015522875816993463,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+              "source": "kb_qa",
+              "doc_id": "bp-0111",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "16410b15-b2b7-4d3a-ae7c-23ecf67a0449",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) motor shutting off mid-session?\n1. Insufficient Battery Power: Even if the battery indicator shows sufficient power, the actual battery level may be low or the discharge may be abnormal.\n2. Poor Motor Contact: Poor contact in the internal air pump can cause intermittent operation.\n3. Hardware Failure: The motor or pump assembly may be faulty.\n4. Software Error:",
+              "score": 0.015456730769230768,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+              "source": "kb_qa",
+              "doc_id": "bp-0034",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "65c87b7e-000a-4919-9c08-3522971c38ee",
+              "snippet": "Can I get a replacement for the main motor unit of my Breast Pump S1 Pro (T8D04)?\n1. You can purchase replacement washable parts for the breast pump separately, but the pump hub (motor unit) may not be available for individual purchase.\n2. Warranty Policy: The pump hub has a 1-year warranty. If your device is within the warranty period, the customer service team can assist.\n3. If the device is out",
+              "score": 0.015367965367965367,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "source": "kb_qa",
+              "doc_id": "bp-0123",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "snippet": "- If the noise persists after the above self-checks, please inform us.\n- Please first confirm according to the instructions in Steps One and Two, and provide us with the results (text + video/audio). We will provide you with further solutions as soon as possible.",
+              "score": 0.014404609475032009,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "source": "kb_qa",
+              "doc_id": "bp-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "124705cf-f683-4c1d-9619-3b3d5f2abe77",
+              "snippet": "Can I use my Breast Pump S1 Pro (T8D04) parts in the dishwasher?\nYes, the washable parts of the S1 Pro breast pump are dishwasher safe, but they should only be placed on the top shelf. The motor, however, is not.",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+              "source": "kb_qa",
+              "doc_id": "bp-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) smell like burning plastic or chemicals?\nThe burning plastic or chemical smell from your Breast Pump S1 Pro (T8D04) may be due to incorrect sterilization methods, which can cause the flanges to burn and melt, rendering the equipment unusable. Reason: The heating pads in the speaker cover, plastic terminals, PCB, and two-shot silicone shrinkage are inconsisten",
+              "score": 0.014163306451612902,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+              "source": "kb_qa",
+              "doc_id": "bp-0101",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1ec2ae26-c153-447c-a3c1-54f312294c95",
+              "snippet": "Why is my Breast Pump S1 Pro (T8D04) causing a rash or allergic reaction?\n1. Material sensitivity: Although the breast pump uses food-grade materials that are BPA, BPS, and BPF free, individual sensitivities may still cause reactions. Make sure to check for any signs of irritation or discomfort when using the pump for the first time. If you experience a rash or allergic reaction, it is recommended",
+              "score": 0.013846153846153847,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+              "source": "kb_qa",
+              "doc_id": "bp-0020",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) left and right motors perform differently?\n1. Check Assembly: Confirm that both sides have silicone breast shields, duckbill valves, and elasticity bowls correctly installed with no damage or reversal.\n2. Test Pump Hub Suction: Separate each pump hub from the cup, place on your palm, and compare suction between left and right.\n3. Reset Device: Pres",
+              "score": 0.012713472485768502,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "source": "kb_qa",
+              "doc_id": "bp-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+              "score": 0.012458333333333332,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+              "source": "kb_qa",
+              "doc_id": "bp-0028",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "01fea5d7-c632-4b77-a7b9-275109be6eef",
+              "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has a burning smell?\n1. A new S1 Pro may have a slight smell from the silicone vulcanization process and low molecular siloxane volatilization. This is normal and safe.\n2. To eliminate the odor:\n- Boil all silicone parts for 5 minutes (also serves as first-use sterilization)\n- Or let parts air out for a few hours\nBoth methods will completely elimin",
+              "score": 0.012435003872109746,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "source": "kb_qa",
+              "doc_id": "bp-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5c60dec4-0575-48b4-920d-29c8afa3d597",
+              "snippet": "- Solution: Try the \"Gentle Flow\" mode from the app, which is designed for mothers with sensitive nipples. This mode mimics a more gentle sucking rhythm.\n5. Accessory Damage\n- Explanation: Damaged parts such as the duckbill valve or diaphragm can affect the suction and cause uneven pressure on the nipple.\n- Solution: Inspect the duckbill valve and diaphragm for damage, including cracks, chips, hol",
+              "score": 0.012344074844074843,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+              "source": "kb_qa",
+              "doc_id": "bp-0110",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3cec20f2-7e7a-46bc-b98b-adab37d817ae",
+              "snippet": "Why does my Breast Pump S1 Pro (T8D04) have a burning smell?\nThe burnt smell emanating from your S1 Pro (T8D04) breast pump is likely due to improper sterilization, which can cause the pump's bell cover to burn and melt, rendering the device unusable. Possible Causes: Incorrect Sterilization Method: Using high-temperature sterilization methods such as microwave ovens can cause the flange to melt, ",
+              "score": 0.012334053720284037,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "source": "kb_qa",
+              "doc_id": "bp-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+              "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+              "score": 0.012240259740259739,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+              "source": "kb_qa",
+              "doc_id": "bp-0002",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+              "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) reconnect to the Anker eufy app?\n1. Ensure Bluetooth is enabled on your phone and the app has Bluetooth permissions.\n2. Restart the pump and force close the app, then reopen and try again.\n3. For Android: Add the app to the battery whitelist to prevent background killing.\n4. If the issue persists, remove the pump from the app and re-add it.",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+              "source": "kb_qa",
+              "doc_id": "bp-0003",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+              "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) be added (bound) to the Anker eufy app?\n1. Ensure the pump is turned on and the LED is lit.\n2. Enable Bluetooth on your phone and ensure the app has Bluetooth permissions.\n3. Keep the phone close to the pump (within 1 meter) during pairing.\n4. Restart the pump and relaunch the app, then retry.\n5. Update the Anker eufy app to the latest version.",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+              "source": "kb_qa",
+              "doc_id": "bp-0058",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+              "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) emit harmful radiation?\nNo, eufy Wearable Breast Pump S1 Pro(T8D04) does not emit harmful radiation. The eufy Wearable Breast Pump series has passed the SAR (Specific Absorption Rate) test, confirming the radiation poses no risk to health.",
+              "score": 0.01529032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+              "source": "kb_qa",
+              "doc_id": "bp-0057",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+              "snippet": "Has eufy Wearable Breast Pump S1 Pro(T8D04) passed Prop 65 certification?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) has passed California Proposition 65 (Prop 65) certification, meeting California's standards for chemical exposure safety.",
+              "score": 0.01486111111111111,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d9629940-e39e-4063-9d50-efe69519696f",
+              "source": "kb_qa",
+              "doc_id": "bp-0092",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d9629940-e39e-4063-9d50-efe69519696f",
+              "snippet": "Can I use a dishwasher to clean eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nYes, the washable parts of eufy Wearable Breast Pump S1 Pro(T8D04) are dishwasher-safe, but top rack only.",
+              "score": 0.0145021645021645,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+              "source": "kb_qa",
+              "doc_id": "bp-0095",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+              "snippet": "Is eufy Wearable Breast Pump S1 Pro(T8D04) HSA/FSA eligible?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is HSA/FSA eligible on Amazon.",
+              "score": 0.014254516577327774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "source": "kb_qa",
+              "doc_id": "bp-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+              "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+              "score": 0.014151464897733553,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+              "source": "kb_qa",
+              "doc_id": "bp-0055",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c00b0b6d-1c28-4c9c-a312-72d8b211b703",
+              "snippet": "Is it safe to refrigerate eufy Wearable Breast Pump S1 Pro(T8D04) parts without the batteries (fridge hack)?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not put the pump hub in the fridge as it contains electronic components including the battery.",
+              "score": 0.014140017286084702,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "629b90de-3560-40d3-b722-50663afca3b1",
+              "source": "kb_qa",
+              "doc_id": "bp-0001",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "629b90de-3560-40d3-b722-50663afca3b1",
+              "snippet": "How do I use the custom rhythm feature on eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Open the Anker eufy app (eufy Baby app) and connect to the pump.\n2. Go to pump settings and find 'Custom Rhythm' or 'Rhythm Adjustment'.\n3. Adjust the mode (expression/stimulation) and duration for each segment.\n4. You can save up to 5 custom rhythm profiles.\nThe custom rhythm allows you to tailor the pumping pat",
+              "score": 0.013568521031207599,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+              "source": "kb_qa",
+              "doc_id": "bp-0073",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "25ed4037-72f2-41cc-a548-44affcb4418c",
+              "snippet": "Can I store eufy Wearable Breast Pump S1 Pro(T8D04) parts in the fridge between sessions?\nYes, you can use the fridge hack for all washable parts of eufy Wearable Breast Pump S1 Pro(T8D04). However, do not store the pump hub in the fridge as it contains electronic components.",
+              "score": 0.013488372093023256,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+              "source": "kb_qa",
+              "doc_id": "bp-0054",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "09da8bb0-3f73-4456-a807-5aff52572cd9",
+              "snippet": "Why does eufy Wearable Breast Pump S1 Pro(T8D04) have an unusual odor when new?\nSome customers may notice a slight odor when first unpacking eufy Wearable Breast Pump S1 Pro(T8D04). This is completely normal and safe. The smell comes from curing agents and low molecular weight siloxanes used during the silicone vulcanization process. Since all parts are sealed in airtight packaging, the odor is mo",
+              "score": 0.013355342136854742,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+              "source": "kb_qa",
+              "doc_id": "bp-0004",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+              "snippet": "How do I check the battery level of eufy Wearable Breast Pump S1 Pro(T8D04)?\neufy Wearable Breast Pump S1 Pro(T8D04) has a low battery reminder. When pressing any button on the hub, if the battery light lights up red, the battery level is below 20% and needs to be charged. You can also check the battery level in the Anker eufy app.",
+              "score": 0.013151969981238272,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+              "source": "kb_qa",
+              "doc_id": "bp-0044",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+              "snippet": "How do I upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04) (device log not opened)?\nPlease refer to the eufy Baby app in-app guide for instructions on how to enable and upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04).![]()",
+              "score": 0.013028413028413028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+              "source": "kb_qa",
+              "doc_id": "bp-0046",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+              "snippet": "How do I check the firmware version of eufy Wearable Breast Pump S1 Pro(T8D04)?\nPlease open the eufy Baby App and follow the steps shown in the image to view.![]()",
+              "score": 0.012983091787439614,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+              "source": "kb_qa",
+              "doc_id": "bp-0005",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "789d8ef1-e437-4e7d-9b21-8a7c63132740",
+              "snippet": "How much extra battery does the heating function consume on eufy Wearable Breast Pump S1 Pro(T8D04)?\nThe heating function on eufy Wearable Breast Pump S1 Pro(T8D04) consumes additional battery depending on the selected duration: - 5 minutes: ~10% more battery - 10 minutes (default): ~20% more battery - 15 minutes: ~30% more battery The Anker eufy app will display an estimated battery consumption w",
+              "score": 0.012878787878787878,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:35.237693+00:00",
+          "first_seq": 21,
+          "last_seq": 21,
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "kind": "step_card",
+          "card_id": "6bf17c7d9d53596bb0ab8ab1fa3ab2fa",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0123",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Identify the Problem",
+            "instruction": "Identify the Problem",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "b52939ec-687e-4569-b2d2-e407ee3244ea"
+            ],
+            "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:35.259234+00:00",
+          "first_seq": 25,
+          "last_seq": 29,
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "kind": "action",
+          "id": "203abcdb997340478fbbe99f2ff1c66c",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:35.304898+00:00",
+          "first_seq": 32,
+          "last_seq": 32,
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "kind": "step_card",
+          "card_id": "b8a7e1f69e825c3fa25056f03892cf3c",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0123",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Is the noise continuous or intermittent?",
+            "instruction": "Is the noise continuous or intermittent?",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+              "b52939ec-687e-4569-b2d2-e407ee3244ea"
+            ],
+            "primary_evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+            "media": []
+          },
+          "seen": null,
+          "feedback": null,
+          "note": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+      "issues": [
+        {
+          "issue_id": "17acc7bdfecd565b82730a33e9604e7e",
+          "status": "open",
+          "title": "Motor making awful noise.",
+          "task_queue": [
+            {
+              "task_id": "d3a271a5dc425624b48255340f416759",
+              "intent": "report_problem",
+              "quote": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+              "status": "active",
+              "created_input_id": "bc966f1526454552987aa966df0519fa",
+              "business_reference": {
+                "status": "resolved",
+                "subject_id": "da7f2aae78865948bec0216e9158103a",
+                "candidate_ids": []
+              }
+            },
+            {
+              "task_id": "e0288cdff8bb54d28eaaca35441c0fea",
+              "intent": "warranty_query",
+              "quote": "Dear sale-team.Hello!\nThis message come from anker.com ----RMA----,\nSource: amazon\nOrder No: Anker013\nProduct Name: eufy Heated Wearable Breast Pump S1 Pro\nProblem Description: Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total.\nProdcut SN:\nCountry: US",
+              "status": "pending",
+              "created_input_id": "bc966f1526454552987aa966df0519fa",
+              "business_reference": {
+                "status": "resolved",
+                "subject_id": "da7f2aae78865948bec0216e9158103a",
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 34,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": []
+}

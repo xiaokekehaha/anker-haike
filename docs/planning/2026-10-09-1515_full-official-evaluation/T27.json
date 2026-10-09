@@ -1,0 +1,1860 @@
+{
+  "id": "T27",
+  "input": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "resumed": false,
+          "event_id": "5fd2819cd54b432eaf88bf6b2e6b64ca",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:20.020645+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "5d81fcc0ffd1428c8dd57a768b7161f4",
+          "input_id": "c4e79beb088f4e2898972f0c4e9923eb",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:20.020645+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 3,
+          "event_id": "0a974cc486794a8d9c42e01bb4f510f9",
+          "recorded_at": "2026-10-09T07:18:20.034547+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 4,
+          "event_id": "e3b654d5dea04310b9a7c4caff3bdfb2",
+          "recorded_at": "2026-10-09T07:18:23.892791+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 5,
+          "event_id": "9589c9096afc4a1197663a91f40af9a9",
+          "recorded_at": "2026-10-09T07:18:23.901589+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "048a13f2252a586fbaf5942293dcf3fd",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 6,
+          "event_id": "e7da118765a84f239083894186c73a3e",
+          "recorded_at": "2026-10-09T07:18:23.903527+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "048a13f2252a586fbaf5942293dcf3fd",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 7,
+          "event_id": "6017bcae9eeb4796bbe2d075229b1dab",
+          "recorded_at": "2026-10-09T07:18:24.147887+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 8,
+          "event_id": "1b6a1a2f74a84551b08df8421e750810",
+          "recorded_at": "2026-10-09T07:18:26.440657+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 9,
+          "event_id": "e0541d12063149bca805d9b15e5daef1",
+          "recorded_at": "2026-10-09T07:18:26.447385+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "input_id": "c4e79beb088f4e2898972f0c4e9923eb",
+          "resolved_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+              "title": "Rolling Mop Blockage. Please clean.、Crack sound kept on repeating everything robots done with mop cleaning process.、vacuum cannot start process",
+              "status": "open"
+            }
+          ],
+          "event_id": "50101c7e421a52a58f05375d653fa5a5",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:18:26.468058+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0080",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "snippet": "what should I do If my omni T2353 E25/ T2352 omni E28 displays 3222-The mop is stuck/ Mop Blockage. Please clean.?\nPlease remove the robot's dirty water tank and check whether the roller is entangled in foreign objects, especially strings/data cables/plastic bags, or hair. Remove the roller and clear any foreign objects to ensure the roller rotates properly. (Note: Listen for a clicking sound to e",
+              "score": 0.016237314597970336,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "source": "kb_qa",
+              "doc_id": "rv-0050",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+              "score": 0.015835777126099706,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "dae3781d-5932-4428-803e-14c151ea2777",
+              "source": "kb_qa",
+              "doc_id": "rv-0149",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "dae3781d-5932-4428-803e-14c151ea2777",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7007 Error: Please return the robot to the base station toclean the mop/Floor mop washing without base station?\nWhen mopping on a floor without a base station, the robot cannot return to the base station to wash the mop by itself. Please manually put the robot into the base station to wash the mop before starting the cleaning task. You can us",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "source": "kb_qa",
+              "doc_id": "rv-0119",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+              "score": 0.014783653846153846,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+              "source": "kb_qa",
+              "doc_id": "rv-0188",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3202 Error: Roller mop stuck, please remove obstructions./Roller mop blocked？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+              "score": 0.014715649647156496,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "source": "kb_qa",
+              "doc_id": "rv-0148",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+              "score": 0.014614427860696517,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "source": "kb_qa",
+              "doc_id": "rv-0180",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+              "score": 0.01457983193277311,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0181",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+              "snippet": "What should I do when my T2353 Omni E25 / T2352 Omni E28 Mopping makes noise/Robot makes noise/Making abnormal noise？\nThis is the sound of the robot dirty water pump operating, which is a normal phenomenon. During the mopping process, a sound lasting 10 seconds occurs once every 40-80 seconds. This is to ensure that the dirty water scraped into the dirty water sink by the roller is recycled into t",
+              "score": 0.014302600472813237,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "source": "kb_qa",
+              "doc_id": "rv-0147",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop obstructed, please clean/The roller bracket is stuck？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "source": "kb_qa",
+              "doc_id": "rv-0170",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+              "score": 0.01377879228055613,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+              "source": "kb_qa",
+              "doc_id": "rv-0118",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 leaves mopping marks/leaves stain marks on floor/has streak marks on floor/leaves marks on floor/has low mopping water flow/not dispensing water on the floor when mopping/insufficient water output when mopping/no water output when mopping/dry mopping/has no water when mopping/leaving streaks?\n*I'm sorry to hear that our robot mop left marks on y",
+              "score": 0.013260869565217392,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+              "source": "kb_qa",
+              "doc_id": "rv-0174",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+              "snippet": "supplement the unfinished cleaning of the region; 3.If there are many times around the obstacles to repeat the trajectory of the sweeping, may be due to the avoidance of obstacles to get out of the trap caused by the frequent occurrence of the proposal to set up the region of this No-go Zone; The video link below will guide you on how to set up an no-go zone:\nTips: Tips:\n1.Open the 'dirty cleaning",
+              "score": 0.013175230566534914,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+              "source": "kb_qa",
+              "doc_id": "rv-0140",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+              "snippet": "What should I do if my T2352 omni E28/T2353 omni E25's roller mop isn't cleaning or the roller mop's self-cleaning effect is poor?\nThis issue has been optimized in the new firmware version with an enhanced mop rewashing strategy. Please upgrade the firmware after receiving the update notification and perform a new mopping task to confirm whether the issue is resolved. Tips: If needed, you can also",
+              "score": 0.013131313131313131,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "source": "kb_qa",
+              "doc_id": "rv-0202",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+              "score": 0.012551299589603283,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+              "source": "kb_qa",
+              "doc_id": "rv-0075",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 The Robot Vacuum smells /Leaves a bad odour /Leaves a damp odour /Leaves a musty odour /Mop smells?\n* Does it happen when the robot is mopping the floor?\n* Does it occur during the drying process?\n* Is it noticeable when sweeping the floor as well? Once we have these details, our support team will work on resolving the issue effectively.",
+              "score": 0.012460646230323114,
+              "status": "ok"
+            }
+          ],
+          "event_id": "745b0399b7005be78988808e26b842e9",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:18:26.469120+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "pending_id": "f0070d5d55695799bc7bc461736f1669",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "30974cc3ec555f93b58679e09e8c9989",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:18:26.473842+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "f0070d5d55695799bc7bc461736f1669",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0147",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+            "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+            "evidence_ids": [
+              "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "qa:rv-0147"
+            ],
+            "primary_evidence_id": "qa:rv-0147",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                "kind": "video"
+              }
+            ]
+          },
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "event_id": "a27ba872bb50574399243787bbfe54e0",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:18:26.475087+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "card_id": "f0070d5d55695799bc7bc461736f1669",
+          "version": 1,
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 15,
+          "event_id": "033e098a5ab345a69464756b4bf80b8e",
+          "recorded_at": "2026-10-09T07:18:26.476104+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "fb28a34f1df6538e964231a960f36b6e",
+          "recorded_at": "2026-10-09T07:18:26.477618+00:00",
+          "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "resumed": false,
+          "event_id": "d15aa89f06114eb9b2161bb355ac6eb1",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:26.497165+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "f0070d5d55695799bc7bc461736f1669",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "dc964d6b661442d7bf9f0662083c3d8b",
+            "target_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "expected_version": 1
+          },
+          "event_id": "f27c36e765a64601a2792085ac6f4687",
+          "input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:26.497165+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 19,
+          "event_id": "a62c8ec30c9a42de94e21fed9f4cc922",
+          "recorded_at": "2026-10-09T07:18:26.511236+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 20,
+          "event_id": "3165f4c05e2848d49d6b982b26f608d7",
+          "recorded_at": "2026-10-09T07:18:26.517086+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+          "resolved_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+              "title": "Rolling Mop Blockage. Please clean.、Crack sound kept on repeating everything robots done with mop cleaning process.、vacuum cannot start process",
+              "status": "open"
+            }
+          ],
+          "event_id": "5893dacf29c35021bcd559430d16380a",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:18:26.540703+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "pending_id": "f0070d5d55695799bc7bc461736f1669",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "8f270101f01651348311839250bbcee1",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:18:26.541834+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+          "case_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "version": 2,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:26.511138+00:00",
+          "event_id": "49126cefadf658a1a9b508d0fca138e9",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:18:26.542590+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "reply_to_input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+          "event_id": "84212bc745125d218a2f319fd5d47389",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:18:26.543676+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "30eecfb6cfa85eef9bfdb1ae5a6db40e",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 26,
+          "recorded_at": "2026-10-09T07:18:26.544419+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+          "status": "completed",
+          "event_id": "284193529778506dbfa13e76bc752aa7",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 27,
+          "recorded_at": "2026-10-09T07:18:26.545560+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "pending_id": "03dcb022f4b354559c00fe37cdc7374c",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "3ccf3ec5d35c57118cf31fec52633bf6",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 28,
+          "recorded_at": "2026-10-09T07:18:26.546414+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "card_id": "03dcb022f4b354559c00fe37cdc7374c",
+          "version": 2,
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 29,
+          "event_id": "1c9482d9ebc1443ba1275c85379883e7",
+          "recorded_at": "2026-10-09T07:18:26.546805+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "12a4b965e39f5ac1a833afdcd2907ce5",
+          "recorded_at": "2026-10-09T07:18:26.547646+00:00",
+          "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+          "seq": 30,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:20.010470+08:00",
+  "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+    "version": 2,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+      "kind": "upload_receipt",
+      "card_id": "03dcb022f4b354559c00fe37cdc7374c",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:20.020645+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "user_message",
+        "id": "c4e79beb088f4e2898972f0c4e9923eb",
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:18:23.903527+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "048a13f2252a586fbaf5942293dcf3fd",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:18:26.469284Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+            "source": "kb_qa",
+            "doc_id": "rv-0080",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+            "snippet": "what should I do If my omni T2353 E25/ T2352 omni E28 displays 3222-The mop is stuck/ Mop Blockage. Please clean.?\nPlease remove the robot's dirty water tank and check whether the roller is entangled in foreign objects, especially strings/data cables/plastic bags, or hair. Remove the roller and clear any foreign objects to ensure the roller rotates properly. (Note: Listen for a clicking sound to e",
+            "score": 0.016237314597970336,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+            "source": "kb_qa",
+            "doc_id": "rv-0050",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+            "score": 0.015835777126099706,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "dae3781d-5932-4428-803e-14c151ea2777",
+            "source": "kb_qa",
+            "doc_id": "rv-0149",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "dae3781d-5932-4428-803e-14c151ea2777",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7007 Error: Please return the robot to the base station toclean the mop/Floor mop washing without base station?\nWhen mopping on a floor without a base station, the robot cannot return to the base station to wash the mop by itself. Please manually put the robot into the base station to wash the mop before starting the cleaning task. You can us",
+            "score": 0.014823284823284823,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+            "source": "kb_qa",
+            "doc_id": "rv-0119",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+            "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+            "score": 0.014783653846153846,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+            "source": "kb_qa",
+            "doc_id": "rv-0188",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3202 Error: Roller mop stuck, please remove obstructions./Roller mop blocked？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+            "score": 0.014715649647156496,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+            "source": "kb_qa",
+            "doc_id": "rv-0148",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+            "score": 0.014614427860696517,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+            "source": "kb_qa",
+            "doc_id": "rv-0180",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+            "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+            "score": 0.01457983193277311,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+            "source": "kb_qa",
+            "doc_id": "rv-0181",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+            "snippet": "What should I do when my T2353 Omni E25 / T2352 Omni E28 Mopping makes noise/Robot makes noise/Making abnormal noise？\nThis is the sound of the robot dirty water pump operating, which is a normal phenomenon. During the mopping process, a sound lasting 10 seconds occurs once every 40-80 seconds. This is to ensure that the dirty water scraped into the dirty water sink by the roller is recycled into t",
+            "score": 0.014302600472813237,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+            "source": "kb_qa",
+            "doc_id": "rv-0147",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop obstructed, please clean/The roller bracket is stuck？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+            "score": 0.014204425711275025,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+            "source": "kb_qa",
+            "doc_id": "rv-0170",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+            "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+            "score": 0.01377879228055613,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+            "source": "kb_qa",
+            "doc_id": "rv-0118",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 leaves mopping marks/leaves stain marks on floor/has streak marks on floor/leaves marks on floor/has low mopping water flow/not dispensing water on the floor when mopping/insufficient water output when mopping/no water output when mopping/dry mopping/has no water when mopping/leaving streaks?\n*I'm sorry to hear that our robot mop left marks on y",
+            "score": 0.013260869565217392,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+            "source": "kb_qa",
+            "doc_id": "rv-0174",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+            "snippet": "supplement the unfinished cleaning of the region; 3.If there are many times around the obstacles to repeat the trajectory of the sweeping, may be due to the avoidance of obstacles to get out of the trap caused by the frequent occurrence of the proposal to set up the region of this No-go Zone; The video link below will guide you on how to set up an no-go zone:\nTips: Tips:\n1.Open the 'dirty cleaning",
+            "score": 0.013175230566534914,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+            "source": "kb_qa",
+            "doc_id": "rv-0140",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+            "snippet": "What should I do if my T2352 omni E28/T2353 omni E25's roller mop isn't cleaning or the roller mop's self-cleaning effect is poor?\nThis issue has been optimized in the new firmware version with an enhanced mop rewashing strategy. Please upgrade the firmware after receiving the update notification and perform a new mopping task to confirm whether the issue is resolved. Tips: If needed, you can also",
+            "score": 0.013131313131313131,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+            "source": "kb_qa",
+            "doc_id": "rv-0202",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+            "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+            "score": 0.012551299589603283,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+            "source": "kb_qa",
+            "doc_id": "rv-0075",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 The Robot Vacuum smells /Leaves a bad odour /Leaves a damp odour /Leaves a musty odour /Mop smells?\n* Does it happen when the robot is mopping the floor?\n* Does it occur during the drying process?\n* Is it noticeable when sweeping the floor as well? Once we have these details, our support team will work on resolving the issue effectively.",
+            "score": 0.012460646230323114,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:26.475087+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "step_card",
+        "card_id": "f0070d5d55695799bc7bc461736f1669",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0147",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+          "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+          "evidence_ids": [
+            "83226fe1-ea46-4df1-9cef-69b3016995c5",
+            "b511ddd9-eab3-4458-b245-c48c322281ab",
+            "qa:rv-0147"
+          ],
+          "primary_evidence_id": "qa:rv-0147",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+              "kind": "video"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:26.497165+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "action",
+        "id": "dc964d6b661442d7bf9f0662083c3d8b",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:26.542590+00:00",
+        "first_seq": 24,
+        "last_seq": 24,
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "case_changed",
+        "card_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+        "version": 2,
+        "case_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:18:26.511138+00:00"
+      },
+      {
+        "at": "2026-10-09T07:18:26.543676+00:00",
+        "first_seq": 25,
+        "last_seq": 27,
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "assistant_message",
+        "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+    "issues": [
+      {
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "status": "open",
+        "title": "Rolling Mop Blockage. Please clean.、Crack sound kept on repeating everything robots done with mop cleaning process.、vacuum cannot start process",
+        "task_queue": [
+          {
+            "task_id": "4d0a1210f9555f338f8c9a141fa03bc5",
+            "intent": "report_problem",
+            "quote": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+            "status": "active",
+            "created_input_id": "c4e79beb088f4e2898972f0c4e9923eb",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 30,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 1,
+  "errors": [],
+  "seconds": 6.45,
+  "journey": {
+    "session": {
+      "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:20.024452Z",
+      "last_run_at": "2026-10-09T07:18:26.549302Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F[REDACTED]\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [
+        "qa_rv_0147"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 49,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:18:26.549302Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+        "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:20.024452Z",
+        "ended_at": "2026-10-09T07:18:26.478384Z",
+        "duration_ms": 6453,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6451,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3845,
+            "tokens_in": 4245,
+            "tokens_out": 441,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:23.875760Z"
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2269,
+            "tokens_in": 5234,
+            "tokens_out": 397,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:26.414561Z"
+          }
+        ],
+        "tokens_in": 9479,
+        "tokens_out": 838,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:20.024452Z",
+            "duration_ms": 3866,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "clarify",
+              "patch_count": 3,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3394,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 261,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5794
+                    }
+                  ],
+                  "actual_input_tokens": 4245
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:23.891330Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:23.901572Z",
+            "duration_ms": 2531,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0147",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5869,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 340,
+                    "current": 261,
+                    "history": 0,
+                    "authority": 5268
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 707,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 223,
+                    "timezone": 7,
+                    "task_data": 3997,
+                    "issue_index": 179,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 6347
+                    }
+                  ],
+                  "actual_input_tokens": 5234
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:18:26.433536Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0147",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:26.444910Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:26.444917Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "b58de8f4c4e341b3b60367a2e5e4a7ba",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 142,
+            "hits": 15,
+            "top_score": 0.0162,
+            "latency_ms": 235,
+            "query": "Rolling Mop Blockage. Please clean Crack sound kept on repeating everything robots done with mop cleaning process vacuum cannot start process",
+            "created_at": "2026-10-09T07:18:24.134619Z"
+          }
+        ]
+      },
+      {
+        "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+        "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:18:26.499690Z",
+        "ended_at": "2026-10-09T07:18:26.549295Z",
+        "duration_ms": 49,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 45,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:26.499690Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0147",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:26.508182Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:26.509930Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:18:26.510837Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:18:26.514630Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:18:26.515099Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "db39bc64fd9b4a8e86f0259dff53dfc7",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:26.515564Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "kind": "upload_receipt",
+        "card_id": "03dcb022f4b354559c00fe37cdc7374c",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:20.020645+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "user_message",
+          "id": "c4e79beb088f4e2898972f0c4e9923eb",
+          "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:18:23.903527+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "048a13f2252a586fbaf5942293dcf3fd",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:18:26.469284Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0080",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "snippet": "what should I do If my omni T2353 E25/ T2352 omni E28 displays 3222-The mop is stuck/ Mop Blockage. Please clean.?\nPlease remove the robot's dirty water tank and check whether the roller is entangled in foreign objects, especially strings/data cables/plastic bags, or hair. Remove the roller and clear any foreign objects to ensure the roller rotates properly. (Note: Listen for a clicking sound to e",
+              "score": 0.016237314597970336,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "source": "kb_qa",
+              "doc_id": "rv-0050",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+              "score": 0.015835777126099706,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "dae3781d-5932-4428-803e-14c151ea2777",
+              "source": "kb_qa",
+              "doc_id": "rv-0149",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "dae3781d-5932-4428-803e-14c151ea2777",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7007 Error: Please return the robot to the base station toclean the mop/Floor mop washing without base station?\nWhen mopping on a floor without a base station, the robot cannot return to the base station to wash the mop by itself. Please manually put the robot into the base station to wash the mop before starting the cleaning task. You can us",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "source": "kb_qa",
+              "doc_id": "rv-0119",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+              "score": 0.014783653846153846,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+              "source": "kb_qa",
+              "doc_id": "rv-0188",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3202 Error: Roller mop stuck, please remove obstructions./Roller mop blocked？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+              "score": 0.014715649647156496,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "source": "kb_qa",
+              "doc_id": "rv-0148",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+              "score": 0.014614427860696517,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "source": "kb_qa",
+              "doc_id": "rv-0180",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+              "score": 0.01457983193277311,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0181",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+              "snippet": "What should I do when my T2353 Omni E25 / T2352 Omni E28 Mopping makes noise/Robot makes noise/Making abnormal noise？\nThis is the sound of the robot dirty water pump operating, which is a normal phenomenon. During the mopping process, a sound lasting 10 seconds occurs once every 40-80 seconds. This is to ensure that the dirty water scraped into the dirty water sink by the roller is recycled into t",
+              "score": 0.014302600472813237,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "source": "kb_qa",
+              "doc_id": "rv-0147",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop obstructed, please clean/The roller bracket is stuck？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "source": "kb_qa",
+              "doc_id": "rv-0170",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+              "score": 0.01377879228055613,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+              "source": "kb_qa",
+              "doc_id": "rv-0118",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 leaves mopping marks/leaves stain marks on floor/has streak marks on floor/leaves marks on floor/has low mopping water flow/not dispensing water on the floor when mopping/insufficient water output when mopping/no water output when mopping/dry mopping/has no water when mopping/leaving streaks?\n*I'm sorry to hear that our robot mop left marks on y",
+              "score": 0.013260869565217392,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+              "source": "kb_qa",
+              "doc_id": "rv-0174",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+              "snippet": "supplement the unfinished cleaning of the region; 3.If there are many times around the obstacles to repeat the trajectory of the sweeping, may be due to the avoidance of obstacles to get out of the trap caused by the frequent occurrence of the proposal to set up the region of this No-go Zone; The video link below will guide you on how to set up an no-go zone:\nTips: Tips:\n1.Open the 'dirty cleaning",
+              "score": 0.013175230566534914,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+              "source": "kb_qa",
+              "doc_id": "rv-0140",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+              "snippet": "What should I do if my T2352 omni E28/T2353 omni E25's roller mop isn't cleaning or the roller mop's self-cleaning effect is poor?\nThis issue has been optimized in the new firmware version with an enhanced mop rewashing strategy. Please upgrade the firmware after receiving the update notification and perform a new mopping task to confirm whether the issue is resolved. Tips: If needed, you can also",
+              "score": 0.013131313131313131,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "source": "kb_qa",
+              "doc_id": "rv-0202",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+              "score": 0.012551299589603283,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+              "source": "kb_qa",
+              "doc_id": "rv-0075",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 The Robot Vacuum smells /Leaves a bad odour /Leaves a damp odour /Leaves a musty odour /Mop smells?\n* Does it happen when the robot is mopping the floor?\n* Does it occur during the drying process?\n* Is it noticeable when sweeping the floor as well? Once we have these details, our support team will work on resolving the issue effectively.",
+              "score": 0.012460646230323114,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:26.475087+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "step_card",
+          "card_id": "f0070d5d55695799bc7bc461736f1669",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0147",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+            "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+            "evidence_ids": [
+              "83226fe1-ea46-4df1-9cef-69b3016995c5",
+              "b511ddd9-eab3-4458-b245-c48c322281ab",
+              "qa:rv-0147"
+            ],
+            "primary_evidence_id": "qa:rv-0147",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                "kind": "video"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:26.497165+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "action",
+          "id": "dc964d6b661442d7bf9f0662083c3d8b",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:26.542590+00:00",
+          "first_seq": 24,
+          "last_seq": 24,
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "case_changed",
+          "card_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+          "version": 2,
+          "case_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:26.511138+00:00"
+        },
+        {
+          "at": "2026-10-09T07:18:26.543676+00:00",
+          "first_seq": 25,
+          "last_seq": 27,
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "assistant_message",
+          "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+      "issues": [
+        {
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "status": "open",
+          "title": "Rolling Mop Blockage. Please clean.、Crack sound kept on repeating everything robots done with mop cleaning process.、vacuum cannot start process",
+          "task_queue": [
+            {
+              "task_id": "4d0a1210f9555f338f8c9a141fa03bc5",
+              "intent": "report_problem",
+              "quote": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+              "status": "active",
+              "created_input_id": "c4e79beb088f4e2898972f0c4e9923eb",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 30,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+      "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+      "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:18:26.511138+00:00",
+      "updated_at": "2026-10-09T07:18:26.511138+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "5b52edca67dd4e52af97adefbfffc76d",
+        "version": 2,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+          "kind": "upload_receipt",
+          "card_id": "03dcb022f4b354559c00fe37cdc7374c",
+          "version": 2
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:20.020645+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "kind": "user_message",
+            "id": "c4e79beb088f4e2898972f0c4e9923eb",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:18:23.903527+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "048a13f2252a586fbaf5942293dcf3fd",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:18:26.469284Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+                "source": "kb_qa",
+                "doc_id": "rv-0080",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b511ddd9-eab3-4458-b245-c48c322281ab",
+                "snippet": "what should I do If my omni T2353 E25/ T2352 omni E28 displays 3222-The mop is stuck/ Mop Blockage. Please clean.?\nPlease remove the robot's dirty water tank and check whether the roller is entangled in foreign objects, especially strings/data cables/plastic bags, or hair. Remove the roller and clear any foreign objects to ensure the roller rotates properly. (Note: Listen for a clicking sound to e",
+                "score": 0.016237314597970336,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+                "source": "kb_qa",
+                "doc_id": "rv-0050",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+                "score": 0.015835777126099706,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "dae3781d-5932-4428-803e-14c151ea2777",
+                "source": "kb_qa",
+                "doc_id": "rv-0149",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "dae3781d-5932-4428-803e-14c151ea2777",
+                "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 7007 Error: Please return the robot to the base station toclean the mop/Floor mop washing without base station?\nWhen mopping on a floor without a base station, the robot cannot return to the base station to wash the mop by itself. Please manually put the robot into the base station to wash the mop before starting the cleaning task. You can us",
+                "score": 0.014823284823284823,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+                "source": "kb_qa",
+                "doc_id": "rv-0119",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+                "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+                "score": 0.014783653846153846,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+                "source": "kb_qa",
+                "doc_id": "rv-0188",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1d57f1fd-dd41-47df-ba7f-28f8bf96beb0",
+                "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3202 Error: Roller mop stuck, please remove obstructions./Roller mop blocked？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+                "score": 0.014715649647156496,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+                "source": "kb_qa",
+                "doc_id": "rv-0148",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+                "score": 0.014614427860696517,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+                "source": "kb_qa",
+                "doc_id": "rv-0180",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+                "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+                "score": 0.01457983193277311,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+                "source": "kb_qa",
+                "doc_id": "rv-0181",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b5ff1a91-b86d-49ad-838c-a4f479553f6a",
+                "snippet": "What should I do when my T2353 Omni E25 / T2352 Omni E28 Mopping makes noise/Robot makes noise/Making abnormal noise？\nThis is the sound of the robot dirty water pump operating, which is a normal phenomenon. During the mopping process, a sound lasting 10 seconds occurs once every 40-80 seconds. This is to ensure that the dirty water scraped into the dirty water sink by the roller is recycled into t",
+                "score": 0.014302600472813237,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+                "source": "kb_qa",
+                "doc_id": "rv-0147",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "83226fe1-ea46-4df1-9cef-69b3016995c5",
+                "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop obstructed, please clean/The roller bracket is stuck？\nPlease follow these troubleshooting steps: 1.Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Plea",
+                "score": 0.014204425711275025,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+                "source": "kb_qa",
+                "doc_id": "rv-0170",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+                "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+                "score": 0.01377879228055613,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+                "source": "kb_qa",
+                "doc_id": "rv-0118",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "776f47d3-f8af-4fe0-9889-0801a06279e3",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 leaves mopping marks/leaves stain marks on floor/has streak marks on floor/leaves marks on floor/has low mopping water flow/not dispensing water on the floor when mopping/insufficient water output when mopping/no water output when mopping/dry mopping/has no water when mopping/leaving streaks?\n*I'm sorry to hear that our robot mop left marks on y",
+                "score": 0.013260869565217392,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+                "source": "kb_qa",
+                "doc_id": "rv-0174",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e1e67693-aa10-4292-9e81-70414e7494c7",
+                "snippet": "supplement the unfinished cleaning of the region; 3.If there are many times around the obstacles to repeat the trajectory of the sweeping, may be due to the avoidance of obstacles to get out of the trap caused by the frequent occurrence of the proposal to set up the region of this No-go Zone; The video link below will guide you on how to set up an no-go zone:\nTips: Tips:\n1.Open the 'dirty cleaning",
+                "score": 0.013175230566534914,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+                "source": "kb_qa",
+                "doc_id": "rv-0140",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "62aa45f7-b6e6-4677-be06-26417fe1e7fd",
+                "snippet": "What should I do if my T2352 omni E28/T2353 omni E25's roller mop isn't cleaning or the roller mop's self-cleaning effect is poor?\nThis issue has been optimized in the new firmware version with an enhanced mop rewashing strategy. Please upgrade the firmware after receiving the update notification and perform a new mopping task to confirm whether the issue is resolved. Tips: If needed, you can also",
+                "score": 0.013131313131313131,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+                "source": "kb_qa",
+                "doc_id": "rv-0202",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+                "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+                "score": 0.012551299589603283,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+                "source": "kb_qa",
+                "doc_id": "rv-0075",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1753212e-4c59-4167-8499-ac45b9efbcf6",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 The Robot Vacuum smells /Leaves a bad odour /Leaves a damp odour /Leaves a musty odour /Mop smells?\n* Does it happen when the robot is mopping the floor?\n* Does it occur during the drying process?\n* Is it noticeable when sweeping the floor as well? Once we have these details, our support team will work on resolving the issue effectively.",
+                "score": 0.012460646230323114,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:26.475087+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "kind": "step_card",
+            "card_id": "f0070d5d55695799bc7bc461736f1669",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0147",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+              "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+              "evidence_ids": [
+                "83226fe1-ea46-4df1-9cef-69b3016995c5",
+                "b511ddd9-eab3-4458-b245-c48c322281ab",
+                "qa:rv-0147"
+              ],
+              "primary_evidence_id": "qa:rv-0147",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                  "kind": "video"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:26.497165+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "kind": "action",
+            "id": "dc964d6b661442d7bf9f0662083c3d8b",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:26.542590+00:00",
+            "first_seq": 24,
+            "last_seq": 24,
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "kind": "case_changed",
+            "card_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+            "version": 2,
+            "case_id": "ca95b7ed-2e70-5b5f-85c6-6af7e717676f",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:18:26.511138+00:00"
+          },
+          {
+            "at": "2026-10-09T07:18:26.543676+00:00",
+            "first_seq": 25,
+            "last_seq": 27,
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "kind": "assistant_message",
+            "message_id": "bb883aaf33e45037aa334ae9a71b27fa",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "dc964d6b661442d7bf9f0662083c3d8b",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+        "issues": [
+          {
+            "issue_id": "7795f1aa1c5555b7962e90dc954c077c",
+            "status": "open",
+            "title": "Rolling Mop Blockage. Please clean.、Crack sound kept on repeating everything robots done with mop cleaning process.、vacuum cannot start process",
+            "task_queue": [
+              {
+                "task_id": "4d0a1210f9555f338f8c9a141fa03bc5",
+                "intent": "report_problem",
+                "quote": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+                "status": "active",
+                "created_input_id": "c4e79beb088f4e2898972f0c4e9923eb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 30,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

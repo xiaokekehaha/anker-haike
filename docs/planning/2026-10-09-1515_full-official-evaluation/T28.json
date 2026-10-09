@@ -1,0 +1,2199 @@
+{
+  "id": "T28",
+  "input": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "resumed": false,
+          "event_id": "e7c8d4739ac341d590c416f728299244",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:24.969472+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "payload": {
+            "kind": "message",
+            "text": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "6ad45950f0ef4d47952a682a089ca893",
+          "input_id": "ea2e34d74e794f738b16375637ec366b",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:24.969472+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 3,
+          "event_id": "643146763cda4acba39879e77d5a8962",
+          "recorded_at": "2026-10-09T07:18:24.987779+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 4,
+          "event_id": "5a40e3d5672645ac8ce52f6fc9f4a019",
+          "recorded_at": "2026-10-09T07:18:27.922977+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 5,
+          "event_id": "c4a4625c65da43bd8c2e2fb284f7cf49",
+          "recorded_at": "2026-10-09T07:18:27.931157+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "6707629c83255596824c3e197b193bbf",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 6,
+          "event_id": "6776d613744b40da9c238e09a292ef40",
+          "recorded_at": "2026-10-09T07:18:27.936793+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "6707629c83255596824c3e197b193bbf",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 7,
+          "event_id": "c0d69f7d30ac40b4a3300b79a49e1900",
+          "recorded_at": "2026-10-09T07:18:28.285689+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 8,
+          "event_id": "eccd7f86f6bd4c4ba43423123833c150",
+          "recorded_at": "2026-10-09T07:18:29.783272+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 9,
+          "event_id": "dc97ce78cac74ef98f63006ff045bccb",
+          "recorded_at": "2026-10-09T07:18:29.800212+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "input_id": "ea2e34d74e794f738b16375637ec366b",
+          "resolved_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "title": "Die Rollbürste funktioniert nicht richtig.",
+              "status": "open"
+            }
+          ],
+          "event_id": "781ac40e2ad95bd1a29d5a8843b800c0",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:18:29.823033+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "source": "kb_qa",
+              "doc_id": "rv-0272",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2112 Roller brush stuck, or says \"Roller brush stuck. Remove and clean the roller brush\"/ What if eufy X10 Pro Omni (T2351) shows a \"clean the brush\" error despite the brush being clean and rotating freely?\n1. Turn the robot over, remove the roller brush cover and roller brush, and check whether the metal shaft in the roller brush cav",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0260",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+              "score": 0.015384615384615384,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+              "score": 0.01446078431372549,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "336d18c2-5a39-433e-b836-52b797c51012",
+              "source": "kb_qa",
+              "doc_id": "rv-0008",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "336d18c2-5a39-433e-b836-52b797c51012",
+              "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) does not rotate smoothly and makes loud noise?\n1. Check the mop holder assembly\n- Inspect whether the mop support assembly has cracks or damage, which usually causes the mop to bounce during rotation and produce abnormal noise.\n2. Check mopping settings and water output\n- If the noise occurs when the mop is dry, check the water output s",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+              "source": "kb_qa",
+              "doc_id": "rv-0229",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2213 side brush stuck, or says \"Side brush stuck. Please check to remove foreign objects from the side brushes\"?\n1. Turn the robot over and check if the side brush is entangled by foreign objects such as wires. If so, clean the foreign objects and try again.\n2. If there are no obvious foreign objects, use a screwdriver to remove the s",
+              "score": 0.014270833333333333,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "source": "kb_qa",
+              "doc_id": "rv-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+              "score": 0.01405433646812957,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+              "source": "kb_qa",
+              "doc_id": "rv-0004",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+              "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) cannot lower or rotate?\n1. Basic checks\na. Check the mop lifting module and confirm it can rotate freely.\nb. Check and clean the ultrasonic sensor at the bottom: wipe the sensor surface with a clean soft cloth to remove dirt and foreign objects.\nc. Restart the robot and restart the task to check whether the fault is resolved.\n2. If lift",
+              "score": 0.013247577681256263,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "source": "kb_qa",
+              "doc_id": "rv-0233",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+              "score": 0.013028413028413028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0240",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+              "score": 0.012941176470588235,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.01284090909090909,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+              "source": "kb_qa",
+              "doc_id": "rv-0262",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 3110 or 3111: the left mop is not properly installed, or the right mop is not properly installed, or \"the mop not installed\", or mopping pad got detached?\n1. Turn the robot over and check whether the mop pad holder is cracked; if it is cracked, which usually accompanied by severe abnormal noise.\n2. If the mop pad holder is not cracked, bu",
+              "score": 0.01274242424242424,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+              "source": "kb_qa",
+              "doc_id": "rv-0261",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+              "snippet": "What should I do if my X10 Pro Omni T2351 leaves stains after mopping or does not mop thoroughly, or leaves tire marks on wet floors/ mops excessively after wash cycles, causing water damage to hardwood floors/ leaves dirty water marks during mopping?\n1. Low water output can cause uneven water distribution on rough surfaces. It's recommended to adjust to high water output.\n2. Please check if the m",
+              "score": 0.012685265911072361,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+              "source": "kb_qa",
+              "doc_id": "rv-0257",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error:2210/2211 Side brush module error/Side brush anomaly?\nPlease try restarting the robot to check whether the error is resolved. If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still u",
+              "score": 0.01245261984392419,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0217",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+              "score": 0.012063492063492064,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "source": "kb_qa",
+              "doc_id": "rv-0250",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+              "score": 0.012032762472077437,
+              "status": "ok"
+            }
+          ],
+          "event_id": "10e27d9ed3015d6f951cbd28f4d82989",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:18:29.824549+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "pending_id": "af4051246f4557798f264935aa5cab41",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "87db8b7dbfe95651bdfadf0d3e255c04",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:18:29.833251+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "af4051246f4557798f264935aa5cab41",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0256",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Please try restarting the robot to check whether the error…",
+            "instruction": "Please try restarting the robot to check whether the error is resolved.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "qa:rv-0256"
+            ],
+            "primary_evidence_id": "qa:rv-0256",
+            "media": []
+          },
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "event_id": "e70cf861eb9f5a54b755d0699e346aca",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:18:29.834958+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "card_id": "af4051246f4557798f264935aa5cab41",
+          "version": 1,
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 15,
+          "event_id": "cceba4936ec140bcbadeab6ea2316fd0",
+          "recorded_at": "2026-10-09T07:18:29.836134+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "30d18c4efe25590688c839dcb5495566",
+          "recorded_at": "2026-10-09T07:18:29.837481+00:00",
+          "run_id": "d3ed406d449b492ea4398885d13e7b84",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "resumed": false,
+          "event_id": "1ed2c63b0b844ee4b2d38220a60a17b5",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:29.878526+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "af4051246f4557798f264935aa5cab41",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "ba3c4074934b49e0bfe07599c0e7d040",
+            "target_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "expected_version": 1
+          },
+          "event_id": "3c5901fb11974f609792410caaf093b9",
+          "input_id": "ba3c4074934b49e0bfe07599c0e7d040",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:29.878526+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 19,
+          "event_id": "e1a398cea7a94687b7277902e7c21f4d",
+          "recorded_at": "2026-10-09T07:18:29.900241+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 20,
+          "event_id": "15acbcd0a2154c2f81b531ca31f9209d",
+          "recorded_at": "2026-10-09T07:18:29.903497+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "input_id": "ba3c4074934b49e0bfe07599c0e7d040",
+          "resolved_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "title": "Die Rollbürste funktioniert nicht richtig.",
+              "status": "open"
+            }
+          ],
+          "event_id": "4bdfda6019da5979ade4d68e267ea96b",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:18:29.933307+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "pending_id": "af4051246f4557798f264935aa5cab41",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "72a9b7f8ddd6558294ece657540baf16",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:18:29.935518+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "pending_id": "930810887c325a608db6276b1a7ddfc7",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "485b04fd9dc3553c8b0c0092fa0f6445",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:18:29.937163+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "930810887c325a608db6276b1a7ddfc7",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0256",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the restarting could not fix the issue, our engineering…",
+            "instruction": "If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still under warranty, we will provide warranty service.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "qa:rv-0256"
+            ],
+            "primary_evidence_id": "qa:rv-0256",
+            "media": []
+          },
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "event_id": "46f0370d50045cdf91d9f57450492a8a",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:18:29.938968+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "card_id": "930810887c325a608db6276b1a7ddfc7",
+          "version": 2,
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 26,
+          "event_id": "674339f9c24948f58e095b41697a75bb",
+          "recorded_at": "2026-10-09T07:18:29.940509+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9304f76ad20c5a7dad91634052c2afda",
+          "recorded_at": "2026-10-09T07:18:29.943668+00:00",
+          "run_id": "f300d7346cd940a7a42a1350387d6033",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "resumed": false,
+          "event_id": "51e14958db76485ea79a0a73160bf982",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:29.969678+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "930810887c325a608db6276b1a7ddfc7",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "89191ce26399446ba8721e5910bdb153",
+            "target_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "expected_version": 2
+          },
+          "event_id": "868c6c6042c64c2598d67df0b81386d1",
+          "input_id": "89191ce26399446ba8721e5910bdb153",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:18:29.969678+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 30,
+          "event_id": "a674d58bd779462286ca9555dfea11c3",
+          "recorded_at": "2026-10-09T07:18:29.984216+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 31,
+          "event_id": "b6cd9c6f9d354a6ea112c42683a42040",
+          "recorded_at": "2026-10-09T07:18:29.992105+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "input_id": "89191ce26399446ba8721e5910bdb153",
+          "resolved_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "title": "Die Rollbürste funktioniert nicht richtig.",
+              "status": "open"
+            }
+          ],
+          "event_id": "fe9f93eebb26526092df6bc134980259",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:18:30.017185+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "pending_id": "930810887c325a608db6276b1a7ddfc7",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "5dcb978fbe615adb95885b2ac9157b90",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:18:30.018112+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+          "case_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:29.984192+00:00",
+          "event_id": "e848059f146458d9be58e9a20ff4c48e",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:18:30.019103+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "95aa87aa3b345710b58676ae77d63028",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "reply_to_input_id": "89191ce26399446ba8721e5910bdb153",
+          "event_id": "2ea21059a163518191e622762c15406d",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:18:30.020482+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "95aa87aa3b345710b58676ae77d63028",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "c726cdd00cc552c9a1b78103a8b059e3",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:18:30.021557+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "95aa87aa3b345710b58676ae77d63028",
+          "status": "completed",
+          "event_id": "ae9094d2b56e5b32bf6a878fbd07d09e",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:18:30.023614+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "pending_id": "03960129f56055bcb33006092ff154ba",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "28e0f8e9214952e08dbcc4e771b79503",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:18:30.024594+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "card_id": "03960129f56055bcb33006092ff154ba",
+          "version": 3,
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 40,
+          "event_id": "bea37aa1803746919da3049b4050d783",
+          "recorded_at": "2026-10-09T07:18:30.025193+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "5b729b0a841a5814b221eb367271443d",
+          "recorded_at": "2026-10-09T07:18:30.026378+00:00",
+          "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+          "seq": 41,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:24.875450+08:00",
+  "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+      "kind": "upload_receipt",
+      "card_id": "03960129f56055bcb33006092ff154ba",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:24.969472+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "user_message",
+        "id": "ea2e34d74e794f738b16375637ec366b",
+        "text": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:18:27.936793+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "6707629c83255596824c3e197b193bbf",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:18:29.825142Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+            "source": "kb_qa",
+            "doc_id": "rv-0272",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2112 Roller brush stuck, or says \"Roller brush stuck. Remove and clean the roller brush\"/ What if eufy X10 Pro Omni (T2351) shows a \"clean the brush\" error despite the brush being clean and rotating freely?\n1. Turn the robot over, remove the roller brush cover and roller brush, and check whether the metal shaft in the roller brush cav",
+            "score": 0.015887174541947928,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+            "source": "kb_qa",
+            "doc_id": "rv-0260",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+            "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+            "score": 0.015384615384615384,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+            "source": "kb_qa",
+            "doc_id": "rv-0244",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+            "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+            "score": 0.01446078431372549,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "336d18c2-5a39-433e-b836-52b797c51012",
+            "source": "kb_qa",
+            "doc_id": "rv-0008",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "336d18c2-5a39-433e-b836-52b797c51012",
+            "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) does not rotate smoothly and makes loud noise?\n1. Check the mop holder assembly\n- Inspect whether the mop support assembly has cracks or damage, which usually causes the mop to bounce during rotation and produce abnormal noise.\n2. Check mopping settings and water output\n- If the noise occurs when the mop is dry, check the water output s",
+            "score": 0.014395129615082481,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+            "source": "kb_qa",
+            "doc_id": "rv-0229",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2213 side brush stuck, or says \"Side brush stuck. Please check to remove foreign objects from the side brushes\"?\n1. Turn the robot over and check if the side brush is entangled by foreign objects such as wires. If so, clean the foreign objects and try again.\n2. If there are no obvious foreign objects, use a screwdriver to remove the s",
+            "score": 0.014270833333333333,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+            "source": "kb_qa",
+            "doc_id": "rv-0263",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+            "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+            "score": 0.01405433646812957,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+            "source": "kb_qa",
+            "doc_id": "rv-0004",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+            "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) cannot lower or rotate?\n1. Basic checks\na. Check the mop lifting module and confirm it can rotate freely.\nb. Check and clean the ultrasonic sensor at the bottom: wipe the sensor surface with a clean soft cloth to remove dirt and foreign objects.\nc. Restart the robot and restart the task to check whether the fault is resolved.\n2. If lift",
+            "score": 0.013247577681256263,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+            "source": "kb_qa",
+            "doc_id": "rv-0233",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+            "score": 0.013028413028413028,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+            "source": "kb_qa",
+            "doc_id": "rv-0240",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+            "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+            "score": 0.012941176470588235,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "source": "kb_qa",
+            "doc_id": "rv-0102",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+            "score": 0.01284090909090909,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+            "source": "kb_qa",
+            "doc_id": "rv-0262",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 3110 or 3111: the left mop is not properly installed, or the right mop is not properly installed, or \"the mop not installed\", or mopping pad got detached?\n1. Turn the robot over and check whether the mop pad holder is cracked; if it is cracked, which usually accompanied by severe abnormal noise.\n2. If the mop pad holder is not cracked, bu",
+            "score": 0.01274242424242424,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+            "source": "kb_qa",
+            "doc_id": "rv-0261",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+            "snippet": "What should I do if my X10 Pro Omni T2351 leaves stains after mopping or does not mop thoroughly, or leaves tire marks on wet floors/ mops excessively after wash cycles, causing water damage to hardwood floors/ leaves dirty water marks during mopping?\n1. Low water output can cause uneven water distribution on rough surfaces. It's recommended to adjust to high water output.\n2. Please check if the m",
+            "score": 0.012685265911072361,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+            "source": "kb_qa",
+            "doc_id": "rv-0257",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports an error:2210/2211 Side brush module error/Side brush anomaly?\nPlease try restarting the robot to check whether the error is resolved. If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still u",
+            "score": 0.01245261984392419,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+            "source": "kb_qa",
+            "doc_id": "rv-0217",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+            "score": 0.012063492063492064,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+            "source": "kb_qa",
+            "doc_id": "rv-0250",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+            "score": 0.012032762472077437,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:29.834958+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "step_card",
+        "card_id": "af4051246f4557798f264935aa5cab41",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0256",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Please try restarting the robot to check whether the error…",
+          "instruction": "Please try restarting the robot to check whether the error is resolved.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+            "qa:rv-0256"
+          ],
+          "primary_evidence_id": "qa:rv-0256",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:29.878526+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "action",
+        "id": "ba3c4074934b49e0bfe07599c0e7d040",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:29.938968+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "step_card",
+        "card_id": "930810887c325a608db6276b1a7ddfc7",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0256",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If the restarting could not fix the issue, our engineering…",
+          "instruction": "If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still under warranty, we will provide warranty service.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+            "qa:rv-0256"
+          ],
+          "primary_evidence_id": "qa:rv-0256",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:18:29.969678+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "action",
+        "id": "89191ce26399446ba8721e5910bdb153",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:18:30.019103+00:00",
+        "first_seq": 35,
+        "last_seq": 35,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "case_changed",
+        "card_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+        "version": 3,
+        "case_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:18:29.984192+00:00"
+      },
+      {
+        "at": "2026-10-09T07:18:30.020482+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "assistant_message",
+        "message_id": "95aa87aa3b345710b58676ae77d63028",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "89191ce26399446ba8721e5910bdb153",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+    "issues": [
+      {
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "status": "open",
+        "title": "Die Rollbürste funktioniert nicht richtig.",
+        "task_queue": [
+          {
+            "task_id": "8a8dd6f53f8b533b94b4b6d8c5fd885d",
+            "intent": "report_problem",
+            "quote": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+            "status": "active",
+            "created_input_id": "ea2e34d74e794f738b16375637ec366b",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 41,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 5.17,
+  "journey": {
+    "session": {
+      "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:24.972203Z",
+      "last_run_at": "2026-10-09T07:18:30.027245Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürste",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0256"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 56,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:18:30.027245Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d3ed406d449b492ea4398885d13e7b84",
+        "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:24.972203Z",
+        "ended_at": "2026-10-09T07:18:29.838422Z",
+        "duration_ms": 4987,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 4985,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2908,
+            "tokens_in": 4225,
+            "tokens_out": 295,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:27.891037Z"
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1602,
+            "tokens_in": 4835,
+            "tokens_out": 214,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:29.759296Z"
+          }
+        ],
+        "tokens_in": 9060,
+        "tokens_out": 509,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:24.972203Z",
+            "duration_ms": 2944,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3365,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 232,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5765
+                    }
+                  ],
+                  "actual_input_tokens": 4225
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:27.916475Z",
+            "duration_ms": 14,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:27.931131Z",
+            "duration_ms": 1967,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0256",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5425,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 232,
+                    "history": 0,
+                    "authority": 4837
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 462,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 190,
+                    "timezone": 7,
+                    "task_data": 3844,
+                    "issue_index": 149,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5903
+                    }
+                  ],
+                  "actual_input_tokens": 4835
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:18:29.899108Z",
+            "duration_ms": 12,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0256",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:29.911862Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:29.911870Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "d3ed406d449b492ea4398885d13e7b84",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0159,
+            "latency_ms": 334,
+            "query": "Die Rollbürste funktioniert nicht richtig",
+            "created_at": "2026-10-09T07:18:28.259175Z"
+          }
+        ]
+      },
+      {
+        "run_id": "f300d7346cd940a7a42a1350387d6033",
+        "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:18:29.880024Z",
+        "ended_at": "2026-10-09T07:18:29.944519Z",
+        "duration_ms": 64,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 60,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "f300d7346cd940a7a42a1350387d6033",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:29.880024Z",
+            "duration_ms": 17,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0256",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "f300d7346cd940a7a42a1350387d6033",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:29.897051Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0256",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "f300d7346cd940a7a42a1350387d6033",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:29.899078Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0256",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "f300d7346cd940a7a42a1350387d6033",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:18:29.902421Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "f300d7346cd940a7a42a1350387d6033",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:29.902426Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+        "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:18:29.971162Z",
+        "ended_at": "2026-10-09T07:18:30.027239Z",
+        "duration_ms": 56,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 52,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:29.971162Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0256",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:29.981345Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:18:29.982825Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:18:29.983722Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:18:29.988418Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:18:29.989031Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "691d62e6964e4f8f9df00ea4353d29cb",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:18:29.989466Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "kind": "upload_receipt",
+        "card_id": "03960129f56055bcb33006092ff154ba",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:24.969472+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "user_message",
+          "id": "ea2e34d74e794f738b16375637ec366b",
+          "text": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:18:27.936793+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "6707629c83255596824c3e197b193bbf",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:18:29.825142Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "source": "kb_qa",
+              "doc_id": "rv-0272",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2112 Roller brush stuck, or says \"Roller brush stuck. Remove and clean the roller brush\"/ What if eufy X10 Pro Omni (T2351) shows a \"clean the brush\" error despite the brush being clean and rotating freely?\n1. Turn the robot over, remove the roller brush cover and roller brush, and check whether the metal shaft in the roller brush cav",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "source": "kb_qa",
+              "doc_id": "rv-0260",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+              "score": 0.015384615384615384,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+              "score": 0.01446078431372549,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "336d18c2-5a39-433e-b836-52b797c51012",
+              "source": "kb_qa",
+              "doc_id": "rv-0008",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "336d18c2-5a39-433e-b836-52b797c51012",
+              "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) does not rotate smoothly and makes loud noise?\n1. Check the mop holder assembly\n- Inspect whether the mop support assembly has cracks or damage, which usually causes the mop to bounce during rotation and produce abnormal noise.\n2. Check mopping settings and water output\n- If the noise occurs when the mop is dry, check the water output s",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+              "source": "kb_qa",
+              "doc_id": "rv-0229",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2213 side brush stuck, or says \"Side brush stuck. Please check to remove foreign objects from the side brushes\"?\n1. Turn the robot over and check if the side brush is entangled by foreign objects such as wires. If so, clean the foreign objects and try again.\n2. If there are no obvious foreign objects, use a screwdriver to remove the s",
+              "score": 0.014270833333333333,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "source": "kb_qa",
+              "doc_id": "rv-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+              "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+              "score": 0.01405433646812957,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+              "source": "kb_qa",
+              "doc_id": "rv-0004",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+              "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) cannot lower or rotate?\n1. Basic checks\na. Check the mop lifting module and confirm it can rotate freely.\nb. Check and clean the ultrasonic sensor at the bottom: wipe the sensor surface with a clean soft cloth to remove dirt and foreign objects.\nc. Restart the robot and restart the task to check whether the fault is resolved.\n2. If lift",
+              "score": 0.013247577681256263,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "source": "kb_qa",
+              "doc_id": "rv-0233",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+              "score": 0.013028413028413028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0240",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+              "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+              "score": 0.012941176470588235,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.01284090909090909,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+              "source": "kb_qa",
+              "doc_id": "rv-0262",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 3110 or 3111: the left mop is not properly installed, or the right mop is not properly installed, or \"the mop not installed\", or mopping pad got detached?\n1. Turn the robot over and check whether the mop pad holder is cracked; if it is cracked, which usually accompanied by severe abnormal noise.\n2. If the mop pad holder is not cracked, bu",
+              "score": 0.01274242424242424,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+              "source": "kb_qa",
+              "doc_id": "rv-0261",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+              "snippet": "What should I do if my X10 Pro Omni T2351 leaves stains after mopping or does not mop thoroughly, or leaves tire marks on wet floors/ mops excessively after wash cycles, causing water damage to hardwood floors/ leaves dirty water marks during mopping?\n1. Low water output can cause uneven water distribution on rough surfaces. It's recommended to adjust to high water output.\n2. Please check if the m",
+              "score": 0.012685265911072361,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+              "source": "kb_qa",
+              "doc_id": "rv-0257",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error:2210/2211 Side brush module error/Side brush anomaly?\nPlease try restarting the robot to check whether the error is resolved. If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still u",
+              "score": 0.01245261984392419,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "source": "kb_qa",
+              "doc_id": "rv-0217",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+              "score": 0.012063492063492064,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "source": "kb_qa",
+              "doc_id": "rv-0250",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+              "score": 0.012032762472077437,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:29.834958+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "step_card",
+          "card_id": "af4051246f4557798f264935aa5cab41",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0256",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Please try restarting the robot to check whether the error…",
+            "instruction": "Please try restarting the robot to check whether the error is resolved.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "qa:rv-0256"
+            ],
+            "primary_evidence_id": "qa:rv-0256",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:29.878526+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "action",
+          "id": "ba3c4074934b49e0bfe07599c0e7d040",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:29.938968+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "step_card",
+          "card_id": "930810887c325a608db6276b1a7ddfc7",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0256",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the restarting could not fix the issue, our engineering…",
+            "instruction": "If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still under warranty, we will provide warranty service.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+              "qa:rv-0256"
+            ],
+            "primary_evidence_id": "qa:rv-0256",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:18:29.969678+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "action",
+          "id": "89191ce26399446ba8721e5910bdb153",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:18:30.019103+00:00",
+          "first_seq": 35,
+          "last_seq": 35,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "case_changed",
+          "card_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+          "version": 3,
+          "case_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:29.984192+00:00"
+        },
+        {
+          "at": "2026-10-09T07:18:30.020482+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "assistant_message",
+          "message_id": "95aa87aa3b345710b58676ae77d63028",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "89191ce26399446ba8721e5910bdb153",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+      "issues": [
+        {
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "status": "open",
+          "title": "Die Rollbürste funktioniert nicht richtig.",
+          "task_queue": [
+            {
+              "task_id": "8a8dd6f53f8b533b94b4b6d8c5fd885d",
+              "intent": "report_problem",
+              "quote": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+              "status": "active",
+              "created_input_id": "ea2e34d74e794f738b16375637ec366b",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 41,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+      "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+      "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:18:29.984192+00:00",
+      "updated_at": "2026-10-09T07:18:29.984192+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "c315ebc7ff3341d38476ae2ed99d65ec",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+          "kind": "upload_receipt",
+          "card_id": "03960129f56055bcb33006092ff154ba",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:24.969472+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "user_message",
+            "id": "ea2e34d74e794f738b16375637ec366b",
+            "text": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:18:27.936793+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "6707629c83255596824c3e197b193bbf",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:18:29.825142Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+                "source": "kb_qa",
+                "doc_id": "rv-0272",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2112 Roller brush stuck, or says \"Roller brush stuck. Remove and clean the roller brush\"/ What if eufy X10 Pro Omni (T2351) shows a \"clean the brush\" error despite the brush being clean and rotating freely?\n1. Turn the robot over, remove the roller brush cover and roller brush, and check whether the metal shaft in the roller brush cav",
+                "score": 0.015887174541947928,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+                "source": "kb_qa",
+                "doc_id": "rv-0260",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "543ec604-63e8-4f0d-9c04-89d3a76976ab",
+                "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: poor cleaning performance, weak suction, has loss of suction, failure to pick up debris, inadequate vacuuming, dust remains uncleaned, hair isn't being collected, incomplete cleaning, or ineffective dust removal,not cleaning well, cleaning performance is bad, not pick any debris?\nWe recommend cleaning the dust box filter, roller brush, an",
+                "score": 0.015384615384615384,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+                "source": "kb_qa",
+                "doc_id": "rv-0244",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "44d470b5-63a6-4df1-b12a-82626ac0fcf0",
+                "snippet": "What should I do if my X10 Pro Omni T2351 machine makes cleaning noise,runs louder,is running with a loud noise?\n1. The noise from the machine may come from the fan, roller brush, side brush, side wheel, or mop pads;\n2. If the fan noise is very sharp, remove the dust box, take out the filter, and check if the filter is severely clogged. Clean the filter and try again;\n<>\n3. If the noise comes from",
+                "score": 0.01446078431372549,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "336d18c2-5a39-433e-b836-52b797c51012",
+                "source": "kb_qa",
+                "doc_id": "rv-0008",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "336d18c2-5a39-433e-b836-52b797c51012",
+                "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) does not rotate smoothly and makes loud noise?\n1. Check the mop holder assembly\n- Inspect whether the mop support assembly has cracks or damage, which usually causes the mop to bounce during rotation and produce abnormal noise.\n2. Check mopping settings and water output\n- If the noise occurs when the mop is dry, check the water output s",
+                "score": 0.014395129615082481,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+                "source": "kb_qa",
+                "doc_id": "rv-0229",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d0bcb9b3-fe8d-43d0-8ea5-68fa739bcbf9",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports warning/error:2213 side brush stuck, or says \"Side brush stuck. Please check to remove foreign objects from the side brushes\"?\n1. Turn the robot over and check if the side brush is entangled by foreign objects such as wires. If so, clean the foreign objects and try again.\n2. If there are no obvious foreign objects, use a screwdriver to remove the s",
+                "score": 0.014270833333333333,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+                "source": "kb_qa",
+                "doc_id": "rv-0263",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "2cecfcc0-b745-42c7-92a1-3e0cd27aac20",
+                "snippet": "What should I do if my X10 Pro Omni/T2351 keeps going around in circle？\n- Could you please clean the wheel out? Check if there is any cords or abstractions stuck in the wheel. - Flip the machine onto its back to check the gap between the front bumper and the main body of the machine and send me a picture showing it. - Please press the front bumper to ensure it can rebound normally. - Please restar",
+                "score": 0.01405433646812957,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+                "source": "kb_qa",
+                "doc_id": "rv-0004",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1de8b7b8-6d9d-4018-9c07-6cbab9b3867a",
+                "snippet": "What should I do if the mop of eufy Clean X10 Pro Omni(T2351) cannot lower or rotate?\n1. Basic checks\na. Check the mop lifting module and confirm it can rotate freely.\nb. Check and clean the ultrasonic sensor at the bottom: wipe the sensor surface with a clean soft cloth to remove dirt and foreign objects.\nc. Restart the robot and restart the task to check whether the fault is resolved.\n2. If lift",
+                "score": 0.013247577681256263,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+                "source": "kb_qa",
+                "doc_id": "rv-0233",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+                "score": 0.013028413028413028,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+                "source": "kb_qa",
+                "doc_id": "rv-0240",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f12379eb-3dbf-4e72-a133-c7e3894170f6",
+                "snippet": "What should I do if my X10 Pro Omni T2351 has these issues: getting stuck on carpets, getting caught on carpet edges, or the mop pad holder coming off when stuck on a carpet edge?\n1. Small or thin floor mats are lightweight, and their edges are easily knocked up by the front bumper or side brush of the robot. It is recommended to secure the corners of the floor mats with nano glue or set up no-go ",
+                "score": 0.012941176470588235,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+                "source": "kb_qa",
+                "doc_id": "rv-0102",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+                "score": 0.01284090909090909,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+                "source": "kb_qa",
+                "doc_id": "rv-0262",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f38b09d0-fb78-4446-9850-fa2d210aa5ca",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 3110 or 3111: the left mop is not properly installed, or the right mop is not properly installed, or \"the mop not installed\", or mopping pad got detached?\n1. Turn the robot over and check whether the mop pad holder is cracked; if it is cracked, which usually accompanied by severe abnormal noise.\n2. If the mop pad holder is not cracked, bu",
+                "score": 0.01274242424242424,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+                "source": "kb_qa",
+                "doc_id": "rv-0261",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "63ce8e0e-8e94-4cfd-9099-cab3335f3e43",
+                "snippet": "What should I do if my X10 Pro Omni T2351 leaves stains after mopping or does not mop thoroughly, or leaves tire marks on wet floors/ mops excessively after wash cycles, causing water damage to hardwood floors/ leaves dirty water marks during mopping?\n1. Low water output can cause uneven water distribution on rough surfaces. It's recommended to adjust to high water output.\n2. Please check if the m",
+                "score": 0.012685265911072361,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+                "source": "kb_qa",
+                "doc_id": "rv-0257",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "114db9b5-c3db-4402-a2ec-881a177de115",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports an error:2210/2211 Side brush module error/Side brush anomaly?\nPlease try restarting the robot to check whether the error is resolved. If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still u",
+                "score": 0.01245261984392419,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+                "source": "kb_qa",
+                "doc_id": "rv-0217",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d1d449bc-aba7-49a2-9360-002e0293c2f4",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip:6112 The station's dust bag is full or there is a foreign object stuck, please check?\n1. Open the dust collection station lid, take out the dust bag, and replace it with a new one (note: avoid reusing the dust bag, as the dust from the used dust bag will block the gaps in the bag fabric and cause false alarms);\n*\n2. If the error message still",
+                "score": 0.012063492063492064,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+                "source": "kb_qa",
+                "doc_id": "rv-0250",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "bc4b7d11-1c86-43df-b261-fbe3934d9e3c",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4111&4112:Front bumper stuck/The buffer is stuck?\nIf the robot still reports an error on an open flat ground and the front bumper does not rebound after being tapped,try to pull out the front bumper from where it is stuck and then flap it. Tips: The robot may get stuck when it enters the bottom of furniture with a height close to the fron",
+                "score": 0.012032762472077437,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:29.834958+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "step_card",
+            "card_id": "af4051246f4557798f264935aa5cab41",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0256",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Please try restarting the robot to check whether the error…",
+              "instruction": "Please try restarting the robot to check whether the error is resolved.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+                "qa:rv-0256"
+              ],
+              "primary_evidence_id": "qa:rv-0256",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:29.878526+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "action",
+            "id": "ba3c4074934b49e0bfe07599c0e7d040",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:29.938968+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "step_card",
+            "card_id": "930810887c325a608db6276b1a7ddfc7",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0256",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If the restarting could not fix the issue, our engineering…",
+              "instruction": "If the restarting could not fix the issue, our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware issue while still under warranty, we will provide warranty service.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "803d7a01-ff1d-493f-8a0c-a7a2ac8e356b",
+                "qa:rv-0256"
+              ],
+              "primary_evidence_id": "qa:rv-0256",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:18:29.969678+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "action",
+            "id": "89191ce26399446ba8721e5910bdb153",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:18:30.019103+00:00",
+            "first_seq": 35,
+            "last_seq": 35,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "case_changed",
+            "card_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+            "version": 3,
+            "case_id": "66a82cb6-f3cb-51ee-86d4-9ad0b854263d",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:18:29.984192+00:00"
+          },
+          {
+            "at": "2026-10-09T07:18:30.020482+00:00",
+            "first_seq": 36,
+            "last_seq": 38,
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "kind": "assistant_message",
+            "message_id": "95aa87aa3b345710b58676ae77d63028",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "89191ce26399446ba8721e5910bdb153",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+        "issues": [
+          {
+            "issue_id": "e632c3f2041c5737beeb53bb5c30ed27",
+            "status": "open",
+            "title": "Die Rollbürste funktioniert nicht richtig.",
+            "task_queue": [
+              {
+                "task_id": "8a8dd6f53f8b533b94b4b6d8c5fd885d",
+                "intent": "report_problem",
+                "quote": "Produktname: X10 Pro Omni\nProduktnummer (PN): T2351\nSeriennummer (SN):\nProblemtyp: ERROR\nFehlercode: 2111-Die Rollbürste funktioniert nicht richtig.\nPush-Benachrichtigung: Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst.\nProblembeschreibung: Fehler an der Bürstenrolle.\nBilder zum Problem: []",
+                "status": "active",
+                "created_input_id": "ea2e34d74e794f738b16375637ec366b",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 41,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

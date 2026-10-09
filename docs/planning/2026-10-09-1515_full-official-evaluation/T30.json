@@ -1,0 +1,2804 @@
+{
+  "id": "T30",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+  "attachments": [
+    "T30.jpg"
+  ],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+        "attachments": [
+          "T30.jpg"
+        ],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "resumed": false,
+          "event_id": "8690f0a45ef240fb931aa781a24ea9c8",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:18:30.106915+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "images": [
+              {
+                "mime": "image/jpeg",
+                "size": 331875,
+                "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+                "purpose": "fault",
+                "image_id": "92b785379dd45fa597a6ba02a53568d9",
+                "created_at": "2026-10-09T07:18:30.075967+00:00"
+              }
+            ],
+            "purpose": "fault",
+            "image_ids": [
+              "92b785379dd45fa597a6ba02a53568d9"
+            ],
+            "target_issue_id": null,
+            "attachment_hashes": [
+              "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5"
+            ],
+            "evaluation_source": "replay"
+          },
+          "event_id": "37152cb9f7de47739805b93537b7ca09",
+          "input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:18:30.106915+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 3,
+          "event_id": "b31fb22d3f9f42d29937fd8fb376430d",
+          "recorded_at": "2026-10-09T07:18:30.150978+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 4,
+          "event_id": "0fb524b6b13d45bbb5816443e196b7e5",
+          "recorded_at": "2026-10-09T07:18:33.136045+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "vision",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 5,
+          "event_id": "88d1f0f5258f4396879389f3f785b53a",
+          "recorded_at": "2026-10-09T07:18:33.139811+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "65c6e929e7ba50daaf507a43748aea47",
+          "name": "diagnose.vision",
+          "status": "started",
+          "summary": "识别 1 张故障照片",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 6,
+          "event_id": "b9550a2207b94585bf68bbe84f24d2ca",
+          "recorded_at": "2026-10-09T07:18:33.142859+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "65c6e929e7ba50daaf507a43748aea47",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "黑色圆角方形设备置于木地板；机身正面红色 eufy 标志亮起；机身下方印有 3D MATRIX EYE 字样；机身表面有灰尘与划痕；左下角可见一只手；外壳污渍",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 7,
+          "event_id": "9e54c60a5375457a886597f8fd6f1d18",
+          "recorded_at": "2026-10-09T07:18:35.074360+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 8,
+          "event_id": "7eef6966d256436db81264bc2c3505a9",
+          "recorded_at": "2026-10-09T07:18:35.099775+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 9,
+          "event_id": "a454c3ecdcbb44469c597f428cb77c11",
+          "recorded_at": "2026-10-09T07:18:35.105389+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "50d6b39b42a05584a1758755a2290781",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 10,
+          "event_id": "a232558cbd8f48f6bbbea4bc59df231e",
+          "recorded_at": "2026-10-09T07:18:35.108621+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "50d6b39b42a05584a1758755a2290781",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 19 条来源（已补检索）",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 11,
+          "event_id": "5401a9353a6c43eaa8a6e6c3e90a227b",
+          "recorded_at": "2026-10-09T07:18:36.341749+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 12,
+          "event_id": "f2017fdd0b7749459cf700adb47333b0",
+          "recorded_at": "2026-10-09T07:18:38.520463+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 13,
+          "event_id": "e9cf3b26844b49f38be46a60bce725a0",
+          "recorded_at": "2026-10-09T07:18:39.560364+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "2c8db04d96d053fa885803e101464af4",
+          "input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+          "resolved_issue_id": "2c8db04d96d053fa885803e101464af4",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "2c8db04d96d053fa885803e101464af4",
+              "title": "E4: Side brush abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "3f6e04c3c1815379bce59e15651761bc",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:18:39.576077+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+              "source": "kb_qa",
+              "doc_id": "rv-0443",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+              "snippet": "what should I do when T2080 S1 Pro has E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance/Side brush error/Abnormal side brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test if the robot is functionin",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+              "source": "kb_qa",
+              "doc_id": "rv-0441",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+              "snippet": "what should I do when T2080 S1 Pro has E2: Roller brush abnormal, task ended. Please try restarting or contact customer service for assistance/Rolling brush error/Abnormal roller brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush cover, and check for any foreign objects that may be blocking or entangled. Rolling brush cleaning video link\n2. Clic",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "source": "kb_qa",
+              "doc_id": "rv-0455",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6a88af34-d05b-4713-b215-200f480abea7",
+              "source": "kb_qa",
+              "doc_id": "rv-0426",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6a88af34-d05b-4713-b215-200f480abea7",
+              "snippet": "what should I do when T2080 S1 Pro has E3: Side brush tangled, please clean. Click to view the steps/Side brush tangled, please remove obstructing item/Side brush tangled?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test whether the robot is functioning ",
+              "score": 0.015588723051409618,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "source": "kb_qa",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+              "score": 0.01515151515151515,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "source": "kb_qa",
+              "doc_id": "rv-0449",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "source": "kb_qa",
+              "doc_id": "rv-0451",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014311594202898549,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+              "source": "kb_qa",
+              "doc_id": "rv-0462",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+              "snippet": "what should I do when T2080 S1 pro has EB21: Drying abnormal, task ended. Click to contact customer service for assistance/Mop dryer error/Drying anomaly?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.014241486068111455,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.014070048309178743,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "source": "kb_qa",
+              "doc_id": "rv-0484",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+              "score": 0.013948717948717947,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "source": "kb_qa",
+              "doc_id": "rv-0459",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013896103896103896,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "source": "kb_qa",
+              "doc_id": "rv-0447",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+              "score": 0.013874755381604695,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "source": "kb_qa",
+              "doc_id": "rv-0463",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.01370530877573131,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0408",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+              "snippet": "what should I do when T2080 S1 Pro has E1: Roller brush blocked, please clean. Click to view the steps/Rolling brush obstructed, please remove obstructing item/Brush blockage?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush guard, and check for any foreign objects that may be blocking or entangled. Inspect the roller brush and its removable parts fo",
+              "score": 0.013605655930871954,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "source": "kb_qa",
+              "doc_id": "rv-0138",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+              "score": 0.01351190476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "source": "kb_qa",
+              "doc_id": "rv-0434",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.01569940476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+              "source": "kb_qa",
+              "doc_id": "rv-0005",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+              "snippet": "How to locate the serial number of eufy Robot Vacuum Omni S1 Pro(T2080)?\n1. Open the eufyHome / Eufy Clean app.\n2. Select your RoboVac S1 Omni from the device list.\n3. Go to Device Settings.\n4. Select General.\n5. Tap About Device.\n6. The serial number is displayed on this page.\nIf the app is inaccessible, confirm the serial number from the physical label on the bottom of the dustbin.",
+              "score": 0.011588032220943612,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.011225352112676055,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+              "source": "kb_qa",
+              "doc_id": "rv-0435",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+              "snippet": "what should I do when T2080 S1 Pro has E7: Robot fan abnormal, please clean the dust bin and filter. Click to view the steps/Robot fan error/Robot fan malfunction?\n1. Check if the robot's dust bin is blocked. If so, clean it thoroughly.\n2. Check if the dust bin filter and high-performance filter are clogged. If so, clean them thoroughly.\n3. Use the app to adjust the fan speed in the robot's task s",
+              "score": 0.01114603481624758,
+              "status": "ok"
+            }
+          ],
+          "event_id": "4ca9b9b4a319592cb046d4110fa0c5e9",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:18:39.577554+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:39.547713+00:00",
+          "event_id": "e91320dbb2ad529fb9856f99110de844",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:18:39.586059+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+          "reply_to_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "event_id": "2beb0dc990ab5b7f9542af814b9aa99b",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 18,
+          "recorded_at": "2026-10-09T07:18:39.588605+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+          "delta": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "bc70c132583e52afa6f61cb9c765c42a",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 19,
+          "recorded_at": "2026-10-09T07:18:39.591559+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+          "status": "completed",
+          "event_id": "c59c29fe07de598b805b95b69fed9097",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:18:39.594101+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "459f4beb2f065622b57fb77bff18951f",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni S1 Pro",
+            "problem": "E4: Side brush abnormal, task ended",
+            "observations": [
+              "图片：黑色圆角方形设备置于木地板",
+              "图片：机身正面红色 eufy 标志亮起",
+              "图片：机身下方印有 3D MATRIX EYE 字样",
+              "图片：机身表面有灰尘与划痕",
+              "图片：左下角可见一只手",
+              "图片：外壳污渍",
+              "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678E"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.vision",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                "status": "active",
+                "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+          "revision": 1,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "updated_at": "2026-10-09T07:18:30.106915+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "7f089da256e1561c9d22a7a4e14cc450",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:18:39.595744+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+          "revision": 1,
+          "card_id": "459f4beb2f065622b57fb77bff18951f",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-09T07:18:30.106915+00:00",
+          "event_id": "d10c348d6a125ccd94299a6caa47bb80",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:18:39.601657+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "0a1455b43a49531ea6339c9af16edf46",
+          "recorded_at": "2026-10-09T07:18:39.603381+00:00",
+          "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+          "seq": 23,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:18:30.057541+08:00",
+  "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:18:30.106915+00:00",
+        "first_seq": 2,
+        "last_seq": 15,
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "kind": "user_message",
+        "id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+        "image_ids": [
+          "92b785379dd45fa597a6ba02a53568d9"
+        ],
+        "images": [
+          {
+            "image_id": "92b785379dd45fa597a6ba02a53568d9",
+            "purpose": "fault",
+            "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+            "mime": "image/jpeg",
+            "size": 331875
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:33.142859+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "65c6e929e7ba50daaf507a43748aea47",
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "黑色圆角方形设备置于木地板；机身正面红色 eufy 标志亮起；机身下方印有 3D MATRIX EYE 字样；机身表面有灰尘与划痕；左下角可见一只手；外壳污渍"
+      },
+      {
+        "at": "2026-10-09T07:18:35.108621+00:00",
+        "first_seq": 10,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "50d6b39b42a05584a1758755a2290781",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 19 条来源（已补检索）"
+      },
+      {
+        "at": "2026-10-09T07:18:39.577814Z",
+        "first_seq": 16,
+        "last_seq": 16,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+            "source": "kb_qa",
+            "doc_id": "rv-0443",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+            "snippet": "what should I do when T2080 S1 Pro has E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance/Side brush error/Abnormal side brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test if the robot is functionin",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+            "source": "kb_qa",
+            "doc_id": "rv-0441",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+            "snippet": "what should I do when T2080 S1 Pro has E2: Roller brush abnormal, task ended. Please try restarting or contact customer service for assistance/Rolling brush error/Abnormal roller brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush cover, and check for any foreign objects that may be blocking or entangled. Rolling brush cleaning video link\n2. Clic",
+            "score": 0.016129032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+            "source": "kb_qa",
+            "doc_id": "rv-0455",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+            "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.015625,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6a88af34-d05b-4713-b215-200f480abea7",
+            "source": "kb_qa",
+            "doc_id": "rv-0426",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6a88af34-d05b-4713-b215-200f480abea7",
+            "snippet": "what should I do when T2080 S1 Pro has E3: Side brush tangled, please clean. Click to view the steps/Side brush tangled, please remove obstructing item/Side brush tangled?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test whether the robot is functioning ",
+            "score": 0.015588723051409618,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+            "source": "kb_qa",
+            "doc_id": "rv-0439",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+            "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+            "score": 0.01515151515151515,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+            "source": "kb_qa",
+            "doc_id": "rv-0449",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+            "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.014823284823284823,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "source": "kb_qa",
+            "doc_id": "rv-0451",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+            "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.014311594202898549,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+            "source": "kb_qa",
+            "doc_id": "rv-0462",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+            "snippet": "what should I do when T2080 S1 pro has EB21: Drying abnormal, task ended. Click to contact customer service for assistance/Mop dryer error/Drying anomaly?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.014241486068111455,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "source": "kb_qa",
+            "doc_id": "rv-0436",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+            "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+            "score": 0.014070048309178743,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+            "source": "kb_qa",
+            "doc_id": "rv-0484",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+            "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+            "score": 0.013948717948717947,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+            "source": "kb_qa",
+            "doc_id": "rv-0459",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+            "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.013896103896103896,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+            "source": "kb_qa",
+            "doc_id": "rv-0447",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+            "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+            "score": 0.013874755381604695,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+            "source": "kb_qa",
+            "doc_id": "rv-0463",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+            "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.01370530877573131,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+            "source": "kb_qa",
+            "doc_id": "rv-0408",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+            "snippet": "what should I do when T2080 S1 Pro has E1: Roller brush blocked, please clean. Click to view the steps/Rolling brush obstructed, please remove obstructing item/Brush blockage?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush guard, and check for any foreign objects that may be blocking or entangled. Inspect the roller brush and its removable parts fo",
+            "score": 0.013605655930871954,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+            "source": "kb_qa",
+            "doc_id": "rv-0138",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+            "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+            "score": 0.01351190476190476,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+            "source": "kb_qa",
+            "doc_id": "rv-0434",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+            "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+            "score": 0.01569940476190476,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+            "source": "kb_qa",
+            "doc_id": "rv-0005",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+            "snippet": "How to locate the serial number of eufy Robot Vacuum Omni S1 Pro(T2080)?\n1. Open the eufyHome / Eufy Clean app.\n2. Select your RoboVac S1 Omni from the device list.\n3. Go to Device Settings.\n4. Select General.\n5. Tap About Device.\n6. The serial number is displayed on this page.\nIf the app is inaccessible, confirm the serial number from the physical label on the bottom of the dustbin.",
+            "score": 0.011588032220943612,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "source": "kb_qa",
+            "doc_id": "rv-0453",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+            "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+            "score": 0.011225352112676055,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+            "source": "kb_qa",
+            "doc_id": "rv-0435",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+            "snippet": "what should I do when T2080 S1 Pro has E7: Robot fan abnormal, please clean the dust bin and filter. Click to view the steps/Robot fan error/Robot fan malfunction?\n1. Check if the robot's dust bin is blocked. If so, clean it thoroughly.\n2. Check if the dust bin filter and high-performance filter are clogged. If so, clean them thoroughly.\n3. Use the app to adjust the fan speed in the robot's task s",
+            "score": 0.01114603481624758,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:18:39.586059+00:00",
+        "first_seq": 17,
+        "last_seq": 17,
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "kind": "case_changed",
+        "card_id": "704fc015-764b-5004-bf60-4eee909764dd",
+        "version": 1,
+        "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "当前产品的这一问题没有可用的排障计划",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:18:39.547713+00:00"
+      },
+      {
+        "at": "2026-10-09T07:18:39.588605+00:00",
+        "first_seq": 18,
+        "last_seq": 20,
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "kind": "assistant_message",
+        "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+        "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:18:39.595744+00:00",
+        "first_seq": 21,
+        "last_seq": 21,
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "kind": "escalation_summary",
+        "card_id": "459f4beb2f065622b57fb77bff18951f",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni S1 Pro",
+          "problem": "E4: Side brush abnormal, task ended",
+          "observations": [
+            "图片：黑色圆角方形设备置于木地板",
+            "图片：机身正面红色 eufy 标志亮起",
+            "图片：机身下方印有 3D MATRIX EYE 字样",
+            "图片：机身表面有灰尘与划痕",
+            "图片：左下角可见一只手",
+            "图片：外壳污渍",
+            "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+            "客户填写的产品：S1 Pro / T2080",
+            "客户填写的 SN：12345678E"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.vision",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+              "intent": "report_problem",
+              "status": "active",
+              "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+              "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:18:30.106915+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "2c8db04d96d053fa885803e101464af4",
+    "issues": [
+      {
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "status": "open",
+        "title": "E4: Side brush abnormal, task ended",
+        "task_queue": [
+          {
+            "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+            "intent": "report_problem",
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "status": "waiting_human",
+            "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 23,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "2c8db04d96d053fa885803e101464af4",
+        "kind": "escalation_summary",
+        "card_id": "459f4beb2f065622b57fb77bff18951f",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni S1 Pro",
+          "problem": "E4: Side brush abnormal, task ended",
+          "observations": [
+            "图片：黑色圆角方形设备置于木地板",
+            "图片：机身正面红色 eufy 标志亮起",
+            "图片：机身下方印有 3D MATRIX EYE 字样",
+            "图片：机身表面有灰尘与划痕",
+            "图片：左下角可见一只手",
+            "图片：外壳污渍",
+            "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+            "客户填写的产品：S1 Pro / T2080",
+            "客户填写的 SN：12345678E"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.vision",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+              "intent": "report_problem",
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+              "status": "active",
+              "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:18:30.106915+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "visible_text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 9.54,
+  "journey": {
+    "session": {
+      "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:18:30.118698Z",
+      "last_run_at": "2026-10-09T07:18:39.604475Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: [REDACTED]E\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact custom",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 9485,
+      "model_calls": 5,
+      "tokens_in": 22084,
+      "tokens_out": 771,
+      "raw_available_until": "2026-10-16T07:18:39.604475Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+        "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:18:30.118698Z",
+        "ended_at": "2026-10-09T07:18:39.604451Z",
+        "duration_ms": 9485,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 9475,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2964,
+            "tokens_in": 4325,
+            "tokens_out": 305,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:33.106022Z"
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "vision",
+            "task": "diagnose.vision",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1430,
+            "tokens_in": 2813,
+            "tokens_out": 189,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:35.001786Z"
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1403,
+            "tokens_in": 6245,
+            "tokens_out": 225,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:37.740285Z"
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 570,
+            "tokens_in": 5617,
+            "tokens_out": 7,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:38.471635Z"
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "summarize",
+            "task": "escalate.summary",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1017,
+            "tokens_in": 3084,
+            "tokens_out": 45,
+            "error_type": null,
+            "created_at": "2026-10-09T07:18:39.530126Z"
+          }
+        ],
+        "tokens_in": 22084,
+        "tokens_out": 771,
+        "node_count": 8,
+        "nodes": [
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:18:30.118698Z",
+            "duration_ms": 3016,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3474,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 341,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5874
+                    }
+                  ],
+                  "actual_input_tokens": 4325
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "2c8db04d96d053fa885803e101464af4",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:18:33.135108Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "decision": "read_images"
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 3,
+            "node": "vision",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:33.139789Z",
+            "duration_ms": 1959,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "diagnose",
+              "substage": "vision",
+              "vision_status": "ok",
+              "context_metrics": [
+                {
+                  "task": "diagnose.vision",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 2389
+                    }
+                  ],
+                  "actual_input_tokens": 2813
+                }
+              ],
+              "context_revision": 2
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 4,
+            "node": "disambiguate",
+            "prev_node": "vision",
+            "started_at": "2026-10-09T07:18:35.099711Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 5,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:18:35.105373Z",
+            "duration_ms": 3391,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "retrieve",
+              "rewrite_used": true,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 7301,
+                  "truncated": true,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 280,
+                    "history": 0,
+                    "authority": 6665
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 2132,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 4169,
+                    "issue_index": 152,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 7779
+                    }
+                  ],
+                  "actual_input_tokens": 6245
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 6597,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 341,
+                    "history": 0,
+                    "authority": 5900
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 2132,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 3404,
+                    "issue_index": 152,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 7075
+                    }
+                  ],
+                  "actual_input_tokens": 5617
+                }
+              ],
+              "escalate_reason": "R5",
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 6,
+            "node": "escalate",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:18:38.497140Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 7,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:18:38.501398Z",
+            "duration_ms": 1049,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize",
+              "context_metrics": [
+                {
+                  "task": "escalate.summary",
+                  "event": "context_built",
+                  "tokens": 3079,
+                  "truncated": false,
+                  "max_tokens": 7687,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 215,
+                    "current": 341,
+                    "history": 0,
+                    "authority": 2523
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 2132,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 27,
+                    "issue_index": 152,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "escalate.summary",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3176
+                    }
+                  ],
+                  "actual_input_tokens": 3084
+                }
+              ]
+            }
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "idx": 8,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-09T07:18:39.551372Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 1027,
+            "query": "E4: Side brush abnormal, task ended",
+            "created_at": "2026-10-09T07:18:36.121393Z"
+          },
+          {
+            "run_id": "2e76acad800d4f86b8140a1beeacf0cc",
+            "node": "retrieve",
+            "round": 2,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 198,
+            "query": "E4: Side brush abnormal, task ended 黑色圆角方形设备置于木地板 机身正面红色 eufy 标志亮起 机身下方印有 3D MATRIX EYE 字样 机身表面有灰尘与划痕 左下角可见一只手 外壳污渍",
+            "created_at": "2026-10-09T07:18:36.321295Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:18:30.106915+00:00",
+          "first_seq": 2,
+          "last_seq": 15,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "kind": "user_message",
+          "id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+          "image_ids": [
+            "92b785379dd45fa597a6ba02a53568d9"
+          ],
+          "images": [
+            {
+              "image_id": "92b785379dd45fa597a6ba02a53568d9",
+              "purpose": "fault",
+              "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+              "mime": "image/jpeg",
+              "size": 331875
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:33.142859+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "65c6e929e7ba50daaf507a43748aea47",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "黑色圆角方形设备置于木地板；机身正面红色 eufy 标志亮起；机身下方印有 3D MATRIX EYE 字样；机身表面有灰尘与划痕；左下角可见一只手；外壳污渍"
+        },
+        {
+          "at": "2026-10-09T07:18:35.108621+00:00",
+          "first_seq": 10,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "50d6b39b42a05584a1758755a2290781",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 19 条来源（已补检索）"
+        },
+        {
+          "at": "2026-10-09T07:18:39.577814Z",
+          "first_seq": 16,
+          "last_seq": 16,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+              "source": "kb_qa",
+              "doc_id": "rv-0443",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+              "snippet": "what should I do when T2080 S1 Pro has E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance/Side brush error/Abnormal side brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test if the robot is functionin",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+              "source": "kb_qa",
+              "doc_id": "rv-0441",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+              "snippet": "what should I do when T2080 S1 Pro has E2: Roller brush abnormal, task ended. Please try restarting or contact customer service for assistance/Rolling brush error/Abnormal roller brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush cover, and check for any foreign objects that may be blocking or entangled. Rolling brush cleaning video link\n2. Clic",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "source": "kb_qa",
+              "doc_id": "rv-0455",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+              "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6a88af34-d05b-4713-b215-200f480abea7",
+              "source": "kb_qa",
+              "doc_id": "rv-0426",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6a88af34-d05b-4713-b215-200f480abea7",
+              "snippet": "what should I do when T2080 S1 Pro has E3: Side brush tangled, please clean. Click to view the steps/Side brush tangled, please remove obstructing item/Side brush tangled?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test whether the robot is functioning ",
+              "score": 0.015588723051409618,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "source": "kb_qa",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+              "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+              "score": 0.01515151515151515,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "source": "kb_qa",
+              "doc_id": "rv-0449",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+              "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014823284823284823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "source": "kb_qa",
+              "doc_id": "rv-0451",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+              "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.014311594202898549,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+              "source": "kb_qa",
+              "doc_id": "rv-0462",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+              "snippet": "what should I do when T2080 S1 pro has EB21: Drying abnormal, task ended. Click to contact customer service for assistance/Mop dryer error/Drying anomaly?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.014241486068111455,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "source": "kb_qa",
+              "doc_id": "rv-0436",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+              "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+              "score": 0.014070048309178743,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "source": "kb_qa",
+              "doc_id": "rv-0484",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+              "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+              "score": 0.013948717948717947,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "source": "kb_qa",
+              "doc_id": "rv-0459",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+              "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.013896103896103896,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "source": "kb_qa",
+              "doc_id": "rv-0447",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+              "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+              "score": 0.013874755381604695,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "source": "kb_qa",
+              "doc_id": "rv-0463",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+              "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.01370530877573131,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0408",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+              "snippet": "what should I do when T2080 S1 Pro has E1: Roller brush blocked, please clean. Click to view the steps/Rolling brush obstructed, please remove obstructing item/Brush blockage?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush guard, and check for any foreign objects that may be blocking or entangled. Inspect the roller brush and its removable parts fo",
+              "score": 0.013605655930871954,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "source": "kb_qa",
+              "doc_id": "rv-0138",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+              "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+              "score": 0.01351190476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "source": "kb_qa",
+              "doc_id": "rv-0434",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+              "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+              "score": 0.01569940476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+              "source": "kb_qa",
+              "doc_id": "rv-0005",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+              "snippet": "How to locate the serial number of eufy Robot Vacuum Omni S1 Pro(T2080)?\n1. Open the eufyHome / Eufy Clean app.\n2. Select your RoboVac S1 Omni from the device list.\n3. Go to Device Settings.\n4. Select General.\n5. Tap About Device.\n6. The serial number is displayed on this page.\nIf the app is inaccessible, confirm the serial number from the physical label on the bottom of the dustbin.",
+              "score": 0.011588032220943612,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "source": "kb_qa",
+              "doc_id": "rv-0453",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+              "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+              "score": 0.011225352112676055,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+              "source": "kb_qa",
+              "doc_id": "rv-0435",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+              "snippet": "what should I do when T2080 S1 Pro has E7: Robot fan abnormal, please clean the dust bin and filter. Click to view the steps/Robot fan error/Robot fan malfunction?\n1. Check if the robot's dust bin is blocked. If so, clean it thoroughly.\n2. Check if the dust bin filter and high-performance filter are clogged. If so, clean them thoroughly.\n3. Use the app to adjust the fan speed in the robot's task s",
+              "score": 0.01114603481624758,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:18:39.586059+00:00",
+          "first_seq": 17,
+          "last_seq": 17,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "kind": "case_changed",
+          "card_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "version": 1,
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:18:39.547713+00:00"
+        },
+        {
+          "at": "2026-10-09T07:18:39.588605+00:00",
+          "first_seq": 18,
+          "last_seq": 20,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "kind": "assistant_message",
+          "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+          "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:18:39.595744+00:00",
+          "first_seq": 21,
+          "last_seq": 21,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "kind": "escalation_summary",
+          "card_id": "459f4beb2f065622b57fb77bff18951f",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni S1 Pro",
+            "problem": "E4: Side brush abnormal, task ended",
+            "observations": [
+              "图片：黑色圆角方形设备置于木地板",
+              "图片：机身正面红色 eufy 标志亮起",
+              "图片：机身下方印有 3D MATRIX EYE 字样",
+              "图片：机身表面有灰尘与划痕",
+              "图片：左下角可见一只手",
+              "图片：外壳污渍",
+              "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678E"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.vision",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:18:30.106915+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "2c8db04d96d053fa885803e101464af4",
+      "issues": [
+        {
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "status": "open",
+          "title": "E4: Side brush abnormal, task ended",
+          "task_queue": [
+            {
+              "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+              "intent": "report_problem",
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+              "status": "waiting_human",
+              "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 23,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "2c8db04d96d053fa885803e101464af4",
+          "kind": "escalation_summary",
+          "card_id": "459f4beb2f065622b57fb77bff18951f",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni S1 Pro",
+            "problem": "E4: Side brush abnormal, task ended",
+            "observations": [
+              "图片：黑色圆角方形设备置于木地板",
+              "图片：机身正面红色 eufy 标志亮起",
+              "图片：机身下方印有 3D MATRIX EYE 字样",
+              "图片：机身表面有灰尘与划痕",
+              "图片：左下角可见一只手",
+              "图片：外壳污渍",
+              "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678E"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.vision",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                "status": "active",
+                "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:18:30.106915+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+      "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+      "issue_id": "2c8db04d96d053fa885803e101464af4",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:18:39.537584+00:00",
+      "updated_at": "2026-10-09T07:18:39.547713+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 2826,
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "当前产品的这一问题没有可用的排障计划"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:18:39.547190+00:00"
+        },
+        {
+          "id": 2827,
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:18:39.547214+00:00"
+        },
+        {
+          "id": 2828,
+          "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null,
+              "rule_id": "R5"
+            },
+            "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "problem": "E4: Side brush abnormal, task ended",
+            "product": "eufy Robot Vacuum Omni S1 Pro",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.vision",
+                "attempts": 1,
+                "model_used": "deepseek/deepseek-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.synthesize",
+                "attempts": 1,
+                "model_used": "deepseek/deepseek-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.synthesize",
+                "attempts": 1,
+                "model_used": "deepseek/deepseek-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [
+              "图片：黑色圆角方形设备置于木地板",
+              "图片：机身正面红色 eufy 标志亮起",
+              "图片：机身下方印有 3D MATRIX EYE 字样",
+              "图片：机身表面有灰尘与划痕",
+              "图片：左下角可见一只手",
+              "图片：外壳污渍",
+              "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+              "客户填写的产品：S1 Pro / T2080",
+              "客户填写的 SN：12345678E"
+            ],
+            "emotion_track": [],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:18:39.547713+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "当前产品的这一问题没有可用的排障计划",
+          "cause": null,
+          "rule_id": "R5"
+        },
+        "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+        "emotion": {
+          "level": null,
+          "strategy": "normal"
+        },
+        "problem": "E4: Side brush abnormal, task ended",
+        "product": "eufy Robot Vacuum Omni S1 Pro",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "intent": "report_problem",
+            "status": "active",
+            "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+            "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.vision",
+            "attempts": 1,
+            "model_used": "deepseek/deepseek-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.synthesize",
+            "attempts": 1,
+            "model_used": "deepseek/deepseek-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.synthesize",
+            "attempts": 1,
+            "model_used": "deepseek/deepseek-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [
+          "图片：黑色圆角方形设备置于木地板",
+          "图片：机身正面红色 eufy 标志亮起",
+          "图片：机身下方印有 3D MATRIX EYE 字样",
+          "图片：机身表面有灰尘与划痕",
+          "图片：左下角可见一只手",
+          "图片：外壳污渍",
+          "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+          "客户填写的产品：S1 Pro / T2080",
+          "客户填写的 SN：12345678E"
+        ],
+        "emotion_track": [],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "c8451d134b5145e485a4cdcd4fafb8ba",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-09T07:18:30.106915+00:00",
+            "first_seq": 2,
+            "last_seq": 15,
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "kind": "user_message",
+            "id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "image_ids": [
+              "92b785379dd45fa597a6ba02a53568d9"
+            ],
+            "images": [
+              {
+                "image_id": "92b785379dd45fa597a6ba02a53568d9",
+                "purpose": "fault",
+                "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+                "mime": "image/jpeg",
+                "size": 331875
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:33.142859+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "65c6e929e7ba50daaf507a43748aea47",
+            "name": "diagnose.vision",
+            "status": "finished",
+            "summary": "黑色圆角方形设备置于木地板；机身正面红色 eufy 标志亮起；机身下方印有 3D MATRIX EYE 字样；机身表面有灰尘与划痕；左下角可见一只手；外壳污渍"
+          },
+          {
+            "at": "2026-10-09T07:18:35.108621+00:00",
+            "first_seq": 10,
+            "last_seq": 11,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "50d6b39b42a05584a1758755a2290781",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 19 条来源（已补检索）"
+          },
+          {
+            "at": "2026-10-09T07:18:39.577814Z",
+            "first_seq": 16,
+            "last_seq": 16,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+                "source": "kb_qa",
+                "doc_id": "rv-0443",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "65fa48c3-3202-4d09-9307-53bdda047cfb",
+                "snippet": "what should I do when T2080 S1 Pro has E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance/Side brush error/Abnormal side brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test if the robot is functionin",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+                "source": "kb_qa",
+                "doc_id": "rv-0441",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4d0ab291-54dc-45e2-b404-fd7e8fe1c739",
+                "snippet": "what should I do when T2080 S1 Pro has E2: Roller brush abnormal, task ended. Please try restarting or contact customer service for assistance/Rolling brush error/Abnormal roller brush?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush cover, and check for any foreign objects that may be blocking or entangled. Rolling brush cleaning video link\n2. Clic",
+                "score": 0.016129032258064516,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fc965c77-326f-4e77-a934-367496303aa0",
+                "source": "kb_qa",
+                "doc_id": "rv-0455",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fc965c77-326f-4e77-a934-367496303aa0",
+                "snippet": "what should I do when T2080 S1 pro has E13: Roller mop abnormal, task ended. Click to contact customer service for assistance/Rolling mop error/Abnormal roller mop?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.015625,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6a88af34-d05b-4713-b215-200f480abea7",
+                "source": "kb_qa",
+                "doc_id": "rv-0426",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6a88af34-d05b-4713-b215-200f480abea7",
+                "snippet": "what should I do when T2080 S1 Pro has E3: Side brush tangled, please clean. Click to view the steps/Side brush tangled, please remove obstructing item/Side brush tangled?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.\n2. Click the Start/Pause button again to test whether the robot is functioning ",
+                "score": 0.015588723051409618,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+                "source": "kb_qa",
+                "doc_id": "rv-0439",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4e4e93fb-d92a-476a-9f66-c5b43e7f4281",
+                "snippet": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance/Gyroscope error/No gyroscope data?\nRestart the robot to see if it can be restored.",
+                "score": 0.01515151515151515,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+                "source": "kb_qa",
+                "doc_id": "rv-0449",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ead6290e-4eb4-484d-9ff7-12d9090e35ff",
+                "snippet": "what should I do when T2080 S1 pro has E52: 3D MATRIX EYEsensor abnormal, task ended. Please try restarting or contact customer service for assistance/3D MATRIX EYE sensor error/3D MATRIX EYE sensor no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.014823284823284823,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "source": "kb_qa",
+                "doc_id": "rv-0451",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "3d25fd09-ee54-4c65-8d68-e8ca518e8d2c",
+                "snippet": "what should I do when T2080 S1 pro has E53: TrueAl sensor abnormal, task ended. Please try restarting or contact customer service for assistance/A.I. sensor error/AI sensor has no data?\n1. Check if there is any dirt on the 3D MATRIX EYE sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.014311594202898549,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+                "source": "kb_qa",
+                "doc_id": "rv-0462",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1f4b1c83-5f33-4219-b37a-43656e9e13e6",
+                "snippet": "what should I do when T2080 S1 pro has EB21: Drying abnormal, task ended. Click to contact customer service for assistance/Mop dryer error/Drying anomaly?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.014241486068111455,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "source": "kb_qa",
+                "doc_id": "rv-0436",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ae924ef9-1d87-4376-8b79-6337ccaa0732",
+                "snippet": "what should I do when T2080 S1 Pro has E58: Wall sensor abnormal, task ended.Please try restarting or contact customer service for assistance/Wall sensor error/Wall sensor no data?\nCheck whether the robot's wall sensor is dirty or obstructed by foreign objects. After cleaning, place it back on the ground to continue cleaning.",
+                "score": 0.014070048309178743,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+                "source": "kb_qa",
+                "doc_id": "rv-0484",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "548387f5-fff7-4a16-8160-a16e75d9ad9f",
+                "snippet": "what should I do when T2080 S1 Pro has E20: Robot clean water pump abnormal, task ended/Robot clean water pump error/Robot clean water pump component malfunction/The S1 Pro robot shows a warning E20: clean water pump abnormal, causing the task to end?\n1. 1. Please use the app to update the firmware of the robot to the latest version.\n2. After the upgrade, use the app to start the Base Station Mop ",
+                "score": 0.013948717948717947,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+                "source": "kb_qa",
+                "doc_id": "rv-0459",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d2b420d4-1736-4c68-ad6f-5ffab7b69697",
+                "snippet": "what should I do when T2080 S1 pro has EB18: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.013896103896103896,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+                "source": "kb_qa",
+                "doc_id": "rv-0447",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9b2a08f8-8e37-4cf1-b4e6-ed8e29828206",
+                "snippet": "what should I do when T2080 S1 pro displays error E32: Wheels abnormal, task ended. Please try restarting or contact customer service for assistance/Robot wheels error/Wheel abnormality?\nPlease restart the robot to see if the corresponding error disappears. If the issue persists and you are within our warranty period, we will assist you with replacing the robot.",
+                "score": 0.013874755381604695,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+                "source": "kb_qa",
+                "doc_id": "rv-0463",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6fc95471-f234-4f63-81a7-a6a6d7ebcc13",
+                "snippet": "what should I do when T2080 S1 pro has EB19: Base station solenoid valve abnormal, task ended. Click to contact customer service for assistance/Base station solenoid valve error/Base station solenoid valve malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.01370530877573131,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+                "source": "kb_qa",
+                "doc_id": "rv-0408",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9de2ab44-0365-4bf2-9316-77ad7e5da2c0",
+                "snippet": "what should I do when T2080 S1 Pro has E1: Roller brush blocked, please clean. Click to view the steps/Rolling brush obstructed, please remove obstructing item/Brush blockage?\n1. Remove the robot's dirty water reservoir, turn the robot upside down, remove the roller brush guard, and check for any foreign objects that may be blocking or entangled. Inspect the roller brush and its removable parts fo",
+                "score": 0.013605655930871954,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+                "source": "kb_qa",
+                "doc_id": "rv-0138",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6bc6ec06-8ae3-4d1f-967f-5fc977b98db2",
+                "snippet": "What should I do when T2080 S1 Pro has E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance, or shows battery error?\n1. Please update the robot firmware to the latest version in the APP.\n2. Restart the robot and check if the robot works properly.\nApplicable Models: T2080, S1 Pro\nApplicable Error Codes or problem codes: E41\nCore Symptoms: E41, Battery ",
+                "score": 0.01351190476190476,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+                "source": "kb_qa",
+                "doc_id": "rv-0434",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "d0af8120-7803-4489-8f1d-d30006e39254",
+                "snippet": "what should I do when T2080 S1 Pro has E54: 3D MATRIX EYE Sensor is dirty. Click to view the steps/3D MATRIX EYE Sensor is tainted/Dirt on the 3D MATRIX EYE Sensor?\n1. Check if there is any dirt on the 3D MATRIX EYE Sensor and wipe it clean with a clean, soft cloth.\n2. Restart the robot and see if the corresponding error message disappears.",
+                "score": 0.01569940476190476,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+                "source": "kb_qa",
+                "doc_id": "rv-0005",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6f978c02-4559-40e2-b747-b173dce8fb69",
+                "snippet": "How to locate the serial number of eufy Robot Vacuum Omni S1 Pro(T2080)?\n1. Open the eufyHome / Eufy Clean app.\n2. Select your RoboVac S1 Omni from the device list.\n3. Go to Device Settings.\n4. Select General.\n5. Tap About Device.\n6. The serial number is displayed on this page.\nIf the app is inaccessible, confirm the serial number from the physical label on the bottom of the dustbin.",
+                "score": 0.011588032220943612,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "source": "kb_qa",
+                "doc_id": "rv-0453",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "71af79d5-d564-4a45-87cd-dda91b584625",
+                "snippet": "what should I do when T2080 S1 pro has E21: Robot dirty water pump abnormal, task ended. Click to contact customer service for assistance/Robot dirty water pump error/Robot sewage pump component malfunction?\nRestart the robot and see if the corresponding error message disappears.",
+                "score": 0.011225352112676055,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+                "source": "kb_qa",
+                "doc_id": "rv-0435",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c192b588-34be-4ebd-a184-cdcb04312392",
+                "snippet": "what should I do when T2080 S1 Pro has E7: Robot fan abnormal, please clean the dust bin and filter. Click to view the steps/Robot fan error/Robot fan malfunction?\n1. Check if the robot's dust bin is blocked. If so, clean it thoroughly.\n2. Check if the dust bin filter and high-performance filter are clogged. If so, clean them thoroughly.\n3. Use the app to adjust the fan speed in the robot's task s",
+                "score": 0.01114603481624758,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:18:39.586059+00:00",
+            "first_seq": 17,
+            "last_seq": 17,
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "kind": "case_changed",
+            "card_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "version": 1,
+            "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "当前产品的这一问题没有可用的排障计划",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:18:39.547713+00:00"
+          },
+          {
+            "at": "2026-10-09T07:18:39.588605+00:00",
+            "first_seq": 18,
+            "last_seq": 20,
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "kind": "assistant_message",
+            "message_id": "bffc7c6cbf305d38bcad389d2ea3819b",
+            "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:18:39.595744+00:00",
+            "first_seq": 21,
+            "last_seq": 21,
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "kind": "escalation_summary",
+            "card_id": "459f4beb2f065622b57fb77bff18951f",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni S1 Pro",
+              "problem": "E4: Side brush abnormal, task ended",
+              "observations": [
+                "图片：黑色圆角方形设备置于木地板",
+                "图片：机身正面红色 eufy 标志亮起",
+                "图片：机身下方印有 3D MATRIX EYE 字样",
+                "图片：机身表面有灰尘与划痕",
+                "图片：左下角可见一只手",
+                "图片：外壳污渍",
+                "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+                "客户填写的产品：S1 Pro / T2080",
+                "客户填写的 SN：12345678E"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.vision",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                  "intent": "report_problem",
+                  "status": "active",
+                  "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                  "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:18:30.106915+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "2c8db04d96d053fa885803e101464af4",
+        "issues": [
+          {
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "status": "open",
+            "title": "E4: Side brush abnormal, task ended",
+            "task_queue": [
+              {
+                "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                "status": "waiting_human",
+                "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 23,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "2c8db04d96d053fa885803e101464af4",
+            "kind": "escalation_summary",
+            "card_id": "459f4beb2f065622b57fb77bff18951f",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni S1 Pro",
+              "problem": "E4: Side brush abnormal, task ended",
+              "observations": [
+                "图片：黑色圆角方形设备置于木地板",
+                "图片：机身正面红色 eufy 标志亮起",
+                "图片：机身下方印有 3D MATRIX EYE 字样",
+                "图片：机身表面有灰尘与划痕",
+                "图片：左下角可见一只手",
+                "图片：外壳污渍",
+                "尚无适用步骤，待人工核实：E4: Side brush abnormal, task ended",
+                "客户填写的产品：S1 Pro / T2080",
+                "客户填写的 SN：12345678E"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.vision",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "704fc015-764b-5004-bf60-4eee909764dd",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "bde1f2e6ce8c5db3941fbe7cfeea24c5",
+                  "intent": "report_problem",
+                  "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+                  "status": "active",
+                  "created_input_id": "9bbfd77b8d5b4d56b8d539594fba92fd",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "79b54d42d5e7593fb95622b9ac2b79b3",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:18:30.106915+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ]
+}

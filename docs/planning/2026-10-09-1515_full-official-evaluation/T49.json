@@ -1,0 +1,741 @@
+{
+  "id": "T49",
+  "input": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "resumed": false,
+          "event_id": "c25de8e4d6324f399ba8d91a0b82405d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:35.727323+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "payload": {
+            "kind": "message",
+            "text": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "162a0eee77a84be0a24c9571402194b2",
+          "input_id": "fbe9f807b53a4130b954764936df93d5",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:35.727323+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 3,
+          "event_id": "bb0c67005c4745ac94adbed7cc8d400f",
+          "recorded_at": "2026-10-09T07:19:35.739850+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 4,
+          "event_id": "5d2d0f5e17ba45ed887ceb12d40f1d72",
+          "recorded_at": "2026-10-09T07:19:38.016294+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 5,
+          "event_id": "78c0c42dae0f42cdb436ec102923f3ef",
+          "recorded_at": "2026-10-09T07:19:38.031031+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "965dd31f958451f79e4874a7b0f93eda",
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+          "event_id": "9bc842337a1d5ee18c2f762649e19227",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 7,
+          "recorded_at": "2026-10-09T07:19:38.050502+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "965dd31f958451f79e4874a7b0f93eda",
+          "delta": "I'll handle your requests in this order: replacement request → device troubleshooting.",
+          "event_id": "fbb29082c34a5576a31c3482a6e8be9d",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 8,
+          "recorded_at": "2026-10-09T07:19:38.051737+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "965dd31f958451f79e4874a7b0f93eda",
+          "status": "completed",
+          "event_id": "e7807d7565d55c1cb97abf92ab089bea",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:19:38.053724+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "input_id": "fbe9f807b53a4130b954764936df93d5",
+          "resolved_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+              "title": "can't turn on",
+              "status": "open"
+            }
+          ],
+          "event_id": "66407fb4a1bc5ddf83bc246db55082e7",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:19:38.055255+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+          "case_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "version": 1,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:38.016022+00:00",
+          "event_id": "c20e739ac47f599d8be984c3dc972b1a",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:19:38.057339+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "f218de8560405bbb88357897130361da",
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+          "event_id": "09731009f83a5022aaed784cc58af0f7",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:19:38.058519+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "f218de8560405bbb88357897130361da",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "7398aff35e2c55aa9a01310fc74b7a55",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:19:38.059378+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "f218de8560405bbb88357897130361da",
+          "status": "completed",
+          "event_id": "496340fef9375cab9468b8acf6953fb1",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:19:38.060528+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "pending_id": "ad4dd1227dd3528ab0cd8247d10962fd",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "c381ae2b5010598a9276675a72b254bf",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:19:38.061625+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "card_id": "ad4dd1227dd3528ab0cd8247d10962fd",
+          "version": 1,
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 16,
+          "event_id": "235caa221edd41fb9e12d3763491f40c",
+          "recorded_at": "2026-10-09T07:19:38.062285+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "f5833ae37ea9556cb4f2b49e306ddd92",
+          "recorded_at": "2026-10-09T07:19:38.063732+00:00",
+          "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+          "seq": 17,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:35.628555+08:00",
+  "session_id": "04ec3b74083c490389e1458c3accf496",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "04ec3b74083c490389e1458c3accf496",
+    "version": 1,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+      "kind": "upload_receipt",
+      "card_id": "ad4dd1227dd3528ab0cd8247d10962fd",
+      "version": 1
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:35.727323+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "kind": "user_message",
+        "id": "fbe9f807b53a4130b954764936df93d5",
+        "text": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:19:38.050502+00:00",
+        "first_seq": 7,
+        "last_seq": 9,
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "kind": "assistant_message",
+        "message_id": "965dd31f958451f79e4874a7b0f93eda",
+        "text": "I'll handle your requests in this order: replacement request → device troubleshooting.",
+        "status": "completed",
+        "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:19:38.057339+00:00",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "kind": "case_changed",
+        "card_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+        "version": 1,
+        "case_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:19:38.016022+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:38.058519+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "kind": "assistant_message",
+        "message_id": "f218de8560405bbb88357897130361da",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+    "issues": [
+      {
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "status": "open",
+        "title": "can't turn on",
+        "task_queue": [
+          {
+            "task_id": "ee0ea50d66c752799af44713caf251d9",
+            "intent": "replacement_request",
+            "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+            "status": "active",
+            "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          },
+          {
+            "task_id": "c7917ec6973a59ad85eb976ca3f07881",
+            "intent": "report_problem",
+            "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+            "status": "pending",
+            "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 17,
+    "latest_summaries": []
+  },
+  "visible_text": "I'll handle your requests in this order: replacement request → device troubleshooting.To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 2.34,
+  "journey": {
+    "session": {
+      "session_id": "04ec3b74083c490389e1458c3accf496",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:35.729717Z",
+      "last_run_at": "2026-10-09T07:19:38.064791Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 2335,
+      "model_calls": 1,
+      "tokens_in": 4168,
+      "tokens_out": 191,
+      "raw_available_until": "2026-10-16T07:19:38.064791Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+        "session_id": "04ec3b74083c490389e1458c3accf496",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:35.729717Z",
+        "ended_at": "2026-10-09T07:19:38.064782Z",
+        "duration_ms": 2335,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 2323,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2252,
+            "tokens_in": 4168,
+            "tokens_out": 191,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:37.988114Z"
+          }
+        ],
+        "tokens_in": 4168,
+        "tokens_out": 191,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:35.729717Z",
+            "duration_ms": 2285,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "replacement_request",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3315,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 182,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5715
+                    }
+                  ],
+                  "actual_input_tokens": 4168
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "idx": 2,
+            "node": "service_context",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:38.015191Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "idx": 3,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:19:38.023364Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:19:38.024627Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4d14b5318e2a42248781ef48d75b9c67",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:38.026006Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "04ec3b74083c490389e1458c3accf496",
+      "version": 1,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "kind": "upload_receipt",
+        "card_id": "ad4dd1227dd3528ab0cd8247d10962fd",
+        "version": 1
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:35.727323+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "kind": "user_message",
+          "id": "fbe9f807b53a4130b954764936df93d5",
+          "text": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:19:38.050502+00:00",
+          "first_seq": 7,
+          "last_seq": 9,
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "kind": "assistant_message",
+          "message_id": "965dd31f958451f79e4874a7b0f93eda",
+          "text": "I'll handle your requests in this order: replacement request → device troubleshooting.",
+          "status": "completed",
+          "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:19:38.057339+00:00",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "kind": "case_changed",
+          "card_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+          "version": 1,
+          "case_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:38.016022+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:38.058519+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "kind": "assistant_message",
+          "message_id": "f218de8560405bbb88357897130361da",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+      "issues": [
+        {
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "status": "open",
+          "title": "can't turn on",
+          "task_queue": [
+            {
+              "task_id": "ee0ea50d66c752799af44713caf251d9",
+              "intent": "replacement_request",
+              "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+              "status": "active",
+              "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            },
+            {
+              "task_id": "c7917ec6973a59ad85eb976ca3f07881",
+              "intent": "report_problem",
+              "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+              "status": "pending",
+              "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 17,
+      "latest_summaries": []
+    }
+  },
+  "intent": "replacement_request",
+  "cases": [
+    {
+      "case_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+      "session_id": "04ec3b74083c490389e1458c3accf496",
+      "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+      "sku": null,
+      "category": null,
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:19:38.016022+00:00",
+      "updated_at": "2026-10-09T07:19:38.016022+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "04ec3b74083c490389e1458c3accf496",
+        "version": 1,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+          "kind": "upload_receipt",
+          "card_id": "ad4dd1227dd3528ab0cd8247d10962fd",
+          "version": 1
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:19:35.727323+00:00",
+            "first_seq": 2,
+            "last_seq": 10,
+            "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+            "kind": "user_message",
+            "id": "fbe9f807b53a4130b954764936df93d5",
+            "text": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:19:38.050502+00:00",
+            "first_seq": 7,
+            "last_seq": 9,
+            "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+            "kind": "assistant_message",
+            "message_id": "965dd31f958451f79e4874a7b0f93eda",
+            "text": "I'll handle your requests in this order: replacement request → device troubleshooting.",
+            "status": "completed",
+            "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:19:38.057339+00:00",
+            "first_seq": 11,
+            "last_seq": 11,
+            "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+            "kind": "case_changed",
+            "card_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+            "version": 1,
+            "case_id": "1e699e5a-eefd-5ccf-a3c8-788aa32a2ea0",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:19:38.016022+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:38.058519+00:00",
+            "first_seq": 12,
+            "last_seq": 14,
+            "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+            "kind": "assistant_message",
+            "message_id": "f218de8560405bbb88357897130361da",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "fbe9f807b53a4130b954764936df93d5",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+        "issues": [
+          {
+            "issue_id": "0a9a6f2580415dd2bb48618f2d982333",
+            "status": "open",
+            "title": "can't turn on",
+            "task_queue": [
+              {
+                "task_id": "ee0ea50d66c752799af44713caf251d9",
+                "intent": "replacement_request",
+                "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+                "status": "active",
+                "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "task_id": "c7917ec6973a59ad85eb976ca3f07881",
+                "intent": "report_problem",
+                "quote": "I have the Eufy S1 wearable breast pumps. I partially paid for than and my insurance paid for the rest. I can’t get them to turn on and I am looking to get them replaced bc they are my only pump",
+                "status": "pending",
+                "created_input_id": "fbe9f807b53a4130b954764936df93d5",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 17,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

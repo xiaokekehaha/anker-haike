@@ -1,0 +1,39 @@
+Browser tab: 2, Title: "智能服务 · Anker", URL: "http://localhost:5173/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 14, 59-66, 68-70
+~			5 pop up button (collapsed, settable) Description: 切换会话, Value: （当前）Hello, I am writing to inquire… · 等待人工审核, Secondary Actions: Expand
+~					67 (disabled) （当前）Hello, I am writing to inquire… · 等待人工审核
+~			9 button 新建会话, Help: 开始一个新会话；当前会话可从列表切回
++				81 container
++					82 text 今天 15:25 Hello, 
+
+I am writing to inquire about the shipping of the vacuum I purchased in the 7th. Order Anker008
+
+I only received the filters.
+
+If you have not shipped, don’t and let’s first talk about your other products. I still find it odd that I have not had any communication from you regarding the delay. 
+
+Thank you very much, 查询物流 After-sales tool responded
++					83 text I'll handle your requests in this order: order change → delivery status.
++					84 container Description: 案件进度, Help: 案件状态更新；订单号 Anker008
++						85 text 等待人工审核
++					86 text I can't change or hold an order myself, so I've passed your request to a colleague who can. Please note the order may already be in process.
++					87 text Next up: delivery status.
++					88 text Order Anker008: • Package: pre-order, not shipped yet, expected to ship on 2026-10-20 (T2292111) • US YANWEN Anker1234567-10: delivered on 2026-09-12 (T290Y000) This item is a pre-order and hasn't shipped yet. It will be sent on the expected ship date.
+~					42 button 上传故障照片
+~					43 text entry area (settable) 描述你的问题
+~					45 button (disabled) 发送
++						89 container
++							90 text 核实服务信息 补齐办理所需信息
++						91 container
++							92 text 确认处理方案 查看费用、条件与依据
++						93 container
++							94 text 等待人工审核 审核决定会回到本会话
++						95 container
++							96 text 跟踪办理进度 查看回执与收货进度
++				97 container
++					98 heading 案件, Value: 2
++						99 text 案件
++					100 text 等待人工审核 订单号
++					101 text Anker008
+The focused UI element is 0 AXWebArea 智能服务 · Anker, URL: localhost:5173/

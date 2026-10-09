@@ -1,0 +1,2819 @@
+{
+  "id": "T38",
+  "input": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+  "attachments": [
+    "T38.jpg"
+  ],
+  "turns": [
+    {
+      "input": {
+        "text": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+        "attachments": [
+          "T38.jpg"
+        ],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "resumed": false,
+          "event_id": "d134569919ee4ee8aba13083a971790f",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:03.002022+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "payload": {
+            "kind": "message",
+            "text": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+            "images": [
+              {
+                "mime": "image/jpeg",
+                "size": 65045,
+                "sha256": "3c00ec08fe82adfcff6908c2709b246ebe689e4a1ceab5fce2eb73832535dfca",
+                "purpose": "fault",
+                "image_id": "a101456c119255149f2892868baafe70",
+                "created_at": "2026-10-09T07:19:02.994644+00:00"
+              }
+            ],
+            "purpose": "fault",
+            "image_ids": [
+              "a101456c119255149f2892868baafe70"
+            ],
+            "target_issue_id": null,
+            "attachment_hashes": [
+              "3c00ec08fe82adfcff6908c2709b246ebe689e4a1ceab5fce2eb73832535dfca"
+            ],
+            "evaluation_source": "replay"
+          },
+          "event_id": "7052f3baf43141fb9ae21af936a82cae",
+          "input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:03.002022+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 3,
+          "event_id": "f12166b24ce44d939f78c321d041bc40",
+          "recorded_at": "2026-10-09T07:19:03.019838+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 4,
+          "event_id": "b07259ada58844b99996b12ce9cb104b",
+          "recorded_at": "2026-10-09T07:19:06.089616+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "vision",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 5,
+          "event_id": "dd39f782ae984295a6771615988434fe",
+          "recorded_at": "2026-10-09T07:19:06.094274+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "a7bd62a1498050c88aa9027483c1ad56",
+          "name": "diagnose.vision",
+          "status": "started",
+          "summary": "识别 1 张故障照片",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 6,
+          "event_id": "b76002a53e90431cb8f0b5e33af0a437",
+          "recorded_at": "2026-10-09T07:19:06.172457+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "a7bd62a1498050c88aa9027483c1ad56",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "页面标题为 Invoice Preview；发票号 Anker012，日期 2024-10-09；商品 eufy X10 Pro Omni，数量 1；含 6-Pack 抗菌除臭尘袋；总计 £608.99，含 VAT £101.50",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 7,
+          "event_id": "4381ff37839c4183b19c7770b7d737fd",
+          "recorded_at": "2026-10-09T07:19:07.570398+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 8,
+          "event_id": "d9c565b36c1a4d0cb537f0a4e1fce2f2",
+          "recorded_at": "2026-10-09T07:19:07.581656+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 9,
+          "event_id": "b27ffa0488d94326b2a5fce051efa2af",
+          "recorded_at": "2026-10-09T07:19:07.591075+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "1f251efe7d7451548ce46404e9fc1cac",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 10,
+          "event_id": "a2be0f7c9bae4e12aff0467f8da355a8",
+          "recorded_at": "2026-10-09T07:19:07.605777+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "1f251efe7d7451548ce46404e9fc1cac",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 22 条来源（已补检索）",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 11,
+          "event_id": "10dd917beee6495b85daff89e84e6449",
+          "recorded_at": "2026-10-09T07:19:08.545365+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 12,
+          "event_id": "fce1e19f9f8a4bf2adac8708af6758b9",
+          "recorded_at": "2026-10-09T07:19:09.954125+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 13,
+          "event_id": "530c34dea3ca4624bcf9d4aa28fcd9ea",
+          "recorded_at": "2026-10-09T07:19:09.968577+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "9dc6495de71252f3a235483b74e21ab3",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "reply_to_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+          "event_id": "947a1761095250a083ccb07c7a88674b",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:19:09.999739+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "9dc6495de71252f3a235483b74e21ab3",
+          "delta": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "event_id": "c941235ab2f35018bf2627b5e546f514",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:19:10.001998+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "9dc6495de71252f3a235483b74e21ab3",
+          "status": "completed",
+          "event_id": "6390b8097553592d8c71000b23bfff17",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:19:10.003972+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+          "resolved_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "title": "The device contantly says the water tank is i sufficient",
+              "status": "open"
+            }
+          ],
+          "event_id": "6d179aa9677d50fd8efeee6913a79171",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 18,
+          "recorded_at": "2026-10-09T07:19:10.005979+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "source": "kb_qa",
+              "doc_id": "rv-0023",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6011: The clean water in the station is insufficient, please add water, Base station clean water tank is empty, insufficient water error despite a filled tank, showed the clean water tank is empty, saying that the Clean water is insufficient, water in the clean water tank is insufficient?\n1. Inspect the components of the clean water tank ",
+              "score": 0.016162909836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "source": "kb_qa",
+              "doc_id": "rv-0242",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+              "score": 0.016029143897996354,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0236",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+              "score": 0.015905707196029774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+              "source": "kb_qa",
+              "doc_id": "rv-0241",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6020:Clean water tank or dirty water tank not connected, please check, Base Station Dirty Water Tank Not Installed?\n1. Please put the dirty water tank back in the station correctly.\n2. If the dirty water tank has been installed correctly and still reports an error, open the dirty water tank cover to check whether the float in the dirty wa",
+              "score": 0.015776209677419356,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "54924af7-4c53-4649-99ee-f151a3251300",
+              "source": "kb_qa",
+              "doc_id": "rv-0239",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "54924af7-4c53-4649-99ee-f151a3251300",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6021: The dirty water tank in the station is full, please empty to avoid bad smells, The sewage tank of the base station is full or out of position?\n1. Please empty the dirty water in the dirty water tank;\n2. If the dirty water tank is empty and the error message still appears, please open the dirty water tank cover and check whether the ",
+              "score": 0.01553113553113553,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+              "source": "kb_qa",
+              "doc_id": "rv-0268",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+              "snippet": "Does the X10 Pro Omni have an onboard water tank?\nYes! The X10 Pro Omni is equipped with an onboard water tank that holds up to 80ml, ensuring that it can start its cleaning cycle without the immediate need for the Omni Station to wet the mopping pads. Additionally, the X10 Pro Omni's all-in-one Omni Station is equipped with a substantial 3-liter clean water tank.",
+              "score": 0.01477172958735733,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+              "source": "kb_qa",
+              "doc_id": "rv-0254",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6031:Abnormal sewage pumping function, or the cleaning tray is full of water, or dirty water is not being pumped out, sent errors stating the pump is malfunctioning, or the water level of the station's cleaning tray is abnormal?\n1. Check whether the door latch of the dirty water tank is fastened when it is installed on the station.\n2. Che",
+              "score": 0.014690382081686429,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "source": "kb_qa",
+              "doc_id": "rv-0270",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+              "score": 0.014411764705882353,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+              "source": "kb_qa",
+              "doc_id": "rv-0273",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6012 or 6013:Sprinkler error/Base station clean water pump error/Water injection device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the error",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+              "source": "kb_qa",
+              "doc_id": "rv-0249",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6028: The base station may have a water leakage or abnormal sewage pumping function?\nCheck whether the station cleaning tray grille is clogged with sediment or foreign matter, and clean the cleaning tray.",
+              "score": 0.014135472370766487,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+              "source": "kb_qa",
+              "doc_id": "rv-0094",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+              "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 2?\n1. The device is at a station.\n2. The device's battery level is ≥10%.\n3. The device is not currently washing mops/collecting dust.",
+              "score": 0.013519690576652602,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+              "source": "kb_qa",
+              "doc_id": "rv-0282",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6022 or 6023:Station pump error/Base station dirty water pump error/Sewage pumping device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the err",
+              "score": 0.013305613305613305,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+              "source": "kb_qa",
+              "doc_id": "rv-0245",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 base station is leaking water,Station leaks water?\n1. Check whether the base station cleaning tray grille is blocked by mud, sand, or foreign objects, which may affect the normal dirty water extraction of the base station and cause dirty water overflow. Please clean the cleaning tray regularly according to the app prompts.\n2. If the cleaning tray is clean ",
+              "score": 0.012724358974358974,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+              "source": "kb_qa",
+              "doc_id": "rv-0221",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a toast 78:Low battery, please charge and try again?\nPlease note that the current battery level of the robot is less than 30%, which makes it impossible to start the task. Please wait until the battery level is greater than 30% before starting the cleaning task.",
+              "score": 0.012586427656850191,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+              "source": "kb_qa",
+              "doc_id": "rv-0007",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+              "snippet": "What should I do if the charging base of the eufy Clean X10 Pro Omni(T2351) gets dirty and wet?\n1. Check the cleaning tray grille for blockage\nSediment and foreign objects blocking the grille affect the base station's sewage extraction, causing sewage to overflow and making the base dirty and wet. Clean the cleaning tray regularly according to the app prompts, and observe whether there is still wa",
+              "score": 0.012302371541501975,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "source": "kb_qa",
+              "doc_id": "rv-0098",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "source": "kb_qa",
+              "doc_id": "rv-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+              "score": 0.013830455259026687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+              "source": "kb_qa",
+              "doc_id": "rv-0266",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+              "snippet": "What are the dimensions of the X10 Pro Omni and the All-in-One Omni Station?\n-Dimensions (Length*Width*Height) The X10 Pro Omni Robot：327mm*353mm*113.5mm The Omni Station：365mm*480mm*460mm -Weight The X10 Pro Omni Robot：4,560g The Omni Station：7,240g The Combined Weight (when the robotic vacuum cleaner is docked on the Omni Station): 11,800g -Accessory Capacity Dustbin: 330ml Disposable Dust Bag: ",
+              "score": 0.01368813825608798,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc11811-b317-4365-9555-a8954099b618",
+              "source": "kb_qa",
+              "doc_id": "rv-0015",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc11811-b317-4365-9555-a8954099b618",
+              "snippet": "What should I do if eufy Clean X10 Pro Omni(T2351) battery dies at 60%?\n1. Adjust cleaning suction power. If the cleaning mode is set to Maximum or Turbo, it will consume more battery power. Try switching to Standard mode to extend battery life.\n2. Check the scheduled cleaning area. Ensure the programmed area is within the device's nominal cleaning capacity. If the area is too large, the device ma",
+              "score": 0.013664904163912757,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+              "source": "kb_qa",
+              "doc_id": "rv-0069",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+              "snippet": "I'm looking to purchase the eufy X10 Pro Omni in white, but it is not available for shipping to Denmark. Is it possible to get the white version shipped to Denmark?\nStock availability depends on the region where the product is being purchased, and unfortunately, the white version of the Eufy X10 Pro Omni is not available for shipping to Denmark at this time. We understand that this may be disappoi",
+              "score": 0.013380758807588076,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+              "source": "kb_qa",
+              "doc_id": "rv-0097",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+              "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 6/7/8/9/10/20/21/22/23/24/25/26/27/28/29/30/31/32 or firmware upgrade progress bar stuck at 50%-95%?\n1. If the device can perform the cleaning task normally after restarting, please try upgrading again;\n2. If the device cannot perform the cleaning task normally after restarting, please co",
+              "score": 0.013172043010752688,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+              "source": "kb_qa",
+              "doc_id": "rv-0264",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+              "snippet": "How to use the eufy cleaning solution for X10 Pro Omni/T2351.\nYou can follow the below article to use the eufy cleanning solutions:",
+              "score": 0.012781609195402298,
+              "status": "ok"
+            }
+          ],
+          "event_id": "c504b6675c31524dbf5ea908f6bc83e1",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 19,
+          "recorded_at": "2026-10-09T07:19:10.007156+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "pending_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "84ac6bbeb4535b8187e6fe31bb0acca1",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:19:10.014022+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0023",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Inspect the components of the clean water tank itself.",
+            "instruction": "Inspect the components of the clean water tank itself. If there is water in the tank, remove it first: check if the sealing ring of the water outlet is installed correctly/is undamaged. If the seal ring is deformed or broken, please provide photos of the defect.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+            ],
+            "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "media": []
+          },
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "event_id": "26883c0bf2eb55adb6c5f379cc410079",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:19:10.015293+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+          "version": 1,
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 22,
+          "event_id": "a6a169c9ee2f4466bcb063ce22460c23",
+          "recorded_at": "2026-10-09T07:19:10.016339+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "886cd57af4d15493959e14c1bd6a6713",
+          "recorded_at": "2026-10-09T07:19:10.018957+00:00",
+          "run_id": "d35fd2c68177444f84227a696c197106",
+          "seq": 23,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 24,
+          "type": "run_started",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "resumed": false,
+          "event_id": "50e36b0b924a4947af83c9a1f56ff015",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:10.058381+00:00"
+        },
+        {
+          "seq": 25,
+          "type": "input_received",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "36af7590d4eb4b7abe926528f8456bce",
+            "target_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "expected_version": 1
+          },
+          "event_id": "8194f37b13124fafa9d5c1f3c8ddcfbf",
+          "input_id": "36af7590d4eb4b7abe926528f8456bce",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:10.058381+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 26,
+          "event_id": "4a1a65053828447b93ed244895839bb8",
+          "recorded_at": "2026-10-09T07:19:10.085815+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 27,
+          "event_id": "760d767644794bc19e071de34ee87b8a",
+          "recorded_at": "2026-10-09T07:19:10.089847+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "input_id": "36af7590d4eb4b7abe926528f8456bce",
+          "resolved_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "title": "The device contantly says the water tank is i sufficient",
+              "status": "open"
+            }
+          ],
+          "event_id": "ef6835d1115c5d7899f23de05578bc2a",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 29,
+          "recorded_at": "2026-10-09T07:19:10.113391+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "pending_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "25f39095cd3d560b8910c89830dab20c",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 30,
+          "recorded_at": "2026-10-09T07:19:10.114815+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "pending_id": "972b09caeb77568292d651584fa7b3ab",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "453be6bf4a795dc8a7f504dd4712da94",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 31,
+          "recorded_at": "2026-10-09T07:19:10.115735+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "972b09caeb77568292d651584fa7b3ab",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0023",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If there are no abnormalities in the above steps (clean wat…",
+            "instruction": "If there are no abnormalities in the above steps (clean water tank components, base station sealing ring, installation), and the robot still displays error after reinstallation, it can be determined that there is a hardware problem with the base station.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+            ],
+            "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "media": []
+          },
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "event_id": "ae2ac80c131050188c2967fb7c116e86",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 32,
+          "recorded_at": "2026-10-09T07:19:10.116889+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "card_id": "972b09caeb77568292d651584fa7b3ab",
+          "version": 2,
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 33,
+          "event_id": "fa6d6baaca1f40c9bd2023679d840828",
+          "recorded_at": "2026-10-09T07:19:10.117703+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "a9dcf285c2275023861bcf09643abbc0",
+          "recorded_at": "2026-10-09T07:19:10.118626+00:00",
+          "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+          "seq": 34,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 35,
+          "type": "run_started",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "resumed": false,
+          "event_id": "b98c61fc5d684fae84b7e58ad5850fff",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:10.142791+00:00"
+        },
+        {
+          "seq": 36,
+          "type": "input_received",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "972b09caeb77568292d651584fa7b3ab",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "b6b3fcfcc4764705a386d19505b25ecc",
+            "target_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "expected_version": 2
+          },
+          "event_id": "e2488b356606468b9f5c55fca0b8505d",
+          "input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:19:10.142791+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 37,
+          "event_id": "e248df85d1df4ccca7a412f5ceebe525",
+          "recorded_at": "2026-10-09T07:19:10.157933+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "propose",
+          "substage": null,
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 38,
+          "event_id": "d5dcb6b12bfd44db9283ddf26e113c6a",
+          "recorded_at": "2026-10-09T07:19:10.165964+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "done",
+          "substage": null,
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 39,
+          "event_id": "478355b6a00047a5828ef7c1e77c04f3",
+          "recorded_at": "2026-10-09T07:19:10.172568+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+          "resolved_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "title": "The device contantly says the water tank is i sufficient",
+              "status": "open"
+            }
+          ],
+          "event_id": "ef80910d1adb5c8d8a6e5ce6cb28b529",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 41,
+          "recorded_at": "2026-10-09T07:19:10.194898+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "pending_id": "972b09caeb77568292d651584fa7b3ab",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "f2194cd490ac578e9a1eec50ab9694ed",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 42,
+          "recorded_at": "2026-10-09T07:19:10.196303+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker012"
+          },
+          "updated_at": "2026-10-09T07:19:10.160375+00:00",
+          "event_id": "b241f4211f5f56a59e9468ff295d911d",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 43,
+          "recorded_at": "2026-10-09T07:19:10.197337+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "reply_to_input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+          "event_id": "0688b43f02d8545f922f9b8b6b21ff01",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:19:10.198755+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+          "delta": "I've checked: order Anker012 was under warranty until 2025-10-10. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+          "event_id": "e17624fe406554f0b24603dabb785e76",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:19:10.200018+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+          "status": "completed",
+          "event_id": "6e554aa9f30c53a5aa813d7b308321ee",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:19:10.201376+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "version": 3,
+          "status": "closed_unresolved",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker012"
+          },
+          "updated_at": "2026-10-09T07:19:10.168926+00:00",
+          "event_id": "4d765bb300b15f2b83a32e2d5db600d8",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:19:10.202701+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "fe3257dc12fb5c64bf6502b9e9bb2712",
+          "recorded_at": "2026-10-09T07:19:10.203776+00:00",
+          "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+          "seq": 48,
+          "reason": "completed",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:02.924058+08:00",
+  "session_id": "2c4d928612a74f329b8793eb710d356d",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "2c4d928612a74f329b8793eb710d356d",
+    "version": 3,
+    "stage": "done",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:03.002022+00:00",
+        "first_seq": 2,
+        "last_seq": 18,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "user_message",
+        "id": "c0ccf273e9044abbbcdb138718a23c4b",
+        "text": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+        "image_ids": [
+          "a101456c119255149f2892868baafe70"
+        ],
+        "images": [
+          {
+            "image_id": "a101456c119255149f2892868baafe70",
+            "purpose": "fault",
+            "sha256": "3c00ec08fe82adfcff6908c2709b246ebe689e4a1ceab5fce2eb73832535dfca",
+            "mime": "image/jpeg",
+            "size": 65045
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:06.172457+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "a7bd62a1498050c88aa9027483c1ad56",
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "页面标题为 Invoice Preview；发票号 Anker012，日期 2024-10-09；商品 eufy X10 Pro Omni，数量 1；含 6-Pack 抗菌除臭尘袋；总计 £608.99，含 VAT £101.50"
+      },
+      {
+        "at": "2026-10-09T07:19:07.605777+00:00",
+        "first_seq": 10,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "1f251efe7d7451548ce46404e9fc1cac",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 22 条来源（已补检索）"
+      },
+      {
+        "at": "2026-10-09T07:19:09.999739+00:00",
+        "first_seq": 15,
+        "last_seq": 17,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "assistant_message",
+        "message_id": "9dc6495de71252f3a235483b74e21ab3",
+        "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+        "status": "completed",
+        "reply_to_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:19:10.007440Z",
+        "first_seq": 19,
+        "last_seq": 19,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "source": "kb_qa",
+            "doc_id": "rv-0023",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6011: The clean water in the station is insufficient, please add water, Base station clean water tank is empty, insufficient water error despite a filled tank, showed the clean water tank is empty, saying that the Clean water is insufficient, water in the clean water tank is insufficient?\n1. Inspect the components of the clean water tank ",
+            "score": 0.016162909836065574,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+            "source": "kb_qa",
+            "doc_id": "rv-0242",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+            "score": 0.016029143897996354,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+            "source": "kb_qa",
+            "doc_id": "rv-0236",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+            "score": 0.015905707196029774,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+            "source": "kb_qa",
+            "doc_id": "rv-0241",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6020:Clean water tank or dirty water tank not connected, please check, Base Station Dirty Water Tank Not Installed?\n1. Please put the dirty water tank back in the station correctly.\n2. If the dirty water tank has been installed correctly and still reports an error, open the dirty water tank cover to check whether the float in the dirty wa",
+            "score": 0.015776209677419356,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "54924af7-4c53-4649-99ee-f151a3251300",
+            "source": "kb_qa",
+            "doc_id": "rv-0239",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "54924af7-4c53-4649-99ee-f151a3251300",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6021: The dirty water tank in the station is full, please empty to avoid bad smells, The sewage tank of the base station is full or out of position?\n1. Please empty the dirty water in the dirty water tank;\n2. If the dirty water tank is empty and the error message still appears, please open the dirty water tank cover and check whether the ",
+            "score": 0.01553113553113553,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+            "source": "kb_qa",
+            "doc_id": "rv-0268",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+            "snippet": "Does the X10 Pro Omni have an onboard water tank?\nYes! The X10 Pro Omni is equipped with an onboard water tank that holds up to 80ml, ensuring that it can start its cleaning cycle without the immediate need for the Omni Station to wet the mopping pads. Additionally, the X10 Pro Omni's all-in-one Omni Station is equipped with a substantial 3-liter clean water tank.",
+            "score": 0.01477172958735733,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+            "source": "kb_qa",
+            "doc_id": "rv-0254",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6031:Abnormal sewage pumping function, or the cleaning tray is full of water, or dirty water is not being pumped out, sent errors stating the pump is malfunctioning, or the water level of the station's cleaning tray is abnormal?\n1. Check whether the door latch of the dirty water tank is fastened when it is installed on the station.\n2. Che",
+            "score": 0.014690382081686429,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+            "source": "kb_qa",
+            "doc_id": "rv-0270",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+            "score": 0.014411764705882353,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+            "source": "kb_qa",
+            "doc_id": "rv-0273",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6012 or 6013:Sprinkler error/Base station clean water pump error/Water injection device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the error",
+            "score": 0.014395129615082481,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+            "source": "kb_qa",
+            "doc_id": "rv-0249",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6028: The base station may have a water leakage or abnormal sewage pumping function?\nCheck whether the station cleaning tray grille is clogged with sediment or foreign matter, and clean the cleaning tray.",
+            "score": 0.014135472370766487,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+            "source": "kb_qa",
+            "doc_id": "rv-0094",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+            "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 2?\n1. The device is at a station.\n2. The device's battery level is ≥10%.\n3. The device is not currently washing mops/collecting dust.",
+            "score": 0.013519690576652602,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+            "source": "kb_qa",
+            "doc_id": "rv-0282",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6022 or 6023:Station pump error/Base station dirty water pump error/Sewage pumping device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the err",
+            "score": 0.013305613305613305,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+            "source": "kb_qa",
+            "doc_id": "rv-0245",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+            "snippet": "What should I do if my X10 Pro Omni T2351 base station is leaking water,Station leaks water?\n1. Check whether the base station cleaning tray grille is blocked by mud, sand, or foreign objects, which may affect the normal dirty water extraction of the base station and cause dirty water overflow. Please clean the cleaning tray regularly according to the app prompts.\n2. If the cleaning tray is clean ",
+            "score": 0.012724358974358974,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+            "source": "kb_qa",
+            "doc_id": "rv-0221",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a toast 78:Low battery, please charge and try again?\nPlease note that the current battery level of the robot is less than 30%, which makes it impossible to start the task. Please wait until the battery level is greater than 30% before starting the cleaning task.",
+            "score": 0.012586427656850191,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+            "source": "kb_qa",
+            "doc_id": "rv-0007",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+            "snippet": "What should I do if the charging base of the eufy Clean X10 Pro Omni(T2351) gets dirty and wet?\n1. Check the cleaning tray grille for blockage\nSediment and foreign objects blocking the grille affect the base station's sewage extraction, causing sewage to overflow and making the base dirty and wet. Clean the cleaning tray regularly according to the app prompts, and observe whether there is still wa",
+            "score": 0.012302371541501975,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+            "source": "kb_qa",
+            "doc_id": "rv-0098",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+            "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+            "score": 0.014204425711275025,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+            "source": "kb_qa",
+            "doc_id": "rv-0066",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+            "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+            "score": 0.013830455259026687,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+            "source": "kb_qa",
+            "doc_id": "rv-0266",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+            "snippet": "What are the dimensions of the X10 Pro Omni and the All-in-One Omni Station?\n-Dimensions (Length*Width*Height) The X10 Pro Omni Robot：327mm*353mm*113.5mm The Omni Station：365mm*480mm*460mm -Weight The X10 Pro Omni Robot：4,560g The Omni Station：7,240g The Combined Weight (when the robotic vacuum cleaner is docked on the Omni Station): 11,800g -Accessory Capacity Dustbin: 330ml Disposable Dust Bag: ",
+            "score": 0.01368813825608798,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6fc11811-b317-4365-9555-a8954099b618",
+            "source": "kb_qa",
+            "doc_id": "rv-0015",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6fc11811-b317-4365-9555-a8954099b618",
+            "snippet": "What should I do if eufy Clean X10 Pro Omni(T2351) battery dies at 60%?\n1. Adjust cleaning suction power. If the cleaning mode is set to Maximum or Turbo, it will consume more battery power. Try switching to Standard mode to extend battery life.\n2. Check the scheduled cleaning area. Ensure the programmed area is within the device's nominal cleaning capacity. If the area is too large, the device ma",
+            "score": 0.013664904163912757,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+            "source": "kb_qa",
+            "doc_id": "rv-0069",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+            "snippet": "I'm looking to purchase the eufy X10 Pro Omni in white, but it is not available for shipping to Denmark. Is it possible to get the white version shipped to Denmark?\nStock availability depends on the region where the product is being purchased, and unfortunately, the white version of the Eufy X10 Pro Omni is not available for shipping to Denmark at this time. We understand that this may be disappoi",
+            "score": 0.013380758807588076,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+            "source": "kb_qa",
+            "doc_id": "rv-0097",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+            "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 6/7/8/9/10/20/21/22/23/24/25/26/27/28/29/30/31/32 or firmware upgrade progress bar stuck at 50%-95%?\n1. If the device can perform the cleaning task normally after restarting, please try upgrading again;\n2. If the device cannot perform the cleaning task normally after restarting, please co",
+            "score": 0.013172043010752688,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+            "source": "kb_qa",
+            "doc_id": "rv-0264",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+            "snippet": "How to use the eufy cleaning solution for X10 Pro Omni/T2351.\nYou can follow the below article to use the eufy cleanning solutions:",
+            "score": 0.012781609195402298,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:10.015293+00:00",
+        "first_seq": 21,
+        "last_seq": 21,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "step_card",
+        "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0023",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Inspect the components of the clean water tank itself.",
+          "instruction": "Inspect the components of the clean water tank itself. If there is water in the tank, remove it first: check if the sealing ring of the water outlet is installed correctly/is undamaged. If the seal ring is deformed or broken, please provide photos of the defect.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+          ],
+          "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:10.058381+00:00",
+        "first_seq": 25,
+        "last_seq": 29,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "action",
+        "id": "36af7590d4eb4b7abe926528f8456bce",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:10.116889+00:00",
+        "first_seq": 32,
+        "last_seq": 32,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "step_card",
+        "card_id": "972b09caeb77568292d651584fa7b3ab",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0023",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If there are no abnormalities in the above steps (clean wat…",
+          "instruction": "If there are no abnormalities in the above steps (clean water tank components, base station sealing ring, installation), and the robot still displays error after reinstallation, it can be determined that there is a hardware problem with the base station.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+          ],
+          "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:19:10.142791+00:00",
+        "first_seq": 36,
+        "last_seq": 41,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "action",
+        "id": "b6b3fcfcc4764705a386d19505b25ecc",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:19:10.197337+00:00",
+        "first_seq": 43,
+        "last_seq": 47,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "case_changed",
+        "card_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+        "version": 3,
+        "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+        "status": "closed_unresolved",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {
+          "order_no": "Anker012"
+        },
+        "updated_at": "2026-10-09T07:19:10.168926+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:10.198755+00:00",
+        "first_seq": 44,
+        "last_seq": 46,
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "kind": "assistant_message",
+        "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+        "text": "I've checked: order Anker012 was under warranty until 2025-10-10. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+        "status": "completed",
+        "reply_to_input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+    "issues": [
+      {
+        "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "status": "open",
+        "title": "The device contantly says the water tank is i sufficient",
+        "task_queue": [
+          {
+            "task_id": "a30bf5102ed45532aaa2de690b292f26",
+            "intent": "report_problem",
+            "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+            "status": "active",
+            "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+            "business_reference": {
+              "status": "resolved",
+              "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+              "candidate_ids": []
+            }
+          },
+          {
+            "task_id": "3092301b98ab520388b48503de1a567d",
+            "intent": "warranty_query",
+            "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+            "status": "pending",
+            "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+            "business_reference": {
+              "status": "resolved",
+              "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 48,
+    "latest_summaries": []
+  },
+  "visible_text": "I'll handle your requests in this order: device troubleshooting → warranty check.I've checked: order Anker012 was under warranty until 2025-10-10. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+  "step_cards": 2,
+  "errors": [],
+  "seconds": 7.3,
+  "journey": {
+    "session": {
+      "session_id": "2c4d928612a74f329b8793eb710d356d",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:03.004689Z",
+      "last_run_at": "2026-10-09T07:19:10.204462Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Order No: [REDACTED]\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0023"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": "order_verified",
+      "outcome": "in_progress",
+      "outcome_reason": null,
+      "outcome_at": null,
+      "total_latency_ms": 59,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:19:10.204462Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d35fd2c68177444f84227a696c197106",
+        "session_id": "2c4d928612a74f329b8793eb710d356d",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:03.004689Z",
+        "ended_at": "2026-10-09T07:19:10.020588Z",
+        "duration_ms": 7148,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 7131,
+        "card_ready_ms": 7144,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3042,
+            "tokens_in": 4213,
+            "tokens_out": 291,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:06.057676Z"
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "node": "vision",
+            "task": "diagnose.vision",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1336,
+            "tokens_in": 2452,
+            "tokens_out": 132,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:07.501801Z"
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1499,
+            "tokens_in": 5828,
+            "tokens_out": 198,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:09.908202Z"
+          }
+        ],
+        "tokens_in": 12493,
+        "tokens_out": 621,
+        "node_count": 8,
+        "nodes": [
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:03.004689Z",
+            "duration_ms": 3083,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3356,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 223,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5756
+                    }
+                  ],
+                  "actual_input_tokens": 4213
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:06.088521Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "decision": "read_images"
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 3,
+            "node": "vision",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:06.094239Z",
+            "duration_ms": 1487,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "vision",
+              "vision_status": "ok",
+              "context_metrics": [
+                {
+                  "task": "diagnose.vision",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 2387
+                    }
+                  ],
+                  "actual_input_tokens": 2452
+                }
+              ],
+              "context_revision": 2
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 4,
+            "node": "disambiguate",
+            "prev_node": "vision",
+            "started_at": "2026-10-09T07:19:07.581641Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 5,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:19:07.591062Z",
+            "duration_ms": 2475,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0023",
+              "substage": "retrieve",
+              "rewrite_used": true,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 6699,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 223,
+                    "history": 0,
+                    "authority": 6120
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 1532,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 193,
+                    "timezone": 7,
+                    "task_data": 4058,
+                    "issue_index": 157,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 99,
+                    "context_revision": 2,
+                    "conversation_view": 102,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 7177
+                    }
+                  ],
+                  "actual_input_tokens": 5828
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 6,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:19:10.066474Z",
+            "duration_ms": 31,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0023",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 7,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:10.097647Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "idx": 8,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:10.097654Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0162,
+            "latency_ms": 520,
+            "query": "The device contantly says the water tank is i sufficient",
+            "created_at": "2026-10-09T07:19:08.096902Z"
+          },
+          {
+            "run_id": "d35fd2c68177444f84227a696c197106",
+            "node": "retrieve",
+            "round": 2,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0162,
+            "latency_ms": 409,
+            "query": "The device contantly says the water tank is i sufficient 页面标题为 Invoice Preview 发票号 [REDACTED]，日期 2024-10-09 商品 eufy X10 Pro Omni，数量 1 含 6-Pack 抗菌除臭尘袋 总计 £608.99，含 VAT £101.50",
+            "created_at": "2026-10-09T07:19:08.507754Z"
+          }
+        ]
+      },
+      {
+        "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+        "session_id": "2c4d928612a74f329b8793eb710d356d",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:19:10.059960Z",
+        "ended_at": "2026-10-09T07:19:10.119209Z",
+        "duration_ms": 59,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 58,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:10.059960Z",
+            "duration_ms": 14,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0023",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": true,
+              "product_state": "confirmed_sku",
+              "vision_status": "ok",
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:10.074444Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0023",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:10.077220Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0023",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:19:10.087997Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "c37c99d48e454edd9db7ff99b9b6d9dc",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:19:10.088003Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+        "session_id": "2c4d928612a74f329b8793eb710d356d",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:19:10.144630Z",
+        "ended_at": "2026-10-09T07:19:10.204456Z",
+        "duration_ms": 59,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "done",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 56,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:10.144630Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0023",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": true,
+              "product_state": "confirmed_sku",
+              "vision_status": "ok",
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 2,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:10.154260Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:19:10.156229Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:19:10.157295Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "receipt_status": "order_verified",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 5,
+            "node": "propose",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:19:10.165657Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "done"
+            }
+          },
+          {
+            "run_id": "f7ef924e118c4eeda25dc84a1e34c529",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "propose",
+            "started_at": "2026-10-09T07:19:10.170761Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "2c4d928612a74f329b8793eb710d356d",
+      "version": 3,
+      "stage": "done",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:03.002022+00:00",
+          "first_seq": 2,
+          "last_seq": 18,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "user_message",
+          "id": "c0ccf273e9044abbbcdb138718a23c4b",
+          "text": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+          "image_ids": [
+            "a101456c119255149f2892868baafe70"
+          ],
+          "images": [
+            {
+              "image_id": "a101456c119255149f2892868baafe70",
+              "purpose": "fault",
+              "sha256": "3c00ec08fe82adfcff6908c2709b246ebe689e4a1ceab5fce2eb73832535dfca",
+              "mime": "image/jpeg",
+              "size": 65045
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:06.172457+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "a7bd62a1498050c88aa9027483c1ad56",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "页面标题为 Invoice Preview；发票号 Anker012，日期 2024-10-09；商品 eufy X10 Pro Omni，数量 1；含 6-Pack 抗菌除臭尘袋；总计 £608.99，含 VAT £101.50"
+        },
+        {
+          "at": "2026-10-09T07:19:07.605777+00:00",
+          "first_seq": 10,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "1f251efe7d7451548ce46404e9fc1cac",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 22 条来源（已补检索）"
+        },
+        {
+          "at": "2026-10-09T07:19:09.999739+00:00",
+          "first_seq": 15,
+          "last_seq": 17,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "assistant_message",
+          "message_id": "9dc6495de71252f3a235483b74e21ab3",
+          "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "status": "completed",
+          "reply_to_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:19:10.007440Z",
+          "first_seq": 19,
+          "last_seq": 19,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "source": "kb_qa",
+              "doc_id": "rv-0023",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6011: The clean water in the station is insufficient, please add water, Base station clean water tank is empty, insufficient water error despite a filled tank, showed the clean water tank is empty, saying that the Clean water is insufficient, water in the clean water tank is insufficient?\n1. Inspect the components of the clean water tank ",
+              "score": 0.016162909836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "source": "kb_qa",
+              "doc_id": "rv-0242",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+              "score": 0.016029143897996354,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "source": "kb_qa",
+              "doc_id": "rv-0236",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+              "score": 0.015905707196029774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+              "source": "kb_qa",
+              "doc_id": "rv-0241",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6020:Clean water tank or dirty water tank not connected, please check, Base Station Dirty Water Tank Not Installed?\n1. Please put the dirty water tank back in the station correctly.\n2. If the dirty water tank has been installed correctly and still reports an error, open the dirty water tank cover to check whether the float in the dirty wa",
+              "score": 0.015776209677419356,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "54924af7-4c53-4649-99ee-f151a3251300",
+              "source": "kb_qa",
+              "doc_id": "rv-0239",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "54924af7-4c53-4649-99ee-f151a3251300",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6021: The dirty water tank in the station is full, please empty to avoid bad smells, The sewage tank of the base station is full or out of position?\n1. Please empty the dirty water in the dirty water tank;\n2. If the dirty water tank is empty and the error message still appears, please open the dirty water tank cover and check whether the ",
+              "score": 0.01553113553113553,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+              "source": "kb_qa",
+              "doc_id": "rv-0268",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+              "snippet": "Does the X10 Pro Omni have an onboard water tank?\nYes! The X10 Pro Omni is equipped with an onboard water tank that holds up to 80ml, ensuring that it can start its cleaning cycle without the immediate need for the Omni Station to wet the mopping pads. Additionally, the X10 Pro Omni's all-in-one Omni Station is equipped with a substantial 3-liter clean water tank.",
+              "score": 0.01477172958735733,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+              "source": "kb_qa",
+              "doc_id": "rv-0254",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6031:Abnormal sewage pumping function, or the cleaning tray is full of water, or dirty water is not being pumped out, sent errors stating the pump is malfunctioning, or the water level of the station's cleaning tray is abnormal?\n1. Check whether the door latch of the dirty water tank is fastened when it is installed on the station.\n2. Che",
+              "score": 0.014690382081686429,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "source": "kb_qa",
+              "doc_id": "rv-0270",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+              "score": 0.014411764705882353,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+              "source": "kb_qa",
+              "doc_id": "rv-0273",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6012 or 6013:Sprinkler error/Base station clean water pump error/Water injection device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the error",
+              "score": 0.014395129615082481,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+              "source": "kb_qa",
+              "doc_id": "rv-0249",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6028: The base station may have a water leakage or abnormal sewage pumping function?\nCheck whether the station cleaning tray grille is clogged with sediment or foreign matter, and clean the cleaning tray.",
+              "score": 0.014135472370766487,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+              "source": "kb_qa",
+              "doc_id": "rv-0094",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+              "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 2?\n1. The device is at a station.\n2. The device's battery level is ≥10%.\n3. The device is not currently washing mops/collecting dust.",
+              "score": 0.013519690576652602,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+              "source": "kb_qa",
+              "doc_id": "rv-0282",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6022 or 6023:Station pump error/Base station dirty water pump error/Sewage pumping device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the err",
+              "score": 0.013305613305613305,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+              "source": "kb_qa",
+              "doc_id": "rv-0245",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 base station is leaking water,Station leaks water?\n1. Check whether the base station cleaning tray grille is blocked by mud, sand, or foreign objects, which may affect the normal dirty water extraction of the base station and cause dirty water overflow. Please clean the cleaning tray regularly according to the app prompts.\n2. If the cleaning tray is clean ",
+              "score": 0.012724358974358974,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+              "source": "kb_qa",
+              "doc_id": "rv-0221",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a toast 78:Low battery, please charge and try again?\nPlease note that the current battery level of the robot is less than 30%, which makes it impossible to start the task. Please wait until the battery level is greater than 30% before starting the cleaning task.",
+              "score": 0.012586427656850191,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+              "source": "kb_qa",
+              "doc_id": "rv-0007",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+              "snippet": "What should I do if the charging base of the eufy Clean X10 Pro Omni(T2351) gets dirty and wet?\n1. Check the cleaning tray grille for blockage\nSediment and foreign objects blocking the grille affect the base station's sewage extraction, causing sewage to overflow and making the base dirty and wet. Clean the cleaning tray regularly according to the app prompts, and observe whether there is still wa",
+              "score": 0.012302371541501975,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "source": "kb_qa",
+              "doc_id": "rv-0098",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+              "score": 0.014204425711275025,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "source": "kb_qa",
+              "doc_id": "rv-0066",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+              "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+              "score": 0.013830455259026687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+              "source": "kb_qa",
+              "doc_id": "rv-0266",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+              "snippet": "What are the dimensions of the X10 Pro Omni and the All-in-One Omni Station?\n-Dimensions (Length*Width*Height) The X10 Pro Omni Robot：327mm*353mm*113.5mm The Omni Station：365mm*480mm*460mm -Weight The X10 Pro Omni Robot：4,560g The Omni Station：7,240g The Combined Weight (when the robotic vacuum cleaner is docked on the Omni Station): 11,800g -Accessory Capacity Dustbin: 330ml Disposable Dust Bag: ",
+              "score": 0.01368813825608798,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fc11811-b317-4365-9555-a8954099b618",
+              "source": "kb_qa",
+              "doc_id": "rv-0015",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fc11811-b317-4365-9555-a8954099b618",
+              "snippet": "What should I do if eufy Clean X10 Pro Omni(T2351) battery dies at 60%?\n1. Adjust cleaning suction power. If the cleaning mode is set to Maximum or Turbo, it will consume more battery power. Try switching to Standard mode to extend battery life.\n2. Check the scheduled cleaning area. Ensure the programmed area is within the device's nominal cleaning capacity. If the area is too large, the device ma",
+              "score": 0.013664904163912757,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+              "source": "kb_qa",
+              "doc_id": "rv-0069",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+              "snippet": "I'm looking to purchase the eufy X10 Pro Omni in white, but it is not available for shipping to Denmark. Is it possible to get the white version shipped to Denmark?\nStock availability depends on the region where the product is being purchased, and unfortunately, the white version of the Eufy X10 Pro Omni is not available for shipping to Denmark at this time. We understand that this may be disappoi",
+              "score": 0.013380758807588076,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+              "source": "kb_qa",
+              "doc_id": "rv-0097",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+              "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 6/7/8/9/10/20/21/22/23/24/25/26/27/28/29/30/31/32 or firmware upgrade progress bar stuck at 50%-95%?\n1. If the device can perform the cleaning task normally after restarting, please try upgrading again;\n2. If the device cannot perform the cleaning task normally after restarting, please co",
+              "score": 0.013172043010752688,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+              "source": "kb_qa",
+              "doc_id": "rv-0264",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+              "snippet": "How to use the eufy cleaning solution for X10 Pro Omni/T2351.\nYou can follow the below article to use the eufy cleanning solutions:",
+              "score": 0.012781609195402298,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:10.015293+00:00",
+          "first_seq": 21,
+          "last_seq": 21,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "step_card",
+          "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0023",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Inspect the components of the clean water tank itself.",
+            "instruction": "Inspect the components of the clean water tank itself. If there is water in the tank, remove it first: check if the sealing ring of the water outlet is installed correctly/is undamaged. If the seal ring is deformed or broken, please provide photos of the defect.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+            ],
+            "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:10.058381+00:00",
+          "first_seq": 25,
+          "last_seq": 29,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "action",
+          "id": "36af7590d4eb4b7abe926528f8456bce",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:10.116889+00:00",
+          "first_seq": 32,
+          "last_seq": 32,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "step_card",
+          "card_id": "972b09caeb77568292d651584fa7b3ab",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0023",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If there are no abnormalities in the above steps (clean wat…",
+            "instruction": "If there are no abnormalities in the above steps (clean water tank components, base station sealing ring, installation), and the robot still displays error after reinstallation, it can be determined that there is a hardware problem with the base station.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+            ],
+            "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:19:10.142791+00:00",
+          "first_seq": 36,
+          "last_seq": 41,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "action",
+          "id": "b6b3fcfcc4764705a386d19505b25ecc",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:19:10.197337+00:00",
+          "first_seq": 43,
+          "last_seq": 47,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "case_changed",
+          "card_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "version": 3,
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "status": "closed_unresolved",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker012"
+          },
+          "updated_at": "2026-10-09T07:19:10.168926+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:10.198755+00:00",
+          "first_seq": 44,
+          "last_seq": 46,
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "kind": "assistant_message",
+          "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+          "text": "I've checked: order Anker012 was under warranty until 2025-10-10. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+          "status": "completed",
+          "reply_to_input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+      "issues": [
+        {
+          "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+          "status": "open",
+          "title": "The device contantly says the water tank is i sufficient",
+          "task_queue": [
+            {
+              "task_id": "a30bf5102ed45532aaa2de690b292f26",
+              "intent": "report_problem",
+              "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+              "status": "active",
+              "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+              "business_reference": {
+                "status": "resolved",
+                "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+                "candidate_ids": []
+              }
+            },
+            {
+              "task_id": "3092301b98ab520388b48503de1a567d",
+              "intent": "warranty_query",
+              "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+              "status": "pending",
+              "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+              "business_reference": {
+                "status": "resolved",
+                "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 48,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+      "session_id": "2c4d928612a74f329b8793eb710d356d",
+      "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "closed_unresolved",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": {
+        "sku": "T2351V11",
+        "as_of": "2026-10-09",
+        "basis": "order",
+        "dealer": null,
+        "reason": "order Anker012 was under warranty until 2025-10-10",
+        "status": "out_of_warranty",
+        "country": null,
+        "order_no": "Anker012",
+        "warranty_end": "2025-10-10"
+      },
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {
+        "order_no": "Anker012"
+      },
+      "opened_at": "2026-10-09T07:19:10.157838+00:00",
+      "updated_at": "2026-10-09T07:19:10.168926+00:00",
+      "closed_at": "2026-10-09T07:19:10.168923+00:00",
+      "reopened_count": 0,
+      "revision": 4,
+      "events": [
+        {
+          "id": 2832,
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "seq": 1,
+          "type": "order_identified",
+          "payload": {
+            "order_no": "Anker012"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:10.160375+00:00"
+        },
+        {
+          "id": 2833,
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "seq": 2,
+          "type": "updated",
+          "payload": {
+            "reason": "订单质保已判断"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:10.162901+00:00"
+        },
+        {
+          "id": 2834,
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "seq": 3,
+          "type": "status_changed",
+          "payload": {
+            "to": "proposing",
+            "from": "open",
+            "reason": "订单已过保"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:10.167546+00:00"
+        },
+        {
+          "id": 2835,
+          "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+          "seq": 4,
+          "type": "status_changed",
+          "payload": {
+            "to": "closed_unresolved",
+            "from": "proposing",
+            "reason": "过保，按 SOP 委婉拒绝"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:10.168926+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "2c4d928612a74f329b8793eb710d356d",
+        "version": 3,
+        "stage": "done",
+        "substage": null,
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-09T07:19:03.002022+00:00",
+            "first_seq": 2,
+            "last_seq": 18,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "user_message",
+            "id": "c0ccf273e9044abbbcdb138718a23c4b",
+            "text": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+            "image_ids": [
+              "a101456c119255149f2892868baafe70"
+            ],
+            "images": [
+              {
+                "image_id": "a101456c119255149f2892868baafe70",
+                "purpose": "fault",
+                "sha256": "3c00ec08fe82adfcff6908c2709b246ebe689e4a1ceab5fce2eb73832535dfca",
+                "mime": "image/jpeg",
+                "size": 65045
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:06.172457+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "a7bd62a1498050c88aa9027483c1ad56",
+            "name": "diagnose.vision",
+            "status": "finished",
+            "summary": "页面标题为 Invoice Preview；发票号 Anker012，日期 2024-10-09；商品 eufy X10 Pro Omni，数量 1；含 6-Pack 抗菌除臭尘袋；总计 £608.99，含 VAT £101.50"
+          },
+          {
+            "at": "2026-10-09T07:19:07.605777+00:00",
+            "first_seq": 10,
+            "last_seq": 11,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "1f251efe7d7451548ce46404e9fc1cac",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 22 条来源（已补检索）"
+          },
+          {
+            "at": "2026-10-09T07:19:09.999739+00:00",
+            "first_seq": 15,
+            "last_seq": 17,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "assistant_message",
+            "message_id": "9dc6495de71252f3a235483b74e21ab3",
+            "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+            "status": "completed",
+            "reply_to_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:19:10.007440Z",
+            "first_seq": 19,
+            "last_seq": 19,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+                "source": "kb_qa",
+                "doc_id": "rv-0023",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6011: The clean water in the station is insufficient, please add water, Base station clean water tank is empty, insufficient water error despite a filled tank, showed the clean water tank is empty, saying that the Clean water is insufficient, water in the clean water tank is insufficient?\n1. Inspect the components of the clean water tank ",
+                "score": 0.016162909836065574,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+                "source": "kb_qa",
+                "doc_id": "rv-0242",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7d2e132c-3139-478c-9722-cb7ad174cc81",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6010:Clean water tank not in place, please check, The clean water tank is not in place?\n1. Please put the clean water tank back at the station correctly.\n2. If the clean water tank has been installed correctly and there is still an error, please check whether the magnet at the bottom of the clean water tank is still there;",
+                "score": 0.016029143897996354,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+                "source": "kb_qa",
+                "doc_id": "rv-0236",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "cb913b19-8778-45e0-91f3-353eff3c63c0",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6025:The dirty water tank is full or not in place, please check, The sewage tank of the base station is full or out of position?\n1. Please check whether the dirty water tank of the station is installed in place.\n2. Take out the dirty water tank and check whether it is full. If it is full, pour out the dirty water and clean the dirty water",
+                "score": 0.015905707196029774,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+                "source": "kb_qa",
+                "doc_id": "rv-0241",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5b66d6a5-d227-4ab2-8f31-f88228565aa3",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6020:Clean water tank or dirty water tank not connected, please check, Base Station Dirty Water Tank Not Installed?\n1. Please put the dirty water tank back in the station correctly.\n2. If the dirty water tank has been installed correctly and still reports an error, open the dirty water tank cover to check whether the float in the dirty wa",
+                "score": 0.015776209677419356,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "54924af7-4c53-4649-99ee-f151a3251300",
+                "source": "kb_qa",
+                "doc_id": "rv-0239",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "54924af7-4c53-4649-99ee-f151a3251300",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6021: The dirty water tank in the station is full, please empty to avoid bad smells, The sewage tank of the base station is full or out of position?\n1. Please empty the dirty water in the dirty water tank;\n2. If the dirty water tank is empty and the error message still appears, please open the dirty water tank cover and check whether the ",
+                "score": 0.01553113553113553,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+                "source": "kb_qa",
+                "doc_id": "rv-0268",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "1d5bd6cc-fb82-4ed4-a671-1729883555b9",
+                "snippet": "Does the X10 Pro Omni have an onboard water tank?\nYes! The X10 Pro Omni is equipped with an onboard water tank that holds up to 80ml, ensuring that it can start its cleaning cycle without the immediate need for the Omni Station to wet the mopping pads. Additionally, the X10 Pro Omni's all-in-one Omni Station is equipped with a substantial 3-liter clean water tank.",
+                "score": 0.01477172958735733,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+                "source": "kb_qa",
+                "doc_id": "rv-0254",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b60536ed-56ab-4442-b7f8-c79ef400ef71",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6031:Abnormal sewage pumping function, or the cleaning tray is full of water, or dirty water is not being pumped out, sent errors stating the pump is malfunctioning, or the water level of the station's cleaning tray is abnormal?\n1. Check whether the door latch of the dirty water tank is fastened when it is installed on the station.\n2. Che",
+                "score": 0.014690382081686429,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+                "source": "kb_qa",
+                "doc_id": "rv-0270",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "7f763763-126c-4aa6-b052-8381b3dee5d9",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6032:Abnormal sewage pumping function or the cleaning tray is full or not in place?\n1. Please check whether the cleaning tray is installed correctly.\n2. Please check whether the buoy in the cleaning tray is installed correctly.\n3. If the cleaning tray is in place and water accumulates in the cleaning tray:\na. Check whether the door latch ",
+                "score": 0.014411764705882353,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+                "source": "kb_qa",
+                "doc_id": "rv-0273",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e8733bd8-dd94-43f6-9470-30e68a8a8b3f",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6012 or 6013:Sprinkler error/Base station clean water pump error/Water injection device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the error",
+                "score": 0.014395129615082481,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+                "source": "kb_qa",
+                "doc_id": "rv-0249",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ee61789d-2d58-4f34-8c16-60e642a1f854",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 6028: The base station may have a water leakage or abnormal sewage pumping function?\nCheck whether the station cleaning tray grille is clogged with sediment or foreign matter, and clean the cleaning tray.",
+                "score": 0.014135472370766487,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+                "source": "kb_qa",
+                "doc_id": "rv-0094",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "56d93cad-1a4b-4efb-97c0-998bb38916cc",
+                "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 2?\n1. The device is at a station.\n2. The device's battery level is ≥10%.\n3. The device is not currently washing mops/collecting dust.",
+                "score": 0.013519690576652602,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+                "source": "kb_qa",
+                "doc_id": "rv-0282",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "96d152c4-cf0f-44ec-8c28-d981500df0bf",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports an error 6022 or 6023:Station pump error/Base station dirty water pump error/Sewage pumping device is abnormal?\n1. Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.\n2. If the err",
+                "score": 0.013305613305613305,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+                "source": "kb_qa",
+                "doc_id": "rv-0245",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b590f8a0-2ec0-4293-aaa9-d2f95cb6aefc",
+                "snippet": "What should I do if my X10 Pro Omni T2351 base station is leaking water,Station leaks water?\n1. Check whether the base station cleaning tray grille is blocked by mud, sand, or foreign objects, which may affect the normal dirty water extraction of the base station and cause dirty water overflow. Please clean the cleaning tray regularly according to the app prompts.\n2. If the cleaning tray is clean ",
+                "score": 0.012724358974358974,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+                "source": "kb_qa",
+                "doc_id": "rv-0221",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b4e4566d-8567-477e-9cbd-61a308664d07",
+                "snippet": "What should I do if my X10 Pro Omni T2351 reports a toast 78:Low battery, please charge and try again?\nPlease note that the current battery level of the robot is less than 30%, which makes it impossible to start the task. Please wait until the battery level is greater than 30% before starting the cleaning task.",
+                "score": 0.012586427656850191,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+                "source": "kb_qa",
+                "doc_id": "rv-0007",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a0aff6ee-5962-4ab0-8870-f93decdb6786",
+                "snippet": "What should I do if the charging base of the eufy Clean X10 Pro Omni(T2351) gets dirty and wet?\n1. Check the cleaning tray grille for blockage\nSediment and foreign objects blocking the grille affect the base station's sewage extraction, causing sewage to overflow and making the base dirty and wet. Clean the cleaning tray regularly according to the app prompts, and observe whether there is still wa",
+                "score": 0.012302371541501975,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+                "source": "kb_qa",
+                "doc_id": "rv-0098",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+                "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+                "score": 0.014204425711275025,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+                "source": "kb_qa",
+                "doc_id": "rv-0066",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e5ba1179-bc7c-46e4-b5e7-d36fc8f3a85e",
+                "snippet": "I would like to know if I can purchase a replacement or additional base station for the Eufy X10 Pro Omni/T2351 robot vacuum.\nCurrently, the extra base station is not available, you can click \"notify me\" to get updated and order it when it is in stock. Below are links for you to order an extra base station and power adapter if needed. US: CA: UK： DE:",
+                "score": 0.013830455259026687,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+                "source": "kb_qa",
+                "doc_id": "rv-0266",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ef032c20-7801-4ad1-a489-663bcf4af809",
+                "snippet": "What are the dimensions of the X10 Pro Omni and the All-in-One Omni Station?\n-Dimensions (Length*Width*Height) The X10 Pro Omni Robot：327mm*353mm*113.5mm The Omni Station：365mm*480mm*460mm -Weight The X10 Pro Omni Robot：4,560g The Omni Station：7,240g The Combined Weight (when the robotic vacuum cleaner is docked on the Omni Station): 11,800g -Accessory Capacity Dustbin: 330ml Disposable Dust Bag: ",
+                "score": 0.01368813825608798,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6fc11811-b317-4365-9555-a8954099b618",
+                "source": "kb_qa",
+                "doc_id": "rv-0015",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6fc11811-b317-4365-9555-a8954099b618",
+                "snippet": "What should I do if eufy Clean X10 Pro Omni(T2351) battery dies at 60%?\n1. Adjust cleaning suction power. If the cleaning mode is set to Maximum or Turbo, it will consume more battery power. Try switching to Standard mode to extend battery life.\n2. Check the scheduled cleaning area. Ensure the programmed area is within the device's nominal cleaning capacity. If the area is too large, the device ma",
+                "score": 0.013664904163912757,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+                "source": "kb_qa",
+                "doc_id": "rv-0069",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b50fac52-0042-40ac-9255-f9e369eb4a35",
+                "snippet": "I'm looking to purchase the eufy X10 Pro Omni in white, but it is not available for shipping to Denmark. Is it possible to get the white version shipped to Denmark?\nStock availability depends on the region where the product is being purchased, and unfortunately, the white version of the Eufy X10 Pro Omni is not available for shipping to Denmark at this time. We understand that this may be disappoi",
+                "score": 0.013380758807588076,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+                "source": "kb_qa",
+                "doc_id": "rv-0097",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "41ea0502-477b-4009-8b7f-7bc2140b6e6b",
+                "snippet": "What should I do if my X10 Pro Omni T2351's firmware upgrade fails and APP displays upgrade failure error code 6/7/8/9/10/20/21/22/23/24/25/26/27/28/29/30/31/32 or firmware upgrade progress bar stuck at 50%-95%?\n1. If the device can perform the cleaning task normally after restarting, please try upgrading again;\n2. If the device cannot perform the cleaning task normally after restarting, please co",
+                "score": 0.013172043010752688,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+                "source": "kb_qa",
+                "doc_id": "rv-0264",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "89ce981d-853c-4ec1-a9ff-43f8c81cdd2f",
+                "snippet": "How to use the eufy cleaning solution for X10 Pro Omni/T2351.\nYou can follow the below article to use the eufy cleanning solutions:",
+                "score": 0.012781609195402298,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:10.015293+00:00",
+            "first_seq": 21,
+            "last_seq": 21,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "step_card",
+            "card_id": "0faa5e7bf5035f6cb4d38b610b51ef89",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0023",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Inspect the components of the clean water tank itself.",
+              "instruction": "Inspect the components of the clean water tank itself. If there is water in the tank, remove it first: check if the sealing ring of the water outlet is installed correctly/is undamaged. If the seal ring is deformed or broken, please provide photos of the defect.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+              ],
+              "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:10.058381+00:00",
+            "first_seq": 25,
+            "last_seq": 29,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "action",
+            "id": "36af7590d4eb4b7abe926528f8456bce",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:10.116889+00:00",
+            "first_seq": 32,
+            "last_seq": 32,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "step_card",
+            "card_id": "972b09caeb77568292d651584fa7b3ab",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0023",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If there are no abnormalities in the above steps (clean wat…",
+              "instruction": "If there are no abnormalities in the above steps (clean water tank components, base station sealing ring, installation), and the robot still displays error after reinstallation, it can be determined that there is a hardware problem with the base station.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "6e0a9f77-51cf-41b6-8f6a-b7b833408153"
+              ],
+              "primary_evidence_id": "6e0a9f77-51cf-41b6-8f6a-b7b833408153",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:19:10.142791+00:00",
+            "first_seq": 36,
+            "last_seq": 41,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "action",
+            "id": "b6b3fcfcc4764705a386d19505b25ecc",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:19:10.197337+00:00",
+            "first_seq": 43,
+            "last_seq": 47,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "case_changed",
+            "card_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+            "version": 3,
+            "case_id": "1de08322-63c3-5a9d-a20a-1c0620387052",
+            "status": "closed_unresolved",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {
+              "order_no": "Anker012"
+            },
+            "updated_at": "2026-10-09T07:19:10.168926+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:10.198755+00:00",
+            "first_seq": 44,
+            "last_seq": 46,
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "kind": "assistant_message",
+            "message_id": "46b059eea82a5c45a49d379e33d6e9bc",
+            "text": "I've checked: order Anker012 was under warranty until 2025-10-10. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+            "status": "completed",
+            "reply_to_input_id": "b6b3fcfcc4764705a386d19505b25ecc",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+        "issues": [
+          {
+            "issue_id": "e0fcbd8fc88f510da433d62f13739bb4",
+            "status": "open",
+            "title": "The device contantly says the water tank is i sufficient",
+            "task_queue": [
+              {
+                "task_id": "a30bf5102ed45532aaa2de690b292f26",
+                "intent": "report_problem",
+                "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+                "status": "active",
+                "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+                "business_reference": {
+                  "status": "resolved",
+                  "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+                  "candidate_ids": []
+                }
+              },
+              {
+                "task_id": "3092301b98ab520388b48503de1a567d",
+                "intent": "warranty_query",
+                "quote": "Order No: Anker012\nProduct Name: Eufy X10 Pro Omni\nProblem Description: The device contantly says the water tank is i sufficient I have tried repeatedly washing the mop among other things but cannot get rid of the fault\nOrder Receipt: See attached picture\nProdcut SN:\nSubmit Date: 2026-09-06T08:07:04.473Z",
+                "status": "pending",
+                "created_input_id": "c0ccf273e9044abbbcdb138718a23c4b",
+                "business_reference": {
+                  "status": "resolved",
+                  "subject_id": "0b9bd26cb57351beb4cd9112aaeec471",
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 48,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}

@@ -1,0 +1,1417 @@
+{
+  "id": "T35",
+  "input": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "resumed": false,
+          "event_id": "b59dcf65fcaa4d6c8eb163f83a1bcbb5",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:16.261825+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "bc654e54cb1444e985932c5cce55eda0",
+          "input_id": "8ba5679e6f3f489c9dbbd53ddd158524",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:16.261825+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 3,
+          "event_id": "f585679ae2ec47758ffd5475bd499018",
+          "recorded_at": "2026-10-09T07:23:16.291187+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "consult",
+          "substage": null,
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 4,
+          "event_id": "4ab11a2e8ac047eeb76bcc1d55f08554",
+          "recorded_at": "2026-10-09T07:23:18.723157+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "2fe0b5367f8b5511b785a6077ef0af22",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "查询产品官方说明",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 5,
+          "event_id": "ba6f792fbac64704ac86015944669c54",
+          "recorded_at": "2026-10-09T07:23:18.727610+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "2fe0b5367f8b5511b785a6077ef0af22",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "找到 12 条产品说明",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 6,
+          "event_id": "8d6e18d08caa47a49e6d81b5070d697b",
+          "recorded_at": "2026-10-09T07:23:18.958367+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 7,
+          "event_id": "a15ee0c0a35340eb815b09bf0206f35f",
+          "recorded_at": "2026-10-09T07:23:23.623991+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "input_id": "8ba5679e6f3f489c9dbbd53ddd158524",
+          "resolved_issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+              "title": "待描述的问题",
+              "status": "draft"
+            }
+          ],
+          "event_id": "37e62aed35d9563eb38e69aa13fcfb4c",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:23:23.635271+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+              "source": "kb_qa",
+              "doc_id": "rv-0212",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+              "snippet": "what should I do if my T2353 Omni E25/T2352 Omni E28 has the error message \"5012-Battery abnormality Charging current is too low, click to view troubleshooting\"？\nThis issue may be caused by dirty charging pins. Please gently wipe the charging pins on the robot and the base station. If the problem persists and still under warranty, we will provide warranty service.",
+              "score": 0.015522875816993463,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+              "source": "kb_qa",
+              "doc_id": "rv-0076",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 79 warning Low battery, heading home/ Low battery, return to recharge/Low charge back/When the charge level is sufficient, the robot will automatically resume the last incomplete cleaning?\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will return to the base station to charge until it is e",
+              "score": 0.015365793980915095,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+              "source": "kb_qa",
+              "doc_id": "rv-0190",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5010 Error:Battery pack malfunction/Battery error？\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our technical department for analysis and will respond to you as soon as possible.",
+              "score": 0.014906832298136646,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+              "source": "kb_qa",
+              "doc_id": "rv-0152",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+              "snippet": "What should I do when (T2353 Omni E25 /T2352 Omni E28) Short battery life /Dropping battery quickly \nRunning out of battery quickly?\nPlease confirm the suction level set on the APP, if your home is clean and do not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box, the higher the suction level, the higher the power consumption, y",
+              "score": 0.014623655913978493,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "source": "kb_qa",
+              "doc_id": "rv-0021",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+              "score": 0.014298169136878813,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+              "source": "kb_qa",
+              "doc_id": "rv-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is poor cleaning/Poor suction /Can't vacuum /Insufficient suction /Dust not cleaned /Hair not cleaned /Incomplete cleaning /Poor vacuuming/ no vacuuming /hair left behind / has inconsistent mopping and vacuuming performance/did not vacuum properly/is spreading confetti/didn’t Hoover/cannot pick up a fluffy cottonor/paper shredding/has Cleanning ",
+              "score": 0.013975409836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+              "source": "kb_qa",
+              "doc_id": "rv-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Can't clean wall edges or corners /Poorly cleaned edges of cupboards /Poorly cleaned edges of skirting boards /Can't clean to the edges /Missing some corners /Avoiding the edges of rooms or The Omni E25 did not perform a perimeter clean or The Omni E25 does not approach within 6 inches of walls or furniture and avoids certain areas or The Omni E",
+              "score": 0.013767688679245282,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+              "source": "kb_qa",
+              "doc_id": "rv-0187",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5015 Error: Batter low, scheduled task start failed？\nThe robotic vacuum has insufficient power and cannot start the scheduled task. Please recharge and try again. Tips: The robot takes approximately 5 hours to fully charge when the battery is low. To avoid affecting the normal execution of scheduled tasks, we recommend not setting cleaning ap",
+              "score": 0.013519813519813519,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+              "source": "kb_qa",
+              "doc_id": "rv-0157",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Camera Exception /Camera Error？\nThis issue requires our technical team to analyze your error logs in order to provide a precise troubleshooting solution. Please provide your device information and enable the log switch in the APP. Our eufy engineers will assist you in resolving the problem.",
+              "score": 0.013157894736842105,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+              "source": "kb_qa",
+              "doc_id": "rv-0178",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Cleaning corners with side brushes that don't extend out?\nThe design will only expand the side brush when it recognises the specified scene. There may not be a significant difference in cleaning effectiveness between the non-expanded and expanded scenes. Should you have any suggestions for the expanded scene, please share the relevant video and ",
+              "score": 0.012859154929577465,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+              "source": "kb_qa",
+              "doc_id": "rv-0043",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5017 Error: Battery pack malfunction/Battery error？\nBased on our review, this appears to be related to a hardware malfunction, and unfortunately, the machine may not be able to recover on its own. We want to make this right for you and would like to offer our warranty service to resolve this issue.",
+              "score": 0.012857142857142857,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0134",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Battery Exception /Battery Error?\nPlease reinsert the battery pack and start a new task to verify if the operation can be resumed.",
+              "score": 0.01284486657620986,
+              "status": "ok"
+            }
+          ],
+          "event_id": "5498ecc2e61f5d02b5a8ff8509880910",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:23:23.636472+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "reply_to_input_id": "8ba5679e6f3f489c9dbbd53ddd158524",
+          "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "event_id": "4c148ea9b8805c87b023285aba1f3652",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:23.640686+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "Based",
+          "event_id": "28518b2018a3578081f79fbbe698122a",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:23.642815+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " on the official",
+          "event_id": "1dc233540000505fa437dc29428f298c",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:23.644341+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " evidence provided, the",
+          "event_id": "48d6de04a8815794837f9cb3c6b7c134",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:23:23.645609+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " behavior you",
+          "event_id": "03ceb387e2885edba4d7694e5e6ae477",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:23:23.646802+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " described for the T",
+          "event_id": "b3b698fab72c5fec914ff39a9dd8875b",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:23:23.648108+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "2353",
+          "event_id": "8f7850e0bdfe53f58b2b5154e463dd24",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 17,
+          "recorded_at": "2026-10-09T07:23:23.649304+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " Omni E25",
+          "event_id": "a7ba29dd0a595e8e9860b307e869901f",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 18,
+          "recorded_at": "2026-10-09T07:23:23.650479+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " is normal operation.",
+          "event_id": "d54a6464edb25a31a2d1e91114006029",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 19,
+          "recorded_at": "2026-10-09T07:23:23.651577+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "\n\nWhen",
+          "event_id": "52dbdac308985284848cc26be4a12321",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 20,
+          "recorded_at": "2026-10-09T07:23:23.652940+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " the robot vacuum cleaner",
+          "event_id": "529f0202a0895417879e6e9d4d9c4b4d",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 21,
+          "recorded_at": "2026-10-09T07:23:23.654899+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " is low on battery",
+          "event_id": "a869c428aa94528fa116dc2f65b5fe0d",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:23:23.656254+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " and the current cleaning",
+          "event_id": "cd10d5cd0d8d52fdbb937bc721018b2a",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:23:23.657722+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " task is not completed",
+          "event_id": "877f6a927c2e5e7fb8daaa93fb51bd30",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:23:23.658901+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": ", it will automatically",
+          "event_id": "85c8d071bb60573681e88f3209c39b46",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:23:23.659933+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " return to the base",
+          "event_id": "26301d682f3a5416b1da5a0edc9ad55c",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 26,
+          "recorded_at": "2026-10-09T07:23:23.661082+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " station to recharge.",
+          "event_id": "af73c66fd79158bf988ada52db97e361",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 27,
+          "recorded_at": "2026-10-09T07:23:23.662647+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " Once the charge level",
+          "event_id": "8870cb610b125c7cab273a15a3b6a458",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 28,
+          "recorded_at": "2026-10-09T07:23:23.664134+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " is sufficient, the",
+          "event_id": "7801aa2d59e056aba1eb40bcdac1d26b",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 29,
+          "recorded_at": "2026-10-09T07:23:23.665135+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " robot will automatically resume",
+          "event_id": "f9ef5bb7f0c0547892fb7e78e2217625",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 30,
+          "recorded_at": "2026-10-09T07:23:23.666151+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " the last incomplete cleaning",
+          "event_id": "0999f0e605c05618898cd979ee8766fa",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 31,
+          "recorded_at": "2026-10-09T07:23:23.667520+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " task [05",
+          "event_id": "9e14f94d0acf5500887d3c342cd333db",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 32,
+          "recorded_at": "2026-10-09T07:23:23.668524+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "af0",
+          "event_id": "3e174083624f5b9380099e6d51d02951",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:23:23.669558+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "178-",
+          "event_id": "dc705cd8baa75df4ba5aabb3ee64011e",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:23:23.670709+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "096c",
+          "event_id": "469eed9c3cf056369bb0b8aede086644",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:23:23.671782+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "-47d",
+          "event_id": "a21d48a167d252839948b98406e93eca",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:23:23.672992+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "0-b31",
+          "event_id": "e61d41d2692550baadba35f02eeede60",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 37,
+          "recorded_at": "2026-10-09T07:23:23.674660+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "7-fc9",
+          "event_id": "fe3a060691ef5a548c958854f792fe6f",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 38,
+          "recorded_at": "2026-10-09T07:23:23.675775+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "9b22",
+          "event_id": "cc6fcdc5b787561aa5ee3bd9e5e296ed",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 39,
+          "recorded_at": "2026-10-09T07:23:23.676826+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "1f68",
+          "event_id": "fa058e35f9f95be6a90296b1c9a787cc",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 40,
+          "recorded_at": "2026-10-09T07:23:23.678145+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "e].\n\nIf",
+          "event_id": "2a20b8767ffc552cadfc6759242fed34",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 41,
+          "recorded_at": "2026-10-09T07:23:23.679273+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " you are experiencing issues",
+          "event_id": "21e83710c7dc504291cd19b4c955c13c",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 42,
+          "recorded_at": "2026-10-09T07:23:23.680174+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " related to",
+          "event_id": "aaa3bf5582bb55b397f40d37c45424cc",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 43,
+          "recorded_at": "2026-10-09T07:23:23.681173+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " battery performance, such",
+          "event_id": "b6cee41d34bf543eadeb20706d6e0047",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:23:23.683321+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " as short",
+          "event_id": "beb5f6c2d69c5510bd28f72b5df9daf5",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:23:23.684251+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " battery life or dropping",
+          "event_id": "5ac278a543545a5c907d0e42084b30c3",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:23:23.685243+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " battery quickly,",
+          "event_id": "6e1022fb202151ada615413110b2f76d",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:23:23.686207+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " please confirm the suction",
+          "event_id": "6e6b22df57cb5db1a5b9061502968ba1",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 48,
+          "recorded_at": "2026-10-09T07:23:23.687098+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " level set",
+          "event_id": "b5b98789fbc85cfbb7069eed287bf938",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 49,
+          "recorded_at": "2026-10-09T07:23:23.688007+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " on the APP.",
+          "event_id": "91a766bec50b5779ab3bbf086fba1d1f",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 50,
+          "recorded_at": "2026-10-09T07:23:23.688964+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " If your home is",
+          "event_id": "cd0a735dcae05de589ebd81364c144a4",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 51,
+          "recorded_at": "2026-10-09T07:23:23.691247+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " clean and does not",
+          "event_id": "b624fe156c295889b525eec656c3ac36",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 52,
+          "recorded_at": "2026-10-09T07:23:23.692428+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " have pets,",
+          "event_id": "effae69c03c85d068e5847dcc4d63ba2",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 53,
+          "recorded_at": "2026-10-09T07:23:23.694116+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " it is recommended to",
+          "event_id": "196716f7ac875e67ad85397edeabd804",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 54,
+          "recorded_at": "2026-10-09T07:23:23.696143+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " adjust the suction level",
+          "event_id": "64f0e4ef0ee55f77bcd2a714775afec5",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 55,
+          "recorded_at": "2026-10-09T07:23:23.698311+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " to silent or standard",
+          "event_id": "47556974bea954b79d1138d3ba59b237",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 56,
+          "recorded_at": "2026-10-09T07:23:23.699434+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " after the first cleaning",
+          "event_id": "d17d3fd0b69d547da221e2466fbdfe8e",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 57,
+          "recorded_at": "2026-10-09T07:23:23.700476+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " out of the box",
+          "event_id": "3a07ad93061e5d8f83431ea3104d4411",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 58,
+          "recorded_at": "2026-10-09T07:23:23.701451+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": " [f9f",
+          "event_id": "0c93bae08868522c986788b2eeddd3db",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 59,
+          "recorded_at": "2026-10-09T07:23:23.702438+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "0961",
+          "event_id": "be447c4ce1ff5941b1eeb483f9cf64d6",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 60,
+          "recorded_at": "2026-10-09T07:23:23.703438+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "d-94",
+          "event_id": "69d6ab3eb1b75346a847a310402fc896",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 61,
+          "recorded_at": "2026-10-09T07:23:23.704447+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "09-",
+          "event_id": "5fe5e306b8f257f29d303fd05f4fe8c4",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 62,
+          "recorded_at": "2026-10-09T07:23:23.706204+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "4f4e",
+          "event_id": "06434068f4f456aeb7fecf7d376097c7",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 63,
+          "recorded_at": "2026-10-09T07:23:23.707404+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "-b349",
+          "event_id": "64587b64da3e59a8afee84e82da7c7da",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 64,
+          "recorded_at": "2026-10-09T07:23:23.708836+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "-363",
+          "event_id": "03abab55de25550b8cd9dd507250707c",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 65,
+          "recorded_at": "2026-10-09T07:23:23.709725+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "c6cc4",
+          "event_id": "9fdbc66ba98751f480e1b79ae289d776",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 66,
+          "recorded_at": "2026-10-09T07:23:23.710651+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "6325",
+          "event_id": "56794c615d9c529e8931040af5189f61",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 67,
+          "recorded_at": "2026-10-09T07:23:23.711580+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "delta": "].",
+          "event_id": "42355a7743ca5feebf0f636c16a6148a",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 68,
+          "recorded_at": "2026-10-09T07:23:23.712449+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "status": "completed",
+          "model_tier": "primary",
+          "event_id": "a0a8e22e62b45d08912a93ec4f861ec4",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 69,
+          "recorded_at": "2026-10-09T07:23:23.713485+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "f96ab28bee795b8a83d417f1b9612253",
+          "recorded_at": "2026-10-09T07:23:23.714948+00:00",
+          "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+          "seq": 70,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:16.157217+08:00",
+  "session_id": "51dd4c1c29f64ccc9c88abcda2079286",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "51dd4c1c29f64ccc9c88abcda2079286",
+    "version": 1,
+    "stage": "intake",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:16.261825+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+        "kind": "user_message",
+        "id": "8ba5679e6f3f489c9dbbd53ddd158524",
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:18.727610+00:00",
+        "first_seq": 5,
+        "last_seq": 6,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "2fe0b5367f8b5511b785a6077ef0af22",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "找到 12 条产品说明"
+      },
+      {
+        "at": "2026-10-09T07:23:23.636693Z",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+            "source": "kb_qa",
+            "doc_id": "rv-0212",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+            "snippet": "what should I do if my T2353 Omni E25/T2352 Omni E28 has the error message \"5012-Battery abnormality Charging current is too low, click to view troubleshooting\"？\nThis issue may be caused by dirty charging pins. Please gently wipe the charging pins on the robot and the base station. If the problem persists and still under warranty, we will provide warranty service.",
+            "score": 0.015522875816993463,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+            "source": "kb_qa",
+            "doc_id": "rv-0076",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 79 warning Low battery, heading home/ Low battery, return to recharge/Low charge back/When the charge level is sufficient, the robot will automatically resume the last incomplete cleaning?\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will return to the base station to charge until it is e",
+            "score": 0.015365793980915095,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+            "source": "kb_qa",
+            "doc_id": "rv-0190",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5010 Error:Battery pack malfunction/Battery error？\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our technical department for analysis and will respond to you as soon as possible.",
+            "score": 0.014906832298136646,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+            "source": "kb_qa",
+            "doc_id": "rv-0152",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+            "snippet": "What should I do when (T2353 Omni E25 /T2352 Omni E28) Short battery life /Dropping battery quickly \nRunning out of battery quickly?\nPlease confirm the suction level set on the APP, if your home is clean and do not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box, the higher the suction level, the higher the power consumption, y",
+            "score": 0.014623655913978493,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "source": "kb_qa",
+            "doc_id": "rv-0021",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+            "score": 0.014298169136878813,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+            "source": "kb_qa",
+            "doc_id": "rv-0120",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is poor cleaning/Poor suction /Can't vacuum /Insufficient suction /Dust not cleaned /Hair not cleaned /Incomplete cleaning /Poor vacuuming/ no vacuuming /hair left behind / has inconsistent mopping and vacuuming performance/did not vacuum properly/is spreading confetti/didn’t Hoover/cannot pick up a fluffy cottonor/paper shredding/has Cleanning ",
+            "score": 0.013975409836065574,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+            "source": "kb_qa",
+            "doc_id": "rv-0117",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Can't clean wall edges or corners /Poorly cleaned edges of cupboards /Poorly cleaned edges of skirting boards /Can't clean to the edges /Missing some corners /Avoiding the edges of rooms or The Omni E25 did not perform a perimeter clean or The Omni E25 does not approach within 6 inches of walls or furniture and avoids certain areas or The Omni E",
+            "score": 0.013767688679245282,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+            "source": "kb_qa",
+            "doc_id": "rv-0187",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5015 Error: Batter low, scheduled task start failed？\nThe robotic vacuum has insufficient power and cannot start the scheduled task. Please recharge and try again. Tips: The robot takes approximately 5 hours to fully charge when the battery is low. To avoid affecting the normal execution of scheduled tasks, we recommend not setting cleaning ap",
+            "score": 0.013519813519813519,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+            "source": "kb_qa",
+            "doc_id": "rv-0157",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Camera Exception /Camera Error？\nThis issue requires our technical team to analyze your error logs in order to provide a precise troubleshooting solution. Please provide your device information and enable the log switch in the APP. Our eufy engineers will assist you in resolving the problem.",
+            "score": 0.013157894736842105,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+            "source": "kb_qa",
+            "doc_id": "rv-0178",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Cleaning corners with side brushes that don't extend out?\nThe design will only expand the side brush when it recognises the specified scene. There may not be a significant difference in cleaning effectiveness between the non-expanded and expanded scenes. Should you have any suggestions for the expanded scene, please share the relevant video and ",
+            "score": 0.012859154929577465,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+            "source": "kb_qa",
+            "doc_id": "rv-0043",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+            "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5017 Error: Battery pack malfunction/Battery error？\nBased on our review, this appears to be related to a hardware malfunction, and unfortunately, the machine may not be able to recover on its own. We want to make this right for you and would like to offer our warranty service to resolve this issue.",
+            "score": 0.012857142857142857,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+            "source": "kb_qa",
+            "doc_id": "rv-0134",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Battery Exception /Battery Error?\nPlease reinsert the battery pack and start a new task to verify if the operation can be resumed.",
+            "score": 0.01284486657620986,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:23:23.640686+00:00",
+        "first_seq": 11,
+        "last_seq": 69,
+        "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+        "kind": "assistant_message",
+        "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+        "text": "Based on the official evidence provided, the behavior you described for the T2353 Omni E25 is normal operation.\n\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will automatically return to the base station to recharge. Once the charge level is sufficient, the robot will automatically resume the last incomplete cleaning task [05af0178-096c-47d0-b317-fc99b221f68e].\n\nIf you are experiencing issues related to battery performance, such as short battery life or dropping battery quickly, please confirm the suction level set on the APP. If your home is clean and does not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box [f9f0961d-9409-4f4e-b349-363c6cc46325].",
+        "status": "completed",
+        "reply_to_input_id": "8ba5679e6f3f489c9dbbd53ddd158524",
+        "model_tier": "primary",
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+    "issues": [
+      {
+        "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+        "status": "draft",
+        "title": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 70,
+    "latest_summaries": []
+  },
+  "visible_text": "Based on the official evidence provided, the behavior you described for the T2353 Omni E25 is normal operation.\n\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will automatically return to the base station to recharge. Once the charge level is sufficient, the robot will automatically resume the last incomplete cleaning task [05af0178-096c-47d0-b317-fc99b221f68e].\n\nIf you are experiencing issues related to battery performance, such as short battery life or dropping battery quickly, please confirm the suction level set on the APP. If your home is clean and does not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box [f9f0961d-9409-4f4e-b349-363c6cc46325].",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 7.52,
+  "journey": {
+    "session": {
+      "session_id": "51dd4c1c29f64ccc9c88abcda2079286",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:16.263187Z",
+      "last_run_at": "2026-10-09T07:23:23.716085Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete clean",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "in_progress",
+      "outcome_reason": null,
+      "outcome_at": null,
+      "total_latency_ms": 7570,
+      "model_calls": 2,
+      "tokens_in": 6941,
+      "tokens_out": 445,
+      "raw_available_until": "2026-10-16T07:23:23.716085Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+        "session_id": "51dd4c1c29f64ccc9c88abcda2079286",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:16.263187Z",
+        "ended_at": "2026-10-09T07:23:23.716068Z",
+        "duration_ms": 7570,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "intake",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 7498,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2410,
+            "tokens_in": 4171,
+            "tokens_out": 239,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:18.695110Z"
+          },
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "node": "product_help",
+            "task": "reply.stream",
+            "model_used": "dashscope/qwen3.7-plus",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": true,
+            "latency_ms": 4780,
+            "tokens_in": 2770,
+            "tokens_out": 206,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:23.614365Z"
+          }
+        ],
+        "tokens_in": 6941,
+        "tokens_out": 445,
+        "node_count": 3,
+        "nodes": [
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:16.263187Z",
+            "duration_ms": 2455,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "product_question",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3316,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 183,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5716
+                    }
+                  ],
+                  "actual_input_tokens": 4171
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "idx": 2,
+            "node": "product_help",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:18.719040Z",
+            "duration_ms": 5020,
+            "status": "ok",
+            "summary": {
+              "category": "robot_vacuum",
+              "product_state": "confirmed_sku",
+              "context_metrics": [
+                {
+                  "task": "reply.stream",
+                  "event": "context_built",
+                  "tokens": 3072,
+                  "truncated": false,
+                  "max_tokens": 7744,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 231,
+                    "current": 183,
+                    "history": 0,
+                    "authority": 2658
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "handoff": 9,
+                    "decision": 190,
+                    "timezone": 7,
+                    "task_data": 2132,
+                    "issue_index": 149,
+                    "step_attempts": 2,
+                    "active_issue_id": 28,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "reply.stream",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-plus",
+                  "attempts": [
+                    {
+                      "alias": "qwen-plus",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3072
+                    }
+                  ],
+                  "actual_input_tokens": 2770
+                }
+              ],
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "idx": 3,
+            "node": "commit_issue",
+            "prev_node": "product_help",
+            "started_at": "2026-10-09T07:23:23.739218Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "2b1a3effa6934f81924186ddd1ae02ee",
+            "node": "product_help",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 142,
+            "hits": 15,
+            "top_score": 0.0155,
+            "latency_ms": 217,
+            "query": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+            "created_at": "2026-10-09T07:23:18.938038Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "51dd4c1c29f64ccc9c88abcda2079286",
+      "version": 1,
+      "stage": "intake",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:16.261825+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "kind": "user_message",
+          "id": "8ba5679e6f3f489c9dbbd53ddd158524",
+          "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:18.727610+00:00",
+          "first_seq": 5,
+          "last_seq": 6,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "2fe0b5367f8b5511b785a6077ef0af22",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "找到 12 条产品说明"
+        },
+        {
+          "at": "2026-10-09T07:23:23.636693Z",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+              "source": "kb_qa",
+              "doc_id": "rv-0212",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d2344d68-78fb-4ae5-b10f-73eebff6efbd",
+              "snippet": "what should I do if my T2353 Omni E25/T2352 Omni E28 has the error message \"5012-Battery abnormality Charging current is too low, click to view troubleshooting\"？\nThis issue may be caused by dirty charging pins. Please gently wipe the charging pins on the robot and the base station. If the problem persists and still under warranty, we will provide warranty service.",
+              "score": 0.015522875816993463,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+              "source": "kb_qa",
+              "doc_id": "rv-0076",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "05af0178-096c-43b6-9007-79ca404b44e1",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 79 warning Low battery, heading home/ Low battery, return to recharge/Low charge back/When the charge level is sufficient, the robot will automatically resume the last incomplete cleaning?\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will return to the base station to charge until it is e",
+              "score": 0.015365793980915095,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+              "source": "kb_qa",
+              "doc_id": "rv-0190",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "38e656c1-554e-47d0-b317-fc99b221f68e",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5010 Error:Battery pack malfunction/Battery error？\nThis issue requires our technical team to analyze your error logs in order to accurately troubleshoot the problem. Please provide your device ID and activate the log feature in the APP. We will escalate this to our technical department for analysis and will respond to you as soon as possible.",
+              "score": 0.014906832298136646,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+              "source": "kb_qa",
+              "doc_id": "rv-0152",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f9f0961d-9409-4f4e-b349-363c6cc46325",
+              "snippet": "What should I do when (T2353 Omni E25 /T2352 Omni E28) Short battery life /Dropping battery quickly \nRunning out of battery quickly?\nPlease confirm the suction level set on the APP, if your home is clean and do not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box, the higher the suction level, the higher the power consumption, y",
+              "score": 0.014623655913978493,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "source": "kb_qa",
+              "doc_id": "rv-0021",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+              "score": 0.014298169136878813,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+              "source": "kb_qa",
+              "doc_id": "rv-0120",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b42adeb3-9b55-4733-8688-ac9ad267ff2f",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is poor cleaning/Poor suction /Can't vacuum /Insufficient suction /Dust not cleaned /Hair not cleaned /Incomplete cleaning /Poor vacuuming/ no vacuuming /hair left behind / has inconsistent mopping and vacuuming performance/did not vacuum properly/is spreading confetti/didn’t Hoover/cannot pick up a fluffy cottonor/paper shredding/has Cleanning ",
+              "score": 0.013975409836065574,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+              "source": "kb_qa",
+              "doc_id": "rv-0117",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ae2bbeeb-fb72-4a49-b54e-090b71e570d0",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Can't clean wall edges or corners /Poorly cleaned edges of cupboards /Poorly cleaned edges of skirting boards /Can't clean to the edges /Missing some corners /Avoiding the edges of rooms or The Omni E25 did not perform a perimeter clean or The Omni E25 does not approach within 6 inches of walls or furniture and avoids certain areas or The Omni E",
+              "score": 0.013767688679245282,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+              "source": "kb_qa",
+              "doc_id": "rv-0187",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5261b504-58df-4618-bd0e-e84911423fd0",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5015 Error: Batter low, scheduled task start failed？\nThe robotic vacuum has insufficient power and cannot start the scheduled task. Please recharge and try again. Tips: The robot takes approximately 5 hours to fully charge when the battery is low. To avoid affecting the normal execution of scheduled tasks, we recommend not setting cleaning ap",
+              "score": 0.013519813519813519,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+              "source": "kb_qa",
+              "doc_id": "rv-0157",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2187f32e-47be-48d3-b361-b31199cee5a4",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Camera Exception /Camera Error？\nThis issue requires our technical team to analyze your error logs in order to provide a precise troubleshooting solution. Please provide your device information and enable the log switch in the APP. Our eufy engineers will assist you in resolving the problem.",
+              "score": 0.013157894736842105,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+              "source": "kb_qa",
+              "doc_id": "rv-0178",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c5d5814f-62ae-4ff6-9697-b91e4fb38d33",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Cleaning corners with side brushes that don't extend out?\nThe design will only expand the side brush when it recognises the specified scene. There may not be a significant difference in cleaning effectiveness between the non-expanded and expanded scenes. Should you have any suggestions for the expanded scene, please share the relevant video and ",
+              "score": 0.012859154929577465,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+              "source": "kb_qa",
+              "doc_id": "rv-0043",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4311dc02-ec6c-4215-b25e-9befb26321cd",
+              "snippet": "what should I do when T2353 Omni E25/T2352 Omni E28 has 5017 Error: Battery pack malfunction/Battery error？\nBased on our review, this appears to be related to a hardware malfunction, and unfortunately, the machine may not be able to recover on its own. We want to make this right for you and would like to offer our warranty service to resolve this issue.",
+              "score": 0.012857142857142857,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+              "source": "kb_qa",
+              "doc_id": "rv-0134",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "46c0633f-5b3f-4a3a-b12c-ff7cc9eeabf0",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Battery Exception /Battery Error?\nPlease reinsert the battery pack and start a new task to verify if the operation can be resumed.",
+              "score": 0.01284486657620986,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:23:23.640686+00:00",
+          "first_seq": 11,
+          "last_seq": 69,
+          "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "kind": "assistant_message",
+          "message_id": "cf6b33c99dcf56a4b965cd992456e788",
+          "text": "Based on the official evidence provided, the behavior you described for the T2353 Omni E25 is normal operation.\n\nWhen the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will automatically return to the base station to recharge. Once the charge level is sufficient, the robot will automatically resume the last incomplete cleaning task [05af0178-096c-47d0-b317-fc99b221f68e].\n\nIf you are experiencing issues related to battery performance, such as short battery life or dropping battery quickly, please confirm the suction level set on the APP. If your home is clean and does not have pets, it is recommended to adjust the suction level to silent or standard after the first cleaning out of the box [f9f0961d-9409-4f4e-b349-363c6cc46325].",
+          "status": "completed",
+          "reply_to_input_id": "8ba5679e6f3f489c9dbbd53ddd158524",
+          "model_tier": "primary",
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+      "issues": [
+        {
+          "issue_id": "fe077a49efce5a9e933e2ee66d73c62a",
+          "status": "draft",
+          "title": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Low battery, return to recharge. When the power is sufficient it will automatically continue the last incomplete cleaning.\nProblem Upload Images: []",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 70,
+      "latest_summaries": []
+    }
+  },
+  "intent": "product_question",
+  "cases": []
+}

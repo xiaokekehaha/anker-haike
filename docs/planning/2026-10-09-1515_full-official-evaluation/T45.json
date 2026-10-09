@@ -1,0 +1,1549 @@
+{
+  "id": "T45",
+  "input": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+  "attachments": [
+    "T45.jpg"
+  ],
+  "turns": [
+    {
+      "input": {
+        "text": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+        "attachments": [
+          "T45.jpg"
+        ],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "resumed": false,
+          "event_id": "6c357efb39654ab7887465d56a4b0171",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:19:27.367072+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "payload": {
+            "kind": "message",
+            "text": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "images": [
+              {
+                "mime": "image/jpeg",
+                "size": 80142,
+                "sha256": "8e1e0d0ef47d578cd6f469d2fdfb8e08be129ea0f019d855c3d6495d03d0c8a9",
+                "purpose": "fault",
+                "image_id": "e855281b13d35d71acd5f017f895c3a5",
+                "created_at": "2026-10-09T07:19:27.358378+00:00"
+              }
+            ],
+            "purpose": "fault",
+            "image_ids": [
+              "e855281b13d35d71acd5f017f895c3a5"
+            ],
+            "target_issue_id": null,
+            "attachment_hashes": [
+              "8e1e0d0ef47d578cd6f469d2fdfb8e08be129ea0f019d855c3d6495d03d0c8a9"
+            ],
+            "evaluation_source": "replay"
+          },
+          "event_id": "916773209b804746ad4b38888ebf3a57",
+          "input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:19:27.367072+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 3,
+          "event_id": "856d9432c0d44631aa8867c9837f05f0",
+          "recorded_at": "2026-10-09T07:19:27.386761+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 4,
+          "event_id": "2fe8cb6092bd499887d279816f4ace35",
+          "recorded_at": "2026-10-09T07:19:31.946429+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 5,
+          "event_id": "798116abf0a1417cb182571bffdb52a4",
+          "recorded_at": "2026-10-09T07:19:32.040939+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "event_id": "c77fdf3f438c5c0baf2a29beb74e7e8d",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 7,
+          "recorded_at": "2026-10-09T07:19:32.063348+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+          "delta": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "event_id": "c1a6b33a17a75d62b866e794ce1873ed",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 8,
+          "recorded_at": "2026-10-09T07:19:32.064212+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+          "status": "completed",
+          "event_id": "9397f8eb5dbc5bf384e431e515f1666b",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 9,
+          "recorded_at": "2026-10-09T07:19:32.065133+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "resolved_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+              "title": "Pump isn’t charging anymore、heating part also burned me and looks tarnished now",
+              "status": "open"
+            }
+          ],
+          "event_id": "7fcacfd3c35950309e0a57654e1051e6",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 10,
+          "recorded_at": "2026-10-09T07:19:32.065920+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:32.028693+00:00",
+          "event_id": "976d65d6cf5859d5b7e8e08e0319e37f",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:19:32.066640+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+          "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "event_id": "8c96ddef3a89562ca8d0c61ee0f85558",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:19:32.067621+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+          "delta": "For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "507b75f3c4e35371bd5b8572f45af966",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:19:32.068745+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+          "status": "completed",
+          "event_id": "783f821df83b5dc68c645a9d671a3faa",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:19:32.069461+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "db782bbc9ef957da8994197dd56755ba",
+          "summary": {
+            "product": "未确认",
+            "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+            "observations": [
+              "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+              "客户填写的 SN：ANKER1234567E",
+              "客户自述购买渠道：Aeroflow / US",
+              "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R4",
+              "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "reassure_first"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                "intent": "report_problem",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "active",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                "intent": "warranty_query",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "pending",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "126c49afab2b5206b64ba64639a07331",
+          "revision": 1,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "updated_at": "2026-10-09T07:19:27.367072+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "92d1ceffcf425ec6b009f19157904cd6",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 15,
+          "recorded_at": "2026-10-09T07:19:32.070085+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "summary_id": "126c49afab2b5206b64ba64639a07331",
+          "revision": 1,
+          "card_id": "db782bbc9ef957da8994197dd56755ba",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-09T07:19:27.367072+00:00",
+          "event_id": "3ca0257768f15f19b2c37a5ffb52b7cc",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 16,
+          "recorded_at": "2026-10-09T07:19:32.072221+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "5c4641784b885bbfa1ba745fec589f46",
+          "recorded_at": "2026-10-09T07:19:32.073186+00:00",
+          "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+          "seq": 17,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:19:27.240927+08:00",
+  "session_id": "35affb1fefac4396a0d388127e94cf18",
+  "stop_reason": "no_pending_action_or_free_text_request",
+  "snapshot": {
+    "session_id": "35affb1fefac4396a0d388127e94cf18",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-09T07:19:27.367072+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "user_message",
+        "id": "c6afba51ac1b4c9b867a74c6eaeef677",
+        "text": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+        "image_ids": [
+          "e855281b13d35d71acd5f017f895c3a5"
+        ],
+        "images": [
+          {
+            "image_id": "e855281b13d35d71acd5f017f895c3a5",
+            "purpose": "fault",
+            "sha256": "8e1e0d0ef47d578cd6f469d2fdfb8e08be129ea0f019d855c3d6495d03d0c8a9",
+            "mime": "image/jpeg",
+            "size": 80142
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:19:32.063348+00:00",
+        "first_seq": 7,
+        "last_seq": 9,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "assistant_message",
+        "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+        "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+        "status": "completed",
+        "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:19:32.066640+00:00",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "case_changed",
+        "card_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+        "version": 1,
+        "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:19:32.028693+00:00"
+      },
+      {
+        "at": "2026-10-09T07:19:32.067621+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "assistant_message",
+        "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+        "text": "For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-09T07:19:32.070085+00:00",
+        "first_seq": 15,
+        "last_seq": 15,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "escalation_summary",
+        "card_id": "db782bbc9ef957da8994197dd56755ba",
+        "summary": {
+          "product": "未确认",
+          "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+          "observations": [
+            "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+            "客户填写的 SN：ANKER1234567E",
+            "客户自述购买渠道：Aeroflow / US",
+            "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R4",
+            "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "reassure_first"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "intent": "report_problem",
+              "status": "active",
+              "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            },
+            {
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "intent": "warranty_query",
+              "status": "pending",
+              "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "126c49afab2b5206b64ba64639a07331",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:19:27.367072+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+    "issues": [
+      {
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "status": "open",
+        "title": "Pump isn’t charging anymore、heating part also burned me and looks tarnished now",
+        "task_queue": [
+          {
+            "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+            "intent": "report_problem",
+            "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "status": "waiting_human",
+            "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          },
+          {
+            "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+            "intent": "warranty_query",
+            "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "status": "pending",
+            "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 17,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "kind": "escalation_summary",
+        "card_id": "db782bbc9ef957da8994197dd56755ba",
+        "summary": {
+          "product": "未确认",
+          "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+          "observations": [
+            "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+            "客户填写的 SN：ANKER1234567E",
+            "客户自述购买渠道：Aeroflow / US",
+            "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R4",
+            "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "reassure_first"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+              "intent": "report_problem",
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "status": "active",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            },
+            {
+              "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+              "intent": "warranty_query",
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "status": "pending",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [],
+          "draft_reply": null
+        },
+        "summary_id": "126c49afab2b5206b64ba64639a07331",
+        "revision": 1,
+        "updated_at": "2026-10-09T07:19:27.367072+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "visible_text": "I'll handle your requests in this order: device troubleshooting → warranty check.For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": 0,
+  "errors": [],
+  "seconds": 4.81,
+  "journey": {
+    "session": {
+      "session_id": "35affb1fefac4396a0d388127e94cf18",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:19:27.370274Z",
+      "last_run_at": "2026-10-09T07:19:32.073888Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Order No:\n[REDACTED] Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. O",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 4822,
+      "model_calls": 1,
+      "tokens_in": 4221,
+      "tokens_out": 388,
+      "raw_available_until": "2026-10-16T07:19:32.073888Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+        "session_id": "35affb1fefac4396a0d388127e94cf18",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:19:27.370274Z",
+        "ended_at": "2026-10-09T07:19:32.073879Z",
+        "duration_ms": 4822,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 4813,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 4628,
+            "tokens_in": 4221,
+            "tokens_out": 388,
+            "error_type": null,
+            "created_at": "2026-10-09T07:19:31.891137Z"
+          }
+        ],
+        "tokens_in": 4221,
+        "tokens_out": 388,
+        "node_count": 4,
+        "nodes": [
+          {
+            "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:19:27.370274Z",
+            "duration_ms": 4670,
+            "status": "ok",
+            "summary": {
+              "rule": "R4",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3368,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 235,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5768
+                    }
+                  ],
+                  "actual_input_tokens": 4221
+                }
+              ],
+              "escalate_reason": "R4",
+              "target_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": false,
+              "escalation_trigger": "R4"
+            }
+          },
+          {
+            "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+            "idx": 2,
+            "node": "escalate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:19:32.041142Z",
+            "duration_ms": 14,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+            "idx": 3,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:19:32.055771Z",
+            "duration_ms": 101,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize"
+            }
+          },
+          {
+            "run_id": "2c6861b86fc74edcacfe8174b27111cf",
+            "idx": 4,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-09T07:19:32.157092Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "35affb1fefac4396a0d388127e94cf18",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-09T07:19:27.367072+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "user_message",
+          "id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "text": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+          "image_ids": [
+            "e855281b13d35d71acd5f017f895c3a5"
+          ],
+          "images": [
+            {
+              "image_id": "e855281b13d35d71acd5f017f895c3a5",
+              "purpose": "fault",
+              "sha256": "8e1e0d0ef47d578cd6f469d2fdfb8e08be129ea0f019d855c3d6495d03d0c8a9",
+              "mime": "image/jpeg",
+              "size": 80142
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:19:32.063348+00:00",
+          "first_seq": 7,
+          "last_seq": 9,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "assistant_message",
+          "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+          "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+          "status": "completed",
+          "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:19:32.066640+00:00",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "case_changed",
+          "card_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "version": 1,
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:19:32.028693+00:00"
+        },
+        {
+          "at": "2026-10-09T07:19:32.067621+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "assistant_message",
+          "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+          "text": "For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-09T07:19:32.070085+00:00",
+          "first_seq": 15,
+          "last_seq": 15,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "escalation_summary",
+          "card_id": "db782bbc9ef957da8994197dd56755ba",
+          "summary": {
+            "product": "未确认",
+            "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+            "observations": [
+              "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+              "客户填写的 SN：ANKER1234567E",
+              "客户自述购买渠道：Aeroflow / US",
+              "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R4",
+              "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "reassure_first"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "intent": "warranty_query",
+                "status": "pending",
+                "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "126c49afab2b5206b64ba64639a07331",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:19:27.367072+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+      "issues": [
+        {
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "status": "open",
+          "title": "Pump isn’t charging anymore、heating part also burned me and looks tarnished now",
+          "task_queue": [
+            {
+              "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+              "intent": "report_problem",
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "status": "waiting_human",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            },
+            {
+              "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+              "intent": "warranty_query",
+              "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+              "status": "pending",
+              "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 17,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+          "kind": "escalation_summary",
+          "card_id": "db782bbc9ef957da8994197dd56755ba",
+          "summary": {
+            "product": "未确认",
+            "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+            "observations": [
+              "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+              "客户填写的 SN：ANKER1234567E",
+              "客户自述购买渠道：Aeroflow / US",
+              "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R4",
+              "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "reassure_first"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                "intent": "report_problem",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "active",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                "intent": "warranty_query",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "pending",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [],
+            "draft_reply": null
+          },
+          "summary_id": "126c49afab2b5206b64ba64639a07331",
+          "revision": 1,
+          "updated_at": "2026-10-09T07:19:27.367072+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+      "session_id": "35affb1fefac4396a0d388127e94cf18",
+      "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+      "sku": null,
+      "category": null,
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:19:31.947581+00:00",
+      "updated_at": "2026-10-09T07:19:32.028693+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 2836,
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:32.028582+00:00"
+        },
+        {
+          "id": 2837,
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:32.028599+00:00"
+        },
+        {
+          "id": 2838,
+          "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+              "cause": null,
+              "rule_id": "R4"
+            },
+            "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "emotion": {
+              "level": null,
+              "strategy": "reassure_first"
+            },
+            "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+            "product": "未确认",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "intent": "warranty_query",
+                "status": "pending",
+                "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [
+              "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+              "客户填写的 SN：ANKER1234567E",
+              "客户自述购买渠道：Aeroflow / US",
+              "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+            ],
+            "emotion_track": [],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-09T07:19:32.028693+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+          "cause": null,
+          "rule_id": "R4"
+        },
+        "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+        "emotion": {
+          "level": null,
+          "strategy": "reassure_first"
+        },
+        "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+        "product": "未确认",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "intent": "report_problem",
+            "status": "active",
+            "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+            "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          },
+          {
+            "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "intent": "warranty_query",
+            "status": "pending",
+            "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+            "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [
+          "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+          "客户填写的 SN：ANKER1234567E",
+          "客户自述购买渠道：Aeroflow / US",
+          "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+        ],
+        "emotion_track": [],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "35affb1fefac4396a0d388127e94cf18",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-09T07:19:27.367072+00:00",
+            "first_seq": 2,
+            "last_seq": 10,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "user_message",
+            "id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "text": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+            "image_ids": [
+              "e855281b13d35d71acd5f017f895c3a5"
+            ],
+            "images": [
+              {
+                "image_id": "e855281b13d35d71acd5f017f895c3a5",
+                "purpose": "fault",
+                "sha256": "8e1e0d0ef47d578cd6f469d2fdfb8e08be129ea0f019d855c3d6495d03d0c8a9",
+                "mime": "image/jpeg",
+                "size": 80142
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:19:32.063348+00:00",
+            "first_seq": 7,
+            "last_seq": 9,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "assistant_message",
+            "message_id": "884d29fca2bd5fdc874e8814b78d2e83",
+            "text": "I'll handle your requests in this order: device troubleshooting → warranty check.",
+            "status": "completed",
+            "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:19:32.066640+00:00",
+            "first_seq": 11,
+            "last_seq": 11,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "case_changed",
+            "card_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "version": 1,
+            "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:19:32.028693+00:00"
+          },
+          {
+            "at": "2026-10-09T07:19:32.067621+00:00",
+            "first_seq": 12,
+            "last_seq": 14,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "assistant_message",
+            "message_id": "b73dee8e8bf8533b9d127a21a813f945",
+            "text": "For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-09T07:19:32.070085+00:00",
+            "first_seq": 15,
+            "last_seq": 15,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "escalation_summary",
+            "card_id": "db782bbc9ef957da8994197dd56755ba",
+            "summary": {
+              "product": "未确认",
+              "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+              "observations": [
+                "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+                "客户填写的 SN：ANKER1234567E",
+                "客户自述购买渠道：Aeroflow / US",
+                "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R4",
+                "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "reassure_first"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                  "intent": "report_problem",
+                  "status": "active",
+                  "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                  "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                },
+                {
+                  "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                  "intent": "warranty_query",
+                  "status": "pending",
+                  "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                  "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "126c49afab2b5206b64ba64639a07331",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:19:27.367072+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "f89a5411797f5037bd68221f562ce4e0",
+        "issues": [
+          {
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "status": "open",
+            "title": "Pump isn’t charging anymore、heating part also burned me and looks tarnished now",
+            "task_queue": [
+              {
+                "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                "intent": "report_problem",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "waiting_human",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              },
+              {
+                "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                "intent": "warranty_query",
+                "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                "status": "pending",
+                "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 17,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "f89a5411797f5037bd68221f562ce4e0",
+            "kind": "escalation_summary",
+            "card_id": "db782bbc9ef957da8994197dd56755ba",
+            "summary": {
+              "product": "未确认",
+              "problem": "Pump isn’t charging anymore；heating part also burned me and looks tarnished now",
+              "observations": [
+                "客户填写的产品：Eufy S1 Pro Wearable Breast Pump",
+                "客户填写的 SN：ANKER1234567E",
+                "客户自述购买渠道：Aeroflow / US",
+                "经销商名录：Aeroflow Breastpumps (US) is an authorized dealer, but the purchase date is missing"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R4",
+                "text": "检测到安全风险信号（冒烟 / 烧焦 / 电池鼓包等），立即升级；命中词：burned me",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "reassure_first"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "e7a03209-b9f5-5eb3-aa2a-afd7c2919c24",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "a7a8bb062daa52b3bf9f597856c50362",
+                  "intent": "report_problem",
+                  "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                  "status": "active",
+                  "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                },
+                {
+                  "task_id": "29adc5c7abc5522996714b8f1c7e2113",
+                  "intent": "warranty_query",
+                  "quote": "Order No:\nProduct Name: Eufy S1 Pro Wearable Breast Pump\nProblem Description: Pump isn’t charging anymore and the heating part also burned me and looks tarnished now\nPurchase proof: see attached. Ordered from the reseller Aeroflow\nProdcut SN: Anker1234567E\nCountry: US\nSubmit Date: 2026-08-11T18:54:18.020Z",
+                  "status": "pending",
+                  "created_input_id": "c6afba51ac1b4c9b867a74c6eaeef677",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [],
+              "draft_reply": null
+            },
+            "summary_id": "126c49afab2b5206b64ba64639a07331",
+            "revision": 1,
+            "updated_at": "2026-10-09T07:19:27.367072+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ]
+}

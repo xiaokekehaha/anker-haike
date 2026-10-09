@@ -1,0 +1,2944 @@
+{
+  "id": "T31",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+        "attachments": [],
+        "purpose": "fault"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "resumed": false,
+          "event_id": "2fb09c325bb74ffaadb1f0bec13c0221",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:10.336735+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "0e18288f402549e5a43b24702b2f2a6c",
+          "input_id": "f890c48696e14d0392fe2c6fe7b20527",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-09T07:23:10.336735+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 3,
+          "event_id": "c6f883c7125a4ce1901ff842303233cb",
+          "recorded_at": "2026-10-09T07:23:10.361046+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 4,
+          "event_id": "d8fd6e9625d84e54995696e7028d1333",
+          "recorded_at": "2026-10-09T07:23:13.869440+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 5,
+          "event_id": "9d34d7230316428182c7530c8a7e227c",
+          "recorded_at": "2026-10-09T07:23:13.874385+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "20ce98e041935c28940618e0d66e26e0",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 6,
+          "event_id": "cfab217e110347b28bdd5f40ff0b2193",
+          "recorded_at": "2026-10-09T07:23:13.876280+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "20ce98e041935c28940618e0d66e26e0",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 7,
+          "event_id": "1e7ea5de2d1d478391d329b90735fe9b",
+          "recorded_at": "2026-10-09T07:23:14.111703+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 8,
+          "event_id": "9c2685cb898c4bf1a890634929244b9e",
+          "recorded_at": "2026-10-09T07:23:15.967713+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 9,
+          "event_id": "c5ffe2975d2e4fe389eff992d0cbd379",
+          "recorded_at": "2026-10-09T07:23:15.975299+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_id": "f890c48696e14d0392fe2c6fe7b20527",
+          "resolved_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+              "status": "open"
+            }
+          ],
+          "event_id": "dd6650fec18d5e849f04c86433fbe93c",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 11,
+          "recorded_at": "2026-10-09T07:23:15.995822+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+              "source": "kb_qa",
+              "doc_id": "rv-0370",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+              "snippet": "If the base station is not powered on: -Try different wall outlets to check whether the base station powers on. Sometimes, this issue might stem from a defective wall outlet. -Inspect the power cord at the rear of the base station to verify that it is securely connected. A loose connection can prevent the base station from receiving power. If the base station is powered on： -Switch the robot to th",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0298",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+              "snippet": "Can the base station be relocated for S1 Pro?\nRelocate the base station only when the robot is not in use. Remove the robot from the base station before moving to prevent it from falling. Relocating the base station while the robot is cleaning may result in a failed return to charge.",
+              "score": 0.015873015873015872,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+              "source": "kb_qa",
+              "doc_id": "rv-0363",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+              "snippet": "Robot S1 Pro is unable to charge\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loos",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0473",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "snippet": "What should I do if T2080 S1 Pro is not charging,cannot be charged,unable to charge, failed to charge,or charging failed?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect t",
+              "score": 0.015246842709529276,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+              "source": "kb_qa",
+              "doc_id": "rv-0415",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+              "snippet": "what should I do when T2080 S1 Pro has E74: Return to base station failed. Please place the robot back in the base station/Robot failed to locate the base station. Please bring the robot near the base station then try again/Failed to find base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: ",
+              "score": 0.01515151515151515,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+              "source": "kb_qa",
+              "doc_id": "rv-0422",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+              "snippet": "what should I do when T2080 S1 Pro has E75: Return to base station failed. Please place the robot back in the base station/Robot failed to dock into base station. Please clear the area near base station then try again/Failed to enter base station, stop return?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base s",
+              "score": 0.01504708904109589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+              "source": "kb_qa",
+              "doc_id": "rv-0416",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+              "snippet": "what should I do when T2080 S1 Pro has E76: Return to base station failed. Task ended. Click to view the reason/Robot failed to return to base station, please take the robot back into the base station/Can't return to base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 m to the left and ",
+              "score": 0.014909502262443438,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+              "source": "kb_qa",
+              "doc_id": "rv-0472",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+              "snippet": "What should I do when T2080 S1 Pro Does not power on/Cannot be activated/Won't turn on/Cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the ",
+              "score": 0.01477718771646271,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0364",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+              "snippet": "Robot S1 Pro failed to return to base station，failing to dock\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 rm to the left and right, and 1.5 m in front.\n3. Inspect the recharge sensors' lens where the water filling interface islocated for any protrusions or damage.\n4. Manually press the 'Retur",
+              "score": 0.014673113306705905,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+              "source": "kb_qa",
+              "doc_id": "rv-0362",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+              "snippet": "What should I do if my S1 Pro/T2080 robot vacuum cannot power on, won't turn on, or cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the pow",
+              "score": 0.014172043010752687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+              "source": "kb_qa",
+              "doc_id": "rv-0406",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: Communication error between the robot and the station/EB41 Robot and base station disconnected/disconnected\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab. Press and release the base station's charging pins to check if they can ext",
+              "score": 0.014166666666666668,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+              "source": "kb_qa",
+              "doc_id": "rv-0412",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+              "snippet": "what should I do when T2080 S1 Pro has E77: Robot not detected, task paused/Robot charging pin disconnected, please push the robot back into the station/Can't detect robot?\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab, press the base station's charging pins, and check whether they ca",
+              "score": 0.013513513513513513,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+              "source": "kb_qa",
+              "doc_id": "rv-0430",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+              "snippet": "Robot S1 Pro didn't resume cleaning\n1. The Auto-return Cleaning function is enabled.\n2. The robot returned to the charging dock by itself due to low battery, rather than being moved there manually.\n3. No manual cleaning was initiated after the robot paused and before it attempted to resume.\n4. There are no firmware updates in progress when the resume cleaning task is triggered.",
+              "score": 0.012937062937062937,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+              "source": "kb_qa",
+              "doc_id": "rv-0423",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+              "snippet": "what should I do when T2080 S1 Pro has E7K: Unable to return to starting point, task paused, please remove nearby obstacles/Failed to return to base station or initial position/Robot failed to recharge or unable to return to starting point?\nClear obstacles between the cleaning robot and the base station or starting point.",
+              "score": 0.012922705314009662,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+              "source": "kb_qa",
+              "doc_id": "rv-0356",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+              "snippet": "What should I do if my S1 Pro/T2080 starts by itself at night?\nIf you encounter the issue of your S1 Pro spontaneously starting a cleaning session by itself, please refer to the following troubleshooting steps to resolve the issue. -If you have a pet at home, please make sure that your pet did not accidentally start the robot. -Please check the robot's settings in the app to determine if a schedul",
+              "score": 0.01261904761904762,
+              "status": "ok"
+            }
+          ],
+          "event_id": "8fe56b73608e596e978f8eb69f6b26a3",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 12,
+          "recorded_at": "2026-10-09T07:23:15.997258+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "9287464674cd55138c513c67c08866c1",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "56bb13407d475d1c9ed1159f125fe652",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 13,
+          "recorded_at": "2026-10-09T07:23:16.002929+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "9287464674cd55138c513c67c08866c1",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Verify whether the base station is powered on, and whether…",
+            "instruction": "Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": []
+          },
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "event_id": "742e76664a4f50f1a95b35c0a8d0b074",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 14,
+          "recorded_at": "2026-10-09T07:23:16.004280+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "card_id": "9287464674cd55138c513c67c08866c1",
+          "version": 1,
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 15,
+          "event_id": "5d032b260f2049c58a0ec0800901a180",
+          "recorded_at": "2026-10-09T07:23:16.005732+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "6141efdfa07756f2861116abcb896104",
+          "recorded_at": "2026-10-09T07:23:16.007117+00:00",
+          "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "resumed": false,
+          "event_id": "6fb0d55f39cd4a48bb9eeadf6a960570",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:16.028580+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "9287464674cd55138c513c67c08866c1",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "313b7c851ec84443b3fd097a7a6dd56d",
+            "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "expected_version": 1
+          },
+          "event_id": "8f133ebe05154239ab478262c414d5e5",
+          "input_id": "313b7c851ec84443b3fd097a7a6dd56d",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:16.028580+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 19,
+          "event_id": "1a5ac6647b3541a99eebcb316c4c9d4e",
+          "recorded_at": "2026-10-09T07:23:16.039502+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 20,
+          "event_id": "e3107aee66074c5db58128922b32f0ac",
+          "recorded_at": "2026-10-09T07:23:16.041910+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_id": "313b7c851ec84443b3fd097a7a6dd56d",
+          "resolved_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+              "status": "open"
+            }
+          ],
+          "event_id": "9b9661b4628d5ec89b8c662ce0e6cf05",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 22,
+          "recorded_at": "2026-10-09T07:23:16.059329+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "9287464674cd55138c513c67c08866c1",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "82c3e16953c352428c732f2f3c3c8d41",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 23,
+          "recorded_at": "2026-10-09T07:23:16.060218+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "3a583fd1e6665bf886b9151ec4def3f6",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 24,
+          "recorded_at": "2026-10-09T07:23:16.061016+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the base station is not powered on, attempt different po…",
+            "instruction": "If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loose connection may prevent the base station from receiving power.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Base-station-power-cable.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "event_id": "6d10e36da0e25c4ea19e65af48c69301",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 25,
+          "recorded_at": "2026-10-09T07:23:16.061791+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+          "version": 2,
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 26,
+          "event_id": "1c035bc357fe4f9ab93d6f3d4b63549f",
+          "recorded_at": "2026-10-09T07:23:16.062781+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "a2186bdfd2a55aa1b44e00f128f8817f",
+          "recorded_at": "2026-10-09T07:23:16.063595+00:00",
+          "run_id": "ffed1b40606d4093b73af8d2f294728a",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "resumed": false,
+          "event_id": "a9019315af9947eda4246436c3cb8fbc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:16.079585+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+            "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "expected_version": 2
+          },
+          "event_id": "cf475f3353494f53991b3cf7454b5251",
+          "input_id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:16.079585+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 30,
+          "event_id": "2d4ccc1e920d44dc9660f366dccbc29b",
+          "recorded_at": "2026-10-09T07:23:16.088655+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 31,
+          "event_id": "f8c5e79af9724e26b783f6e40dbc9c0b",
+          "recorded_at": "2026-10-09T07:23:16.090988+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+          "resolved_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+              "status": "open"
+            }
+          ],
+          "event_id": "dc462901e1675603b0d96fa9faa4be1d",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 33,
+          "recorded_at": "2026-10-09T07:23:16.108175+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "88d95160b9cf52589c334992eefdc516",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 34,
+          "recorded_at": "2026-10-09T07:23:16.108966+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "45ddfa7a049858efa17fae7b4fc555bb",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "044d5610c7f55dff8b60b6f304e01b46",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 35,
+          "recorded_at": "2026-10-09T07:23:16.109763+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Please wipe the charging pins on the robot and the base sta…",
+            "instruction": "Please wipe the charging pins on the robot and the base station and ensure they are free from dirt.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/station-pin.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "event_id": "e8cfcac1944b5396af1106a7b66e56b3",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 36,
+          "recorded_at": "2026-10-09T07:23:16.110535+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+          "version": 3,
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 37,
+          "event_id": "5ff22a61238d4aa9bbd9a11fe3bbac0c",
+          "recorded_at": "2026-10-09T07:23:16.111207+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "46fbdc9784735fc59c4d0fbd8fcdc20e",
+          "recorded_at": "2026-10-09T07:23:16.112039+00:00",
+          "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+          "seq": 38,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 39,
+          "type": "run_started",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "resumed": false,
+          "event_id": "68296b64c67b4a1b9a7030086a0525f1",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:16.129083+00:00"
+        },
+        {
+          "seq": 40,
+          "type": "input_received",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+            "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "expected_version": 3
+          },
+          "event_id": "a343bc9cd3784fcd971e516e3945d28b",
+          "input_id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:16.129083+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 41,
+          "event_id": "264625ce94394bc6b603710ecfe41c59",
+          "recorded_at": "2026-10-09T07:23:16.139237+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 42,
+          "event_id": "839c571231a243b8b3668a9f5700c971",
+          "recorded_at": "2026-10-09T07:23:16.141404+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+          "resolved_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+              "status": "open"
+            }
+          ],
+          "event_id": "e1e05a0a083c51f6a62f808f9f5b7362",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 44,
+          "recorded_at": "2026-10-09T07:23:16.159156+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "45ddfa7a049858efa17fae7b4fc555bb",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "9920a57a10195f3ba44ec79168cfada7",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 45,
+          "recorded_at": "2026-10-09T07:23:16.160017+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "2fca2ed9e3c95e12b497b8aec0469597",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "4a78c4debd505a0d947c53e116a2e892",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 46,
+          "recorded_at": "2026-10-09T07:23:16.160895+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Press and hold the red button next to the Wi-Fi indicator t…",
+            "instruction": "Press and hold the red button next to the Wi-Fi indicator to restore factory settings. Wait for 5 minutes, ensuring the robot is placed on the base station with the charging pins properly engaged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin-contact-with-station-pin-properly.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "event_id": "773c4d8a904851a9b3bac6d91a338e56",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 47,
+          "recorded_at": "2026-10-09T07:23:16.161773+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+          "version": 4,
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 48,
+          "event_id": "82f0d1fef0394c30ba481e0daee4df46",
+          "recorded_at": "2026-10-09T07:23:16.162390+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "e3df4c0f8a6b550f822a21b570481060",
+          "recorded_at": "2026-10-09T07:23:16.163214+00:00",
+          "run_id": "4b44af46de734d5a829f62efe6b4429f",
+          "seq": 49,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 50,
+          "type": "run_started",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "resumed": false,
+          "event_id": "f57c1e50ec12429cbf166f72178bc15a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-09T07:23:16.181118+00:00"
+        },
+        {
+          "seq": 51,
+          "type": "input_received",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+            "payload": {
+              "note": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+            "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "expected_version": 4
+          },
+          "event_id": "aa77f948c42a4c3bbacc556dee91e118",
+          "input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_kind": "action",
+          "recorded_at": "2026-10-09T07:23:16.181118+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 52,
+          "event_id": "78ae97e1c6b245f0a611ed5d5fca6895",
+          "recorded_at": "2026-10-09T07:23:16.191574+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 53,
+          "event_id": "0ccbca4aa96a4dad9f5c2f11aab2027b",
+          "recorded_at": "2026-10-09T07:23:16.199808+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+          "resolved_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 5,
+          "issues": [
+            {
+              "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+              "status": "open"
+            }
+          ],
+          "event_id": "cd3f616427e35d33bd46bf734c2c78d3",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 55,
+          "recorded_at": "2026-10-09T07:23:16.218268+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "2fca2ed9e3c95e12b497b8aec0469597",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 5,
+          "event_id": "e37c7067912952f99bb34f1a7e89ed22",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 56,
+          "recorded_at": "2026-10-09T07:23:16.219195+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+          "case_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "version": 5,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:16.191543+00:00",
+          "event_id": "39808c0fd3f952d1b7de3ab7cfe58e75",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 57,
+          "recorded_at": "2026-10-09T07:23:16.220102+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "reply_to_input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+          "event_id": "297e9177667b567fbc20dba15656e0bc",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 58,
+          "recorded_at": "2026-10-09T07:23:16.221530+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "2bd2c08ba6725f9fa894db261ffe0a23",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 59,
+          "recorded_at": "2026-10-09T07:23:16.222460+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+          "status": "completed",
+          "event_id": "06c46a17db2e5fed8e44bfed149f82d6",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 60,
+          "recorded_at": "2026-10-09T07:23:16.223539+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "pending_id": "d6e505a985dc565daf8748513f5ec682",
+          "status": "active",
+          "reason": "presented",
+          "version": 5,
+          "event_id": "2b2df558d3eb5237a6c788fa465ea9ab",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 61,
+          "recorded_at": "2026-10-09T07:23:16.224463+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "card_id": "d6e505a985dc565daf8748513f5ec682",
+          "version": 5,
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 62,
+          "event_id": "cacf56a114a14e4dbd9cb6988806e725",
+          "recorded_at": "2026-10-09T07:23:16.225063+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "f9832449b748565484a9defac81a191b",
+          "recorded_at": "2026-10-09T07:23:16.226479+00:00",
+          "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+          "seq": 63,
+          "reason": "awaiting_input",
+          "version": 5
+        }
+      ]
+    }
+  ],
+  "started_at": "2026-10-09T15:23:10.315527+08:00",
+  "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+    "version": 5,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+      "kind": "upload_receipt",
+      "card_id": "d6e505a985dc565daf8748513f5ec682",
+      "version": 5
+    },
+    "timeline": [
+      {
+        "at": "2026-10-09T07:23:10.336735+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "user_message",
+        "id": "f890c48696e14d0392fe2c6fe7b20527",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-09T07:23:13.876280+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "20ce98e041935c28940618e0d66e26e0",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-09T07:23:15.997597Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+            "source": "kb_qa",
+            "doc_id": "rv-0370",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+            "snippet": "If the base station is not powered on: -Try different wall outlets to check whether the base station powers on. Sometimes, this issue might stem from a defective wall outlet. -Inspect the power cord at the rear of the base station to verify that it is securely connected. A loose connection can prevent the base station from receiving power. If the base station is powered on： -Switch the robot to th",
+            "score": 0.015887174541947928,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+            "source": "kb_qa",
+            "doc_id": "rv-0298",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+            "snippet": "Can the base station be relocated for S1 Pro?\nRelocate the base station only when the robot is not in use. Remove the robot from the base station before moving to prevent it from falling. Relocating the base station while the robot is cleaning may result in a failed return to charge.",
+            "score": 0.015873015873015872,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+            "source": "kb_qa",
+            "doc_id": "rv-0363",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+            "snippet": "Robot S1 Pro is unable to charge\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loos",
+            "score": 0.015638148667601683,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "source": "kb_qa",
+            "doc_id": "rv-0473",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "snippet": "What should I do if T2080 S1 Pro is not charging,cannot be charged,unable to charge, failed to charge,or charging failed?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect t",
+            "score": 0.015246842709529276,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+            "source": "kb_qa",
+            "doc_id": "rv-0415",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+            "snippet": "what should I do when T2080 S1 Pro has E74: Return to base station failed. Please place the robot back in the base station/Robot failed to locate the base station. Please bring the robot near the base station then try again/Failed to find base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: ",
+            "score": 0.01515151515151515,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+            "source": "kb_qa",
+            "doc_id": "rv-0422",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+            "snippet": "what should I do when T2080 S1 Pro has E75: Return to base station failed. Please place the robot back in the base station/Robot failed to dock into base station. Please clear the area near base station then try again/Failed to enter base station, stop return?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base s",
+            "score": 0.01504708904109589,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+            "source": "kb_qa",
+            "doc_id": "rv-0416",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+            "snippet": "what should I do when T2080 S1 Pro has E76: Return to base station failed. Task ended. Click to view the reason/Robot failed to return to base station, please take the robot back into the base station/Can't return to base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 m to the left and ",
+            "score": 0.014909502262443438,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+            "source": "kb_qa",
+            "doc_id": "rv-0472",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+            "snippet": "What should I do when T2080 S1 Pro Does not power on/Cannot be activated/Won't turn on/Cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the ",
+            "score": 0.01477718771646271,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+            "source": "kb_qa",
+            "doc_id": "rv-0364",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+            "snippet": "Robot S1 Pro failed to return to base station，failing to dock\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 rm to the left and right, and 1.5 m in front.\n3. Inspect the recharge sensors' lens where the water filling interface islocated for any protrusions or damage.\n4. Manually press the 'Retur",
+            "score": 0.014673113306705905,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+            "source": "kb_qa",
+            "doc_id": "rv-0362",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+            "snippet": "What should I do if my S1 Pro/T2080 robot vacuum cannot power on, won't turn on, or cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the pow",
+            "score": 0.014172043010752687,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+            "source": "kb_qa",
+            "doc_id": "rv-0406",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+            "snippet": "what should I do when T2080 S1 pro has Abnormal alert: Communication error between the robot and the station/EB41 Robot and base station disconnected/disconnected\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab. Press and release the base station's charging pins to check if they can ext",
+            "score": 0.014166666666666668,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+            "source": "kb_qa",
+            "doc_id": "rv-0412",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+            "snippet": "what should I do when T2080 S1 Pro has E77: Robot not detected, task paused/Robot charging pin disconnected, please push the robot back into the station/Can't detect robot?\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab, press the base station's charging pins, and check whether they ca",
+            "score": 0.013513513513513513,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+            "source": "kb_qa",
+            "doc_id": "rv-0430",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+            "snippet": "Robot S1 Pro didn't resume cleaning\n1. The Auto-return Cleaning function is enabled.\n2. The robot returned to the charging dock by itself due to low battery, rather than being moved there manually.\n3. No manual cleaning was initiated after the robot paused and before it attempted to resume.\n4. There are no firmware updates in progress when the resume cleaning task is triggered.",
+            "score": 0.012937062937062937,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+            "source": "kb_qa",
+            "doc_id": "rv-0423",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+            "snippet": "what should I do when T2080 S1 Pro has E7K: Unable to return to starting point, task paused, please remove nearby obstacles/Failed to return to base station or initial position/Robot failed to recharge or unable to return to starting point?\nClear obstacles between the cleaning robot and the base station or starting point.",
+            "score": 0.012922705314009662,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+            "source": "kb_qa",
+            "doc_id": "rv-0356",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+            "snippet": "What should I do if my S1 Pro/T2080 starts by itself at night?\nIf you encounter the issue of your S1 Pro spontaneously starting a cleaning session by itself, please refer to the following troubleshooting steps to resolve the issue. -If you have a pet at home, please make sure that your pet did not accidentally start the robot. -Please check the robot's settings in the app to determine if a schedul",
+            "score": 0.01261904761904762,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-09T07:23:16.004280+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "step_card",
+        "card_id": "9287464674cd55138c513c67c08866c1",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0473",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Verify whether the base station is powered on, and whether…",
+          "instruction": "Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "328e03f4-8e91-4998-9799-2b8910065d1a"
+          ],
+          "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+          "media": []
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:16.028580+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "action",
+        "id": "313b7c851ec84443b3fd097a7a6dd56d",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:16.061791+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "step_card",
+        "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0473",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If the base station is not powered on, attempt different po…",
+          "instruction": "If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loose connection may prevent the base station from receiving power.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "328e03f4-8e91-4998-9799-2b8910065d1a"
+          ],
+          "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Base-station-power-cable.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:16.079585+00:00",
+        "first_seq": 29,
+        "last_seq": 33,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "action",
+        "id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:16.110535+00:00",
+        "first_seq": 36,
+        "last_seq": 36,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "step_card",
+        "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_rv_0473",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "Please wipe the charging pins on the robot and the base sta…",
+          "instruction": "Please wipe the charging pins on the robot and the base station and ensure they are free from dirt.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "328e03f4-8e91-4998-9799-2b8910065d1a"
+          ],
+          "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin.png",
+              "kind": "image"
+            },
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/station-pin.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:16.129083+00:00",
+        "first_seq": 40,
+        "last_seq": 44,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "action",
+        "id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:16.161773+00:00",
+        "first_seq": 47,
+        "last_seq": 47,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "step_card",
+        "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+        "version": 4,
+        "step": {
+          "step_id": "s4",
+          "plan_id": "qa_rv_0473",
+          "plan_version": 1,
+          "step_no": 4,
+          "title": "Press and hold the red button next to the Wi-Fi indicator t…",
+          "instruction": "Press and hold the red button next to the Wi-Fi indicator to restore factory settings. Wait for 5 minutes, ensuring the robot is placed on the base station with the charging pins properly engaged.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "328e03f4-8e91-4998-9799-2b8910065d1a"
+          ],
+          "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin-contact-with-station-pin-properly.png",
+              "kind": "image"
+            }
+          ]
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null
+      },
+      {
+        "at": "2026-10-09T07:23:16.181118+00:00",
+        "first_seq": 51,
+        "last_seq": 55,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "action",
+        "id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-09T07:23:16.220102+00:00",
+        "first_seq": 57,
+        "last_seq": 57,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "case_changed",
+        "card_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+        "version": 5,
+        "case_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-09T07:23:16.191543+00:00"
+      },
+      {
+        "at": "2026-10-09T07:23:16.221530+00:00",
+        "first_seq": 58,
+        "last_seq": 60,
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "assistant_message",
+        "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+    "issues": [
+      {
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "status": "open",
+        "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 63,
+    "latest_summaries": []
+  },
+  "visible_text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": 4,
+  "errors": [],
+  "seconds": 5.83,
+  "journey": {
+    "session": {
+      "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+      "lane": "domestic",
+      "created_at": "2026-10-09T07:23:10.338978Z",
+      "last_run_at": "2026-10-09T07:23:16.227258Z",
+      "runs": 5,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot ca",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0363",
+        "qa_rv_0473"
+      ],
+      "steps_executed": 4,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 43,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-16T07:23:16.227258Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "seq_no": 1,
+        "started_at": "2026-10-09T07:23:10.338978Z",
+        "ended_at": "2026-10-09T07:23:16.008072Z",
+        "duration_ms": 5669,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 5666,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3501,
+            "tokens_in": 4182,
+            "tokens_out": 426,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:13.855742Z"
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1836,
+            "tokens_in": 4545,
+            "tokens_out": 322,
+            "error_type": null,
+            "created_at": "2026-10-09T07:23:15.944934Z"
+          }
+        ],
+        "tokens_in": 8727,
+        "tokens_out": 748,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:10.338978Z",
+            "duration_ms": 3529,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3330,
+                  "truncated": false,
+                  "max_tokens": 13385,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 2985,
+                    "current": 197,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 5730
+                    }
+                  ],
+                  "actual_input_tokens": 4182
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:13.868204Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-09T07:23:13.874350Z",
+            "duration_ms": 2088,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0473",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5171,
+                  "truncated": false,
+                  "max_tokens": 7306,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 197,
+                    "history": 0,
+                    "authority": 4618
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 474,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 47,
+                    "decision": 192,
+                    "timezone": 7,
+                    "task_data": 3594,
+                    "issue_index": 167,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5649
+                    }
+                  ],
+                  "actual_input_tokens": 4545
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-09T07:23:15.962476Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:15.973722Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:15.973735Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "6df11a2d0ac24d87bbe87058db9e0774",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 220,
+            "hits": 15,
+            "top_score": 0.0159,
+            "latency_ms": 229,
+            "query": "The robot won’t charge when it is at the base station the robot can’t get past critical low battery",
+            "created_at": "2026-10-09T07:23:14.100792Z"
+          }
+        ]
+      },
+      {
+        "run_id": "ffed1b40606d4093b73af8d2f294728a",
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "seq_no": 2,
+        "started_at": "2026-10-09T07:23:16.029596Z",
+        "ended_at": "2026-10-09T07:23:16.064089Z",
+        "duration_ms": 34,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 33,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "ffed1b40606d4093b73af8d2f294728a",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:16.029596Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "ffed1b40606d4093b73af8d2f294728a",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:16.037119Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "ffed1b40606d4093b73af8d2f294728a",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:16.038536Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "ffed1b40606d4093b73af8d2f294728a",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:16.041097Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "ffed1b40606d4093b73af8d2f294728a",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:16.041101Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "seq_no": 3,
+        "started_at": "2026-10-09T07:23:16.080691Z",
+        "ended_at": "2026-10-09T07:23:16.112841Z",
+        "duration_ms": 32,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 30,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:16.080691Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:16.086213Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:16.087465Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:16.090255Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "98cebe8cd82b470e86fe708086bc9d28",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:16.090259Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "4b44af46de734d5a829f62efe6b4429f",
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "seq_no": 4,
+        "started_at": "2026-10-09T07:23:16.130600Z",
+        "ended_at": "2026-10-09T07:23:16.164724Z",
+        "duration_ms": 34,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 31,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "4b44af46de734d5a829f62efe6b4429f",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:16.130600Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "4b44af46de734d5a829f62efe6b4429f",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:16.137038Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s4",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "4b44af46de734d5a829f62efe6b4429f",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:16.138240Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "4b44af46de734d5a829f62efe6b4429f",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-09T07:23:16.140695Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4b44af46de734d5a829f62efe6b4429f",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:16.140699Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "seq_no": 5,
+        "started_at": "2026-10-09T07:23:16.183224Z",
+        "ended_at": "2026-10-09T07:23:16.227246Z",
+        "duration_ms": 43,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 40,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-09T07:23:16.183224Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0473",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null
+            }
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-09T07:23:16.188788Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-09T07:23:16.190396Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-09T07:23:16.191248Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-09T07:23:16.195471Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-09T07:23:16.196548Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "fdb3fa620b424c92b78ba00b5955023a",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-09T07:23:16.197145Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+      "version": 5,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "kind": "upload_receipt",
+        "card_id": "d6e505a985dc565daf8748513f5ec682",
+        "version": 5
+      },
+      "timeline": [
+        {
+          "at": "2026-10-09T07:23:10.336735+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "user_message",
+          "id": "f890c48696e14d0392fe2c6fe7b20527",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-09T07:23:13.876280+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "20ce98e041935c28940618e0d66e26e0",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-09T07:23:15.997597Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+              "source": "kb_qa",
+              "doc_id": "rv-0370",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+              "snippet": "If the base station is not powered on: -Try different wall outlets to check whether the base station powers on. Sometimes, this issue might stem from a defective wall outlet. -Inspect the power cord at the rear of the base station to verify that it is securely connected. A loose connection can prevent the base station from receiving power. If the base station is powered on： -Switch the robot to th",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+              "source": "kb_qa",
+              "doc_id": "rv-0298",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+              "snippet": "Can the base station be relocated for S1 Pro?\nRelocate the base station only when the robot is not in use. Remove the robot from the base station before moving to prevent it from falling. Relocating the base station while the robot is cleaning may result in a failed return to charge.",
+              "score": 0.015873015873015872,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+              "source": "kb_qa",
+              "doc_id": "rv-0363",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+              "snippet": "Robot S1 Pro is unable to charge\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loos",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0473",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "snippet": "What should I do if T2080 S1 Pro is not charging,cannot be charged,unable to charge, failed to charge,or charging failed?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect t",
+              "score": 0.015246842709529276,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+              "source": "kb_qa",
+              "doc_id": "rv-0415",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+              "snippet": "what should I do when T2080 S1 Pro has E74: Return to base station failed. Please place the robot back in the base station/Robot failed to locate the base station. Please bring the robot near the base station then try again/Failed to find base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: ",
+              "score": 0.01515151515151515,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+              "source": "kb_qa",
+              "doc_id": "rv-0422",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+              "snippet": "what should I do when T2080 S1 Pro has E75: Return to base station failed. Please place the robot back in the base station/Robot failed to dock into base station. Please clear the area near base station then try again/Failed to enter base station, stop return?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base s",
+              "score": 0.01504708904109589,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+              "source": "kb_qa",
+              "doc_id": "rv-0416",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+              "snippet": "what should I do when T2080 S1 Pro has E76: Return to base station failed. Task ended. Click to view the reason/Robot failed to return to base station, please take the robot back into the base station/Can't return to base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 m to the left and ",
+              "score": 0.014909502262443438,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+              "source": "kb_qa",
+              "doc_id": "rv-0472",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+              "snippet": "What should I do when T2080 S1 Pro Does not power on/Cannot be activated/Won't turn on/Cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the ",
+              "score": 0.01477718771646271,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0364",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+              "snippet": "Robot S1 Pro failed to return to base station，failing to dock\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 rm to the left and right, and 1.5 m in front.\n3. Inspect the recharge sensors' lens where the water filling interface islocated for any protrusions or damage.\n4. Manually press the 'Retur",
+              "score": 0.014673113306705905,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+              "source": "kb_qa",
+              "doc_id": "rv-0362",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+              "snippet": "What should I do if my S1 Pro/T2080 robot vacuum cannot power on, won't turn on, or cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the pow",
+              "score": 0.014172043010752687,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+              "source": "kb_qa",
+              "doc_id": "rv-0406",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+              "snippet": "what should I do when T2080 S1 pro has Abnormal alert: Communication error between the robot and the station/EB41 Robot and base station disconnected/disconnected\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab. Press and release the base station's charging pins to check if they can ext",
+              "score": 0.014166666666666668,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+              "source": "kb_qa",
+              "doc_id": "rv-0412",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+              "snippet": "what should I do when T2080 S1 Pro has E77: Robot not detected, task paused/Robot charging pin disconnected, please push the robot back into the station/Can't detect robot?\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab, press the base station's charging pins, and check whether they ca",
+              "score": 0.013513513513513513,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+              "source": "kb_qa",
+              "doc_id": "rv-0430",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+              "snippet": "Robot S1 Pro didn't resume cleaning\n1. The Auto-return Cleaning function is enabled.\n2. The robot returned to the charging dock by itself due to low battery, rather than being moved there manually.\n3. No manual cleaning was initiated after the robot paused and before it attempted to resume.\n4. There are no firmware updates in progress when the resume cleaning task is triggered.",
+              "score": 0.012937062937062937,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+              "source": "kb_qa",
+              "doc_id": "rv-0423",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+              "snippet": "what should I do when T2080 S1 Pro has E7K: Unable to return to starting point, task paused, please remove nearby obstacles/Failed to return to base station or initial position/Robot failed to recharge or unable to return to starting point?\nClear obstacles between the cleaning robot and the base station or starting point.",
+              "score": 0.012922705314009662,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+              "source": "kb_qa",
+              "doc_id": "rv-0356",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+              "snippet": "What should I do if my S1 Pro/T2080 starts by itself at night?\nIf you encounter the issue of your S1 Pro spontaneously starting a cleaning session by itself, please refer to the following troubleshooting steps to resolve the issue. -If you have a pet at home, please make sure that your pet did not accidentally start the robot. -Please check the robot's settings in the app to determine if a schedul",
+              "score": 0.01261904761904762,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-09T07:23:16.004280+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "step_card",
+          "card_id": "9287464674cd55138c513c67c08866c1",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Verify whether the base station is powered on, and whether…",
+            "instruction": "Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": []
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:16.028580+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "action",
+          "id": "313b7c851ec84443b3fd097a7a6dd56d",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:16.061791+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "step_card",
+          "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the base station is not powered on, attempt different po…",
+            "instruction": "If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loose connection may prevent the base station from receiving power.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Base-station-power-cable.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:16.079585+00:00",
+          "first_seq": 29,
+          "last_seq": 33,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "action",
+          "id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:16.110535+00:00",
+          "first_seq": 36,
+          "last_seq": 36,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "step_card",
+          "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Please wipe the charging pins on the robot and the base sta…",
+            "instruction": "Please wipe the charging pins on the robot and the base station and ensure they are free from dirt.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/station-pin.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:16.129083+00:00",
+          "first_seq": 40,
+          "last_seq": 44,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "action",
+          "id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:16.161773+00:00",
+          "first_seq": 47,
+          "last_seq": 47,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "step_card",
+          "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0473",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "Press and hold the red button next to the Wi-Fi indicator t…",
+            "instruction": "Press and hold the red button next to the Wi-Fi indicator to restore factory settings. Wait for 5 minutes, ensuring the robot is placed on the base station with the charging pins properly engaged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "328e03f4-8e91-4998-9799-2b8910065d1a"
+            ],
+            "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin-contact-with-station-pin-properly.png",
+                "kind": "image"
+              }
+            ]
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null
+        },
+        {
+          "at": "2026-10-09T07:23:16.181118+00:00",
+          "first_seq": 51,
+          "last_seq": 55,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "action",
+          "id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-09T07:23:16.220102+00:00",
+          "first_seq": 57,
+          "last_seq": 57,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "case_changed",
+          "card_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+          "version": 5,
+          "case_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-09T07:23:16.191543+00:00"
+        },
+        {
+          "at": "2026-10-09T07:23:16.221530+00:00",
+          "first_seq": 58,
+          "last_seq": 60,
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "assistant_message",
+          "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+      "issues": [
+        {
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "status": "open",
+          "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 63,
+      "latest_summaries": []
+    }
+  },
+  "intent": "report_problem",
+  "cases": [
+    {
+      "case_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+      "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+      "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-09T07:23:16.191543+00:00",
+      "updated_at": "2026-10-09T07:23:16.191543+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "fd21aad46fdc44a4aaf04a7c04ae4ae3",
+        "version": 5,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+          "kind": "upload_receipt",
+          "card_id": "d6e505a985dc565daf8748513f5ec682",
+          "version": 5
+        },
+        "timeline": [
+          {
+            "at": "2026-10-09T07:23:10.336735+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "user_message",
+            "id": "f890c48696e14d0392fe2c6fe7b20527",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: Ask Us\nProblem Description: The robot won’t charge when it is at the base station despite wiping clean the electrical connections and the robot can’t get past critical low battery\n\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-09T07:23:13.876280+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "20ce98e041935c28940618e0d66e26e0",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-09T07:23:15.997597Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+                "source": "kb_qa",
+                "doc_id": "rv-0370",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "86e640a9-fad6-490c-bb21-4be5a9dca37a",
+                "snippet": "If the base station is not powered on: -Try different wall outlets to check whether the base station powers on. Sometimes, this issue might stem from a defective wall outlet. -Inspect the power cord at the rear of the base station to verify that it is securely connected. A loose connection can prevent the base station from receiving power. If the base station is powered on： -Switch the robot to th",
+                "score": 0.015887174541947928,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+                "source": "kb_qa",
+                "doc_id": "rv-0298",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b9ecbdf8-0ed8-4ff9-bc31-70cbbbc494f6",
+                "snippet": "Can the base station be relocated for S1 Pro?\nRelocate the base station only when the robot is not in use. Remove the robot from the base station before moving to prevent it from falling. Relocating the base station while the robot is cleaning may result in a failed return to charge.",
+                "score": 0.015873015873015872,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+                "source": "kb_qa",
+                "doc_id": "rv-0363",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "01eb282a-6642-402d-8fd9-3ebb8a6a538a",
+                "snippet": "Robot S1 Pro is unable to charge\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loos",
+                "score": 0.015638148667601683,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+                "source": "kb_qa",
+                "doc_id": "rv-0473",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+                "snippet": "What should I do if T2080 S1 Pro is not charging,cannot be charged,unable to charge, failed to charge,or charging failed?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect t",
+                "score": 0.015246842709529276,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+                "source": "kb_qa",
+                "doc_id": "rv-0415",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "79b545e4-c42d-43dc-b0f2-bf71a2caeb7a",
+                "snippet": "what should I do when T2080 S1 Pro has E74: Return to base station failed. Please place the robot back in the base station/Robot failed to locate the base station. Please bring the robot near the base station then try again/Failed to find base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: ",
+                "score": 0.01515151515151515,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+                "source": "kb_qa",
+                "doc_id": "rv-0422",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "99d1f330-1693-4eed-a84e-9218a9684d71",
+                "snippet": "what should I do when T2080 S1 Pro has E75: Return to base station failed. Please place the robot back in the base station/Robot failed to dock into base station. Please clear the area near base station then try again/Failed to enter base station, stop return?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base s",
+                "score": 0.01504708904109589,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+                "source": "kb_qa",
+                "doc_id": "rv-0416",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b56819a9-027e-4a5b-b21a-f34c7caaee22",
+                "snippet": "what should I do when T2080 S1 Pro has E76: Return to base station failed. Task ended. Click to view the reason/Robot failed to return to base station, please take the robot back into the base station/Can't return to base station?\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 m to the left and ",
+                "score": 0.014909502262443438,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+                "source": "kb_qa",
+                "doc_id": "rv-0472",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fdf08997-3d71-476d-a06e-31655d1f2e24",
+                "snippet": "What should I do when T2080 S1 Pro Does not power on/Cannot be activated/Won't turn on/Cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the ",
+                "score": 0.01477718771646271,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+                "source": "kb_qa",
+                "doc_id": "rv-0364",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "652c7c45-d308-47b2-a1ee-774d02822c1a",
+                "snippet": "Robot S1 Pro failed to return to base station，failing to dock\n1. Clear any obstacles on the path between the cleaning robot and the base station.\n2. Confirm that there is a safe space around the base station: 0.5 rm to the left and right, and 1.5 m in front.\n3. Inspect the recharge sensors' lens where the water filling interface islocated for any protrusions or damage.\n4. Manually press the 'Retur",
+                "score": 0.014673113306705905,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+                "source": "kb_qa",
+                "doc_id": "rv-0362",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c861d628-3ffa-46e1-a8d7-502ccf406bde",
+                "snippet": "What should I do if my S1 Pro/T2080 robot vacuum cannot power on, won't turn on, or cannot be started?\n1. Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;\n2. If the base station is not powered on, try different power sockets to determine whether the base station can be switched on.\n3. Inspect the pow",
+                "score": 0.014172043010752687,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+                "source": "kb_qa",
+                "doc_id": "rv-0406",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6684410f-cdf8-48b7-badf-680ad8d24835",
+                "snippet": "what should I do when T2080 S1 pro has Abnormal alert: Communication error between the robot and the station/EB41 Robot and base station disconnected/disconnected\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab. Press and release the base station's charging pins to check if they can ext",
+                "score": 0.014166666666666668,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+                "source": "kb_qa",
+                "doc_id": "rv-0412",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9d72b772-b2b8-4acd-968b-5430b1b0c7fd",
+                "snippet": "what should I do when T2080 S1 Pro has E77: Robot not detected, task paused/Robot charging pin disconnected, please push the robot back into the station/Can't detect robot?\n1. Remove the robot from the base station and wipe the robot's charging pins with an alcohol swab.\n2. Wipe the base station's charging pins with an alcohol swab, press the base station's charging pins, and check whether they ca",
+                "score": 0.013513513513513513,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+                "source": "kb_qa",
+                "doc_id": "rv-0430",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "856cb357-9c79-4645-8b39-79453ba72f36",
+                "snippet": "Robot S1 Pro didn't resume cleaning\n1. The Auto-return Cleaning function is enabled.\n2. The robot returned to the charging dock by itself due to low battery, rather than being moved there manually.\n3. No manual cleaning was initiated after the robot paused and before it attempted to resume.\n4. There are no firmware updates in progress when the resume cleaning task is triggered.",
+                "score": 0.012937062937062937,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+                "source": "kb_qa",
+                "doc_id": "rv-0423",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "300d489a-3bf1-42a0-a902-bc3a0d126725",
+                "snippet": "what should I do when T2080 S1 Pro has E7K: Unable to return to starting point, task paused, please remove nearby obstacles/Failed to return to base station or initial position/Robot failed to recharge or unable to return to starting point?\nClear obstacles between the cleaning robot and the base station or starting point.",
+                "score": 0.012922705314009662,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+                "source": "kb_qa",
+                "doc_id": "rv-0356",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "274692e2-228d-409c-9b4a-be0688e4e582",
+                "snippet": "What should I do if my S1 Pro/T2080 starts by itself at night?\nIf you encounter the issue of your S1 Pro spontaneously starting a cleaning session by itself, please refer to the following troubleshooting steps to resolve the issue. -If you have a pet at home, please make sure that your pet did not accidentally start the robot. -Please check the robot's settings in the app to determine if a schedul",
+                "score": 0.01261904761904762,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-09T07:23:16.004280+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "step_card",
+            "card_id": "9287464674cd55138c513c67c08866c1",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0473",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Verify whether the base station is powered on, and whether…",
+              "instruction": "Verify whether the base station is powered on, and whether the indicator lights on the screen and inside the water tank are illuminating correctly;",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "328e03f4-8e91-4998-9799-2b8910065d1a"
+              ],
+              "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "media": []
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:16.028580+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "action",
+            "id": "313b7c851ec84443b3fd097a7a6dd56d",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:16.061791+00:00",
+            "first_seq": 25,
+            "last_seq": 25,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "step_card",
+            "card_id": "1f0ed435fd6153b58bb2e3b2dfa15499",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0473",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If the base station is not powered on, attempt different po…",
+              "instruction": "If the base station is not powered on, attempt different power sockets to determine whether it can be switched on. Inspect the power cable at the rear of the base station to ensure it is securely connected; a loose connection may prevent the base station from receiving power.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "328e03f4-8e91-4998-9799-2b8910065d1a"
+              ],
+              "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Base-station-power-cable.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:16.079585+00:00",
+            "first_seq": 29,
+            "last_seq": 33,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "action",
+            "id": "a5c11bdec6c044a2be7f3769c8d1a9cd",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:16.110535+00:00",
+            "first_seq": 36,
+            "last_seq": 36,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "step_card",
+            "card_id": "45ddfa7a049858efa17fae7b4fc555bb",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_rv_0473",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "Please wipe the charging pins on the robot and the base sta…",
+              "instruction": "Please wipe the charging pins on the robot and the base station and ensure they are free from dirt.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "328e03f4-8e91-4998-9799-2b8910065d1a"
+              ],
+              "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin.png",
+                  "kind": "image"
+                },
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/station-pin.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:16.129083+00:00",
+            "first_seq": 40,
+            "last_seq": 44,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "action",
+            "id": "ab7e58ae2af44a84b1a2fefd4b940d1e",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:16.161773+00:00",
+            "first_seq": 47,
+            "last_seq": 47,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "step_card",
+            "card_id": "2fca2ed9e3c95e12b497b8aec0469597",
+            "version": 4,
+            "step": {
+              "step_id": "s4",
+              "plan_id": "qa_rv_0473",
+              "plan_version": 1,
+              "step_no": 4,
+              "title": "Press and hold the red button next to the Wi-Fi indicator t…",
+              "instruction": "Press and hold the red button next to the Wi-Fi indicator to restore factory settings. Wait for 5 minutes, ensuring the robot is placed on the base station with the charging pins properly engaged.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "328e03f4-8e91-4998-9799-2b8910065d1a"
+              ],
+              "primary_evidence_id": "328e03f4-8e91-4998-9799-2b8910065d1a",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/robot-pin-contact-with-station-pin-properly.png",
+                  "kind": "image"
+                }
+              ]
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null
+          },
+          {
+            "at": "2026-10-09T07:23:16.181118+00:00",
+            "first_seq": 51,
+            "last_seq": 55,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "action",
+            "id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-09T07:23:16.220102+00:00",
+            "first_seq": 57,
+            "last_seq": 57,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "case_changed",
+            "card_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+            "version": 5,
+            "case_id": "03f85652-49ea-5a32-a1b7-c860c8ed19a8",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-09T07:23:16.191543+00:00"
+          },
+          {
+            "at": "2026-10-09T07:23:16.221530+00:00",
+            "first_seq": 58,
+            "last_seq": 60,
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "kind": "assistant_message",
+            "message_id": "2b8abb191a695a0db7417af08f6d86a8",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "ec04601f2cdd4a6f8f7f2fd2bbfb569c",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+        "issues": [
+          {
+            "issue_id": "51c5ef9c839051ffb33da3a88bb50dcb",
+            "status": "open",
+            "title": "The robot won’t charge when it is at the base station、the robot can’t get past critical low battery",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 63,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ]
+}
