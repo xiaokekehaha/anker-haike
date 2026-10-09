@@ -220,3 +220,18 @@ def test_invalid_device_safety_quote_cannot_suppress_precheck():
         )
         assert state["risk_cases"]
         assert not state["turn_decision"]["allowed_operations"]
+
+
+def test_fact_quote_matches_across_whitespace_and_apostrophe_form():
+    # T61 (round6 2026-10-09): the ticket reads "omni c20  isn’t" (double space, curly
+    # apostrophe); the model cited "omni c20 isn't". Exact matching dropped the symptom
+    # and the handoff summary said no symptom was recorded.
+    text = "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app"
+    state = turn(
+        {}, "i1", text, primary_intent="report_problem", device_relation="other",
+        product_hints=["omni c20"], device_category="robot_vacuum",
+        facts=[{"value": "going off 2 hours before schedule", "quote": "omni c20 isn't following my schedule it's going off 2 hours before"},
+               {"value": "cleans not recorded by app", "quote": "the cleans are not being recorded by your dumb app"},
+               {"value": "invented", "quote": "the robot caught fire"}],
+    )
+    assert state["symptoms"] == ["going off 2 hours before schedule", "cleans not recorded by app"]

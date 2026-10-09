@@ -25,6 +25,7 @@ from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.product_questions import answer_product_question, handles_product_question
+from app.conversation.quotes import quoted
 from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
 from app.conversation.tasks import REMEDY_INTENTS
 from app.diagnose import (
@@ -1159,7 +1160,7 @@ async def understand(state: SessionState) -> SessionState:
         context_sources = dict(update.get("context_sources") or {})
         reported = {
             fact.context_field: fact.value for fact in meaning.facts
-            if fact.kind == "context" and fact.context_field and fact.quote and fact.quote in text
+            if fact.kind == "context" and fact.context_field and quoted(fact.quote, text)
             and (fact.context_field != "purchase_date" or receipt_mod.stated_purchase_date(fact.value, state["at"]))
         }
         business = BusinessContext.restore({**state, **update}).remember(reported, state["input_id"], order_no=update.get("case_order_no") if update["turn_decision"].get("answer_scope") in {"case", "issue"} else None)

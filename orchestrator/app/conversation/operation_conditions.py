@@ -10,6 +10,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.conversation.quotes import quoted
+
 # One signal per turn keeps the interpret schema small and rules out contradictory
 # combinations (pause + retry). Resource signals name the resource and whether it is at hand.
 OperationSignal = Literal[
@@ -167,7 +169,7 @@ def update_conditions(state: dict, proposal: OperationUpdate | None, *, text: st
     conditions = conditions_for(state)
     before = conditions.model_dump()
     # One turn carries one quote: nothing in an update applies unless that quote is in this text.
-    if proposal is None or not (proposal.quote.strip() and proposal.quote in text):
+    if proposal is None or not quoted(proposal.quote, text):
         return before, False
     current = next((b for b in reversed(conditions.blockers) if not b.cleared), None)
     if proposal.signal in RESOURCE_SIGNALS:

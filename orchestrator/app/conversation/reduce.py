@@ -11,6 +11,7 @@ from app.conversation.operation_conditions import (
     resolve_operation_reply,
     update_conditions,
 )
+from app.conversation.quotes import quoted
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
@@ -191,7 +192,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             (f for f in facts if f["fact_id"] == correction.fact_id and f["status"] == "active"),
             None,
         )
-        if not old or not correction.quote.strip() or correction.quote not in text:
+        if not old or not quoted(correction.quote, text):
             clarify = "请指出需要更正的是哪项记录，以及正确的情况。"
             continue
         old["status"] = "superseded" if correction.value else "retracted"
@@ -218,7 +219,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
     for index, candidate in enumerate(meaning.facts):
-        if not candidate.quote.strip() or candidate.quote not in text:
+        if not quoted(candidate.quote, text):
             continue
         if any(f["value"] == candidate.value and f["status"] == "active" for f in facts):
             continue
@@ -312,10 +313,10 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         issue["title"] = "、".join(issue["symptoms"])
     risks = copy.deepcopy(state.get("risk_cases") or [])
     new_risk = (
-        meaning.device_safety_assertion == "reported" and meaning.device_safety_quote and meaning.device_safety_quote in text
+        meaning.device_safety_assertion == "reported" and quoted(meaning.device_safety_quote, text)
     )
     validated_negation = meaning.device_safety_assertion == "negated" and bool(
-        meaning.device_safety_quote and meaning.device_safety_quote in text
+        quoted(meaning.device_safety_quote, text)
     )
     uncertain_risk = precheck_risk and not new_risk and not validated_negation
     if new_risk or uncertain_risk:
@@ -379,7 +380,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     if intent in {"replacement_request", "refund_request", "address_update"}:
         issue["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[intent]
     if intent == "request_human" and state.get("entry") != "action" and not (
-        meaning.human_request_quote and meaning.human_request_quote.strip() and meaning.human_request_quote in text
+        quoted(meaning.human_request_quote, text)
     ):
         # A classifier's recommendation is not a user request to cancel a task.
         intent = "complaint" if meaning.emotion_level in {"dissatisfied", "angry", "complaint_risk"} else "unknown"
@@ -434,8 +435,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     decision = {
         "input_id": iid,
         "primary_intent": intent,
-        "answer_scope": meaning.business_reference.relation if meaning.business_reference and meaning.business_reference.relation in {"case", "issue"} and meaning.business_reference.quote.strip() and meaning.business_reference.quote in text else "focus",
-        "answer_request": meaning.answer_request.model_dump() if meaning.answer_request and meaning.answer_request.quote.strip() and meaning.answer_request.quote in text else None,
+        "answer_scope": meaning.business_reference.relation if meaning.business_reference and meaning.business_reference.relation in {"case", "issue"} and quoted(meaning.business_reference.quote, text) else "focus",
+        "answer_request": meaning.answer_request.model_dump() if meaning.answer_request and quoted(meaning.answer_request.quote, text) else None,
         "secondary_intents": meaning.secondary_intents,
         "target_issue_id": target,
         "reply_mode": mode,
@@ -450,11 +451,11 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "business_switched": business_switched,
         "business_ambiguous": business_ambiguous,
         "operation_changed": operation_changed,
-        "diagnostic_request": bool(meaning.diagnostic_request_quote and meaning.diagnostic_request_quote.strip() and meaning.diagnostic_request_quote in text),
+        "diagnostic_request": quoted(meaning.diagnostic_request_quote, text),
     }
     result = {key: copy.deepcopy(issue.get(key, default)) for key, default in ISSUE_FIELDS.items()}
     preferences = dict(state.get("session_preferences") or {})
-    if meaning.detail_level and meaning.preference_quote and meaning.preference_quote in text:
+    if meaning.detail_level and quoted(meaning.preference_quote, text):
         preferences.update(detail_level=meaning.detail_level, source_input_id=iid, updated_at=at)
     result["session_preferences"] = preferences
     result.update(

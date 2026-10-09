@@ -1,0 +1,58 @@
+{
+ "summary": {
+  "cases": 2,
+  "errors": 0,
+  "intent_accuracy": "100%",
+  "sop_accuracy": "100%",
+  "sop_exact": "100%",
+  "sop_via_alternate": 0,
+  "bot_closed_rate": "n/a (0/0)",
+  "service_order_submitted": 0,
+  "hallucination_cases": 0,
+  "median_seconds": 9.2
+ },
+ "rows": [
+  {
+   "id": "T7",
+   "session_id": "74e63cb3ea044b14b264eeab7d9b72eb",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "logistics_query",
+   "intent_ok": true,
+   "sop_expected": "ask_order",
+   "bot_closable": false,
+   "sop_also": [],
+   "terminal": "ask_order",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [],
+   "hallucination": [],
+   "first_reply": "Please share your order number or tracking number and I'll look it up.",
+   "seconds": 4.1
+  },
+  {
+   "id": "T56",
+   "session_id": "c1847343823445598b90b5914008cb67",
+   "language": "en",
+   "intent_expected": "report_problem",
+   "intent_actual": "report_problem",
+   "intent_ok": true,
+   "sop_expected": "troubleshoot",
+   "bot_closable": false,
+   "sop_also": [],
+   "terminal": "troubleshoot",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 2,
+   "escalate_reasons": [],
+   "hallucination": [],
+   "first_reply": "I can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team.",
+   "seconds": 9.2
+  }
+ ]
+}

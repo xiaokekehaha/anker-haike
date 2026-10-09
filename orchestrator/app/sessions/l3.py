@@ -23,6 +23,7 @@ from app.backends.protocol import BackendError
 from app.cases.service import case_event
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
+from app.conversation.quotes import quoted
 from app.conversation.reduce import stable_id
 from app.conversation.tasks import NOT_EXECUTABLE, REMEDY_INTENTS, settle
 from app.emotion.policy import complaint_flagged
@@ -888,7 +889,7 @@ async def reopening_request(state, meaning):
         quotes.append(meaning.feedback_quote)
     if meaning.primary_intent == "report_problem":
         quotes.extend(f.quote for f in meaning.facts if f.kind in {"symptom", "observation"})
-    quote = next((q for q in quotes if q and q.strip() and q in text), None)
+    quote = next((q for q in quotes if quoted(q, text)), None)
     if not quote:
         return None
     row = await require_services().cases.store.get(state["case_id"])

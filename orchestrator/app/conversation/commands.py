@@ -3,6 +3,8 @@
 from haike_contracts.actions import parse_action
 from pydantic import ValidationError
 
+from app.conversation.quotes import quoted
+
 
 def resolve_command(state, meaning):
     if state.get("entry") == "action":
@@ -26,7 +28,7 @@ def resolve_command(state, meaning):
         return None, "I've noted the new details. Does this feedback refer to the step from before the correction? Please confirm."
     kind = "step_feedback" if feedback else candidate.kind
     quote = meaning.feedback_quote if feedback else candidate.quote
-    if not quote or quote not in state.get("text", ""):
+    if not quoted(quote, state.get("text", "")):
         return None, "Please choose an option or tell me the result; I can't submit it for you yet."
     if kind != pending["kind"] and not (
         kind == "skip_receipt" and pending["kind"] in {"upload_receipt", "confirm_receipt"}
