@@ -101,6 +101,8 @@ class SessionState(TypedDict, total=False):
     document_image_ids: list[str]
     retake_attempts: int
     completed_task_intent: str | None
+    # 刚处理完的任务记成什么：done（默认）或 waiting_human（已交人工，见 tasks.next_task）
+    task_outcome: str | None
     retake_skipped: bool
     input_id: str
     base_version: int
@@ -2783,7 +2785,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         "authorize": ["execute", "await_human", "commit_issue", "service_context"],
         "execute": ["commit_issue", "await_human", "advance_tasks", "await_input"],
         "track": ["advance_tasks"],
-        "await_human": ["commit_issue"],
+        "await_human": ["commit_issue", "advance_tasks"],
         "consult": ["commit_issue", "summarize", "advance_tasks", "service_context"],
         "apply_human_decision": ["await_input", "authorize", "propose", "commit_issue"],
         "apply_case_command": ["commit_issue"],

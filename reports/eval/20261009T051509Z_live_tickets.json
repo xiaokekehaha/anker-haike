@@ -1,0 +1,41 @@
+{
+ "summary": {
+  "cases": 1,
+  "errors": 0,
+  "intent_accuracy": "100%",
+  "sop_accuracy": "100%",
+  "sop_exact": "0%",
+  "sop_via_alternate": 1,
+  "bot_closed_rate": "100% (1/1)",
+  "service_order_submitted": 0,
+  "hallucination_cases": 0,
+  "median_seconds": 4.7
+ },
+ "rows": [
+  {
+   "id": "T9",
+   "session_id": "922d44b98e824c8d89fed60c3b2721f5",
+   "language": "en",
+   "intent_expected": "logistics_query",
+   "intent_actual": "order_change",
+   "intent_ok": true,
+   "sop_expected": "logistics_presale",
+   "bot_closable": true,
+   "sop_also": [
+    "order_change_human"
+   ],
+   "terminal": "order_change_human + logistics_presale",
+   "sop_ok": true,
+   "service_order": false,
+   "human": false,
+   "self_served": true,
+   "step_cards": 0,
+   "escalate_reasons": [
+    "awaiting_approval"
+   ],
+   "hallucination": [],
+   "first_reply": "I'll handle your requests in this order: order change → delivery status.I can't change or hold an order myself, so I've passed your request to a colleague who can. Please note the order may already be in process.Next up: delivery status.Order Anker008:\n• Package: pre-order, not shipped yet, expected",
+   "seconds": 4.7
+  }
+ ]
+}

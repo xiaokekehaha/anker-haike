@@ -13,7 +13,7 @@
 
 指标：
 - 意图准确率：首轮 understand 节点的 primary_intent 与标注 intent 一致；
-- SOP 分支准确率：会话终点映射到标注 sop（映射见 TERMINAL）；
+- SOP 分支准确率：会话到达的终点覆盖标注 sop（多诉求单还要覆盖 sop_also；转人工只认案件状态与交接记录，见 terminals_of）；
 - 机器人闭环率 bot_closed_rate：期望终点为机器人可独立闭环的工单（BOT_CLOSABLE）中，未触发转人工即结束的比例。
   驱动策略对步骤一律答「还没解决」，故障单按设计会走到质保 / 转人工，不计入分母（2026-10-08 Fable 5.1 裁定）；
   「提交服务单后转人工」是 SOP 规定终点，单列 service_order_submitted；
@@ -73,9 +73,33 @@ def intent_of(journey: dict[str, Any]) -> str | None:
     return None
 
 
-def terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_reasons: list[str],
-                service_types: list[str], step_cards: int, said: str, has_code: bool = False) -> str:
-    """会话终点 → 评测集的 sop 标签。"""
+# 本系统办不了、只能转人工的诉求（暂缓发货 / 取消 / 改购 / 改地址），见 app.conversation.tasks.NOT_EXECUTABLE
+HANDOFF_REQUESTS = {"order_change", "address_update"}
+
+
+def terminals_of(snapshot: dict[str, Any], *, case_status: str | None, review_requested: str | None, handoff: bool,
+                 escalate_reasons: list[str], service_types: list[str], step_cards: int, said: str,
+                 has_code: bool = False) -> list[str]:
+    """会话到达的终点（评测集 sop 标签），可能不止一个：多诉求单每项诉求各有终点。
+
+    转人工终点只认持久化证据：案件已进人工队列、记录了该诉求、写了交接摘要。
+    「passed your request to」这句话不是证据 —— 2026-10-09 T9 三次复测都说了这句，案件却仍 open、无交接。
+    """
+    reached: list[str] = []
+    if case_status == "awaiting_approval" and review_requested in HANDOFF_REQUESTS and handoff:
+        reached.append("order_change_human")
+    return reached + [_terminal_of(snapshot, case_status=case_status, escalate_reasons=escalate_reasons,
+                                   service_types=service_types, step_cards=step_cards, said=said, has_code=has_code)]
+
+
+def sop_passed(case: dict[str, Any], reached: list[str]) -> bool:
+    """标注 sop 与 sop_also 的每个终点都要到达；单终点单沿用 ACCEPT 的等价集合。"""
+    required = [case["sop"], *(case.get("sop_also") or [])]
+    return all(set(reached) & ACCEPT.get(sop, {sop}) for sop in required)
+
+
+def _terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_reasons: list[str],
+                 service_types: list[str], step_cards: int, said: str, has_code: bool = False) -> str:
     if "R4" in escalate_reasons:
         return "safety_human"
     if "carrier_investigation" in service_types:
@@ -85,10 +109,6 @@ def terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_r
     if {"replace", "refund"} & set(service_types):
         return "warranty_replace"
     low = said.casefold()
-    # 本系统办不了、已如实说明并转人工的诉求（暂缓发货 / 取消 / 改购 / 改地址）。
-    # 这是 SOP 的正确终点之一：不能声称已经改好，也不能默不作声（T9 原来只回了发货日就结束）。
-    if "passed your request to" in low:
-        return "order_change_human"
     if "超过质保期" in said or "out of warranty" in low or "warranty has expired" in low:
         return "out_of_warranty"
     if "授权经销商" in said or "authorized" in low and "dealer" in low:
@@ -118,8 +138,7 @@ ACCEPT = {
     "out_of_warranty": {"out_of_warranty"},
     "logistics_delivered": {"logistics_delivered"},
     "logistics_reship": {"logistics_reship"},
-    # T9 同时问发货日与要求暂缓发货：答了发货日算对，把暂缓诉求转人工也算对（标注 note 写明「转人工可选」）
-    "logistics_presale": {"logistics_presale", "order_change_human"},
+    "logistics_presale": {"logistics_presale"},
     "logistics_in_transit": {"logistics_in_transit"},
     "ask_order": {"ask_order", "clarify"},
     "code_miss": {"code_miss"},
@@ -133,8 +152,8 @@ ACCEPT = {
 def intents_accepted(case: dict[str, Any]) -> set[str]:
     """这一单可以接受的意图。多诉求工单允许标注第二个意图（intent_alt）。
 
-    T9 一句话里既问发货日（logistics_query）又要求暂缓发货（order_change），
-    单标签表达不了：答发货日算对，识别出暂缓发货诉求并转人工同样算对 —— 后者其实更完整。
+    T9 一句话里既问发货日（logistics_query）又要求暂缓发货（order_change）：模型先读到哪个都算对，
+    因为队列会按优先级重排；终点则两项都必须到达（sop + sop_also），见 sop_passed。
     """
     return {case["intent"], *([case["intent_alt"]] if case.get("intent_alt") else [])}
 
@@ -224,6 +243,15 @@ def card_of(events: list[dict[str, Any]], kind: str) -> dict[str, Any] | None:
     return next((e for e in reversed(events) if e.get("type") == kind), None)
 
 
+async def case_of(client: httpx.AsyncClient, events: list[dict[str, Any]]) -> dict[str, Any]:
+    """案件详情（状态、事件、交接摘要）：转人工的判定依据，不看话术。没有案件时返回空。"""
+    changed = card_of(events, "case_changed")
+    if not changed:
+        return {}
+    resp = await client.get(f"/admin/api/cases/{changed['case_id']}")
+    return resp.json() if resp.status_code == 200 else {}
+
+
 async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: str | None) -> dict[str, Any]:
     started = time.perf_counter()
     sid = (await driver.client.post("/sessions")).json()["session_id"]
@@ -311,9 +339,16 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
         proposal = card_of(transcript, "proposal_card")
         service_types = [o["type"] for o in (proposal or {}).get("options") or []]
     visible = said_of(transcript)
-    terminal = terminal_of(snapshot, case_status=(journey.get("case") or {}).get("status"),
-                           escalate_reasons=reasons, service_types=service_types,
-                           step_cards=step_cards, said=visible, has_code=bool(parsed.codes))
+    detail = await case_of(driver.client, transcript)
+    case_events = detail.get("events") or []
+    reached = terminals_of(
+        snapshot, case_status=detail.get("status"),
+        review_requested=next((e["payload"]["requested"] for e in reversed(case_events)
+                               if e["type"] in {"review_requested", "request_changed"}), None),
+        handoff=detail.get("handoff_summary") is not None,
+        escalate_reasons=reasons, service_types=service_types,
+        step_cards=step_cards, said=visible, has_code=bool(parsed.codes),
+    )
     forbid_hits = [k for k in case.get("forbid") or [] if FORBID_PATTERNS.get(k) and promised(FORBID_PATTERNS[k], visible)]
     if TIMELINE_PROMISE.search(visible):
         forbid_hits.append("timeline_promise")
@@ -330,8 +365,9 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
         "intent_ok": INTENT_GROUP.get(intent or "", intent) in intents_accepted(case),
         "sop_expected": case["sop"],
         "bot_closable": case["sop"] in BOT_CLOSABLE,
-        "terminal": terminal,
-        "sop_ok": terminal in ACCEPT.get(case["sop"], {case["sop"]}),
+        "sop_also": case.get("sop_also") or [],
+        "terminal": " + ".join(reached),
+        "sop_ok": sop_passed(case, reached),
         "service_order": bool(receipts),
         "human": human,
         "self_served": not human,
@@ -357,6 +393,11 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "errors": n - len(ok_rows),
         "intent_accuracy": pct(sum(r["intent_ok"] for r in ok_rows), len(ok_rows)),
         "sop_accuracy": pct(sum(r["sop_ok"] for r in ok_rows), len(ok_rows)),
+        # 把 sop_accuracy 拆开：完全命中标注终点的，与走了 ACCEPT 里替代终点的。
+        # 只看合计会把「没走错路」读成「回答正确」——ACCEPT 刻意接受多个终点
+        # （排障单走完「还没解决」必然进质保分支，驱动策略使然），这部分不能算作答对内容。
+        "sop_exact": pct(sum(r["terminal"] == r["sop_expected"] for r in ok_rows), len(ok_rows)),
+        "sop_via_alternate": sum(r["sop_ok"] and r["terminal"] != r["sop_expected"] for r in ok_rows),
         "bot_closed_rate": f"{pct(sum(r['self_served'] for r in closable), len(closable))} ({sum(r['self_served'] for r in closable)}/{len(closable)})",
         "service_order_submitted": len(service),
         "hallucination_cases": sum(bool(r["hallucination"]) for r in ok_rows),
@@ -367,6 +408,11 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def render(summary: dict[str, Any], rows: list[dict[str, Any]]) -> str:
     lines = [f"# 63 单真实链路回放（{datetime.now(UTC).strftime('%Y-%m-%d %H:%M UTC')}）", "",
              "客户策略与指标口径见 orchestrator/app/evaluation/live_tickets.py。机器人闭环率只统计期望终点可由机器人独立闭环的工单（物流运输中、预售、过保告知、解释）。", "",
+             "**这些数字证明的是「没走错 SOP 分支」，不是「回答内容正确」。**",
+             "- `sop_accuracy` 含 ACCEPT 表里的替代终点（排障单走完「还没解决」必然进质保分支，是驱动策略使然）；",
+             f"  其中完全命中标注终点 `sop_exact` = {summary.get('sop_exact')}，经替代终点通过 {summary.get('sop_via_alternate')} 单。",
+             "- `hallucination` 只检查标注的禁止承诺与未收录错误码，不校验事实（日期、单号、金额）是否正确。",
+             "- 回答质量需人工逐条核对；两者结论曾经不一致，见 docs/planning/2026-10-09-0841_finals-tracking/。", "",
              "| 指标 | 值 |", "| --- | --- |"]
     lines += [f"| {k} | {v} |" for k, v in summary.items()]
     lines += ["", "| id | 语言 | 意图 期望 / 实际 | SOP 期望 → 终点 | 步骤卡 | 服务单 | 转人工原因 | 幻觉 | 秒 |",
@@ -377,7 +423,7 @@ def render(summary: dict[str, Any], rows: list[dict[str, Any]]) -> str:
             continue
         lines.append(
             f"| {r['id']} | {r['language']} | {'✓' if r['intent_ok'] else '✗'} {r['intent_expected']} / {r['intent_actual']} "
-            f"| {'✓' if r['sop_ok'] else '✗'} {r['sop_expected']} → {r['terminal']} | {r['step_cards']} "
+            f"| {'✓' if r['sop_ok'] else '✗'} {' + '.join([r['sop_expected'], *r['sop_also']])} → {r['terminal']} | {r['step_cards']} "
             f"| {'是' if r['service_order'] else ''} | {','.join(dict.fromkeys(r['escalate_reasons']))} "
             f"| {','.join(r['hallucination'])} | {r['seconds']} |"
         )

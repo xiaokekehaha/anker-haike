@@ -197,8 +197,7 @@ async def service_context(state):
     if remedy not in NOT_EXECUTABLE and (state.get("turn_decision") or {}).get("primary_intent") in NOT_EXECUTABLE:
         remedy = (state["turn_decision"])["primary_intent"]
     if remedy in NOT_EXECUTABLE:
-        say(state, NOT_EXECUTABLE_TEXT[remedy])
-        update.update(requested_remedy=remedy, stage="propose", l3_route=finish(state, "commit_issue"))
+        update.update(await hand_off_request({**state, "case_id": case["case_id"]}, remedy))
         return update
     if binding.status == "ambiguous":
         say(state, "This involves more than one order. Please tell me which order number you'd like me to handle.")
@@ -321,8 +320,7 @@ async def propose(state):
     # 本系统只能提交预定义服务单，改不了订单本身：如实说明并转人工，绝不声称已经改好。
     # 必须排在 requested_type 之前 —— 它的兜底会把这类诉求当成换货。
     if state.get("requested_remedy") in NOT_EXECUTABLE:
-        say(state, NOT_EXECUTABLE_TEXT[state["requested_remedy"]])
-        return {"stage": "propose", "l3_route": "await_human"}
+        return await hand_off_request(state, state["requested_remedy"])
     kind = requested_type(state)
     if kind in {"reship", "carrier_investigation"}:
         return await _propose_logistics(state, case, kind)
@@ -608,7 +606,48 @@ async def await_human(state):
     row = await _record_handoff(state, row)
     emit_case(state, row)
     say(state, "I've submitted this for review by a colleague. The decision will come back to this conversation, and you can keep adding information here.")
-    return {"stage": "awaiting_human", "pending_card": None, "l3_route": "commit_issue"}
+    return {"stage": "awaiting_human", "pending_card": None, **waiting_human(state.get("requested_remedy"))}
+
+
+INTENT_OF_REMEDY = {remedy: intent for intent, remedy in REQUESTED_REMEDY.items()}
+
+
+def waiting_human(remedy):
+    """诉求已交人工：对应任务记 waiting_human 并回到任务推进，让排在后面的查询继续（T9 的物流）。
+
+    等人工不等于办结 —— 任务不记 done；但机器人本轮对它已无事可做，不能让它一直 active 堵住队列。
+    """
+    intent = INTENT_OF_REMEDY.get(remedy)
+    if intent is None:
+        return {"l3_route": "commit_issue"}
+    return {"completed_task_intent": intent, "task_outcome": "waiting_human", "l3_route": "advance_tasks"}
+
+
+async def hand_off_request(state, remedy):
+    """本系统办不了的诉求（改地址、暂缓发货 / 取消 / 改购）：先把请求持久化进人工队列，再告诉客户。
+
+    顺序不能反：话术「已转交」必须以案件进入 awaiting_approval、记录了诉求、写了交接摘要为前提
+    （2026-10-09 T9 三次复测：只说了这句话，案件仍 open、无交接，物流查询也被丢掉）。
+    同一诉求再说一遍：状态迁移、review_requested 都按内容去重，不会重复入队。
+    交接摘要保留客户原话 —— 「if you have not shipped」这样的条件由人工核实，不由机器人改写。
+    """
+    services = require_services()
+    row = await services.cases.store.get(state["case_id"])
+    queued = next((e["payload"]["requested"] for e in reversed(row["events"])
+                   if e["type"] in {"review_requested", "request_changed"}), None)
+    if not (row["status"] == "awaiting_approval" and queued == remedy):
+        row = await services.cases.transition(
+            state["case_id"], "awaiting_approval", NOT_EXECUTABLE_HANDOFF[remedy],
+            complaint_risk=complaint_flagged(state), priority="high" if complaint_flagged(state) else "normal",
+        )
+        row = await services.cases.record_review_request(state["case_id"], remedy)
+        row = await _record_handoff(
+            {**state, "requested_remedy": remedy}, row, NOT_EXECUTABLE_HANDOFF[remedy] + "：" + (state.get("text") or ""),
+        )
+        emit_case(state, row)
+    say(state, NOT_EXECUTABLE_TEXT[remedy])
+    return {"requested_remedy": remedy, "stage": "awaiting_human", "pending_card": None, "case_status": row["status"],
+            **waiting_human(remedy)}
 
 
 def handoff_reason(state, row):
@@ -989,8 +1028,9 @@ async def advance_tasks(state):
     business = BusinessContext.restore(state)
     decision = state.get("turn_decision") or {}
     completed_business = business.for_order(state["case_order_no"]) if state.get("case_order_no") and (decision.get("answer_scope") in {"case", "issue"} or completed in REMEDY_INTENTS) else business
-    tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business, task_id=decision.get("task_id"))
-    update = {"task_queue": tasks, "completed_task_intent": None}
+    tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business,
+                            task_id=decision.get("task_id"), outcome=state.get("task_outcome") or "done")
+    update = {"task_queue": tasks, "completed_task_intent": None, "task_outcome": None}
     if task:
         say(state, "Next up: " + LABELS[task["intent"]] + ".")
         update.update(

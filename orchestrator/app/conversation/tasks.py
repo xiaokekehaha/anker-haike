@@ -87,10 +87,11 @@ def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
             tuple(sorted(ref.get("candidate_ids", []))),
         )
 
+    # 等人工的诉求（waiting_human）已经在队列里：客户再说一遍不算新任务，否则会重复入队。
     existing = {
         identity(t["intent"], task_business(t, business).reference())
         for t in result
-        if t["status"] in {"pending", "active"}
+        if t["status"] in {"pending", "active", "waiting_human"}
     }
     for intent in incoming:
         key = identity(intent, reference)
@@ -130,7 +131,11 @@ def announces_order(incoming: list[str]) -> bool:
     return len(incoming) > 1 and not set(incoming) <= CONSULT_ONLY
 
 
-def next_task(tasks, completed_intent, *, business=None, task_id=None):
+def next_task(tasks, completed_intent, *, business=None, task_id=None, outcome="done"):
+    """把刚处理完的任务记为 outcome（done = 业务已办结；waiting_human = 已交人工、本轮不再推进），再挑下一个。
+
+    waiting_human 不是 done：诉求还没解决，但机器人已无事可做，不该让后面的任务一直 pending（T9）。
+    """
     result = deepcopy(tasks)
     for task in result:
         matches = (
@@ -144,7 +149,7 @@ def next_task(tasks, completed_intent, *, business=None, task_id=None):
             and matches
             and (not task_id or task["task_id"] == task_id)
         ):
-            task["status"] = "done"
+            task["status"] = outcome
     if any(t["status"] == "active" for t in result):
         return result, None
     candidates = [t for t in result if t["status"] == "pending"]

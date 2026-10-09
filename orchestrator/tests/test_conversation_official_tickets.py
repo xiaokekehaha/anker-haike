@@ -457,3 +457,82 @@ def test_an_explicit_hold_request_is_kept_whatever_the_model_reads():
     for tid in ("T1", "T5", "T7", "T55"):
         out = logistics_correction(_interpretation(primary_intent="logistics_query"), TICKETS[tid])
         assert "order_change" not in out.secondary_intents, tid
+
+
+# ---------------------------------------------------------------------------
+# T9：一句话两个诉求 —— 问主机物流 + 「未发货就先别发」（2026-10-09 11:48 复测三次均错）
+#
+# 实测路径 understand → service_context → commit_issue：不可执行分支说了一句「已转交」就结束，
+# 案件仍 open、没有交接记录，排在后面的物流查询永远 pending。话术描述的是一个没发生的动作。
+# 根因是 finish() 只在 completed_task_intent 非空时才回任务队列，而主诉求直接进来时它是空的。
+# ---------------------------------------------------------------------------
+
+
+def _t9_intent(monkeypatch, primary, secondary):
+    async def interpret(router, state, **kwargs):
+        if state.get("entry") == "message" and state.get("text") == TICKETS["T9"]:
+            return TurnInterpretation(primary_intent=primary, secondary_intents=secondary, device_relation="current"), {"source": "test"}
+        return TurnInterpretation(primary_intent="logistics_query", device_relation="current"), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+
+
+async def _case_detail(client, rows):
+    case_id = next(e["case_id"] for e in reversed(rows) if e["type"] == "case_changed")
+    return (await client.get(f"/admin/api/cases/{case_id}")).json()
+
+
+@pytest.mark.parametrize(("primary", "secondary"), [("order_change", ["logistics_query"]), ("logistics_query", ["order_change"])])
+async def test_t9_hold_request_is_queued_and_the_shipping_question_is_still_answered(l3_runtime, monkeypatch, primary, secondary):
+    """无论模型先读到哪半句：暂缓诉求真正进人工队列，物流事实照样答，两者缺一不可。"""
+    from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
+
+    _t9_intent(monkeypatch, primary, secondary)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, TICKETS["T9"]))
+        text = said(rows)
+        # 物流事实：主机预售 10/20 发货、滤网 9/12 已送达
+        assert "expected to ship on 2026-10-20" in text and "delivered on 2026-09-12" in text, text
+        # 不声称已暂停，不进换货排障
+        assert "paused" not in text.casefold() and "on hold" not in text.casefold()
+        assert not any(e["type"] in {"proposal_card", "step_card", "product_card"} for e in rows)
+        # 案件真的进了人工队列，交接摘要保留客户原话（条件「if you have not shipped」不能丢）
+        case = await _case_detail(client, rows)
+        assert case["status"] == "awaiting_approval"
+        assert [e["payload"]["requested"] for e in case["events"] if e["type"] == "review_requested"] == ["order_change"]
+        reason = case["handoff_summary"]["reason"]["text"]
+        assert reason.startswith(NOT_EXECUTABLE_HANDOFF["order_change"]) and "If you have not shipped" in reason
+        # 任务队列：暂缓等人工，物流已答完，没有悬而未决的 pending
+        state = await state_of(sid)
+        queue = {t["intent"]: t["status"] for t in state["issues"][state["active_issue_id"]]["task_queue"]}
+        assert queue == {"order_change": "waiting_human", "logistics_query": "done"}, queue
+        assert state["stage"] == "awaiting_human"
+
+
+async def test_t9_repeating_the_hold_request_does_not_queue_it_twice(l3_runtime, monkeypatch):
+    """同一诉求再说一遍：案件状态、review_requested 与交接摘要都不重复写。"""
+    _t9_intent(monkeypatch, "order_change", ["logistics_query"])
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        first = events(await send(client, sid, TICKETS["T9"]))
+        again = events(await send(client, sid, TICKETS["T9"]))
+        assert not any(e["type"] == "error" for e in again), again
+        case = await _case_detail(client, first)
+        kinds = [e["type"] for e in case["events"]]
+        assert kinds.count("review_requested") == 1 and kinds.count("handoff_summary") == 1, kinds
+        state = await state_of(sid)
+        queue = [(t["intent"], t["status"]) for t in state["issues"][state["active_issue_id"]]["task_queue"]]
+        assert queue.count(("order_change", "waiting_human")) == 1, queue
+
+
+async def test_a_hold_request_alone_is_queued_and_the_turn_ends_cleanly(l3_runtime, monkeypatch):
+    """只有暂缓诉求、没有别的任务：交接后不报错、不卡在进行中。"""
+    _t9_intent(monkeypatch, "order_change", [])
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, TICKETS["T9"]))
+        assert not any(e["type"] == "error" for e in rows), rows
+        assert (await _case_detail(client, rows))["status"] == "awaiting_approval"
+        snap = (await client.get(f"/sessions/{sid}")).json()
+        assert snap["pending_input"] is None and snap["active_run"] is None

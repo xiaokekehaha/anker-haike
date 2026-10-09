@@ -321,3 +321,20 @@ async def test_retake_limit_and_skip_path(monkeypatch):
     skipped = await l3.apply_l3_action(state, {"kind": "skip_retake"}, first["pending_card"])
     # 跳过补拍回到消歧：首封带图时读图早于产品确认（T55 实测），直接检索会因无查询中断
     assert skipped["l3_route"] == "disambiguate" and skipped["retake_skipped"]
+
+
+def test_a_task_waiting_for_a_colleague_releases_the_queue_but_is_not_done():
+    """办不了的诉求转人工后：任务记 waiting_human（不是 done），队列继续推进其他任务，重复入队不生效。
+
+    2026-10-09 T9：order_change 一直 active，排在后面的 logistics_query 永远 pending。
+    """
+    queue, _ = enqueue([], "order_change", ["logistics_query"], "If you have not shipped, don't", "i")
+    assert [(t["intent"], t["status"]) for t in queue] == [("order_change", "active"), ("logistics_query", "pending")]
+    queue, task = next_task(queue, "order_change", outcome="waiting_human")
+    assert task["intent"] == "logistics_query"
+    assert [(t["intent"], t["status"]) for t in queue] == [("order_change", "waiting_human"), ("logistics_query", "active")]
+    queue, task = next_task(queue, "logistics_query")
+    assert task is None and [t["status"] for t in queue] == ["waiting_human", "done"]
+    # 客户把同一句话再说一遍：等人工的任务不再当成新任务加入
+    again, _ = enqueue(queue, "order_change", ["logistics_query"], "If you have not shipped, don't", "i2")
+    assert [t["status"] for t in again if t["intent"] == "order_change"] == ["waiting_human"]

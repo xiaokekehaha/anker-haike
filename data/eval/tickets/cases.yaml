@@ -17,6 +17,7 @@
 #   safety_human               安全风险 → 转人工
 #   clarify                    信息不足（型号 / 现象）→ 追问
 #   explain                    产品咨询 / 状态提示 → 解释即可
+#   order_change_human         暂缓发货 / 取消 / 改购 / 改地址 → 本系统办不了，案件进人工队列并留交接记录
 # 2026-10-08 二次复核：T54 补 bp-0125（not suctioning 原题），T57 补离线 / 不录像条目，T59 补 Wi-Fi 连接失败条目；英文官方术语改写实验 recall 无提升（9/12 → 9/12），query_rewrite 保持关闭。
 # 2026-10-08 复核（真实链路回放后，Fable 5.1 裁定）：T42 / T44 改 warranty_by_qa，T44 意图改 replacement_request，T50 改 troubleshoot，T63 意图改 report_problem。
 # 2026-10-08 复核：bp-0123（电机异响）、bp-0090（吸力弱或无吸力）与原金标同义，补为等价金标。
@@ -31,7 +32,7 @@ cases:
 - {id: T6, intent: logistics_query, language: nl, order_no: Anker006, sop: logistics_delivered, forbid: [reship]}
 - {id: T7, intent: logistics_query, language: en, order_no: null, sop: ask_order}
 - {id: T8, intent: logistics_query, language: en, order_no: Anker007, sop: logistics_reship}
-- {id: T9, intent: logistics_query, intent_alt: order_change, language: en, order_no: Anker008, sop: logistics_presale, note: 一句两诉求：问发货日 + 要求暂缓发货；两种读法都可接受，转人工可选}
+- {id: T9, intent: logistics_query, intent_alt: order_change, language: en, order_no: Anker008, sop: logistics_presale, sop_also: [order_change_human], note: 一句两诉求：问发货日 + 要求暂缓发货；意图先读到哪个都行，终点两个都必须到达}
 - {id: T10, intent: logistics_query, language: en, order_no: Anker009, sop: logistics_delivered, forbid: [reship]}
 - {id: T11, intent: report_problem, language: en, pn: T2080, codes: [EB1L], sop: troubleshoot, qa_exact: rv-0481}
 - {id: T12, intent: report_problem, language: en, pn: T2353, sop: explain, qa_gold: [rv-0021], note: 清水不足自动转纯扫是提示}
