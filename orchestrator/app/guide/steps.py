@@ -16,7 +16,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
-from app.conversation.operation_conditions import execution_history, step_unavailable
+from app.conversation.operation_conditions import answered_history, step_unavailable
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
@@ -95,10 +95,21 @@ async def prepare_step(
         ),
         [],
     )
-    executed_src = {s.get("instruction_src") for s in execution_history(state)}
+    executed_src = {s.get("instruction_src") for s in answered_history(state)}
+    reported = user_reported_actions(state)
     dropped: list[dict[str, Any]] = []
+    context: list[str] = []  # 说明段落不单独出卡，附在下一张卡上（I4：标题 / 结论不是操作，不要求反馈）
     while step_id is not None:
         step = plan.step(step_id)
+        if step.kind == "statement":
+            context.append(customer_voice(library.evidence_snippet(step.instruction_src)))
+            dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "statement_context"})
+            step_id = _advance_in_plan(plan, step_id)
+            continue
+        if step.kind == "handoff":
+            # 「请联系客服继续保修流程」不是给用户的操作：计划到此耗尽，交给 decide_next 走质保 / 人工（I4）
+            dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "handoff_step"})
+            break
         unavailable = step_unavailable(state, plan.plan_id, step)
         if unavailable:
             return StepPrep("blocked", dropped=[*dropped, {
@@ -112,6 +123,11 @@ async def prepare_step(
             step_id = _advance_in_plan(plan, step_id)
             continue
         source_text = library.evidence_snippet(step.instruction_src)
+        # 用户自述已做过的排查（已换滤网、已清洁触点）：同部件同动作的步骤不再让他做一遍（I5：T27 / T36 / T37）
+        if step.kind == "action" and (done := matches_reported(source_text, reported)):
+            dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "user_reported", "reported": done})
+            step_id = _advance_in_plan(plan, step_id)
+            continue
         evidence_ids = _evidence_for(step, plan, allowed_evidence, ranked_evidence)
         bad = [e for e in evidence_ids if e not in allowed_evidence]
         if bad:
@@ -162,6 +178,9 @@ async def prepare_step(
                 "evidence_ids": evidence_ids,
                 "primary_evidence_id": primary_id,
                 "media": step_media(plan.plan_id, step_id),
+                "kind": step.kind,
+                "options": list(step.options),
+                **({"context": "\n".join(context)} if context else {}),
             },
             card_id=card_id,
             plan_cursor={
@@ -219,6 +238,56 @@ def _primary_evidence(
         },
         "none",
     )
+
+
+# 「同部件 + 同动作」才算做过：部件词与动作词各取一个交集。只认词表里的词，
+# 「cleaned everything」没有部件词 → 匹配所有清洁步骤的部件；「replaced the filter」只匹配滤网的更换。
+PART_WORDS = (
+    "filter", "brush", "roller", "side brush", "tank", "contact", "valve", "shield", "mop", "sensor", "base", "dock",
+    "station", "bin", "dust box", "lid", "cover", "seal", "ring", "nozzle", "pin", "port", "wheel", "tray", "hose",
+    "tube", "bottle", "diaphragm", "pad", "battery", "charger", "cable", "case", "hub", "app", "firmware",
+)
+ACTION_WORDS = {
+    "clean": ("clean", "cleaned", "cleaning", "wipe", "wiped", "wiping", "rinse", "rinsed", "wash", "washed"),
+    "replace": ("replace", "replaced", "replacing", "change", "changed", "swap", "swapped", "new"),
+    "restart": ("restart", "restarted", "reboot", "rebooted", "reset", "power cycle", "powered off"),
+    "refill": ("refill", "refilled", "fill", "filled", "top up", "topped up", "full"),
+    "reinstall": ("reinstall", "reinstalled", "reseat", "reseated", "reattach", "reattached", "re-install"),
+    "update": ("update", "updated", "upgrade", "upgraded"),
+}
+
+
+def _parts(text: str) -> set[str]:
+    low = text.casefold()
+    return {p for p in PART_WORDS if p in low}
+
+
+def _actions(text: str) -> set[str]:
+    low = text.casefold()
+    return {name for name, forms in ACTION_WORDS.items() if any(f in low for f in forms)}
+
+
+def user_reported_actions(state: dict[str, Any]) -> list[dict[str, Any]]:
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    out = []
+    for fact in issue.get("facts", []):
+        if fact.get("status") == "active" and fact.get("kind") == "action_taken":
+            text = " ".join(filter(None, [fact.get("value"), fact.get("subject")]))
+            out.append({"value": fact.get("value"), "parts": _parts(text), "actions": _actions(text)})
+    return out
+
+
+def matches_reported(instruction: str, reported: list[dict[str, Any]]) -> str | None:
+    """步骤正文与某条已做操作同部件同动作时返回那条操作原话；没有部件词的操作（「cleaned everything」）按动作匹配。"""
+    parts, actions = _parts(instruction), _actions(instruction)
+    if not actions:
+        return None
+    for item in reported:
+        if not item["actions"] & actions:
+            continue
+        if not item["parts"] or item["parts"] & parts:
+            return item["value"]
+    return None
 
 
 def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:

@@ -40,6 +40,9 @@ STEP = {
     "caution": None,
     "evidence_ids": ["e1"],
 }
+QUESTION_STEP = {**STEP, "kind": "question", "title": "Is the noise continuous or intermittent?",
+                 "instruction": "Is the noise continuous or intermittent?", "expected_result": "Pick the option that matches.",
+                 "options": ["continuous", "intermittent"]}
 
 SUMMARY = {
     "product": "A1234",
@@ -114,7 +117,7 @@ _reg(
     "候选不能为空",
 )
 _reg(
-    ev("step_card", card_id="c2", version=4, step=STEP),
+    ev("step_card", card_id="c2", version=4, step=QUESTION_STEP),
     ev("step_card", card_id="c2", version=4, **{k: v for k, v in STEP.items()}),
     "step 字段必须嵌在 step 对象内",
 )
@@ -219,7 +222,7 @@ ACTIONS: dict[str, tuple[dict, dict, str]] = {
         "payload 有未知字段",
     ),
     "step_feedback": (
-        act("step_feedback", {"feedback": "solved", "note": None}),
+        act("step_feedback", {"feedback": None, "note": None, "answer": {"option": "intermittent", "text": None, "unavailable": False}}),
         act("step_feedback", {"feedback": "maybe"}),
         "feedback 非法",
     ),

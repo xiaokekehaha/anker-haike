@@ -12,12 +12,16 @@ from __future__ import annotations
 
 import re
 
-from app.official.qa_index import Guide, QAIndex, get_qa_index
+from app.official.qa_index import Guide, QAIndex, Step, get_qa_index
 from app.plans.library import PlanLibrary
 from app.plans.models import PlansConfig
 
 # 步骤卡的「预期结果」直接显示给客户，用英文（D2）。步骤正文本身就是官方 Q&A 原文（英文）。
 EXPECTED = "After this step, check whether the problem is resolved."
+ANSWER_EXPECTED = "Pick the option that matches, or describe it in a few words."
+MATERIAL_EXPECTED = "Upload it here if you have it, or tell me you don't have it right now."
+EXPECTED_BY_KIND = {"action": EXPECTED, "question": ANSWER_EXPECTED, "material_request": MATERIAL_EXPECTED,
+                    "statement": "No action needed here.", "handoff": "A support colleague will continue from here."}
 TIPS_LEAD = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\s*[:：]?\s*", re.IGNORECASE)
 SENTENCE = re.compile(r"(?<=[.!?。！？])\s")
 
@@ -50,27 +54,40 @@ def step_title(text: str, limit: int = 60) -> str:
 
 
 def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
-    texts = [(s.no, s.text, s.warranty) for s in guide.steps] if guide.kind == "steps" else [(1, guide.answer, guide.kind == "warranty")]
+    if guide.kind == "steps":
+        texts = [(pos, s) for pos, s in enumerate(guide.steps, 1) if not s.disabled]
+    else:
+        texts = [(1, Step(no=1, text=guide.answer, warranty=guide.kind == "warranty"))]
     evidence: dict[str, dict] = {}
     steps = []
-    # 步骤 id 按位置编号：有的条目分几段、每段编号从 1 重新开始（rv-0004、bp-0114）。
-    for index, (_no, text, warranty) in enumerate(texts):
-        step_id = f"s{index + 1}"
-        nxt = f"s{index + 2}" if index + 1 < len(texts) else "EXHAUSTED"
+    # 步骤 id 按原文位置编号（s{pos}）：编号在条目里会重复（rv-0004、bp-0114 每段从 1 起），
+    # 禁用的段落跳过但不重排，card_id 由 step_id 派生，覆写一段不能让后面的卡全部换 id。
+    positions = [pos for pos, _ in texts]
+    for i, (pos, step) in enumerate(texts):
+        step_id = f"s{pos}"
+        nxt = f"s{positions[i + 1]}" if i + 1 < len(positions) else "EXHAUSTED"
         key = f"{guide.qa_id}#{step_id}"
-        evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": text}
+        evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": step.text}
+        kind = step.kind
+        # 只有操作步骤才有「解决了 / 没解决」的语义；问句按回答分支，说明与材料请求一律向后走；
+        # 交人工段落走完就耗尽（进质保 / 人工流程）。
+        if kind == "action":
+            next_on = {"solved": "DONE", "not_solved": "EXHAUSTED" if step.warranty else nxt, "cannot_do": nxt}
+        elif kind == "handoff":
+            next_on = {"solved": "DONE", "not_solved": "EXHAUSTED", "cannot_do": "EXHAUSTED"}
+        else:
+            next_on = {"solved": nxt, "not_solved": nxt, "cannot_do": nxt}
         steps.append({
             "step_id": step_id,
             # 单步答案的首句就是正文开头，当标题只会重复；用 Q&A 标题（问的是什么问题）更有信息量
-            "title": (step_title(guide.title, 80) if len(texts) == 1 else step_title(text)) or guide.title[:60],
+            "title": (step_title(guide.title, 80) if len(texts) == 1 else step_title(step.text)) or guide.title[:60],
             "instruction_src": f"evidence:{key}",
-            "expected_result": EXPECTED,
+            "expected_result": EXPECTED_BY_KIND[kind],
             "caution": TIPS_LEAD.sub("", guide.tips).strip() or None,
-            "next_on": {
-                "solved": "DONE",
-                "not_solved": "EXHAUSTED" if warranty else nxt,
-                "cannot_do": nxt,
-            },
+            "next_on": next_on,
+            "kind": kind,
+            "options": list(step.options),
+            "branches": {option: f"s{target}" for option, target in step.branches.items()},
         })
     plan = {
         "plan_id": guide.plan_id,

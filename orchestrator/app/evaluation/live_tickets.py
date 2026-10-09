@@ -101,7 +101,7 @@ HANDOFF_REQUESTS = {"order_change", "address_update"}
 
 def terminals_of(snapshot: dict[str, Any], *, case_status: str | None, review_requested: str | None, handoff: bool,
                  escalate_reasons: list[str], service_types: list[str], step_cards: int, said: str,
-                 has_code: bool = False) -> list[str]:
+                 has_code: bool = False, question_cards: int = 0) -> list[str]:
     """会话到达的终点（评测集 sop 标签），可能不止一个：多诉求单每项诉求各有终点。
 
     转人工终点只认持久化证据：案件已进人工队列、记录了该诉求、写了交接摘要。
@@ -111,7 +111,8 @@ def terminals_of(snapshot: dict[str, Any], *, case_status: str | None, review_re
     if case_status == "awaiting_approval" and review_requested in HANDOFF_REQUESTS and handoff:
         reached.append("order_change_human")
     return reached + [_terminal_of(snapshot, case_status=case_status, escalate_reasons=escalate_reasons,
-                                   service_types=service_types, step_cards=step_cards, said=said, has_code=has_code)]
+                                   service_types=service_types, step_cards=step_cards, said=said, has_code=has_code,
+                                   question_cards=question_cards)]
 
 
 class SopExpectation(TypedDict, total=False):
@@ -128,7 +129,8 @@ def sop_passed(case: SopExpectation, reached: list[str]) -> bool:
 
 
 def _terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_reasons: list[str],
-                 service_types: list[str], step_cards: int, said: str, has_code: bool = False) -> str:
+                 service_types: list[str], step_cards: int, said: str, has_code: bool = False,
+                 question_cards: int = 0) -> str:
     if "R4" in escalate_reasons:
         return "safety_human"
     if "carrier_investigation" in service_types:
@@ -152,6 +154,8 @@ def _terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_
         return "no_guidance"
     if step_cards:
         return "troubleshoot"
+    if question_cards:
+        return "clarify"  # 停在事实问句卡：等客户回答，与文字澄清同一终点
     if "订单号" in said or "order number" in low:
         return "ask_order"
     if "R7" in escalate_reasons or snapshot.get("stage") in {"disambiguate", "intake"}:
@@ -163,7 +167,8 @@ def _terminal_of(snapshot: dict[str, Any], *, case_status: str | None, escalate_
 ACCEPT = {
     "troubleshoot": {"troubleshoot", "warranty_replace", "out_of_warranty", "dealer_check", "ask_order"},
     "warranty_by_qa": {"warranty_replace", "out_of_warranty", "dealer_check", "ask_order"},
-    "warranty_replace": {"warranty_replace"},
+    # 驱动器遇事实问句卡即停（不替客户编答案）：这类单在问句处停下也算走对了方向
+    "warranty_replace": {"warranty_replace", "clarify"},
     "out_of_warranty": {"out_of_warranty"},
     "logistics_delivered": {"logistics_delivered"},
     "logistics_reship": {"logistics_reship"},
@@ -205,6 +210,11 @@ FAULT_PHOTO_BY_LINE = {
     "breast_pump": "T48.jpg",   # 吸奶器主机，外壳有裂纹
     "robot_vacuum": "T14.jpg",  # 扫地机主机与基站
 }
+
+
+def _action_cards(events: list[dict[str, Any]]) -> int:
+    """只有操作卡算「步骤」；问句 / 材料请求卡是事实收集，不计入 MAX_STEPS 也不算到达 troubleshoot。"""
+    return sum(1 for e in events if e.get("type") == "step_card" and ((e.get("step") or {}).get("kind") or "action") in {"action", "material_request"})
 
 
 def fault_photos(data: OfficialData, ticket) -> list[Path]:
@@ -291,7 +301,7 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
     parsed = parse_message(ticket.body)
     events = await driver.send(sid, ticket.body, images)
     transcript = list(events)
-    step_cards = sum(1 for e in events if e.get("type") == "step_card")
+    step_cards = _action_cards(events)
     supplied: set[str] = set()
     for _ in range(MAX_TURNS):
         snap = await driver.snapshot(sid)
@@ -302,9 +312,18 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
             if kind == "step_feedback":
                 if step_cards > MAX_STEPS:
                     break
-                # 期望「解释即结束」的单（正常提示类，如清水不足 / 低电回充）：客户看到说明就满意
-                feedback = "solved" if case["sop"] == "explain" else "not_solved"
-                events = await driver.act(sid, "step_feedback", {"feedback": feedback})
+                card = next((e for e in reversed(transcript) if e.get("type") == "step_card" and e.get("card_id") == pending["card_id"]), None) or {}
+                step_kind = ((card.get("step") or {}).get("kind")) or "action"
+                if step_kind == "question":
+                    break  # 事实问句：按口径停下，不替客户编答案（criteria §客户模拟 1）
+                if step_kind == "statement":
+                    events = await driver.act(sid, "step_feedback", {})
+                elif step_kind == "material_request":
+                    events = await driver.act(sid, "step_feedback", {"answer": {"option": None, "text": None, "unavailable": True}})
+                else:
+                    # 期望「解释即结束」的单（正常提示类，如清水不足 / 低电回充）：客户看到说明就满意
+                    feedback = "solved" if case["sop"] == "explain" else "not_solved"
+                    events = await driver.act(sid, "step_feedback", {"feedback": feedback})
             elif kind == "select_product":
                 card = card_of(transcript, "product_card") or {}
                 cands = card.get("candidates") or []
@@ -338,7 +357,7 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
                 supplied.add("photo")
                 events = await driver.send(sid, "Here are photos of the problem.", retake)
                 transcript += events
-                step_cards += sum(1 for e in events if e.get("type") == "step_card")
+                step_cards += _action_cards(events)
                 continue
             if ("SN" in said or "serial" in low) and "sn" not in supplied:
                 supplied.add("sn")
@@ -353,8 +372,9 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
                 break
             events = await driver.send(sid, reply)
         transcript += events
-        step_cards += sum(1 for e in events if e.get("type") == "step_card")
+        step_cards += _action_cards(events)
     journey = await journey_of(driver.client, sid)
+    question_cards = sum(1 for e in transcript if e.get("type") == "step_card" and (e.get("step") or {}).get("kind") == "question")
     snapshot = journey.get("snapshot") or await driver.snapshot(sid)
     reasons = [
         e["summary"]["reason"]["rule_id"] for e in transcript if e.get("type") == "escalation_summary"
@@ -376,7 +396,7 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
                                if e["type"] in {"review_requested", "request_changed"}), None),
         handoff=detail.get("handoff_summary") is not None,
         escalate_reasons=reasons, service_types=service_types,
-        step_cards=step_cards, said=visible, has_code=bool(parsed.codes),
+        step_cards=step_cards, said=visible, has_code=bool(parsed.codes), question_cards=question_cards,
     )
     forbid_hits = [k for k in case.get("forbid") or [] if FORBID_PATTERNS.get(k) and promised(FORBID_PATTERNS[k], visible)]
     if TIMELINE_PROMISE.search(visible):
@@ -390,6 +410,8 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
     first_card = next((e for e in transcript if e.get("type") == "step_card"), None)
     if first_card and first_card["step"]["plan_id"] in {"qa_" + q.replace("-", "_") for q in case.get("first_card_forbid") or []}:
         forbid_hits.append("first_card_forbidden")
+    if any(e.get("type") == "step_card" and (e.get("step") or {}).get("kind") == "statement" for e in transcript):
+        forbid_hits.append("statement_as_card")  # 说明段落应附在下一张卡上，不单独出卡
     human = bool(reasons and set(reasons) & {"R3", "R4", "R5", "R6", "R7", "R1", "R1b", "R1c", "R2"}) or bool(receipts)
     intent = intent_of(journey)
     return {

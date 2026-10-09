@@ -12,6 +12,7 @@ from typing import Any, Literal
 
 from app.conversation.operation_conditions import (
     BURDEN_SKIP_LIMIT,
+    answered_history,
     conditions_for,
     effective_exhausted,
     execution_history,
@@ -229,8 +230,9 @@ def decide_next(state, *, library) -> NextAction:
     product = state.get("product_confirmed") or {}
     category = state.get("category") or product.get("category")
     sku = product.get("sku")
-    executed_src = {s.get("instruction_src") for s in executed}
-    executed_steps = {(s.get("plan_id"), s.get("step_id")) for s in executed}
+    answered = answered_history(state)
+    executed_src = {s.get("instruction_src") for s in answered}
+    executed_steps = {(s.get("plan_id"), s.get("step_id")) for s in answered}
 
     trace: dict[str, Any] = {"skipped": []}
     pending_step: NextAction | None = None

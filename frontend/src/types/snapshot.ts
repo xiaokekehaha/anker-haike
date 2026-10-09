@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: d18b331d0fa840d6e57e1f95352e0f6b416a0db6a136aecd9484509dfc47ddea
+// SHA-256: e849ed4733924c11e2615d117253b83261978b98e716b6a9f38f192a23d2d72f
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -192,6 +192,9 @@ export type SelectedSku = string | null;
  */
 export type SelectedUnknown = boolean;
 export type Version1 = number;
+export type Option = string | null;
+export type Text3 = string | null;
+export type Unavailable = boolean;
 export type At8 = string | null;
 export type CardId3 = string;
 export type Feedback1 = ('solved' | 'not_solved' | 'cannot_do') | null;
@@ -202,12 +205,15 @@ export type LastSeq6 = number;
 export type Note1 = string | null;
 export type Seen = string | null;
 export type Caution = string | null;
+export type Context = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
 export type Instruction = string;
-export type Kind9 = 'image' | 'video' | 'link';
+export type Kind9 = 'action' | 'question' | 'statement' | 'material_request' | 'handoff';
+export type Kind10 = 'image' | 'video' | 'link';
 export type Url = string;
 export type Media = StepMedia[];
+export type Options = string[];
 export type PlanId = string;
 export type PlanVersion = number;
 export type PrimaryEvidenceId = string | null;
@@ -224,7 +230,7 @@ export type PurchaseDate = string | null;
 export type Seller = string | null;
 export type FirstSeq7 = number;
 export type IssueId8 = string | null;
-export type Kind10 = 'receipt_card';
+export type Kind11 = 'receipt_card';
 export type LastSeq7 = number;
 export type SkippedReason = ('none' | 'unreadable' | 'later') | null;
 export type Unreadable = string[];
@@ -241,7 +247,7 @@ export type Snippet = string;
 export type Source1 = string;
 export type Status5 = 'ok' | 'replay';
 export type Items = EvidenceItem[];
-export type Kind11 = 'evidence';
+export type Kind12 = 'evidence';
 export type LastSeq8 = number;
 export type At11 = string | null;
 export type CardId5 = string;
@@ -250,9 +256,9 @@ export type DecisionSummary = string;
 export type DeclinedReason = string | null;
 export type FirstSeq9 = number;
 export type IssueId10 = string | null;
-export type Kind12 = 'proposal_card';
+export type Kind13 = 'proposal_card';
 export type LastSeq9 = number;
-export type Options = ProposalOption[];
+export type Options1 = ProposalOption[];
 export type Retry = boolean;
 export type Version4 = number;
 export type ActionKind1 = string;
@@ -262,7 +268,7 @@ export type ExecutionId = string;
 export type FirstSeq10 = number;
 export type IdempotencyKey = string;
 export type IssueId11 = string | null;
-export type Kind13 = 'execution_card';
+export type Kind14 = 'execution_card';
 export type LastSeq10 = number;
 export type NextStep1 = string;
 export type OrderNo2 = string | null;
@@ -278,7 +284,7 @@ export type CardId7 = string;
 export type FirstSeq11 = number;
 export type Guidance = string[];
 export type IssueId12 = string | null;
-export type Kind14 = 'retake_card';
+export type Kind15 = 'retake_card';
 export type LastSeq11 = number;
 export type Reasons = string[];
 export type Skipped = boolean;
@@ -288,7 +294,7 @@ export type CardId8 = string;
 export type CaseId1 = string | null;
 export type FirstSeq12 = number;
 export type IssueId13 = string | null;
-export type Kind15 = 'rating_card';
+export type Kind16 = 'rating_card';
 export type LastSeq12 = number;
 export type Score1 = number | null;
 export type Version7 = number;
@@ -298,7 +304,7 @@ export type CaseId2 = string;
 export type ComplaintRisk = boolean;
 export type FirstSeq13 = number;
 export type IssueId14 = string | null;
-export type Kind16 = 'case_changed';
+export type Kind17 = 'case_changed';
 export type LastSeq13 = number;
 export type Owner = string | null;
 export type Priority = 'normal' | 'high';
@@ -682,6 +688,7 @@ export interface ProductCandidate {
  * via the `definition` "StepCardItem".
  */
 export interface StepCardItem {
+  answer?: StepAnswer | null;
   at?: At8;
   card_id: CardId3;
   feedback?: Feedback1;
@@ -695,6 +702,17 @@ export interface StepCardItem {
   version: Version2;
 }
 /**
+ * 问句卡 / 材料卡的回答：选项原文或短答；material_request 可声明暂时没有。
+ *
+ * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
+ * via the `definition` "StepAnswer".
+ */
+export interface StepAnswer {
+  option?: Option;
+  text?: Text3;
+  unavailable?: Unavailable;
+}
+/**
  * step_card 的唯一层级：step 对象（08 §5）。
  *
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
@@ -702,10 +720,13 @@ export interface StepCardItem {
  */
 export interface TroubleshootStep {
   caution?: Caution;
+  context?: Context;
   evidence_ids?: EvidenceIds;
   expected_result: ExpectedResult;
   instruction: Instruction;
+  kind?: Kind9;
   media?: Media;
+  options?: Options;
   plan_id: PlanId;
   plan_version: PlanVersion;
   primary_evidence_id?: PrimaryEvidenceId;
@@ -720,7 +741,7 @@ export interface TroubleshootStep {
  * via the `definition` "StepMedia".
  */
 export interface StepMedia {
-  kind: Kind9;
+  kind: Kind10;
   url: Url;
 }
 /**
@@ -735,7 +756,7 @@ export interface ReceiptCardItem {
   fields: ReceiptFields;
   first_seq?: FirstSeq7;
   issue_id?: IssueId8;
-  kind: Kind10;
+  kind: Kind11;
   last_seq?: LastSeq7;
   skipped_reason?: SkippedReason;
   unreadable?: Unreadable;
@@ -764,7 +785,7 @@ export interface EvidenceItemGroup {
   first_seq?: FirstSeq8;
   issue_id?: IssueId9;
   items: Items;
-  kind: Kind11;
+  kind: Kind12;
   last_seq?: LastSeq8;
 }
 /**
@@ -793,9 +814,9 @@ export interface ProposalCardItem {
   declined_reason?: DeclinedReason;
   first_seq?: FirstSeq9;
   issue_id?: IssueId10;
-  kind: Kind12;
+  kind: Kind13;
   last_seq?: LastSeq9;
-  options: Options;
+  options: Options1;
   retry?: Retry;
   version: Version4;
 }
@@ -811,7 +832,7 @@ export interface ExecutionCardItem {
   first_seq?: FirstSeq10;
   idempotency_key: IdempotencyKey;
   issue_id?: IssueId11;
-  kind: Kind13;
+  kind: Kind14;
   last_seq?: LastSeq10;
   receipt: Receipt;
   status: Status7;
@@ -844,7 +865,7 @@ export interface RetakeCardItem {
   first_seq?: FirstSeq11;
   guidance: Guidance;
   issue_id?: IssueId12;
-  kind: Kind14;
+  kind: Kind15;
   last_seq?: LastSeq11;
   reasons: Reasons;
   skipped?: Skipped;
@@ -860,7 +881,7 @@ export interface RatingCardItem {
   case_id?: CaseId1;
   first_seq?: FirstSeq12;
   issue_id?: IssueId13;
-  kind: Kind15;
+  kind: Kind16;
   last_seq?: LastSeq12;
   score?: Score1;
   version: Version7;
@@ -877,7 +898,7 @@ export interface CaseStatusItem {
   external_refs?: ExternalRefs;
   first_seq?: FirstSeq13;
   issue_id?: IssueId14;
-  kind: Kind16;
+  kind: Kind17;
   last_seq?: LastSeq13;
   owner?: Owner;
   priority?: Priority;

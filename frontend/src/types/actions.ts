@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/actions.schema.json
-// SHA-256: 1a8c88927fd6dc8262252f8437c6e82d926cab1a6a814d8bfad1a4437fbdab53
+// SHA-256: fc8ac1760536ef912e366dddef61cf2a4081bffe56a36b14b57f1a15db59bc3b
 
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
@@ -36,7 +36,10 @@ export type CardId1 = string;
 export type ExpectedVersion1 = number;
 export type InputToken1 = string;
 export type Kind1 = 'step_feedback';
-export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
+export type Option = string | null;
+export type Text = string | null;
+export type Unavailable = boolean;
+export type Feedback = ('solved' | 'not_solved' | 'cannot_do') | null;
 export type Note = string | null;
 export type TargetIssueId1 = string;
 /**
@@ -172,12 +175,27 @@ export interface StepFeedbackAction {
   target_issue_id: TargetIssueId1;
 }
 /**
+ * action 卡交 feedback；question / material_request 卡交 answer；statement 卡两者都可省（确认已读）。
+ * 服务端按卡片 kind 校验组合（sessions/router.py）。
+ *
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
  * via the `definition` "StepFeedbackPayload".
  */
 export interface StepFeedbackPayload {
-  feedback: Feedback;
+  answer?: StepAnswer | null;
+  feedback?: Feedback;
   note?: Note;
+}
+/**
+ * 问句卡 / 材料卡的回答：选项原文或短答；material_request 可声明暂时没有。
+ *
+ * This interface was referenced by `ActionRequestSchema`'s JSON-Schema
+ * via the `definition` "StepAnswer".
+ */
+export interface StepAnswer {
+  option?: Option;
+  text?: Text;
+  unavailable?: Unavailable;
 }
 /**
  * This interface was referenced by `ActionRequestSchema`'s JSON-Schema

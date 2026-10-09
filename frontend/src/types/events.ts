@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 6484013c97bdbb3385bea7ccc4b03d86cc7aed488096043b680e94755a7e3f92
+// SHA-256: 5460c58db571359bfd219cb4abc923254234fe9960f564489220889979a02490
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -213,12 +213,15 @@ export type Seen = string | null;
  */
 export type Seq12 = number;
 export type Caution = string | null;
+export type Context = string | null;
 export type EvidenceIds = string[];
 export type ExpectedResult = string;
 export type Instruction = string;
-export type Kind = 'image' | 'video' | 'link';
+export type Kind = 'action' | 'question' | 'statement' | 'material_request' | 'handoff';
+export type Kind1 = 'image' | 'video' | 'link';
 export type Url = string;
 export type Media = StepMedia[];
+export type Options = string[];
 export type PlanId = string;
 export type PlanVersion = number;
 export type PrimaryEvidenceId = string | null;
@@ -265,7 +268,7 @@ export type CardId4 = string;
 export type EventId15 = string;
 export type InputToken = string;
 export type IssueId7 = string | null;
-export type Kind1 =
+export type Kind2 =
   | 'select_product'
   | 'step_feedback'
   | 'upload_receipt'
@@ -294,7 +297,7 @@ export type RunId16 = string;
  */
 export type Seq16 = number;
 export type SourceThroughSeq1 = number;
-export type Kind2 =
+export type Kind3 =
   'device_fault' | 'order_change' | 'parts_purchase' | 'warranty_review' | 'safety' | 'unknown';
 export type Missing = string[];
 export type Intent = string;
@@ -395,7 +398,7 @@ export type CardId6 = string;
 export type DecisionSummary = string;
 export type EventId19 = string;
 export type IssueId9 = string | null;
-export type Options = ProposalOption[];
+export type Options1 = ProposalOption[];
 export type RecordedAt19 = string;
 export type Retry = boolean;
 export type RunId19 = string;
@@ -724,10 +727,13 @@ export interface StepCard {
  */
 export interface TroubleshootStep {
   caution?: Caution;
+  context?: Context;
   evidence_ids?: EvidenceIds;
   expected_result: ExpectedResult;
   instruction: Instruction;
+  kind?: Kind;
   media?: Media;
+  options?: Options;
   plan_id: PlanId;
   plan_version: PlanVersion;
   primary_evidence_id?: PrimaryEvidenceId;
@@ -742,7 +748,7 @@ export interface TroubleshootStep {
  * via the `definition` "StepMedia".
  */
 export interface StepMedia {
-  kind: Kind;
+  kind: Kind1;
   url: Url;
 }
 /**
@@ -811,7 +817,7 @@ export interface AwaitingInput {
   event_id: EventId15;
   input_token: InputToken;
   issue_id?: IssueId7;
-  kind: Kind1;
+  kind: Kind2;
   recorded_at: RecordedAt15;
   run_id: RunId15;
   seq: Seq15;
@@ -872,7 +878,7 @@ export interface EscalationSummary {
  * via the `definition` "HandoffBusiness".
  */
 export interface HandoffBusiness {
-  kind: Kind2;
+  kind: Kind3;
   known?: Known;
   missing?: Missing;
   pending_requests?: PendingRequests;
@@ -1025,7 +1031,7 @@ export interface ProposalCardEvent {
   decision_summary: DecisionSummary;
   event_id: EventId19;
   issue_id?: IssueId9;
-  options: Options;
+  options: Options1;
   recorded_at: RecordedAt19;
   retry?: Retry;
   run_id: RunId19;

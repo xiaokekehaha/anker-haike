@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 6484013c97bdbb3385bea7ccc4b03d86cc7aed488096043b680e94755a7e3f92
+// SHA-256: 5460c58db571359bfd219cb4abc923254234fe9960f564489220889979a02490
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -2731,6 +2731,18 @@ export const serverEventSchema = z.fromJSONSchema({
           "default": null,
           "title": "Caution"
         },
+        "context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context"
+        },
         "evidence_ids": {
           "items": {
             "type": "string"
@@ -2746,11 +2758,30 @@ export const serverEventSchema = z.fromJSONSchema({
           "title": "Instruction",
           "type": "string"
         },
+        "kind": {
+          "default": "action",
+          "enum": [
+            "action",
+            "question",
+            "statement",
+            "material_request",
+            "handoff"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
         "media": {
           "items": {
             "$ref": "#/$defs/StepMedia"
           },
           "title": "Media",
+          "type": "array"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
           "type": "array"
         },
         "plan_id": {

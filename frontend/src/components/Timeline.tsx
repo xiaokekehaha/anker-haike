@@ -32,8 +32,9 @@ type Props = {
 type CardItem = Extract<TimelineItem, { card_id: string }>;
 
 /** 待办卡的一行指针文案（流里）。 */
+const STEP_POINTER = { action: '步骤', question: '请回答', statement: '请查看', material_request: '请提供', handoff: '交人工' } as const;
 const POINTER: Partial<Record<TimelineItem['kind'], (item: CardItem) => string>> = {
-  step_card: (item) => item.kind === 'step_card' ? `步骤 ${item.step.step_no} · ${item.step.title}` : '',
+  step_card: (item) => item.kind === 'step_card' ? `${STEP_POINTER[item.step.kind ?? 'action']} ${item.step.step_no} · ${item.step.title}` : '',
   product_card: () => '请确认是哪一台设备',
   receipt_card: () => '核对购买凭证信息',
   proposal_card: () => '选择售后方案',
@@ -46,7 +47,7 @@ function renderCard(item: CardItem, active: boolean, disabled: boolean, onAction
     case 'product_card':
       return <ProductCard key={item.card_id} item={item} active={active} disabled={disabled} onSelect={(sku) => onAction('select_product', { sku })} />; // sku=null：其他型号 / 不确定
     case 'step_card':
-      return <StepCard key={item.card_id} item={item} active={active} disabled={disabled} onHover={onHover} onFeedback={(feedback, note) => onAction('step_feedback', { feedback, ...(note ? { note } : {}) })} />;
+      return <StepCard key={item.card_id} item={item} active={active} disabled={disabled} onHover={onHover} onReply={(reply) => onAction('step_feedback', { feedback: reply.feedback ?? null, note: reply.note ?? null, answer: reply.answer ?? null })} />;
     case 'receipt_card':
       return <ReceiptCard key={item.card_id} item={item} active={active} disabled={disabled} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
     case 'proposal_card':

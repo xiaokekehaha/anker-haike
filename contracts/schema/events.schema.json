@@ -2724,6 +2724,18 @@
           "default": null,
           "title": "Caution"
         },
+        "context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context"
+        },
         "evidence_ids": {
           "items": {
             "type": "string"
@@ -2739,11 +2751,30 @@
           "title": "Instruction",
           "type": "string"
         },
+        "kind": {
+          "default": "action",
+          "enum": [
+            "action",
+            "question",
+            "statement",
+            "material_request",
+            "handoff"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
         "media": {
           "items": {
             "$ref": "#/$defs/StepMedia"
           },
           "title": "Media",
+          "type": "array"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
           "type": "array"
         },
         "plan_id": {

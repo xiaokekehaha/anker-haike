@@ -20,6 +20,7 @@ from haike_contracts.common import (
     Receipt,
     ReceiptFields,
     Stage,
+    StepAnswer,
     Strict,
     TroubleshootStep,
 )
@@ -121,6 +122,7 @@ class StepCardItem(TimelineRecord):
     seen: str | None = None  # 读图结果的隐式确认，见 events.StepCard.seen
     feedback: Feedback | None = None
     note: str | None = None
+    answer: StepAnswer | None = None
 
 
 class ReceiptCardItem(TimelineRecord):

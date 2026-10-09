@@ -864,12 +864,14 @@ def _apply_step_feedback(
     """反馈保存到 step_attempts；真实执行写 steps_executed，无法操作记录可恢复约束并重算。
     真实执行后按 next_on 推进，保留 CP-verify R1 / R1c；备注先过 CP-in。无 LLM。"""
     payload = action.get("payload") or {}
-    feedback = payload["feedback"]
+    feedback = payload.get("feedback")
     note = payload.get("note") or None
+    answer = payload.get("answer") or None
     card_id = pc.get("card_id", "")
     session_id = state.get("session_id", "")
-    results[card_id] = {"feedback": feedback, **({"note": note} if note else {})}
-    update: SessionState = {"stage": "verify", "substage": None, "card_results": results, "unresolved_turns": 0 if feedback == "solved" else (state.get("unresolved_turns") or 0) + 1}
+    results[card_id] = {"feedback": feedback, **({"note": note} if note else {}), **({"answer": answer} if answer else {})}
+    update: SessionState = {"stage": "verify", "substage": None, "card_results": results,
+                            "unresolved_turns": 0 if feedback == "solved" else (state.get("unresolved_turns") or 0) + (1 if feedback else 0)}
     cp = get_rules_service().check_in(
         action_kind="step_feedback", action_note=note, session_id=session_id
     )
@@ -891,8 +893,10 @@ def _apply_step_feedback(
         )
         return update
     out = apply_feedback(
-        state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library(),
+        state=dict(state), feedback=feedback, note=note, card_id=card_id, library=get_plan_library(), answer=answer,
     )
+    if out.observation is not None or out.missing_material:
+        update.update(_record_card_answer(state, out.observation, out.missing_material))
     log.info(
         "cp_verify session=%s card=%s feedback=%s outcome=%s rule=%s counters=%s",
         session_id,
@@ -937,6 +941,36 @@ def _apply_step_feedback(
         update["escalate_reason"] = out.escalate_reason
     if out.outcome == "reassess":
         update.update(_apply_next_action({**state, **update}, feedback=feedback))
+    return update
+
+
+def _record_card_answer(state: SessionState, observation: dict[str, Any] | None, missing: str | None) -> SessionState:
+    """问句卡的回答进入 issue.facts（observation，来源用户），材料暂缺进入 observations；synthesize 下次评估可见。"""
+    from app.conversation.reduce import stable_id
+
+    issues = copy.deepcopy(state.get("issues") or {})
+    issue = issues.get(state.get("active_issue_id") or "")
+    update: SessionState = {}
+    if issue is None:
+        return update
+    facts = issue.setdefault("facts", [])
+    if observation is not None:
+        fact = {
+            "fact_id": stable_id(state.get("input_id", ""), "answer", len(facts)),
+            "issue_id": state.get("active_issue_id"), "device_ref_id": (issue.get("device_ref") or {}).get("device_ref_id"),
+            "status": "active", "revision": 1, "source_kind": "card_answer", "source_entry_ids": [state.get("input_id", "")],
+            "recorded_at": state.get("at"), "context_field": None, "timing": None, "occurred_at": None,
+            "time_expression": None, "precision": None, **observation,
+        }
+        facts.append(fact)
+        issue["observations"] = [f["value"] for f in facts if f["status"] == "active" and f["kind"] == "observation"]
+        issue["issue_revision"] = int(issue.get("issue_revision") or 0) + 1
+        update["observations"] = list(issue["observations"])
+    if missing:
+        note = f"待补材料：{missing}"
+        issue["observations"] = [*(issue.get("observations") or []), note]
+        update["observations"] = list(issue["observations"])
+    update["issues"] = issues
     return update
 
 

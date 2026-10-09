@@ -157,6 +157,7 @@ def fold_timeline(records: list[EventRecord], values: dict[str, Any]) -> dict[st
                     "seen": e.get("seen"),
                     "feedback": res.get("feedback"),
                     "note": res.get("note"),
+                    "answer": res.get("answer"),
                 },
             )
         elif t == "receipt_card":

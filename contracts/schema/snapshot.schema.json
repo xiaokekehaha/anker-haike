@@ -1827,9 +1827,57 @@
       "title": "RetakeCardItem",
       "type": "object"
     },
+    "StepAnswer": {
+      "additionalProperties": false,
+      "description": "问句卡 / 材料卡的回答：选项原文或短答；material_request 可声明暂时没有。",
+      "properties": {
+        "option": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Option"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "unavailable": {
+          "default": false,
+          "title": "Unavailable",
+          "type": "boolean"
+        }
+      },
+      "title": "StepAnswer",
+      "type": "object"
+    },
     "StepCardItem": {
       "additionalProperties": false,
       "properties": {
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepAnswer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "at": {
           "anyOf": [
             {
@@ -2156,6 +2204,18 @@
           "default": null,
           "title": "Caution"
         },
+        "context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context"
+        },
         "evidence_ids": {
           "items": {
             "type": "string"
@@ -2171,11 +2231,30 @@
           "title": "Instruction",
           "type": "string"
         },
+        "kind": {
+          "default": "action",
+          "enum": [
+            "action",
+            "question",
+            "statement",
+            "material_request",
+            "handoff"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
         "media": {
           "items": {
             "$ref": "#/$defs/StepMedia"
           },
           "title": "Media",
+          "type": "array"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
           "type": "array"
         },
         "plan_id": {

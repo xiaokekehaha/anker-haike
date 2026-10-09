@@ -13,11 +13,14 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from app.official.models import OfficialData, QAEntry, pn_of
 
 Kind = Literal["steps", "answer", "warranty"]
+# 一个编号段落对用户意味着什么（2026-10-09 第二批 I4）：要回答、要操作、只需知道、要提供材料、还是要交人工。
+StepKind = Literal["action", "question", "statement", "material_request", "handoff"]
 
 CODE = r"(?:\d{4}|E[0-9A-Z]{1,3}|EB[0-9A-Z]{1,2})"
 CODE_LIST = rf"{CODE}(?:\s*(?:/|,|&|or)\s*{CODE})*"
@@ -68,6 +71,11 @@ class Step:
     text: str
     media: tuple[Media, ...] = ()
     warranty: bool = False
+    kind: StepKind = "action"
+    options: tuple[str, ...] = ()
+    branches: dict[str, int] = field(default_factory=dict)  # 选项 → 段落位置 pos（question 用）
+    disabled: bool = False
+    disabled_reason: str = ""
 
 
 @dataclass(frozen=True)
@@ -176,6 +184,99 @@ def inline_steps(content: str) -> list[tuple[int, str]]:
 CATEGORY = {"Breast Pump": "breast_pump", "SoloCam": "security_cam"}
 
 
+# ---- 步骤类型 ----
+# 875 条 Q&A 共 1364 段，非 action 段不到 11%，question 只有 3 段：规则分类够用，少数条目用 qa_overrides.yaml 修正。
+ACTION_VERB = re.compile(
+    r"\b(?:check|clean|remove|press|turn|restart|reboot|reset|replace|place|ensure|make sure|fill|wipe|install|update|"
+    r"open|close|try|use|disconnect|connect|charge|empty|re-?install|tighten|hold|move|put|take out|pull|push|unplug|"
+    r"plug|power|switch|run|start|confirm|verify|adjust|set|enable|disable|delete|re-?add|log in|test|compare|inspect|"
+    r"look|shake|dry|rinse|align|separate|flip|rotate|lift|lower|change|disassemble|reassemble|attach|detach|wash|"
+    r"calibrate|pair|re-?pair|add|download|upgrade|contact)\b",
+    re.IGNORECASE,
+)
+MATERIAL = re.compile(
+    r"\b(?:please\s+)?(?:record|send(?: us)?|provide(?: us with)?|upload|share|attach|take)\b[^.]{0,60}"
+    r"\b(?:photo|picture|image|video|audio|clip|screenshot|screen recording)s?\b",
+    re.IGNORECASE,
+)
+HANDOFF = re.compile(
+    r"^(?:if .{0,100}(?:persists?|still|cannot|unable|not resolved|ineffective)[^.]*[,.]?\s*)?(?:please\s+)?"
+    r"contact (?:us|customer service|support|eufy)\b",
+    re.IGNORECASE,
+)
+HEADING = re.compile(r"^(?:step\s*\w+\s*[:：]\s*)?[A-Z][\w &/,()'-]{2,60}:?$")
+STATEMENT_LEAD = re.compile(r"^(?:when|if|this|it is normal|the (?:robot|device|app|noise|base station)|note|during|after|under)\b", re.IGNORECASE)
+QUESTION_PAREN = re.compile(r"\(([^()]*?/[^()]*?)\)\s*$")
+QUESTION_OR = re.compile(r"\b(?:is|are|does|do)\s+(?:it|the \w+(?: \w+)?)\s+(\w[\w-]*)\s+or\s+(\w[\w-]*)\s*\?$", re.IGNORECASE)
+
+
+def _head_body(text: str) -> tuple[str, list[str]]:
+    lines = [line.strip() for line in text.strip().splitlines() if line.strip()]
+    return (lines[0] if lines else ""), lines[1:]
+
+
+def classify_step(text: str) -> StepKind:
+    """按段落首行判定类型。顺序：问句 → 材料请求 → 交人工 → 纯标题（正文有动作则 action）→ 说明句 → 操作。"""
+    head, body = _head_body(text)
+    # 首句：句号后面不一定有空格（「…as shown in the picture.If it's loose, please provide a picture」）
+    first_sentence = re.split(r"(?<=[.!?])\s*(?=[A-Z])", head, maxsplit=1)[0]
+    # 问句：以 ? 结尾，或 ? 后只跟一段括号里的选项（「When does it occur? (… / … / …)」）
+    if (head.rstrip().endswith("?") or re.search(r"\?\s*\([^()]*\)\s*$", head)) and len(head) < 200:
+        return "question"
+    # 材料请求是这一段的主要内容才算；操作之后附带的「若松动请拍照」仍是操作步骤（rv-0272）
+    if MATERIAL.search(first_sentence) and not ACTION_VERB.match(first_sentence.lstrip("- ")):
+        return "material_request"
+    if HANDOFF.match(head) and not ACTION_VERB.search(" ".join(body)):
+        return "handoff"
+    if HEADING.match(head) and not ACTION_VERB.search(head):
+        return "action" if ACTION_VERB.search(" ".join(body)) else "statement"
+    if STATEMENT_LEAD.match(head) and not ACTION_VERB.search(head):
+        return "statement"
+    return "action"
+
+
+def question_options(text: str) -> tuple[str, ...]:
+    """问句里列出的选项：括号内以 / 分隔（「(upon startup / During pumping / Only at high speed)」），或 A or B。"""
+    head, _ = _head_body(text)
+    if match := QUESTION_PAREN.search(head):
+        parts = [p.strip(" ?.") for p in match.group(1).split("/")]
+        return tuple(p for p in parts if p)
+    if match := QUESTION_OR.search(head):
+        return (match.group(1), match.group(2))
+    return ()
+
+
+def overrides_path() -> Path:
+    """与 qa.yaml 同目录（本机 data/official，容器内 OFFICIAL_DATA_DIR）。"""
+    from app.official.models import OFFICIAL_DIR
+
+    return OFFICIAL_DIR / "qa_overrides.yaml"
+
+
+@lru_cache(maxsize=1)
+def load_overrides(path: Path | None = None) -> dict[str, dict[int, dict]]:
+    """人工审核结果：{qa_id: {pos: {kind / options / branches / disabled / reason}}}。pos 是段落在原文中的位置（从 1 起），
+    不是原文编号 —— bp-0123 的「Step 1:」与「1.」编号都是 1。文件不存在视为空。"""
+    import yaml
+
+    target = path or overrides_path()
+    if not target.is_file():
+        return {}
+    raw = yaml.safe_load(target.read_text(encoding="utf-8")) or {}
+    return {str(qa_id): {int(no): dict(spec or {}) for no, spec in (entries or {}).items()} for qa_id, entries in raw.items()}
+
+
+def _typed_step(no: int, pos: int, text: str, *, warranty: bool, overrides: dict[int, dict]) -> Step:
+    spec = overrides.get(pos, {})
+    kind: StepKind = spec.get("kind") or classify_step(text)
+    options = tuple(spec.get("options") or (question_options(text) if kind == "question" else ()))
+    return Step(
+        no=no, text=strip_urls(text), media=media_of(text), warranty=warranty or kind == "handoff",
+        kind=kind, options=options, branches={str(k): int(v) for k, v in (spec.get("branches") or {}).items()},
+        disabled=bool(spec.get("disabled")), disabled_reason=str(spec.get("reason") or ""),
+    )
+
+
 def answer_body(content: str, tips: str) -> str:
     """答案正文去掉 Tips 段：Tips 单独作为步骤卡的注意事项，正文再带一遍就重复了。"""
     if not tips:
@@ -184,11 +285,12 @@ def answer_body(content: str, tips: str) -> str:
     return content[: match.start()].rstrip() if match else content
 
 
-def build_guide(entry: QAEntry) -> Guide:
+def build_guide(entry: QAEntry, overrides: dict[int, dict] | None = None) -> Guide:
     raw_steps, tips = split_steps(entry.content)
+    overrides = overrides if overrides is not None else load_overrides().get(entry.id, {})
     steps = tuple(
-        Step(no=n, text=strip_urls(text), media=media_of(text), warranty=bool(WARRANTY.search(text)))
-        for n, text in raw_steps
+        _typed_step(n, pos, text, warranty=bool(WARRANTY.search(text)), overrides=overrides)
+        for pos, (n, text) in enumerate(raw_steps, 1)
     )
     warranty = bool(WARRANTY.search(entry.content))
     if len(steps) < 2 and warranty and (pre := FIRST_TRY.match(strip_urls(entry.content))):

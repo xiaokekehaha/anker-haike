@@ -21,6 +21,9 @@ class NextOn(_Strict):
     cannot_do: str
 
 
+StepKind = Literal["action", "question", "statement", "material_request", "handoff"]
+
+
 class PlanStep(_Strict):
     step_id: str = Field(min_length=1)
     title: str = Field(min_length=1)
@@ -30,6 +33,11 @@ class PlanStep(_Strict):
     stop_conditions: list[str] = Field(default_factory=list)
     next_on: NextOn
     required_resources: list[str] = Field(default_factory=lambda: ["device"])
+    # 2026-10-09 第二批：段落对用户意味着什么。question 带 options，按 branches（选项 → step_id）分支，
+    # 没列出的选项走 next_on.not_solved；statement / material_request 不计已操作；handoff 不出卡。
+    kind: StepKind = "action"
+    options: list[str] = Field(default_factory=list)
+    branches: dict[str, str] = Field(default_factory=dict)
 
     @field_validator("instruction_src")
     @classmethod
@@ -79,6 +87,11 @@ class Plan(_Strict):
                     )
                 if target == s.step_id:
                     raise ValueError(f"step {s.step_id}.next_on.{fb} points to itself")
+            for option, target in s.branches.items():
+                if target not in allowed or target == s.step_id:
+                    raise ValueError(f"step {s.step_id}.branches[{option!r}] -> {target!r} is not another step_id of this plan")
+                if option not in s.options:
+                    raise ValueError(f"step {s.step_id}.branches[{option!r}] is not one of its options")
         return self
 
     def step(self, step_id: str) -> PlanStep:

@@ -100,6 +100,18 @@ class StepMedia(Strict):
     kind: Literal["image", "video", "link"]
 
 
+# 官方 Q&A 的一个段落对用户意味着什么（2026-10-09 第二批 I4）：要回答、要操作、只需知道、要提供材料、还是要交人工。
+StepKind = Literal["action", "question", "statement", "material_request", "handoff"]
+
+
+class StepAnswer(Strict):
+    """问句卡 / 材料卡的回答：选项原文或短答；material_request 可声明暂时没有。"""
+
+    option: str | None = None
+    text: str | None = None
+    unavailable: bool = False
+
+
 class TroubleshootStep(Strict):
     """step_card 的唯一层级：step 对象（08 §5）。"""
 
@@ -116,6 +128,10 @@ class TroubleshootStep(Strict):
     # 主引用按 instruction_src 的锚点认出，前端默认只展开它，其余折叠。
     primary_evidence_id: str | None = None
     media: list[StepMedia] = Field(default_factory=list)
+    kind: StepKind = "action"
+    options: list[str] = Field(default_factory=list)
+    # 这一步之前的说明段落（标题、机制说明、条件说明）：只展示，不要求反馈，不计已操作
+    context: str | None = None
 
 
 class EvidenceItem(Strict):

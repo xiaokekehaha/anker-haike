@@ -744,6 +744,43 @@
       "title": "SkipRetakePayload",
       "type": "object"
     },
+    "StepAnswer": {
+      "additionalProperties": false,
+      "description": "问句卡 / 材料卡的回答：选项原文或短答；material_request 可声明暂时没有。",
+      "properties": {
+        "option": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Option"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "unavailable": {
+          "default": false,
+          "title": "Unavailable",
+          "type": "boolean"
+        }
+      },
+      "title": "StepAnswer",
+      "type": "object"
+    },
     "StepFeedbackAction": {
       "additionalProperties": false,
       "properties": {
@@ -792,15 +829,35 @@
     },
     "StepFeedbackPayload": {
       "additionalProperties": false,
+      "description": "action 卡交 feedback；question / material_request 卡交 answer；statement 卡两者都可省（确认已读）。\n服务端按卡片 kind 校验组合（sessions/router.py）。",
       "properties": {
-        "feedback": {
-          "enum": [
-            "solved",
-            "not_solved",
-            "cannot_do"
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepAnswer"
+            },
+            {
+              "type": "null"
+            }
           ],
-          "title": "Feedback",
-          "type": "string"
+          "default": null
+        },
+        "feedback": {
+          "anyOf": [
+            {
+              "enum": [
+                "solved",
+                "not_solved",
+                "cannot_do"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Feedback"
         },
         "note": {
           "anyOf": [
@@ -815,9 +872,6 @@
           "title": "Note"
         }
       },
-      "required": [
-        "feedback"
-      ],
       "title": "StepFeedbackPayload",
       "type": "object"
     }

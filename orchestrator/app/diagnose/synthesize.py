@@ -149,16 +149,28 @@ def _head_part(subject: str) -> str | None:
     return parts[-1] if parts else None
 
 
+# 同一类部件在官方资料里的不同叫法：用户说 tray、文档说 tank 都是在讲那个水盒（T29）
+_PART_FAMILY = {
+    "tray": "container", "tank": "container", "bin": "container", "box": "container", "bucket": "container",
+    "brush": "brush", "roller": "brush",
+    "dock": "station", "station": "station", "base": "station",
+    "contact": "contact", "pin": "contact", "port": "contact",
+    "tube": "tube", "tubing": "tube", "hose": "tube",
+}
+
+
 def _subject_conflicts(user_subject: str, candidate_subject: str) -> bool:
     user, cand = _norm(user_subject), _norm(candidate_subject)
     if not (user and cand) or user in cand or cand in user:
         return False
     if not _is_part(user_subject):
         return False
-    # 「Water tray」对「cleaning tray」是同一类部件的不同叫法（T29），中心词相同不算冲突；
+    # 「Water tray」对「cleaning tray / dirty water tank」是同一类部件的不同叫法（T29），同族不算冲突；
     # 「charging case」对「pump in the case」中心词是 case 对 pump，才是对象不同（T52）。
     user_head, cand_head = _head_part(user_subject), _head_part(candidate_subject)
-    return user_head is not None and cand_head is not None and user_head != cand_head
+    if user_head is None or cand_head is None or user_head == cand_head:
+        return False
+    return _PART_FAMILY.get(user_head, user_head) != _PART_FAMILY.get(cand_head, cand_head)
 
 
 CLARIFY_TEMPLATES = {

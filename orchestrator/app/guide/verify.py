@@ -41,15 +41,25 @@ class VerifyOutcome:
     trace: dict[str, Any] = field(default_factory=dict)
     step_attempts: list[dict] = field(default_factory=list)
     operation_conditions: dict = field(default_factory=dict)
+    # 2026-10-09 第二批：问句的回答写成事实；材料请求「暂时没有」记为待补
+    observation: dict[str, Any] | None = None
+    missing_material: str | None = None
+
+
+def _answer_text(answer: dict[str, Any] | None) -> str:
+    if not answer:
+        return ""
+    return (answer.get("option") or answer.get("text") or "").strip()
 
 
 def apply_feedback(
     *,
     state: dict[str, Any],
-    feedback: Feedback,
+    feedback: Feedback | None,
     note: str | None,
     card_id: str,
     library: PlanLibrary,
+    answer: dict[str, Any] | None = None,
 ) -> VerifyOutcome:
     cursor = dict(state.get("plan_cursor") or {})
     plan = library.get(cursor["plan_id"])
@@ -72,13 +82,38 @@ def apply_feedback(
             "card_id": card_id,
             "title": step.title,
             "instruction_src": step.instruction_src,
+            "kind": step.kind,
             "feedback": feedback,
             "note": note,
+            "answer": answer,
             "ts": datetime.now(UTC).isoformat(),
         }
     )
     attempts.append(attempt)
     result = partial(VerifyOutcome, step_attempts=attempts, operation_conditions=conditions_for(state).model_dump())
+    if step.kind != "action":
+        # 问句 / 说明 / 材料请求不是操作：不计 executed / skipped，不走 solved / not_solved 的语义。
+        # 问句按 branches 分支，其余向后走；回答写成一条 observation 事实，材料暂缺记为待补（I4）。
+        target = step.branches.get(answer.get("option")) if step.kind == "question" and answer and answer.get("option") else None
+        nxt = target or plan.next_step_id(step_id, "not_solved")
+        observation = None
+        missing = None
+        text = _answer_text(answer)
+        if step.kind == "question" and text:
+            observation = {"kind": "observation", "value": f"{step.title}: {text}", "quote": text,
+                           "subject": step.title.rstrip("?"), "polarity": "affirmed", "source": "user_statement"}
+        elif step.kind == "material_request":
+            if answer and answer.get("unavailable"):
+                missing = step.title
+            elif text:
+                observation = {"kind": "observation", "value": f"{step.title}: {text}", "quote": text,
+                               "subject": step.title, "polarity": "affirmed", "source": "user_statement"}
+        if nxt in ("DONE", "EXHAUSTED"):
+            return exhaust_plan({**state, "step_attempts": attempts}, plan.plan_id, library=library, counters=counters,
+                                executed=executed, exhausted=exhausted, observation=observation, missing_material=missing)
+        return result("next", {**cursor, "step_id": nxt}, counters, executed, exhausted,
+                      trace={"rule": f"{step.kind}:{nxt}"}, observation=observation, missing_material=missing)
+    assert feedback is not None
     if feedback == "cannot_do":
         counters["skipped"] += 1
         conditions, _ = update_conditions(
@@ -150,6 +185,8 @@ def exhaust_plan(
     counters: dict[str, int] | None = None,
     executed: list[dict[str, Any]] | None = None,
     exhausted: list[str] | None = None,
+    observation: dict[str, Any] | None = None,
+    missing_material: str | None = None,
 ) -> VerifyOutcome:
     """当前计划耗尽（next_on 到 EXHAUSTED，或剩余步骤全部被 CP-pre-step / 去重丢弃）：
 
@@ -177,4 +214,6 @@ def exhaust_plan(
         trace={"rule": "plan_exhausted", "plan_id": plan_id},
         step_attempts=feedback_history(state),
         operation_conditions=conditions_for(state).model_dump(),
+        observation=observation,
+        missing_material=missing_material,
     )

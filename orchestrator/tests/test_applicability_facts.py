@@ -246,3 +246,15 @@ def test_product_names_and_consumables_do_not_conflict(subject, candidate):
         allowed=_allowed("qa_rv_0341"), evidence_ids={"e1"}, symptoms={"x"}, facts=facts, error_codes=[], max_n=3,
     )
     assert [k["plan_id"] for k in kept] == ["qa_rv_0341"], dropped
+
+
+def test_container_synonyms_are_not_a_subject_conflict():
+    """T29 第二批复测：「Water tray」对「dirty water tank」是同一类容器的不同叫法，不是对象不同。"""
+    facts = [{"kind": "symptom", "value": "Water tray will not empty", "quote": "x",
+              "subject": "Water tray", "polarity": "affirmed", "status": "active"}]
+    kept, dropped, _ = filter_hypotheses(
+        [_hyp("qa_rv_0254", supported_symptoms=["Water tray will not empty"], matched_subject="dirty water tank")],
+        allowed=_allowed("qa_rv_0254"), evidence_ids={"e1"}, symptoms={"Water tray will not empty"},
+        facts=facts, error_codes=[], max_n=3,
+    )
+    assert [k["plan_id"] for k in kept] == ["qa_rv_0254"], dropped

@@ -17,8 +17,8 @@ const EVIDENCE: EvidenceItem[] = [
 
 describe('StepCard（票 34）', () => {
   it('shows title, instruction, expected result, caution and source badge; posts feedback with note', () => {
-    const onFeedback = vi.fn();
-    render(<StepCard item={item({ step: step({ caution: '拆装前请先关机', evidence_ids: ['c12', 'c15'] }) })} active onFeedback={onFeedback} />);
+    const onReply = vi.fn();
+    render(<StepCard item={item({ step: step({ caution: '拆装前请先关机', evidence_ids: ['c12', 'c15'] }) })} active onReply={onReply} />);
     expect(screen.getByText('步骤 1：检查并清理滚刷')).toBeVisible();
     expect(screen.getByText('把主机翻过来，取出滚刷，割断毛发后装回。')).toBeVisible();
     expect(screen.getByText('滚刷无缠绕物，转动顺畅')).toBeVisible();
@@ -26,17 +26,17 @@ describe('StepCard（票 34）', () => {
     expect(screen.getByText('依据 2')).toBeVisible();
     fireEvent.change(screen.getByLabelText('补充说明'), { target: { value: ' 还是没吸力 ' } });
     fireEvent.click(screen.getByRole('button', { name: '还没解决' }));
-    expect(onFeedback).toHaveBeenCalledWith('not_solved', '还是没吸力');
+    expect(onReply).toHaveBeenCalledWith({ feedback: 'not_solved', note: '还是没吸力' });
     fireEvent.click(screen.getByRole('button', { name: '解决了' }));
-    expect(onFeedback).toHaveBeenLastCalledWith('solved', '还是没吸力');
+    expect(onReply).toHaveBeenLastCalledWith({ feedback: 'solved', note: '还是没吸力' });
   });
 
   it('only the active card is interactive; answered old cards collapse to one line', () => {
-    const onFeedback = vi.fn();
+    const onReply = vi.fn();
     const { container } = render(
       <>
-        <StepCard item={item({ card_id: 'old', feedback: 'not_solved', note: '仍有异响' })} active={false} onFeedback={onFeedback} />
-        <StepCard item={item({ card_id: 'cur', step: step({ step_id: 's2', step_no: 2, title: '取出并清洁滤网' }) })} active onFeedback={onFeedback} />
+        <StepCard item={item({ card_id: 'old', feedback: 'not_solved', note: '仍有异响' })} active={false} onReply={onReply} />
+        <StepCard item={item({ card_id: 'cur', step: step({ step_id: 's2', step_no: 2, title: '取出并清洁滤网' }) })} active onReply={onReply} />
       </>,
     );
     const collapsed = container.querySelectorAll('[data-kind="step_card"]');
@@ -47,15 +47,50 @@ describe('StepCard（票 34）', () => {
     expect(first.querySelectorAll('button')).toHaveLength(0);
     expect(screen.getAllByRole('button', { name: '解决了' })).toHaveLength(1);
     // 待反馈卡 disabled（动作进行中）时按钮不可点
-    render(<StepCard item={item({ card_id: 'busy' })} active disabled onFeedback={onFeedback} />);
+    render(<StepCard item={item({ card_id: 'busy' })} active disabled onReply={onReply} />);
     const buttons = screen.getAllByRole('button', { name: '解决了' });
     expect(buttons[buttons.length - 1]).toBeDisabled();
   });
 
   it('answered active card shows the recorded feedback instead of buttons', () => {
-    render(<StepCard item={item({ feedback: 'cannot_do', note: '没有工具' })} active onFeedback={vi.fn()} />);
+    render(<StepCard item={item({ feedback: 'cannot_do', note: '没有工具' })} active onReply={vi.fn()} />);
     expect(screen.getByText('您的反馈：做不到 / 跳过（没有工具）')).toBeVisible();
     expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('question card offers options and a short answer, never solved / not solved（2026-10-09 第二批 I4）', () => {
+    const onReply = vi.fn();
+    render(<StepCard item={item({ step: step({ kind: 'question', title: 'Is the noise continuous or intermittent?', instruction: 'Is the noise continuous or intermittent?', options: ['continuous', 'intermittent'] }) })} active onReply={onReply} />);
+    expect(screen.getByText('请回答 1：Is the noise continuous or intermittent?')).toBeVisible();
+    expect(screen.queryByRole('button', { name: '还没解决' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'intermittent' }));
+    expect(onReply).toHaveBeenCalledWith({ answer: { option: 'intermittent', text: null, unavailable: false } });
+    fireEvent.change(screen.getByLabelText('短答'), { target: { value: 'only at high speed' } });
+    fireEvent.click(screen.getByRole('button', { name: '提交回答' }));
+    expect(onReply).toHaveBeenLastCalledWith({ answer: { option: null, text: 'only at high speed', unavailable: false } });
+  });
+
+  it('material request card can be declined as unavailable; statement card only acknowledges', () => {
+    const onReply = vi.fn();
+    render(<StepCard item={item({ step: step({ kind: 'material_request', title: 'Please record a short video' }) })} active onReply={onReply} />);
+    fireEvent.click(screen.getByRole('button', { name: '暂时没有' }));
+    expect(onReply).toHaveBeenCalledWith({ answer: { option: null, text: null, unavailable: true } });
+    const ack = vi.fn();
+    render(<StepCard item={item({ card_id: 's', step: step({ kind: 'statement', title: 'Identify the Problem', context: null }) })} active onReply={ack} />);
+    fireEvent.click(screen.getByRole('button', { name: '知道了' }));
+    expect(ack).toHaveBeenCalledWith({});
+    expect(screen.queryByText('预期结果')).toBeNull();
+  });
+
+  it('answered question collapses to its answer and shows statement context on the next card', () => {
+    const { container } = render(
+      <>
+        <StepCard item={item({ card_id: 'q', step: step({ kind: 'question', options: ['continuous', 'intermittent'] }), answer: { option: 'intermittent', text: null, unavailable: false } })} active={false} onReply={vi.fn()} />
+        <StepCard item={item({ card_id: 'a', step: step({ step_id: 's2', step_no: 2, context: 'The noise may come from the fan, roller brush or side brush.' }) })} active onReply={vi.fn()} />
+      </>,
+    );
+    expect(container.querySelector('[data-step-kind="question"]')).toHaveTextContent('intermittent');
+    expect(screen.getByText('The noise may come from the fan, roller brush or side brush.')).toBeVisible();
   });
 
   it('主引用直接展开，同 doc 的其余命中折叠一层', () => {
@@ -81,7 +116,7 @@ describe('StepCard（票 34）', () => {
       return (
         <>
           <EvidenceDrawer items={EVIDENCE} highlight={hover} />
-          <StepCard item={item()} active onFeedback={vi.fn()} onHover={setHover} />
+          <StepCard item={item()} active onReply={vi.fn()} onHover={setHover} />
         </>
       );
     }
@@ -105,7 +140,7 @@ describe('StepCard 的读图回显', () => {
   } as unknown as StepCardItem;
 
   it('有 seen 时单独成行显示，不混进操作正文', () => {
-    render(<StepCard item={{ ...base, seen: '从照片里我看到：滚刷缠绕。如果不对，您可以直接告诉我。' } as StepCardItem} active onFeedback={vi.fn()} />);
+    render(<StepCard item={{ ...base, seen: '从照片里我看到：滚刷缠绕。如果不对，您可以直接告诉我。' } as StepCardItem} active onReply={vi.fn()} />);
     const echo = screen.getByText(/从照片里我看到/);
     expect(echo).toBeInTheDocument();
     expect(echo.textContent).not.toContain('取下滚刷');
@@ -113,7 +148,7 @@ describe('StepCard 的读图回显', () => {
   });
 
   it('没有 seen 时不渲染空行', () => {
-    const { container } = render(<StepCard item={base} active onFeedback={vi.fn()} />);
+    const { container } = render(<StepCard item={base} active onReply={vi.fn()} />);
     expect(container.querySelector('[data-kind="vision-echo"]')).toBeNull();
   });
 });

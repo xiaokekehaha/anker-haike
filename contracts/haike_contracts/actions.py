@@ -6,7 +6,7 @@ from typing import Annotated, Literal, get_args
 
 from pydantic import Field, TypeAdapter
 
-from haike_contracts.common import Feedback, ReceiptFields, Strict
+from haike_contracts.common import Feedback, ReceiptFields, StepAnswer, Strict
 
 ActionKind = Literal[
     "select_product",
@@ -29,8 +29,12 @@ class SelectProductPayload(Strict):
 
 
 class StepFeedbackPayload(Strict):
-    feedback: Feedback
+    """action 卡交 feedback；question / material_request 卡交 answer；statement 卡两者都可省（确认已读）。
+    服务端按卡片 kind 校验组合（sessions/router.py）。"""
+
+    feedback: Feedback | None = None
     note: str | None = None
+    answer: StepAnswer | None = None
 
 
 class ConfirmReceiptPayload(Strict):

@@ -104,3 +104,79 @@ def test_restart_first_entries_become_two_steps_before_warranty():
     steps = INDEX.guides["rv-0256"].steps
     assert INDEX.guides["rv-0256"].kind == "steps"
     assert [s.warranty for s in steps] == [False, True] and "restart" in steps[0].text.lower()
+
+
+# ---- 步骤类型（2026-10-09 第二批 I4：官方段落不等于用户操作）----
+
+from app.official.qa_index import classify_step, get_qa_index
+
+
+@pytest.mark.parametrize(("text", "kind"), [
+    ("Is the noise continuous or intermittent?", "question"),
+    ("When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)", "question"),
+    ("Please record a short video or audio clip (at least 10 seconds) to help us remotely determine the type of noise.", "material_request"),
+    ("Provide a picture showing the issue for further analysis.", "material_request"),
+    ("If the device cannot perform the cleaning task normally after restarting, please contact us to continue the warranty process.", "handoff"),
+    ("Identify the Problem", "statement"),
+    ("Scene Cleaning (selectable cleaning modes for each room)", "statement"),
+    ("If the battery temperature of the robot is too low during operation, in order to protect the robot the task will pause.", "statement"),
+    ("Placement and Appearance Inspection\n- Place the breast pump on a flat, sturdy surface to avoid table resonance.", "action"),
+    ("Check Assembly: Confirm that both sides have silicone breast shields installed.", "action"),
+    ("Turn the robot over, remove the roller brush cover and check the shaft.", "action"),
+])
+def test_classify_step(text, kind):
+    assert classify_step(text) == kind
+
+
+def test_question_options_are_split_from_parentheses_and_slashes():
+    from app.official.qa_index import question_options
+
+    assert question_options("When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)") == (
+        "Is it present upon startup", "During breast pumping", "Only at high speed",
+    )
+    assert question_options("Is the noise continuous or intermittent?") == ("continuous", "intermittent")
+    assert question_options("Is it accompanied by decreased suction?") == ()
+
+
+def test_kind_distribution_is_mostly_actions():
+    """规则分类的粗界：非操作段落不到 15%，问句不多于 10 段；超出说明规则跑偏。"""
+    from collections import Counter
+
+    counts = Counter(s.kind for g in get_qa_index().guides.values() for s in g.steps)
+    total = sum(counts.values())
+    assert counts["action"] / total >= 0.85, counts
+    assert counts["question"] <= 10 and counts["material_request"] <= 20 and counts["handoff"] <= 20, counts
+
+
+def test_bp_0123_steps_are_typed_and_overridden():
+    """T46：标题不计操作；两问带选项；软管检查按 7.1 复核屏蔽；末段交人工。"""
+    steps = list(get_qa_index().guides["bp-0123"].steps)  # 按原文位置；原文编号会重复（两个 1）
+    kinds = [s.kind for s in steps]
+    assert kinds[0] == "statement"  # Identify the Problem
+    assert kinds[1] == "question" and steps[1].options == ("continuous", "intermittent")
+    assert kinds[2] == "question" and "During breast pumping" in steps[2].options
+    assert kinds[3] == "question"
+    assert kinds[4] == "material_request"
+    assert kinds[6:8] == ["action", "action"]
+    assert steps[8].disabled and "软管" in steps[8].disabled_reason
+    assert steps[9].disabled
+    assert kinds[10] == "handoff"
+
+
+def test_bp_0032_first_step_branches_on_leak_location():
+    steps = {s.no: s for s in get_qa_index().guides["bp-0032"].steps}
+    assert steps[1].kind == "question" and steps[1].options == ("Breast shield opening", "Bottle connection")
+    assert steps[1].branches == {"Breast shield opening": 2, "Bottle connection": 3}
+
+
+def test_overrides_reference_existing_entries():
+    from app.official.qa_index import load_overrides
+
+    index = get_qa_index()
+    for qa_id, entry in load_overrides().items():
+        assert qa_id in index.guides, qa_id
+        count = len(index.guides[qa_id].steps)
+        for pos, spec in entry.items():
+            assert 1 <= pos <= count, (qa_id, pos)
+            for target in (spec.get("branches") or {}).values():
+                assert 1 <= target <= count, (qa_id, pos, target)
