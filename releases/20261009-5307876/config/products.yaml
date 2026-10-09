@@ -1,0 +1,35 @@
+# 产品目录：只收主办方资料包内的产品（data/official：订单 SKU、Q&A 的 PN、63 单工单的产品名）。
+# sku 字段取产品 PN（订单 SKU 前缀，如 T8D04121 → T8D04），与 Q&A 的 PN 列一致；订单完整 SKU 由 pn_of 归一。
+# aliases 只放客户会说的写法（工单原文、订单描述、Q&A 三级目录），比较时忽略大小写、空格与连字符。
+# 「S1 Pro」同时是扫地机（T2080）与吸奶器（T8D04）：同一别名返回两个候选，由产品卡片消歧（赛题能力「产品消歧」）。
+# keywords 补了工单里出现的荷 / 德 / 法 / 西语品类词，客户只说品类时也能缩小到品类。
+version: 2026-10-08.1
+categories:
+  robot_vacuum:
+    name: 扫地机器人
+    name_en: robot vacuum
+    line: Anker eufy
+    in_scope: true
+    keywords: [扫地机, 扫地机器人, 扫拖机器人, 拖地机, 机器人吸尘器, robovac, robot vacuum, vacuum, hoover, mop, robotstofzuiger, stofzuiger, Saugroboter, Staubsauger, aspirateur, aspirateur robot, robot aspirador, aspiradora]
+  breast_pump:
+    name: 吸奶器
+    name_en: breast pump
+    line: Anker eufy
+    in_scope: true
+    keywords: [吸奶器, 电动吸奶器, 穿戴吸奶器, breast pump, pump, borstkolf, Milchpumpe, tire-lait, sacaleches]
+  security_cam:
+    name: 家庭安防摄像头
+    name_en: security camera
+    line: Anker eufy
+    in_scope: true
+    keywords: [摄像头, 监控, 安防, 摄像机, camera, cameras, security camera, solocam, beveiligingscamera, Kamera, caméra, cámara]
+
+products:
+  - {sku: T2080, name: eufy Robot Vacuum Omni S1 Pro, category: robot_vacuum, aliases: [S1 Pro, Omni S1 Pro, S1 Pro Omni, S1, T2080, T2080A, T2071]}
+  - {sku: T2351, name: eufy Clean X10 Pro Omni, category: robot_vacuum, aliases: [X10 Pro Omni, X10 Pro, X10, T2351]}
+  - {sku: T2352, name: eufy Robot Vacuum Omni E28, category: robot_vacuum, aliases: [Omni E28, E28, T2352]}
+  - {sku: T2353, name: eufy Robot Vacuum Omni E25, category: robot_vacuum, aliases: [Omni E25, E25, T2353]}
+  - {sku: T2280, name: eufy Robot Vacuum Omni C20, category: robot_vacuum, aliases: [Omni C20, omni c 20, C20, T2280]}
+  - {sku: T2292, name: eufy Robot Vacuum Auto-Empty C10, category: robot_vacuum, aliases: [Auto-Empty C10, C10, T2292]}
+  - {sku: T8D04, name: eufy Wearable Breast Pump S1 Pro, category: breast_pump, aliases: [S1 Pro, S1 Pro Breast Pump, S1 Pro Wearable Breast Pump, Heated Wearable Breast Pump S1 Pro, Wearable Breast Pump S1 Pro, S1 pump, T8D04, T8D02, T8D03]}
+  - {sku: T8170, name: eufy SoloCam S340, category: security_cam, aliases: [SoloCam S340, S340, T8170]}

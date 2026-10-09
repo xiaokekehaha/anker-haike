@@ -28,17 +28,17 @@ ROOT = Path(__file__).resolve().parents[2]
 
 class SmokeKnowledge:
     async def hybrid_search(self, kb, query, top_k, allow):
-        if kb != "kb_manual":
+        if kb != "kb_qa":
             return ToolResult("no_match", kb=kb, query=query)
         return ToolResult(
             "ok",
             [
                 Hit(
-                    evidence_id="smoke-brush",
+                    evidence_id="rv-0272#s1",
                     knowledge_id="smoke",
-                    chunk_id="smoke-brush",
-                    doc_id="manual_rv_v1",
-                    doc_version="2026-09-12.1",
+                    chunk_id="rv-0272#s1",
+                    doc_id="rv-0272",
+                    doc_version="smoke",
                     source=kb,
                     snippet="翻转主机，按下滚刷盖两侧卡扣取出滚刷，清理缠绕毛发后装回。",
                     score=0.9,
@@ -62,30 +62,31 @@ async def main(*, offline: bool = False):
         script=[
             json.dumps(
                 {
+                    "primary_intent": "report_problem",
+                    "device_relation": "current",
+                    "device_category": "robot_vacuum",
+                    "product_hints": ["X10 Pro Omni"],
                     "emotion_level": "calm",
-                    "product_hints": ["X9 Pro"],
-                    "symptoms": ["不吸", "滚刷缠头发"],
-                    "wants_human": False,
+                    "emotion_cues": [],
+                    "facts": [
+                        {"kind": "symptom", "value": "不吸了", "quote": "不吸了"},
+                        {"kind": "symptom", "value": "滚刷缠头发", "quote": "滚刷缠头发"},
+                    ],
                 }
             ),
             json.dumps(
                 {
                     "hypotheses": [
                         {
-                            "plan_id": "rv_suction_hair_wrap",
+                            "plan_id": "qa_rv_0272",
                             "confidence": 0.9,
-                            "evidence_ids": ["smoke-brush"],
+                            "evidence_ids": ["rv-0272#s1"],
                             "rationale": "滚刷缠绕",
                         }
                     ]
                 }
             ),
             ["已找到滚刷缠绕的处理资料。", "请按提示操作。"],
-            json.dumps(
-                {
-                    "instruction": "翻转主机，按下滚刷盖两侧卡扣取出滚刷，用附带清洁刀具割断缠绕的毛发后装回。"
-                }
-            ),
         ]
     )
     config = load_models_config(ROOT / "config/models.yaml", lane_override="domestic")
@@ -107,7 +108,7 @@ async def main(*, offline: bool = False):
                 store,
                 build_graph(InMemorySaver()),
                 sid,
-                "eufy X9 Pro 不吸了，滚刷缠头发。手机号 13800138000，订单号：SMOKE-ORDER-123",
+                "eufy X10 Pro Omni 不吸了，滚刷缠头发。手机号 13800138000，订单号：CHECK-ORDER-123",
             )
         ]
     finally:
@@ -124,7 +125,10 @@ async def main(*, offline: bool = False):
     calls = [
         row for row in rows if row.get("event") == "model_call" and row.get("session_id") == sid
     ]
-    assert len(calls) == 4 and all(row["status"] == "ok" for row in calls), calls
+    # 调用数不写死：步骤正文自 2026-10-08 起直接取官方 Q&A 原文，guide.step 不再调模型；
+    # 冒烟要验的是「链路通 + 每次调用都成功 + 同属一个 run」，不是调用次数。
+    assert calls and all(row["status"] == "ok" for row in calls), calls
+    assert {row["task"] for row in calls} >= {"intake", "diagnose.synthesize"}, calls
     assert len({row["run_id"] for row in calls}) == 1
     traces = []
     if not offline:
@@ -168,9 +172,9 @@ async def main(*, offline: bool = False):
                     assert detail["usageDetails"]["output"] == 5
                 assert "13800138000" not in json.dumps(
                     detail
-                ) and "SMOKE-ORDER-123" not in json.dumps(detail)
+                ) and "CHECK-ORDER-123" not in json.dumps(detail)
     current = [json.dumps(row) for row in rows if row.get("session_id") == sid]
-    assert "13800138000" not in "".join(current) and "SMOKE-ORDER-123" not in "".join(current)
+    assert "13800138000" not in "".join(current) and "CHECK-ORDER-123" not in "".join(current)
     session_log = ROOT / "logs/observability-smoke-session.jsonl"
     session_log.write_text("\n".join(current) + "\n")
     result = {
@@ -181,7 +185,9 @@ async def main(*, offline: bool = False):
         "pii_redacted": True,
         "metrics": summarize([session_log]),
     }
-    assert all(item["count"] == 1 for item in result["metrics"]["metrics"].values())
+    # 只断言本条链路真正会产生的指标。这一单以步骤卡作答（正文取官方 Q&A 原文，不走流式回复），
+    # 因此只有 card_ready_ms；first_visible_ms 属于流式回复路径，这里本就不该有。
+    assert result["metrics"]["metrics"]["card_ready_ms"]["count"] == 1, result["metrics"]
     output = ROOT / (
         "logs/observability-offline-result.json"
         if offline

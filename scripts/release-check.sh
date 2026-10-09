@@ -31,7 +31,8 @@ declared() { grep -m1 -E "^\| $1 \|" RELEASE.md | awk -F'|' '{print $3}' | sed -
 
 check "models.yaml"   "$(ver config/models.yaml)"              "$(declared 'models.yaml')"
 check "rules_ver"     "$(ver config/rules/safety_terms.yaml)"  "$(declared 'rules_ver')"
-check "products/plans" "$(ver config/products.yaml) / $(ver config/plans.yaml)" "$(declared 'products / plans')"
+QA_VER="$(grep -m1 -oE 'sha256=[0-9a-f]{12}' data/official/qa.yaml | cut -d= -f2 || echo "-")"
+check "products/官方 Q&A" "$(ver config/products.yaml) / ${QA_VER}" "$(declared 'products / 官方 Q&A')"
 check "prompt_ver" \
   "system $(pyconst orchestrator/app/prompts/system.py PROMPT_VERSION) / reply $(pyconst orchestrator/app/prompts/reply.py REPLY_PROMPT_VERSION)" \
   "$(declared 'prompt_ver')"

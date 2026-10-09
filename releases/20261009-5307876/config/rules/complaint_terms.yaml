@@ -1,0 +1,13 @@
+# 情绪规则词（模型之外的兜底与升级，命中即把情绪抬到该级）。中文词按子串匹配；拉丁字母词忽略大小写、按整词匹配，
+# 前面紧跟否定词（不 / 没有 / not / never / don't …）不算。
+# 英 / 荷 / 德 / 法 / 西语词取自主办方 63 单工单原文（T56 T58 T60 辱骂，T57 T59 T62 失望），2026-10-08 补。
+version: '2026-10-08.1'
+complaint_risk: [投诉, '315', 消协, 曝光, 差评, 律师,
+                 lawyer, attorney, sue, lawsuit, legal action, chargeback, trading standards, consumer protection, report you,
+                 advocaat, rechtsanwalt, avocat, abogado]
+angry: [气死, 太烂, 受够, 生气, 愤怒, '😡', '🤬',
+        fuck, fucking, shit, bullshit, crap, sick of, fed up, furious, ridiculous, outrageous, unacceptable, scam, rip off, ripoff, worst,
+        belachelijk, waardeloos, schande, scheiße, unverschämt, merde, inacceptable, una mierda, inaceptable]
+dissatisfied: [不满意, 不满, 太慢, 失望, 又坏了, 没用, 无语, '🙄',
+               disappointed, disappointing, frustrating, frustrated, terrible, rubbish, junk, useless, not reliable, unreliable, dumb, suck, sucks, annoying, upset, unhappy,
+               teleurgesteld, enttäuscht, déçu, decepcionado]

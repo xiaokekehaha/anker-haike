@@ -10,6 +10,9 @@ KB_VER="$(python3 -c "import json,sys; print(json.load(open('data/knowledge/mani
 WEKNORA_TAG="$(grep -m1 -E '^WEKNORA_VERSION=' .env 2>/dev/null | cut -d= -f2 || true)"; WEKNORA_TAG="${WEKNORA_TAG:-$(grep -m1 -oE 'WEKNORA_VERSION:-v[0-9.]+' docker-compose.yml | cut -d- -f2)}"
 REPLAY="$(ls -1 replay/*/manifest.json 2>/dev/null | xargs -n1 dirname 2>/dev/null | xargs -n1 basename 2>/dev/null | paste -sd, - || true)"; REPLAY="${REPLAY:-"-（票 43 未录制）"}"
 TBD="$(grep -c -iE 'TBD|todo' config/models.yaml || true)"
+# 排障计划自 2026-10-08 起由官方 Q&A 生成（config/plans.yaml 已删）：版本取源工作簿 sha256 前 12 位，
+# 与 app.official.qa_index 的 version 同源。
+QA_VER="$(grep -m1 -oE 'sha256=[0-9a-f]{12}' data/official/qa.yaml | cut -d= -f2 || echo "-")"
 BAKEOFF="$(test -f reports/bakeoff/bakeoff.md && head -1 reports/bakeoff/bakeoff.md | sed -E 's/^# bake-off 结果（(.*)）$/\1/' || echo "-（未跑，make bakeoff）")"
 OWNER="$(git remote get-url origin 2>/dev/null | sed -E 's#.*github.com[:/]([^/]+)/.*#\1#' || echo owner)"
 
@@ -34,7 +37,7 @@ cat > RELEASE.md <<MD
 | actions_version | $(ver config/actions.yaml) |
 | emotion_policy / vision_vocab | $(ver config/emotion_policy.yaml) / $(ver config/vision_vocab.yaml) |
 | official data | $(head -2 data/official/orders.yaml | tail -1 | sed 's/.*sha256=//' | cut -c1-12) |
-| products / plans | $(ver config/products.yaml) / $(ver config/plans.yaml) |
+| products / 官方 Q&A | $(ver config/products.yaml) / ${QA_VER} |
 | kb_ver | $KB_VER |
 | WeKnora 镜像 tag | $WEKNORA_TAG |
 | 回放包清单 | $REPLAY |
