@@ -58,3 +58,21 @@
   未达标 T23、T27：两单在无代码改动的相邻轮次间来回翻（T23 连过 8 轮后翻一次，T27 反复横跳），
   属模型在边界工单上的波动，非本次改动引入；留待后续。
 
+- 2026-10-09 — P3 全部完成（提交 21a48a2 / 36a61d6 / 502b2f3）：
+  P3-1 金标换目录真值（范围比 plan 大：还有 X9 Pro，且被错配给 SKU T2351），加两条守卫防回潮；
+  P3-3 只删 operation_conditions 的「充电宝」，单测里的 opaque 夹具值刻意不改；
+  P3-2 拆出 sop_exact / sop_via_alternate，口径说明写进报告头（评委看的是报告文件）。
+  更正 plan.md 前提：CI 的 haike-eval all 不跑 semantic-gold，那些金标只有 --mode model 才读。
+  DD1 勘误写进 replan 与 0828 两个 addendum（原文档开发后不改写）。
+- 2026-10-09 — P4 全部完成（提交 065110b / 148fb61）：
+  P4-1 release.sh / release-check.sh 的 config/plans.yaml 改为官方 Q&A 版本（sha256 前 12 位）；
+  ver() 对缺失文件返回空不报错，所以是「清单留空值→release-check 必失配」而非崩溃。
+  重新生成清单后 release-check 六项全绿（bake-off 一项仍提示重跑，D3 已列为取消项）。
+  Makefile 的 seed 帮助文案与 haike-seed 的 choices 不一致（照文案敲会报错），一并修。
+  P4-2 smoke.py 四处失效：kb_manual / rv_suction_hair_wrap、占位单号 SMOKE-ORDER-123 命中
+  R4 安全词、intake 假响应仍是旧 schema、断言写死 4 次模型调用（guide.step 已不调模型）。
+  修后 --offline 跑通。P4-3 散落改动已提交。
+  未做：make release 的产物 releases/20261009-5307876/ 一并入库；bakeoff 不重跑。
+- 2026-10-09 — 全量验证：829 passed / 2 skipped，ruff 零告警，frontend typecheck 通过；
+  63 单真实链路 意图 100% / SOP 100%（sop_exact 83%）/ 幻觉 0 / 闭环率 100%(8/8)
+  （reports/eval/20261009T051839Z_live_tickets.md）。
