@@ -52,3 +52,9 @@ T9 一句话两个诉求：问 Anker008 主机物流；未发货则先暂停。2
 - `tests/test_conversation_official_tickets.py`：改口后人工看到最新原话且只有一份等人工任务；驳回后任务收尾、再提诉求重新入队且迁移链为 awaiting_approval → rejected → proposing → awaiting_approval；换货卡上请人工后不推进排障、阶段保持 awaiting_human。
 - `tests/test_l3_experience.py`：`hand_off` 去重 / 改口 / 驳回后再入队；等人工时只推进查询类任务、`settle` 与改口更新。
 - 相关 7 个测试文件 124 条通过，ruff 零告警。
+
+### 2026-10-09 13:42 重建后真实模型复测
+
+`make up` 后镜像内 l3.py / service.py / tasks.py 哈希与工作区一致。T9 首封三次（13:42:25 / 13:42:30 / 13:42:36，报告 `reports/eval/20261009T0542{25,30,36}Z_live_tickets.*`）与 13:15 一致：回复先转交再答物流，案件 awaiting_approval 且事件链完整，队列 order_change=waiting_human、logistics_query=done，终点 order_change_human + logistics_presale，幻觉 0。
+
+另在第一个会话上走多轮：后台驳回 → 客户说「Then please cancel the whole Anker008 order instead.」。驳回后任务收尾为 done、阶段 done；第三轮无运行错误（修复前此处报非法迁移）。但模型把这句判成 order_query，确定性守卫 ORDER_CHANGE_WORDS 只匹配 `cancel (the|my|this) order`，「cancel the whole … order」不命中，于是没有补成 order_change，系统答了订单信息与物流而不是再次转人工。这是意图识别词表覆盖问题，不属本轮交接修复；是否放宽词表另行决定。
