@@ -1,5 +1,6 @@
 # 63 单主办方工单评测集（data/official/tickets.yaml 的首封消息）。
-# 每单标注：意图 intent、语言 language、确定性事实（pn / codes / order_no）、SOP 期望终点 sop、
+# 每单标注：意图 intent（多诉求单可加 intent_alt，两种读法都算对）、语言 language、
+# 确定性事实（pn / codes / order_no）、SOP 期望终点 sop、
 # 精确命中的官方 Q&A（qa_exact，有错误码时）或现象应召回的 Q&A 候选（qa_gold，任一命中即可）、禁止出现的承诺 forbid。
 # sop 取值：
 #   logistics_delivered        物流显示送达 → 不补发，可提交承运商调查单（D3）
@@ -30,7 +31,7 @@ cases:
 - {id: T6, intent: logistics_query, language: nl, order_no: Anker006, sop: logistics_delivered, forbid: [reship]}
 - {id: T7, intent: logistics_query, language: en, order_no: null, sop: ask_order}
 - {id: T8, intent: logistics_query, language: en, order_no: Anker007, sop: logistics_reship}
-- {id: T9, intent: logistics_query, language: en, order_no: Anker008, sop: logistics_presale, note: 客户另有改买意向，转人工可选}
+- {id: T9, intent: logistics_query, intent_alt: order_change, language: en, order_no: Anker008, sop: logistics_presale, note: 一句两诉求：问发货日 + 要求暂缓发货；两种读法都可接受，转人工可选}
 - {id: T10, intent: logistics_query, language: en, order_no: Anker009, sop: logistics_delivered, forbid: [reship]}
 - {id: T11, intent: report_problem, language: en, pn: T2080, codes: [EB1L], sop: troubleshoot, qa_exact: rv-0481}
 - {id: T12, intent: report_problem, language: en, pn: T2353, sop: explain, qa_gold: [rv-0021], note: 清水不足自动转纯扫是提示}

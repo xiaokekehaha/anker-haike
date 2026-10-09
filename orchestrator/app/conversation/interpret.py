@@ -42,6 +42,7 @@ type Intent = Literal[
     "warranty_query",
     "order_query",
     "address_update",
+    "order_change",
     "replacement_request",
     "refund_request",
     "confirm_received",
@@ -122,7 +123,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-08.4"
+INTERPRET_PROMPT_VERSION = "2026-10-09.1"  # 新增 order_change 意图
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。
@@ -134,11 +135,85 @@ DELIVERY_WORDS = re.compile(
 )
 ORDER_FIELD_WORDS = re.compile(r"purchase date|invoice|receipt|price|购买日期|发票|金额|渠道", re.IGNORECASE)
 
+# 「东西从来没送到」与「这台设备有故障 / 我要换这台设备」在物理上互斥：
+# 没到手的机器既不可能有观察到的故障现象，也没有什么可换。这不是某一单的补丁，是一条客观约束 ——
+# 63 单里说「从未收到」的 4 单（T1 T2 T8 T10）金标全部是物流分支，没有一单是排障或换货。
+# 2026-10-09 实测两种读错：
+# - 模型路径：T1 同一原文跑 8 次有 2 次判 report_problem（+ 次诉求 logistics_query），
+#   于是回「I'll handle your requests in this order: device troubleshooting → delivery status」，
+#   而这单根本没有故障可排；
+# - 降级路径（模型 schema_error 重试耗尽）：关键词表把 T1 的「Only the replacement parts kit」
+#   —— 一个描述「收到了什么」的名词 —— 读成 replacement_request，而它的优先级还高于物流。
+# 提示词已经写了「逐一识别本轮每个独立诉求」，模型仍有约 25% 概率读错，所以这条约束放在代码里。
+NEVER_ARRIVED = re.compile(
+    r"not arrived|did ?n[o']?t arrive|never arrived|not received|have ?n[o']?t received|have not received|"
+    r"没收到|未收到|没有收到|niet ontvangen|nicht angekommen|nicht erhalten|pas re[çc]u|no ha llegado|no recib",
+    re.IGNORECASE,
+)
+# 这台机器还没到手，就不可能成立的诉求
+IMPOSSIBLE_WHEN_NEVER_ARRIVED = ("report_problem", "replacement_request")
+
+# 「改订单本身」的明确说法。问物流（东西到哪了 / 发货了没）不算。
+# T9 的说法是「If you have not shipped, don't」—— 动词被省略了，所以单列这一条。
+ORDER_CHANGE_WORDS = re.compile(
+    r"do ?n[o']?t ship|do not ship|don'?t send|if you have not shipped,? ?do ?n[o']?t|"
+    r"hold (?:the|my|this) (?:order|shipment|package)|"
+    r"cancel (?:the|my|this) order|cancel it|stop (?:the|my) (?:order|shipment)|"
+    r"pause (?:the|my) (?:order|shipment)|change (?:the|my) order|"
+    r"别发|先别发|不要发货|暂缓发货|取消订单|"
+    r"niet verzenden|annuleer|annuleren|stornieren|nicht versenden|annuler|cancelar",
+    re.IGNORECASE,
+)
+
 
 def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
-    if meaning.primary_intent != "order_query" or not DELIVERY_WORDS.search(text) or ORDER_FIELD_WORDS.search(text):
+    """模型把物流诉求判成别的意图时，按原话里的客观线索纠正。
+
+    几条都只在**原话**上判断，不看会话状态：纠的是这一句被读错，不是推翻用户后续的说法。
+    """
+    # 主办方工单里的撇号多数是中文输入法的 ’（63 单里 15 处），而不是 '。
+    # 在入口统一成 '，下面所有模式只需写一种写法（T9 的「don’t」曾因此整条漏掉）。
+    text = text.replace("’", "'").replace("ʼ", "'")
+    # order_change 必须有明确的「改订单」原话。只靠提示词约束不住：加上这个意图后实测
+    # T1「Was the vacuum shipped?」、T9「inquire about the shipping」都被判成 order_change，
+    # 而它们只是在问物流。没有明确要求就退回查物流。
+    # order_change 两个方向都要纠：
+    # - 没有明确「改订单」原话却判成 order_change → 退回查询（实测 T1「Was the vacuum shipped?」中招）；
+    # - 有明确原话却没被识别出来 → 补上。T9 说「If you have not shipped, don't and let's first talk
+    #   about your other products」，模型稳定地只读到后半句、判成 product_question，
+    #   于是「先别发货」这个有时效性的诉求被整个丢掉（P2-1）。明确的要求不该取决于模型挑了哪半句。
+    explicit_change = bool(ORDER_CHANGE_WORDS.search(text))
+    if meaning.primary_intent == "order_change" and not explicit_change:
+        demoted = "logistics_query" if DELIVERY_WORDS.search(text) else "order_query"
+        meaning = meaning.model_copy(update={
+            "primary_intent": demoted,
+            "secondary_intents": [i for i in meaning.secondary_intents if i not in {"order_change", demoted}],
+        })
+    elif explicit_change and meaning.primary_intent != "order_change" and "order_change" not in meaning.secondary_intents:
+        # 保留模型读到的那个诉求，把「改订单」作为并列诉求补进队列，由任务队列按优先级排。
+        meaning = meaning.model_copy(
+            update={"secondary_intents": [*meaning.secondary_intents, "order_change"]}
+        )
+    # 上面这条也是「不看会话状态」的：只凭本轮原话里有没有那句明确要求。
+    if meaning.primary_intent == "order_query" and DELIVERY_WORDS.search(text) and not ORDER_FIELD_WORDS.search(text):
+        return meaning.model_copy(update={"primary_intent": "logistics_query", "answer_request": None})
+    if not NEVER_ARRIVED.search(text):
         return meaning
-    return meaning.model_copy(update={"primary_intent": "logistics_query", "answer_request": None})
+    impossible = set(IMPOSSIBLE_WHEN_NEVER_ARRIVED)
+    primary_bad = meaning.primary_intent in impossible
+    secondary = [i for i in meaning.secondary_intents if i not in impossible]
+    if not primary_bad and len(secondary) == len(meaning.secondary_intents):
+        return meaning
+    update = {
+        # 次诉求里的同类诉求一并去掉：留着会让 tasks.enqueue 发「按顺序处理」的多诉求提示，
+        # 并把一个不存在的排障 / 换货任务排进队列。
+        "secondary_intents": [i for i in secondary if i != "logistics_query"] if primary_bad else secondary,
+    }
+    if primary_bad:
+        update["primary_intent"] = "logistics_query"
+        # 机器没到手，模型顺带抽出来的「故障现象」没有来源
+        update["facts"] = [f for f in meaning.facts if f.kind != "symptom"]
+    return meaning.model_copy(update=update)
 
 INSTRUCTION = """你是售后会话语义解释器，输出符合 schema 的 JSON。
 operation_update 只在用户本轮明确声明操作条件或意愿时填写：signal 取一个，quote 引用当前原话，其余情况留空。资源缺失不表示故障，也不表示已操作；不能从“做不了”推断缺哪一项。step_attempts 是原始反馈，cannot_do 不是已执行。
@@ -147,7 +222,7 @@ emotion_level 需要 emotion_cues 里的原话支撑，calm 也一样；短答�
 business_subject.active_subject 是最近选择或查询的业务对象，active_subject_id 是其 ID。「这笔订单、上面的订单」及普通短追问沿用该焦点，business_reference 用 current 且 subject_id 留空；不要因为本轮省略编号要求重填。service_case 是正在办理的案件，可以属于另一笔订单；不能用案件订单覆盖聊天焦点。业务缺参和不同订单的案件隔离由服务端处理，clarification 只用于意图或对象确实歧义。
 business_reference 是唯一的对象选择：问正在办理的案件/退款/换货订单用 relation=case（服务端绑定 service_case.order_no）；问正在排障的设备用 issue；这两种不填写 subject_id。明确换查另一笔尚无编号的订单用 other 且 subject_id 留空；只有用户明确回指其他已知对象时才从 business_subject.subjects 选择 subject_id；无法确定对象用 ambiguous。quote 必须是本条逐字原话，模型不输出或编造订单/运单编号。
 对事实追问填写 answer_request：fields 只选择本轮所问字段，quote 是当前逐字原话，不输出答案值。对象只在 business_reference 中选择，answer_request 不重复选择对象。询问型号/渠道/平台/购买日/购买地/金额属于订单事实，使用地来自用户，物流状态/单号来自物流，现象/已做步骤来自问题记录，方案/案件状态来自办理记录。结合 conversation_view 识别已知与缺失，不把另一对象事实当作当前事实；问题中没重述已知信息无需追问。只有事实问答才填写 answer_request，操作解释和一般建议保持空。
-查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。
+查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。order_change 只用于客户明确要求改变订单本身的履约：暂缓发货、取消订单、把已下单的型号换成别的。问「东西到哪了 / 发货了没 / 什么时候到」仍然是 logistics_query，不是 order_change。
 情绪分 calm/dissatisfied/angry/complaint_risk 四级，emotion_cues 仅引用当前原话。单纯表达不满、催促或提出投诉用 complaint 意图；例如“再不解决我就去平台投诉”是 complaint + complaint_risk，不含转人工请求。只有明确要求接入人工客服才 request_human，且须填写 human_request_quote，不能从用户情绪或你认为需要人工推导此操作。情绪策略与实际转人工请求相互独立。
 收货地址、产品 SN、购买商家、购买国家（ISO 代码）抽为 facts(kind=context, context_field=对应字段, value=原样, quote=当前原话)。购买日期能确定到某天时抽为 context_field=purchase_date，value=YYYY-MM-DD（相对说法按当前时间换算），只到月份不抽。一句多诉求放 secondary_intents。只有用户明确指定队列中存在的任务且能给出其 target_task_id，才用 resume_task；否则即使说「继续、先处理」，仍按其明确的退款、换货、查询等业务诉求分类，由服务端恢复对应订单的案件。不得生成 task_id。
 逐一识别本轮每个独立诉求，不因涉及另一设备或另一订单而省略其中任何一项；只把第一个诉求放 primary_intent，其余按原话出现顺序放 secondary_intents，服务端负责业务优先级排序。new_issue 仅表示用户明确要求新建问题，不能替代已经说清的换货、退款、排障等业务意图。查购买日期/渠道/型号属于 order_query，查保修期限属于 warranty_query，同一句同时问两者时保留两个意图。
@@ -266,7 +341,11 @@ async def interpret_turn(router, state: dict, *, lane: str):
 
         fallback = fallback_interpretation(state)
         if fallback is not None:
-            return fallback, dict(bundle.as_dict(), source="l3_rules_degraded")
+            # 降级路径按关键词凑意图，同样会把「没收到货」读成故障，所以走同一道纠正。
+            # 模型调用失败（schema_error 重试耗尽）恰恰是最容易判错的时候。
+            return logistics_correction(fallback, state.get("text", "")), dict(
+                bundle.as_dict(), source="l3_rules_degraded"
+            )
         return TurnInterpretation(
             primary_intent="unknown",
             clarification="我暂时无法完成这次理解，已有信息仍会保留。请指出要查询的信息或要继续的步骤。",

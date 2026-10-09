@@ -843,6 +843,18 @@
           "title": "Conflicts With Text",
           "type": "array"
         },
+        "content_kinds": {
+          "items": {
+            "enum": [
+              "fault_photo",
+              "document",
+              "other"
+            ],
+            "type": "string"
+          },
+          "title": "Content Kinds",
+          "type": "array"
+        },
         "findings": {
           "items": {
             "$ref": "#/$defs/Finding"

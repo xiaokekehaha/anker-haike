@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 15a1a20d27f94f06e9095922be0f4712041a65456dc0851341f915a579e33bea
+// SHA-256: 8b9cd11e795273eeb1d6731493ca9b133bbcdb6f06845aefc33822df3f192094
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -478,6 +478,7 @@ export type Type24 = 'case_changed';
 export type UpdatedAt3 = string;
 export type Version11 = number;
 export type ConflictsWithText = string[];
+export type ContentKinds = ('fault_photo' | 'document' | 'other')[];
 export type Cell =
   ('左上' | '上中' | '右上' | '左中' | '中心' | '右中' | '左下' | '下中' | '右下') | null;
 export type Evidence1 = string | null;
@@ -1094,6 +1095,7 @@ export interface ExternalRefs {
  */
 export interface FaultLocalization {
   conflicts_with_text?: ConflictsWithText;
+  content_kinds?: ContentKinds;
   findings?: Findings;
   image_quality?: ImageQuality;
   model_hint?: ModelHint;

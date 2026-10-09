@@ -24,6 +24,7 @@ from app.cases.service import case_event
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.reduce import stable_id
+from app.conversation.tasks import NOT_EXECUTABLE, REMEDY_INTENTS
 from app.emotion.policy import complaint_flagged
 from app.escalation.summary import build_summary
 from app.official.message import parse_message
@@ -33,7 +34,19 @@ from app.warranty.service import decide_by_dealer, decide_by_order, today
 
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
 LOGISTICS_FIELDS = {"logistics_status", "updated_at", "carrier", "tracking_no", "order_no"}
-REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}
+REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund",
+                    "address_update": "address_update", "order_change": "order_change"}
+# 本系统执行不了的诉求：客户可见说明（英文，D2）与转人工摘要里的内部原因（中文）。
+# 关键是不能声称已经办好 —— 订单改没改只有人工知道。
+NOT_EXECUTABLE_TEXT = {
+    "address_update": "Address changes need to be verified by a colleague, so I've passed your request to our team.",
+    "order_change": "I can't change or hold an order myself, so I've passed your request to a colleague who can. "
+                    "Please note the order may already be in process.",
+}
+NOT_EXECUTABLE_HANDOFF = {
+    "address_update": "修改地址需人工核实办理",
+    "order_change": "暂缓发货 / 取消 / 改购需人工办理",
+}
 TYPE_NAMES = {
     "replace": "replacement request",
     "refund": "refund request",
@@ -47,12 +60,22 @@ TYPE_DETAILS = {
     "replace": "The fault is still not resolved after troubleshooting and the product is under warranty, so under our "
                "after-sales policy it qualifies for a replacement. Once submitted, a colleague will review it and arrange the shipment.",
     "refund": "The product is under warranty, so you can request a refund. Once submitted, a colleague will review and process it.",
-    "reship": "Tracking doesn't show the package as delivered, so under our after-sales policy we can reship it to you. "
-              "Once submitted, a colleague will arrange it.",
+    # reship 的理由有两条来路（退回发件人 / 在途逾期），只有看订单才知道是哪一条，
+    # 所以这里不写死，由 reship_detail() 按包裹状态拼。见 logistics.RESHIP_REASON。
     "carrier_investigation": "Tracking shows the package as delivered, so under our after-sales policy we can't send another "
                              "shipment. If you really haven't received it, I can submit a carrier investigation request and a "
                              "colleague will check with the carrier.",
 }
+RESHIP_TAIL = " Once submitted, a colleague will arrange it."
+
+
+def type_detail(kind: str, order=None, as_of_date=None) -> str:
+    """方案卡上的说明。reship 的理由取决于包裹状态，查不到订单时退回通用说法。"""
+    if kind != "reship":
+        return TYPE_DETAILS[kind]
+    if order is None or as_of_date is None:
+        return logistics.RESHIP_REASON["not_delivered"] + RESHIP_TAIL
+    return logistics.sop_text(order, as_of_date) + RESHIP_TAIL
 
 
 def say(state, text):
@@ -87,10 +110,16 @@ def as_of(state) -> date:
 
 
 def requested_type(state) -> str:
-    """客户诉求对应的服务单类型；排障升级默认是换货。"""
+    """客户诉求对应的服务单类型；排障升级默认是换货。
+
+    兜底成 replace 只对「排障走不通 → 换货」这条路成立。办不了的诉求（改地址、改订单）
+    没有对应服务单类型，必须在进入这里之前就被 NOT_EXECUTABLE 截住 ——
+    否则会被这句兜底悄悄变成换货申请（2026-10-09 实测 order_change 走到了 warranty_replace）。
+    """
     remedy = state.get("requested_remedy")
     if remedy in {"refund", "reship", "carrier_investigation"}:
         return remedy
+    assert remedy not in NOT_EXECUTABLE, f"{remedy} 没有服务单类型，不该走到这里"
     return "replace"
 
 
@@ -158,6 +187,19 @@ async def service_context(state):
         "escalate_reason": None,
     }
     emit_case(state, case)
+    # 本系统办不了的诉求（改地址、暂缓发货 / 取消 / 改购）到此为止，不进质保与服务单流程：
+    # 它们没有对应的服务单类型，继续往下会被 requested_type 的兜底当成换货
+    # （实测 order_change 一路走到 warranty_replace，还向客户要起了故障照片）。
+    # 放在建 case 之后：propose 要读 case_id，提前返回会让它抛 CaseNotFound（实测客户收到空回复）。
+    # 同时看 requested_remedy 与本轮意图 —— 前者只在任务队列推进时才写入，
+    # 诉求作为本轮主诉求直接进来时它还是空的。
+    remedy = state.get("requested_remedy")
+    if remedy not in NOT_EXECUTABLE and (state.get("turn_decision") or {}).get("primary_intent") in NOT_EXECUTABLE:
+        remedy = (state["turn_decision"])["primary_intent"]
+    if remedy in NOT_EXECUTABLE:
+        say(state, NOT_EXECUTABLE_TEXT[remedy])
+        update.update(requested_remedy=remedy, stage="propose", l3_route=finish(state, "commit_issue"))
+        return update
     if binding.status == "ambiguous":
         say(state, "This involves more than one order. Please tell me which order number you'd like me to handle.")
         update.update(l3_route="commit_issue", pending_card=None)
@@ -188,8 +230,15 @@ async def service_context(state):
     elif receipt.get("skipped_reason"):
         decision = WarrantyDecision(status="unknown", basis="none", as_of=as_of(state), reason="no order or proof of purchase was provided")
     else:
-        say(state, "I couldn't find an order. Please share your order number. If you bought it from another seller, please "
-                   "upload your proof of purchase showing the seller name, country of purchase and purchase date.")
+        # 「没查到订单」只有在客户真给过订单号时才成立。App 自动生成的报障表单（T14）根本没有订单号，
+        # 这时说「I couldn't find an order」是假话，而且把「为什么现在谈质保」这一步跳过了：
+        # 应当先说明官方指引已把这个故障判定为硬件问题、可走保修，再问订单。
+        say(state, " ".join(filter(None, [
+            hardware_basis(state),
+            "I couldn't find that order number." if customer_gave_order_no(state)
+            else "To check the warranty I'll need your order details.",
+            PROOF_REQUEST,
+        ])))
         update.update(escalate_reason="R6", l3_route="prepare_receipt")
         return update
     case = await services.cases.transition(
@@ -198,6 +247,40 @@ async def service_context(state):
     )
     update.update(warranty=decision.model_dump(mode="json"), l3_route="propose")
     return update
+
+
+PROOF_REQUEST = (
+    "Please share your order number. If you bought it from another seller, please upload your proof of "
+    "purchase showing the seller name, country of purchase and purchase date."
+)
+
+
+def customer_gave_order_no(state) -> bool:
+    """客户在本问题里真的给过订单号吗。没给过就不能说「没查到订单」。"""
+    texts = [state.get("text", "")] + [
+        e.get("text", "") for e in state.get("history") or []
+        if e.get("role") == "user" and e.get("issue_id") == state.get("active_issue_id")
+    ]
+    return any(parse_message(t or "").order_no for t in texts)
+
+
+# 走到质保判断的两条「免排障」来路，各自对应一句说明为什么现在谈保修。
+# 由 diagnose_outcome 驱动，不自己下判断：hardware_malfunction 是官方 Q&A 原文给的结论
+# （rv-0028 这类 kind=warranty 条目），physical_damage 是客户自己描述的可见损坏。
+HARDWARE_BASIS = {
+    "hardware_malfunction": "Based on the official guidance for this error code, this is a hardware malfunction, "
+                            "so it's covered by warranty service rather than further troubleshooting.",
+    "physical_damage": "From the damage you've described, this isn't something troubleshooting can fix, "
+                       "so it goes to warranty service.",
+}
+
+
+def hardware_basis(state) -> str | None:
+    """为什么这单直接进了质保判断。没有明确来路时返回 None，不编理由。"""
+    outcome = state.get("diagnose_outcome") or {}
+    if outcome.get("mode") != "warranty":
+        return None
+    return HARDWARE_BASIS.get(outcome.get("reason"))
 
 
 def stated_dealer(state) -> WarrantyDecision | None:
@@ -235,10 +318,12 @@ async def propose(state):
     }:
         say(state, "Your case is waiting to be processed. Updates will appear in the case status.")
         return {"l3_route": "commit_issue"}
-    kind = requested_type(state)
-    if state.get("requested_remedy") == "address_update":
-        say(state, "Address changes need to be verified by a colleague, so I've passed your request to our team.")
+    # 本系统只能提交预定义服务单，改不了订单本身：如实说明并转人工，绝不声称已经改好。
+    # 必须排在 requested_type 之前 —— 它的兜底会把这类诉求当成换货。
+    if state.get("requested_remedy") in NOT_EXECUTABLE:
+        say(state, NOT_EXECUTABLE_TEXT[state["requested_remedy"]])
         return {"stage": "propose", "l3_route": "await_human"}
+    kind = requested_type(state)
     if kind in {"reship", "carrier_investigation"}:
         return await _propose_logistics(state, case, kind)
     decision = warranty_of(state)
@@ -279,16 +364,17 @@ async def _propose_logistics(state, case, kind):
     if kind == "carrier_investigation" and verdict == "reship_eligible":
         kind = "reship"
     if (kind == "reship" and verdict != "reship_eligible") or (kind == "carrier_investigation" and verdict != "delivered"):
-        say(state, f"{status_line}. {logistics.SOP_TEXT[verdict]}")
+        say(state, f"{status_line}. {logistics.sop_text(order, as_of(state))}")
         return {"stage": "consult", "l3_route": finish(state, "commit_issue")}
     # consult 已经把包裹状态告诉客户时不再复述。
     lead = "" if state.get("logistics_announced") else f"{status_line}. "
-    return await _offer(state, case, kind, lead, requested=kind)
+    return await _offer(state, case, kind, lead, requested=kind, order=order)
 
 
-async def _offer(state, case, kind, lead, requested=None):
+async def _offer(state, case, kind, lead, requested=None, order=None):
     services = require_services()
-    option = {"option_id": kind, "type": kind, "title": TYPE_TITLES[kind], "detail": TYPE_DETAILS[kind], "source": "sop"}
+    detail = type_detail(kind, order, as_of(state))
+    option = {"option_id": kind, "type": kind, "title": TYPE_TITLES[kind], "detail": detail, "source": "sop"}
     proposal = {"options": [option], "status": "offered", "excluded": [], "chosen_option_id": None, "user_confirmed": False}
     have = evidence_mod.collect(state)
     missing = missing_evidence(kind, have)
@@ -307,7 +393,7 @@ async def _offer(state, case, kind, lead, requested=None):
         return update
     case = await services.cases.transition(state["case_id"], "awaiting_confirmation", "等待客户确认提交", proposal=proposal)
     emit_case(state, case)
-    say(state, lead + TYPE_DETAILS[kind])
+    say(state, lead + detail)
     update.update(
         awaiting_evidence=[],
         pending_card=pending(state, "confirm_proposal", {"options": [option], "decision_summary": lead.strip().rstrip(".")}),
@@ -402,7 +488,8 @@ async def execute(state):
         "type": option["type"],
         "order_no": state.get("case_order_no"),
         "sku": (state.get("product_confirmed") or {}).get("sku"),
-        "reason": handoff_reason(state, case) if option["type"] in {"replace", "refund"} else TYPE_DETAILS[option["type"]],
+        # 方案卡上给客户看的那句理由就在 option 里（reship 的理由按包裹状态拼过），直接沿用
+        "reason": handoff_reason(state, case) if option["type"] in {"replace", "refund"} else option["detail"],
         "evidence": evidence_mod.collect(state),
     }
     params = {k: v for k, v in params.items() if v is not None}
@@ -534,8 +621,8 @@ def handoff_reason(state, row):
     if latest and latest not in {"需要人工审核", "服务单已提交，转人工处理"}:
         return latest
     remedy = state.get("requested_remedy")
-    if remedy == "address_update":
-        return "修改地址需人工核实办理"
+    if remedy in NOT_EXECUTABLE:
+        return NOT_EXECUTABLE_HANDOFF[remedy]
     failed = [c["detail"] for c in (state.get("gate_result") or {}).get("checks", []) if not c.get("passed")]
     if failed:
         return "提交条件未满足：" + "；".join(failed)
@@ -619,7 +706,7 @@ async def consult(state):
         if kind == "logistics.query" and receipt["status"] == "packages":
             order = await services.backend.get_order(receipt["order_no"])
             verdict = logistics.verdict(order, as_of(state))
-            logistics_note = f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages) + "\n" + logistics.SOP_TEXT[verdict]
+            logistics_note = f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages) + "\n" + logistics.sop_text(order, as_of(state))
             if intent == "logistics_query" and verdict in {"reship_eligible", "delivered"}:
                 # 物流工单的典型诉求就是「没收到」（主办方 11 单全部如此）：直接按 SOP 给出补发 / 承运商调查方案，客户可暂不办理。
                 offer = "reship" if verdict == "reship_eligible" else "carrier_investigation"
@@ -901,7 +988,7 @@ async def advance_tasks(state):
     completed = state.get("completed_task_intent") or "report_problem"
     business = BusinessContext.restore(state)
     decision = state.get("turn_decision") or {}
-    completed_business = business.for_order(state["case_order_no"]) if state.get("case_order_no") and (decision.get("answer_scope") in {"case", "issue"} or completed in {"replacement_request", "refund_request", "address_update"}) else business
+    completed_business = business.for_order(state["case_order_no"]) if state.get("case_order_no") and (decision.get("answer_scope") in {"case", "issue"} or completed in REMEDY_INTENTS) else business
     tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business, task_id=decision.get("task_id"))
     update = {"task_queue": tasks, "completed_task_intent": None}
     if task:
@@ -918,8 +1005,8 @@ async def advance_tasks(state):
             if task["intent"] == "report_problem"
             else "service_context",
         )
-        if task["intent"] in {"replacement_request", "refund_request", "address_update"}:
-            update["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[task["intent"]]
+        if task["intent"] in REMEDY_INTENTS:
+            update["requested_remedy"] = REQUESTED_REMEDY[task["intent"]]
         writer()(
             {
                 "type": "issue_changed",

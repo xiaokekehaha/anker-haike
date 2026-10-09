@@ -20,6 +20,7 @@ from app.conversation.operation_conditions import execution_history, step_unavai
 from app.models.router import ModelRouter
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
+from app.plans.qa import customer_voice
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
@@ -154,8 +155,8 @@ async def prepare_step(
                 "plan_id": plan.plan_id,
                 "plan_version": plan.version,
                 "step_no": step_no_of(plan, step_id),
-                "title": step.title,
-                "instruction": source_text,
+                "title": customer_voice(step.title),
+                "instruction": customer_voice(source_text),
                 "expected_result": step.expected_result,
                 "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,

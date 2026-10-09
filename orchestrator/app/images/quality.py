@@ -22,6 +22,15 @@
   clipped     亮度 ≥ 250 的像素占比，判过曝
   short_edge  原图短边像素，判「太小 / 拍太远」
 
+**关于过曝判据为什么是合取**：`clipped` 数的是「有多少像素撞到了白」，它分不开「背景本来就是白的」
+和「细节被烧掉了」。实测 data/official/attachments 的 5 张白底订单截图 / 发票 clipped 0.77–0.96，
+人眼完全可读，却和亮度 ×6 的真过曝照片（0.82–0.97）落在同一区间 —— 单看这一项，**所有文档类凭证
+都会被硬拦**，而客户上传凭证恰恰是 SOP 的必经步骤。
+区分它们的是画面里还剩不剩结构：文档 focus 133–201，真过曝 13–80，中间有大间隔。
+所以 too_bright 的 reject 要求「饱和 且 结构塌」两条同时成立（structure.exposure_reject_below）。
+注意文档的 focus **高于**正常照片（18–58），这不是给文档开的后门，而是「饱和」本来就不蕴含「不可读」。
+too_dark 不加这个条件，marginal 也不加：理由分别见 SATURATION_REASONS 与下一段。
+
 **关于 blurry 只做 marginal、不做 reject**：阈值是在合成示意图上标的，而合成图的梯度统计是病态的
 （大片纯色 + 完美阶跃边缘），真实照片处处有纹理与噪点，这条阈值大概率不迁移。实测也确实看到
 铭牌那类平面为主的图清晰时 focus 只有 20，比别的图模糊到半径 9 时还低。
@@ -64,6 +73,13 @@ def thresholds() -> dict[str, Any]:
     return yaml.safe_load((CONFIG_DIR / "vision_vocab.yaml").read_text())["quality"]
 
 
+def structure_floor() -> float:
+    """曝光类硬阈值额外要求的「结构已塌」上界，见模块文档。"""
+    return yaml.safe_load((CONFIG_DIR / "vision_vocab.yaml").read_text())["structure"][
+        "exposure_reject_below"
+    ]
+
+
 def _percentile(hist: list[int], q: float) -> float:
     total = sum(hist)
     if not total:
@@ -102,11 +118,18 @@ def measure(data: bytes) -> dict[str, float]:
     }
 
 
+# 只有 too_bright 要求「结构已塌」这个附加条件。too_dark 不要：
+# 它的硬阈值是 luma_p95 < 60，即整幅画面 95% 的像素都接近全黑 —— 白底单据不会这样，
+# 曝光正常的深色机身也不会（实测 p95 ≈ 205）。没有被它误伤的合法输入类别，就不加这个条件。
+SATURATION_REASONS = ("too_bright",)
+
+
 def assess(data: bytes) -> QualityReport:
     m = measure(data)
     if not m:
         return QualityReport("ok", [], {})
     th = thresholds()
+    collapsed = m["focus"] < structure_floor()  # 画面里还剩不剩结构，见模块文档
     reject: list[str] = []
     marginal: list[str] = []
     for reason, key, cmp in (
@@ -118,7 +141,11 @@ def assess(data: bytes) -> QualityReport:
         hard, soft = th[reason]["reject"], th[reason]["marginal"]
         value = m[key]
         worse = (lambda v, t: v < t) if cmp == "lt" else (lambda v, t: v > t)
-        if hard is not None and worse(value, hard):
+        hits_hard = hard is not None and worse(value, hard)
+        if hits_hard and reason in SATURATION_REASONS and not collapsed:
+            # 亮部饱和但结构仍在（白底订单截图 / 发票）：不硬拦，交模型再看一眼
+            marginal.append(reason)
+        elif hits_hard:
             reject.append(reason)  # 硬阈值：直接拦下，一次模型都不调
         elif soft is not None and worse(value, soft):
             marginal.append(reason)  # 软阈值：只在模型也说不行时才判不可用

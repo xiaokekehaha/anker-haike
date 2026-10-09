@@ -261,9 +261,18 @@ class ImageQuality(Strict):
     guidance: list[str] = Field(default_factory=list)
 
 
+# 这张图实际是什么。**不是** ImageRefItem.purpose —— 那个字段记的是「上传时系统在等什么」
+# （前端按 pendingKind 填），不是图片内容。两者混用过一次：订单截图在普通首问里以 purpose=fault
+# 上传，于是既被当故障照片做曝光门控，又被 evidence 记成「故障图片/视频」凑齐了换货证据四件套。
+# document = 订单 / 发票 / 收据 / 配送详情等以文字为主的凭证类图片。
+ImageContentKind = Literal["fault_photo", "document", "other"]
+
+
 class FaultLocalization(Strict):
     findings: list[Finding] = Field(default_factory=list)
     image_quality: ImageQuality = Field(default_factory=lambda: ImageQuality(usable=True))
+    # 逐图定性（与读图送进去的图同序）。空列表 = 没读图或读图失败，调用方按「未知」处理。
+    content_kinds: list[ImageContentKind] = Field(default_factory=list)
     model_hint: str | None = None
     # 铭牌所在的九宫格，用于「读不清就裁这一格放大再看一次」；定位一个小方块远比读清 14px 小字容易
     model_hint_cell: CellField = None

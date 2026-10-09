@@ -62,3 +62,27 @@ SOP_TEXT = {
     "presale": "This item is a pre-order and hasn't shipped yet. It will be sent on the expected ship date.",
     "unknown": "The tracking information is incomplete, so I'll pass this to a colleague to check.",
 }
+
+# reship_eligible 有两条互不相同的来路，理由必须分开说，否则会说出与事实相反的话：
+# 退回发件人，和「在途但已过预计送达日」。后者常见于多包裹订单 —— T5（Anker005）的主机包裹
+# ETA 9/30 逾期未达，而同一订单的配件包裹 9/15 已送达；套用「轨迹未显示送达」就是错的
+# （2026-10-09 测评逐单核对指出这一条）。理由从包裹状态推出来，不按 verdict 写死。
+RESHIP_REASON = {
+    "returned": "The package was returned to the sender, so under our after-sales policy we can arrange a reship for you.",
+    "overdue": "This package hasn't arrived by its estimated delivery date of {eta}, so under our after-sales policy "
+               "we can arrange a reship for you.",
+    "not_delivered": "Tracking doesn't show the item as delivered, so under our after-sales policy we can arrange a reship for you.",
+}
+
+
+def sop_text(order: Order, as_of: date) -> str:
+    """客户可见的 SOP 结论。只有 reship_eligible 需要看具体来路，其余按 verdict 取。"""
+    v = verdict(order, as_of)
+    if v != "reship_eligible":
+        return SOP_TEXT[v]
+    pkg = main_package(order)
+    if pkg is not None and pkg.status == "returned":
+        return RESHIP_REASON["returned"]
+    if pkg is not None and pkg.eta and pkg.eta < as_of:
+        return RESHIP_REASON["overdue"].format(eta=pkg.eta.isoformat())
+    return RESHIP_REASON["not_delivered"]

@@ -16,9 +16,32 @@ from app.official.qa_index import Guide, QAIndex, get_qa_index
 from app.plans.library import PlanLibrary
 from app.plans.models import PlansConfig
 
-EXPECTED = "按这一步操作后，确认问题是否解决"
+# 步骤卡的「预期结果」直接显示给客户，用英文（D2）。步骤正文本身就是官方 Q&A 原文（英文）。
+EXPECTED = "After this step, check whether the problem is resolved."
 TIPS_LEAD = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\s*[:：]?\s*", re.IGNORECASE)
 SENTENCE = re.compile(r"(?<=[.!?。！？])\s")
+
+# 官方 Q&A 是写给客服看的内部指引，少数条目直接用了客服口吻（「让用户去照一下」）。
+# 原样发给客户会变成「请让用户打开手电筒」—— 客户就是用户本人。
+# data/official/qa.yaml 是 XLSX 的生成产物（文件头写明勿手改），改它既违反生成文件约定，
+# 也会让本地数据与主办方原文悄悄分叉；所以在**渲染层**把人称改过来，原文留在证据里不动。
+# 只改人称，不改任何操作内容、器具或顺序。
+AGENT_VOICE = (
+    (re.compile(r"\b[Hh]ave the (?:user|customer)\s+(\w+)"), lambda m: m.group(1).capitalize()),
+    (re.compile(r"\b[Aa]sk the (?:user|customer) to\s+(\w+)"), lambda m: m.group(1).capitalize()),
+    (re.compile(r"\b[Tt]ell the (?:user|customer) to\s+(\w+)"), lambda m: m.group(1).capitalize()),
+    (re.compile(r"\b[Ii]nstruct the (?:user|customer) to\s+(\w+)"), lambda m: m.group(1).capitalize()),
+    (re.compile(r"\b[Tt]he (?:user|customer) can\b"), lambda m: "You can"),
+    (re.compile(r"\b[Tt]he (?:user|customer) should\b"), lambda m: "You should"),
+    (re.compile(r"\b[Tt]he (?:user|customer) needs to\b"), lambda m: "You need to"),
+)
+
+
+def customer_voice(text: str) -> str:
+    """把官方 Q&A 里的客服口吻改成对客户说话的口吻。只改人称。"""
+    for pattern, repl in AGENT_VOICE:
+        text = pattern.sub(repl, text)
+    return text
 
 
 def step_title(text: str, limit: int = 60) -> str:

@@ -26,6 +26,7 @@ from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.product_questions import answer_product_question, handles_product_question
 from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
+from app.conversation.tasks import REMEDY_INTENTS
 from app.diagnose import (
     build_query,
     get_retrieval_config,
@@ -96,6 +97,8 @@ class SessionState(TypedDict, total=False):
     emotion_track: list[dict]
     fault_localization: dict | None
     image_quality: dict | None
+    # 经读图确认是单据 / 界面截图的图；这些不算 SOP 的「故障图片/视频」证据（app.sessions.evidence）
+    document_image_ids: list[str]
     retake_attempts: int
     completed_task_intent: str | None
     retake_skipped: bool
@@ -247,7 +250,7 @@ async def disambiguate(state: SessionState) -> SessionState:
     decision = clarify_mod.decide(dict(state), abandoned_card=state.get("abandoned_card"))
     update: SessionState = {"stage": "disambiguate", "abandoned_card": None, **decision.update}
     from app.actions.runtime import get_services
-    if get_services() is not None and decision.reason == "symptom" and (state.get("requested_remedy") or (state.get("turn_decision") or {}).get("primary_intent") in {"refund_request", "address_update"}):
+    if get_services() is not None and decision.reason == "symptom" and (state.get("requested_remedy") or (state.get("turn_decision") or {}).get("primary_intent") in {"refund_request", "address_update", "order_change"}):
         decision.outcome = "continue"
     update["_decision"] = {
         "outcome": decision.outcome,
@@ -327,7 +330,7 @@ def _after_product(state: SessionState) -> str:
     from app.actions.runtime import get_services
     intent = (state.get("turn_decision") or {}).get("primary_intent")
     if get_services() is not None and state.get("product_state") == "confirmed_sku" and (
-        intent in {"replacement_request", "refund_request", "address_update"} or state.get("requested_remedy")
+        intent in REMEDY_INTENTS or state.get("requested_remedy")
     ):
         return "service_context"
     if _new_fault_images(state):
@@ -398,6 +401,9 @@ async def vision(state: SessionState) -> SessionState:
         # replaying the same unavailable evidence on every subsequent text turn.
         "processed_fault_image_ids": list(dict.fromkeys([
             *state.get("processed_fault_image_ids", []), *[r["image_id"] for r in refs],
+        ])),
+        "document_image_ids": list(dict.fromkeys([
+            *state.get("document_image_ids", []), *out.document_image_ids,
         ])),
         "image_observations": list(out.observations),
         "visible_parts": [*state.get("visible_parts", []), *out.visible_parts],
@@ -1078,14 +1084,14 @@ async def understand(state: SessionState) -> SessionState:
         if extract_params(text):
             # 原话里已有订单 / 运单号：业务事实由服务端查询，模型对「订单状态缺失」的追问不成立。
             meaning = meaning.model_copy(update={"clarification": None})
-    if meaning.answer_request and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update", "report_problem", "request_human"}:
+    if meaning.answer_request and meaning.primary_intent not in {*REMEDY_INTENTS, "report_problem", "request_human"}:
         # A single factual question can require several reads. Those reads are
         # planned by the answer module, not queued as duplicate user tasks.
         meaning = meaning.model_copy(update={"secondary_intents": [i for i in meaning.secondary_intents if i not in {"order_query", "warranty_query", "logistics_query"}]})
     requested_business = None
     business_order_no = None
     if get_services() is not None and state.get("entry") == "message" and (
-        meaning.primary_intent in {"replacement_request", "refund_request", "address_update"}
+        meaning.primary_intent in REMEDY_INTENTS
         or (state.get("requested_remedy") and (state.get("stage") == "context" or (state.get("pending_card") or {}).get("kind") in {"upload_receipt", "confirm_receipt"})
             and meaning.primary_intent in {"supplement", "unknown", "answer_pending"})
     ):
@@ -1100,7 +1106,7 @@ async def understand(state: SessionState) -> SessionState:
         binding = requested_business.bind("warranty.check")
         if binding.status == "ready":
             business_order_no = binding.params.get("order_no")
-        if meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"} and state.get("case_order_no") and business_order_no != state["case_order_no"]:
+        if meaning.primary_intent not in REMEDY_INTENTS and state.get("case_order_no") and business_order_no != state["case_order_no"]:
             requested_business, business_order_no = None, None
     # Context reported while discussing another order belongs to that subject,
     # not to the still-open service issue. Keep the full meaning for subject storage.
@@ -1130,7 +1136,7 @@ async def understand(state: SessionState) -> SessionState:
         observed = next((e for e in emotion_update["emotion_track"] if e["input_id"] == state["input_id"]), {})
         source = observed.get("source") or ("unavailable" if context.get("source") in {"unavailable", "degraded", "context_budget"} else "no_signal")
         record("emotion_strategy", session_id=state["session_id"], run_id=state["run_id"], level=emotion_update["emotion"]["level"], observed_level=observed.get("level"), source=source, trend=emotion_update["emotion_trend"], strategy=emotion_update["emotion"]["strategy"])
-    if update["turn_decision"].get("business_switched") and state.get("requested_remedy") and meaning.primary_intent not in {"replacement_request", "refund_request", "address_update"}:
+    if update["turn_decision"].get("business_switched") and state.get("requested_remedy") and meaning.primary_intent not in REMEDY_INTENTS:
         update["requested_remedy"] = state["requested_remedy"]
     from app.actions.runtime import get_services
     if get_services() is not None:
@@ -1340,6 +1346,27 @@ async def commit_issue(state: SessionState) -> SessionState:
     }
 
 
+def _troubleshoot_before_remedy(state: SessionState, intent: str) -> bool:
+    """换货 / 退款诉求是否应当先走一轮排障（主办方 SOP：保内排障无效才换货）。
+
+    四个条件缺一不可，每一个都是为了不把客户困在排障里：
+    - 只管换货 / 退款：补发、承运商调查、改地址、改订单与排障无关；
+    - 本会话还没排过任何一步（执行过的步骤为空），排过就照常进办理；
+    - 客户确实描述了故障现象，否则无障可排；
+    - 还没进入办理流程（没有 case、没有待办卡片），不打断进行中的办理。
+    """
+    from app.conversation.operation_conditions import execution_history
+
+    return (
+        intent in {"replacement_request", "refund_request"}
+        and not execution_history(dict(state))
+        and bool(state.get("symptoms"))
+        and not state.get("case_id")
+        and not state.get("pending_card")
+        and not state.get("requested_remedy")
+    )
+
+
 def route_after_close(state: SessionState) -> str:
     from app.actions.runtime import get_services
     return "advance_tasks" if get_services() is not None else "commit_issue"
@@ -1386,7 +1413,14 @@ def route_entry(state: SessionState) -> str:
             return "consult"
         if intent == "confirm_received" and state.get("case_id"):
             return "track"
-        if intent in {"replacement_request","refund_request","address_update"}:
+        if intent in REMEDY_INTENTS:
+            # 主办方 SOP：「保内**排障无效**可换货」—— 排障是换货 / 退款的前置条件，不是另一条路。
+            # 客户张口就要换货但同时描述了故障、而本会话还没排过障时，先走排障（T49：吸奶器开不了机，
+            # 官方 Q&A bp-0123 / bp-0151 有对应条目，原行为直接转人工跳过了这一步）。
+            # 只对「可排障的故障诉求」生效：没有现象可排（如纯物流补发、改地址）不受影响；
+            # 排过一轮之后 executed_steps 非空，照常进入办理流程，不会把客户困在排障里。
+            if _troubleshoot_before_remedy(state, intent):
+                return "disambiguate"
             return "service_context"
         if decision.get("evidence_supplied"):
             return "propose"
@@ -2370,8 +2404,12 @@ def closing_text(state: SessionState) -> str:
     product = (state.get("product_confirmed") or {}).get("name")
     who = f"your {product}" if product else "your device"
     parts = ["Great, the issue is resolved! "]
-    if solved and solved.get("title"):
-        parts.append(f"\"{solved['title']}\" did the trick, and ")
+    # 步骤标题是卡片展示用的，超长会被截断成「…」，而且 answer 型计划的标题就是 Q&A 的那句问句。
+    # 这两种都不该被引述成「"……" did the trick」（T12 实测引了一句带省略号的问句）。
+    title = (solved or {}).get("title") or ""
+    quotable = title and not title.endswith("…") and "?" not in title
+    if quotable:
+        parts.append(f"\"{title}\" did the trick, and ")
     else:
         parts.append("After following the steps, ")
     parts.append(f"{who} should work normally now. ")

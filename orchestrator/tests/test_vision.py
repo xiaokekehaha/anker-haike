@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import io
 import json
 
 from app.diagnose.vision import (
@@ -474,7 +475,7 @@ async def test_unusable_photo_never_reaches_the_model(tmp_path):
     assert fake.calls == [], "被门控拦下时不应发起任何模型调用"
     quality = out.fault_localization["image_quality"]
     assert quality["usable"] is False and quality["reasons"] == ["too_dark"]
-    assert "光线充足" in quality["guidance"][0]
+    assert "enough light" in quality["guidance"][0]  # 客户可见，英文（D2）
     assert out.fault_localization["findings"] == []
 
 
@@ -657,3 +658,248 @@ def test_out_of_range_image_index_is_treated_as_missing():
     loc = normalize(parsed, image_count=2)
     assert loc["model_hint_image"] is None
     assert loc["findings"][0]["image_index"] is None
+
+
+# --------------------------------------------------------------------------
+# 2026-10-09：附件用途与图片内容是两件事（P1-1）
+#
+# purpose 记的是「上传时系统在等什么」（前端按 pendingKind 填），不是图片内容。
+# 两处消费端曾把它当内容读，于是客户在普通首问里传的订单截图既被当故障照片做曝光门控，
+# 又被记成 SOP 的「故障图片/视频」证据，凑齐了换货四件套。
+# 这组用例锁的是真实主办方附件，不是合成图。
+# --------------------------------------------------------------------------
+
+OFFICIAL_ATTACHMENTS = REPO_ROOT / "data" / "official" / "attachments"
+# 白底单据 / 界面截图：clipped 0.77–0.96，人眼完全可读
+OFFICIAL_DOCUMENTS = ("T38.jpg", "T45.jpg", "T46.jpg", "T53.jpg", "T55.jpg")
+# 实物设备照
+OFFICIAL_PHOTOS = ("T14.jpg", "T20.jpg", "T30.jpg", "T42.jpg", "T48.jpg")
+
+
+def test_white_background_receipts_are_not_hard_rejected_as_overexposed():
+    """真实订单截图 / 发票不得被像素层硬拦。
+
+    修复前这 5 张全部 reject(too_bright) —— 客户上传凭证是 SOP 的必经步骤，
+    硬拦意味着给每一张凭证都发一张补拍卡。
+    """
+    from app.images.quality import assess
+
+    for name in OFFICIAL_DOCUMENTS:
+        report = assess((OFFICIAL_ATTACHMENTS / name).read_bytes())
+        assert report.verdict != "reject", f"{name} 被硬拦：{report.reasons} {report.metrics}"
+
+
+def test_exposure_rejection_needs_saturation_and_collapsed_structure():
+    """过曝判据是合取：亮部饱和「且」结构塌掉。
+
+    单看饱和占比分不开「背景是白的」与「细节被烧掉了」：真实单据 clipped 0.77–0.96，
+    与亮度 ×6 的真过曝照片同区间。区分它们的是画面里还剩不剩结构。
+    """
+    from app.images.quality import assess, measure, structure_floor
+
+    doc = measure((OFFICIAL_ATTACHMENTS / "T55.jpg").read_bytes())
+    assert doc["clipped"] > 0.5, "订单截图确实高度饱和"
+    assert doc["focus"] >= structure_floor(), "但结构仍在，所以可读"
+
+    sharp = (OFFICIAL_ATTACHMENTS / "T14.jpg").read_bytes()
+    blown = _degrade(sharp, bright=6.0)
+    m = measure(blown)
+    assert m["clipped"] > 0.5 and m["focus"] < structure_floor()
+    assert assess(blown).verdict == "reject" and assess(blown).reasons == ["too_bright"]
+    # 真实设备照本身不受影响
+    for name in OFFICIAL_PHOTOS:
+        assert assess((OFFICIAL_ATTACHMENTS / name).read_bytes()).verdict == "ok", name
+
+
+def test_underexposure_still_hard_rejects_regardless_of_structure():
+    """结构条件只加在 too_bright 上，不加在 too_dark 上。
+
+    too_dark 的硬阈值是「95% 的像素接近全黑」，没有被它误伤的合法输入类别：
+    白底单据不会这样，曝光正常的深色机身 p95 ≈ 205 也不会。对称不是加条件的理由。
+    """
+    from app.images.quality import assess, measure, structure_floor
+
+    dark = _degrade((OFFICIAL_ATTACHMENTS / "T14.jpg").read_bytes(), bright=0.12)
+    assert measure(dark)["luma_p95"] < 60
+    assert assess(dark).verdict == "reject" and assess(dark).reasons == ["too_dark"]
+    # 即便是一张结构仍在的欠曝图（合成图梯度统计病态，focus 很高），也照样硬拦
+    from PIL import Image, ImageDraw, ImageEnhance
+
+    im = Image.new("RGB", (900, 700), (210, 210, 214))
+    draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle([60, 180, 840, 470], radius=70, fill=(60, 60, 64))
+    for x in range(90, 820, 26):
+        draw.line([(x, 200), (x + 12, 450)], fill=(150, 150, 155), width=3)
+    buf = io.BytesIO()
+    ImageEnhance.Brightness(im).enhance(0.08).save(buf, "PNG")
+    high_structure_but_dark = buf.getvalue()
+    assert measure(high_structure_but_dark)["focus"] >= structure_floor()
+    assert assess(high_structure_but_dark).verdict == "reject"
+
+
+async def test_a_document_image_yields_no_fault_findings(tmp_path):
+    """判为 document 的图不产生故障结论，即便模型仍为它写了 finding。
+
+    约束的执行权不该握在被约束者手里：提示词要求只为 fault_photo 写 findings，
+    这里按定性结果确定性地丢掉。
+    """
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [
+            {
+                "observations": ["订单摘要页", "显示订单号 Anker016"],
+                "content_kinds": [{"image_index": 1, "kind": "document"}],
+                "findings": [
+                    {"part": "喇叭罩", "phenomenon": "污渍", "evidence": "订单摘要页", "image_index": 1}
+                ],
+                "visible_parts": [],
+            }
+        ],
+    )
+    store, refs = await _store_with(1)
+    out = await observe_images(router, store, session_id="s", refs=refs, lane="domestic")
+    assert out.status == "ok"
+    assert out.fault_localization["content_kinds"] == ["document"]
+    assert out.fault_localization["findings"] == []
+    assert out.document_image_ids == [refs[0]["image_id"]]
+
+
+async def test_mixed_upload_keeps_the_fault_photo_and_drops_only_the_document(tmp_path):
+    """一次传订单截图 + 故障照：只排除单据那张，故障照仍然是证据。"""
+    router, _ = _router(
+        tmp_path,
+        CONFIG.replace("max_images: 2", "max_images: 4"),
+        [
+            {
+                "observations": ["第一张是订单页", "第二张喇叭罩有裂纹"],
+                "content_kinds": [
+                    {"image_index": 1, "kind": "document"},
+                    {"image_index": 2, "kind": "fault_photo"},
+                ],
+                "findings": [
+                    {"part": "喇叭罩", "phenomenon": "裂纹", "evidence": "喇叭罩有裂纹", "image_index": 2}
+                ],
+                "visible_parts": ["喇叭罩"],
+            }
+        ],
+    )
+    store, refs = await _store_with(2)
+    out = await observe_images(router, store, session_id="s", refs=refs, lane="domestic")
+    assert out.document_image_ids == [refs[0]["image_id"]]
+    assert [f["image_index"] for f in out.fault_localization["findings"]] == [2]
+
+
+async def test_unreported_images_default_to_fault_photo(tmp_path):
+    """模型漏填 content_kinds 时按 fault_photo 处理：读图只对 purpose=fault 的图调用，
+    沿用调用语境是保守的一侧 —— 错判成单据会丢掉真证据，反之只是多收一次。"""
+    router, _ = _router(
+        tmp_path,
+        CONFIG,
+        [{"observations": ["滚刷缠毛"], "visible_parts": ["滚刷"]}],
+    )
+    store, refs = await _store_with(1)
+    out = await observe_images(router, store, session_id="s", refs=refs, lane="domestic")
+    assert out.fault_localization["content_kinds"] == ["fault_photo"]
+    assert out.document_image_ids == []
+
+
+def test_order_screenshot_does_not_satisfy_the_replacement_photo_evidence():
+    """P1-1 的另一半：单据截图不得凑齐换货证据四件套。
+
+    这条与 T55 无关 —— 任何客户在非 upload_receipt 时机上传的任何单据截图都曾被记为故障证据。
+    """
+    from app.actions.gate import missing_evidence
+    from app.sessions.evidence import collect
+
+    base = {
+        "receipt": {"status": "order_verified", "verified_facts": {"order_no": "Anker016", "address": "1 Main St"}},
+        "image_refs": [{"image_id": "img-doc", "purpose": "fault"}],
+        "text": "SN: T8D04121ABCD0001",
+    }
+    # 读图判定这张是订单截图
+    evidence = collect({**base, "document_image_ids": ["img-doc"]})
+    assert "photo_or_video" not in evidence
+    assert missing_evidence("replace", evidence) == ["photo_or_video"]
+    # 同一张图若是故障照，证据齐全
+    assert "photo_or_video" in collect(base)
+
+
+def test_vision_outage_falls_back_to_upload_context_instead_of_blocking():
+    """读图没跑 / 失败时不得把正常换货流程堵死：退回按上传时机判定，与修复前同行为。
+
+    这里刻意不做成白名单（只认「确认是故障照」）：视觉链故障是运维事件，
+    不该让每一单换货都因为无法测量而卡在缺证据上。
+    """
+    from app.sessions.evidence import collect
+
+    state = {
+        "receipt": {"status": "order_verified", "verified_facts": {"order_no": "Anker016", "address": "1 Main St"}},
+        "image_refs": [{"image_id": "img-1", "purpose": "fault"}],
+        "text": "SN: T8D04121ABCD0001",
+    }
+    assert collect(state)["photo_or_video"] == "images:img-1"
+    assert collect({**state, "document_image_ids": []})["photo_or_video"] == "images:img-1"
+
+
+# --------------------------------------------------------------------------
+# P1-4：客户可见文案一律英文（D2，2026-10-08）
+#
+# 前端界面文字仍是中文（用户：「显示的先不用」），不在此约束内；
+# 这里守的是**后端下发、直接显示给客户**的固定文案。
+# --------------------------------------------------------------------------
+
+CJK = __import__("re").compile(r"[一-鿿]")
+
+
+def test_customer_facing_copy_from_the_backend_is_english():
+    """补拍指引、步骤卡预期结果、读图回显都由后端下发并直接显示给客户。"""
+    from app.diagnose.localization import echo_findings, vocabulary
+    from app.plans.qa import EXPECTED
+
+    for reason, text in vocabulary()["retake_guidance"].items():
+        assert not CJK.search(text), f"retake_guidance.{reason} 仍是中文：{text}"
+    assert not CJK.search(EXPECTED), EXPECTED
+
+    echoed = echo_findings({
+        "image_quality": {"usable": True},
+        "findings": [{"part": "滚刷", "phenomenon": "缠绕", "evidence": "缠满毛发"}],
+    })
+    assert echoed and not CJK.search(echoed), echoed
+    assert "roller brush tangled" in echoed
+
+
+def test_official_qa_agent_voice_is_rewritten_for_the_customer():
+    """官方 Q&A 是写给客服的内部指引，少数条目用了客服口吻；客户就是「用户」本人。
+
+    qa.yaml 是 XLSX 的生成产物（文件头写明勿手改），所以在渲染层改人称，原文留在证据里不动。
+    这里锁的是 data/official/qa.yaml 里真实存在的两句。
+    """
+    from app.plans.qa import customer_voice
+
+    assert customer_voice(
+        "Have the user shine a flashlight on the clean water tank pipe to check whether the pipe is damaged."
+    ).startswith("Shine a flashlight")
+    assert customer_voice(
+        "The user can press the robot's start button to resume drying the mop."
+    ).startswith("You can press")
+    # 只改人称，不碰操作内容
+    plain = "Remove the clean water tank from the base station and check the seal ring."
+    assert customer_voice(plain) == plain
+
+
+def test_no_agent_voice_survives_into_any_rendered_step():
+    """全量扫一遍官方 Q&A：渲染后不应再有「让用户去做某事」的客服口吻。"""
+    import re
+
+    from app.official.qa_index import get_qa_index
+    from app.plans.qa import customer_voice, plans_config
+
+    agent_voice = re.compile(r"\b(?:have|ask|tell|instruct) the (?:user|customer)\b|\bthe (?:user|customer) (?:can|should|needs to)\b", re.IGNORECASE)
+    cfg = plans_config(get_qa_index())
+    offenders = [
+        (key, ev.snippet[:80])
+        for key, ev in cfg.evidence.items()
+        if agent_voice.search(customer_voice(ev.snippet))
+    ]
+    assert not offenders, offenders

@@ -1,7 +1,11 @@
 """票 30：读图观察 diagnose.vision（03 §1.4 步骤 1；09 §1 CP-in；07 §6 备用模型不支持图片）。
 
-- 只对本 run 新上传、purpose=fault 的图片调用视觉任务（tag=internal），输出 {observations, visible_parts}；
+- 对本 run 新上传、purpose=fault 的图片调用视觉任务（tag=internal），
+  输出 {observations, content_kinds, visible_parts}；
   输出只是「观察」，不是假设，进入 image_observations 供检索补充与 synthesize 使用。
+- purpose 只是「上传时机」（见 snapshot.ImageRefItem），不回答「这张图是什么」：
+  客户在普通首问里传订单截图同样是 purpose=fault。图片内容由 content_kinds 逐图定性，
+  判为 document 的图不产生故障 finding，也不算 SOP 的「故障图片/视频」证据（app.sessions.evidence）。
 - 观察项再过一次 CP-in（observation_terms：smoke / deformed battery …），R4 命中由调用方直接升级。
 - 图片超过链上视觉模型的单请求上限（models.yaml max_images）时只保留最新几张。
 - 视觉链全部失败 / 无视觉模型可用：流程不中断，observations 为空并记录 status；
@@ -16,7 +20,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from haike_contracts.common import CellField, Finding, ImageQuality
+from haike_contracts.common import CellField, Finding, ImageContentKind, ImageQuality
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,13 +36,22 @@ log = logging.getLogger("diagnose.vision")
 TASK = "diagnose.vision"
 VISION_BUDGET_MS = 12_000  # 含图轮 run deadline 40 s（08 §8），读图给 12 s
 DEFAULT_MAX_IMAGES = 4
-VISION_PROMPT_VERSION = "2026-09-15.3"
+VISION_PROMPT_VERSION = "2026-10-09.1"  # content_kinds 逐图定性
 NO_VISION_TEXT = (
     "I can't read images right now. Could you describe what the photo shows (which part, what's wrong)? I'll continue from there."
 )
 
 # unusable：像素层画质门控直接判定不可用，**一次模型都没调**（阶段 3）
 Status = Literal["ok", "unusable", "skipped", "no_images", "no_vision", "failed"]
+
+
+class ImageKind(BaseModel):
+    """逐图定性。放在 observations 之后、findings 之前：先看见，再说这是什么，最后才下故障结论。"""
+
+    model_config = ConfigDict(extra="forbid")
+
+    image_index: int = Field(ge=1, description="第几张图（就是 Image N 的那个 N）")
+    kind: ImageContentKind = Field(description="fault_photo / document / other")
 
 
 class VisionObservation(BaseModel):
@@ -57,8 +70,11 @@ class VisionObservation(BaseModel):
         default_factory=list,
         description="第一步：照片里直接可见的客观事实，每条不超过 20 个字，最多 5 条",
     )
+    content_kinds: list[ImageKind] = Field(
+        default_factory=list, description="第二步：逐图说明这是故障照片还是单据截图"
+    )
     findings: list[Finding] = Field(
-        default_factory=list, description="第二步：只依据 observations 得出的结构化故障定位"
+        default_factory=list, description="第三步：只依据 observations 得出的结构化故障定位"
     )
     image_quality: ImageQuality = Field(default_factory=lambda: ImageQuality(usable=True))
     model_hint: str | None = Field(default=None, description="铭牌上逐字符抄录的文字")
@@ -76,6 +92,10 @@ class VisionOutcome:
     visible_parts: list[str] = field(default_factory=list)
     used_image_ids: list[str] = field(default_factory=list)
     dropped_image_ids: list[str] = field(default_factory=list)
+    # 经读图确认是单据 / 界面截图（订单、发票、配送详情）的图。这些不算 SOP 的「故障图片/视频」证据。
+    # 记「确认不是」而不是「确认是」：读图没跑 / 失败时这里为空，证据判定退回上传时机，
+    # 与修复前同行为 —— 视觉链故障不该把正常换货流程整个堵死（app.sessions.evidence）。
+    document_image_ids: list[str] = field(default_factory=list)
     model_used: str | None = None
     reason: str | None = None
     model_trace: dict[str, Any] | None = None
@@ -98,19 +118,25 @@ def _instruction() -> str:
 
     v = vocabulary()
     return (
-        "你正在查看用户上传的设备故障照片。只写图片里直接可见的内容。\n"
-        "第一步 observations：先写出你在照片里看见的事实，每条不超过 20 字，最多 5 条。"
+        "你正在查看用户上传的图片。只写图片里直接可见的内容。\n"
+        "第一步 observations：先写出你在图片里看见的事实，每条不超过 20 字，最多 5 条。"
         "设备整体可辨认时写出设备品类；只有局部部件时保留部件描述，不猜整机品类。"
         "出现冒烟 / 烧焦 / 电池鼓包 / 漏液 / 火花时，在这一步里中文与英文关键词各写一次"
         "（如「烧焦 burnt」「鼓包 swollen battery」）。\n"
-        "第二步 findings：只依据第一步写下的事实填写，每条给出 part / phenomenon / evidence / cell。\n"
+        "第二步 content_kinds：逐图说明每张图是什么，每张图一条，image_index 写它是第几张（Image N 的 N）。"
+        "拍到实物设备或其部件的照片填 fault_photo；"
+        "订单截图、发票、收据、配送详情页、App 报错页这类以文字为主的单据或界面填 document；"
+        "两者都不是时填 other。\n"
+        "第三步 findings：只依据第一步写下的事实填写，每条给出 part / phenomenon / evidence / cell。"
+        "只为 fault_photo 的图写 findings；document 与 other 的图不写。\n"
         f"part 从 [{' '.join(v['parts'])}] 中选；phenomenon 从 [{' '.join(v['phenomena'])}] 中选。"
         f"看清楚了但不属于表内任何一项时选「其他」；看不出是什么时选「{v['unknown']}」。\n"
         "evidence 抄第一步里支撑这条结论的那句话；"
         f"cell 写它位于九宫格的哪一格，从 [{' '.join(v['cells'])}] 中选；"
         "image_index 写它来自第几张图（就是上面 Image N 的那个 N）。每条 finding 都要有 evidence。\n"
         "image_quality：图看得清就 usable=true；看不清时 usable=false 并从 "
-        "blurry / too_dark / too_far / wrong_subject / occluded 中选出 reasons。多图中只要一张能用于判断即为 true。\n"
+        "blurry / too_dark / too_far / wrong_subject / occluded 中选出 reasons。多图中只要一张能用于判断即为 true。"
+        "单据截图上的文字能读清就是 usable=true。\n"
         "model_hint：逐字符抄录铭牌上你看到的字符本身，看不清的单个字符写 ?，没有铭牌或一个字符都认不出时填 null。\n"
         "model_hint_cell：铭牌或疑似铭牌的小标签位于九宫格的哪一格；画面中没有铭牌时填 null。\n"
         "model_hint_image：铭牌在第几张图（Image N 的 N）；没有铭牌时填 null。\n"
@@ -311,10 +337,15 @@ async def observe_images(
     obs = list(dict.fromkeys([*obs, *derived]))
     parts = [p.strip() for p in parsed.visible_parts if p.strip()][:10]
     parts = list(dict.fromkeys([*parts, *[f["part"] for f in localization["findings"]]]))
+    kinds = localization["content_kinds"]
+    document_image_ids = [
+        r["image_id"] for (r, _, _), kind in zip(images, kinds, strict=True) if kind == "document"
+    ]
     log.info(
-        "vision observed session=%s images=%d observations=%s parts=%s model=%s prompt_ver=%s",
+        "vision observed session=%s images=%d kinds=%s observations=%s parts=%s model=%s prompt_ver=%s",
         session_id,
         len(images),
+        kinds,
         obs,
         parts,
         res.model_used,
@@ -327,6 +358,7 @@ async def observe_images(
         visible_parts=parts,
         used_image_ids=[r["image_id"] for r, _, _ in images],
         dropped_image_ids=[r["image_id"] for r in dropped],
+        document_image_ids=document_image_ids,
         model_used=res.model_used,
         reread_verdict=reread_verdict,
         reread_cell=reread_cell,

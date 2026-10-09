@@ -152,3 +152,308 @@ def test_crack_sound_is_not_physical_damage():
     assert physical_damage("When it starts there is a crack sound from the brush") is None
     assert physical_damage("The roller brush came off") is None
     assert physical_damage("The lid of the tank snapped") == "The lid of the tank snapped"
+
+
+# ---------------------------------------------------------------------------
+# P1-3：「从未收到货」不得被读成设备故障（2026-10-09）
+#
+# 没到手的机器不可能有观察到的故障现象 —— 这是客观约束，不是某一单的补丁。
+# 63 单里说「从未收到」的 4 单（T1 T2 T8 T10）金标全部是物流分支，没有一单是排障或质保。
+# T1 同一原文实测 8 次有 2 次判成 report_problem，于是回「device troubleshooting → delivery status」。
+# ---------------------------------------------------------------------------
+
+
+def _interpretation(**kw):
+    from app.conversation.interpret import TurnInterpretation
+
+    return TurnInterpretation(device_relation="current", **kw)
+
+
+def test_never_arrived_is_repaired_to_a_logistics_query():
+    from app.conversation.interpret import logistics_correction
+
+    text = TICKETS["T1"]
+    assert "did not arrive" in text
+    fixed = logistics_correction(
+        _interpretation(primary_intent="report_problem", secondary_intents=["logistics_query"]), text
+    )
+    assert fixed.primary_intent == "logistics_query"
+    # 次诉求去重：留着会让 tasks.enqueue 发「按顺序处理」的多诉求提示，而这单只有一个诉求
+    assert "logistics_query" not in fixed.secondary_intents
+    assert "report_problem" not in fixed.secondary_intents
+
+
+def test_never_arrived_drops_symptom_facts_it_cannot_have():
+    """机器没到手，模型顺带抽出来的「故障现象」没有来源，不能进事实库。"""
+    from app.conversation.interpret import logistics_correction
+
+    meaning = _interpretation(
+        primary_intent="report_problem",
+        facts=[
+            {"kind": "symptom", "value": "did not arrive", "quote": "The vacuum did not arrive."},
+            {"kind": "context", "context_field": "address", "value": "1 Main St",
+             "quote": "My address is 1 Main St"},
+        ],
+    )
+    fixed = logistics_correction(meaning, TICKETS["T1"])
+    assert [f.kind for f in fixed.facts] == ["context"], "只丢症状，保留地址这类上下文事实"
+
+
+def test_all_never_arrived_tickets_are_logistics_in_the_gold_set():
+    """这条约束在 63 单上零误伤：命中的工单金标必须全是物流分支。
+
+    若将来新增一单「没收到货」却应当走排障，这条用例会先红，提醒重新审视该约束。
+    """
+    import yaml
+
+    from app.conversation.interpret import NEVER_ARRIVED
+    from app.settings import REPO_ROOT
+
+    cases = {c["id"]: c for c in yaml.safe_load(
+        (REPO_ROOT / "data/eval/tickets/cases.yaml").read_text(encoding="utf-8"))["cases"]}
+    hit = [t.id for t in OfficialData().tickets if NEVER_ARRIVED.search(t.body or "")]
+    assert hit, "样例集里应当有「从未收到」的工单"
+    assert all(cases[i]["sop"].startswith("logistics") for i in hit), {i: cases[i]["sop"] for i in hit}
+
+
+def test_a_real_fault_report_is_left_alone():
+    """反向用例：真的在报故障时不能被这条约束改判。"""
+    from app.conversation.interpret import logistics_correction
+
+    meaning = _interpretation(primary_intent="report_problem")
+    assert logistics_correction(meaning, "The vacuum arrived but the roller brush does not spin").primary_intent == "report_problem"
+    assert logistics_correction(meaning, TICKETS["T55"]).primary_intent == "report_problem"
+
+
+def test_replacement_parts_kit_is_not_a_replacement_request():
+    """降级路径的同一条约束：T1 的「Only the replacement parts kit」是在描述「收到了什么」。
+
+    关键词表（config/rules/intent_terms.yaml）命中 'replacement' 就判 replacement_request，
+    而它在 tasks.PRIORITY 里还高于物流 —— 模型 schema_error 重试耗尽时，这单会去提议换货。
+    机器从未到手，没有什么可换。
+    """
+    from app.conversation.interpret import logistics_correction
+
+    fixed = logistics_correction(
+        _interpretation(primary_intent="replacement_request", secondary_intents=["logistics_query"]),
+        TICKETS["T1"],
+    )
+    assert fixed.primary_intent == "logistics_query"
+    assert fixed.secondary_intents == []
+
+
+async def test_the_degraded_path_gets_the_same_repair_as_the_model_path(l3_runtime, monkeypatch):
+    """纠正挂在 interpret_turn 的出口上，降级分支不能绕过去。
+
+    模型调用失败恰恰是最容易判错的时候：降级靠关键词凑意图，比模型更容易把
+    「没收到货」读成故障或换货 —— T1 的「Only the replacement parts kit」正好命中
+    intent_terms 的 'replacement'。这里让模型调用必定失败，走真实降级路径。
+    """
+    from app.conversation.interpret import interpret_turn
+    from app.models.router import ModelInvokeError
+
+    async def always_fails(*a, **kw):
+        raise ModelInvokeError("forced", attempts=[])
+
+    class Router:
+        invoke = staticmethod(always_fails)
+
+    state = {
+        "text": TICKETS["T1"],
+        "input_id": "i1",
+        "at": "2026-10-09T00:00:00+00:00",
+        "history": [{"entry_id": "i1", "session_id": "s1", "run_id": "r1", "kind": "message",
+                     "role": "user", "first_seq": 1, "last_seq": 1,
+                     "recorded_at": "2026-10-09T00:00:00+00:00", "text": TICKETS["T1"]}],
+    }
+    meaning, context = await interpret_turn(Router(), state, lane="domestic")
+    assert context["source"] == "l3_rules_degraded", "这条用例必须真的走降级路径"
+    assert meaning.primary_intent == "logistics_query"
+    assert "replacement_request" not in meaning.secondary_intents
+    assert "report_problem" not in meaning.secondary_intents
+
+
+def test_a_genuine_replacement_request_is_left_alone():
+    """反向用例：收到了货再要求换货，不受这条约束影响。"""
+    from app.conversation.interpret import logistics_correction
+
+    meaning = _interpretation(primary_intent="replacement_request")
+    text = "The pump arrived last week but the left side has no suction, I want a replacement."
+    assert logistics_correction(meaning, text).primary_intent == "replacement_request"
+
+
+# ---------------------------------------------------------------------------
+# P2：SOP 符合性（2026-10-09）
+# ---------------------------------------------------------------------------
+
+
+def test_overdue_package_states_the_real_reship_reason():
+    """P2-3：补发理由要与事实相符。
+
+    T5（Anker005）主机包裹 ETA 9/30 在途逾期，而同一订单的配件包裹 9/15 已送达。
+    原来 reship_eligible 固定说「Tracking doesn't show the item as delivered」——
+    与「有一包已送达」的事实冲突。理由应当从包裹状态推出来。
+    """
+    from datetime import date
+
+    from app.backends import logistics
+
+    order = next(o for o in OfficialData().orders if o.order_no == "Anker005")
+    text = logistics.sop_text(order, date(2026, 10, 8))
+    assert logistics.verdict(order, date(2026, 10, 8)) == "reship_eligible"
+    assert "2026-09-30" in text and "estimated delivery date" in text
+    assert "doesn't show the item as delivered" not in text, text
+    # 退回发件人仍走原来的理由
+    returned = next(o for o in OfficialData().orders
+                    if any(p.status == "returned" for p in o.packages))
+    assert "returned to the sender" in logistics.sop_text(returned, date(2026, 10, 8))
+
+
+def test_a_replacement_request_with_a_fault_troubleshoots_first():
+    """P2-2：主办方 SOP 是「保内**排障无效**可换货」，排障是前置条件。
+
+    T49：吸奶器开不了机 + 想换货，官方 Q&A bp-0123 / bp-0151 有对应条目，
+    原行为直接转人工跳过排障。
+    """
+    from app.sessions.graph import _troubleshoot_before_remedy
+
+    base = {"symptoms": ["can't get them to turn on"]}
+    assert _troubleshoot_before_remedy(base, "replacement_request")
+    assert _troubleshoot_before_remedy(base, "refund_request")
+    # 没有现象可排 / 已排过 / 已在办理中：都不该再绕回排障
+    assert not _troubleshoot_before_remedy({}, "replacement_request")
+    assert not _troubleshoot_before_remedy({**base, "case_id": "c1"}, "replacement_request")
+    assert not _troubleshoot_before_remedy({**base, "requested_remedy": "replace"}, "replacement_request")
+    assert not _troubleshoot_before_remedy(
+        {**base, "steps_executed": [{"feedback": "not_solved"}]}, "replacement_request")
+    # 与排障无关的诉求不受影响
+    assert not _troubleshoot_before_remedy(base, "address_update")
+    assert not _troubleshoot_before_remedy(base, "order_change")
+
+
+def test_no_order_number_given_is_not_reported_as_a_failed_lookup():
+    """P2-4：客户没给过订单号时不能说「没查到订单」，并且要说明为什么现在谈保修。
+
+    T14 是 App 自动生成的报障表单，通篇没有订单号；官方 Q&A rv-0028 已把 4090 判为硬件故障。
+    """
+    from app.sessions.l3 import customer_gave_order_no, hardware_basis
+
+    t14 = {"text": TICKETS["T14"], "history": []}
+    assert not customer_gave_order_no(t14), "T14 原文没有订单号"
+    assert customer_gave_order_no({"text": "My order is Anker001", "history": []})
+
+    basis = hardware_basis({**t14, "diagnose_outcome": {"mode": "warranty", "reason": "hardware_malfunction"}})
+    assert basis and "hardware malfunction" in basis and "official guidance" in basis
+    # 来路不明时不编理由
+    assert hardware_basis({"diagnose_outcome": {"mode": "evidence"}}) is None
+    assert hardware_basis({}) is None
+
+
+def test_read_only_lookups_do_not_announce_a_processing_order():
+    """P2-5：查询类诉求一轮答完，不该先播报「按顺序处理」。
+
+    T7：问物流 + 问订单，都是从同一张订单读字段。
+    """
+    from app.conversation.tasks import announces_order
+
+    assert not announces_order(["logistics_query", "order_query"])
+    assert not announces_order(["logistics_query"])
+    # 真的要分轮办的仍然播报
+    assert announces_order(["replacement_request", "logistics_query"])
+    assert announces_order(["report_problem", "order_query"])
+
+
+def test_closing_line_does_not_quote_a_truncated_or_question_title():
+    """P2-5：结束语不引述被截断的标题或 Q&A 的那句问句（T12 实测引了带省略号的问句）。"""
+    from app.sessions.graph import closing_text
+
+    truncated = closing_text({"steps_executed": [
+        {"feedback": "solved", "title": 'What Should I do If my T2353 shows clean water insuffic…'}]})
+    assert "…" not in truncated and "After following the steps" in truncated
+
+    question = closing_text({"steps_executed": [
+        {"feedback": "solved", "title": "Why can't my pump power on?"}]})
+    assert "did the trick" not in question
+
+    plain = closing_text({"steps_executed": [
+        {"feedback": "solved", "title": "Clean the roller brush"}]})
+    assert '"Clean the roller brush" did the trick' in plain
+
+
+def test_order_change_needs_an_explicit_request():
+    """P2-1：order_change 必须有明确的「改订单」原话。
+
+    只靠提示词约束不住：加上这个意图后实测 T1「Was the vacuum shipped?」与
+    T9 开头的「inquire about the shipping」都被判成 order_change，一路走到 warranty_replace。
+    """
+    from app.conversation.interpret import logistics_correction
+
+    def as_change(text):
+        return logistics_correction(
+            _interpretation(primary_intent="order_change", secondary_intents=["logistics_query"]), text
+        )
+
+    # 真的要求别发货的只有 T9
+    assert as_change(TICKETS["T9"]).primary_intent == "order_change"
+    # 其余只是在问物流，必须退回去
+    for tid in ("T1", "T5", "T7", "T2", "T8", "T10"):
+        out = as_change(TICKETS[tid])
+        assert out.primary_intent == "logistics_query", (tid, out.primary_intent)
+        assert "order_change" not in out.secondary_intents
+        assert out.secondary_intents == [], (tid, out.secondary_intents)
+
+
+def test_curly_apostrophes_do_not_defeat_the_text_rules():
+    """主办方工单里的撇号多是 ’ 而不是 '（63 单 15 处）。
+
+    T9 的「don’t」曾因此整条漏掉 —— 这不是 T9 的特例，是所有带撇号规则的共同前提。
+    """
+    from app.conversation.interpret import logistics_correction
+
+    straight = "If you have not shipped, don't and let's talk about your other products."
+    curly = straight.replace("'", "\u2019")
+    for text in (straight, curly):
+        out = logistics_correction(_interpretation(primary_intent="order_change"), text)
+        assert out.primary_intent == "order_change", repr(text)
+
+
+def test_an_unexecutable_request_never_becomes_a_replacement():
+    """办不了的诉求没有服务单类型，不能被 requested_type 的兜底悄悄变成换货。
+
+    实测 order_change 曾一路走到 warranty_replace。
+    """
+    import pytest
+
+    from app.sessions.l3 import NOT_EXECUTABLE_TEXT, requested_type
+
+    assert requested_type({"requested_remedy": "refund"}) == "refund"
+    assert requested_type({"requested_remedy": None}) == "replace"  # 排障升级默认换货
+    for remedy in ("address_update", "order_change"):
+        assert remedy in NOT_EXECUTABLE_TEXT
+        with pytest.raises(AssertionError):
+            requested_type({"requested_remedy": remedy})
+
+
+def test_an_explicit_hold_request_is_kept_whatever_the_model_reads():
+    """P2-1：T9 的「别发货」不能因为模型只读到后半句就被丢掉。
+
+    T9 原文是「If you have not shipped, don't and let's first talk about your other products」。
+    模型稳定地把后半句读成 product_question，于是前半句这个有时效性的诉求整个消失
+    （两轮测评都复现：只回了发货日就结束）。明确的要求不该取决于模型挑了哪半句。
+    """
+    from app.conversation.interpret import logistics_correction
+
+    for primary in ("product_question", "logistics_query"):
+        out = logistics_correction(_interpretation(primary_intent=primary), TICKETS["T9"])
+        assert "order_change" in out.secondary_intents, primary
+        assert out.primary_intent == primary, "不抢主诉求，只把漏掉的诉求补进队列"
+
+    # order_query 会被既有规则纠成 logistics_query（T9 问的是发货），order_change 仍要补上
+    out = logistics_correction(_interpretation(primary_intent="order_query"), TICKETS["T9"])
+    assert out.primary_intent == "logistics_query"
+    assert "order_change" in out.secondary_intents
+
+    # 没有这句明确要求的工单不会被补上
+    for tid in ("T1", "T5", "T7", "T55"):
+        out = logistics_correction(_interpretation(primary_intent="logistics_query"), TICKETS[tid])
+        assert "order_change" not in out.secondary_intents, tid

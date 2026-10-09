@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: d0a2d64460190ba6d78d098fcea8b25f205ac45426d0208bb025b753725e87b5
+// SHA-256: 9cfb4266c05e36328e34b4e0f184f9f61939af26943867bd6f934b14a678d25e
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -550,6 +550,9 @@ export interface UserMessageItem {
 }
 /**
  * 会话期图片引用（票 29）：只有引用与摘要，字节在 session_images，1 小时后清理。
+ *
+ * purpose 记的是**上传时机**（前端按 pendingKind 填：等凭证时 receipt，其余 fault），
+ * 不是图片内容。「这张图实际是什么」由读图定性回答，见 common.ImageContentKind。
  *
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ImageRefItem".

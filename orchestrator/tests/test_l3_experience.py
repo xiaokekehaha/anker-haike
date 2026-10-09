@@ -221,7 +221,7 @@ def test_vision_vocabulary_quality_and_prior():
     result["image_quality"]["usable"] = False
     assert signature_plans(result) == []
     blurry = normalize(FaultLocalization(image_quality={"usable": False, "reasons": ["blurry"]}))
-    assert "对焦" in blurry["image_quality"]["guidance"][0]
+    assert "focus" in blurry["image_quality"]["guidance"][0]  # 客户可见，英文（D2）
 
 
 def test_vision_unknown_and_evidence_gate_plan_prior():

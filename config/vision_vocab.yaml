@@ -108,20 +108,32 @@ text_aliases:
     正常: [正常, 没问题, 好的]
 # 像素层画质门控阈值（阶段 3）。reject = 硬阈值，直接发补拍卡且一次模型都不调；
 # marginal = 软阈值，只在模型也说看不清时才判不可用。reject 写 null 表示该指标不允许单独拦人。
-# 标定：2026-09-15 用合成图做亮度 / 模糊 / 尺寸退化扫描（脚本见 docs/planning/2026-09-15_vision-measurement-redesign/probes）。
-# **待真实照片复标定** —— 合成图的梯度统计是病态的，blurry 尤其不可信，故其 reject 为 null。
+# 标定：2026-10-09 用 data/official/attachments 的 10 张真实附件（5 张白底文档 + 5 张设备照）
+# 加 50 张由那 5 张设备照合成的过曝 / 欠曝退化样本（脚本见本次 planning 目录 probes/）。
+#
+# 过曝判据是**合取**：亮部饱和 且 结构塌掉。单看饱和占比区分不开「背景是白的」与「细节被烧掉了」——
+# 白底订单截图 clipped 0.77–0.96 却完全可读，正是 structure 这一项把它和真过曝分开（见 structure 注释）。
 quality:
   too_dark:   {reject: 60,   marginal: 110}   # 灰度 95 分位（不是中位数，见 quality.py 注释）。曝光正常的深色机身图 ≈205，亮度 ×0.2 时 ≈41–47
   too_far:    {reject: 300,  marginal: 480}   # 短边像素。手机随手拍普遍 ≥1000，低于 300 基本是截图裁剪或极远拍
   too_bright: {reject: 0.5,  marginal: 0.3}   # 亮度 ≥250 的像素占比，过半即严重过曝
   blurry:     {reject: null, marginal: 12}    # 梯度 99.5 分位。合成图上清晰 ≥96、模糊半径 4 约 12，但该阈值不迁移，见上
+# 过曝判据的第二个必要条件：画面里还剩多少结构（focus = 梯度 99.5 分位）。
+# 实测分离干净且中间有大间隔：白底文档 133–201 / 真过曝 13–80 / 正常照片 18–58。
+# 文档的 structure 高于正常照片，所以这不是给文档开后门，而是「饱和」本来就不等于「不可读」。
+# 只约束 too_bright 的 reject（too_dark 不需要，见 quality.py 的 SATURATION_REASONS）：
+# 放过的图模型还会再看一眼（_merge_quality），硬拦才不可逆。
+structure:
+  exposure_reject_below: 100
+# 补拍指引：由后端下发、直接显示给客户，所以用英文（D2，2026-10-08「客户可见输出用英文」）。
+# 前端 RetakeCard 自己的界面文字仍是中文，属界面层，不在 D2 范围内。
 retake_guidance:
-  blurry: 请擦净镜头，对焦后拍摄故障部件。
-  too_dark: 请在光线充足处拍摄。
-  too_far: 请靠近拍摄，让部件占据画面中心。
-  wrong_subject: 请拍摄当前设备的故障部件或铭牌。
-  occluded: 请移开遮挡物，保持安全距离。
-  too_bright: 请避开强光直射或反光，换个角度拍摄。
+  blurry: Please wipe the lens, focus on the faulty part, and take the photo again.
+  too_dark: Please take the photo somewhere with enough light.
+  too_far: Please move closer so the part fills the centre of the frame.
+  wrong_subject: Please photograph the faulty part or the label on this device.
+  occluded: Please move anything blocking the view, keeping a safe distance.
+  too_bright: Please avoid direct light or glare, and try another angle.
 # 部件 → 品类线索：照片里认出这些部件，就把该品类作为**待用户确认**的线索
 # （走 clarify 的 expected_category 「是 / 不是」，不静默锁定）。只列品类特有部件：
 # 接口 / 电池 / 外壳 / 指示灯 / 传感器 / 充电触点 各类设备都有，认出它们说明不了是什么设备。

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 15a1a20d27f94f06e9095922be0f4712041a65456dc0851341f915a579e33bea
+// SHA-256: 8b9cd11e795273eeb1d6731493ca9b133bbcdb6f06845aefc33822df3f192094
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -848,6 +848,18 @@ export const serverEventSchema = z.fromJSONSchema({
             "type": "string"
           },
           "title": "Conflicts With Text",
+          "type": "array"
+        },
+        "content_kinds": {
+          "items": {
+            "enum": [
+              "fault_photo",
+              "document",
+              "other"
+            ],
+            "type": "string"
+          },
+          "title": "Content Kinds",
           "type": "array"
         },
         "findings": {

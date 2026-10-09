@@ -33,6 +33,21 @@ def _valid_index(index, image_count: int | None):
     return index
 
 
+def _content_kinds(raw, image_count: int | None) -> list[str]:
+    """模型给的逐图定性 → 按图序排好的列表。没说到的图按 fault_photo 处理。
+
+    默认 fault_photo 而不是 other：读图任务本身只对 purpose=fault 的图调用，漏填时沿用调用语境
+    是保守的一侧 —— 把真故障照错判成单据会丢掉证据，反之只是多收一次证据。
+    """
+    count = image_count or 0
+    kinds = ["fault_photo"] * count
+    for item in raw or []:
+        index = item.get("image_index")
+        if isinstance(index, int) and 1 <= index <= count:
+            kinds[index - 1] = item["kind"]
+    return kinds
+
+
 def normalize(localization, image_count: int | None = None):
     config = vocabulary()
     unknown = config["unknown"]
@@ -41,6 +56,14 @@ def normalize(localization, image_count: int | None = None):
     result.setdefault("conflicts_with_text", [])
     result.setdefault("model_hint_verified", False)
     result["model_hint_image"] = _valid_index(result.get("model_hint_image"), image_count)
+    result["content_kinds"] = _content_kinds(result.get("content_kinds"), image_count)
+    # 单据 / 其他内容的图不产生故障结论：模型被要求只为 fault_photo 写 findings，但那是自报的约束，
+    # 而约束的执行权不该握在被约束者手里 —— 这里按定性结果确定性地丢掉。
+    non_fault = {i for i, k in enumerate(result["content_kinds"], 1) if k != "fault_photo"}
+    if non_fault:
+        result["findings"] = [
+            f for f in result["findings"] if f.get("image_index") not in non_fault
+        ]
     for finding in result["findings"]:
         for key, vocab in [("part", "parts"), ("phenomenon", "phenomena")]:
             if finding[key] not in config[vocab]:
@@ -134,12 +157,16 @@ def echo_findings(localization) -> str | None:
 
     句子由结构化结果确定性拼出，不经模型：回显的意义就在于「我们真正拿到的是什么」，
     让模型再措辞一遍就等于把它可能编的东西又念了一遍。
+
+    客户可见，所以用英文（D2）：部件 / 现象经 vision_vocab 的 english 映射，与图文冲突提示同一套词。
     """
+    from app.diagnose.conflict import en
+
     facts = [
-        f"{f['part']}{f['phenomenon']}"
+        f"{en(f['part'])} {en(f['phenomenon'])}"
         for f in usable_findings(localization)
         if f["phenomenon"] not in ("正常", "不可辨")
     ]
     if not facts:
         return None
-    return f"从照片里我看到：{'、'.join(dict.fromkeys(facts))}。如果不对，您可以直接告诉我。"
+    return f"From the photo I can see: {', '.join(dict.fromkeys(facts))}. If that's not right, just tell me."

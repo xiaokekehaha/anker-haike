@@ -146,7 +146,8 @@ async def test_logistics_returned_to_sender_offers_reship(l3_runtime):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, "my order Anker007 never arrived, where is it"))
-        assert "returned to sender" in said(rows) and "we can reship it to you" in said(rows)
+        # 补发理由按包裹状态给（P2-3）：退回发件人就说退回，不再统一说「未显示送达」
+        assert "returned to sender" in said(rows) and "arrange a reship for you" in said(rows)
         assert [o["type"] for o in next(e for e in rows if e["type"] == "proposal_card")["options"]] == ["reship"]
         rows = events(await act(client, sid, "confirm_proposal", {"option_id": "reship"}))
         assert any(e["type"] == "execution_card" and e["status"] == "succeeded" for e in rows)

@@ -43,7 +43,17 @@ def collect(state: dict[str, Any]) -> dict[str, str]:
         evidence["address"] = "order:" + order_address
     elif stated.get("address"):
         evidence["address"] = "customer:" + stated["address"]
-    photos = [r["image_id"] for r in state.get("image_refs") or [] if r.get("purpose") != "receipt"]
+    # SOP 的「故障图片/视频」排除经读图确认为单据 / 界面截图的图（vision 的 content_kinds）。
+    # 不能按 purpose 判定：purpose 记的是上传时机，客户在普通首问里传的订单截图同样是 fault，
+    # 一张单据截图曾因此凑齐换货证据四件套。
+    # 这里排除「确认不是」而不是只认「确认是」：读图没跑 / 失败时集合为空，退回按上传时机判定，
+    # 视觉链故障不该把正常换货流程整个堵死。
+    documents = set(state.get("document_image_ids") or [])
+    photos = [
+        r["image_id"]
+        for r in state.get("image_refs") or []
+        if r.get("purpose") != "receipt" and r["image_id"] not in documents
+    ]
     if photos:
         evidence["photo_or_video"] = "images:" + ",".join(photos)
     serial = stated.get("serial_number") or serial_from_text(state.get("text", "")) or next(

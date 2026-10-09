@@ -247,7 +247,7 @@ async def test_underexposed_photo_yields_a_retake_card_without_calling_the_model
     cards = [e for e in events if e["type"] == "retake_card"]
     assert cards, "应当发出补拍卡"
     assert cards[0]["reasons"] == ["too_dark"]
-    assert "光线充足" in cards[0]["guidance"][0]
+    assert "enough light" in cards[0]["guidance"][0]  # 客户可见，英文（D2）
     state = await _state(sid)
     assert state["vision_status"] == "unusable"
     assert state["image_quality"]["usable"] is False
@@ -307,7 +307,7 @@ async def test_unverified_model_hint_does_not_silently_lock_the_sku(
 
 
 async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_store, l3_services, tmp_path):
-    """阶段 4 隐式确认：首张步骤卡带一句「从照片里我看到…」，且不掺进步骤正文。"""
+    """阶段 4 隐式确认：首张步骤卡带一句「From the photo I can see…」，且不掺进步骤正文。"""
     router, _ = _router(
         tmp_path,
         CONFIG,
@@ -330,9 +330,10 @@ async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_stor
     cards = [e for e in events if e["type"] == "step_card"]
     assert cards, f"应当出步骤卡：{[e['type'] for e in events]}"
     seen = cards[0].get("seen")
-    assert seen and "滚刷缠绕" in seen
-    assert "吸口正常" not in seen, "非故障项不该回显"
-    assert "如果不对" in seen, "隐式确认要留一句让用户纠正的话"
+    # 客户可见，英文（D2）：部件 / 现象走 vision_vocab 的 english 映射
+    assert seen and "roller brush tangled" in seen
+    assert "suction inlet" not in seen, "非故障项不该回显"
+    assert "not right" in seen, "隐式确认要留一句让用户纠正的话"
     assert seen not in cards[0]["step"]["instruction"], "步骤是已审核原文，不能被掺入生成的句子"
     assert (await _state(sid))["vision_echoed"] is True
 
