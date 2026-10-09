@@ -38,11 +38,16 @@ def fallback_interpretation(state):
     terms = yaml.safe_load((CONFIG_DIR / "rules/intent_terms.yaml").read_text())
     folded = text.casefold()
     intents = [intent for intent, words in terms.items() if any(word.casefold() in folded for word in words)]
+    from app.conversation.reduce import device_message_spans, quote_source
     from app.emotion.policy import evaluate_emotion
     from app.rules import get_rules_service
 
     cp = get_rules_service().check_in(text=text, session_id=state.get("session_id"))
-    human_requested = any(hit.rule_id == "R3" for hit in cp.hits)
+    spans = device_message_spans(text)
+    # 命中词只出现在设备推送 / 问题描述字段里（T11 的「contact customer service」）时，是设备在说话。
+    human_requested = any(
+        hit.rule_id == "R3" and quote_source(hit.term, spans) == "user_statement" for hit in cp.hits
+    )
     if human_requested:
         intents.insert(0, "request_human")
     emotion = evaluate_emotion("calm", text, [], state.get("input_id", "fallback"))["emotion"]["level"]

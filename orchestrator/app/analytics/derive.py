@@ -62,7 +62,7 @@ def node_summary(update: Any) -> dict[str, Any] | None:
             out[name] = update[key]
     turn = update.get("turn_decision")
     if isinstance(turn, dict):
-        for key in ("primary_intent", "reply_mode", "target_issue_id", "escalation_trigger", "allowed_operations"):
+        for key in ("primary_intent", "reply_mode", "target_issue_id", "escalation_trigger", "allowed_operations", "human_request_source"):
             if key in turn: out[key] = turn[key]
         out["patch_count"] = len(turn.get("patches", []))
     if "context_revision" in update: out["context_revision"] = update["context_revision"]

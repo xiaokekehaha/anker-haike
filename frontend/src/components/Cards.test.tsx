@@ -9,6 +9,10 @@ const SUMMARY = {
   product: 'eufy Clean X10 Pro Omni', problem: '冒烟', observations: ['用户补充：有焦味'], hypotheses: [], steps: [{ step_id: 's1', title: '清理滚刷', feedback: 'not_solved' as const }],
   reason: { rule_id: 'R4', text: '检测到安全风险信号' }, emotion: { level: 'anxious' as const, strategy: 'reassure_first' as const },
   receipt: { status: 'not_collected' as const, verified_facts: {}, conflicts: [], next_step: '已转人工' }, model_trace: [],
+  business: {
+    kind: 'safety' as const, known: { product: 'eufy Clean X10 Pro Omni', symptoms: '冒烟' }, missing: [],
+    pending_requests: [{ intent: 'report_problem', quote: '冒烟', status: 'active' }],
+  },
 };
 
 describe('cards', () => {
@@ -19,7 +23,8 @@ describe('cards', () => {
     fireEvent.click(screen.getByRole('button', { name: '一键复制' }));
     await screen.findByText('已复制');
     const text = writeText.mock.calls[0]?.[0] as string;
-    for (const k of ['【产品】eufy Clean X10 Pro Omni', '【问题】冒烟', '【观察】', '【假设】', '【排查记录】清理滚刷（已操作，仍有问题）', '【升级原因】R4', '【凭证】not_collected']) expect(text).toContain(k);
+    for (const k of ['【产品】eufy Clean X10 Pro Omni', '【问题】冒烟', '【观察】', '【假设】', '【排查记录】清理滚刷（已操作，仍有问题）', '【升级原因】R4', '【业务】safety；已知：产品=eufy Clean X10 Pro Omni；现象=冒烟；缺失：无；待办：report_problem(active)', '【凭证】not_collected']) expect(text).toContain(k);
+    expect(screen.getByText('安全风险')).toBeVisible();
     expect(summaryToText(SUMMARY)).toContain('【凭证核实事实】');
     expect(summaryToText(SUMMARY)).toContain('【凭证待核实差异】');
   });

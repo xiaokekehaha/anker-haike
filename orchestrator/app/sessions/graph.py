@@ -37,6 +37,7 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
+from app.diagnose.decision import confirmed_symptom
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches
 from app.diagnose.query import category_label, product_term
@@ -349,6 +350,7 @@ def _after_product(state: SessionState) -> str:
         state.get("plans_ranked")
         and basis.get("issue_revision") == issue.get("issue_revision")
         and basis.get("plans_version") == get_plan_library().version
+        and basis.get("sku") == (state.get("product_confirmed") or {}).get("sku")
     ):
         # 事实修订号与计划库都没变：再检索一次得到的仍是同一份候选（会话 37cea3 第 7 轮重发同一句话，
         # 重新 retrieve + synthesize 后只多了一份相同摘要）。直接依据已有排序重新决策。
@@ -1395,6 +1397,11 @@ def route_entry(state: SessionState) -> str:
     if decision.get("escalation_trigger"):
         return "escalate"
     if decision.get("operation_changed"):
+        from app.conversation.operation_conditions import execution_history
+        if not state.get("plans_ranked") and not execution_history(dict(state)):
+            # 从未排障的问题（T31 首封「despite wiping clean…」被读成操作条件）：先检索，再谈操作条件。
+            # 没有候选时 reassess 只会直接 R2 交接。
+            return "disambiguate"
         return "reassess"
     if decision.get("primary_intent") == "complaint" and state.get("plans_ranked") and not state.get("pending_card") and not state.get("case_id"):
         return "reassess"
@@ -1522,12 +1529,12 @@ def exact_code_hits(state: SessionState, scope: KnowledgeScope) -> dict[str, Any
     codes: list[str] = list(dict.fromkeys(c for t in texts for c in parse_message(t).codes))
     codes += [c for c in state.get("error_codes") or [] if c not in codes]
     if not codes:
-        return {"codes": [], "evidence": [], "warranty": None, "miss": False}
+        return {"codes": [], "evidence": [], "warranty": None, "steps": None, "miss": False}
     guides = []
     for code in codes:
         guides += [g for g in index.lookup(scope.sku, code) if g.visible and g not in guides]
     if not guides:
-        return {"codes": codes, "evidence": [], "warranty": None, "miss": True}
+        return {"codes": codes, "evidence": [], "warranty": None, "steps": None, "miss": True}
     evidence = [
         {
             "evidence_id": f"qa:{g.qa_id}",
@@ -1543,7 +1550,21 @@ def exact_code_hits(state: SessionState, scope: KnowledgeScope) -> dict[str, Any
         for g in guides
     ]
     warranty = next((g.plan_id for g in guides if g.kind == "warranty"), None)
-    return {"codes": codes, "evidence": evidence, "warranty": warranty if len(guides) == 1 else None, "miss": False}
+    # 同型号同码唯一命中一条步骤类 Q&A：官方已经按这个码写好了排查顺序，不必再让模型判适用性
+    # （T18 / T30 实测模型会反过来追问「是 3212 还是 3202」或判成不适用）。
+    steps = guides[0].plan_id if len(guides) == 1 and guides[0].kind in {"steps", "answer"} else None
+    return {"codes": codes, "evidence": evidence, "warranty": warranty if len(guides) == 1 else None,
+            "steps": steps, "miss": False}
+
+
+def retrieval_basis(state: SessionState) -> dict[str, Any]:
+    """本次候选依据的事实修订号、计划库版本与已确认型号；三者都没变时不重新检索（_after_product）。
+    型号纠正（X10 → E28）必须作废旧候选，所以 sku 也是依据的一部分。"""
+    return {
+        "issue_revision": ((state.get("issues") or {}).get(state.get("active_issue_id")) or {}).get("issue_revision"),
+        "plans_version": get_plan_library().version,
+        "sku": (state.get("product_confirmed") or {}).get("sku"),
+    }
 
 
 def retrieval_query(state: SessionState) -> str:
@@ -1805,6 +1826,30 @@ async def retrieve(state: SessionState) -> SessionState:
             "retrieval_trace": [{"round": 0, "status": "exact_code_warranty", "codes": exact["codes"],
                                  "plan_id": exact["warranty"], "session_id": session_id, "run_id": run_id}],
         }
+    if exact["steps"] and exact["steps"] not in effective_exhausted(state):
+        items = [{k: v for k, v in it.items() if k != "knowledge_title"} for it in exact_evidence]
+        writer({"type": "evidence", "items": items})
+        for it in items:
+            evidence[it["evidence_id"]] = it
+        symptoms = [s for s in [*(state.get("symptoms") or []), parse_message(state.get("text") or "").problem_text] if s]
+        ranked = [{"plan_id": exact["steps"], "version": get_plan_library().get(exact["steps"]).version, "confidence": 1.0,
+                   "evidence_ids": [it["evidence_id"] for it in exact_evidence], "source": "exact_code",
+                   "supported_symptoms": symptoms or [", ".join(exact["codes"])]}]
+        return {
+            "stage": "diagnose",
+            "substage": "retrieve",
+            "knowledge_status": "ok",
+            "evidence": evidence,
+            "current_evidence_ids": [it["evidence_id"] for it in exact_evidence],
+            "query": query,
+            "error_codes": exact["codes"],
+            "plans_ranked": ranked,
+            "retrieval_trace": [{"round": 0, "status": "exact_code_steps", "codes": exact["codes"],
+                                 "plan_id": exact["steps"], "session_id": session_id, "run_id": run_id}],
+            "retrieval_basis": retrieval_basis(state),
+            **_diagnose_outcome(ranked, knowledge_status="ok", exact_hits=[e["chunk_id"] for e in exact_evidence],
+                                exhausted_plans=sorted(effective_exhausted(state)), state=state),
+        }
     local_hits = [
         Hit(
             evidence_id=it["evidence_id"], knowledge_id=it["doc_id"], chunk_id=it["chunk_id"],
@@ -1851,6 +1896,7 @@ async def retrieve(state: SessionState) -> SessionState:
                 exhausted_plans=state.get("exhausted_plans") or [],
                 clarifications=plans.pop("clarifications", []),
                 previous_outcome=state.get("diagnose_outcome"),
+                state=state,
             )
         )
         return {
@@ -2161,6 +2207,7 @@ async def retrieve(state: SessionState) -> SessionState:
             exhausted_plans=sorted(effective_exhausted(state)),
             clarifications=plans.pop("clarifications", []),
             previous_outcome=state.get("diagnose_outcome"),
+            state=state,
         )
     )
     return {
@@ -2180,10 +2227,7 @@ async def retrieve(state: SessionState) -> SessionState:
         ),
         "error_codes": exact["codes"],
         # 本次候选依据的事实修订号与计划库版本；两者都没变时 _after_product 不再重新检索
-        "retrieval_basis": {
-            "issue_revision": ((state.get("issues") or {}).get(state.get("active_issue_id")) or {}).get("issue_revision"),
-            "plans_version": get_plan_library().version,
-        },
+        "retrieval_basis": retrieval_basis(state),
         **plans,
     }
 
@@ -2232,19 +2276,36 @@ def _diagnose_outcome(
     plans_ranked: list[dict[str, Any]], *, knowledge_status: str, exact_hits: list[str],
     exhausted_plans: list[str] = (),
     clarifications: list[dict] = (), previous_outcome: dict | None = None,
+    state: SessionState | None = None,
 ) -> dict[str, Any]:
     """有假设 → 进 guide；来源 synthesize（模型按证据排序）或 retrieval_order（模型不可用时按命中顺序）；无候选 → R5。"""
     clarifications = [candidate for candidate in clarifications if candidate["plan_id"] not in exhausted_plans]
-    if not plans_ranked and clarifications:
-        previous = previous_outcome or {}
-        attempts = previous.get("attempts", 0) if previous.get("mode") == "clarify" else 0
-        if attempts < clarify_mod.MAX_CLARIFICATIONS:
-            candidate = clarifications[0]
+    previous = previous_outcome or {}
+    attempts = previous.get("attempts", 0) if previous.get("mode") == "clarify" else 0
+    if not plans_ranked and clarifications and attempts < clarify_mod.MAX_CLARIFICATIONS:
+        candidate = clarifications[0]
+        return {
+            "diagnose_outcome": {"mode": "clarify", **candidate, "attempts": attempts + 1},
+            "_decision": {"outcome": "clarify", "reason": "applicability", "question": candidate["question"]},
+            "escalate_reason": None, "plan_cursor": None,
+        }
+    if not plans_ranked and knowledge_status == "no_match" and state is not None and not confirmed_symptom(state):
+        # 只有情绪或「想让它正常工作」（T60）：没有可核对的现象也没有错误码，知识库自然无命中。
+        # 这时交人工只是把空摘要推给同事；先问现象，与 disambiguate 的症状追问共用同一个预算，问满才 R5。
+        clar = dict(state.get("clarification") or {})
+        subject = clarify_mod.clarify_subject("symptom")
+        asked = int(clar.get("attempts") or 0) if clar.get("question") and clar.get("subject") == subject else 0
+        if asked < clarify_mod.MAX_CLARIFICATIONS:
+            # 计数由 clarify 节点的 count_attempt 统一 +1；这里只把预算绑定到「症状」这个主题，不改 attempts。
             return {
-                "diagnose_outcome": {"mode": "clarify", **candidate, "attempts": attempts + 1},
-                "_decision": {"outcome": "clarify", "reason": "applicability", "question": candidate["question"]},
+                "diagnose_outcome": {"mode": "clarify", "reason": "symptom_missing", "attempts": asked + 1},
+                "_decision": {"outcome": "clarify", "reason": "symptom"},
+                "clarification": {**clar, "reason": "symptom", "subject": subject} if clar.get("reason") == "symptom"
+                else {"reason": "symptom", "attempts": 0, "subject": subject},
                 "escalate_reason": None, "plan_cursor": None,
             }
+    # 走到这里，症状追问已经有了结果（命中方案或交人工）：澄清预算用完，不再带到下一轮
+    settled = {"clarification": None} if (state or {}).get("clarification", {}) and (state or {})["clarification"].get("reason") == "symptom" else {}
     if not plans_ranked:
         return {
             "diagnose_outcome": {
@@ -2254,6 +2315,7 @@ def _diagnose_outcome(
             },
             "escalate_reason": "R5",
             "plan_cursor": None,
+            **settled,
         }
     available = [p for p in plans_ranked if p["plan_id"] not in exhausted_plans]
     if not available:
@@ -2262,6 +2324,7 @@ def _diagnose_outcome(
             "escalate_reason": "R2",
             "plan_cursor": None,
             "next_action": {"kind": "handoff_offer", "reason": "no_supported_followup", "compat_rule": "R2"},
+            **settled,
         }
     first = available[0]
     mode = "exact_code" if exact_hits else "evidence"
@@ -2280,6 +2343,7 @@ def _diagnose_outcome(
             "step_id": plan.first_step().step_id,
             "source": first.get("source"),
         },
+        **settled,
     }
 
 

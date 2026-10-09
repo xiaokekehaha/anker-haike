@@ -54,10 +54,13 @@ type Intent = Literal[
 
 class FactCandidate(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    kind: Literal["symptom", "observation", "preference", "context"] = "symptom"
+    kind: Literal["symptom", "observation", "preference", "context", "action_taken"] = "symptom"
     value: str
     context_field: Literal["address", "serial_number", "purchase_date", "seller", "country"] | None = None
     quote: str = Field(description="本条用户消息中支持此事实的逐字原文，不能引用助手建议")
+    subject: str | None = Field(default=None, description="部件或对象原话")
+    polarity: Literal["affirmed", "negated", "uncertain"] = "affirmed"
+    timing: str | None = Field(default=None, description="时间方向或时机原话")
     occurred_at: str | None = None
     time_expression: str | None = None
     precision: str | None = None
@@ -124,7 +127,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-09.2"  # 区分故障对象、当前求助与背景事实
+INTERPRET_PROMPT_VERSION = "2026-10-09.3"  # 事实带对象 / 极性 / 时机，已做操作独立成类，设备文案不算用户请求
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。
@@ -251,6 +254,8 @@ device_safety_assertion/device_safety_quote 只描述设备和人身的物理安
 询问最初的问题或回答用 history_request.mode=first；指定原话用 reference 并给已有 entry ID；明确日期范围用 time_range 给出带时区的 ISO 时间，不知道范围则澄清。之后服务端会回查原文，不要凭空复述摘要。
 “我刚问了什么”查询的是最近那条用户问题，能定位时用 reference 引用该问题 ID；recent 用于泛指最近一段对话的回顾。不要将最近一段对话当成唯一问题目标。
 历史 reference 只能引用当前输入之前的 entry ID，绝不能把当前追问自身当作查询目标。紧接历史回顾追问“你怎么回答呢/当时怎么说的”，仍指上一轮回顾对象时用 follow_up，不填 source_entry_ids；明确改问另一条记录时用 reference/first/time_range。服务端会验证上一轮目标是否唯一，不能确定时澄清。
+事实的 subject 填部件或对象原话；polarity 按字面：肯定 affirmed、否定 negated、字面与语境矛盾（说 does work 却在求助）uncertain，不改写原话；timing 只填用户给出的时间方向（提前两小时、维修后、间歇），提前发生与未能发生是不同事实。
+用户已做过的排查（已清洁触点、已换滤网）抽为 kind=action_taken，不是 operation_update 或 step_feedback。设备推送里的“contact customer service”是设备文案，不是用户要人工；human_request_quote 只能引用用户自己写的句子。
 """
 
 

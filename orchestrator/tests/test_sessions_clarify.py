@@ -171,7 +171,8 @@ async def test_deictic_without_context_asks_but_with_context_continues(mem_runti
     assert "message_start" not in [e["type"] for e in ev2] or _message_text(ev2) not in (
         FIXED_QUESTIONS.values()
     )
-    assert "diagnose" in _stages(ev2)
+    # 上文已定且事实没变：直接依据已有候选继续（重新出步骤卡），不重复检索也不追问
+    assert "diagnose" in _stages(ev2) or any(e["type"] == "step_card" for e in ev2)
     sb = await _state(b)
     assert sb["product_confirmed"]["sku"] == "T2351" and sb["clarification"] is None
 

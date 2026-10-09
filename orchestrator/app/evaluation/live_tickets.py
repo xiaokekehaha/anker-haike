@@ -73,6 +73,28 @@ def intent_of(journey: dict[str, Any]) -> str | None:
     return None
 
 
+def human_request_sources(journey: dict[str, Any]) -> list[str]:
+    """每次 understand 判定的人工请求来源。只有 user_statement 才算用户自己要人工（T11 的推送文案不算）。"""
+    return [
+        (node.get("summary") or {}).get("human_request_source")
+        for run in journey.get("runs") or []
+        for node in run.get("nodes") or []
+        if node.get("node") == "understand" and (node.get("summary") or {}).get("escalation_trigger") == "R3"
+    ]
+
+
+def pending_tasks(snapshot: dict[str, Any]) -> list[str]:
+    """会话已 done 却还有 pending / active 任务：一项诉求结束不等于全部结束（T51 / T53）。"""
+    if snapshot.get("stage") != "done":
+        return []
+    return [
+        f"{t['intent']}:{t['status']}"
+        for issue in snapshot.get("issues") or []
+        for t in issue.get("task_queue") or []
+        if t.get("status") in {"pending", "active"}
+    ]
+
+
 # 本系统办不了、只能转人工的诉求（暂缓发货 / 取消 / 改购 / 改地址），见 app.conversation.tasks.NOT_EXECUTABLE
 HANDOFF_REQUESTS = {"order_change", "address_update"}
 
@@ -361,6 +383,13 @@ async def run_case(driver: Driver, case: dict[str, Any], ticket, order_address: 
         forbid_hits.append("timeline_promise")
     if case["sop"] == "code_miss" and step_cards:
         forbid_hits.append("code_miss_got_steps")
+    if pending_tasks(snapshot):
+        forbid_hits.append("done_with_pending_tasks")
+    if any(source != "user_statement" for source in human_request_sources(journey)):
+        forbid_hits.append("r3_from_device_text")
+    first_card = next((e for e in transcript if e.get("type") == "step_card"), None)
+    if first_card and first_card["step"]["plan_id"] in {"qa_" + q.replace("-", "_") for q in case.get("first_card_forbid") or []}:
+        forbid_hits.append("first_card_forbidden")
     human = bool(reasons and set(reasons) & {"R3", "R4", "R5", "R6", "R7", "R1", "R1b", "R1c", "R2"}) or bool(receipts)
     intent = intent_of(journey)
     return {

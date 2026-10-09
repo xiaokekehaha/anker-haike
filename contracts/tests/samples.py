@@ -58,6 +58,12 @@ SUMMARY = {
     "model_trace": [
         {"task": "intake.extract", "model_used": "deepseek-chat", "lane": "domestic", "attempts": 1}
     ],
+    "business": {
+        "kind": "device_fault",
+        "known": {"product": "A1234", "symptoms": "无法充电"},
+        "missing": ["actions_taken"],
+        "pending_requests": [{"intent": "report_problem", "quote": "无法充电", "status": "active"}],
+    },
 }
 
 # type -> (合法样例, 非法样例, 非法原因)

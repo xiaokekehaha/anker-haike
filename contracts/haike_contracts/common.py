@@ -302,6 +302,26 @@ CaseStatus = Literal[
 ]
 
 
+class PendingRequest(Strict):
+    """交接时队列里尚未办结的一项客户诉求。"""
+
+    intent: str
+    quote: str
+    status: str
+
+
+class HandoffBusiness(Strict):
+    """交接摘要的业务块（2026-10-09 I7 / I8）：按业务类型带具体字段，已知、缺失、待办分别标明。
+
+    kind 决定人工先看什么：订单暂停看订单 / 包裹 / 条件；设备故障看产品 / 症状 / 已做操作；配件采购看型号与部件。
+    """
+
+    kind: Literal["device_fault", "order_change", "parts_purchase", "warranty_review", "safety", "unknown"]
+    known: dict[str, str] = Field(default_factory=dict)
+    missing: list[str] = Field(default_factory=list)
+    pending_requests: list[PendingRequest] = Field(default_factory=list)
+
+
 class EscalationSummary(Strict):
     """escalation_summary 的唯一层级：summary 对象（08 §5）。"""
 
@@ -321,3 +341,4 @@ class EscalationSummary(Strict):
     task_queue: list[dict] = Field(default_factory=list)
     emotion_track: list[dict] = Field(default_factory=list)
     draft_reply: str | None = None
+    business: HandoffBusiness | None = None

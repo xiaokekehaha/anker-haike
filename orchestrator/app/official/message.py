@@ -27,7 +27,9 @@ LABELS: dict[str, tuple[str, ...]] = {
                     "Description du problème", "Descripción del problema"),
     "push": ("Problem Push", "Probleempush", "Push-Benachrichtigung"),
     "order_no": ("Order No", "Order Number", "Order", "Ordernummer", "Bestellnummer", "Numéro de commande", "Número de pedido"),
-    "country": ("Country", "Land", "Pays", "País", "Inlogland", "Land van accountregistratie"),
+    "country": ("Country", "Land", "Pays", "País"),
+    # App 账号的登录 / 注册国家（T22 的 Inlogland: NL）：不是购买国家，不能当购买渠道或经销商判定依据
+    "login_country": ("Inlogland", "Land van accountregistratie"),
     "source": ("Source", "Bron"),
 }
 APP_MARKERS = re.compile(r"Product\s*PN|Product-PN|Produktnummer|Référence produit|Número de parte|Problem Type|Probleemtype|Problemtyp", re.IGNORECASE)
@@ -54,6 +56,7 @@ class ParsedMessage:
     order_no: str | None = None
     tracking_no: str | None = None
     country: str | None = None
+    login_country: str | None = None
     seller: str | None = None
     product_name: str | None = None
     description: str | None = None
@@ -115,6 +118,7 @@ def parse_message(text: str) -> ParsedMessage:
         order_no=params.get("order_no"),
         tracking_no=params.get("tracking_no"),
         country=country.upper() if country and len(country) <= 3 else country,
+        login_country=(fields.get("login_country") or "").strip().upper() or None,
         seller=seller,
         product_name=fields.get("product_name"),
         description=fields.get("description"),

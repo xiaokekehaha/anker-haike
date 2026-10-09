@@ -214,13 +214,16 @@ def symptom_decision(
 ) -> Decision:
     """产品已定之后的症状判定：继续 / 问一句 / 升级。disambiguate 与产品卡片选中后（apply_action）共用，
     否则「我的 S1 Pro 出问题了」选完型号会在没有任何现象的情况下直接下发第一条计划的步骤。"""
-    from app.diagnose.decision import decide_symptoms, fact_codes
+    from app.diagnose.decision import confirmed_symptom, decide_symptoms, fact_codes
     product = confirmed or {}
     category = product.get("category") or update.get("category") or category
     decision = decide_symptoms({**state, **update})
     update["diagnostic_decision"] = decision.snapshot(state)
     if decision.outcome == "continue":
-        update["clarification"] = None
+        # 抽到肯定极性的症状 / 错误码才算回答了现象。只按词数放行检索的回答（「I told you, it doesn't work」）
+        # 保留预算：检索命中则由 _diagnose_outcome 清零，没命中则继续计数，问满再交人工（T60）。
+        if clar.get("reason") != "symptom" or confirmed_symptom({**state, **update}):
+            update["clarification"] = None
         codes = set(fact_codes({**state, **update}))
         available = get_plans().allowed_for(category=category, sku=product.get("sku"))
         if (
@@ -242,16 +245,22 @@ def symptom_decision(
     return _clarify(clar, "symptom", update, category=category)
 
 
+def clarify_subject(reason: str, **detail: Any) -> dict[str, Any]:
+    """同一澄清预算所绑定的「问的是什么」：disambiguate 与 retrieve 两处发出的症状追问必须记在同一个预算上，
+    否则两条路径交替发问，计数永远到不了上限（T60 实测四轮仍在问现象）。"""
+    return {"reason": reason, "unmatched_hints": detail.get("unmatched_hints", []),
+            "known_symptoms": detail.get("known_symptoms", []),
+            "expected_category": detail.get("expected_category"),
+            "confirmed": detail.get("confirmed"), "mentioned": detail.get("mentioned")}
+
+
 def _clarify(
     clar: dict[str, Any], reason: Reason, update: dict[str, Any], **detail: Any
 ) -> Decision:
     """attempts ≥ MAX 且这是对上一问的回答 → R7；否则再问一次（attempts 在真正发问时 +1）。"""
     # A budget belongs to an actual question about the same evidence. Legacy
     # counters lack that binding and cannot prove the user was asked this field.
-    subject = {"reason": reason, "unmatched_hints": detail.get("unmatched_hints", []),
-               "known_symptoms": detail.get("known_symptoms", []),
-               "expected_category": detail.get("expected_category"),
-               "confirmed": detail.get("confirmed"), "mentioned": detail.get("mentioned")}
+    subject = clarify_subject(reason, **detail)
     attempts = int(clar.get("attempts") or 0) if clar.get("question") and clar.get("subject") == subject else 0
     if attempts >= MAX_CLARIFICATIONS:
         update.update(

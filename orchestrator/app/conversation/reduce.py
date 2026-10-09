@@ -11,7 +11,7 @@ from app.conversation.operation_conditions import (
     resolve_operation_reply,
     update_conditions,
 )
-from app.conversation.quotes import quoted
+from app.conversation.quotes import normalize, quoted
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
@@ -74,6 +74,31 @@ ISSUE_FIELDS = {
 
 def stable_id(*parts) -> str:
     return uuid.uuid5(uuid.NAMESPACE_URL, ":".join(map(str, parts))).hex
+
+
+def device_message_spans(text: str) -> list[str]:
+    """首封表单里由设备 / App 写出的句子：推送提示与问题描述字段。
+
+    T11：「Click to contact customer service for assistance」出现在 Problem Push 里，是错误码附带的固定文案。
+    引文落在这些字段里说明是设备在说话，不能当作用户自己的请求；作为故障现象仍然有效。
+    """
+    from app.official.message import parse_message
+
+    fields = parse_message(text or "").fields
+    spans = []
+    for key in ("push", "description"):
+        value = (fields.get(key) or "").strip()
+        if not value:
+            continue
+        norm = normalize(value)
+        if any(norm in normalize(s) or normalize(s) in norm for s in spans):
+            continue
+        spans.append(value)
+    return spans
+
+
+def quote_source(quote: str | None, spans: list[str]) -> str:
+    return "device_message" if quote and any(normalize(quote) in normalize(span) for span in spans) else "user_statement"
 
 
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
@@ -187,6 +212,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         text = ((state.get("last_action") or {}).get("payload") or {}).get("text", "")
     facts = issue.setdefault("facts", [])
     applied = []
+    spans = device_message_spans(text)
     for index, correction in enumerate(meaning.corrections):
         old = next(
             (f for f in facts if f["fact_id"] == correction.fact_id and f["status"] == "active"),
@@ -233,6 +259,10 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "status": "active",
             "revision": 1,
             "source_kind": "user_report",
+            "source": quote_source(candidate.quote, spans),
+            "subject": candidate.subject,
+            "polarity": candidate.polarity,
+            "timing": candidate.timing,
             "source_entry_ids": [iid],
             "recorded_at": at,
             "occurred_at": candidate.occurred_at,
@@ -286,14 +316,25 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         )
         issue["pending_card"] = None
         resumed_pending = False
+    # 否定句（「没有冒烟」「no suction loss」）是反证，不是现象：留在 facts 里供摘要与适用性核对，不进症状。
     issue["symptoms"] = [
-        f["value"] for f in facts if f["status"] == "active" and f["kind"] == "symptom"
+        f["value"] for f in facts
+        if f["status"] == "active" and f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"
     ]
     issue["observations"] = [
         f["value"] for f in facts if f["status"] == "active" and f["kind"] == "observation"
     ]
     operation_proposal, operation_clarification = resolve_operation_reply(text, issue)
     operation_proposal = operation_proposal or meaning.operation_update
+    # 「despite wiping clean the electrical connections」是已做过的排查（action_taken），不是操作条件变了（T31）。
+    # 同一段原话既被抽成已做操作又被当成 operation_update 时，以事实为准，不触发 reassess。
+    if operation_proposal is not None and any(
+        f.kind == "action_taken" and f.quote and (
+            normalize(operation_proposal.quote) in normalize(f.quote) or normalize(f.quote) in normalize(operation_proposal.quote)
+        )
+        for f in meaning.facts
+    ):
+        operation_proposal = None
     if operation_clarification:
         operation_proposal = None
         clarify = operation_clarification
@@ -379,13 +420,20 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     intent = meaning.primary_intent
     if intent in {"replacement_request", "refund_request", "address_update"}:
         issue["requested_remedy"] = {"replacement_request": "replace", "refund_request": "refund", "address_update": "address_update"}[intent]
-    if intent == "request_human" and state.get("entry") != "action" and not (
-        quoted(meaning.human_request_quote, text)
-    ):
-        # A classifier's recommendation is not a user request to cancel a task.
-        intent = "complaint" if meaning.emotion_level in {"dissatisfied", "angry", "complaint_risk"} else "unknown"
-        if intent == "unknown":
-            clarify = clarify or "请说明是需要接入人工客服，还是继续处理当前问题。"
+    human_request_source = None
+    if intent == "request_human" and state.get("entry") != "action":
+        in_text = quoted(meaning.human_request_quote, text)
+        if in_text and quote_source(meaning.human_request_quote, spans) == "user_statement":
+            human_request_source = "user_statement"
+        elif in_text and (parse_codes(text) or any(c.kind == "symptom" for c in meaning.facts)):
+            # 引文确实在原文里，但落在设备推送字段（T11 的「Click to contact customer service」），
+            # 而这封消息报的是故障：这是一条故障求助，按排障处理。
+            intent = "report_problem"
+        else:
+            # A classifier's recommendation is not a user request to cancel a task.
+            intent = "complaint" if meaning.emotion_level in {"dissatisfied", "angry", "complaint_risk"} else "unknown"
+            if intent == "unknown":
+                clarify = clarify or "请说明是需要接入人工客服，还是继续处理当前问题。"
     mode = (
         "clarify"
         if clarify
@@ -452,6 +500,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         "business_ambiguous": business_ambiguous,
         "operation_changed": operation_changed,
         "diagnostic_request": quoted(meaning.diagnostic_request_quote, text),
+        "human_request_source": human_request_source,
     }
     result = {key: copy.deepcopy(issue.get(key, default)) for key, default in ISSUE_FIELDS.items()}
     preferences = dict(state.get("session_preferences") or {})
@@ -476,6 +525,12 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         _verify=None,
     )
     return result
+
+
+def parse_codes(text: str) -> tuple[str, ...]:
+    from app.official.message import parse_message
+
+    return parse_message(text or "").codes
 
 
 def persist_issue(state: dict) -> dict:

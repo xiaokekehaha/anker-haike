@@ -160,3 +160,55 @@ async def test_safety_first_message_full_chain(mem_runtime):
     kinds = [i["kind"] for i in snap["timeline"]]
     assert kinds[-2:] == ["assistant_message", "escalation_summary"]
     assert snap["timeline"][-1]["card_id"] == summ["card_id"] and snap["stage"] == "escalate"
+
+
+# ---- 摘要从事实记录生成（2026-10-09 官方 63 单 I7 / I8：T22 T9 T60）----
+
+T22_TEXT = (
+    "Bron: eufy_mega\nInlogland:NL\nLand van accountregistratie: NL\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\n"
+    "Probleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\n"
+    "Probleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\n"
+    "Probleembeschrijving: Wiel raakt de grond niet.\n"
+)
+
+
+def test_problem_falls_back_to_parsed_description_and_login_country_is_not_a_channel():
+    """T22：模型没抽出症状事实时，摘要问题字段取表单的推送 / 描述；Inlogland 是登录国家，不是购买渠道。"""
+    state = {"text": T22_TEXT, "active_issue_id": "i", "issues": {"i": {"facts": [], "title": "待描述的问题"}},
+             "product_confirmed": {"sku": "T2351", "name": "eufy Clean X10 Pro Omni"}}
+    s = build_summary(state, reason="R5", lane="domestic")
+    assert "Wiel raakt de grond niet" in s.problem
+    assert not any("购买渠道" in o for o in s.observations)
+    assert any(o == "客户登录 / 注册国家：NL" for o in s.observations)
+    assert s.business is not None and s.business.kind == "device_fault"
+    assert "Wiel raakt de grond niet" in s.business.known["symptoms"]
+
+
+def test_business_block_for_order_change_keeps_condition_quote():
+    """T9：暂缓发货诉求交人工 → 摘要按业务类型带订单、条件原话与待办队列。"""
+    quote = "If you have not shipped, don't and let's first talk about your other products."
+    state = {
+        "text": "Order Anker008. " + quote, "active_issue_id": "i", "issues": {"i": {"facts": []}},
+        "requested_remedy": "order_change", "case_order_no": "Anker008",
+        "task_queue": [
+            {"task_id": "a", "intent": "order_change", "quote": quote, "status": "waiting_human"},
+            {"task_id": "b", "intent": "logistics_query", "quote": quote, "status": "pending"},
+        ],
+        "business_context": {"version": 1, "status": "resolved", "active_subject_id": "s", "subjects": {"s": {
+            "identifiers": {"order_no": {"value": "Anker008", "source": "user", "input_id": "i1"}},
+            "facts": {"logistics_status": {"value": "pre-order, not shipped yet", "source": "backend", "input_id": "i1"}},
+        }}},
+    }
+    s = build_summary(state, reason="R6", lane="domestic")
+    b = s.business
+    assert b.kind == "order_change"
+    assert b.known["order_no"] == "Anker008" and b.known["condition"] == quote
+    assert b.known["package_status"] == "pre-order, not shipped yet"
+    assert [(r.intent, r.status) for r in b.pending_requests] == [("order_change", "waiting_human"), ("logistics_query", "pending")]
+    assert "【业务】order_change" in summary_to_text(s)
+
+
+def test_business_block_lists_missing_fields():
+    state = {"text": "it is broken", "active_issue_id": "i", "issues": {"i": {"facts": []}}}
+    s = build_summary(state, reason="R5", lane="domestic")
+    assert s.business.kind == "unknown" and set(s.business.missing) >= {"product", "symptoms"}

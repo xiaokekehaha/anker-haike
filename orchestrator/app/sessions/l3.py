@@ -129,6 +129,20 @@ def finish(state, route):
     return "advance_tasks" if state.get("completed_task_intent") else route
 
 
+def troubleshooting_pending(state) -> bool:
+    return any(t["intent"] == "report_problem" and t["status"] == "pending" for t in state.get("task_queue") or [])
+
+
+def remedy_closed(state):
+    """免费服务资格的结论（过保 / 非授权经销商）只结束换货退款这一项诉求。
+
+    同一句里的排障请求仍在队列里（T51 / T53：「换货 + 电池撑不住」）：把办理任务记 done 后回到任务推进，
+    由 advance_tasks 提升排障任务。以前这里直接 stage=done + commit_issue，排障任务永远 pending 而会话已结束。
+    """
+    intent = INTENT_OF_REMEDY.get(state.get("requested_remedy"), "replacement_request")
+    return {"completed_task_intent": intent, "task_outcome": "done", "l3_route": "advance_tasks"}
+
+
 def warranty_of(state) -> WarrantyDecision | None:
     raw = state.get("warranty")
     return WarrantyDecision.model_validate(raw) if raw else None
@@ -337,18 +351,19 @@ async def propose(state):
             state,
             f"I've checked: {decision.reason}. The warranty has expired (as of {decision.as_of.isoformat()}). "
             "I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. "
-            "To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories.",
+            "To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories."
+            + (" I can still walk you through the official checks for this issue." if troubleshooting_pending(state) else ""),
         )
         case = await services.cases.transition(state["case_id"], "proposing", "订单已过保")
         case = await services.cases.transition(state["case_id"], "closed_unresolved", "过保，按 SOP 委婉拒绝")
         emit_case(state, case)
-        return {"stage": "done", "case_status": case["status"], "l3_route": "commit_issue"}
+        return {"stage": "done", "case_status": case["status"], **remedy_closed(state)}
     if decision.status == "unauthorized_dealer":
         say(state, f"I've checked: {decision.reason}. Please contact the seller directly for after-sales support.")
         case = await services.cases.transition(state["case_id"], "proposing", "非授权经销商")
         case = await services.cases.transition(state["case_id"], "closed_unresolved", "非授权经销商，引导联系商家")
         emit_case(state, case)
-        return {"stage": "done", "case_status": case["status"], "l3_route": "commit_issue"}
+        return {"stage": "done", "case_status": case["status"], **remedy_closed(state)}
     return await _offer(state, case, kind, f"I've checked: {decision.reason}. ")
 
 
@@ -651,6 +666,10 @@ async def hand_off_request(state, remedy):
 
 def handoff_reason(state, row):
     """Why the case sits in the queue, in the words a desk agent reads first."""
+    # 刷新摘要时沿用上一版的原因：它已经带着客户原话（「暂缓…：If you have not shipped…」），不能退化成泛泛的类型说明
+    previous = next((e["payload"] for e in reversed(row["events"]) if e["type"] == "handoff_summary"), None)
+    if previous and (previous.get("reason") or {}).get("text"):
+        return previous["reason"]["text"]
     latest = next(
         (e["payload"]["reason"] for e in reversed(row["events"])
          if e["type"] == "status_changed" and e["payload"]["to"] == "awaiting_approval"),
@@ -1038,6 +1057,15 @@ async def advance_tasks(state):
     tasks, task = next_task(state.get("task_queue") or [], completed, business=completed_business,
                             task_id=decision.get("task_id"), outcome=outcome, only=CONSULT_INTENTS if waiting else None)
     update = {"task_queue": tasks, "completed_task_intent": None, "task_outcome": None}
+    if completed in CONSULT_INTENTS and outcome == "done" and state.get("case_id") and state.get("case_status") == "awaiting_approval":
+        # 交接已入队、查询随后才完成（T9：先交暂缓诉求，再查到预售发货日）：
+        # 把后来获得的物流事实并进交接摘要；不重新入队，也不撤回人工决定。
+        # 只有「已知事实」真的变了才重写，同一诉求再说一遍不会多出一条记录。
+        row = await require_services().cases.store.get(state["case_id"])
+        previous = next((e["payload"] for e in reversed(row["events"]) if e["type"] == "handoff_summary"), None)
+        fresh = build_summary({**state, "task_queue": tasks}, reason="R6", lane=os.environ.get("MODEL_LANE", "domestic"))
+        if fresh.business and (previous or {}).get("business", {}).get("known") != fresh.business.known:
+            await _record_handoff({**state, "task_queue": tasks}, row)
     if task:
         say(state, "Next up: " + LABELS[task["intent"]] + ".")
         update.update(

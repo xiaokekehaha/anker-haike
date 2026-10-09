@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 8b9cd11e795273eeb1d6731493ca9b133bbcdb6f06845aefc33822df3f192094
+// SHA-256: 6484013c97bdbb3385bea7ccc4b03d86cc7aed488096043b680e94755a7e3f92
 import * as z from 'zod';
 import type { ServerEvent } from '../types/events';
 
@@ -402,6 +402,17 @@ export const serverEventSchema = z.fromJSONSchema({
       "additionalProperties": false,
       "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
       "properties": {
+        "business": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HandoffBusiness"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "case_id": {
           "anyOf": [
             {
@@ -1076,6 +1087,50 @@ export const serverEventSchema = z.fromJSONSchema({
       "title": "GateResult",
       "type": "object"
     },
+    "HandoffBusiness": {
+      "additionalProperties": false,
+      "description": "交接摘要的业务块（2026-10-09 I7 / I8）：按业务类型带具体字段，已知、缺失、待办分别标明。\n\nkind 决定人工先看什么：订单暂停看订单 / 包裹 / 条件；设备故障看产品 / 症状 / 已做操作；配件采购看型号与部件。",
+      "properties": {
+        "kind": {
+          "enum": [
+            "device_fault",
+            "order_change",
+            "parts_purchase",
+            "warranty_review",
+            "safety",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Known",
+          "type": "object"
+        },
+        "missing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing",
+          "type": "array"
+        },
+        "pending_requests": {
+          "items": {
+            "$ref": "#/$defs/PendingRequest"
+          },
+          "title": "Pending Requests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "HandoffBusiness",
+      "type": "object"
+    },
     "ImageQuality": {
       "additionalProperties": false,
       "properties": {
@@ -1558,6 +1613,31 @@ export const serverEventSchema = z.fromJSONSchema({
         "version"
       ],
       "title": "PendingChanged",
+      "type": "object"
+    },
+    "PendingRequest": {
+      "additionalProperties": false,
+      "description": "交接时队列里尚未办结的一项客户诉求。",
+      "properties": {
+        "intent": {
+          "title": "Intent",
+          "type": "string"
+        },
+        "quote": {
+          "title": "Quote",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "intent",
+        "quote",
+        "status"
+      ],
+      "title": "PendingRequest",
       "type": "object"
     },
     "Ping": {

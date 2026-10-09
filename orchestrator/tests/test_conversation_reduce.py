@@ -235,3 +235,69 @@ def test_fact_quote_matches_across_whitespace_and_apostrophe_form():
                {"value": "invented", "quote": "the robot caught fire"}],
     )
     assert state["symptoms"] == ["going off 2 hours before schedule", "cleans not recorded by app"]
+
+
+# ---- 事实来源与极性（2026-10-09 官方 63 单 I1 / I3：T11、T50、T31）----
+
+T11_TEXT = (
+    "Product Name: S1 Pro\nProduct PN: T2080A\nProblem Type: ERROR\n"
+    "Problem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\n"
+    "Problem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\n"
+    "Problem Upload Images: []"
+)
+
+
+def test_device_message_contact_phrase_is_not_a_human_request():
+    """T11：App 推送里的「Click to contact customer service」是设备文案，不是用户要人工。"""
+    state = turn(
+        {}, "i1", T11_TEXT, primary_intent="request_human", device_relation="current",
+        human_request_quote="Click to contact customer service for assistance",
+        facts=[{"value": "error while adding clean water", "quote": "The robot encountered an error while adding clean water"}],
+    )
+    assert state["turn_decision"]["primary_intent"] == "report_problem"
+    assert state["turn_decision"]["escalation_trigger"] is None
+    assert state["turn_decision"]["human_request_source"] is None
+    fact = state["issues"][state["active_issue_id"]]["facts"][0]
+    assert fact["source"] == "device_message"
+    assert state["symptoms"] == ["error while adding clean water"]
+
+
+def test_user_written_human_request_still_escalates():
+    state = turn(
+        {}, "i1", "The robot shows EB1L again and again. Please let me talk to a human.",
+        primary_intent="request_human", device_relation="current",
+        human_request_quote="Please let me talk to a human",
+    )
+    assert state["turn_decision"]["escalation_trigger"] == "R3"
+    assert state["turn_decision"]["human_request_source"] == "user_statement"
+
+
+def test_negated_and_uncertain_polarity_are_kept_but_handled():
+    state = turn(
+        {}, "i1", "I have a S1 pump, the left one does work, no smoke though",
+        primary_intent="report_problem", device_relation="current", product_hints=["S1 pump"],
+        facts=[
+            {"value": "left side does work", "quote": "the left one does work", "subject": "left pump", "polarity": "uncertain"},
+            {"value": "no smoke", "quote": "no smoke though", "polarity": "negated"},
+        ],
+    )
+    facts = state["issues"][state["active_issue_id"]]["facts"]
+    assert [(f["polarity"], f["subject"]) for f in facts] == [("uncertain", "left pump"), ("negated", None)]
+    assert state["symptoms"] == ["left side does work"]
+
+
+def test_action_taken_overrides_operation_update():
+    """T31：「despite wiping clean the electrical connections」是已做过的排查，不是操作条件变更。"""
+    state = turn(
+        {}, "i1", "The robot won't charge despite wiping clean the electrical connections",
+        primary_intent="report_problem", device_relation="current",
+        facts=[
+            {"value": "won't charge at base", "quote": "The robot won't charge", "timing": None},
+            {"kind": "action_taken", "value": "wiped electrical connections", "quote": "wiping clean the electrical connections"},
+        ],
+        operation_update={"signal": "device_ready", "quote": "wiping clean the electrical connections"},
+    )
+    assert state["turn_decision"]["operation_changed"] is False
+    kinds = [f["kind"] for f in state["issues"][state["active_issue_id"]]["facts"]]
+    assert kinds == ["symptom", "action_taken"]
+    assert state["symptoms"] == ["won't charge at base"]

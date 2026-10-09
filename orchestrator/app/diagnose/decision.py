@@ -62,6 +62,21 @@ def described(state, issue) -> bool:
     return len(words) >= 6 or len(re.findall(r"[一-鿿]", rest)) >= 12
 
 
+def confirmed_symptom(state, issue=None) -> bool:
+    """有可核对的现象：肯定极性的症状事实，或消息里的错误码。否定句和「坏了 / 不行」这类泛泛之词不算。
+
+    described() 还会按词数放行检索（给知识库一次机会）；但放行不等于已经问清，澄清预算不能因此清零（T60）。"""
+    issue = issue if issue is not None else (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    facts = [f for f in _active_facts(issue) if f.get("polarity", "affirmed") == "affirmed"]
+    return bool(facts or state.get("error_codes") or parse_codes(state.get("text") or ""))
+
+
+def parse_codes(text: str) -> tuple[str, ...]:
+    from app.official.message import parse_message
+
+    return parse_message(text).codes
+
+
 def fact_codes(state) -> list[str]:
     """本问题症状事实上的码。只有照片签名写的症状事实带码：签名命中的官方 Q&A 标题里的错误码。"""
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})

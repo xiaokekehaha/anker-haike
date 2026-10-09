@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { EscalationSummary, ExecutedStep, Feedback } from '../types/snapshot';
+import type { EscalationSummary, ExecutedStep, Feedback, HandoffBusiness } from '../types/snapshot';
 import styles from './Cards.module.css';
 import { HANDOFF_LABELS } from '../state/record';
 
@@ -23,6 +23,25 @@ function receiptFacts(facts: Record<string, string>): string {
   return Object.entries(facts).map(([key, value]) => `${FACT_LABELS[key] ?? key}：${value}`).join('；');
 }
 
+const BUSINESS_KIND: Record<HandoffBusiness['kind'], string> = {
+  device_fault: '设备故障', order_change: '订单变更', parts_purchase: '配件采购', warranty_review: '质保核实', safety: '安全风险', unknown: '待确认',
+};
+const BUSINESS_FIELD: Record<string, string> = {
+  product: '产品', symptoms: '现象', actions_taken: '已做操作', order_no: '订单号', package_status: '包裹状态', condition: '客户条件',
+  part: '部件', login_country: '登录国家',
+};
+
+const fieldLabel = (key: string) => BUSINESS_FIELD[key] ?? key;
+export function businessKnown(b: HandoffBusiness): string {
+  return Object.entries(b.known ?? {}).map(([key, value]) => `${fieldLabel(key)}=${value}`).join('；') || '无';
+}
+export function businessMissing(b: HandoffBusiness): string {
+  return (b.missing ?? []).map(fieldLabel).join('、') || '无';
+}
+export function businessPending(b: HandoffBusiness): string {
+  return (b.pending_requests ?? []).map((r) => `${r.intent}(${r.status})`).join('；') || '无';
+}
+
 /** 与后端 summary_to_text 同款的可读文本（票 16 一键复制）。 */
 export function summaryToText(s: EscalationSummary): string {
   return [
@@ -32,6 +51,7 @@ export function summaryToText(s: EscalationSummary): string {
     `【假设】${s.hypotheses?.join('；') || '无'}`,
     `【排查记录】${s.steps?.map(stepText).join('；') || '无'}`,
     `【升级原因】${s.reason.rule_id}：${s.reason.text}`,
+    ...(s.business ? [`【业务】${s.business.kind}；已知：${businessKnown(s.business)}；缺失：${businessMissing(s.business)}；待办：${businessPending(s.business)}`] : []),
     `【情绪】${s.emotion.level ?? '未判断'} / ${s.emotion.strategy}`,
     `【凭证】${s.receipt.status}${s.receipt.next_step ? `，下一步：${s.receipt.next_step}` : ''}`,
     `【凭证核实事实】${receiptFacts(s.receipt.verified_facts ?? {}) || '无'}`,
@@ -62,6 +82,14 @@ export function SummaryCard({ summary, updatedAt, revision, handoffStatus = 'pre
         <div><dt>观察</dt><dd>{summary.observations?.length ? summary.observations.join('；') : '无'}</dd></div>
         <div><dt>假设</dt><dd>{summary.hypotheses?.length ? summary.hypotheses.join('；') : '无'}</dd></div>
         <div><dt>排查记录</dt><dd>{summary.steps?.length ? summary.steps.map(stepText).join('；') : '无'}</dd></div>
+        {summary.business && (
+          <>
+            <div><dt>业务类型</dt><dd data-kind="business-kind">{BUSINESS_KIND[summary.business.kind]}</dd></div>
+            <div><dt>已知</dt><dd data-kind="business-known">{businessKnown(summary.business)}</dd></div>
+            <div><dt>缺失</dt><dd data-kind="business-missing">{businessMissing(summary.business)}</dd></div>
+            <div><dt>待办</dt><dd data-kind="business-pending">{businessPending(summary.business)}</dd></div>
+          </>
+        )}
         <div><dt>结束原因</dt><dd data-kind="end-reason">{summary.reason.text}<small> · 规则码 <code>{summary.reason.rule_id}</code>{summary.reason.cause ? ` · ${summary.reason.cause}` : ''}</small></dd></div>
         <div><dt>凭证状态</dt><dd>{STATUS[summary.receipt.status] ?? summary.receipt.status}{summary.receipt.next_step ? ` · 下一步：${summary.receipt.next_step}` : ''}</dd></div>
         {Object.keys(summary.receipt.verified_facts ?? {}).length > 0 && <div><dt>凭证核实事实</dt><dd>{receiptFacts(summary.receipt.verified_facts ?? {})}</dd></div>}

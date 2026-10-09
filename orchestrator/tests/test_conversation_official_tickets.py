@@ -522,7 +522,8 @@ async def test_t9_repeating_the_hold_request_does_not_queue_it_twice(l3_runtime,
         assert not any(e["type"] == "error" for e in again), again
         case = await _case_detail(client, first)
         kinds = [e["type"] for e in case["events"]]
-        assert kinds.count("review_requested") == 1 and kinds.count("handoff_summary") == 1, kinds
+        # 交接摘要两条：入队时一条、物流查到后补入包裹状态一条（I8）；重复诉求不再多写
+        assert kinds.count("review_requested") == 1 and kinds.count("handoff_summary") == 2, kinds
         state = await state_of(sid)
         queue = [(t["intent"], t["status"]) for t in state["issues"][state["active_issue_id"]]["task_queue"]]
         assert queue.count(("order_change", "waiting_human")) == 1, queue
@@ -594,7 +595,7 @@ async def test_a_changed_hold_request_reaches_the_desk_not_the_old_one(l3_runtim
         assert case["status"] == "awaiting_approval"
         kinds = [e["type"] for e in case["events"]]
         assert kinds.count("review_requested") == 1 and kinds.count("request_changed") == 1, kinds
-        assert kinds.count("handoff_summary") == 2
+        assert kinds.count("handoff_summary") == 3  # 暂停入队 + 物流补入 + 改口重写
         assert CANCEL in case["handoff_summary"]["reason"]["text"]
         queue = await _queue_of(sid)
         held = [q for q in queue if q[0] == "order_change"]
@@ -645,3 +646,28 @@ async def test_asking_for_a_colleague_does_not_start_the_pending_troubleshooting
         state = await state_of(sid)
         assert state["stage"] == "awaiting_human"
         assert [q[:2] for q in await _queue_of(sid)] == [("replacement_request", "waiting_human"), ("report_problem", "pending")]
+
+
+async def test_t11_device_prompt_gets_the_official_eb1l_steps(l3_runtime, monkeypatch):
+    """T11：推送文案「Click to contact customer service」被模型判成 request_human → 服务端按来源纠正，走 EB1L 官方步骤。"""
+    async def interpret(router, state, **kwargs):
+        return TurnInterpretation(
+            primary_intent="request_human", device_relation="current",
+            human_request_quote="Click to contact customer service for assistance",
+            facts=[{"value": "error while adding clean water", "quote": "The robot encountered an error while adding clean water"}],
+        ), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    rows, state = await _first_turn("T11")
+    assert state["turn_decision"]["escalation_trigger"] is None
+    assert not [e for e in rows if e["type"] == "escalation_summary"]
+    card = next(e for e in rows if e["type"] == "step_card")
+    assert card["step"]["plan_id"] == "qa_rv_0481"
+
+
+async def test_t11_degraded_path_does_not_read_push_text_as_human_request(l3_runtime):
+    """模型不可用时的关键词降级同样不能把设备文案当人工请求（降级词表没有排障意图，只断言不误升级）。"""
+    rows, state = await _first_turn("T11")
+    assert state["turn_decision"]["escalation_trigger"] is None
+    assert state["turn_decision"]["primary_intent"] != "request_human"
+    assert not [e for e in rows if e["type"] == "escalation_summary"]

@@ -395,6 +395,17 @@
       "additionalProperties": false,
       "description": "escalation_summary 的唯一层级：summary 对象（08 §5）。",
       "properties": {
+        "business": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HandoffBusiness"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "case_id": {
           "anyOf": [
             {
@@ -1069,6 +1080,50 @@
       "title": "GateResult",
       "type": "object"
     },
+    "HandoffBusiness": {
+      "additionalProperties": false,
+      "description": "交接摘要的业务块（2026-10-09 I7 / I8）：按业务类型带具体字段，已知、缺失、待办分别标明。\n\nkind 决定人工先看什么：订单暂停看订单 / 包裹 / 条件；设备故障看产品 / 症状 / 已做操作；配件采购看型号与部件。",
+      "properties": {
+        "kind": {
+          "enum": [
+            "device_fault",
+            "order_change",
+            "parts_purchase",
+            "warranty_review",
+            "safety",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Known",
+          "type": "object"
+        },
+        "missing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing",
+          "type": "array"
+        },
+        "pending_requests": {
+          "items": {
+            "$ref": "#/$defs/PendingRequest"
+          },
+          "title": "Pending Requests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "HandoffBusiness",
+      "type": "object"
+    },
     "ImageQuality": {
       "additionalProperties": false,
       "properties": {
@@ -1551,6 +1606,31 @@
         "version"
       ],
       "title": "PendingChanged",
+      "type": "object"
+    },
+    "PendingRequest": {
+      "additionalProperties": false,
+      "description": "交接时队列里尚未办结的一项客户诉求。",
+      "properties": {
+        "intent": {
+          "title": "Intent",
+          "type": "string"
+        },
+        "quote": {
+          "title": "Quote",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "intent",
+        "quote",
+        "status"
+      ],
+      "title": "PendingRequest",
       "type": "object"
     },
     "Ping": {

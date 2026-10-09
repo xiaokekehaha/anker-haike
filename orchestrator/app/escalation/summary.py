@@ -16,11 +16,15 @@ from haike_contracts.common import (
     EscalationSummary,
     ExecutedStep,
     Feedback,
+    HandoffBusiness,
     ModelTraceItem,
+    PendingRequest,
     ReceiptOutcome,
 )
 
+from app.conversation.business import BusinessContext
 from app.conversation.operation_conditions import conditions_for, feedback_history
+from app.conversation.tasks import NOT_EXECUTABLE
 from app.diagnose.query import category_label
 from app.official.message import parse_message
 from app.sessions.receipt import receipt_outcome
@@ -189,7 +193,8 @@ def build_summary(
         emotion_track=state.get("emotion_track") or [],
         draft_reply="已整理订单、质保判断与证据，请核实后继续处理。" if state.get("case_id") else None,
         product=product_text,
-        problem="；".join(f["value"] for f in facts if f["kind"] == "symptom") or "（尚未记录具体故障现象）",
+        problem=problem_text(state, facts),
+        business=handoff_business(state, facts, product_text),
         observations=list(dict.fromkeys([
             *list(state.get("observations") or []), *diagnostic_observations, *first_message_facts(state),
             *(f"操作限制：{b.quote or '该步骤暂时无法执行，原因未确认'}" for b in conditions_for(state).blockers if not b.cleared),
@@ -227,10 +232,91 @@ def first_message_facts(state: dict[str, Any]) -> list[str]:
         out.append(f"客户填写的订单号：{parsed.order_no}")
     if parsed.seller or parsed.country:
         out.append("客户自述购买渠道：" + " / ".join(filter(None, [parsed.seller, parsed.country])))
+    if parsed.login_country:
+        out.append(f"客户登录 / 注册国家：{parsed.login_country}")
     if parsed.seller and parsed.country and not state.get("warranty"):
         decision = decide_by_dealer(parsed.seller, parsed.country, None, today(state.get("at")))
         out.append(f"经销商名录：{decision.reason}")
     return out
+
+
+def problem_text(state: dict[str, Any], facts: list[dict[str, Any]]) -> str:
+    """问题字段：肯定极性的症状事实 → 表单推送 / 描述原文 → issue 标题；都没有才写占位。
+
+    T22 / T34 首测：模型没抽出事实，摘要就写「尚未记录具体故障现象」，而表单里明明写着「Wiel raakt de grond niet」。"""
+    symptoms = [f["value"] for f in facts if f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"]
+    if symptoms:
+        return "；".join(symptoms)
+    parsed = parse_message(state.get("text") or "")
+    if parsed.problem_text:
+        return parsed.problem_text
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    title = (issue.get("title") or "").strip()
+    if title and title != "待描述的问题":
+        return title
+    return "（尚未记录具体故障现象）"
+
+
+# 每种业务交接至少要给人工的字段；缺哪项就写进 missing，让接手的人一眼看到还要问什么
+REQUIRED_BY_KIND = {
+    "device_fault": ("product", "symptoms"),
+    "order_change": ("order_no", "condition"),
+    "parts_purchase": ("product", "part"),
+    "warranty_review": ("product", "order_no", "symptoms"),
+    "safety": ("product", "symptoms"),
+    "unknown": ("product", "symptoms"),
+}
+
+
+def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product_text: str) -> HandoffBusiness:
+    """按业务类型组织交接内容：已知 / 缺失 / 待办分别标明，摘要不再从最后一句答复反推（I7 / I8）。"""
+    remedy = state.get("requested_remedy")
+    symptoms = [f for f in facts if f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"]
+    if state.get("escalate_reason") == "R4":
+        kind = "safety"
+    elif remedy in NOT_EXECUTABLE:
+        kind = "order_change"
+    elif remedy == "parts_purchase":
+        kind = "parts_purchase"
+    elif state.get("warranty"):
+        kind = "warranty_review"
+    elif symptoms or parse_message(state.get("text") or "").problem_text:
+        kind = "device_fault"
+    else:
+        kind = "unknown"
+    known: dict[str, str] = {}
+    if product_text and not product_text.startswith("未确认"):
+        known["product"] = product_text
+    problem = problem_text(state, facts)
+    if problem != "（尚未记录具体故障现象）":
+        known["symptoms"] = "；".join(
+            f"{f['value']}" + (f"（{f['subject']}）" if f.get("subject") else "") + (f"，{f['timing']}" if f.get("timing") else "")
+            for f in symptoms
+        ) or problem
+    actions = [f["value"] for f in facts if f["kind"] == "action_taken"]
+    if actions:
+        known["actions_taken"] = "；".join(actions)
+    tasks = state.get("task_queue") or []
+    order_no = state.get("case_order_no")
+    business = BusinessContext.restore(state) if state.get("business_context") else None
+    subject = business.subjects.get(business.active_subject_id) if business else None
+    if subject is not None:
+        order_no = order_no or (subject.identifiers.get("order_no").value if subject.identifiers.get("order_no") else None)
+        status = subject.facts.get("logistics_status")
+        if status:
+            known["package_status"] = status.value
+    if order_no:
+        known["order_no"] = order_no
+    condition = next((t["quote"] for t in tasks if t.get("intent") in NOT_EXECUTABLE and t.get("quote")), None)
+    if condition:
+        known["condition"] = condition
+    parsed = parse_message(state.get("text") or "")
+    if parsed.login_country:
+        known["login_country"] = parsed.login_country
+    missing = [field for field in REQUIRED_BY_KIND[kind] if field not in known]
+    pending = [PendingRequest(intent=t["intent"], quote=t.get("quote") or "", status=t["status"])
+               for t in tasks if t.get("status") in {"pending", "active", "waiting_human"}]
+    return HandoffBusiness(kind=kind, known=known, missing=missing, pending_requests=pending)
 
 
 def _receipt_facts_text(facts: dict[str, str]) -> str:
@@ -267,6 +353,11 @@ def summary_to_text(s: EscalationSummary) -> str:
             or "无"
         ),
         f"【升级原因】{s.reason.rule_id}：{s.reason.text}",
+        *([
+            f"【业务】{s.business.kind}；已知：" + ("；".join(f"{k}={v}" for k, v in s.business.known.items()) or "无")
+            + "；缺失：" + ("、".join(s.business.missing) or "无")
+            + "；待办：" + ("；".join(f"{r.intent}({r.status})" for r in s.business.pending_requests) or "无")
+        ] if s.business else []),
         f"【情绪】{s.emotion.level or '未判断'} / {s.emotion.strategy}",
         f"【凭证】{s.receipt.status}"
         + (f"，下一步：{s.receipt.next_step}" if s.receipt.next_step else ""),

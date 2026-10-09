@@ -37,6 +37,8 @@ class Hypothesis(BaseModel):
         default=None, max_length=300,
         description="needs_confirmation 时用一句英文询问文档要求但尚未知的入口前提；只确认事实，不要求执行操作",
     )
+    matched_subject: str | None = Field(default=None, max_length=80, description="该方案针对的部件或对象，摘自候选标题/正文原话")
+    matched_timing: str | None = Field(default=None, max_length=80, description="该方案针对的时机或方向，摘自候选原话；没有留空")
 
 
 class PlansRanked(BaseModel):
@@ -59,6 +61,8 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
         evidence_ids=(list[str], Field(default_factory=list)),
         rationale=(str, Field(default="", max_length=80)),
         clarification_question=(str | None, Field(default=None, max_length=300)),
+        matched_subject=(str | None, Field(default=None, max_length=80)),
+        matched_timing=(str | None, Field(default=None, max_length=80)),
     )
     return create_model(
         "PlansRankedEnum",
@@ -81,12 +85,59 @@ def default_plans_ranked(allowed: list[Plan], *, source: str = "retrieval_order"
     ]
 
 
+# 用户说「提前 / 过早」而候选讲「没能启动」：同一个关键词（schedule）下两种相反的事实（T61）。
+EARLY = ("before", "early", "earlier", "ahead", "too soon", "提前", "过早", "早了")
+NOT_STARTED = ("failed to start", "not start", "won't start", "doesn't start", "did not start", "无法启动", "没有启动", "未启动")
+
+
+def _norm(text: str | None) -> str:
+    return " ".join((text or "").casefold().split())
+
+
+def _timing_conflicts(user_timing: str, candidate_timing: str | None, candidate_title: str) -> bool:
+    user = _norm(user_timing)
+    cand = _norm(candidate_timing) + " " + _norm(candidate_title)
+    early, failed = any(k in user for k in EARLY), any(k in user for k in NOT_STARTED)
+    return (early and any(k in cand for k in NOT_STARTED)) or (failed and any(k in cand for k in EARLY))
+
+
+def _subject_conflicts(user_subject: str, candidate_subject: str) -> bool:
+    user, cand = _norm(user_subject), _norm(candidate_subject)
+    return bool(user and cand) and user not in cand and cand not in user
+
+
+CLARIFY_TEMPLATES = {
+    "polarity_uncertain": 'You mentioned "{quote}". Which side or part has the problem, and what exactly is it doing?',
+    "timing_mismatch": "You said it happened {timing}. Is that right, and does the app show any warning at that moment?",
+    "subject_mismatch": "Is the problem with the {subject} itself (for example its own charging light or power input), or with how it works together with other parts?",
+}
+
+
 def filter_hypotheses(
-    raw: list[dict[str, Any]], *, allowed: dict[str, Plan], evidence_ids: set[str], symptoms: set[str], max_n: int
-) -> tuple[list[dict[str, Any]], list[str]]:
+    raw: list[dict[str, Any]], *, allowed: dict[str, Plan], evidence_ids: set[str], symptoms: set[str],
+    facts: list[dict[str, Any]] = (), error_codes: list[str] = (), max_n: int,
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
+    """模型的假设先过服务端核对，再决定可执行 / 待澄清 / 丢弃。
+
+    返回 (kept, dropped, clarifications)。核对只用结构化事实（极性、对象、时机、错误码），
+    不信模型对 applicability 的自评：同型号、关键词相近都不等于适用（T50 / T52 / T61）。
+    """
     kept: list[dict[str, Any]] = []
     dropped: list[str] = []
+    clarifications: list[dict[str, Any]] = []
     seen: set[str] = set()
+    by_value = {f.get("value"): f for f in facts if f.get("kind") == "symptom" and f.get("status", "active") == "active"}
+    codes = {c.upper() for c in error_codes}
+
+    def clarify(h, reason, question):
+        ev = [e for e in (h.get("evidence_ids") or []) if e in evidence_ids]
+        if not ev or not question:
+            return
+        if codes and any(code.casefold() in question.casefold() for code in codes):
+            return  # 不问用户已经告诉我们的错误码（T18）
+        clarifications.append({"plan_id": h["plan_id"], "question": question.strip(), "evidence_ids": ev,
+                               "confidence": float(h.get("confidence", 0)), "reason": reason})
+
     for h in raw:
         pid = h.get("plan_id")
         if pid not in allowed:
@@ -95,10 +146,34 @@ def filter_hypotheses(
         if pid in seen:
             dropped.append(f"duplicate:{pid}")
             continue
-        if h.get("applicability") != "supported":
-            dropped.append(f"not_supported:{pid}")
+        seen.add(pid)
+        plan = allowed[pid]
+        if codes and plan.symptom_codes and not codes.intersection(c.upper() for c in plan.symptom_codes):
+            dropped.append(f"code_mismatch:{pid}")  # 同型号异码不是候选，也不值得追问
             continue
         covered = list(dict.fromkeys(s for s in h.get("supported_symptoms", []) if s in symptoms))
+        covered_facts = [by_value[s] for s in covered if s in by_value]
+        uncertain = next((f for f in covered_facts if f.get("polarity") == "uncertain"), None)
+        if uncertain:
+            dropped.append(f"polarity_uncertain:{pid}")
+            clarify(h, "polarity_uncertain", CLARIFY_TEMPLATES["polarity_uncertain"].format(quote=uncertain.get("quote") or uncertain["value"]))
+            continue
+        timed = next((f for f in covered_facts if f.get("timing") and _timing_conflicts(f["timing"], h.get("matched_timing"), plan.fault)), None)
+        if timed:
+            dropped.append(f"timing_mismatch:{pid}")
+            clarify(h, "timing_mismatch", CLARIFY_TEMPLATES["timing_mismatch"].format(timing=timed["timing"]))
+            continue
+        mismatched = next((f for f in covered_facts if f.get("subject") and h.get("matched_subject")
+                           and _subject_conflicts(f["subject"], h["matched_subject"])), None)
+        if mismatched:
+            dropped.append(f"subject_mismatch:{pid}")
+            clarify(h, "subject_mismatch", CLARIFY_TEMPLATES["subject_mismatch"].format(subject=mismatched["subject"]))
+            continue
+        if h.get("applicability") != "supported":
+            dropped.append(f"not_supported:{pid}")
+            if h.get("applicability") == "needs_confirmation":
+                clarify(h, "needs_confirmation", h.get("clarification_question") or "")
+            continue
         if not covered:
             dropped.append(f"no_supported_symptom:{pid}")
             continue
@@ -109,11 +184,10 @@ def filter_hypotheses(
         if not ev:
             dropped.append(f"no_evidence:{pid}")
             continue
-        seen.add(pid)
         kept.append(
             {
                 "plan_id": pid,
-                "version": allowed[pid].version,
+                "version": plan.version,
                 "confidence": round(float(h.get("confidence", 0)), 3),
                 "evidence_ids": ev,
                 "rationale": (h.get("rationale") or "")[:80],
@@ -122,7 +196,8 @@ def filter_hypotheses(
             }
         )
     kept.sort(key=lambda x: -x["confidence"])
-    return kept[:max_n], dropped
+    clarifications.sort(key=lambda item: -item["confidence"])
+    return kept[:max_n], dropped, clarifications
 
 
 INSTRUCTION = (
@@ -136,8 +211,15 @@ INSTRUCTION = (
     "- 必须区分方向、时间和结果，例如提前发生与未能发生、始终离线与偶发离线不能仅凭共享关键词相互代用。\n"
     "- 文档有错误码而用户没有提供错误码，不是拒绝依据；用户现象和文档适用条件一致仍可 supported。\n"
     "- supported_symptoms 只能逐字选择给定的有效症状；不能把共同主题当作覆盖，不能声称一个方案解决所有并列问题。\n"
+    "- matched_subject / matched_timing 摘自候选标题或正文：该方案针对哪个部件、哪种时机；structured_facts 里用户的 subject / timing 与之不同层级或方向相反时不是 supported。\n"
+    "- action_taken 是用户已经做过的操作；候选只是重复这些动作则 not_applicable，否则在 rationale 里说明新增的检查点。\n"
     "- 没有任何计划能解释时输出空列表。只输出 JSON。"
 )
+
+def active_facts(state: dict[str, Any]) -> list[dict[str, Any]]:
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    return [f for f in issue.get("facts", []) if f.get("status") == "active"]
+
 
 async def synthesize(
     router: ModelRouter | None,
@@ -177,10 +259,19 @@ async def synthesize(
     ev_text = "\n".join(render_evidence(e) for e in evidence)
     obs_text = "\n".join(observations) if observations else "（无图片观察）"
     symptoms = list(dict.fromkeys(str(s) for s in [*(state.get("symptoms") or []), *observations] if str(s).strip()))
+    facts = active_facts(state)
+    error_codes = list(state.get("error_codes") or [])
+    facts_text = "\n".join(
+        f"- kind={f.get('kind')} subject={f.get('subject') or '-'} polarity={f.get('polarity', 'affirmed')} "
+        f"timing={f.get('timing') or '-'} value={f.get('value')}"
+        for f in facts
+    ) or "（无）"
     human = (
         INSTRUCTION.format(n=max_hypotheses)
         + f"\n允许的排障计划：\n{plans_text}\n"
         + "有效症状（supported_symptoms 只能逐字选取）：\n" + wrap_data("\n".join(symptoms), kind="active_symptoms") + "\n"
+        + wrap_data(facts_text, kind="structured_facts") + "\n"
+        + wrap_data(", ".join(error_codes) or "（无）", kind="error_codes") + "\n"
         + wrap_data(
             " ".join(
                 [str(s) for s in state.get("symptoms") or []]
@@ -250,25 +341,16 @@ async def synthesize(
             },
             "degraded": f"model:{type(exc).__name__}",
         }
-    kept, dropped = filter_hypotheses(
+    # 前提未知不能成为可执行计划，但有官方证据的候选可以发起事实澄清。
+    kept, dropped, clarifications = filter_hypotheses(
         raw,
         allowed=allowed_by_id,
         evidence_ids={e["evidence_id"] for e in evidence},
         symptoms=set(symptoms),
+        facts=facts,
+        error_codes=error_codes,
         max_n=max_hypotheses,
     )
-    # 前提未知不能成为可执行计划，但有官方证据的候选可以发起事实澄清。
-    visible_ids = {e["evidence_id"] for e in evidence}
-    clarifications = [
-        {"plan_id": h["plan_id"], "question": h["clarification_question"].strip(),
-         "evidence_ids": [eid for eid in h["evidence_ids"] if eid in visible_ids],
-         "confidence": h["confidence"]}
-        for h in raw
-        if h["plan_id"] in allowed_by_id and h["applicability"] == "needs_confirmation"
-        and (h.get("clarification_question") or "").strip()
-        and any(eid in visible_ids for eid in h["evidence_ids"])
-    ]
-    clarifications.sort(key=lambda item: -item["confidence"])
     for d in dropped:
         log.info(
             "synthesize dropped hypothesis session=%s %s",

@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 8b9cd11e795273eeb1d6731493ca9b133bbcdb6f06845aefc33822df3f192094
+// SHA-256: 6484013c97bdbb3385bea7ccc4b03d86cc7aed488096043b680e94755a7e3f92
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -294,6 +294,13 @@ export type RunId16 = string;
  */
 export type Seq16 = number;
 export type SourceThroughSeq1 = number;
+export type Kind2 =
+  'device_fault' | 'order_change' | 'parts_purchase' | 'warranty_review' | 'safety' | 'unknown';
+export type Missing = string[];
+export type Intent = string;
+export type Quote = string;
+export type Status4 = string;
+export type PendingRequests = PendingRequest[];
 export type CaseId = string | null;
 export type DraftReply = string | null;
 export type Level = ('calm' | 'anxious' | 'dissatisfied' | 'angry' | 'complaint_risk') | null;
@@ -326,7 +333,7 @@ export type RuleId = string;
 export type Text = string;
 export type Conflicts = string[];
 export type NextStep = string | null;
-export type Status4 =
+export type Status5 =
   | 'not_collected'
   | 'insufficient'
   | 'order_verified'
@@ -354,7 +361,7 @@ export type Dealer = string | null;
 export type OrderNo1 = string | null;
 export type Reason1 = string;
 export type Sku1 = string | null;
-export type Status5 = 'in_warranty' | 'out_of_warranty' | 'unauthorized_dealer' | 'unknown';
+export type Status6 = 'in_warranty' | 'out_of_warranty' | 'unauthorized_dealer' | 'unknown';
 export type WarrantyEnd = string | null;
 export type SummaryId1 = string;
 export type Type17 = 'escalation_summary';
@@ -408,7 +415,7 @@ export type NextStep1 = string;
 export type OrderNo2 = string | null;
 export type ServiceOrderNo = string | null;
 export type Source2 = string;
-export type Status6 = string;
+export type Status7 = string;
 export type TrackingNo = string | null;
 export type UpdatedAt2 = string | null;
 export type RecordedAt20 = string;
@@ -417,7 +424,7 @@ export type RunId20 = string;
  * 会话内单调递增
  */
 export type Seq20 = number;
-export type Status7 = 'succeeded' | 'failed';
+export type Status8 = 'succeeded' | 'failed';
 export type Type21 = 'execution_card';
 export type Version8 = number;
 export type CardId8 = string;
@@ -459,7 +466,7 @@ export type RunId23 = string;
  * 会话内单调递增
  */
 export type Seq23 = number;
-export type Status8 =
+export type Status9 =
   | 'open'
   | 'diagnosing'
   | 'proposing'
@@ -838,6 +845,7 @@ export interface EscalationSummaryEvent {
  * via the `definition` "EscalationSummary".
  */
 export interface EscalationSummary {
+  business?: HandoffBusiness | null;
   case_id?: CaseId;
   draft_reply?: DraftReply;
   emotion: Emotion;
@@ -854,6 +862,34 @@ export interface EscalationSummary {
   steps?: Steps;
   task_queue?: TaskQueue;
   warranty?: WarrantyDecision | null;
+}
+/**
+ * 交接摘要的业务块（2026-10-09 I7 / I8）：按业务类型带具体字段，已知、缺失、待办分别标明。
+ *
+ * kind 决定人工先看什么：订单暂停看订单 / 包裹 / 条件；设备故障看产品 / 症状 / 已做操作；配件采购看型号与部件。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "HandoffBusiness".
+ */
+export interface HandoffBusiness {
+  kind: Kind2;
+  known?: Known;
+  missing?: Missing;
+  pending_requests?: PendingRequests;
+}
+export interface Known {
+  [k: string]: string;
+}
+/**
+ * 交接时队列里尚未办结的一项客户诉求。
+ *
+ * This interface was referenced by `ServerEventSchema`'s JSON-Schema
+ * via the `definition` "PendingRequest".
+ */
+export interface PendingRequest {
+  intent: Intent;
+  quote: Quote;
+  status: Status4;
 }
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -909,7 +945,7 @@ export interface EscalationReason {
 export interface ReceiptOutcome {
   conflicts?: Conflicts;
   next_step?: NextStep;
-  status: Status4;
+  status: Status5;
   verified_facts?: VerifiedFacts;
 }
 export interface VerifiedFacts {
@@ -949,7 +985,7 @@ export interface WarrantyDecision {
   order_no?: OrderNo1;
   reason: Reason1;
   sku?: Sku1;
-  status: Status5;
+  status: Status6;
   warranty_end?: WarrantyEnd;
 }
 /**
@@ -1012,7 +1048,7 @@ export interface ExecutionCardEvent {
   recorded_at: RecordedAt20;
   run_id: RunId20;
   seq: Seq20;
-  status: Status7;
+  status: Status8;
   type: Type21;
   version: Version8;
 }
@@ -1026,7 +1062,7 @@ export interface Receipt {
   order_no?: OrderNo2;
   service_order_no?: ServiceOrderNo;
   source?: Source2;
-  status: Status6;
+  status: Status7;
   tracking_no?: TrackingNo;
   updated_at?: UpdatedAt2;
 }
@@ -1081,7 +1117,7 @@ export interface CaseStatusEvent {
   recorded_at: RecordedAt23;
   run_id: RunId23;
   seq: Seq23;
-  status: Status8;
+  status: Status9;
   type: Type24;
   updated_at: UpdatedAt3;
   version: Version11;
