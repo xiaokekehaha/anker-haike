@@ -385,11 +385,23 @@ async def test_complaint_marks_existing_case_priority(l3_runtime, monkeypatch):
 
 async def test_out_of_warranty_continues_pending_troubleshooting(l3_runtime, monkeypatch):
     """T51：过保只是关闭免费换货这一项；同一句里的排障请求仍要处理，不能留 pending 却把会话标成 done（2026-10-09 I6）。"""
+    from app.knowledge.runtime import set_knowledge_adapter
+    from tests.fake_qa import QAHitAdapter
+
     text = "I need help with possibly a replacement for my breast pump. It won't hold the battery and keeps cutting off. Order Anker014"
     interpret_as(monkeypatch, {text: TurnInterpretation(
         primary_intent="replacement_request", secondary_intents=["report_problem"], device_relation="current",
         facts=[{"value": "won't hold the battery, keeps cutting off", "quote": "It won't hold the battery and keeps cutting off"}],
     )})
+    set_knowledge_adapter(QAHitAdapter("bp-0043"))
+    try:
+        await _out_of_warranty_then_troubleshoot(client_text=text, l3_runtime=l3_runtime)
+    finally:
+        set_knowledge_adapter(None)
+
+
+async def _out_of_warranty_then_troubleshoot(*, client_text, l3_runtime):
+    text = client_text
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, text))
@@ -402,8 +414,29 @@ async def test_out_of_warranty_continues_pending_troubleshooting(l3_runtime, mon
         queue = state["task_queue"]
         assert [(t["intent"], t["status"]) for t in queue if t["intent"] == "replacement_request"] == [("replacement_request", "done")]
         assert not [t for t in queue if t["status"] == "pending"]
-        # 排障任务被推进：要么出了步骤卡，要么在问现象 / 等候下一步；总之不是 done 且无人处理
-        assert state["stage"] != "done" or any(e["type"] == "step_card" for e in rows)
+        # 排障任务被推进到检索 / 出卡，而不是再绕回已关闭的案件说「waiting to be processed」
+        assert "waiting to be processed" not in text_out
+        assert any(e["type"] == "step_card" for e in rows), [e["type"] for e in rows]
+        assert state["requested_remedy"] is None
+
+
+async def test_handoff_after_closed_case_records_without_requeue(l3_runtime, monkeypatch):
+    """过保结案后排障走到交接：案件已关闭，只记录摘要，不再入人工队列（否则 closed_unresolved → awaiting_approval 非法迁移）。"""
+    text = "I need help with possibly a replacement for my breast pump. It won't hold the battery and keeps cutting off. Order Anker014"
+    interpret_as(monkeypatch, {text: TurnInterpretation(
+        primary_intent="replacement_request", secondary_intents=["report_problem"], device_relation="current",
+        facts=[{"value": "won't hold the battery, keeps cutting off", "quote": "It won't hold the battery and keeps cutting off"}],
+    )})
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, text))
+        assert not any(e["type"] == "error" for e in rows), rows
+        state = await state_of(sid)
+        case = await l3_runtime.cases.store.get(state["case_id"])
+        assert case["status"] == "closed_unresolved"
+        # 无知识库 → R5：摘要只记录进已关闭案件，不入队、不说「已提交审核」
+        assert state["stage"] != "awaiting_human" and "submitted" not in said(rows)
+        assert any(e["type"] == "handoff_summary" for e in case["events"])
 
 
 async def test_t9_summary_is_refreshed_with_logistics_after_handoff(l3_runtime, monkeypatch):

@@ -301,3 +301,16 @@ def test_action_taken_overrides_operation_update():
     kinds = [f["kind"] for f in state["issues"][state["active_issue_id"]]["facts"]]
     assert kinds == ["symptom", "action_taken"]
     assert state["symptoms"] == ["won't charge at base"]
+
+
+def test_quote_tolerates_a_typo_on_one_edge_word():
+    """T34 复跑：原文「siscovered i had lost the maps」，模型引文把首词纠成 discovered，整条症状因此丢失。
+    引文 ≥ 4 词且去掉首词或末词后仍是逐字片段，仍算有依据；短引文不放宽。"""
+    from app.conversation.quotes import quoted
+
+    text = "i just now tried to use the robot and siscovered i had lost the maps. i cannot use them"
+    assert quoted("discovered i had lost the maps", text)
+    assert quoted("i had lost the maps.", text)
+    assert not quoted("lost maps", text)
+    assert not quoted("discovered i had", text)
+    assert not quoted("discovered i had lost the chart", text)

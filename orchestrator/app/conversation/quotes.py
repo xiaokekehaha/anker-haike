@@ -20,7 +20,18 @@ def normalize(text: str) -> str:
 
 
 def quoted(quote: str | None, text: str | None) -> bool:
-    """True when `quote` is a non-empty span of `text` up to whitespace / apostrophe form."""
+    """True when `quote` is a non-empty span of `text` up to whitespace / apostrophe form.
+
+    The model also silently fixes a typo at the edge of what it copies (T34: "siscovered i had lost the maps"
+    came back as "discovered …"), and a whole symptom was lost for one letter. A quote of at least four words
+    still counts when it is verbatim after dropping its first or last word; short quotes get no such slack.
+    """
     if not quote or not quote.strip() or not text:
         return False
-    return normalize(quote) in normalize(text)
+    norm_quote, norm_text = normalize(quote), normalize(text)
+    if norm_quote in norm_text:
+        return True
+    words = norm_quote.split(" ")
+    if len(words) < 4:
+        return False
+    return " ".join(words[1:]) in norm_text or " ".join(words[:-1]) in norm_text

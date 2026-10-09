@@ -139,7 +139,8 @@ def remedy_closed(state):
     同一句里的排障请求仍在队列里（T51 / T53：「换货 + 电池撑不住」）：把办理任务记 done 后回到任务推进，
     由 advance_tasks 提升排障任务。以前这里直接 stage=done + commit_issue，排障任务永远 pending 而会话已结束。
     """
-    intent = INTENT_OF_REMEDY.get(state.get("requested_remedy"), "replacement_request")
+    active = next((t["intent"] for t in state.get("task_queue") or [] if t["status"] == "active"), None)
+    intent = INTENT_OF_REMEDY.get(state.get("requested_remedy")) or active or "replacement_request"
     return {"completed_task_intent": intent, "task_outcome": "done", "l3_route": "advance_tasks"}
 
 
@@ -1082,6 +1083,10 @@ async def advance_tasks(state):
         )
         if task["intent"] in REMEDY_INTENTS:
             update["requested_remedy"] = REQUESTED_REMEDY[task["intent"]]
+        elif task["intent"] == "report_problem":
+            # 换货诉求已办结（过保 / 非授权）再推进排障：清掉 requested_remedy，否则 _after_product 会把排障
+            # 又送回 service_context，对已关闭的案件说「waiting to be processed」（T51 / T53 复测）。
+            update["requested_remedy"] = None
         writer()(
             {
                 "type": "issue_changed",

@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, create_model
@@ -101,9 +102,63 @@ def _timing_conflicts(user_timing: str, candidate_timing: str | None, candidate_
     return (early and any(k in cand for k in NOT_STARTED)) or (failed and any(k in cand for k in EARLY))
 
 
+# 「left one / my pump / the robot / stofzuiger」是整机或品类词，不是部件：候选讲滚刷、鸭嘴阀都是在说这台机器的某个部件，
+# 不构成对象层级冲突。只有用户点名了具体部件（charging case、duckbill valve）才和候选的部件比对（T52 对 T55 / T36 / T62）。
+_PART_WORDS = (
+    "case", "hub", "motor", "valve", "shield", "bowl", "diaphragm", "bottle", "tube", "tubing", "hose", "cable", "charger",
+    "adapter", "battery", "brush", "roller", "filter", "tank", "tray", "mop", "pad", "sensor", "wheel", "dock", "station",
+    "base", "bin", "lid", "cover", "seal", "ring", "nozzle", "contact", "pin", "port", "light", "indicator", "button", "app",
+    "map", "schedule", "wifi", "wi-fi", "firmware", "camera", "lens", "speaker",
+    # 吸奶器的 pump hub 是盒子里的部件；单说「my pump」仍按整机（_is_part 先查目录品类词）
+    "pump",
+)
+# 耗材与介质不是部件：「floor detergent」对「cleaning solution bottle / clean water tank」讲的是同一件事的容器与液位，
+# 不能按中心词判成对象不同（T40）。它们不进 _PART_WORDS，中心词为空就不比对。
+_DEVICE_WORDS = ("one", "unit", "device", "machine", "robot", "robovac", "vacuum", "hoover", "pump", "stofzuiger", "borstkolf", "camera")
+_FILLER_WORDS = {"the", "my", "this", "it", "left", "right", "side", "eufy", "anker", "both", "either", "other"}
+
+
+def _is_part(subject: str) -> bool:
+    """主语是否指向某个部件，而不是整机、型号名或品类词。"""
+    from app.sessions.cards import get_catalog
+
+    norm = _norm(subject)
+    words = set(re.findall(r"[a-z][a-z\-]+", norm))
+    catalog = get_catalog()
+    named_part = any(w in _PART_WORDS or w.rstrip("s") in _PART_WORDS for w in words if w not in _DEVICE_WORDS)
+    # 「my pump」「the robot」「Eufy S1 pro breast pump」：目录认得出品类或型号、又没点名部件 → 整机（T54）
+    if (catalog.category_hint(subject) or catalog.lookup_product(subject)) and not named_part:
+        return False
+    if named_part:
+        return True
+    return not (words <= set(_DEVICE_WORDS) | _FILLER_WORDS)
+
+
+_PREPOSITIONS = (" in ", " on ", " of ", " inside ", " at ", " with ", " into ", " from ")
+
+
+def _head_part(subject: str) -> str | None:
+    """部件短语的中心词：「charging case」→ case、「cleaning tray」→ tray、「pump in the case」→ pump。
+    介词前的是主语，介词后的只是位置修饰。"""
+    norm = _norm(subject)
+    for prep in _PREPOSITIONS:
+        if prep in norm:
+            norm = norm.split(prep, 1)[0]
+            break
+    parts = [w.rstrip("s") for w in re.findall(r"[a-z][a-z\-]+", norm) if w in _PART_WORDS or w.rstrip("s") in _PART_WORDS]
+    return parts[-1] if parts else None
+
+
 def _subject_conflicts(user_subject: str, candidate_subject: str) -> bool:
     user, cand = _norm(user_subject), _norm(candidate_subject)
-    return bool(user and cand) and user not in cand and cand not in user
+    if not (user and cand) or user in cand or cand in user:
+        return False
+    if not _is_part(user_subject):
+        return False
+    # 「Water tray」对「cleaning tray」是同一类部件的不同叫法（T29），中心词相同不算冲突；
+    # 「charging case」对「pump in the case」中心词是 case 对 pump，才是对象不同（T52）。
+    user_head, cand_head = _head_part(user_subject), _head_part(candidate_subject)
+    return user_head is not None and cand_head is not None and user_head != cand_head
 
 
 CLARIFY_TEMPLATES = {

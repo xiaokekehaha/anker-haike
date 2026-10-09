@@ -65,6 +65,15 @@ def build_query(state: dict[str, Any]) -> str:
         return ""
     product = product_term(state)
     symptoms = dedupe([str(s) for s in (state.get("symptoms") or [])])
+    # 模型把「cannot use them」抽成症状、主语 maps 另记在 subject 里（T34 复测）：检索词只剩代词时整条 Q&A 都召不回。
+    # 主语没出现在症状原文里才拼上，避免「charging case will not charge」变成重复词。
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    subjects = [
+        str(f["subject"]) for f in issue.get("facts", [])
+        if f.get("status", "active") == "active" and f.get("kind") == "symptom" and f.get("subject")
+        and normalize_query(str(f["subject"])) not in normalize_query(str(f.get("value") or ""))
+    ]
+    symptoms = dedupe([*subjects, *symptoms]) if symptoms else symptoms
     if not symptoms:
         # App 报错 / RMA 表单只取问题描述与推送提示：表头、订单字段和图片链接会冲淡检索（63 单评测 recall 4/13 → 7/13）
         text = str(state.get("text") or "")

@@ -381,3 +381,20 @@ def test_waiting_for_a_colleague_only_lets_read_only_tasks_continue():
     queue, _ = enqueue(queue, "order_change", [], "cancel it", "b")
     held = [t for t in queue if t["intent"] == "order_change"]
     assert [(t["status"], t["quote"]) for t in held] == [("waiting_human", "cancel it")]
+
+
+def test_remedy_closed_completes_the_active_task_even_when_it_is_troubleshooting():
+    """T29 / T38 复跑：排障走完 → R1 → 过保。队列里只有 report_problem（active）和 order_query（pending），
+    过保结论要把当前 active 任务记 done，让 order_query 得以推进，而不是留 active 把会话标 done。"""
+    from app.sessions.l3 import remedy_closed
+
+    state = {"requested_remedy": None, "task_queue": [
+        {"task_id": "a", "intent": "report_problem", "status": "active"},
+        {"task_id": "b", "intent": "order_query", "status": "pending"},
+    ]}
+    assert remedy_closed(state)["completed_task_intent"] == "report_problem"
+    state = {"requested_remedy": "replace", "task_queue": [
+        {"task_id": "a", "intent": "replacement_request", "status": "active"},
+        {"task_id": "b", "intent": "report_problem", "status": "pending"},
+    ]}
+    assert remedy_closed(state)["completed_task_intent"] == "replacement_request"

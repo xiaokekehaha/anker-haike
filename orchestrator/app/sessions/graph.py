@@ -2721,8 +2721,10 @@ async def summarize(state: SessionState) -> SessionState:
             complaint_risk=complaint_flagged(state),
         )
         summary.case_id = row["case_id"]
-        if state.get("summary_refresh"):
+        if state.get("summary_refresh") or row["status"] in {"closed", "closed_unresolved"}:
             # 更新摘要不重新发起审批，也不撤回人工已经作出的决定。
+            # 案件已按质保结论关闭（过保 / 非授权）后继续排障又走到交接：免费服务资格的结论是终局，
+            # 不再入人工队列，只把排障记录写进案件（closed_unresolved 只能 reopened，入队会撞非法迁移）。
             row = await services.cases.record_handoff(row["case_id"], summary.model_dump(mode="json"))
         else:
             row = await services.cases.hand_off(

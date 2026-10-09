@@ -61,3 +61,22 @@ def test_summarize_reports_recall_by_language_for_semantic_cases_only():
     assert s["by_language"] == {"en": {"n": 1, "recall@5": "100%"}, "nl": {"n": 1, "recall@5": "0%"}}
     md = render_markdown(arm="A", summary=s, rows=rows, top_k=5)
     assert "| nl | 1 | 0% |" in md and "| c | en | 是 |" in md
+
+
+def test_query_keeps_the_subject_when_the_symptom_is_a_bare_pronoun():
+    """T34 复测：模型把「cannot use them」抽成症状，主语是 maps；检索词只有代词时整条 Q&A 都召不回。"""
+    state = {
+        "product_state": "confirmed_sku", "product_confirmed": {"sku": "T2080", "name": "S1 Pro"},
+        "symptoms": ["cannot use them"], "active_issue_id": "i",
+        "issues": {"i": {"facts": [{"kind": "symptom", "value": "cannot use them", "subject": "maps", "status": "active"}]}},
+    }
+    assert build_query(state) == "maps cannot use them"
+
+
+def test_query_does_not_repeat_a_subject_already_in_the_symptom():
+    state = {
+        "product_state": "confirmed_sku", "product_confirmed": {"sku": "T2080"},
+        "symptoms": ["charging case will not charge"], "active_issue_id": "i",
+        "issues": {"i": {"facts": [{"kind": "symptom", "value": "charging case will not charge", "subject": "charging case", "status": "active"}]}},
+    }
+    assert build_query(state) == "charging case will not charge"
