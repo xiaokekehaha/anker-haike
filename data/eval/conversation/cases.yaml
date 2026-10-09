@@ -8,7 +8,7 @@ cases:
     vision_coverage: false
     note: 原交互图片不复制到测试；第四轮只验证追问不会重放旧升级路径，不验证图片识别。
     inputs:
-      - {input_id: input_1, after_seconds: 0, text: 我的耳机没有声音}
+      - {input_id: input_1, after_seconds: 0, text: 我的吸奶器没有吸力}
       - {input_id: input_2, after_seconds: 23, text: '我机器人，冒烟了'}
       - {input_id: input_3, after_seconds: 491, text: 我之前问了什么问题}
       - {input_id: input_4, after_seconds: 1277, text: 有什么故障}
@@ -18,9 +18,9 @@ cases:
     interpretations:
       - primary_intent: report_problem
         device_relation: other
-        device_category: earbuds
-        product_hints: [耳机]
-        facts: [{kind: symptom, value: 没有声音, quote: 没有声音}]
+        device_category: breast_pump
+        product_hints: [吸奶器]
+        facts: [{kind: symptom, value: 没有吸力, quote: 没有吸力}]
       - primary_intent: report_problem
         device_relation: other
         device_category: robot_vacuum
@@ -36,7 +36,7 @@ cases:
     expected_context_refs: [input_1, input_2, input_3, input_4, input_5, input_6]
     expected_state:
       distinct_devices: 2
-      earbud_symptoms: [没有声音]
+      pump_symptoms: [没有吸力]
       robot_symptoms: [冒烟]
       risk_preserved: true
       correction_requires_clarification: true

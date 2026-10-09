@@ -106,7 +106,7 @@ def explicit_operation_reply(text: str) -> OperationUpdate | None:
     """Exact choices work without a model. Other wording uses quoted semantic extraction."""
     phrase = text.strip(" \n。！!，,")
     resource_choices = {
-        "设备不在身边": "device_missing", "充电宝不在身边": "device_missing",
+        "设备不在身边": "device_missing",
         "设备不在手边": "device_missing",
         # pause_text / resource_recheck 邀请用户"拿到设备后告诉我"，这些说法必须真的能解除限制
         "设备现在在身边": "device_ready", "设备在身边了": "device_ready",

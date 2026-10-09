@@ -7,7 +7,7 @@ cases:
     primary_intent: logistics_query
 - id: logistics_query-2
   family: logistics_query
-  text: 帮我查物流 DEMO-X10-001
+  text: 帮我查物流 Anker001
   expected:
     primary_intent: logistics_query
 - id: logistics_query-3
@@ -42,7 +42,7 @@ cases:
     primary_intent: warranty_query
 - id: warranty_query-4
   family: warranty_query
-  text: 查一下 DEMO-X10-001 的保修期限。
+  text: 查一下 Anker001 的保修期限。
   expected:
     primary_intent: warranty_query
 - id: warranty_query-5
@@ -52,7 +52,7 @@ cases:
     primary_intent: warranty_query
 - id: order_query-1
   family: order_query
-  text: 帮我查一下订单 DEMO-X10-001 的购买信息。
+  text: 帮我查一下订单 Anker001 的购买信息。
   expected:
     primary_intent: order_query
 - id: order_query-2

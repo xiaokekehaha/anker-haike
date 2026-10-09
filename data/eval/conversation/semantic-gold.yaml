@@ -68,25 +68,25 @@ cases:
   expected: *id003
 - id: resume-1
   family: resume
-  text: 回到耳机没有声音的问题
+  text: 回到吸奶器没有吸力的问题
   expected: &id004
     primary_intent: resume_issue
-    target_issue_id: ear
+    target_issue_id: pump
 - id: resume-2
   family: resume
-  text: 继续最初那个耳机问题
+  text: 继续最初那个吸奶器问题
   expected: *id004
 - id: resume-3
   family: resume
-  text: 机器人先放着，处理之前的耳机
+  text: 机器人先放着，处理之前的吸奶器
   expected: *id004
 - id: resume-4
   family: resume
-  text: 我要接着排查耳机没声音
+  text: 我要接着排查吸奶器没吸力
   expected: *id004
 - id: resume-5
   family: resume
-  text: 请切回先前的耳机问题
+  text: 请切回先前的吸奶器问题
   expected: *id004
 - id: correction-1
   family: correction
@@ -156,19 +156,19 @@ cases:
   expected: *id007
 - id: pending_answer-1
   family: pending_answer
-  text: 我的型号是X9 Pro，选它
+  text: 我的型号是X10 Pro Omni，选它
   expected: &id008
     primary_intent: answer_pending
     pending_kind: select_product
   pending: product
 - id: pending_answer-2
   family: pending_answer
-  text: 选卡片里的X9 Pro
+  text: 选卡片里的X10 Pro Omni
   expected: *id008
   pending: product
 - id: pending_answer-3
   family: pending_answer
-  text: 确认是第一个X9 Pro
+  text: 确认是第一个X10 Pro Omni
   expected: *id008
   pending: product
 - id: pending_answer-4
@@ -178,7 +178,7 @@ cases:
   pending: product
 - id: pending_answer-5
   family: pending_answer
-  text: 卡片型号我选X9 Pro
+  text: 卡片型号我选X10 Pro Omni
   expected: *id008
   pending: product
 - id: risk_reported-1
@@ -196,7 +196,7 @@ cases:
   expected: *id009
 - id: risk_reported-4
   family: risk_reported
-  text: 我看见X9 Pro正在冒烟
+  text: 我看见X10 Pro Omni正在冒烟
   expected: *id009
 - id: risk_reported-5
   family: risk_reported

@@ -59,7 +59,10 @@ async def test_original_seven_turns_are_semantically_separated(mem_runtime, monk
     assert len(state["issues"]) == 3
     assert state["issues"][state["active_issue_id"]]["status"] == "draft"
     symptoms = [issue["symptoms"] for issue in state["issues"].values()]
-    assert ["没有声音"] in symptoms and ["冒烟"] in symptoms
+    # 症状取自 cases.yaml 的 interpretations，不在这里写死：换过一次设备品类（耳机 → 吸奶器，
+    # 耳机已不在产品目录）时，写死的字面量会和夹具悄悄脱节。
+    first = case["interpretations"][0]["facts"][0]["value"]
+    assert [first] in symptoms and ["冒烟"] in symptoms
     assert state["risk_cases"] and not state["turn_decision"]["allowed_operations"]
     assert state["turn_decision"]["clarification"]
     for iid in case["expected_events"]["no_repeat_summary_for_control_turns"]:

@@ -28,28 +28,28 @@ def scenario(case):
         return dict(fact_id=fid, value=value, kind='symptom', status='active', revision=1,
                     source_entry_ids=[iid], recorded_at=at)
     issues = {
-        'ear': dict(issue_id='ear', title='耳机没有声音', status='open', issue_revision=1,
-                    device_ref={'device_ref_id':'ear-device','category':'headphones'}, facts=[fact('ear-fact','没有声音','first')]),
-        'robot': dict(issue_id='robot', title='X9 Pro滚刷不转', status='open', issue_revision=1,
+        'pump': dict(issue_id='pump', title='吸奶器没有吸力', status='open', issue_revision=1,
+                    device_ref={'device_ref_id':'pump-device','category':'breast_pump'}, facts=[fact('pump-fact','没有吸力','first')]),
+        'robot': dict(issue_id='robot', title='X10 Pro Omni滚刷不转', status='open', issue_revision=1,
                     device_ref={'device_ref_id':'robot-device','category':'robot_vacuum'}, facts=[fact('robot-fact','滚刷不转','second')]),
     }
     pending = dict(kind='step_feedback', card_id='step1', input_token='token1', issue_id='robot',
         payload={'step': {'step_id':'brush1','title':'检查滚刷','instruction':'关机后检查滚刷是否缠绕毛发','expected_result':'清理后滚刷正常转动'}})
     if case.get('pending') == 'product':
         pending = dict(kind='select_product', card_id='products1', input_token='product-token', issue_id='robot',
-            payload={'candidates':[{'sku':'T2351','name':'X9 Pro'},{'sku':'T2352','name':'X10 Pro Omni'}]})
+            payload={'candidates':[{'sku':'T2351','name':'X10 Pro Omni'},{'sku':'T2352','name':'Omni E28'}]})
     history = []
     for index,(iid,role,text) in enumerate([
-        ('first','user','我的耳机没有声音'),('first-answer','assistant','是两侧都没有声音吗？'),
-        ('second','user','另一个问题，我的X9 Pro机器人滚刷不转'),
+        ('first','user','我的吸奶器没有吸力'),('first-answer','assistant','是左右两侧都没有吸力吗？'),
+        ('second','user','另一个问题，我的X10 Pro Omni滚刷不转'),
         ('second-answer','assistant','请按卡片关机检查滚刷，然后反馈是否解决。'),
         (case['id'],'user',case['text'])],1):
         history.append(ConversationEntry(entry_id=iid,session_id='semantic-gold',run_id=f'run-{(index-1)//2}',
             kind='message',role=role,first_seq=index,last_seq=index,recorded_at=at,received_at=at if role=='user' else None,
-            started_at=at if role=='assistant' else None,text=text,issue_id='ear' if index<3 else 'robot').as_dict())
+            started_at=at if role=='assistant' else None,text=text,issue_id='pump' if index<3 else 'robot').as_dict())
     return dict(session_id='semantic-gold',input_id=case['id'],input_seq=5,at=at,text=case['text'],entry='message',
-        active_issue_id='robot',issues=issues,history=history,pending_card=pending,product_hints=['X9 Pro'],
-        product_confirmed={'sku':'T2351','name':'X9 Pro'},symptoms=['滚刷不转'],counters={'executed':1},
+        active_issue_id='robot',issues=issues,history=history,pending_card=pending,product_hints=['X10 Pro Omni'],
+        product_confirmed={'sku':'T2351','name':'X10 Pro Omni'},symptoms=['滚刷不转'],counters={'executed':1},
         steps_executed=[{'step_id':'brush0','feedback':'not_solved'}], risk_cases=[])
 
 
@@ -76,7 +76,7 @@ def judge(case, meaning, state):
     if case['family']=='risk_reported' and reduced['turn_decision']['allowed_operations']:errors.append('risk_not_restricted')
     if case['family']=='risk_negated' and reduced['risk_cases']:errors.append('negated_risk_created')
     if case['family']=='resume':
-        if reduced['active_issue_id']!='ear' or len(reduced['issues'])!=2:errors.append('resume_did_not_restore_existing_issue')
+        if reduced['active_issue_id']!='pump' or len(reduced['issues'])!=2:errors.append('resume_did_not_restore_existing_issue')
     return errors
 
 

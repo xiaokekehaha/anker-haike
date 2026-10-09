@@ -139,3 +139,53 @@ async def test_seed_products_is_idempotent(catalog):
         assert all(p.in_scope for p in loaded.products)
     finally:
         await pool.close()
+
+
+# --------------------------------------------------------------------------
+# P3-1：自建评测金标只能出现目录里真实存在的产品（2026-10-09）
+#
+# 自建评测是演示的展示点（plan G17）：评委翻到金标却看到 DEMO-X10-001、耳机、X9 Pro
+# 这类不存在的产品会被问住。这条守住的是「金标与产品目录不脱节」，
+# 而不是「代码里不许出现某些字」—— 单测夹具里的任意字符串（test_analytics 的
+# plan_id、test_escalation_summary 的摘要文本）不解析目录，不在此约束内。
+# --------------------------------------------------------------------------
+
+GOLD_FILES = (
+    "data/eval/intent/semantic-gold.yaml",
+    "data/eval/routing/semantic-gold.yaml",
+    "data/eval/conversation/semantic-gold.yaml",
+    "data/eval/conversation/cases.yaml",
+)
+# 已下架 / 从未进过目录的产品与订单号。新增退役产品时往这里加。
+RETIRED = ("DEMO-X10-001", "X9 Pro", "耳机", "充电宝", "earbud", "L60 Hybrid", "G30 Verge")
+
+
+def test_eval_gold_only_mentions_products_in_the_catalog():
+    from app.settings import REPO_ROOT
+
+    offenders = []
+    for rel in GOLD_FILES:
+        text = (REPO_ROOT / rel).read_text(encoding="utf-8")
+        for line_no, line in enumerate(text.splitlines(), 1):
+            if line.lstrip().startswith("#"):
+                continue
+            offenders += [f"{rel}:{line_no} {word}: {line.strip()[:70]}"
+                          for word in RETIRED if word in line]
+    assert not offenders, "金标里出现了目录外产品：\n" + "\n".join(offenders)
+
+
+def test_eval_gold_order_numbers_exist_in_official_data():
+    """金标里的订单号必须查得到，否则跑出来的「查订单」用例是假的。"""
+    import re
+
+    from app.official.models import OfficialData
+    from app.settings import REPO_ROOT
+
+    known = {o.order_no for o in OfficialData().orders}
+    pattern = re.compile(r"\b(Anker\d{3}|DEMO-[A-Z0-9-]+)\b")
+    missing = set()
+    for rel in GOLD_FILES:
+        for found in pattern.findall((REPO_ROOT / rel).read_text(encoding="utf-8")):
+            if found not in known:
+                missing.add(f"{rel}: {found}")
+    assert not missing, missing
