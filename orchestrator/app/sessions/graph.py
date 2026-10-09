@@ -20,6 +20,8 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from app.actions.runtime import get_services
+from app.cases.service import case_event
 from app.context.budget import fit_prompt_budget
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
@@ -290,17 +292,20 @@ async def clarify(state: SessionState) -> SessionState:
     decision = state.get("_decision") or {}
     reason = decision.get("reason") or "product"
     detail = {k: v for k, v in decision.items() if k not in ("outcome", "reason")}
-    out = await clarify_mod.make_question(
-        get_model_router(),
-        reason,
-        state.get("text", ""),
-        strategy=(state.get("emotion") or {}).get("strategy", "normal"),
-        summary=_state_summary(state),
-        detail=detail,
-        session_id=state.get("session_id"),
-        lane=_lane(),
-        previous_question=(state.get("clarification") or {}).get("question"),
-    )
+    if reason == "applicability":
+        out = clarify_mod.QuestionOutcome(decision["question"], "synthesize")
+    else:
+        out = await clarify_mod.make_question(
+            get_model_router(),
+            reason,
+            state.get("text", ""),
+            strategy=(state.get("emotion") or {}).get("strategy", "normal"),
+            summary=_state_summary(state),
+            detail=detail,
+            session_id=state.get("session_id"),
+            lane=_lane(),
+            previous_question=(state.get("clarification") or {}).get("question"),
+        )
     message_id = uuid.uuid5(
         uuid.NAMESPACE_URL, f"{state.get('session_id')}:{state.get('run_id')}:clarify"
     ).hex
@@ -1442,6 +1447,8 @@ def route_entry(state: SessionState) -> str:
                 return "dialogue"
             return "disambiguate"
     if decision.get("reply_mode") in {"dialogue", "clarify"}:
+        if (state.get("diagnose_outcome") or {}).get("mode") == "clarify" and decision.get("primary_intent") in {"answer_pending", "supplement"} and decision.get("allowed_operations", True):
+            return "disambiguate"
         if (decision.get("primary_intent") in {"report_problem", "supplement", "unknown", "answer_pending"}
                 and decision.get("allowed_operations", True) and _new_fault_images(state)):
             return "disambiguate"
@@ -1842,6 +1849,8 @@ async def retrieve(state: SessionState) -> SessionState:
                 knowledge_status="unavailable",
                 exact_hits=[e["chunk_id"] for e in exact_evidence],
                 exhausted_plans=state.get("exhausted_plans") or [],
+                clarifications=plans.pop("clarifications", []),
+                previous_outcome=state.get("diagnose_outcome"),
             )
         )
         return {
@@ -2118,12 +2127,40 @@ async def retrieve(state: SessionState) -> SessionState:
         evidence.setdefault(it["evidence_id"], {k: v for k, v in it.items() if k != "knowledge_title"})
     plans = await _synthesize_step(state, round_evidence, lane, rcfg)
     trace += plans.pop("retrieval_trace", [])
+    # 首批无法支持操作时，给被预算裁掉的候选一次机会；单次上下文预算保持不变。
+    # 不重试已读片段，不重新查询知识库，也不把 needs_confirmation 当成 supported。
+    omitted = [hit for hit in candidates if selection.excluded.get(hit.evidence_id) in {"item_limit", "char_limit"}]
+    if not plans.get("plans_ranked") and omitted and get_model_router() is not None:
+        if _remaining_ms(state) >= rcfg.retrieval.min_remaining_for_second_round_ms:
+            recovery = pack_hits(
+                omitted, max_items=rcfg.retrieval.final_k,
+                max_chars=rcfg.retrieval.context_chars, item_chars=rcfg.retrieval.item_chars,
+            )
+            extra_evidence = {hit.evidence_id: hit.as_internal_item() for hit in recovery.hits}
+            trace.append({"event": "context_recovery", "selected_ids": list(extra_evidence),
+                          "excluded": recovery.excluded, "context_chars": recovery.chars,
+                          "session_id": session_id, "run_id": run_id})
+            if extra_evidence:
+                extra = await _synthesize_step({**state, "model_trace": plans.get("model_trace", [])}, extra_evidence, lane, rcfg)
+                trace += extra.pop("retrieval_trace", [])
+                # 恢复调用失败时不能把检索顺序降级结果升级成可执行方案。
+                extra["plans_ranked"] = [plan for plan in extra["plans_ranked"] if plan.get("source") == "synthesize"]
+                round_evidence.update(extra_evidence)
+                if extra.get("plans_ranked") or not plans.get("clarifications"):
+                    plans = extra
+                else:
+                    plans["model_trace"] = extra.get("model_trace", [])
+        else:
+            trace.append({"event": "context_recovery_skipped", "reason": "budget",
+                          "session_id": session_id, "run_id": run_id})
     plans.update(
         _diagnose_outcome(
             plans.get("plans_ranked") or [],
             knowledge_status=status,
             exact_hits=[e["chunk_id"] for e in exact_evidence],
             exhausted_plans=sorted(effective_exhausted(state)),
+            clarifications=plans.pop("clarifications", []),
+            previous_outcome=state.get("diagnose_outcome"),
         )
     )
     return {
@@ -2175,7 +2212,7 @@ async def _synthesize_step(
         session_id=state.get("session_id"),
         lane=lane,
     )
-    update: dict[str, Any] = {"plans_ranked": out["plans_ranked"]}
+    update: dict[str, Any] = {"plans_ranked": out["plans_ranked"], "clarifications": out.get("clarifications", [])}
     if out["model_trace"]:
         update["model_trace"] = [*state.get("model_trace", []), out["model_trace"]]
     if out["dropped"] or out["degraded"]:
@@ -2194,8 +2231,20 @@ async def _synthesize_step(
 def _diagnose_outcome(
     plans_ranked: list[dict[str, Any]], *, knowledge_status: str, exact_hits: list[str],
     exhausted_plans: list[str] = (),
+    clarifications: list[dict] = (), previous_outcome: dict | None = None,
 ) -> dict[str, Any]:
     """有假设 → 进 guide；来源 synthesize（模型按证据排序）或 retrieval_order（模型不可用时按命中顺序）；无候选 → R5。"""
+    clarifications = [candidate for candidate in clarifications if candidate["plan_id"] not in exhausted_plans]
+    if not plans_ranked and clarifications:
+        previous = previous_outcome or {}
+        attempts = previous.get("attempts", 0) if previous.get("mode") == "clarify" else 0
+        if attempts < clarify_mod.MAX_CLARIFICATIONS:
+            candidate = clarifications[0]
+            return {
+                "diagnose_outcome": {"mode": "clarify", **candidate, "attempts": attempts + 1},
+                "_decision": {"outcome": "clarify", "reason": "applicability", "question": candidate["question"]},
+                "escalate_reason": None, "plan_cursor": None,
+            }
     if not plans_ranked:
         return {
             "diagnose_outcome": {
@@ -2237,6 +2286,8 @@ def _diagnose_outcome(
 def route_after_retrieve(state: SessionState) -> str:
     if state.get("escalate_reason"):
         return "escalate"
+    if (state.get("diagnose_outcome") or {}).get("mode") == "clarify":
+        return "clarify"
     # Only guide may publish operations, after evidence and pre-step policy checks.
     return "guide" if state.get("plan_cursor") else "reply"
 
@@ -2587,11 +2638,6 @@ async def summarize(state: SessionState) -> SessionState:
     session_id = state.get("session_id", "")
     run_id = state.get("run_id", "")
     message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{session_id}:{run_id}:reassure").hex
-    text = acknowledge_current_turn(dict(state), reassurance_text(reason, dict(state)))
-    if not state.get("summary_refresh"):
-        writer({"type": "message_start", "message_id": message_id})
-        writer({"type": "message", "message_id": message_id, "delta": text})
-        writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     summary = build_summary(
         dict(state), reason=reason, lane=os.environ.get("MODEL_LANE", "domestic")
     )
@@ -2602,6 +2648,46 @@ async def summarize(state: SessionState) -> SessionState:
         lane=os.environ.get("MODEL_LANE", "domestic"),
         budget_ms=max(0, _remaining_ms(state) - 2000),
     )
+    services = get_services()
+    case_update = {}
+    handoff_status = "prepared"
+    if services is not None and (not state.get("summary_refresh") or state.get("case_id")):
+        row = await services.cases.store.get(state["case_id"]) if state.get("case_id") else await services.cases.open(
+            session_id, state["active_issue_id"], state.get("product_confirmed") or {},
+            complaint_risk=complaint_flagged(state),
+        )
+        summary.case_id = row["case_id"]
+        if state.get("summary_refresh"):
+            # 更新摘要不重新发起审批，也不撤回人工已经作出的决定。
+            row = await services.cases.record_handoff(row["case_id"], summary.model_dump(mode="json"))
+        else:
+            row = await services.cases.hand_off(
+                row["case_id"], requested=state.get("requested_remedy") or "human_support",
+                quote=state.get("text") or "", input_id=state["input_id"],
+                reason=summary.reason.text,
+                summary_of=lambda current: summary.model_dump(mode="json"),
+            )
+        handoff_status = "requested" if row["status"] == "awaiting_approval" else (
+            ((state.get("issues") or {}).get(state["active_issue_id"], {}).get("handoff") or {}).get("status", "prepared")
+        )
+        case_update = {"case_id": row["case_id"], "case_status": row["status"]}
+        if row["status"] == "awaiting_approval":
+            case_update.update(stage="awaiting_human", pending_card=None,
+                               task_queue=[{**task, "status": "waiting_human"} if task.get("status") == "active" else task
+                                           for task in state.get("task_queue", [])])
+        writer(case_event(row, issue_id=state["active_issue_id"], reason=summary.reason.text))
+    text = reassurance_text(reason, dict(state))
+    if handoff_status == "requested":
+        text = (
+            ("For your safety, please stop using the device and do not charge it. " if reason == "R4" else
+             "I couldn't confirm official troubleshooting guidance for this issue. " if reason == "R5" else "")
+            + "I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting."
+        )
+    text = acknowledge_current_turn({**state, **case_update}, text)
+    if not state.get("summary_refresh"):
+        writer({"type": "message_start", "message_id": message_id})
+        writer({"type": "message", "message_id": message_id, "delta": text})
+        writer({"type": "message_end", "message_id": message_id, "status": "completed"})
     from app.conversation.reduce import stable_id
 
     issue_id = state["active_issue_id"]
@@ -2621,7 +2707,7 @@ async def summarize(state: SessionState) -> SessionState:
         "updated_at": state["at"],
         "source_through_seq": state["input_seq"],
         "previous_card_id": previous.get("card_id"),
-        "handoff_status": "prepared",
+        "handoff_status": handoff_status,
     }
     writer(event)
     writer(
@@ -2645,7 +2731,7 @@ async def summarize(state: SessionState) -> SessionState:
     issue["latest_summary"] = {k: v for k, v in event.items() if k != "type"}
     issue["handoff"] = {
         "handoff_id": stable_id(issue_id, "handoff"),
-        "status": "prepared",
+        "status": handoff_status,
         "prepared_at": state["at"],
         "reason_refs": [state["input_id"]],
     }
@@ -2654,6 +2740,7 @@ async def summarize(state: SessionState) -> SessionState:
         "substage": "summarize",
         "issues": issues,
         "escalation_summary": dict(event, reason=reason),
+        **case_update,
     }
 
 
@@ -2900,7 +2987,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         },
     )
     g.add_conditional_edges(
-        "retrieve", route_after_retrieve, {"reply": "reply", "guide": "guide", "escalate": "escalate"}
+        "retrieve", route_after_retrieve, {"reply": "reply", "guide": "guide", "escalate": "escalate", "clarify": "clarify"}
     )
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(

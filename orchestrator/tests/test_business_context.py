@@ -61,7 +61,8 @@ def test_reference_requires_existing_subject_and_current_quote():
     unknown = context.accept(
         "那一单", "2", {"relation": "current", "quote": "那一单", "subject_id": "invented"}
     )
-    assert unknown.bind("logistics.query").status == "ambiguous"
+    assert unknown.bind("logistics.query").status == "missing"
+    assert unknown.bind("logistics.query").params == {}  # Unknown reference must not reuse the only known order.
     another = context.accept("Anker003", "2")
     restored = another.accept(
         "最初那笔",

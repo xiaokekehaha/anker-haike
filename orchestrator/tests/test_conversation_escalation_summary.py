@@ -26,6 +26,10 @@ async def test_skipped_steps_keep_product_and_feedback(
     conversation: conversation_runtime.Conversation,
 ):
     set_knowledge_adapter(None)
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0426", "confidence": 0.9, "evidence_ids": ["qa:rv-0426"],
+        "applicability": "supported", "supported_symptoms": ["边刷缠绕"],
+    }]}]
     rows = await conversation.send(
         APP_REPORT,
         {

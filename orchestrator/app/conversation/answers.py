@@ -94,7 +94,7 @@ def required_reads(request, view):
 
 def render_answer(request, view):
     if view["status"] == "ambiguous":
-        return "This involves more than one order. Please tell me which order number you'd like me to check."
+        return "I couldn't identify which order you mean. Please share the order number you'd like me to check."
     lines = []
     fields = list(dict.fromkeys(request.fields))
     if "logistics_status" in fields and "updated_at" not in fields:

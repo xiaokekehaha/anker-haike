@@ -17,6 +17,7 @@ from app.conversation.operation_conditions import (
     has_operation_context,
     resolve_operation_reply,
 )
+from app.conversation.request_constraints import constrain_requests
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError
 
@@ -107,7 +108,7 @@ class TurnInterpretation(BaseModel):
     feedback: Literal["solved", "not_solved", "cannot_do"] | None = None
     feedback_quote: str | None = None
     unresolved_quote: str | None = Field(default=None, description="用户明确报告当前问题仍未解决、再次发生，或否认结案结果的本轮逐字原话。查询历史、假设将来复发、一般投诉情绪保持空；它不是某个排障步骤的反馈")
-    diagnostic_request_quote: str | None = Field(default=None, description="用户明确要求继续排查或询问其他排障方案的本轮原话；解释已有步骤、查询历史、办理退换不填。它不表示用户已执行步骤。")
+    diagnostic_request_quote: str | None = Field(default=None, description="用户就当前设备现象求助、问为何发生、要求继续排查或其他方案的本轮原话，须包含对应现象。历史背景、拒绝排障、仅查询保修、解释已有步骤、办理退换不填。它不表示用户已执行步骤。")
     pending_answer: PendingAnswer | None = None
     history_request: HistoryRequest | None = None
     device_safety_assertion: Literal["reported", "negated", "uncertain", "none"] = Field(default="none", description="仅判断设备物理安全隐患，如冒烟、漏液、鼓包、触电；没有此类设备安全内容时必须 none。投诉、差评和生气不属于设备安全隐患")
@@ -123,7 +124,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-09.1"  # 新增 order_change 意图
+INTERPRET_PROMPT_VERSION = "2026-10-09.2"  # 区分故障对象、当前求助与背景事实
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。
@@ -171,6 +172,7 @@ def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpre
 
     几条都只在**原话**上判断，不看会话状态：纠的是这一句被读错，不是推翻用户后续的说法。
     """
+    meaning = constrain_requests(meaning, text)
     # 主办方工单里的撇号多数是中文输入法的 ’（63 单里 15 处），而不是 '。
     # 在入口统一成 '，下面所有模式只需写一种写法（T9 的「don’t」曾因此整条漏掉）。
     text = text.replace("’", "'").replace("ʼ", "'")
@@ -216,11 +218,14 @@ def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpre
     return meaning.model_copy(update=update)
 
 INSTRUCTION = """你是售后会话语义解释器，输出符合 schema 的 JSON。
+先绑定故障描述的对象：追踪号、查件链接或物流查询页面不能用属于 logistics_query，不能生成设备 symptom 或 report_problem；一句中还描述设备故障时保留独立故障诉求，不整句覆盖。
+设备当前发生异常、用户问为什么或如何处理，属于故障求助，填写 report_problem 和包含现象的 diagnostic_request_quote。后接保修反问或情绪不抹掉该诉求；对服务质量的反问本身不是查保修期限。仅作为退款/保修查询的背景、历史事件、明确不排障时，不补排障诉求，也不填 diagnostic_request_quote。
+业务对象缺少订单号是缺参，不是多对象歧义：business_reference 可为 null；只有多个已知对象无法确定指向时才 ambiguous，不因只知道设备名称而选 ambiguous。
 operation_update 只在用户本轮明确声明操作条件或意愿时填写：signal 取一个，quote 引用当前原话，其余情况留空。资源缺失不表示故障，也不表示已操作；不能从“做不了”推断缺哪一项。step_attempts 是原始反馈，cannot_do 不是已执行。
 resources 里为 false 的资源本轮说已到位（“拿到了”），必须给对应 *_ready 信号并引用原话。
 emotion_level 需要 emotion_cues 里的原话支撑，calm 也一样；短答复、型号和理解失败都不算依据，此时 emotion_level=null。
 business_subject.active_subject 是最近选择或查询的业务对象，active_subject_id 是其 ID。「这笔订单、上面的订单」及普通短追问沿用该焦点，business_reference 用 current 且 subject_id 留空；不要因为本轮省略编号要求重填。service_case 是正在办理的案件，可以属于另一笔订单；不能用案件订单覆盖聊天焦点。业务缺参和不同订单的案件隔离由服务端处理，clarification 只用于意图或对象确实歧义。
-business_reference 是唯一的对象选择：问正在办理的案件/退款/换货订单用 relation=case（服务端绑定 service_case.order_no）；问正在排障的设备用 issue；这两种不填写 subject_id。明确换查另一笔尚无编号的订单用 other 且 subject_id 留空；只有用户明确回指其他已知对象时才从 business_subject.subjects 选择 subject_id；无法确定对象用 ambiguous。quote 必须是本条逐字原话，模型不输出或编造订单/运单编号。
+business_reference 是唯一的对象选择：问正在办理的案件/退款/换货订单用 relation=case（服务端绑定 service_case.order_no）；问正在排障的设备用 issue；这两种不填写 subject_id。明确换查另一笔尚无编号的订单用 other 且 subject_id 留空；只有用户明确回指其他已知对象时才从 business_subject.subjects 选择 subject_id；存在多个已知对象而无法区分指向时用 ambiguous；尚无订单对象/编号时保持 null，不从设备名称推断多订单。quote 必须是本条逐字原话，模型不输出或编造订单/运单编号。
 对事实追问填写 answer_request：fields 只选择本轮所问字段，quote 是当前逐字原话，不输出答案值。对象只在 business_reference 中选择，answer_request 不重复选择对象。询问型号/渠道/平台/购买日/购买地/金额属于订单事实，使用地来自用户，物流状态/单号来自物流，现象/已做步骤来自问题记录，方案/案件状态来自办理记录。结合 conversation_view 识别已知与缺失，不把另一对象事实当作当前事实；问题中没重述已知信息无需追问。只有事实问答才填写 answer_request，操作解释和一般建议保持空。
 查物流是 logistics_query，查保修是 warranty_query，查订单是 order_query，要换货是 replacement_request，退款是 refund_request，更改地址是 address_update，确认收到货是 confirm_received。order_change 只用于客户明确要求改变订单本身的履约：暂缓发货、取消订单、把已下单的型号换成别的。问「东西到哪了 / 发货了没 / 什么时候到」仍然是 logistics_query，不是 order_change。
 情绪分 calm/dissatisfied/angry/complaint_risk 四级，emotion_cues 仅引用当前原话。单纯表达不满、催促或提出投诉用 complaint 意图；例如“再不解决我就去平台投诉”是 complaint + complaint_risk，不含转人工请求。只有明确要求接入人工客服才 request_human，且须填写 human_request_quote，不能从用户情绪或你认为需要人工推导此操作。情绪策略与实际转人工请求相互独立。

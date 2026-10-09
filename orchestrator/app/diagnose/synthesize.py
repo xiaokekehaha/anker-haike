@@ -25,10 +25,18 @@ class Hypothesis(BaseModel):
     model_config = ConfigDict(extra="forbid")
     plan_id: str = Field(description="只能是允许列表中的计划 id")
     confidence: float = Field(ge=0, le=1)
+    applicability: Literal["supported", "needs_confirmation", "not_applicable"] = Field(
+        description="证据是否支持用户的实际现象和必要条件；同型号或关键词接近不算支持"
+    )
+    supported_symptoms: list[str] = Field(description="逐字选择本次有效症状中该方案能解释的项目，未覆盖的不填")
     evidence_ids: list[str] = Field(
         default_factory=list, description="支撑该假设的证据 id，取自提供的片段"
     )
     rationale: str = Field(default="", max_length=80)
+    clarification_question: str | None = Field(
+        default=None, max_length=300,
+        description="needs_confirmation 时用一句英文询问文档要求但尚未知的入口前提；只确认事实，不要求执行操作",
+    )
 
 
 class PlansRanked(BaseModel):
@@ -46,8 +54,11 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
         __config__=ConfigDict(extra="forbid"),
         plan_id=(lit, Field(description="只能是允许列表中的计划 id")),
         confidence=(float, Field(ge=0, le=1)),
+        applicability=(Literal["supported", "needs_confirmation", "not_applicable"], Field()),
+        supported_symptoms=(list[str], Field()),
         evidence_ids=(list[str], Field(default_factory=list)),
         rationale=(str, Field(default="", max_length=80)),
+        clarification_question=(str | None, Field(default=None, max_length=300)),
     )
     return create_model(
         "PlansRankedEnum",
@@ -71,7 +82,7 @@ def default_plans_ranked(allowed: list[Plan], *, source: str = "retrieval_order"
 
 
 def filter_hypotheses(
-    raw: list[dict[str, Any]], *, allowed: dict[str, Plan], evidence_ids: set[str], max_n: int
+    raw: list[dict[str, Any]], *, allowed: dict[str, Plan], evidence_ids: set[str], symptoms: set[str], max_n: int
 ) -> tuple[list[dict[str, Any]], list[str]]:
     kept: list[dict[str, Any]] = []
     dropped: list[str] = []
@@ -83,6 +94,13 @@ def filter_hypotheses(
             continue
         if pid in seen:
             dropped.append(f"duplicate:{pid}")
+            continue
+        if h.get("applicability") != "supported":
+            dropped.append(f"not_supported:{pid}")
+            continue
+        covered = list(dict.fromkeys(s for s in h.get("supported_symptoms", []) if s in symptoms))
+        if not covered:
+            dropped.append(f"no_supported_symptom:{pid}")
             continue
         ev = [e for e in (h.get("evidence_ids") or []) if e in evidence_ids]
         bad = [e for e in (h.get("evidence_ids") or []) if e not in evidence_ids]
@@ -99,6 +117,7 @@ def filter_hypotheses(
                 "confidence": round(float(h.get("confidence", 0)), 3),
                 "evidence_ids": ev,
                 "rationale": (h.get("rationale") or "")[:80],
+                "supported_symptoms": covered,
                 "source": "synthesize",
             }
         )
@@ -111,6 +130,12 @@ INSTRUCTION = (
     "- plan_id 只能取允许列表中的值；每个假设至少引用一条支撑它的 evidence_id（只能用给出的 id）；\n"
     "- confidence 为 0–1；rationale 不超过 40 字；不要编造检索片段里没有的现象或原因；\n"
     "- 标为「未解决工单」的片段只说明该次服务未确认解决，不能作为方案依据，只可用作反证；\n"
+    "- 先判断 applicability：supported 必须是同一现象且必要前提已成立；前提未知用 needs_confirmation；现象矛盾用 not_applicable。\n"
+    "- 入口前提是用户观察到的现象/操作条件，不是尚待检查的故障原因。步骤本来用于检查某个可能原因时，不要求用户先证明该原因。\n"
+    "- needs_confirmation 必须填写 clarification_question：只问一个缺失的入口前提，用英文，不给操作指令；结合上一问和本轮回答，已回答的不重复问。\n"
+    "- 必须区分方向、时间和结果，例如提前发生与未能发生、始终离线与偶发离线不能仅凭共享关键词相互代用。\n"
+    "- 文档有错误码而用户没有提供错误码，不是拒绝依据；用户现象和文档适用条件一致仍可 supported。\n"
+    "- supported_symptoms 只能逐字选择给定的有效症状；不能把共同主题当作覆盖，不能声称一个方案解决所有并列问题。\n"
     "- 没有任何计划能解释时输出空列表。只输出 JSON。"
 )
 
@@ -151,9 +176,11 @@ async def synthesize(
     plans_text = "\n".join(f"- {p.plan_id}：{p.fault}（首步：{p.steps[0].title}）" for p in allowed)
     ev_text = "\n".join(render_evidence(e) for e in evidence)
     obs_text = "\n".join(observations) if observations else "（无图片观察）"
+    symptoms = list(dict.fromkeys(str(s) for s in [*(state.get("symptoms") or []), *observations] if str(s).strip()))
     human = (
         INSTRUCTION.format(n=max_hypotheses)
         + f"\n允许的排障计划：\n{plans_text}\n"
+        + "有效症状（supported_symptoms 只能逐字选取）：\n" + wrap_data("\n".join(symptoms), kind="active_symptoms") + "\n"
         + wrap_data(
             " ".join(
                 [str(s) for s in state.get("symptoms") or []]
@@ -162,6 +189,13 @@ async def synthesize(
         )
         + "\n"
         + wrap_data(obs_text, kind="image_observations")
+        + "\n"
+        + wrap_data(str(state.get("observations") or []), kind="confirmed_observations")
+        + "\n"
+        + wrap_data(
+            str({"question": (state.get("diagnose_outcome") or {}).get("question"),
+                 "answer": state.get("text")}), kind="current_turn",
+        )
         + "\n"
         + wrap_data(ev_text, kind="retrieved_snippets")
     )
@@ -220,8 +254,21 @@ async def synthesize(
         raw,
         allowed=allowed_by_id,
         evidence_ids={e["evidence_id"] for e in evidence},
+        symptoms=set(symptoms),
         max_n=max_hypotheses,
     )
+    # 前提未知不能成为可执行计划，但有官方证据的候选可以发起事实澄清。
+    visible_ids = {e["evidence_id"] for e in evidence}
+    clarifications = [
+        {"plan_id": h["plan_id"], "question": h["clarification_question"].strip(),
+         "evidence_ids": [eid for eid in h["evidence_ids"] if eid in visible_ids],
+         "confidence": h["confidence"]}
+        for h in raw
+        if h["plan_id"] in allowed_by_id and h["applicability"] == "needs_confirmation"
+        and (h.get("clarification_question") or "").strip()
+        and any(eid in visible_ids for eid in h["evidence_ids"])
+    ]
+    clarifications.sort(key=lambda item: -item["confidence"])
     for d in dropped:
         log.info(
             "synthesize dropped hypothesis session=%s %s",
@@ -231,9 +278,10 @@ async def synthesize(
         )
     if not kept:
         return {
-            "plans_ranked": default_plans_ranked(allowed),
+            "plans_ranked": [],
             "dropped": dropped,
             "model_trace": trace,
-            "degraded": "all_dropped",
+            "degraded": "no_applicable_plan",
+            "clarifications": clarifications[:1],
         }
     return {"plans_ranked": kept, "dropped": dropped, "model_trace": trace, "degraded": None}

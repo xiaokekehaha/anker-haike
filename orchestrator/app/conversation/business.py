@@ -113,13 +113,15 @@ class BusinessContext(BaseModel):
             elif reference.get("relation") == "other":
                 result.active_subject_id, result.status, result.candidate_ids = None, "missing", []
             elif reference.get("relation") == "ambiguous":
-                result.active_subject_id, result.status = None, "ambiguous"
+                result.active_subject_id = None
+                result.status = "ambiguous" if len(result.subjects) >= 2 else "missing"
                 result.candidate_ids = list(result.subjects)
         return result
 
     def bind(self, action):
         if self.status == "ambiguous":
-            return Binding(status="ambiguous")
+            candidates = set(self.candidate_ids).intersection(self.subjects)
+            return Binding(status="ambiguous") if len(candidates) >= 2 else Binding(status="missing", missing_fields=["order_no"])
         subject = self.subjects.get(self.active_subject_id)
         values = {k: v.value for k, v in subject.identifiers.items()} if subject else {}
         keys = (

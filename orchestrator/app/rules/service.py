@@ -100,7 +100,7 @@ def _norm(text: str) -> str:
 # 视觉模型会把「没看到危险」也写成观察项：「未见冒烟烧焦鼓包漏液火花」。子串匹配读不出否定，
 # 正常的滚刷缠绕照片因此被当成安全风险升级 R4、排障直接中断（三次复现一次）。
 #
-# 这里只承认**一种**否定形态：否定词后面紧跟着一串安全词，词与词之间只允许 _FILLERS 里的连接。
+# 只承认有界否定形态：否定词后跟安全词或普通外观异常，词间只允许 _FILLERS 里的连接。
 # 跨过标点或任何实义字符就当成新的陈述，继续按命中处理 —— 所以「无线充电座冒烟」的「无」不是否定，
 # 「未见冒烟，滚刷烧焦」也只遮住前半句。安全判定宁可误报不可漏报，判否定的条件因此比判命中严得多。
 _NEG_CUES = (
@@ -118,6 +118,8 @@ _FILLERS = (
     "的", "等", "或", "和", "与", "及", "、", "/", "-", "·",
     "signs of", "sign of", "signs", "any", "obvious", "visible", "or", "and", "of",
 )
+# 普通外观异常也可与安全现象并列被否定；只允许完整谓词，不能跨越部件名或转折。
+_NEGATED_APPEARANCE = ("破损", "损坏", "裂纹", "变形", "damage", "cracks", "deformation")
 
 
 def _skip_fillers(text: str, i: int) -> int:
@@ -141,7 +143,7 @@ def _mask_negated(text: str, terms: tuple[str, ...]) -> str:
         i = cue.end()
         while True:
             i = _skip_fillers(text, i)
-            term = next((t for t in terms if text.startswith(t, i)), None)
+            term = next((t for t in (*terms, *_NEGATED_APPEARANCE) if text.startswith(t, i)), None)
             if term is None:
                 break
             masked[i : i + len(term)] = "\x00" * len(term)

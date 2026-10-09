@@ -56,6 +56,8 @@ SYNTH_HAIR = json.dumps(
                 "confidence": 0.85,
                 "evidence_ids": ["c12"],
                 "rationale": "滚刷缠绕毛发",
+                "applicability": "supported",
+                "supported_symptoms": ["不吸了", "滚刷缠头发"],
             }
         ]
     },

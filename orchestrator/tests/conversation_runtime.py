@@ -117,7 +117,8 @@ async def conversation(mem_runtime):
     models["diagnose.synthesize"].script = [
         {
             "hypotheses": [
-                {"plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["c12"]}
+                {"plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["c12"],
+                 "applicability": "supported", "supported_symptoms": ["不吸了", "滚刷缠头发"]}
             ]
         }
     ]

@@ -104,6 +104,16 @@ def _diagnostic_observations(state) -> list[str]:
     if decision.get("issue_id", state.get("active_issue_id")) != state.get("active_issue_id"):
         decision = {}
     observations = [f"待确认：{item}" for item in decision.get("missing_information", [])]
+    ranked = state.get("plans_ranked") or []
+    assessed = [entry for entry in ranked if "supported_symptoms" in entry]
+    if assessed or (state.get("escalate_reason") == "R5" and state.get("knowledge_status") == "ok"):
+        supported = {symptom for entry in assessed for symptom in entry["supported_symptoms"]}
+        issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+        observations.extend(
+            f"尚无适用步骤，待人工核实：{fact['value']}"
+            for fact in issue.get("facts", [])
+            if fact.get("status") == "active" and fact.get("kind") == "symptom" and fact["value"] not in supported
+        )
     pending = state.get("pending_card") or {}
     if pending.get("kind") == "step_feedback":
         step = (pending.get("payload") or {}).get("step") or {}
@@ -268,6 +278,10 @@ def summary_to_text(s: EscalationSummary) -> str:
 
 # 给客户看的结束说明（英文，D2 2026-10-08）；转人工摘要本身仍是中文，给客服看。
 REASSURANCE = {
+    "R5": (
+        "I couldn't confirm official troubleshooting guidance for the symptoms you reported. "
+        "I've put together a record of this issue so a support colleague can continue from here."
+    ),
     "R4": (
         "For your safety, please stop using the device and do not charge it. "
         "I've put together a record of this issue so a support colleague can look into it."
