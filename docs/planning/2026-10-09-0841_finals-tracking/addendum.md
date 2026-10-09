@@ -301,6 +301,71 @@ T9 现在的行为是「答发货日 + 如实说明改不了订单并转人工�
 T9 原来的失败（只回发货日就结束、完全不提暂缓诉求）在新口径下仍然判错 ——
 它的终点会是 `logistics_presale` 且客户可见文字里没有那句说明，不会命中 `order_change_human`。
 
+### P2-1 补完：另一个会话修掉了我这版的硬伤
+
+我这版只做到「说一句已转交 + 路由到 await_human」，另一个会话复测 T9 三次后发现：
+**话是说了，事没做**——案件仍是 `open`、没有 review_request、没有交接摘要，
+而且 T9 的物流查询（排在队列后面）被整个丢掉，因为 order_change 任务一直 active 堵着队列。
+
+它的改法比我的对：
+- `hand_off_request()` 先把请求落库（transition → record_review_request → _record_handoff），
+  再对客户说「已转交」。顺序不能反：话术要以案件真的进了人工队列为前提。
+  交接摘要保留客户原话，「if you have not shipped」这个条件由人工核实，不由机器人改写。
+- 新增 `waiting_human` 任务状态（区别于 `done`）：诉求没办结，但机器人本轮已无事可做，
+  不该让后面的任务一直 pending。`next_task(outcome=...)` 承接这个状态，
+  `enqueue` 把 waiting_human 也算作「已在队列」，客户重复说同一句不会重复入队。
+
+教训记在这里：「如实告知」只是话术层，**可追溯**才是实现层。
+我当时验证到「客户收到了正确的话」就收手了，没有去查案件状态与队列是否真的变了。
+
+## P3 根因与范围更正（2026-10-09）
+
+### P3-1：plan.md 的前提不成立，但问题更大
+
+plan.md 写「CI `haike-eval all` 在跑过时集」。核实后：CI 跑的是 7 个**确定性**套件
+（vision/routing/emotion/warranty/authorization/commitments/tickets），全绿；
+含过时 SKU 的 `data/eval/{intent,routing,conversation}/semantic-gold.yaml` 只有
+`--mode model` 才读，**CI 根本不跑**。所以「CI 在跑过时集」这个说法要撤回。
+
+但实际范围比 plan 列的大：除 `DEMO-X10-001`、耳机外，还有 **`X9 Pro`**——
+它不在产品目录里，而且 `scripts/eval_conversation.py` 把它错配给 SKU T2351
+（T2351 真名是 X10 Pro Omni）。金标与夹具已全部换成目录真值。
+
+`data/eval/conversation/semantic-gold.yaml` 的唯一消费者是 `scripts/eval_conversation.py`，
+没有任何自动化入口调它（它的 `pending`/`product` 字段连 `haike-eval` 的 schema 都不兼容）。
+脚本本身可用：改前 68/75，改后 **69/75**，resume 族从全挂恢复为全过。
+
+改的过程中犯过一个错：把 `target_issue_id: ear` 当成品类删掉，68 → 65。
+`ear` 其实是夹具里的 **issue id**（`resume_did_not_restore_existing_issue` 检查它），
+不是产品。正确改法是连夹具一起把这台设备换成吸奶器（目录里真实存在、且与扫地机分属不同品类，
+保留「两台设备不被混淆」的测试意图）。
+
+**加了守卫**（这才是根因）：`test_catalog.py` 两条用例锁住「金标只能出现目录里真实存在的
+产品与订单号」，退役产品清单集中在 `RETIRED`。实测往金标塞一个 `X9 Pro` 会立刻变红。
+
+### P3-3：真问题只有一处，其余刻意不改
+
+`operation_conditions.py:109` 的「充电宝不在身边」已删（B10 最后一处）。
+plan.md 还列了 test_analytics / test_escalation_summary / test_context_capacity / test_admin_api，
+这些**不改**，理由是它们命中的字符串（`rv_suction_hair_wrap`、`kb_manual`、「耳机」、「充电宝」）
+都是不解析产品目录的 opaque 夹具值，测的是分析聚合与摘要拼装逻辑本身。
+换成真实 SKU 不增加任何保障，反而把「这里与目录无关」这件事弄模糊。
+`config/vision_vocab.yaml` 的「耳机 / 充电盒 / 耳塞套」同理：那是读图**部件**词表，
+不是产品目录；删掉只会让客户真发耳机照片时失去「其他」之外的表达。
+
+### P3-2：把 100% 拆开，并让说明随报告走
+
+`sop_accuracy` 含 `ACCEPT` 表里的替代终点，只看合计会把「没走错路」读成「回答正确」。
+新增两个字段：`sop_exact`（完全命中标注终点）与 `sop_via_alternate`（经替代终点通过的单数）。
+2026-10-09 全量实测：合计 98%，其中完全一致 49/63，另 12 单经替代终点通过
+（最多的是 warranty_by_qa → ask_order 3 单、troubleshoot → ask_order 2 单）。
+
+口径说明写进 `render()` 的报告头，而不是只留在 planning 目录里——
+评委看到的是报告文件，不是这份文档。报告现在固定印着：
+「这些数字证明的是**没走错 SOP 分支**，不是回答内容正确」，
+并点明 `hallucination` 只查标注的禁止承诺与未收录码，不校验日期 / 单号 / 金额。
+
+
 
 
 
