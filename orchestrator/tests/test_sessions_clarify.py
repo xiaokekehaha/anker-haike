@@ -322,3 +322,66 @@ async def test_product_selection_without_symptom_asks_before_any_step(mem_runtim
     state = await _state(sid)
     assert state["product_confirmed"]["sku"] == "T2080"
     assert state["clarification"]["reason"] == "symptom" and state["clarification"]["attempts"] == 1
+
+def test_confirmed_product_survives_a_turn_with_no_model_in_it():
+    """P1-2：产品已确认后，一句不含型号的补充不得让产品卡再弹一次。
+
+    复现路径（T55 实测弹两次，journey run 5 与 run 7）：首封含「S1 Pro」→ product_hints 记下它；
+    该别名同时命中扫地机 T2080 与吸奶器 T8D04。排障走到一半客户回
+    「Here are photos of the problem.」，本轮原话没有任何型号，旧 hint 被重新查成两个候选，
+    已确认的 T8D04 被判成「提到了别的型号」而作废（clarify.decide 的 len(cands)>1 分支）。
+    已确认的产品是更强的证据，推翻它要靠本轮原话里真的出现别的型号，不是一条只增不减的旧线索。
+
+    直接驱动 decide：这条取决于 product_hints 的内容，而默认 HAIKE_LLM=off 时 intake 降级，
+    走 HTTP 根本填不出 hints，端到端反而测不到这条路径。
+    """
+    from app.sessions.clarify import decide
+
+    confirmed = {"sku": "T8D04", "name": "eufy Wearable Breast Pump S1 Pro",
+                 "category": "breast_pump", "in_scope": True}
+    state = {
+        "text": "Here are photos of the problem.",
+        "product_hints": ["S1 Pro"],  # 首封留下的旧线索，同名跨品类
+        "product_confirmed": confirmed,
+        "product_state": "confirmed_sku",
+        "symptoms": ["no suction"],
+    }
+    decision = decide(state, abandoned_card=None)
+    assert decision.update.get("product_state") != "unknown", "不该把已确认的产品打回未知"
+    assert not decision.update.get("product_candidates"), "不该重新出产品卡"
+    assert decision.update.get("product_confirmed", confirmed)["sku"] == "T8D04"
+
+
+async def test_a_real_model_change_in_this_turn_still_switches_the_product(mem_runtime):
+    """反向用例：本轮原话里真的出现了另一台设备，仍然要改产品 —— 上一条修复不能把纠错也堵掉。"""
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        await _send(client, sid, "我的 S1 Pro Wearable Breast Pump 不吸了")
+        assert (await _state(sid))["product_confirmed"]["sku"] == "T8D04"
+        await _send(client, sid, "说错了，是 X10 Pro Omni 不吸了")
+    state = await _state(sid)
+    assert state["product_confirmed"]["sku"] == "T2351"
+
+
+async def test_category_word_locates_a_shared_alias_even_after_confirmation():
+    """同名别名的品类消歧对「已确认」分支同样生效，不是只在首次确认时才有。
+
+    「S1 Pro」同时是扫地机 T2080 与吸奶器 T8D04。客户已确认吸奶器后说
+    「my S1 Pro vacuum broke」——原话两个候选都命中，但品类词 vacuum 已经说明是哪一台。
+    修复前这段收窄只写在 `not confirmed` 分支里，已确认时反而失去定位能力，
+    只能作废产品再弹一次卡；正确行为是识别为换了设备并切到扫地机。
+    """
+    from app.sessions.clarify import decide
+
+    state = {
+        "text": "my S1 Pro vacuum broke",
+        "product_hints": ["S1 Pro"],
+        "product_confirmed": {"sku": "T8D04", "name": "eufy Wearable Breast Pump S1 Pro",
+                              "category": "breast_pump", "in_scope": True},
+        "product_state": "confirmed_sku",
+        "symptoms": ["broke"],
+    }
+    decision = decide(state, abandoned_card=None)
+    assert decision.update.get("product_state") != "unknown", "品类词已定位，不该退回出卡"
+    assert not decision.update.get("product_candidates")
+    assert decision.update["product_confirmed"]["sku"] == "T2080"

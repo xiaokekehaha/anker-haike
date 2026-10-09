@@ -84,10 +84,18 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
     if pinned is None and parsed_pn:
         pinned = next(iter(catalog.lookup_product(parsed_pn)), None)
         pinned = catalog.get(pinned.sku) if pinned else None
-    cands = [pinned.to_candidate().model_dump()] if pinned and pinned.in_scope else _lookup(catalog, text, hints)
+    cands = [pinned.to_candidate().model_dump()] if pinned and pinned.in_scope else _lookup(
+        catalog, text, [] if confirmed else hints
+    )
     category = catalog.category_hint(text) or next(
         (catalog.category_hint(h) for h in hints if catalog.category_hint(h)), None
     )
+    # 同名型号跨品类（「S1 Pro」= 扫地机 T2080 + 吸奶器 T8D04）时，品类词已经说明是哪一台。
+    # 这一步对「已确认」与「未确认」两条分支同样适用：一句话能定位哪台设备，不该因为之前已经
+    # 确认过就反而失去定位能力（T55 / T45）。
+    if len(cands) > 1 and category:
+        same = [c for c in cands if c.get("category") == category]
+        cands = same if len(same) == 1 else cands
     if not category:
         # A short answer such as an unknown model must retain this issue's device.
         # Do not scan the whole transcript: it can contain other devices/issues.
@@ -154,10 +162,6 @@ def decide(state: dict[str, Any], *, abandoned_card: dict[str, Any] | None) -> D
                 mentioned=mentioned,
             )
     else:
-        if len(cands) > 1 and category:
-            # 「S1 Pro Wearable Breast Pump」：同名型号跨品类，原话里的品类词已经说明是哪一台（T55 / T45）
-            same = [c for c in cands if c.get("category") == category]
-            cands = same if len(same) == 1 else cands
         if len(cands) > 1:
             update.update({"product_candidates": cands, "product_state": "unknown"})
             return Decision(
@@ -353,6 +357,15 @@ def _model_card(catalog, category_skus: tuple[str, ...], skus: set[str]) -> list
 
 
 def _lookup(catalog, text: str, hints: list[str]) -> list[dict[str, Any]]:
+    """本轮原话里的型号；原话没有时才退回会话累积的 product_hints。
+
+    调用方在产品已确认时传空 hints。原因：hints 跨轮累积且只增不减（reduce.py 的
+    `issue["product_hints"] = [...旧, ...新]`），而「S1 Pro」这类同名别名会同时命中扫地机与
+    吸奶器两个候选。于是排障走到一半，客户回一句「Here are photos of the problem.」——
+    本轮原话里没有任何型号——旧 hint 被重新查成两个候选，已确认的产品被判成「提到了别的型号」
+    而作废，产品卡再弹一次（T55 实测弹两次，run 5 与 run 7）。
+    已确认的产品是更强的证据：要推翻它，得靠本轮原话里真的出现了别的型号，而不是靠一条旧线索。
+    """
     cands = [c.model_dump() for c in catalog.lookup_product(text)]
     if not cands:
         seen: set[str] = set()
