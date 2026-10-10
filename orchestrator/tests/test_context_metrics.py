@@ -10,6 +10,7 @@ from app.analytics.context import take_context_events
 from app.analytics.sink import AnalyticsSink
 from app.analytics.store import InMemoryAnalyticsStore
 from app.analytics.trace import RunTrace
+from app.context.config import conversation_config
 from app.conversation.interpret import interpret_turn
 from app.main import app
 from app.models.config import load_models_config
@@ -54,7 +55,7 @@ async def test_metrics_follow_each_node_execution_and_keep_usage_separate(monkey
     assert built["token_breakdown"] == context["token_breakdown"]
     assert called["actual_input_tokens"] == 10
     assert called["attempts"][0]["estimated_input_tokens"] > built["tokens"]
-    assert called["attempts"][0]["input_budget"] == 16000
+    assert called["attempts"][0]["input_budget"] == conversation_config().input_budget("intake")
     assert [e["event"] for e in second.summary["context_metrics"]] == ["context_budget"]
     assert take_context_events("metrics-run", "understand") == []
     assert "我的产品" not in json.dumps(first.summary, ensure_ascii=False)

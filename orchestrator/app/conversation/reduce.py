@@ -53,6 +53,7 @@ ISSUE_FIELDS = {
     "steps_executed": [],
     "displayed_knowledge_nodes": [],
     "step_attempts": [],
+    "step_checks": {},
     "operation_conditions": {},
     "counters": {},
     "exhausted_plans": [],
@@ -110,6 +111,16 @@ SAFETY_CONFIRM_QUESTION = (
 
 def _unconfirmed_risk(risks: list[dict], target: str | None) -> dict | None:
     return next((r for r in risks if r.get("status") == "unconfirmed" and r.get("issue_id") in {None, target}), None)
+
+
+def answers_pending_step(meaning: TurnInterpretation, pending: dict | None, text: str) -> bool:
+    """本轮是否在回答当前步骤卡：反馈或问句回答，且引文出自本轮原话。"""
+    if not pending or pending.get("kind") != "step_feedback":
+        return False
+    answer = meaning.pending_answer
+    if answer is not None and answer.kind == "step_answer":
+        return bool(quoted(answer.quote, text))
+    return meaning.feedback is not None and bool(quoted(meaning.feedback_quote, text))
 
 
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
@@ -334,12 +345,15 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
     elif hints:
         issue["product_hints"] = list(dict.fromkeys([*issue.get("product_hints", []), *hints]))
     changed_ids = {patch["fact_id"] for patch in applied}
+    corrected = bool(product_corrected or any(p["op"] in {"replace", "retract"} for p in applied))
     basis_changed = bool(
-        product_corrected
-        or any(p["op"] in {"replace", "retract"} for p in applied)
+        corrected
         or any(f["fact_id"] in changed_ids and f["kind"] == "symptom" for f in facts)
     )
-    if basis_changed and issue.get("pending_card"):
+    # 先承接再撤卡（2026-10-10 多轮复现 T22 / T46）：本轮有引文支持的回答指向当前步骤卡时，同句新增的现象
+    # 不撤这张卡，回答由 resolve_command 提交、verify 写进 step_attempts；新现象照常进事实。纠正旧记录仍撤卡。
+    keeps_card = not corrected and answers_pending_step(meaning, issue.get("pending_card"), text)
+    if basis_changed and issue.get("pending_card") and not keeps_card:
         pc = issue["pending_card"]
         pending_changes.append(
             {

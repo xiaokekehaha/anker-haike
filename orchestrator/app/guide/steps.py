@@ -131,6 +131,11 @@ async def prepare_step(
             dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "handoff_step"})
             break
         unavailable = step_unavailable(state, plan.plan_id, step)
+        if unavailable == "condition_not_met":
+            # 适用条件已被用户原话否定，或兄弟条件成立（fact_check）：这一步不适用，沿计划往后走
+            dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": unavailable})
+            step_id = _advance_in_plan(plan, step_id)
+            continue
         if unavailable:
             return StepPrep("blocked", dropped=[*dropped, {
                 "plan_id": plan.plan_id, "step_id": step_id, "reason": unavailable,

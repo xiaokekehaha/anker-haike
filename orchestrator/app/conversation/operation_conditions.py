@@ -223,7 +223,15 @@ def step_unavailable(state: dict, plan_id: str, step) -> str | None:
         or (b.instruction_src and b.instruction_src == step.instruction_src)
     ) for b in conditions.blockers):
         return "step_blocked"
+    if condition_skipped(state, plan_id, step.step_id):
+        return "condition_not_met"
     return None
+
+
+def condition_skipped(state: dict, plan_id: str, step_id: str) -> bool:
+    """条件步骤与用户原话核对后判为不适用（app/guide/fact_check.py）；选步与发卡共用。"""
+    checked = ((state.get("step_checks") or {}).get(plan_id) or {}).get("steps") or {}
+    return bool((checked.get(step_id) or {}).get("skip"))
 
 
 def effective_exhausted(state: dict) -> set[str]:

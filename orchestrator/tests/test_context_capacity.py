@@ -58,7 +58,7 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     # 2026-10-08：product_question 意图两段提示（见 docs/planning/2026-10-08-1921_product-knowledge-consult/）约 +150，
     #   设备安全说明补「噪音大、担心坏掉不算」（63 工单回放 T36 误判 R4）约 +15，system 从 2641 升到 2810。
     # 2026-10-09：R7 请求证据协议与并列维修提示使固定输入实测为 4573；
-    # 仅更新固定开销回归阈值，生产 16000 输入预算与下面的密集历史保护不变。
+    # 仅更新固定开销回归阈值，生产输入预算（config/conversation.yaml）与下面的密集历史保护不变。
     assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4630
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))
@@ -132,7 +132,7 @@ async def test_dense_context_preserves_required_state(rounds, objects, input_cha
     assert (len(context["source_entry_ids"]) - 1) % 2 == 0
     assert context["source_entry_ids"][-1] == "current"
     assert sum(context["token_breakdown"].values()) == context["tokens"]
-    assert measure_input(fake.calls[0]["messages"])["text_tokens"] <= 16000
+    assert measure_input(fake.calls[0]["messages"])["text_tokens"] <= conversation_config().input_budget("intake")
     assert state == before
 
 
@@ -156,8 +156,11 @@ def test_cache_is_optional_but_required_recall_and_risks_are_not():
 def test_summary_pressure_triggers_before_twelve_turns_without_partial_qa():
     entries = history(8)
     assert extract_summary(entries) is None
+    cfg = conversation_config()
+    # 后 4 轮（8 条）合计越过 intake 预算 × 触发比例：压力按配置计算，预算调整后仍然触发
+    pressure = int(cfg.input_budget("intake") * cfg.summary_trigger_ratio / 8) + 1
     for entry in entries[4:]:
-        entry.text = "字" * 1000
+        entry.text = "字" * pressure
     result = extract_summary(entries)
     assert result["source_entry_ids"] == [e.entry_id for e in entries[:4]]
     assert result["through_seq"] == 4
@@ -217,11 +220,13 @@ def test_intake_schema_preserves_null_fields_and_limits_fixed_overhead():
     # 同上：2026-09-18 新增 operation_update（118 token）后由 2462 升到 2519。
     # 2026-10-09：增加有类型的 request_quotes 后实测 2599，保留 51 token 余量。
     assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2650
-    messages = [HumanMessage(content="字" * 8000)]
+    # 介于默认预算与 intake 预算之间的输入：intake 放得下，其他任务超限（预算以 config/conversation.yaml 为准）
+    cfg = conversation_config()
+    assert cfg.input_budget("intake") > cfg.input_budget("reply.stream")
+    messages = [HumanMessage(content="字" * cfg.input_budget("reply.stream"))]
     spec = load_models_config(CONFIG_DIR / "models.yaml").models["qwen-flash"]
     assert budget_error(messages, spec, task="intake") is None
     assert budget_error(messages, spec, task="reply.stream") is not None
-    assert conversation_config().input_budget("intake") == 16000
 
 
 def test_required_recall_evicts_cache_even_when_fixed_content_alone_fits():

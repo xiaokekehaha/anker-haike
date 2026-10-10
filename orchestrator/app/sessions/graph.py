@@ -48,6 +48,7 @@ from app.emotion.policy import complaint_flagged, evaluate_emotion
 from app.escalation.polish import polish_summary
 from app.escalation.summary import build_summary, reassurance_text
 from app.guide import GUIDE_BUDGET_MS, apply_feedback, exhaust_plan, prepare_step
+from app.guide.fact_check import check_plan_facts
 from app.images.runtime import current_image_store
 from app.knowledge.adapter import Hit, KnowledgeScope
 from app.knowledge.context import pack_hits
@@ -207,6 +208,8 @@ class SessionState(TypedDict, total=False):
     # _verify 为 apply_action(step_feedback) 的本 run 判定（瞬态：done / next / escalate）
     steps_executed: list[dict[str, Any]]
     step_attempts: list[dict]
+    # 计划步骤与用户原话的核对结果 {plan_id: {issue_revision, steps: {step_id: {status, quote, skip?}}}}（app/guide/fact_check.py）
+    step_checks: dict[str, Any]
     operation_conditions: dict
     counters: dict[str, int]
     exhausted_plans: list[str]
@@ -2340,6 +2343,12 @@ def _diagnose_outcome(
     clarifications = [candidate for candidate in clarifications if candidate["plan_id"] not in exhausted_plans]
     previous = previous_outcome or {}
     attempts = previous.get("attempts", 0) if previous.get("mode") == "clarify" else 0
+    if previous.get("mode") == "clarify" and str(previous.get("reason") or "").endswith("_mismatch"):
+        # 对象 / 时机冲突的澄清只问一次（T52）：冲突由已记录的事实与候选标题决定，用户怎么答都消不掉；
+        # 重算时换个候选只会换个对象再问（真实复跑：问完盒子又问泵）。这是「候选不对」而不是「信息不足」：
+        # 同类冲突答过一次后不再追问，换别的澄清或走无方案出口。
+        # 模型提出的前提确认（needs_confirmation）不在此列，用户答「不确定」时按 R7 预算再问一次。
+        clarifications = [c for c in clarifications if c.get("reason") != previous["reason"]]
     if (not plans_ranked and (state or {}).get("unparsed_problem", {})
             and state["unparsed_problem"].get("status") == "unparsed" and not state.get("error_codes")
             and attempts < clarify_mod.MAX_CLARIFICATIONS):
@@ -2460,6 +2469,16 @@ async def guide(state: SessionState) -> SessionState:
     trace: list[dict[str, Any]] = []
     update: SessionState = {"stage": "guide", "substage": None, "_verify": None, "next_action": selected.get("next_action")}
     for _ in range(len(state.get("plans_ranked") or []) + 2):
+        cursor_plan = (work.get("plan_cursor") or {}).get("plan_id")
+        if cursor_plan:
+            # 步骤先对事实（P2 / P3）：用户已答的问句记成回答，条件不成立的步骤标记跳过；同一事实修订号下每个计划只判一次
+            checked = await check_plan_facts(
+                get_model_router(), work, get_plan_library().get(cursor_plan), library=get_plan_library(),
+                lane=_lane(), session_id=session_id, budget_ms=budget,
+            )
+            trace += checked.pop("guide_trace", [])
+            work.update(checked)
+            update.update(checked)
         prep = await prepare_step(
             state=work,
             library=get_plan_library(),

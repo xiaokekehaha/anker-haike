@@ -39,6 +39,8 @@ class PlanStep(_Strict):
     options: list[str] = Field(default_factory=list)
     branches: dict[str, str] = Field(default_factory=dict)
     source_gap: bool = False
+    # 2026-10-10：「If <条件>, …」开头的操作步骤只在条件成立时适用；进指南前与用户原话核对（app/guide/fact_check.py）
+    condition: str | None = None
 
     @field_validator("instruction_src")
     @classmethod

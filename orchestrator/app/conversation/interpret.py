@@ -84,7 +84,7 @@ class ProblemDescriptionFacts(BaseModel):
 
 class PendingAnswer(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    kind: Literal["select_product", "confirm_receipt", "skip_receipt"]
+    kind: Literal["select_product", "confirm_receipt", "skip_receipt", "step_answer"]
     payload: dict
     quote: str
 
@@ -137,7 +137,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-09.7"  # 查询结果契约与独立的请求/事实来源
+INTERPRET_PROMPT_VERSION = "2026-10-10.1"  # 问句 / 材料卡的文字回答用 pending_answer.step_answer
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。
@@ -266,6 +266,7 @@ feedback 必须同时给出 feedback_quote（当前原话）；仅“做过了�
 用户说问题仍未解决、再次发生或否认已解决时，填写 unresolved_quote。已结束案件的再次求助归 report_problem，引用对应 issue 或 case；如果只问历史记录、提出假设或仅表达情绪，不填写。案件结果未达成与单个步骤的执行反馈不同；没有对应步骤卡时，不强造 step_feedback 命令。新的退换货诉求仍保留其业务意图。
 “坏了、不行、有问题、不能正常工作”等没有具体症状的描述不写成故障事实；使用 report_problem，由服务端追问现象。
 对产品卡片唯一明确选择、确认凭证或明确跳过时，可用 pending_answer 指定受控命令及原话。不得为用户猜选型号或自动确认凭证。
+回答 pending 问句 / 材料步骤卡时用 pending_answer.kind=step_answer：payload.option 逐字取卡片选项，对不上给 payload.text；新现象另记 facts，不填 feedback。
 同一型号不等于同一台设备。提到不同品类设备通常 device_relation=other；只有“新问题”不能证明换设备。
 resume_issue 表示继续处理已存在的问题：用户要求回到、接着排查、切回先前设备时，引用 issue_index 中对应的 target_issue_id，并恢复该问题；不要因出现“之前/最初”就归为 history_query。history_query 仅查询过去说过什么、做过什么、如何回答，不表示切换当前排查目标。恢复已有另一设备时 device_relation=other 表示相对当前设备不同，不意味着创建新设备。
 target_issue_id 仅能用已给 ID；另一个设备的现象不能追加到旧设备。未提及事实不意味着否定。

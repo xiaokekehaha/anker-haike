@@ -1,4 +1,5 @@
 from app.context.builder import build_context
+from app.context.config import conversation_config
 from app.conversation.history import fold_history
 from app.conversation.reader import select_history
 from tests.test_conversation_history import input_event, records
@@ -42,7 +43,7 @@ def test_first_question_and_answer_are_exact_after_thirty_turns():
     text = "\n".join(m[1] for m in bundle.messages)
     assert "第0轮：设备现象" in text and "第0轮回答原文" in text
     assert text.count("最开始我问的和你回答的是什么") == 1
-    assert bundle.tokens <= 8000
+    assert bundle.tokens <= conversation_config().input_budget()
 
 
 def test_unknown_future_and_overlarge_history_are_not_fabricated():
@@ -71,7 +72,7 @@ def test_reference_read_keeps_original_even_after_newer_messages():
 
 def test_overlong_current_input_is_elided_not_rejected():
     """一次长粘贴不该把整轮变成「记录较多，无法理解」——头尾都要留住，中间标省略。"""
-    long_text = "开头诉求：扫地机不吸尘" + "无关描述" * 6000 + "结尾诉求：能换货吗"
+    long_text = "开头诉求：扫地机不吸尘" + "无关描述" * conversation_config().input_budget() + "结尾诉求：能换货吗"
     history = fold_history("s", records([input_event("cur", long_text, "r1")]))
     bundle = build_context(
         history, current_input_id="cur", now="2026-09-13T00:00:00Z", state={}
@@ -79,7 +80,7 @@ def test_overlong_current_input_is_elided_not_rejected():
     text = "\n".join(m[1] for m in bundle.messages)
     assert "开头诉求：扫地机不吸尘" in text and "结尾诉求：能换货吗" in text
     assert "已省略" in text and "entry_id=cur" in text
-    assert bundle.tokens <= 8000
+    assert bundle.tokens <= conversation_config().input_budget()
     assert bundle.truncation["chars"] == len(long_text)
     assert bundle.truncation["kept_chars"] < len(long_text)
 

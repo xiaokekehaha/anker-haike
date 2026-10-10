@@ -14,6 +14,7 @@ from haike_contracts.actions import parse_action
 from haike_contracts.snapshot import SessionSnapshot
 from pydantic import BaseModel, ValidationError
 
+from app.guide.verify import step_payload_error
 from app.images import ImageRejected
 from app.images.runtime import get_image_store
 from app.images.store import MAX_IMAGE_BYTES, stage_image
@@ -310,7 +311,8 @@ async def _accept(
                     raise InputConflict("invalid_selection")
                 if payload["kind"] == "step_feedback":
                     step = ((values.get("pending_card") or {}).get("payload") or {}).get("step") or {}
-                    _check_step_payload(step, payload["payload"])
+                    if code := step_payload_error(step, payload["payload"]):
+                        raise InputConflict(code)
             receipt, replay = await store.reserve_input(
                 session_id,
                 input_id,
@@ -354,31 +356,6 @@ async def _accept(
                 "recoverable": True,
             },
         )
-
-
-def _check_step_payload(step: dict, payload: dict) -> None:
-    """按卡片类型校验反馈载荷（2026-10-09 第二批 I4）：操作卡交 feedback，问句 / 材料卡交 answer，说明卡可空。
-    事实问题不能用「解决了 / 没解决」回答；操作步骤也不能用一个选项糊弄过去。"""
-    kind = step.get("kind") or "action"
-    feedback, answer = payload.get("feedback"), payload.get("answer")
-    if kind == "action":
-        if feedback is None or answer is not None:
-            raise InputConflict("not_allowed_now")
-        return
-    if feedback is not None:
-        raise InputConflict("not_allowed_now")
-    if kind == "statement":
-        return
-    if not answer:
-        raise InputConflict("invalid_selection")
-    if kind == "question":
-        option = answer.get("option")
-        if option is not None and option not in (step.get("options") or []):
-            raise InputConflict("invalid_selection")
-        if option is None and not (answer.get("text") or "").strip():
-            raise InputConflict("invalid_selection")
-    if kind == "material_request" and not (answer.get("unavailable") or (answer.get("text") or "").strip()):
-        raise InputConflict("invalid_selection")
 
 
 def _kind_allowed(kind: str, pending_kind: str) -> bool:

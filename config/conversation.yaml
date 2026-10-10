@@ -1,7 +1,9 @@
 recent_turns: 6
-max_input_tokens: 8000
+# 2026-10-10：链上模型窗口 200k–1M，8000 / 16000 在密集会话里先删证据再删候选（T55 diagnose.synthesize 10.1k 对 7.0k → R5）；
+# 默认与 intake 各翻一倍。正常会话实际输入 5–7k，不受影响；只放宽密集会话的上限。
+max_input_tokens: 16000
 input_budgets:
-  intake: 16000
+  intake: 32000
 token_estimate_margin: 1.25
 history_page_entries: 200
 summary_after_turns: 12

@@ -24,6 +24,11 @@ EXPECTED_BY_KIND = {"action": EXPECTED, "question": ANSWER_EXPECTED, "material_r
                     "statement": "No action needed here.", "handoff": "A support colleague will continue from here."}
 TIPS_LEAD = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\s*[:：]?\s*", re.IGNORECASE)
 SENTENCE = re.compile(r"(?<=[.!?。！？])\s")
+# 「If the robot is often stuck on the edge of stairs…, it is recommended…」：逗号 / 冒号 / then 之前是适用条件。
+CONDITION = re.compile(r"^\s*if\s+(?P<cond>[^,:;]{3,200}?)\s*(?:,|:|;|\bthen\b)", re.IGNORECASE)
+# 「If the error persists after restarting」「If heating still fails」接的是上一步的结果，不是场景前提，不拿事实去核。
+# continue 不在内：rv-0106「continues to display errors on flat ground」说的是场景。
+CONTINUATION = re.compile(r"\b(?:still|persists?|again|after|above|previous|remains?)\b", re.IGNORECASE)
 
 # 官方 Q&A 是写给客服看的内部指引，少数条目直接用了客服口吻（「让用户去照一下」）。
 # 原样发给客户会变成「请让用户打开手电筒」—— 客户就是用户本人。
@@ -51,6 +56,14 @@ def customer_voice(text: str) -> str:
 def step_title(text: str, limit: int = 60) -> str:
     first = SENTENCE.split(text.strip(), maxsplit=1)[0].strip()
     return first if len(first) <= limit else first[: limit - 1].rstrip() + "…"
+
+
+def step_condition(text: str) -> str | None:
+    """操作步骤开头的场景前提（rv-0106：卡在楼梯 / 家具边缘时设禁区）；续接上一步结果的条件不算。"""
+    match = CONDITION.match(text)
+    if match is None or CONTINUATION.search(match.group("cond")):
+        return None
+    return match.group("cond").strip()
 
 
 def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
@@ -102,6 +115,7 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             "options": list(step.options),
             "branches": {option: f"s{target}" for option, target in step.branches.items()},
             "required_resources": ["device"] if kind == "action" else [],
+            "condition": step_condition(step.text) if kind == "action" else None,
         })
     plan = {
         "plan_id": guide.plan_id,

@@ -46,6 +46,30 @@ class VerifyOutcome:
     missing_material: str | None = None
 
 
+def step_payload_error(step: dict[str, Any], payload: dict[str, Any]) -> str | None:
+    """按卡片类型校验反馈载荷（2026-10-09 第二批 I4）：操作卡交 feedback，问句 / 材料卡交 answer，说明卡可空。
+    事实问题不能用「解决了 / 没解决」回答；操作步骤也不能用一个选项糊弄过去。卡片动作与文字命令共用。"""
+    kind = step.get("kind") or "action"
+    feedback, answer = payload.get("feedback"), payload.get("answer")
+    if kind == "action":
+        return "not_allowed_now" if feedback is None or answer is not None else None
+    if feedback is not None:
+        return "not_allowed_now"
+    if kind == "statement":
+        return None
+    if not answer:
+        return "invalid_selection"
+    if kind == "question":
+        option = answer.get("option")
+        if option is not None and option not in (step.get("options") or []):
+            return "invalid_selection"
+        if option is None and not (answer.get("text") or "").strip():
+            return "invalid_selection"
+    if kind == "material_request" and not (answer.get("unavailable") or (answer.get("text") or "").strip()):
+        return "invalid_selection"
+    return None
+
+
 def _answer_text(answer: dict[str, Any] | None) -> str:
     if not answer:
         return ""
