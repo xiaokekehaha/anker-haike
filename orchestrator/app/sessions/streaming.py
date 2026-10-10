@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -15,6 +16,43 @@ from typing import Any
 from app.models.router import ModelInvokeError, ModelRouter, StreamEvent
 
 log = logging.getLogger("sessions.streaming")
+
+# 证据标识不经模型之手（2026-10-10）：T35 第十轮正文出现了把两条证据 id 拼接成的假 UUID。
+# 提示词只给 [n] 编号，这里再把模型抄出来的 UUID / [n] / [uuid] 一律丢掉；用户可见的引用只取 message_end.citations
+# （服务端按句子重叠归因的真实 evidence_id）。「[Power]」「[Click here](…)」这类方括号不是标识符，保留。
+_UUID = r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+_MARKER = re.compile(rf"\s*(?:\[(?:{_UUID}|\d{{1,2}})\]|(?<!\[){_UUID})(?=[\s.,;:!?。，；！？\]\[]|$)")
+# 还可能是标记开头的半截（「[05af0178-」「[1」「05af0178-096c」）：在流里连同前导空白一起扣住，等到能判定再放行
+# 尾部空白也扣住：标记连同前导空白一起删，首块末尾的空格若已放行，删掉「 [uuid]」后会留下双空格
+_PARTIAL = re.compile(r"\s*(?:\[(?:[0-9a-fA-F-]*|\d{0,2})|[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{0,4}){0,3}(?:-[0-9a-fA-F]{0,12})?)?$")
+
+
+def strip_markers(text: str) -> str:
+    return _MARKER.sub("", text)
+
+
+class MarkerFilter:
+    """按 delta 过滤：标记可能被切成多块，缓冲到能判定为止；flush 把剩余原样放出。"""
+
+    def __init__(self) -> None:
+        self._buf = ""
+
+    def feed(self, delta: str) -> str:
+        self._buf += delta
+        cleaned = strip_markers(self._buf)
+        # 末尾若像一个未完成的标记，留在缓冲区；其余放行
+        tail = _PARTIAL.search(cleaned)
+        hold = tail.group() if tail else ""
+        if hold:
+            # 「Done [」会被扣住等下一块；「[Power」后面已有字母，不是标识符前缀，直接放行
+            out, self._buf = cleaned[: len(cleaned) - len(hold)], hold
+        else:
+            out, self._buf = cleaned, ""
+        return out
+
+    def flush(self) -> str:
+        out, self._buf = self._buf, ""
+        return out
 
 
 @dataclass
@@ -46,6 +84,7 @@ async def stream_to_writer(
 ) -> StreamOutcome:
     out = StreamOutcome()
     t0 = time.perf_counter()
+    markers = MarkerFilter()
     try:
         async for ev in router.stream(
             task,
@@ -59,6 +98,7 @@ async def stream_to_writer(
             out.events.append(ev)
             if ev.kind == "start":
                 out.message_id, out.text, out.model_tier = ev.message_id, "", ev.model_tier
+                markers = MarkerFilter()
                 payload: dict[str, Any] = {"type": "message_start", "message_id": ev.message_id}
                 if ev.replaces:
                     payload["replaces"] = ev.replaces
@@ -80,8 +120,10 @@ async def stream_to_writer(
                             "session_id": session_id,
                         },
                     )
-                out.text += ev.text
-                writer({"type": "message", "message_id": ev.message_id, "delta": ev.text})
+                visible = markers.feed(ev.text)
+                out.text += visible
+                if visible:
+                    writer({"type": "message", "message_id": ev.message_id, "delta": visible})
             elif ev.kind == "aborted":
                 out.aborted_ids.append(ev.message_id)
                 writer(
@@ -94,6 +136,9 @@ async def stream_to_writer(
                 )
             elif ev.kind == "end":
                 out.completed = True
+                if rest := markers.flush():
+                    out.text += rest
+                    writer({"type": "message", "message_id": ev.message_id, "delta": rest})
                 # message_end 是这条回复的唯一收口，引用也在这里定稿
                 out.citation = cite(out.text) if cite else None
                 writer(
