@@ -1,0 +1,2854 @@
+{
+  "id": "T11",
+  "started_at": "2026-10-10T00:27:38.248769+00:00",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "resumed": false,
+          "event_id": "298626b2414349459fa68310b345be28",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:38.418975+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "936b6a2e92844519ac0a67e4c7a507cd",
+          "input_id": "d0e389fec2eb41238b25d24147cf0d6f",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:27:38.418975+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 3,
+          "event_id": "0f00cc23d9714c228b5123fbe772848f",
+          "recorded_at": "2026-10-10T00:27:38.463728+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 4,
+          "event_id": "2c19445d82ac4412bfec3a2f1a44bf10",
+          "recorded_at": "2026-10-10T00:27:42.412855+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 5,
+          "event_id": "714f95d1431342ef87662eec085a4799",
+          "recorded_at": "2026-10-10T00:27:42.425049+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 6,
+          "event_id": "c06427f17c8b460b8e2b44c43ef9663d",
+          "recorded_at": "2026-10-10T00:27:42.438993+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 7,
+          "event_id": "f8d437ff9b634e5a95edb0ae921d6e7b",
+          "recorded_at": "2026-10-10T00:27:42.442547+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "d0e389fec2eb41238b25d24147cf0d6f",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "328d4a6add8753ae9b6c3716f091317d",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:27:42.489236+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0481",
+              "source": "qa_exact",
+              "doc_id": "rv-0481",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0481",
+              "snippet": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged. Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station. Check",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "d4dceb6952ce5a3abfe0aa568ee4940b",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:27:42.490476+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "7e183d65359d51e0906998cb7d981621",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "adb1a29c60c85d998a0b5c03283e1e68",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:27:42.494780+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "7e183d65359d51e0906998cb7d981621",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the clean water tank from the base station and check…",
+            "instruction": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/the-silicone-rubber-sealing-ring-for-clean-water-outlet.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/check-the-pipe-of-clean-water-tank.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "event_id": "3b501a13af4557d3a646da7bb3bd9206",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:27:42.496532+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "2c309650c1df559ab32a6188e80f5c5b",
+          "card_id": "7e183d65359d51e0906998cb7d981621",
+          "version": 1,
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 13,
+          "event_id": "f1bc729f49614848ac4df3b8a2d776bc",
+          "recorded_at": "2026-10-10T00:27:42.501178+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "2a0a44b0d5a45c0c8e4bc64cea2ca8d8",
+          "recorded_at": "2026-10-10T00:27:42.504482+00:00",
+          "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+          "seq": 14,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 15,
+          "type": "run_started",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "resumed": false,
+          "event_id": "ad1d427569ee47b9a27b0aa37bd708dd",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.526121+00:00"
+        },
+        {
+          "seq": 16,
+          "type": "input_received",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "7e183d65359d51e0906998cb7d981621",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "b5835955267648f5b0b3c5aef747d716",
+            "input_token": "2c309650c1df559ab32a6188e80f5c5b",
+            "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "expected_version": 1
+          },
+          "event_id": "9175154b16624f0c92c802904fd838ba",
+          "input_id": "b5835955267648f5b0b3c5aef747d716",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:42.526121+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 17,
+          "event_id": "f393ad30b5944d44b9456334efab0954",
+          "recorded_at": "2026-10-10T00:27:42.549579+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 18,
+          "event_id": "cb0546e7706143eb965b5374fc52cfc2",
+          "recorded_at": "2026-10-10T00:27:42.552025+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "b5835955267648f5b0b3c5aef747d716",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "162570529bbc59e2a891ec653b488d5e",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 20,
+          "recorded_at": "2026-10-10T00:27:42.574827+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "7e183d65359d51e0906998cb7d981621",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "3a1486678f8f5f3bbf65b5f233e11613",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:27:42.575986+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "b779ec6b46225222a7c2f9836a07b270",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:27:42.576767+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Fill the water tank with clean water to the maximum water l…",
+            "instruction": "Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "event_id": "025f3003cccf51faa628eebe159e29aa",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:27:42.577482+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "491a620c53025113896b434a5fdc4b78",
+          "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+          "version": 2,
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 24,
+          "event_id": "f1850286e12d43f09feff4fe79f3fd68",
+          "recorded_at": "2026-10-10T00:27:42.578217+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b83f6e10d4155883867bf72a62670260",
+          "recorded_at": "2026-10-10T00:27:42.579263+00:00",
+          "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+          "seq": 25,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 26,
+          "type": "run_started",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "resumed": false,
+          "event_id": "12da3e9bc061459aa0ab7e1aa49cca97",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.592054+00:00"
+        },
+        {
+          "seq": 27,
+          "type": "input_received",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "64883b73e46345ce920345a2b202c4a6",
+            "input_token": "491a620c53025113896b434a5fdc4b78",
+            "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "expected_version": 2
+          },
+          "event_id": "8eabdd2d282f47abab148f6f615fb24a",
+          "input_id": "64883b73e46345ce920345a2b202c4a6",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:42.592054+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 28,
+          "event_id": "efa6193f2cfc4ce2878b573fe3bfe2af",
+          "recorded_at": "2026-10-10T00:27:42.607687+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 29,
+          "event_id": "d312b1cd0f544ab2a04f89e89effabbd",
+          "recorded_at": "2026-10-10T00:27:42.610493+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "64883b73e46345ce920345a2b202c4a6",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "a3b8641ac619533da3ba6aa007d814a7",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 31,
+          "recorded_at": "2026-10-10T00:27:42.639790+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "f8f5c7f81070569bb08481d1dec898d1",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 32,
+          "recorded_at": "2026-10-10T00:27:42.640888+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "242a5c7cc9b254eba99ba4ea15616d17",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "940407dbb79756ada3a3254efc3ab2dd",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 33,
+          "recorded_at": "2026-10-10T00:27:42.641901+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Check the robot's water inlet for debris or blockages, then…",
+            "instruction": "Check the robot's water inlet for debris or blockages, then clean with a paper towel or cotton swab.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "event_id": "c48a5322178257ebb9fb3b3a9114484a",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 34,
+          "recorded_at": "2026-10-10T00:27:42.642776+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "76a222d43d735c82b5f23820647508e4",
+          "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+          "version": 3,
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 35,
+          "event_id": "46db5df82ce9428db57220ac56a2264b",
+          "recorded_at": "2026-10-10T00:27:42.643879+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "e7aa90178d2d5b33bc447acf7dffc610",
+          "recorded_at": "2026-10-10T00:27:42.644940+00:00",
+          "run_id": "2241bccd15ad431d80195a6ec045b3be",
+          "seq": 36,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 37,
+          "type": "run_started",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "resumed": false,
+          "event_id": "ee1f36824b434bca9efd5b366990f88d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.661238+00:00"
+        },
+        {
+          "seq": 38,
+          "type": "input_received",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "c24f398b48db40129aa0f29b67e712fb",
+            "input_token": "76a222d43d735c82b5f23820647508e4",
+            "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "expected_version": 3
+          },
+          "event_id": "1872fe600ff34f0ebd75c70a359672c3",
+          "input_id": "c24f398b48db40129aa0f29b67e712fb",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:42.661238+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 39,
+          "event_id": "e34955ea42284c9ca2082b47afec8638",
+          "recorded_at": "2026-10-10T00:27:42.674056+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 40,
+          "event_id": "6eed6f2d23934c0b8d871365518878a0",
+          "recorded_at": "2026-10-10T00:27:42.678047+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "c24f398b48db40129aa0f29b67e712fb",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 4,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "bf79377f3bcd50bfb65d7cd22a98e1e9",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 42,
+          "recorded_at": "2026-10-10T00:27:42.755175+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "242a5c7cc9b254eba99ba4ea15616d17",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 4,
+          "event_id": "a87c46fcb4355fd099698f82fb0ec613",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 43,
+          "recorded_at": "2026-10-10T00:27:42.756359+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "299480f1b1355f37a49a5fc5ee41106d",
+          "status": "active",
+          "reason": "presented",
+          "version": 4,
+          "event_id": "a2ba67b829ad50baa44a641a2991b416",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 44,
+          "recorded_at": "2026-10-10T00:27:42.760293+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "After the error occurs, remove the robot from the base stat…",
+            "instruction": "After the error occurs, remove the robot from the base station and check the rubber plug at the base station's water inlet to see if there is any water. Additionally, check if the rubber plug is damaged or missing.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Silicone-for-base-station-water-injection2.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "event_id": "4b51d8d98564524387972d40cd412b76",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 45,
+          "recorded_at": "2026-10-10T00:27:42.762073+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "92b6271b210a52ad8245af663a4533d8",
+          "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+          "version": 4,
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 46,
+          "event_id": "9171b5f458064692887eaf21ad9ff466",
+          "recorded_at": "2026-10-10T00:27:42.762997+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "1381b020546857348ecf4047f85f1cb2",
+          "recorded_at": "2026-10-10T00:27:42.765175+00:00",
+          "run_id": "051514c66112454d8d397a9c4f40fed2",
+          "seq": 47,
+          "reason": "awaiting_input",
+          "version": 4
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 48,
+          "type": "run_started",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "resumed": false,
+          "event_id": "7c594d9782d64f79ad36a97f605b6e4a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.781209+00:00"
+        },
+        {
+          "seq": 49,
+          "type": "input_received",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "a758f77af017410e833fe45f3e5167de",
+            "input_token": "92b6271b210a52ad8245af663a4533d8",
+            "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "expected_version": 4
+          },
+          "event_id": "dfe99126cb4e43b2bc96ef568cd00002",
+          "input_id": "a758f77af017410e833fe45f3e5167de",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:42.781209+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 50,
+          "event_id": "b4966a244fcf44e485592f7765855847",
+          "recorded_at": "2026-10-10T00:27:42.796125+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 51,
+          "event_id": "358a8530c6bc4e1b817657890ff796a4",
+          "recorded_at": "2026-10-10T00:27:42.798670+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "a758f77af017410e833fe45f3e5167de",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 5,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "14a58709fab85e2da701258c6e0c5501",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 53,
+          "recorded_at": "2026-10-10T00:27:42.822362+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "299480f1b1355f37a49a5fc5ee41106d",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 5,
+          "event_id": "87d90ea4817f5543835e28b582e7f74e",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 54,
+          "recorded_at": "2026-10-10T00:27:42.823203+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "1870d2dade935175a039d2f265f40e0f",
+          "status": "active",
+          "reason": "presented",
+          "version": 5,
+          "event_id": "efcc40cbd13a52ec8f0e18d25c81b81d",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 55,
+          "recorded_at": "2026-10-10T00:27:42.824012+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "1870d2dade935175a039d2f265f40e0f",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Update the firmware to version 7.0.143 or higher.",
+            "instruction": "Update the firmware to version 7.0.143 or higher.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "event_id": "f0063709aff451ae84cb56389b1e0a2b",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 56,
+          "recorded_at": "2026-10-10T00:27:42.825102+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "a23b0ba476c95f7b971e9c1b238cb87c",
+          "card_id": "1870d2dade935175a039d2f265f40e0f",
+          "version": 5,
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 57,
+          "event_id": "958dfdad7ba94a85a94ad548825a9ea7",
+          "recorded_at": "2026-10-10T00:27:42.825776+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ec504049393154488ea2e0942bee9022",
+          "recorded_at": "2026-10-10T00:27:42.826675+00:00",
+          "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+          "seq": 58,
+          "reason": "awaiting_input",
+          "version": 5
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 59,
+          "type": "run_started",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "resumed": false,
+          "event_id": "15ce009871e94188b89411d29468d5d2",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.840890+00:00"
+        },
+        {
+          "seq": 60,
+          "type": "input_received",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "1870d2dade935175a039d2f265f40e0f",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "7e3632a44911403ab0a6abea451d9900",
+            "input_token": "a23b0ba476c95f7b971e9c1b238cb87c",
+            "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "expected_version": 5
+          },
+          "event_id": "407bca00ca454392a786b83a941a3560",
+          "input_id": "7e3632a44911403ab0a6abea451d9900",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:42.840890+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 61,
+          "event_id": "b1fc2c1a7dcd4efa982f611461e9d2ae",
+          "recorded_at": "2026-10-10T00:27:42.856467+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 62,
+          "event_id": "67bc07edb88f42b18ad5d5215181708d",
+          "recorded_at": "2026-10-10T00:27:42.865136+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_id": "7e3632a44911403ab0a6abea451d9900",
+          "resolved_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 6,
+          "issues": [
+            {
+              "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "title": "The robot encountered an error while adding clean water. Task ended.",
+              "status": "open"
+            }
+          ],
+          "event_id": "b92d367c7cc65c9fb7768b336a908f19",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 64,
+          "recorded_at": "2026-10-10T00:27:42.884961+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "1870d2dade935175a039d2f265f40e0f",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 6,
+          "event_id": "88dbd7b8d6095eedbc0ee99d41dbeeb5",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 65,
+          "recorded_at": "2026-10-10T00:27:42.885889+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+          "case_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "version": 6,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:42.856468+00:00",
+          "event_id": "7eb093548d9d5e74ab2153d7352c6b57",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 66,
+          "recorded_at": "2026-10-10T00:27:42.886757+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "reply_to_input_id": "7e3632a44911403ab0a6abea451d9900",
+          "event_id": "06e16ef457475fa4bb9a98ff604c1eaf",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 67,
+          "recorded_at": "2026-10-10T00:27:42.888142+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "f8ff03ddc4165274925886d9b1147dd8",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 68,
+          "recorded_at": "2026-10-10T00:27:42.889832+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+          "status": "completed",
+          "event_id": "6ea3107ff89052428b9b1393b0939ea6",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 69,
+          "recorded_at": "2026-10-10T00:27:42.891042+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "pending_id": "a24ec5cc231853efafc6d212028e3e40",
+          "status": "active",
+          "reason": "presented",
+          "version": 6,
+          "event_id": "2e4b1ea5bbf9587e8db362c47aee5624",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 70,
+          "recorded_at": "2026-10-10T00:27:42.891958+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "input_token": "04c6c37126a15d25bb3d84801595b34d",
+          "card_id": "a24ec5cc231853efafc6d212028e3e40",
+          "version": 6,
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 71,
+          "event_id": "81d764b991be4ad6bb0444a9dbf6afbb",
+          "recorded_at": "2026-10-10T00:27:42.892392+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "63d7d60e76fb50c2a837158d6f16a620",
+          "recorded_at": "2026-10-10T00:27:42.893277+00:00",
+          "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+          "seq": 72,
+          "reason": "awaiting_input",
+          "version": 6
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+    "version": 6,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+      "kind": "upload_receipt",
+      "input_token": "04c6c37126a15d25bb3d84801595b34d",
+      "card_id": "a24ec5cc231853efafc6d212028e3e40",
+      "version": 6
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:27:38.418975+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "user_message",
+        "id": "d0e389fec2eb41238b25d24147cf0d6f",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:27:42.492859Z",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0481",
+            "source": "qa_exact",
+            "doc_id": "rv-0481",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0481",
+            "snippet": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged. Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station. Check",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:27:42.496532+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "step_card",
+        "card_id": "7e183d65359d51e0906998cb7d981621",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0481",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Remove the clean water tank from the base station and check…",
+          "instruction": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0481"
+          ],
+          "primary_evidence_id": "qa:rv-0481",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/the-silicone-rubber-sealing-ring-for-clean-water-outlet.png",
+              "kind": "image"
+            },
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/check-the-pipe-of-clean-water-tank.png",
+              "kind": "image"
+            }
+          ],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:42.526121+00:00",
+        "first_seq": 16,
+        "last_seq": 20,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "action",
+        "id": "b5835955267648f5b0b3c5aef747d716",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:42.577482+00:00",
+        "first_seq": 23,
+        "last_seq": 23,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "step_card",
+        "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0481",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Fill the water tank with clean water to the maximum water l…",
+          "instruction": "Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0481"
+          ],
+          "primary_evidence_id": "qa:rv-0481",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:42.592054+00:00",
+        "first_seq": 27,
+        "last_seq": 31,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "action",
+        "id": "64883b73e46345ce920345a2b202c4a6",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:42.642776+00:00",
+        "first_seq": 34,
+        "last_seq": 34,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "step_card",
+        "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+        "version": 3,
+        "step": {
+          "step_id": "s3",
+          "plan_id": "qa_rv_0481",
+          "plan_version": 1,
+          "step_no": 3,
+          "title": "Check the robot's water inlet for debris or blockages, then…",
+          "instruction": "Check the robot's water inlet for debris or blockages, then clean with a paper towel or cotton swab.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0481"
+          ],
+          "primary_evidence_id": "qa:rv-0481",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+              "kind": "image"
+            }
+          ],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:42.661238+00:00",
+        "first_seq": 38,
+        "last_seq": 42,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "action",
+        "id": "c24f398b48db40129aa0f29b67e712fb",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:42.762073+00:00",
+        "first_seq": 45,
+        "last_seq": 45,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "step_card",
+        "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+        "version": 4,
+        "step": {
+          "step_id": "s4",
+          "plan_id": "qa_rv_0481",
+          "plan_version": 1,
+          "step_no": 4,
+          "title": "After the error occurs, remove the robot from the base stat…",
+          "instruction": "After the error occurs, remove the robot from the base station and check the rubber plug at the base station's water inlet to see if there is any water. Additionally, check if the rubber plug is damaged or missing.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0481"
+          ],
+          "primary_evidence_id": "qa:rv-0481",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Silicone-for-base-station-water-injection2.png",
+              "kind": "image"
+            }
+          ],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:42.781209+00:00",
+        "first_seq": 49,
+        "last_seq": 53,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "action",
+        "id": "a758f77af017410e833fe45f3e5167de",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:42.825102+00:00",
+        "first_seq": 56,
+        "last_seq": 56,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "step_card",
+        "card_id": "1870d2dade935175a039d2f265f40e0f",
+        "version": 5,
+        "step": {
+          "step_id": "s5",
+          "plan_id": "qa_rv_0481",
+          "plan_version": 1,
+          "step_no": 5,
+          "title": "Update the firmware to version 7.0.143 or higher.",
+          "instruction": "Update the firmware to version 7.0.143 or higher.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0481"
+          ],
+          "primary_evidence_id": "qa:rv-0481",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:42.840890+00:00",
+        "first_seq": 60,
+        "last_seq": 64,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "action",
+        "id": "7e3632a44911403ab0a6abea451d9900",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:42.886757+00:00",
+        "first_seq": 66,
+        "last_seq": 66,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "case_changed",
+        "card_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+        "version": 6,
+        "case_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:27:42.856468+00:00"
+      },
+      {
+        "at": "2026-10-10T00:27:42.888142+00:00",
+        "first_seq": 67,
+        "last_seq": 69,
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "assistant_message",
+        "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "7e3632a44911403ab0a6abea451d9900",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+    "issues": [
+      {
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "status": "open",
+        "title": "The robot encountered an error while adding clean water. Task ended.",
+        "task_queue": [
+          {
+            "task_id": "0addeeb8a45e5d60a391f066e29a8c70",
+            "intent": "report_problem",
+            "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "request_quote": "EB1L: The robot encountered an error while adding clean water. Task ended.",
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "active",
+            "created_input_id": "d0e389fec2eb41238b25d24147cf0d6f",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 72,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:27:38.424010Z",
+      "last_run_at": "2026-10-10T00:27:42.893868Z",
+      "runs": 6,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: [REDACTED]A\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. C",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0481"
+      ],
+      "steps_executed": 5,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 51,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:27:42.893868Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:27:38.424010Z",
+        "ended_at": "2026-10-10T00:27:42.505996Z",
+        "duration_ms": 4196,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 4191,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3950,
+            "tokens_in": 4654,
+            "tokens_out": 439,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:42.287405Z"
+          }
+        ],
+        "tokens_in": 4654,
+        "tokens_out": 439,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:38.424010Z",
+            "duration_ms": 3996,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3750,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 247,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6393
+                    }
+                  ],
+                  "actual_input_tokens": 4654
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.420128Z",
+            "duration_ms": 119,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:27:42.539742Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0481",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:27:42.553688Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:42.556058Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "bfdfbc8c62074c13addb8a83d0e0392e",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.556063Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:27:42.527898Z",
+        "ended_at": "2026-10-10T00:27:42.580014Z",
+        "duration_ms": 52,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 50,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.527898Z",
+            "duration_ms": 14,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.542110Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:42.548229Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:42.551690Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "3b10117a66544ac4a0a55c528c528cf1",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.551694Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "2241bccd15ad431d80195a6ec045b3be",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 3,
+        "started_at": "2026-10-10T00:27:42.593079Z",
+        "ended_at": "2026-10-10T00:27:42.645603Z",
+        "duration_ms": 52,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 50,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "2241bccd15ad431d80195a6ec045b3be",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.593079Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "2241bccd15ad431d80195a6ec045b3be",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.603581Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "2241bccd15ad431d80195a6ec045b3be",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:42.605945Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "2241bccd15ad431d80195a6ec045b3be",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:42.610034Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "2241bccd15ad431d80195a6ec045b3be",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.610039Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "051514c66112454d8d397a9c4f40fed2",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 4,
+        "started_at": "2026-10-10T00:27:42.662214Z",
+        "ended_at": "2026-10-10T00:27:42.766473Z",
+        "duration_ms": 104,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 100,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "051514c66112454d8d397a9c4f40fed2",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.662214Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "051514c66112454d8d397a9c4f40fed2",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.670619Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "051514c66112454d8d397a9c4f40fed2",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:42.672857Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "051514c66112454d8d397a9c4f40fed2",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:42.676310Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "051514c66112454d8d397a9c4f40fed2",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.676315Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 5,
+        "started_at": "2026-10-10T00:27:42.784727Z",
+        "ended_at": "2026-10-10T00:27:42.827280Z",
+        "duration_ms": 42,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 41,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.784727Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.793518Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:42.795119Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:42.797841Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "6512d265b8d14f31859c8d06a136d6b5",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.797845Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "seq_no": 6,
+        "started_at": "2026-10-10T00:27:42.842497Z",
+        "ended_at": "2026-10-10T00:27:42.893861Z",
+        "duration_ms": 51,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 48,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.842497Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0481",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:42.849753Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:42.852869Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:27:42.855662Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:27:42.861221Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:27:42.862268Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e41c8230decb4a608b3b4e5bba28adb3",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:42.862762Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+      "version": 6,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "kind": "upload_receipt",
+        "input_token": "04c6c37126a15d25bb3d84801595b34d",
+        "card_id": "a24ec5cc231853efafc6d212028e3e40",
+        "version": 6
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:27:38.418975+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "user_message",
+          "id": "d0e389fec2eb41238b25d24147cf0d6f",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:27:42.492859Z",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0481",
+              "source": "qa_exact",
+              "doc_id": "rv-0481",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0481",
+              "snippet": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged. Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station. Check",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:27:42.496532+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "step_card",
+          "card_id": "7e183d65359d51e0906998cb7d981621",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the clean water tank from the base station and check…",
+            "instruction": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/the-silicone-rubber-sealing-ring-for-clean-water-outlet.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/check-the-pipe-of-clean-water-tank.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:42.526121+00:00",
+          "first_seq": 16,
+          "last_seq": 20,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "action",
+          "id": "b5835955267648f5b0b3c5aef747d716",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:42.577482+00:00",
+          "first_seq": 23,
+          "last_seq": 23,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "step_card",
+          "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Fill the water tank with clean water to the maximum water l…",
+            "instruction": "Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:42.592054+00:00",
+          "first_seq": 27,
+          "last_seq": 31,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "action",
+          "id": "64883b73e46345ce920345a2b202c4a6",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:42.642776+00:00",
+          "first_seq": 34,
+          "last_seq": 34,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "step_card",
+          "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+          "version": 3,
+          "step": {
+            "step_id": "s3",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 3,
+            "title": "Check the robot's water inlet for debris or blockages, then…",
+            "instruction": "Check the robot's water inlet for debris or blockages, then clean with a paper towel or cotton swab.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:42.661238+00:00",
+          "first_seq": 38,
+          "last_seq": 42,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "action",
+          "id": "c24f398b48db40129aa0f29b67e712fb",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:42.762073+00:00",
+          "first_seq": 45,
+          "last_seq": 45,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "step_card",
+          "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+          "version": 4,
+          "step": {
+            "step_id": "s4",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 4,
+            "title": "After the error occurs, remove the robot from the base stat…",
+            "instruction": "After the error occurs, remove the robot from the base station and check the rubber plug at the base station's water inlet to see if there is any water. Additionally, check if the rubber plug is damaged or missing.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Silicone-for-base-station-water-injection2.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:42.781209+00:00",
+          "first_seq": 49,
+          "last_seq": 53,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "action",
+          "id": "a758f77af017410e833fe45f3e5167de",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:42.825102+00:00",
+          "first_seq": 56,
+          "last_seq": 56,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "step_card",
+          "card_id": "1870d2dade935175a039d2f265f40e0f",
+          "version": 5,
+          "step": {
+            "step_id": "s5",
+            "plan_id": "qa_rv_0481",
+            "plan_version": 1,
+            "step_no": 5,
+            "title": "Update the firmware to version 7.0.143 or higher.",
+            "instruction": "Update the firmware to version 7.0.143 or higher.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0481"
+            ],
+            "primary_evidence_id": "qa:rv-0481",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:42.840890+00:00",
+          "first_seq": 60,
+          "last_seq": 64,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "action",
+          "id": "7e3632a44911403ab0a6abea451d9900",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:42.886757+00:00",
+          "first_seq": 66,
+          "last_seq": 66,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "case_changed",
+          "card_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+          "version": 6,
+          "case_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:42.856468+00:00"
+        },
+        {
+          "at": "2026-10-10T00:27:42.888142+00:00",
+          "first_seq": 67,
+          "last_seq": 69,
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "assistant_message",
+          "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "7e3632a44911403ab0a6abea451d9900",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+      "issues": [
+        {
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "status": "open",
+          "title": "The robot encountered an error while adding clean water. Task ended.",
+          "task_queue": [
+            {
+              "task_id": "0addeeb8a45e5d60a391f066e29a8c70",
+              "intent": "report_problem",
+              "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+              "request_quote": "EB1L: The robot encountered an error while adding clean water. Task ended.",
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "active",
+              "created_input_id": "d0e389fec2eb41238b25d24147cf0d6f",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 72,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+      "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+      "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:27:42.856468+00:00",
+      "updated_at": "2026-10-10T00:27:42.856468+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "cc7d94ecc16b49fe98cb1df1ae4cde6f",
+        "version": 6,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+          "kind": "upload_receipt",
+          "input_token": "04c6c37126a15d25bb3d84801595b34d",
+          "card_id": "a24ec5cc231853efafc6d212028e3e40",
+          "version": 6
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:27:38.418975+00:00",
+            "first_seq": 2,
+            "last_seq": 9,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "user_message",
+            "id": "d0e389fec2eb41238b25d24147cf0d6f",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:27:42.492859Z",
+            "first_seq": 10,
+            "last_seq": 10,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0481",
+                "source": "qa_exact",
+                "doc_id": "rv-0481",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0481",
+                "snippet": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Have the user shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged. Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station. Check",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:27:42.496532+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "step_card",
+            "card_id": "7e183d65359d51e0906998cb7d981621",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0481",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Remove the clean water tank from the base station and check…",
+              "instruction": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0481"
+              ],
+              "primary_evidence_id": "qa:rv-0481",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/the-silicone-rubber-sealing-ring-for-clean-water-outlet.png",
+                  "kind": "image"
+                },
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/check-the-pipe-of-clean-water-tank.png",
+                  "kind": "image"
+                }
+              ],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:42.526121+00:00",
+            "first_seq": 16,
+            "last_seq": 20,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "action",
+            "id": "b5835955267648f5b0b3c5aef747d716",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:42.577482+00:00",
+            "first_seq": 23,
+            "last_seq": 23,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "step_card",
+            "card_id": "a64c59fdbff35cd3a65bef6fe91ecdc6",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0481",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Fill the water tank with clean water to the maximum water l…",
+              "instruction": "Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0481"
+              ],
+              "primary_evidence_id": "qa:rv-0481",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:42.592054+00:00",
+            "first_seq": 27,
+            "last_seq": 31,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "action",
+            "id": "64883b73e46345ce920345a2b202c4a6",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:42.642776+00:00",
+            "first_seq": 34,
+            "last_seq": 34,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "step_card",
+            "card_id": "242a5c7cc9b254eba99ba4ea15616d17",
+            "version": 3,
+            "step": {
+              "step_id": "s3",
+              "plan_id": "qa_rv_0481",
+              "plan_version": 1,
+              "step_no": 3,
+              "title": "Check the robot's water inlet for debris or blockages, then…",
+              "instruction": "Check the robot's water inlet for debris or blockages, then clean with a paper towel or cotton swab.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0481"
+              ],
+              "primary_evidence_id": "qa:rv-0481",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+                  "kind": "image"
+                }
+              ],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:42.661238+00:00",
+            "first_seq": 38,
+            "last_seq": 42,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "action",
+            "id": "c24f398b48db40129aa0f29b67e712fb",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:42.762073+00:00",
+            "first_seq": 45,
+            "last_seq": 45,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "step_card",
+            "card_id": "299480f1b1355f37a49a5fc5ee41106d",
+            "version": 4,
+            "step": {
+              "step_id": "s4",
+              "plan_id": "qa_rv_0481",
+              "plan_version": 1,
+              "step_no": 4,
+              "title": "After the error occurs, remove the robot from the base stat…",
+              "instruction": "After the error occurs, remove the robot from the base station and check the rubber plug at the base station's water inlet to see if there is any water. Additionally, check if the rubber plug is damaged or missing.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0481"
+              ],
+              "primary_evidence_id": "qa:rv-0481",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Silicone-for-base-station-water-injection2.png",
+                  "kind": "image"
+                }
+              ],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:42.781209+00:00",
+            "first_seq": 49,
+            "last_seq": 53,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "action",
+            "id": "a758f77af017410e833fe45f3e5167de",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:42.825102+00:00",
+            "first_seq": 56,
+            "last_seq": 56,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "step_card",
+            "card_id": "1870d2dade935175a039d2f265f40e0f",
+            "version": 5,
+            "step": {
+              "step_id": "s5",
+              "plan_id": "qa_rv_0481",
+              "plan_version": 1,
+              "step_no": 5,
+              "title": "Update the firmware to version 7.0.143 or higher.",
+              "instruction": "Update the firmware to version 7.0.143 or higher.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0481"
+              ],
+              "primary_evidence_id": "qa:rv-0481",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:42.840890+00:00",
+            "first_seq": 60,
+            "last_seq": 64,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "action",
+            "id": "7e3632a44911403ab0a6abea451d9900",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:42.886757+00:00",
+            "first_seq": 66,
+            "last_seq": 66,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "case_changed",
+            "card_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+            "version": 6,
+            "case_id": "775028f9-776b-5d52-8466-06e7d9d4fc80",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:27:42.856468+00:00"
+          },
+          {
+            "at": "2026-10-10T00:27:42.888142+00:00",
+            "first_seq": 67,
+            "last_seq": 69,
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "kind": "assistant_message",
+            "message_id": "f02930d93b065ecd8f2fb3e33bc08507",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "7e3632a44911403ab0a6abea451d9900",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+        "issues": [
+          {
+            "issue_id": "42f5d3d3fd7c5727a8b44955a6ddab37",
+            "status": "open",
+            "title": "The robot encountered an error while adding clean water. Task ended.",
+            "task_queue": [
+              {
+                "task_id": "0addeeb8a45e5d60a391f066e29a8c70",
+                "intent": "report_problem",
+                "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678A\nProblem Type: ERROR\nProblem Code: 21037332-\nProblem Push: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Description: EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assistance.\nProblem Upload Images: []",
+                "request_quote": "EB1L: The robot encountered an error while adding clean water. Task ended.",
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "active",
+                "created_input_id": "d0e389fec2eb41238b25d24147cf0d6f",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 72,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\n\n\n\n\n\n\n\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0481",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "Remove the clean water tank from the base station and check…",
+      "instruction": "Remove the clean water tank from the base station and check the seal ring of the outlet hole to ensure that it is installed correctly. Shine a flashlight on the clean water tank pipe to check whether the pipe inside the clean water tank is damaged.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0481"
+      ],
+      "primary_evidence_id": "qa:rv-0481",
+      "media": [
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/the-silicone-rubber-sealing-ring-for-clean-water-outlet.png",
+          "kind": "image"
+        },
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/check-the-pipe-of-clean-water-tank.png",
+          "kind": "image"
+        }
+      ],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s2",
+      "plan_id": "qa_rv_0481",
+      "plan_version": 1,
+      "step_no": 2,
+      "title": "Fill the water tank with clean water to the maximum water l…",
+      "instruction": "Fill the water tank with clean water to the maximum water level, then ensure the water tank is securely placed in the base station.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0481"
+      ],
+      "primary_evidence_id": "qa:rv-0481",
+      "media": [],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s3",
+      "plan_id": "qa_rv_0481",
+      "plan_version": 1,
+      "step_no": 3,
+      "title": "Check the robot's water inlet for debris or blockages, then…",
+      "instruction": "Check the robot's water inlet for debris or blockages, then clean with a paper towel or cotton swab.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0481"
+      ],
+      "primary_evidence_id": "qa:rv-0481",
+      "media": [
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/water-filling-interface.png",
+          "kind": "image"
+        }
+      ],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s4",
+      "plan_id": "qa_rv_0481",
+      "plan_version": 1,
+      "step_no": 4,
+      "title": "After the error occurs, remove the robot from the base stat…",
+      "instruction": "After the error occurs, remove the robot from the base station and check the rubber plug at the base station's water inlet to see if there is any water. Additionally, check if the rubber plug is damaged or missing.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0481"
+      ],
+      "primary_evidence_id": "qa:rv-0481",
+      "media": [
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/Silicone-for-base-station-water-injection2.png",
+          "kind": "image"
+        }
+      ],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s5",
+      "plan_id": "qa_rv_0481",
+      "plan_version": 1,
+      "step_no": 5,
+      "title": "Update the firmware to version 7.0.143 or higher.",
+      "instruction": "Update the firmware to version 7.0.143 or higher.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0481"
+      ],
+      "primary_evidence_id": "qa:rv-0481",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 5.89,
+  "complete": true
+}

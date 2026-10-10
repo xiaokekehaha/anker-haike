@@ -1,0 +1,1105 @@
+{
+  "id": "T39",
+  "started_at": "2026-10-10T00:28:43.173115+00:00",
+  "input": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "resumed": false,
+          "event_id": "a6ee5bdd6b16468eb98ff567e790ea8b",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:43.246605+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "966fe9c4df204263b2a0748760c60113",
+          "input_id": "be729c88b5dc449194af7b5b6d013cdf",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:43.246605+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 3,
+          "event_id": "2015a3760ec8498797e950bab0c4e880",
+          "recorded_at": "2026-10-10T00:28:43.292851+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 4,
+          "event_id": "b7cfea85362f4a6a8e3b4a87170623ae",
+          "recorded_at": "2026-10-10T00:28:45.903340+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 5,
+          "event_id": "fdf621d68cdd41c0b10d9705a801d597",
+          "recorded_at": "2026-10-10T00:28:45.909221+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "7deccee5bdf4553281fa1fa05e3fdb96",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 6,
+          "event_id": "509a991f56a74ff7b7add39d2103425f",
+          "recorded_at": "2026-10-10T00:28:45.915953+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "7deccee5bdf4553281fa1fa05e3fdb96",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 7,
+          "event_id": "a42641afb5a34e3482e4559d080a2723",
+          "recorded_at": "2026-10-10T00:28:46.100051+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": null,
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 8,
+          "event_id": "9930998245094d80a2a48464a2232668",
+          "recorded_at": "2026-10-10T00:28:49.880787+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "input_id": "be729c88b5dc449194af7b5b6d013cdf",
+          "resolved_issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+              "title": "offline",
+              "status": "open"
+            }
+          ],
+          "event_id": "38844f5b8ab25d5d8624b8cd668c716f",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:28:49.900368+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "source": "kb_qa",
+              "doc_id": "rv-0105",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "15109899-06a9-4aea-abd5-4d988325b129",
+              "source": "kb_qa",
+              "doc_id": "rv-0267",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "15109899-06a9-4aea-abd5-4d988325b129",
+              "snippet": "To ensure that the cleaning quality is not compromised, the robot automatically switches to a \"vacuum-only\" mode. This adjustment prevents the robot from spreading dirt or leaving streaks on the floor with a dry or dirty mop. -For users who require mopping services on floors without an Omni station, it is essential to ensure that the robot has access to an Omni station on the same floor where the ",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "source": "kb_qa",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "source": "kb_qa",
+              "doc_id": "rv-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+              "score": 0.015384615384615384,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+              "source": "kb_qa",
+              "doc_id": "rv-0109",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7000:Robot trapped, please clear the obstacles, The robot is trapped?\n1. Please check and remove obstacles around the machine;\n*\n2. If the robot is trapped in a specific location for a long time (such as a narrow passage, Barcelona chair, U-shaped chair, etc.), it is recommended to set a no-go zone in the app to ensure that the robot does",
+              "score": 0.015083672546359114,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "source": "kb_qa",
+              "doc_id": "rv-0098",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+              "score": 0.014918032786885246,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+              "source": "kb_qa",
+              "doc_id": "rv-0099",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7053:Robot tilted. Put it on a flat surface to start, Robot tilt?\n1. Please move the robot to a flat surface before starting, otherwise the robot may not move forward normally.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.014484126984126985,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+              "source": "kb_qa",
+              "doc_id": "rv-0218",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip 7034: Unable to find the starting point, robot will stop running?\nWhen the robot does not start from the station, it needs to return to the starting point after completing the cleaning, but it may not be able to return to the starting point due to obstacles or doors, so it stops running; In this case, please place the robot on the station to ",
+              "score": 0.014254516577327774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+              "source": "kb_qa",
+              "doc_id": "rv-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+              "snippet": "What should I do if my X10 Pro Omni T2351 experiences these issues: poor obstacle avoidance, getting tangled in cords, ineffective AI recognition, subpar visual identification, collisions with furniture, and frequent jamming?\nWe recommend removing small objects (such as data cables, toys, etc.) from the floor before operating the robot, as well as rugs with tassels or any other items that may caus",
+              "score": 0.014172335600907028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+              "source": "kb_qa",
+              "doc_id": "rv-0114",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4130:Laser sensor cover may be stuck,Laser sensor cover stuck, The sensor is blocked?\n* Please check if the robot is stuck under an obstacle or under furniture, if so, move the robot out. If the robot often gets stuck in a specific position, it is recommended to set a no-go zone in the app and place the robot so that it cannot get stuck a",
+              "score": 0.014134495641344955,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+              "source": "kb_qa",
+              "doc_id": "rv-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7040: Unable to leave the station, please check the surrounding environment, The robot cannot leave the base station?\nIf the robot encounters an obstacle while leaving the station, the machine will not be able to start cleaning. Please check the environment around the base station and clear the obstacles.",
+              "score": 0.014106297779395703,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.013745173745173745,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "source": "kb_qa",
+              "doc_id": "rv-0233",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+              "score": 0.013562858633281168,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+              "source": "kb_qa",
+              "doc_id": "rv-0267",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+              "snippet": "Does the X10 Pro Omni Support Multiple Floors? Can the X10 Pro Omni Save Multiple Maps?\nThe X10 Pro Omni supports multiple floors, and users can choose to save one or multiple maps by enabling the Multi-Map Saving feature in the eufy app. Please follow the instructions shown below: Click the Settings icon on the top right corner＞ click Manage Map ＞turn on the \"Multi-Map Saving\" switch. -Please not",
+              "score": 0.013558685446009388,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+              "source": "kb_qa",
+              "doc_id": "rv-0222",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 4040:Something is wrong with the camera and may affect obstacle avoidance, please check?\nPlease try to restart the robot to confirm whether the reminder can be cleared.",
+              "score": 0.013206739006282124,
+              "status": "ok"
+            }
+          ],
+          "event_id": "a8a19c0f3d2554eb97488e558a06cea9",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:28:49.901560+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "0d6c351111855ae4af5f8d1a7750568e",
+          "reply_to_input_id": "be729c88b5dc449194af7b5b6d013cdf",
+          "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "event_id": "7f1b45ff2eb85cd0922ef7e73dd75307",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:28:49.906710+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "0d6c351111855ae4af5f8d1a7750568e",
+          "delta": "Did the robot go offline right after a firmware upgrade or while the upgrade progress bar was stuck?",
+          "event_id": "173ff6c4716e5c0c9be401002d41ebe5",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:28:49.908520+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "0d6c351111855ae4af5f8d1a7750568e",
+          "status": "completed",
+          "event_id": "d9f5521326c956c780c9ccb0508f9844",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:28:49.910176+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "1744aedbaf6f5183a0c10877386c3f10",
+          "recorded_at": "2026-10-10T00:28:49.911802+00:00",
+          "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+          "seq": 15,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "92dc28a325664b47b52489fddce57394",
+  "stop_reason": "awaiting_free_text_or_no_action",
+  "snapshot": {
+    "session_id": "92dc28a325664b47b52489fddce57394",
+    "version": 1,
+    "stage": "diagnose",
+    "substage": "retrieve",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:43.246605+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+        "kind": "user_message",
+        "id": "be729c88b5dc449194af7b5b6d013cdf",
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:28:45.915953+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "7deccee5bdf4553281fa1fa05e3fdb96",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-10T00:28:49.901814Z",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+            "source": "kb_qa",
+            "doc_id": "rv-0105",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "score": 0.016129032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "15109899-06a9-4aea-abd5-4d988325b129",
+            "source": "kb_qa",
+            "doc_id": "rv-0267",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "15109899-06a9-4aea-abd5-4d988325b129",
+            "snippet": "To ensure that the cleaning quality is not compromised, the robot automatically switches to a \"vacuum-only\" mode. This adjustment prevents the robot from spreading dirt or leaving streaks on the floor with a dry or dirty mop. -For users who require mopping services on floors without an Omni station, it is essential to ensure that the robot has access to an Omni station on the same floor where the ",
+            "score": 0.015887174541947928,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+            "source": "kb_qa",
+            "doc_id": "rv-0106",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+            "score": 0.015625,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+            "source": "kb_qa",
+            "doc_id": "rv-0107",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+            "score": 0.015384615384615384,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+            "source": "kb_qa",
+            "doc_id": "rv-0109",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7000:Robot trapped, please clear the obstacles, The robot is trapped?\n1. Please check and remove obstacles around the machine;\n*\n2. If the robot is trapped in a specific location for a long time (such as a narrow passage, Barcelona chair, U-shaped chair, etc.), it is recommended to set a no-go zone in the app to ensure that the robot does",
+            "score": 0.015083672546359114,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+            "source": "kb_qa",
+            "doc_id": "rv-0098",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+            "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+            "score": 0.014918032786885246,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+            "source": "kb_qa",
+            "doc_id": "rv-0099",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7053:Robot tilted. Put it on a flat surface to start, Robot tilt?\n1. Please move the robot to a flat surface before starting, otherwise the robot may not move forward normally.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "score": 0.014484126984126985,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+            "source": "kb_qa",
+            "doc_id": "rv-0218",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip 7034: Unable to find the starting point, robot will stop running?\nWhen the robot does not start from the station, it needs to return to the starting point after completing the cleaning, but it may not be able to return to the starting point due to obstacles or doors, so it stops running; In this case, please place the robot on the station to ",
+            "score": 0.014254516577327774,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+            "source": "kb_qa",
+            "doc_id": "rv-0093",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+            "snippet": "What should I do if my X10 Pro Omni T2351 experiences these issues: poor obstacle avoidance, getting tangled in cords, ineffective AI recognition, subpar visual identification, collisions with furniture, and frequent jamming?\nWe recommend removing small objects (such as data cables, toys, etc.) from the floor before operating the robot, as well as rugs with tassels or any other items that may caus",
+            "score": 0.014172335600907028,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+            "source": "kb_qa",
+            "doc_id": "rv-0114",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4130:Laser sensor cover may be stuck,Laser sensor cover stuck, The sensor is blocked?\n* Please check if the robot is stuck under an obstacle or under furniture, if so, move the robot out. If the robot often gets stuck in a specific position, it is recommended to set a no-go zone in the app and place the robot so that it cannot get stuck a",
+            "score": 0.014134495641344955,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+            "source": "kb_qa",
+            "doc_id": "rv-0100",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7040: Unable to leave the station, please check the surrounding environment, The robot cannot leave the base station?\nIf the robot encounters an obstacle while leaving the station, the machine will not be able to start cleaning. Please check the environment around the base station and clear the obstacles.",
+            "score": 0.014106297779395703,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "source": "kb_qa",
+            "doc_id": "rv-0102",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+            "score": 0.013745173745173745,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+            "source": "kb_qa",
+            "doc_id": "rv-0233",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+            "score": 0.013562858633281168,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+            "source": "kb_qa",
+            "doc_id": "rv-0267",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+            "snippet": "Does the X10 Pro Omni Support Multiple Floors? Can the X10 Pro Omni Save Multiple Maps?\nThe X10 Pro Omni supports multiple floors, and users can choose to save one or multiple maps by enabling the Multi-Map Saving feature in the eufy app. Please follow the instructions shown below: Click the Settings icon on the top right corner＞ click Manage Map ＞turn on the \"Multi-Map Saving\" switch. -Please not",
+            "score": 0.013558685446009388,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+            "source": "kb_qa",
+            "doc_id": "rv-0222",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+            "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 4040:Something is wrong with the camera and may affect obstacle avoidance, please check?\nPlease try to restart the robot to confirm whether the reminder can be cleared.",
+            "score": 0.013206739006282124,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:49.906710+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+        "kind": "assistant_message",
+        "message_id": "0d6c351111855ae4af5f8d1a7750568e",
+        "text": "Did the robot go offline right after a firmware upgrade or while the upgrade progress bar was stuck?",
+        "status": "completed",
+        "reply_to_input_id": "be729c88b5dc449194af7b5b6d013cdf",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "a0315f3348415dc0b2b64f05628816b3",
+    "issues": [
+      {
+        "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+        "status": "open",
+        "title": "offline",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 15,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "92dc28a325664b47b52489fddce57394",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:43.250755Z",
+      "last_run_at": "2026-10-10T00:28:49.913077Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 1,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "clarifying",
+      "outcome_reason": "applicability",
+      "outcome_at": null,
+      "total_latency_ms": 6662,
+      "model_calls": 3,
+      "tokens_in": 12314,
+      "tokens_out": 479,
+      "raw_available_until": "2026-10-17T00:28:49.913077Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+        "session_id": "92dc28a325664b47b52489fddce57394",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:43.250755Z",
+        "ended_at": "2026-10-10T00:28:49.913051Z",
+        "duration_ms": 6662,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "diagnose",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 6658,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2610,
+            "tokens_in": 4578,
+            "tokens_out": 341,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:45.889675Z"
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2268,
+            "tokens_in": 4697,
+            "tokens_out": 131,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:48.361879Z"
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1491,
+            "tokens_in": 3039,
+            "tokens_out": 7,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:49.873809Z"
+          }
+        ],
+        "tokens_in": 12314,
+        "tokens_out": 479,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:43.250755Z",
+            "duration_ms": 2651,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3670,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 167,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6313
+                    }
+                  ],
+                  "actual_input_tokens": 4578
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "a0315f3348415dc0b2b64f05628816b3",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:45.902089Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:45.909113Z",
+            "duration_ms": 3969,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "decision": "clarify",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5196,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 167,
+                    "history": 0,
+                    "authority": 4673
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 242,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 3885,
+                    "issue_index": 139,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5807
+                    }
+                  ],
+                  "actual_input_tokens": 4697
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 3155,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 167,
+                    "history": 0,
+                    "authority": 2632
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 242,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 1844,
+                    "issue_index": 139,
+                    "step_attempts": 2,
+                    "active_issue_id": 25,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3766
+                    }
+                  ],
+                  "actual_input_tokens": 3039
+                }
+              ],
+              "escalate_reason": null,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "idx": 4,
+            "node": "clarify",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:49.878442Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "clarify",
+            "started_at": "2026-10-10T00:28:49.879054Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "e76a540b7a684857a95d8e8330ea03e3",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 116,
+            "hits": 15,
+            "top_score": 0.0161,
+            "latency_ms": 173,
+            "query": "robot offline",
+            "created_at": "2026-10-10T00:28:46.078983Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "92dc28a325664b47b52489fddce57394",
+      "version": 1,
+      "stage": "diagnose",
+      "substage": "retrieve",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:43.246605+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "kind": "user_message",
+          "id": "be729c88b5dc449194af7b5b6d013cdf",
+          "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProblem Type: Issue\nProblem Description: The robot is offline. a\nProblem Upload Images: null",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:28:45.915953+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "7deccee5bdf4553281fa1fa05e3fdb96",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-10T00:28:49.901814Z",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "source": "kb_qa",
+              "doc_id": "rv-0105",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2e88473b-73c2-4aec-91ec-194217a4a871",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7003:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. Please note that the robot is not touching the ground, move the robot to a new position to try again.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.016129032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "15109899-06a9-4aea-abd5-4d988325b129",
+              "source": "kb_qa",
+              "doc_id": "rv-0267",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "15109899-06a9-4aea-abd5-4d988325b129",
+              "snippet": "To ensure that the cleaning quality is not compromised, the robot automatically switches to a \"vacuum-only\" mode. This adjustment prevents the robot from spreading dirt or leaving streaks on the floor with a dry or dirty mop. -For users who require mopping services on floors without an Omni station, it is essential to ensure that the robot has access to an Omni station on the same floor where the ",
+              "score": 0.015887174541947928,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "source": "kb_qa",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "432f7f00-cf25-4485-8a81-59890d682521",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7002:Robot not touching the ground, please move robot to a new position, The robot is floating in the air?\n1. If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.\n2. If the robot continues to display errors on flat ground, please try restarting the robo",
+              "score": 0.015625,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "source": "kb_qa",
+              "doc_id": "rv-0107",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a64dc772-e2a4-4315-9407-8fde0b88cddd",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7001:Robot trapped, please move to an open area to start, The robot is floating in the air?\n1. The robot may be hanging on certain obstacles (such as Barcelona chairs, U-shaped chairs, bar stools, etc.). Please move the robot to a nearby open area to start it. If it is trapped in this position for a long time, it is recommended to set a n",
+              "score": 0.015384615384615384,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+              "source": "kb_qa",
+              "doc_id": "rv-0109",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d0bfd8cf-26f9-460d-a214-6b84e9a23a4a",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7000:Robot trapped, please clear the obstacles, The robot is trapped?\n1. Please check and remove obstacles around the machine;\n*\n2. If the robot is trapped in a specific location for a long time (such as a narrow passage, Barcelona chair, U-shaped chair, etc.), it is recommended to set a no-go zone in the app to ensure that the robot does",
+              "score": 0.015083672546359114,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "source": "kb_qa",
+              "doc_id": "rv-0098",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f74ae6ee-afce-4ab1-8e14-828e22e73fc8",
+              "snippet": "What should I do if my X10 Pro Omni T2351's is offline after firmware upgrade/firmware upgrade progress bar stuck at 0-50% or 95%?\n1. If the robot vacuum can still perform cleaning tasks normally, we suggest you try restarting the router and robot and reconnecting to the network to try again([]()*[referring]()* [ri=https%3A%2F%2Fservice.eufy.com%2F&embeds]()*[referring]()* [origin=https%3A%2F%2Fse",
+              "score": 0.014918032786885246,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+              "source": "kb_qa",
+              "doc_id": "rv-0099",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a9c83be8-a740-400c-80b2-3692e352fa20",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7053:Robot tilted. Put it on a flat surface to start, Robot tilt?\n1. Please move the robot to a flat surface before starting, otherwise the robot may not move forward normally.\n2. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 0.014484126984126985,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+              "source": "kb_qa",
+              "doc_id": "rv-0218",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "dd789c8c-425d-4d95-970b-a4334784dadc",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a tip 7034: Unable to find the starting point, robot will stop running?\nWhen the robot does not start from the station, it needs to return to the starting point after completing the cleaning, but it may not be able to return to the starting point due to obstacles or doors, so it stops running; In this case, please place the robot on the station to ",
+              "score": 0.014254516577327774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+              "source": "kb_qa",
+              "doc_id": "rv-0093",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "097df3c9-f8df-4d3f-baa3-25b1f60a9067",
+              "snippet": "What should I do if my X10 Pro Omni T2351 experiences these issues: poor obstacle avoidance, getting tangled in cords, ineffective AI recognition, subpar visual identification, collisions with furniture, and frequent jamming?\nWe recommend removing small objects (such as data cables, toys, etc.) from the floor before operating the robot, as well as rugs with tassels or any other items that may caus",
+              "score": 0.014172335600907028,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+              "source": "kb_qa",
+              "doc_id": "rv-0114",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c52c8280-2e37-4e1c-95a7-405026211bb7",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 4130:Laser sensor cover may be stuck,Laser sensor cover stuck, The sensor is blocked?\n* Please check if the robot is stuck under an obstacle or under furniture, if so, move the robot out. If the robot often gets stuck in a specific position, it is recommended to set a no-go zone in the app and place the robot so that it cannot get stuck a",
+              "score": 0.014134495641344955,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+              "source": "kb_qa",
+              "doc_id": "rv-0100",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "bb56cb7a-14ec-418a-9f35-7e0a7751b110",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7040: Unable to leave the station, please check the surrounding environment, The robot cannot leave the base station?\nIf the robot encounters an obstacle while leaving the station, the machine will not be able to start cleaning. Please check the environment around the base station and clear the obstacles.",
+              "score": 0.014106297779395703,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "source": "kb_qa",
+              "doc_id": "rv-0102",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0cebcb14-d8a0-439f-890a-22d74c462f2e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 7031:Return failed, please clear the area around the station, Failed to return to the base station?\n1. The robot is blocked by obstacles during the process of getting on the seat, so it cannot enter the station. Please check and clear the obstacles around the station to ensure that there is enough space around the station.\n2. It is recomm",
+              "score": 0.013745173745173745,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "source": "kb_qa",
+              "doc_id": "rv-0233",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7a42bea8-26e1-4666-ae9d-ab8f9ed541da",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports a warning 1013 or 1023:Left/Right wheel stuck. Check the wheel and move robot to a new position, The wheel is stuck?\nMain troubleshooting step: * 1.Check whether the side wheels are entangled with wires or hair; If so, clean up foreign objects, and ensure that the wheels rotate normally. Additional Tips: * 1.It is recommended to store the wires in ",
+              "score": 0.013562858633281168,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+              "source": "kb_qa",
+              "doc_id": "rv-0267",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "70df9c87-86b7-4c73-ad6f-d540b3864ba0",
+              "snippet": "Does the X10 Pro Omni Support Multiple Floors? Can the X10 Pro Omni Save Multiple Maps?\nThe X10 Pro Omni supports multiple floors, and users can choose to save one or multiple maps by enabling the Multi-Map Saving feature in the eufy app. Please follow the instructions shown below: Click the Settings icon on the top right corner＞ click Manage Map ＞turn on the \"Multi-Map Saving\" switch. -Please not",
+              "score": 0.013558685446009388,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+              "source": "kb_qa",
+              "doc_id": "rv-0222",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "8d7ec703-fd7b-4efd-809d-46e747140f3e",
+              "snippet": "What should I do if my X10 Pro Omni T2351 reports tips 4040:Something is wrong with the camera and may affect obstacle avoidance, please check?\nPlease try to restart the robot to confirm whether the reminder can be cleared.",
+              "score": 0.013206739006282124,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:49.906710+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "kind": "assistant_message",
+          "message_id": "0d6c351111855ae4af5f8d1a7750568e",
+          "text": "Did the robot go offline right after a firmware upgrade or while the upgrade progress bar was stuck?",
+          "status": "completed",
+          "reply_to_input_id": "be729c88b5dc449194af7b5b6d013cdf",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "a0315f3348415dc0b2b64f05628816b3",
+      "issues": [
+        {
+          "issue_id": "a0315f3348415dc0b2b64f05628816b3",
+          "status": "open",
+          "title": "offline",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 15,
+      "latest_summaries": []
+    }
+  },
+  "cases": [],
+  "visible_text": "Did the robot go offline right after a firmware upgrade or while the upgrade progress bar was stuck?",
+  "step_cards": [],
+  "intent": "report_problem",
+  "seconds": 8.04,
+  "complete": true
+}

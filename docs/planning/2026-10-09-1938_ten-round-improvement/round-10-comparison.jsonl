@@ -1,0 +1,63 @@
+{"id": "T1", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": []}]}}
+{"id": "T2", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": []}]}}
+{"id": "T3", "same_behavior": true, "changes": {}}
+{"id": "T4", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": [{"intent": "logistics_query", "status": "done"}]}]}}
+{"id": "T5", "same_behavior": true, "changes": {}}
+{"id": "T6", "same_behavior": false, "changes": {"tasks": [{"status": "draft", "tasks": []}]}}
+{"id": "T7", "same_behavior": true, "changes": {}}
+{"id": "T8", "same_behavior": true, "changes": {}}
+{"id": "T9", "same_behavior": true, "changes": {}}
+{"id": "T10", "same_behavior": true, "changes": {}}
+{"id": "T11", "same_behavior": true, "changes": {}}
+{"id": "T12", "same_behavior": true, "changes": {}}
+{"id": "T13", "same_behavior": true, "changes": {}}
+{"id": "T14", "same_behavior": true, "changes": {}}
+{"id": "T15", "same_behavior": true, "changes": {}}
+{"id": "T16", "same_behavior": true, "changes": {}}
+{"id": "T17", "same_behavior": true, "changes": {}}
+{"id": "T18", "same_behavior": true, "changes": {}}
+{"id": "T19", "same_behavior": true, "changes": {}}
+{"id": "T20", "same_behavior": false, "changes": {"reply": "Is the robot currently on the same floor as the base station, and is the base station powered on?"}}
+{"id": "T21", "same_behavior": false, "changes": {"reply": "Does the robot's radar protective cover rotate smoothly when you manually turn it?"}}
+{"id": "T22", "same_behavior": true, "changes": {}}
+{"id": "T23", "same_behavior": false, "changes": {"stop": "awaiting_human", "case_statuses": ["awaiting_approval"], "reply": "For your safety, please stop using the device and do not charge it. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.", "steps": [], "tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "pending"}]}]}}
+{"id": "T24", "same_behavior": true, "changes": {}}
+{"id": "T25", "same_behavior": true, "changes": {}}
+{"id": "T26", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": []}]}}
+{"id": "T27", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T28", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": []}]}}
+{"id": "T29", "same_behavior": true, "changes": {}}
+{"id": "T30", "same_behavior": true, "changes": {}}
+{"id": "T31", "same_behavior": false, "changes": {"stop": "awaiting_free_text_or_no_action", "case_statuses": [], "reply": "Is the base station powered on, and are the indicator lights on its screen and inside the water tank illuminating?", "steps": [], "tasks": [{"status": "open", "tasks": []}]}}
+{"id": "T32", "same_behavior": true, "changes": {}}
+{"id": "T33", "same_behavior": true, "changes": {}}
+{"id": "T34", "same_behavior": true, "changes": {}}
+{"id": "T35", "same_behavior": false, "changes": {"intent": "product_question", "stop": "awaiting_free_text_or_no_action", "reply": "Based on the provided official evidence, the behavior you described for the T2353 Omni E25 is normal operation. When the robot vacuum cleaner is low on battery and the current cleaning task is not completed, it will return to the base station to recharge. Once the charge level is sufficient, the robot will automatically resume the last incomplete cleaning task [05af0178-096c-47d0-b317-fc99b221f68e].", "tasks": [{"status": "draft", "tasks": []}]}}
+{"id": "T36", "same_behavior": false, "changes": {"reply": "I'm sorry this hasn't been a good experience. Does the loud noise disappear when you remove the roller brush and its cover and run the robot?"}}
+{"id": "T37", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T38", "same_behavior": false, "changes": {"reply": "Is the clean water tank in the base station actually filled with water right now?"}}
+{"id": "T39", "same_behavior": false, "changes": {"reply": "Did the robot go offline right after a firmware upgrade?"}}
+{"id": "T40", "same_behavior": false, "changes": {"stop": "awaiting_upload_receipt", "case_statuses": ["open"], "reply": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.", "steps": [{"plan_id": "qa_rv_0073", "step_id": "s1", "kind": "action", "instruction": "In your case, please ensure that the cleaning solution bottle is installed correctly. Also, please try the suggestions in the article below to see if it works. To assist you better, could you please provide a photo or video showing the current state of the cleaning solution and how it is installed? This will help us diagnose the issue more accurately and provide you with the best possible solution.", "context": null, "options": [], "media": [{"url": "https://support.eufy.com/s/article/How-do-I-use-eufy-cleaning-solution-with-my-S1-Pro", "kind": "link"}], "caution": null, "expected_result": "After this step, check whether the problem is resolved."}], "tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T41", "same_behavior": false, "changes": {"reply": "I'll handle your requests in this order: device troubleshooting → delivery status.Does the failed drying error appear even when no mop or drying cycle has been run?"}}
+{"id": "T42", "same_behavior": true, "changes": {}}
+{"id": "T43", "same_behavior": false, "changes": {"stop": "awaiting_free_text_or_no_action", "case_statuses": [], "reply": "Does the app or robot display a 5112 communication error between the robot and the station?", "tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T44", "same_behavior": true, "changes": {}}
+{"id": "T45", "same_behavior": true, "changes": {}}
+{"id": "T46", "same_behavior": true, "changes": {}}
+{"id": "T47", "same_behavior": true, "changes": {}}
+{"id": "T48", "same_behavior": false, "changes": {"reply": "Which product is this? Please tell me the product type and model (the model number on the device label works too), and I'll look up your question. The provided official evidence mentions that the eufy Wearable Breast Pump S1 Pro (T8D04) has LED indicators, but it does not specify what a green light means. The evidence states: \"Please refer to the product manual or in-app guide for full button function details and LED indicator meanings.\" Therefore, I cannot answer what the green light means based on the available information. Please refer to your product manual or the in-app guide for details on LED indicator meanings."}}
+{"id": "T49", "same_behavior": true, "changes": {}}
+{"id": "T50", "same_behavior": false, "changes": {"reply": "Does the right side of the pump fail to work or perform differently from the left side?"}}
+{"id": "T51", "same_behavior": true, "changes": {}}
+{"id": "T52", "same_behavior": true, "changes": {}}
+{"id": "T53", "same_behavior": false, "changes": {"stop": "awaiting_question", "reply": "I'll handle your requests in this order: replacement request → device troubleshooting.I've checked: order Anker015 was under warranty until 2025-12-13. The warranty has expired (as of 2026-10-09). I'm sorry, we can't offer a free replacement or refund for products that are out of warranty. To keep using the product, you can follow the care instructions in the user manual, or contact us about buying accessories. I can still walk you through the official checks for this issue.Next up: device troubleshooting.", "steps": [{"plan_id": "qa_bp_0114", "step_id": "select_scope", "kind": "question", "instruction": "Which of these problems are you experiencing? Choose the matching section.\nBreast pump cannot be turned on\nHeating Function Malfunction", "context": null, "options": ["Breast pump cannot be turned on", "Heating Function Malfunction"], "media": [], "caution": null, "expected_result": "Pick the option that matches, or describe it in a few words."}], "tasks": [{"status": "open", "tasks": [{"intent": "replacement_request", "status": "done"}, {"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T54", "same_behavior": true, "changes": {}}
+{"id": "T55", "same_behavior": false, "changes": {"tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T56", "same_behavior": true, "changes": {}}
+{"id": "T57", "same_behavior": false, "changes": {"reply": "I'm sorry this hasn't been a good experience. Have you already power-cycled the affected cameras (removed and reconnected them to the HomeBase)?"}}
+{"id": "T58", "same_behavior": true, "changes": {}}
+{"id": "T59", "same_behavior": true, "changes": {}}
+{"id": "T60", "same_behavior": false, "changes": {"stop": "awaiting_human", "case_statuses": ["awaiting_approval"], "reply": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.", "tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "waiting_human"}]}]}}
+{"id": "T61", "same_behavior": false, "changes": {"stop": "awaiting_free_text_or_no_action", "case_statuses": [], "reply": "I'm sorry this has taken so much of your time without a fix. You said it happened before scheduled time. Is that right, and does the app show any warning at that moment?", "tasks": [{"status": "open", "tasks": [{"intent": "report_problem", "status": "active"}]}]}}
+{"id": "T62", "same_behavior": false, "changes": {"reply": "I'm sorry this hasn't been a good experience. Does the robot repeatedly clean the same area or overlap its cleaning paths?"}}
+{"id": "T63", "same_behavior": false, "changes": {"reply": "I'll handle your requests in this order: spare part purchase → device troubleshooting.I can't look up spare-part availability or place a parts order here, so I've passed your request (the brush guard) to a colleague who can check it for you."}}

@@ -1,0 +1,467 @@
+{
+  "id": "T2",
+  "started_at": "2026-10-10T00:27:20.656042+00:00",
+  "input": "Hi Team,\n\n I am reaching out to you regarding my order Anker002. I have received ine package today with tracking number \nAnker1234567-2. The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. When trying to track the shipment Anker1234567-3, UPS website says that the label has been created, but there is no further information. Could you please let me know when I should expect the robot vacuum to arrive?\n\nThanks in advance",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Hi Team,\n\n I am reaching out to you regarding my order Anker002. I have received ine package today with tracking number \nAnker1234567-2. The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. When trying to track the shipment Anker1234567-3, UPS website says that the label has been created, but there is no further information. Could you please let me know when I should expect the robot vacuum to arrive?\n\nThanks in advance",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "resumed": false,
+          "event_id": "2dd6dbcd474c494dbd0bcce693881173",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:20.818572+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "payload": {
+            "kind": "message",
+            "text": "Hi Team,\n\n I am reaching out to you regarding my order Anker002. I have received ine package today with tracking number \nAnker1234567-2. The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. When trying to track the shipment Anker1234567-3, UPS website says that the label has been created, but there is no further information. Could you please let me know when I should expect the robot vacuum to arrive?\n\nThanks in advance",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "69129ecabf00466f84a613256813e530",
+          "input_id": "7a2f5f868ca042fa84c68b067e8c7f68",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:27:20.818572+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 3,
+          "event_id": "7c7b910859d8472d937676f8a866aefb",
+          "recorded_at": "2026-10-10T00:27:21.544640+00:00"
+        },
+        {
+          "type": "ping",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 4,
+          "event_id": "da8c2d5732d241f2996f0d1bfd408fe0",
+          "recorded_at": "2026-10-10T00:27:26.661670+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "consult",
+          "substage": null,
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 5,
+          "event_id": "00fea3c2445b46be94ebd37771899ee1",
+          "recorded_at": "2026-10-10T00:27:29.081024+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "aca03ce5-493b-4430-8abe-88602513163c",
+          "name": "logistics.query",
+          "status": "started",
+          "summary": "Checking our after-sales tool",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 6,
+          "event_id": "4264092aea074fbcb9d9c033fad4b66d",
+          "recorded_at": "2026-10-10T00:27:29.087948+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "aca03ce5-493b-4430-8abe-88602513163c",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 7,
+          "event_id": "7061293e17f5487e9e7c1406d2eb95e8",
+          "recorded_at": "2026-10-10T00:27:29.091406+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "done",
+          "substage": null,
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 8,
+          "event_id": "b07cde03aa684aa886192f7b736cc2d6",
+          "recorded_at": "2026-10-10T00:27:29.100559+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "input_id": "7a2f5f868ca042fa84c68b067e8c7f68",
+          "resolved_issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+              "title": "Anker1234567-2",
+              "status": "open"
+            }
+          ],
+          "event_id": "3e6364791bd75b01bf01000bd4211a95",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:27:29.123110+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "f9b12e7dc6975805bddfbc43e564e058",
+          "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "reply_to_input_id": "7a2f5f868ca042fa84c68b067e8c7f68",
+          "event_id": "12de3da925485423af35cbe521738656",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:27:29.124373+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "f9b12e7dc6975805bddfbc43e564e058",
+          "delta": "Order Anker002:\n• ANPOST Anker1234567-2: delivered on 2026-09-21 (T2080GA1)\n• UPS Anker1234567-3: delivered on 2026-09-24 (T29C2001)\nOur record for Anker1234567-2 differs from what you received: it is listed as the main unit, while you mention the accessory kit. I've kept both records as they are; please confirm which item each package contained (the label on the box helps) so a colleague can check with the carrier.",
+          "event_id": "c93637a1dc8b5b7787055cc236a37e0f",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:27:29.125179+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "f9b12e7dc6975805bddfbc43e564e058",
+          "status": "completed",
+          "event_id": "335f84a0a9b35054ba19b6ac94b72a19",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:27:29.126367+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "4a1c0aefe0c552a4b04d9c5f62f827ef",
+          "recorded_at": "2026-10-10T00:27:29.127670+00:00",
+          "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+          "seq": 14,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "5f825602124d4953989e194e64134448",
+  "stop_reason": "done",
+  "snapshot": {
+    "session_id": "5f825602124d4953989e194e64134448",
+    "version": 1,
+    "stage": "done",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:27:20.818572+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+        "kind": "user_message",
+        "id": "7a2f5f868ca042fa84c68b067e8c7f68",
+        "text": "Hi Team,\n\n I am reaching out to you regarding my order Anker002. I have received ine package today with tracking number \nAnker1234567-2. The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. When trying to track the shipment Anker1234567-3, UPS website says that the label has been created, but there is no further information. Could you please let me know when I should expect the robot vacuum to arrive?\n\nThanks in advance",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:27:29.087948+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "aca03ce5-493b-4430-8abe-88602513163c",
+        "name": "logistics.query",
+        "status": "finished",
+        "summary": "After-sales tool responded"
+      },
+      {
+        "at": "2026-10-10T00:27:29.124373+00:00",
+        "first_seq": 11,
+        "last_seq": 13,
+        "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+        "kind": "assistant_message",
+        "message_id": "f9b12e7dc6975805bddfbc43e564e058",
+        "text": "Order Anker002:\n• ANPOST Anker1234567-2: delivered on 2026-09-21 (T2080GA1)\n• UPS Anker1234567-3: delivered on 2026-09-24 (T29C2001)\nOur record for Anker1234567-2 differs from what you received: it is listed as the main unit, while you mention the accessory kit. I've kept both records as they are; please confirm which item each package contained (the label on the box helps) so a colleague can check with the carrier.",
+        "status": "completed",
+        "reply_to_input_id": "7a2f5f868ca042fa84c68b067e8c7f68",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+    "issues": [
+      {
+        "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+        "status": "open",
+        "title": "Anker1234567-2",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 14,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "5f825602124d4953989e194e64134448",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:27:20.831496Z",
+      "last_run_at": "2026-10-10T00:27:29.128958Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Hi Team,\n\n I am reaching out to you regarding my order [REDACTED]. I have received ine package today with tracking number \n[REDACTED]. The package only contains the replacement accessories kit. I have",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "consult_answered",
+      "outcome_reason": null,
+      "outcome_at": "2026-10-10T00:27:29.128958Z",
+      "total_latency_ms": 8397,
+      "model_calls": 1,
+      "tokens_in": 4710,
+      "tokens_out": 351,
+      "raw_available_until": "2026-10-17T00:27:29.128958Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+        "session_id": "5f825602124d4953989e194e64134448",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:27:20.831496Z",
+        "ended_at": "2026-10-10T00:27:29.128952Z",
+        "duration_ms": 8397,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "done",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 8398,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 2,
+            "fallback_used": true,
+            "stream": false,
+            "latency_ms": 7746,
+            "tokens_in": 4710,
+            "tokens_out": 351,
+            "error_type": "facts.0.context_field: Input should be 'address', 'serial_number', 'purchase_dat",
+            "created_at": "2026-10-10T00:27:29.146954Z"
+          }
+        ],
+        "tokens_in": 4710,
+        "tokens_out": 351,
+        "node_count": 4,
+        "nodes": [
+          {
+            "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:20.831496Z",
+            "duration_ms": 8348,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "logistics_query",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3764,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 261,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "schema_error",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6407
+                    },
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6477
+                    }
+                  ],
+                  "actual_input_tokens": 4710
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+            "idx": 2,
+            "node": "consult",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:29.180055Z",
+            "duration_ms": 19,
+            "status": "ok",
+            "summary": {
+              "stage": "done"
+            }
+          },
+          {
+            "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+            "idx": 3,
+            "node": "advance_tasks",
+            "prev_node": "consult",
+            "started_at": "2026-10-10T00:27:29.199825Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4db92cd7d9ca4d218ca9d6874a3c06d9",
+            "idx": 4,
+            "node": "commit_issue",
+            "prev_node": "advance_tasks",
+            "started_at": "2026-10-10T00:27:29.199834Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "5f825602124d4953989e194e64134448",
+      "version": 1,
+      "stage": "done",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:27:20.818572+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "kind": "user_message",
+          "id": "7a2f5f868ca042fa84c68b067e8c7f68",
+          "text": "Hi Team,\n\n I am reaching out to you regarding my order Anker002. I have received ine package today with tracking number \nAnker1234567-2. The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. When trying to track the shipment Anker1234567-3, UPS website says that the label has been created, but there is no further information. Could you please let me know when I should expect the robot vacuum to arrive?\n\nThanks in advance",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:27:29.087948+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "aca03ce5-493b-4430-8abe-88602513163c",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded"
+        },
+        {
+          "at": "2026-10-10T00:27:29.124373+00:00",
+          "first_seq": 11,
+          "last_seq": 13,
+          "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "kind": "assistant_message",
+          "message_id": "f9b12e7dc6975805bddfbc43e564e058",
+          "text": "Order Anker002:\n• ANPOST Anker1234567-2: delivered on 2026-09-21 (T2080GA1)\n• UPS Anker1234567-3: delivered on 2026-09-24 (T29C2001)\nOur record for Anker1234567-2 differs from what you received: it is listed as the main unit, while you mention the accessory kit. I've kept both records as they are; please confirm which item each package contained (the label on the box helps) so a colleague can check with the carrier.",
+          "status": "completed",
+          "reply_to_input_id": "7a2f5f868ca042fa84c68b067e8c7f68",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+      "issues": [
+        {
+          "issue_id": "b5fe45cdf40c5b368c3a56a22a0d309e",
+          "status": "open",
+          "title": "Anker1234567-2",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 14,
+      "latest_summaries": []
+    }
+  },
+  "cases": [],
+  "visible_text": "Order Anker002:\n• ANPOST Anker1234567-2: delivered on 2026-09-21 (T2080GA1)\n• UPS Anker1234567-3: delivered on 2026-09-24 (T29C2001)\nOur record for Anker1234567-2 differs from what you received: it is listed as the main unit, while you mention the accessory kit. I've kept both records as they are; please confirm which item each package contained (the label on the box helps) so a colleague can check with the carrier.",
+  "step_cards": [],
+  "intent": "logistics_query",
+  "seconds": 9.7,
+  "complete": true
+}

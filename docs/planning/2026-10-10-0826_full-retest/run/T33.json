@@ -1,0 +1,1139 @@
+{
+  "id": "T33",
+  "started_at": "2026-10-10T00:28:28.411466+00:00",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "resumed": false,
+          "event_id": "f61606392ba44ee1b2c16b7f0ae88e80",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:28.604917+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "eb09a991e2cf45be844cd45266e7a039",
+          "input_id": "d8bbe93de8264729a49b8fcd95da67d2",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:28.604917+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 3,
+          "event_id": "ea2993b3ac9442f3af3a599d032bad33",
+          "recorded_at": "2026-10-10T00:28:28.633892+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 4,
+          "event_id": "36b3ae1c4e524d4d99e8a932d6b39aff",
+          "recorded_at": "2026-10-10T00:28:31.679634+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 5,
+          "event_id": "33e6657c8fac43a098e3bf797b3d7ade",
+          "recorded_at": "2026-10-10T00:28:31.684440+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 6,
+          "event_id": "279c838bebb04f0e98079c3e5a78bcf8",
+          "recorded_at": "2026-10-10T00:28:31.687146+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 7,
+          "event_id": "35c03d315dfd499c9c16865bcd904151",
+          "recorded_at": "2026-10-10T00:28:31.694197+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "input_id": "d8bbe93de8264729a49b8fcd95da67d2",
+          "resolved_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+              "title": "Gyroscope abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "bf43a800098258f6bf90fdff1c494ea5",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:28:31.722025+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0439",
+              "source": "qa_exact",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0439",
+              "snippet": "Restart the robot to see if it can be restored.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "2558de4b2d8a5b8da1a063cdda81bf62",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:28:31.723248+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "pending_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "e5361c3792c750c1b41f0d8750ae30ae",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:28:31.724400+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0439",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended.",
+            "instruction": "Restart the robot to see if it can be restored.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0439"
+            ],
+            "primary_evidence_id": "qa:rv-0439",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "event_id": "019c9e71d13d59dcac4dac7f8e496830",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:28:31.725215+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "input_token": "fd0424cfb5685991b1b6b7458cf1ae26",
+          "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+          "version": 1,
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 13,
+          "event_id": "641357cc9c6b4c47bcc66d57cedddb5e",
+          "recorded_at": "2026-10-10T00:28:31.726167+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "cfb78463e99d55fcb076c962e6edf823",
+          "recorded_at": "2026-10-10T00:28:31.727283+00:00",
+          "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+          "seq": 14,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 15,
+          "type": "run_started",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "resumed": false,
+          "event_id": "31d58414406445709626ef8b9d1fbbfa",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:31.740512+00:00"
+        },
+        {
+          "seq": 16,
+          "type": "input_received",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "40630cb633194738832b0e14985eefa0",
+            "input_token": "fd0424cfb5685991b1b6b7458cf1ae26",
+            "target_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "expected_version": 1
+          },
+          "event_id": "8726686f078c47a29747c86b58d29407",
+          "input_id": "40630cb633194738832b0e14985eefa0",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:31.740512+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 17,
+          "event_id": "e0e3d0162ec44f61baee3809b203dc11",
+          "recorded_at": "2026-10-10T00:28:31.753113+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 18,
+          "event_id": "4d73d7a796474e5fb9d06ba0693031ed",
+          "recorded_at": "2026-10-10T00:28:31.763379+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "input_id": "40630cb633194738832b0e14985eefa0",
+          "resolved_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+              "title": "Gyroscope abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "315086b6f6b954a88f932227a8b4dfa5",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 20,
+          "recorded_at": "2026-10-10T00:28:31.789872+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "pending_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "9889baa6e0e45a0aa0577e6a731ecad7",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:28:31.790836+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+          "case_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "version": 2,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:31.753207+00:00",
+          "event_id": "e2f1c156e7085f009257a4825cf6e876",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:28:31.791769+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "reply_to_input_id": "40630cb633194738832b0e14985eefa0",
+          "event_id": "807a1e154fff5a6294cffa1076acad40",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:28:31.793115+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "3df288dae82859f3b8cbd9dc815f5b94",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:28:31.794101+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+          "status": "completed",
+          "event_id": "691f12621292540dab0cc68fc836228e",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:28:31.795333+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "pending_id": "3d16d284abdf5baab83925ceea9d94d2",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "2071198d8213541ebfc415ba82cb9853",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 26,
+          "recorded_at": "2026-10-10T00:28:31.798582+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "input_token": "42d20aa6cbc556f3b489e52163d47d9e",
+          "card_id": "3d16d284abdf5baab83925ceea9d94d2",
+          "version": 2,
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 27,
+          "event_id": "6d938cac65af494ca86178513ffe3918",
+          "recorded_at": "2026-10-10T00:28:31.799140+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "a3c28780d310577c981f2d56184d1128",
+          "recorded_at": "2026-10-10T00:28:31.800155+00:00",
+          "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+          "seq": 28,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+    "version": 2,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+      "kind": "upload_receipt",
+      "input_token": "42d20aa6cbc556f3b489e52163d47d9e",
+      "card_id": "3d16d284abdf5baab83925ceea9d94d2",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:28.604917+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "user_message",
+        "id": "d8bbe93de8264729a49b8fcd95da67d2",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:28:31.723409Z",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0439",
+            "source": "qa_exact",
+            "doc_id": "rv-0439",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0439",
+            "snippet": "Restart the robot to see if it can be restored.",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:31.725215+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "step_card",
+        "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0439",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended.",
+          "instruction": "Restart the robot to see if it can be restored.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0439"
+          ],
+          "primary_evidence_id": "qa:rv-0439",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:31.740512+00:00",
+        "first_seq": 16,
+        "last_seq": 20,
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "action",
+        "id": "40630cb633194738832b0e14985eefa0",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:31.791769+00:00",
+        "first_seq": 22,
+        "last_seq": 22,
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "case_changed",
+        "card_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+        "version": 2,
+        "case_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:28:31.753207+00:00"
+      },
+      {
+        "at": "2026-10-10T00:28:31.793115+00:00",
+        "first_seq": 23,
+        "last_seq": 25,
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "assistant_message",
+        "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "40630cb633194738832b0e14985eefa0",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+    "issues": [
+      {
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "status": "open",
+        "title": "Gyroscope abnormal, task ended",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 28,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:28.610433Z",
+      "last_run_at": "2026-10-10T00:28:31.800839Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E[REDACTED]\nProblem Type: ERROR\nProblem Code: [REDACTED]-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistanc",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0439"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 58,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:28:31.800839Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+        "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:28.610433Z",
+        "ended_at": "2026-10-10T00:28:31.727893Z",
+        "duration_ms": 3117,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 3116,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3020,
+            "tokens_in": 4663,
+            "tokens_out": 361,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:31.646157Z"
+          }
+        ],
+        "tokens_in": 4663,
+        "tokens_out": 361,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:28.610433Z",
+            "duration_ms": 3056,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3763,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 260,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6406
+                    }
+                  ],
+                  "actual_input_tokens": 4663
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:31.666719Z",
+            "duration_ms": 17,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:31.684427Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0439",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:31.687136Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0439",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:31.690285Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "99feb96f20924335910c4ae2b61ca3b9",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:31.690291Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+        "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:28:31.742323Z",
+        "ended_at": "2026-10-10T00:28:31.800831Z",
+        "duration_ms": 58,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 52,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:31.742323Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0439",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:31.749518Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:31.751236Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:28:31.752793Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:28:31.760072Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:28:31.760494Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "1b956d2c778e4bcd97994794064e2bf9",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:31.761185Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "kind": "upload_receipt",
+        "input_token": "42d20aa6cbc556f3b489e52163d47d9e",
+        "card_id": "3d16d284abdf5baab83925ceea9d94d2",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:28.604917+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "user_message",
+          "id": "d8bbe93de8264729a49b8fcd95da67d2",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:28:31.723409Z",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0439",
+              "source": "qa_exact",
+              "doc_id": "rv-0439",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0439",
+              "snippet": "Restart the robot to see if it can be restored.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:31.725215+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "step_card",
+          "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0439",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended.",
+            "instruction": "Restart the robot to see if it can be restored.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0439"
+            ],
+            "primary_evidence_id": "qa:rv-0439",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:31.740512+00:00",
+          "first_seq": 16,
+          "last_seq": 20,
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "action",
+          "id": "40630cb633194738832b0e14985eefa0",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:31.791769+00:00",
+          "first_seq": 22,
+          "last_seq": 22,
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "case_changed",
+          "card_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+          "version": 2,
+          "case_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:31.753207+00:00"
+        },
+        {
+          "at": "2026-10-10T00:28:31.793115+00:00",
+          "first_seq": 23,
+          "last_seq": 25,
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "assistant_message",
+          "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "40630cb633194738832b0e14985eefa0",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+      "issues": [
+        {
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "status": "open",
+          "title": "Gyroscope abnormal, task ended",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 28,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+      "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+      "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:28:31.753207+00:00",
+      "updated_at": "2026-10-10T00:28:31.753207+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "dea0bcafbd4d450e8f4d4d540c1e6fea",
+        "version": 2,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+          "kind": "upload_receipt",
+          "input_token": "42d20aa6cbc556f3b489e52163d47d9e",
+          "card_id": "3d16d284abdf5baab83925ceea9d94d2",
+          "version": 2
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:28:28.604917+00:00",
+            "first_seq": 2,
+            "last_seq": 9,
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "kind": "user_message",
+            "id": "d8bbe93de8264729a49b8fcd95da67d2",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600034\nProblem Type: ERROR\nProblem Code: 20972810-E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Push: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Description: E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance.\nProblem Upload Images: null",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:28:31.723409Z",
+            "first_seq": 10,
+            "last_seq": 10,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0439",
+                "source": "qa_exact",
+                "doc_id": "rv-0439",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0439",
+                "snippet": "Restart the robot to see if it can be restored.",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:31.725215+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "kind": "step_card",
+            "card_id": "f5ebe8d4677354c2b78e86e6d457abc8",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0439",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended.",
+              "instruction": "Restart the robot to see if it can be restored.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0439"
+              ],
+              "primary_evidence_id": "qa:rv-0439",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:31.740512+00:00",
+            "first_seq": 16,
+            "last_seq": 20,
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "kind": "action",
+            "id": "40630cb633194738832b0e14985eefa0",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:31.791769+00:00",
+            "first_seq": 22,
+            "last_seq": 22,
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "kind": "case_changed",
+            "card_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+            "version": 2,
+            "case_id": "65920b8d-fb0c-51fa-ac9d-f831a60b88b4",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:28:31.753207+00:00"
+          },
+          {
+            "at": "2026-10-10T00:28:31.793115+00:00",
+            "first_seq": 23,
+            "last_seq": 25,
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "kind": "assistant_message",
+            "message_id": "e90c52b2539e5077bad0983d00dc07bb",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "40630cb633194738832b0e14985eefa0",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "47e5598dadf6571b9f3e67435f806c39",
+        "issues": [
+          {
+            "issue_id": "47e5598dadf6571b9f3e67435f806c39",
+            "status": "open",
+            "title": "Gyroscope abnormal, task ended",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 28,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0439",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "what should I do when T2080 S1 Pro has E5A: Gyroscope abnormal, task ended.",
+      "instruction": "Restart the robot to see if it can be restored.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0439"
+      ],
+      "primary_evidence_id": "qa:rv-0439",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 4.58,
+  "complete": true
+}

@@ -1,0 +1,993 @@
+{
+  "active_issue_id": "7fdb07f084615bb1aa54045771fa3484",
+  "issues": {
+    "7fdb07f084615bb1aa54045771fa3484": {
+      "business_context": {
+        "version": 1,
+        "subjects": {
+          "bb82cc89de1155c5b05b1bd54f235b48": {
+            "identifiers": {
+              "order_no": {
+                "value": "Anker015",
+                "source": "backend",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              }
+            },
+            "facts": {
+              "serial_number": {
+                "value": "T8D04121",
+                "source": "user",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              },
+              "sku": {
+                "value": "T8D04121",
+                "source": "backend",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              },
+              "purchase_date": {
+                "value": "2024-12-13",
+                "source": "backend",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              },
+              "warranty_end": {
+                "value": "2025-12-13",
+                "source": "backend",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              },
+              "amount": {
+                "value": "349.99",
+                "source": "backend",
+                "input_id": "8cb0f77154424656b870b065beddf2c6",
+                "observed_at": null
+              }
+            }
+          }
+        },
+        "active_subject_id": "bb82cc89de1155c5b05b1bd54f235b48",
+        "status": "resolved",
+        "candidate_ids": [],
+        "last_input_id": "8cb0f77154424656b870b065beddf2c6"
+      },
+      "case_status": "closed_unresolved",
+      "case_order_no": "Anker015",
+      "execution_key": null,
+      "human_involved": false,
+      "stage": "guide",
+      "substage": null,
+      "pending_card": {
+        "card_id": "de540040454e5c21ac21c23d386cff01",
+        "input_token": "9290a7a09a65531f96c92f411c026a32",
+        "kind": "step_feedback",
+        "payload": {
+          "step": {
+            "step_id": "select_scope",
+            "plan_id": "qa_bp_0114",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Which of these problems are you experiencing? Choose the matching section.",
+            "instruction": "Which of these problems are you experiencing? Choose the matching section.\nBreast pump cannot be turned on\nHeating Function Malfunction",
+            "expected_result": "Pick the option that matches, or describe it in a few words.",
+            "caution": null,
+            "evidence_ids": [
+              "eda2e4f1-6f07-4066-82e1-62aa68eb46b7"
+            ],
+            "primary_evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+            "media": [],
+            "kind": "question",
+            "options": [
+              "Breast pump cannot be turned on",
+              "Heating Function Malfunction"
+            ]
+          }
+        },
+        "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+        "status": "active",
+        "created_seq": 2
+      },
+      "product_confirmed": {
+        "sku": "T8D04",
+        "name": "eufy Wearable Breast Pump S1 Pro",
+        "category": "breast_pump",
+        "image": null,
+        "in_scope": true
+      },
+      "product_candidates": [],
+      "product_state": "confirmed_sku",
+      "category": "breast_pump",
+      "out_of_scope": false,
+      "clarification": null,
+      "abandoned_card": null,
+      "observations": [
+        "图片：单据标题为 Invoice",
+        "图片：Invoice No.: Anker015",
+        "图片：商品 eufy Wearable Breast Pump S1 Pro",
+        "图片：数量 1，单价 $294.00",
+        "图片：Grand Total $294.00"
+      ],
+      "product_hints": [],
+      "product_question": null,
+      "symptoms": [
+        "One side of the pump stoped working"
+      ],
+      "unparsed_problem": null,
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "reason": "symptom_described",
+        "source_refs": [
+          "8cb0f77154424656b870b065beddf2c6"
+        ],
+        "missing_information": [],
+        "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+        "input_id": "8cb0f77154424656b870b065beddf2c6"
+      },
+      "evidence": {
+        "36919ad1-b015-41c5-96e6-5009ab309e30": {
+          "evidence_id": "36919ad1-b015-41c5-96e6-5009ab309e30",
+          "source": "kb_qa",
+          "doc_id": "bp-0125",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "36919ad1-b015-41c5-96e6-5009ab309e30",
+          "snippet": "7. Check if the Main Unit is Working Properly:\n- Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cover). If there is no suction, further troubleshooti",
+          "score": 0.015063145809414464,
+          "status": "ok"
+        },
+        "eda2e4f1-6f07-4066-82e1-62aa68eb46b7": {
+          "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+          "source": "kb_qa",
+          "doc_id": "bp-0114",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+          "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+          "score": 0.015058479532163742,
+          "status": "ok"
+        },
+        "cac6104f-5d58-4c1c-b110-21a4d9ca493e": {
+          "evidence_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+          "source": "kb_qa",
+          "doc_id": "bp-0102",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+          "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor make a clicking sound but no suction?\n1. Restore factory settings:\nPress and hold the \"power button\" and the \"+\" button simultaneously for about 5 seconds. The device will restore to factory settings. After restoring factory settings, try using the breast pump again. If the problem persists, proceed to the next step.\n2. Check if the main unit is working",
+          "score": 0.015054945054945056,
+          "status": "ok"
+        },
+        "c45151d7-171e-40df-a17b-99ba5d82adde": {
+          "evidence_id": "c45151d7-171e-40df-a17b-99ba5d82adde",
+          "source": "kb_qa",
+          "doc_id": "bp-0037",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "c45151d7-171e-40df-a17b-99ba5d82adde",
+          "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) stopped working completely?\n1. Check Power and Battery:\n- Ensure the device has sufficient charge. Try a different charging cable or adapter, charge for at least 30 minutes, then try turning on.\n- Verify you are using the original adapter and cable, and check if the charging indicator lights up normally.\n2. Check Buttons and Touch Panel:\n- Check if",
+          "score": 0.014596036585365853,
+          "status": "ok"
+        },
+        "cc39638e-c7af-4048-ba0b-bf5dcf658564": {
+          "evidence_id": "cc39638e-c7af-4048-ba0b-bf5dcf658564",
+          "source": "kb_qa",
+          "doc_id": "bp-0120",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "cc39638e-c7af-4048-ba0b-bf5dcf658564",
+          "snippet": "If the problem persists, proceed to the next step.\n7. Check if the main unit is working properly: Remove the main head, align the suction port with your palm, and test if there is suction after the device starts. If you feel a significant suction on your palm, it indicates that the main unit is working properly, and the problem may be with other components (such as the hose or the breast pump cove",
+          "score": 0.014270919635459817,
+          "status": "ok"
+        },
+        "6cb9865a-19d7-4930-9c5a-fb4c7245517a": {
+          "evidence_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+          "source": "kb_qa",
+          "doc_id": "bp-0036",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+          "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) is making abnormal noise while pumping?\n1. First identify the noise details:\n- Is the noise continuous or intermittent?\n- When does it occur: at startup, during pumping, or only at high settings?\n- Is it accompanied by reduced suction or other issues?\n- Record a video or audio clip of at least 10 seconds.\n2. Self-troubleshooting steps (in order):\n-",
+          "score": 0.014199834162520731,
+          "status": "ok"
+        },
+        "6acceacc-4bbb-4d8c-bd77-0459f3896a1e": {
+          "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+          "source": "kb_qa",
+          "doc_id": "bp-0043",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+          "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+          "score": 0.013716356107660454,
+          "status": "ok"
+        },
+        "f690ebfe-4500-492e-8027-54ce1d2f4fc8": {
+          "evidence_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+          "source": "kb_qa",
+          "doc_id": "bp-0100",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "f690ebfe-4500-492e-8027-54ce1d2f4fc8",
+          "snippet": "Why won't my Breast Pump S1 Pro (T8D04) motor turn on?\n1. Reset the device: Press and hold the power on button for 12 seconds to reset the device and see if it can be turned on. This can help resolve software issues that may be preventing the pump from starting.\n2. Check the charging status:\n- Ensure that the light inside the charging compartment is on. If it's not, try charging the breast pump wi",
+          "score": 0.013576357635763574,
+          "status": "ok"
+        },
+        "b52939ec-687e-4569-b2d2-e407ee3244ea": {
+          "evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "source": "kb_qa",
+          "doc_id": "bp-0123",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor keep making abnormal noise?\n1. Identify the Problem\n1. Is the noise continuous or intermittent?\n2. When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)\n3. Is it accompanied by decreased suction or other performance abnormalities?\n4. Please record a short video or audio clip (at least 10 seconds) to help us remote",
+          "score": 0.013485144991994305,
+          "status": "ok"
+        },
+        "6a98604a-6461-49a4-b817-64df1ff87d5c": {
+          "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+          "source": "kb_qa",
+          "doc_id": "bp-0127",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+          "score": 0.013351767726644282,
+          "status": "ok"
+        },
+        "f6d0b4c1-e31f-454c-b24b-e9f846cae5de": {
+          "evidence_id": "f6d0b4c1-e31f-454c-b24b-e9f846cae5de",
+          "source": "kb_qa",
+          "doc_id": "bp-0105",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "f6d0b4c1-e31f-454c-b24b-e9f846cae5de",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) temperature indicator light not working?\n1. Loose connections:\n- Ensure that the heating pins are firmly inserted into the oval notch of the container.\n- Install the pump hub and push it firmly to seal the gap between the hub and the diaphragm.\n2. Dirty or corroded contacts:\n- Over time, the heating contacts may accumulate dirt, debris, or oxidation, which can ",
+          "score": 0.013083333333333332,
+          "status": "ok"
+        },
+        "e7abb7b7-4535-4e23-8bca-a387a5b786bc": {
+          "evidence_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "source": "kb_qa",
+          "doc_id": "bp-0125",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "e7abb7b7-4535-4e23-8bca-a387a5b786bc",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) not suctioning?\n1. Inspect Key Components for Damage:\n- Check the duckbill valve and diaphragm for any signs of damage, including cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Verify Assembly and Sealing:\n- Ensure that the assembly is correct, and the four key components - duckbill valve, flange tunnel, dia",
+          "score": 0.012794612794612794,
+          "status": "ok"
+        },
+        "1e70cc0a-416e-4671-a718-96767a41a6e2": {
+          "evidence_id": "1e70cc0a-416e-4671-a718-96767a41a6e2",
+          "source": "kb_qa",
+          "doc_id": "bp-0007",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "1e70cc0a-416e-4671-a718-96767a41a6e2",
+          "snippet": "What should I do if the Wearable Breast Pump S1 Pro (T8D04) has almost zero milk output?\n1. Check the flange insert size for each breast using the nipple measurement card, as different sizes may be needed for each side.\n2. Verify the wearing position: the nipple should be centered in the flange tunnel and the pump should fit snugly against the breast.\n3. Ensure all pump components are properly ass",
+          "score": 0.01275,
+          "status": "ok"
+        },
+        "16fcda84-ccf9-41e1-b517-b8888f2a46df": {
+          "evidence_id": "16fcda84-ccf9-41e1-b517-b8888f2a46df",
+          "source": "kb_qa",
+          "doc_id": "bp-0083",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "16fcda84-ccf9-41e1-b517-b8888f2a46df",
+          "snippet": "What should I do if the heating function is not working on eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Loose connections: Press the heating pins firmly into the container oval notch, then reinstall the flange. Ensure all components are properly assembled.\n2. Dirty contacts: Check the exposed metal contact surfaces where the heating cover and main unit connect for dirt or debris. Clean with a dry c",
+          "score": 0.012193588937774984,
+          "status": "ok"
+        },
+        "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2": {
+          "evidence_id": "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2",
+          "source": "kb_qa",
+          "doc_id": "bp-0038",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2",
+          "snippet": "Why is the heating function on my Breast Pump S1 Pro (T8D04) not working?\n1. Clarify the Issue: Determine whether you cannot find the right temperature, the temperature range is too large, the heating doesn't work at all, or the temperature is too high/low.\n2. If Temperature is Too High: Lower the setting and run continuously for about 10 minutes to observe changes. If still too high, stop using a",
+          "score": 0.011781609195402299,
+          "status": "ok"
+        },
+        "f930d2d2-e99f-4099-a387-2e6459dc9ace": {
+          "evidence_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+          "source": "kb_qa",
+          "doc_id": "bp-0003",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+          "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) be added (bound) to the Anker eufy app?\n1. Ensure the pump is turned on and the LED is lit.\n2. Enable Bluetooth on your phone and ensure the app has Bluetooth permissions.\n3. Keep the phone close to the pump (within 1 meter) during pairing.\n4. Restart the pump and relaunch the app, then retry.\n5. Update the Anker eufy app to the latest version.",
+          "score": 0.015767934520943667,
+          "status": "ok"
+        },
+        "8339a09d-52c4-4484-9c52-59f4450e85bf": {
+          "evidence_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+          "source": "kb_qa",
+          "doc_id": "bp-0058",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+          "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) emit harmful radiation?\nNo, eufy Wearable Breast Pump S1 Pro(T8D04) does not emit harmful radiation. The eufy Wearable Breast Pump series has passed the SAR (Specific Absorption Rate) test, confirming the radiation poses no risk to health.",
+          "score": 0.015607940446650124,
+          "status": "ok"
+        },
+        "6b4144c4-f2e7-456f-b1aa-2f604c72a79b": {
+          "evidence_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+          "source": "kb_qa",
+          "doc_id": "bp-0095",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+          "snippet": "Is eufy Wearable Breast Pump S1 Pro(T8D04) HSA/FSA eligible?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is HSA/FSA eligible on Amazon.",
+          "score": 0.015584998877161464,
+          "status": "ok"
+        },
+        "83aa099e-37fb-4e40-adee-f487c52371cd": {
+          "evidence_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+          "source": "kb_qa",
+          "doc_id": "bp-0002",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "83aa099e-37fb-4e40-adee-f487c52371cd",
+          "snippet": "Why can't eufy Wearable Breast Pump S1 Pro(T8D04) reconnect to the Anker eufy app?\n1. Ensure Bluetooth is enabled on your phone and the app has Bluetooth permissions.\n2. Restart the pump and force close the app, then reopen and try again.\n3. For Android: Add the app to the battery whitelist to prevent background killing.\n4. If the issue persists, remove the pump from the app and re-add it.",
+          "score": 0.015007215007215005,
+          "status": "ok"
+        },
+        "c71229c2-afac-4076-a3ef-e8168c223259": {
+          "evidence_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+          "source": "kb_qa",
+          "doc_id": "bp-0057",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "c71229c2-afac-4076-a3ef-e8168c223259",
+          "snippet": "Has eufy Wearable Breast Pump S1 Pro(T8D04) passed Prop 65 certification?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) has passed California Proposition 65 (Prop 65) certification, meeting California's standards for chemical exposure safety.",
+          "score": 0.014551957831325301,
+          "status": "ok"
+        },
+        "d9629940-e39e-4063-9d50-efe69519696f": {
+          "evidence_id": "d9629940-e39e-4063-9d50-efe69519696f",
+          "source": "kb_qa",
+          "doc_id": "bp-0092",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "d9629940-e39e-4063-9d50-efe69519696f",
+          "snippet": "Can I use a dishwasher to clean eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nYes, the washable parts of eufy Wearable Breast Pump S1 Pro(T8D04) are dishwasher-safe, but top rack only.",
+          "score": 0.014285714285714287,
+          "status": "ok"
+        },
+        "629b90de-3560-40d3-b722-50663afca3b1": {
+          "evidence_id": "629b90de-3560-40d3-b722-50663afca3b1",
+          "source": "kb_qa",
+          "doc_id": "bp-0001",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "629b90de-3560-40d3-b722-50663afca3b1",
+          "snippet": "How do I use the custom rhythm feature on eufy Wearable Breast Pump S1 Pro(T8D04)?\n1. Open the Anker eufy app (eufy Baby app) and connect to the pump.\n2. Go to pump settings and find 'Custom Rhythm' or 'Rhythm Adjustment'.\n3. Adjust the mode (expression/stimulation) and duration for each segment.\n4. You can save up to 5 custom rhythm profiles.\nThe custom rhythm allows you to tailor the pumping pat",
+          "score": 0.014151464897733553,
+          "status": "ok"
+        },
+        "99ba42d1-7540-46f7-b632-8a605b1e49a8": {
+          "evidence_id": "99ba42d1-7540-46f7-b632-8a605b1e49a8",
+          "source": "kb_qa",
+          "doc_id": "bp-0097",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "99ba42d1-7540-46f7-b632-8a605b1e49a8",
+          "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) work for moms with elastic nipples?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is designed with moms who have elastic nipples in mind, by providing a flange tunnel that is fit and long enough to accommodate the stretch.",
+          "score": 0.01405433646812957,
+          "status": "ok"
+        },
+        "b224cd5b-4f6c-42ae-84bf-df5f717ee24c": {
+          "evidence_id": "b224cd5b-4f6c-42ae-84bf-df5f717ee24c",
+          "source": "kb_qa",
+          "doc_id": "bp-0059",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "b224cd5b-4f6c-42ae-84bf-df5f717ee24c",
+          "snippet": "Is eufy Wearable Breast Pump S1 Pro(T8D04) BPA, BPS, and BPF free?\nYes, all materials that are in contact with skin and milk in eufy Wearable Breast Pump S1 Pro(T8D04) are food-grade and contain no BPA, BPS, or BPF.",
+          "score": 0.013622291021671826,
+          "status": "ok"
+        },
+        "81e1e19c-308b-40c7-ac2c-2bb40dffadbc": {
+          "evidence_id": "81e1e19c-308b-40c7-ac2c-2bb40dffadbc",
+          "source": "kb_qa",
+          "doc_id": "bp-0096",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "81e1e19c-308b-40c7-ac2c-2bb40dffadbc",
+          "snippet": "Can eufy Wearable Breast Pump S1 Pro(T8D04) be covered by insurance?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is available through major insurance providers. You can purchase through the following channels (US only): - Baby List - Every Ounce - Baby'son Broadway - Breastfeeding Shop (BDA: Scotty Girl LLC) - Milliken Medical (DBA - Boxout) You can also purchase it via the insurance company's de",
+          "score": 0.013419117647058823,
+          "status": "ok"
+        },
+        "36974093-2c8b-4bec-b79a-5ab83623df07": {
+          "evidence_id": "36974093-2c8b-4bec-b79a-5ab83623df07",
+          "source": "kb_qa",
+          "doc_id": "bp-0091",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "36974093-2c8b-4bec-b79a-5ab83623df07",
+          "snippet": "How do I control eufy Wearable Breast Pump S1 Pro(T8D04)?\neufy Wearable Breast Pump S1 Pro(T8D04) is controlled via the buttons on the pump hub: - Power button: Press and hold to turn on/off. - Mode button: Switch between stimulation mode and expression mode. - + / - buttons: Adjust suction level. Please refer to the product manual or in-app guide for full button function details and LED indicator",
+          "score": 0.013370733987844786,
+          "status": "ok"
+        },
+        "8f5727ee-2347-4c47-8e1a-59c4dcece333": {
+          "evidence_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+          "source": "kb_qa",
+          "doc_id": "bp-0004",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "8f5727ee-2347-4c47-8e1a-59c4dcece333",
+          "snippet": "How do I check the battery level of eufy Wearable Breast Pump S1 Pro(T8D04)?\neufy Wearable Breast Pump S1 Pro(T8D04) has a low battery reminder. When pressing any button on the hub, if the battery light lights up red, the battery level is below 20% and needs to be charged. You can also check the battery level in the Anker eufy app.",
+          "score": 0.013224085365853656,
+          "status": "ok"
+        },
+        "563f9257-5ebe-4338-8e84-a4646b65523f": {
+          "evidence_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+          "source": "kb_qa",
+          "doc_id": "bp-0046",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "563f9257-5ebe-4338-8e84-a4646b65523f",
+          "snippet": "How do I check the firmware version of eufy Wearable Breast Pump S1 Pro(T8D04)?\nPlease open the eufy Baby App and follow the steps shown in the image to view.![]()",
+          "score": 0.012983091787439614,
+          "status": "ok"
+        },
+        "394e43ea-12d1-4f22-a53a-2f32fa97bfe6": {
+          "evidence_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+          "source": "kb_qa",
+          "doc_id": "bp-0093",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "394e43ea-12d1-4f22-a53a-2f32fa97bfe6",
+          "snippet": "Can I use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts?\nNo, do not use a microwave to sterilize eufy Wearable Breast Pump S1 Pro(T8D04) parts. Microwaving will warp the plastic components, causing permanent damage.",
+          "score": 0.012878787878787878,
+          "status": "ok"
+        },
+        "08ce770e-5c7b-4974-a1e4-e9d2b319d16c": {
+          "evidence_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+          "source": "kb_qa",
+          "doc_id": "bp-0044",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "08ce770e-5c7b-4974-a1e4-e9d2b319d16c",
+          "snippet": "How do I upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04) (device log not opened)?\nPlease refer to the eufy Baby app in-app guide for instructions on how to enable and upload device logs for eufy Wearable Breast Pump S1 Pro(T8D04).![]()",
+          "score": 0.012862745098039214,
+          "status": "ok"
+        }
+      },
+      "current_evidence_ids": [
+        "36919ad1-b015-41c5-96e6-5009ab309e30",
+        "f930d2d2-e99f-4099-a387-2e6459dc9ace",
+        "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+        "8339a09d-52c4-4484-9c52-59f4450e85bf",
+        "cac6104f-5d58-4c1c-b110-21a4d9ca493e",
+        "6b4144c4-f2e7-456f-b1aa-2f604c72a79b",
+        "c45151d7-171e-40df-a17b-99ba5d82adde",
+        "83aa099e-37fb-4e40-adee-f487c52371cd",
+        "cc39638e-c7af-4048-ba0b-bf5dcf658564",
+        "c71229c2-afac-4076-a3ef-e8168c223259",
+        "6cb9865a-19d7-4930-9c5a-fb4c7245517a",
+        "d9629940-e39e-4063-9d50-efe69519696f"
+      ],
+      "image_observations": [
+        "单据标题为 Invoice",
+        "Invoice No.: Anker015",
+        "商品 eufy Wearable Breast Pump S1 Pro",
+        "数量 1，单价 $294.00",
+        "Grand Total $294.00"
+      ],
+      "knowledge_status": "ok",
+      "plans_ranked": [
+        {
+          "plan_id": "qa_bp_0114",
+          "version": 1,
+          "confidence": 0.55,
+          "evidence_ids": [
+            "eda2e4f1-6f07-4066-82e1-62aa68eb46b7"
+          ],
+          "rationale": "单侧不工作且无法开机，符合完全停止工作分支",
+          "supported_symptoms": [
+            "One side of the pump stoped working"
+          ],
+          "source": "synthesize"
+        },
+        {
+          "plan_id": "qa_bp_0037",
+          "version": 1,
+          "confidence": 0.5,
+          "evidence_ids": [
+            "c45151d7-171e-40df-a17b-99ba5d82adde"
+          ],
+          "rationale": "反复充电后仍无法开机，需换线换适配器并观察充电灯",
+          "supported_symptoms": [
+            "One side of the pump stoped working"
+          ],
+          "source": "synthesize"
+        }
+      ],
+      "retrieval_basis": {
+        "issue_revision": 2,
+        "plans_version": "0cc02e6531d6",
+        "sku": "T8D04"
+      },
+      "retrieval_rounds": 2,
+      "rewrite_used": true,
+      "evidence_quality": null,
+      "query": "One side of the pump stoped working",
+      "error_codes": [],
+      "diagnose_outcome": {
+        "mode": "evidence",
+        "note": null,
+        "knowledge_status": "ok",
+        "plan_id": "qa_bp_0114"
+      },
+      "plan_cursor": {
+        "plan_id": "qa_bp_0114",
+        "version": 1,
+        "step_id": "select_scope",
+        "source": "synthesize"
+      },
+      "steps_executed": [],
+      "displayed_knowledge_nodes": [],
+      "step_attempts": [],
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "counters": {},
+      "exhausted_plans": [],
+      "next_action": {
+        "kind": "step",
+        "reason": "ranked_plan",
+        "plan_cursor": {
+          "plan_id": "qa_bp_0114",
+          "version": 1,
+          "step_id": "select_scope",
+          "source": "synthesize"
+        },
+        "question": null,
+        "basis": [],
+        "trace": {
+          "skipped": [],
+          "confidence": 0.55,
+          "switched_to": "qa_bp_0114",
+          "skipped_steps": []
+        },
+        "compat_rule": null,
+        "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+        "input_id": "8cb0f77154424656b870b065beddf2c6",
+        "issue_revision": 2
+      },
+      "receipt": {
+        "status": "order_verified",
+        "fields": {
+          "order_no": "Anker015"
+        },
+        "verified_facts": {
+          "order_no": "Anker015",
+          "purchase_date": "2024-12-13",
+          "address": "AnkerDirect 5250 Ontario Mills Parkway, Suite 300, Ontario, California, 91764 United States"
+        }
+      },
+      "vision_status": "ok",
+      "processed_fault_image_ids": [
+        "538854b48c035ba1b9b89a5492c7f6b6"
+      ],
+      "visual_product": null,
+      "visible_parts": [],
+      "service_context": {
+        "serial_number": "T8D04121"
+      },
+      "context_sources": {
+        "serial_number": "user"
+      },
+      "warranty": {
+        "status": "out_of_warranty",
+        "basis": "order",
+        "warranty_end": "2025-12-13",
+        "as_of": "2026-10-10",
+        "order_no": "Anker015",
+        "sku": "T8D04121",
+        "dealer": null,
+        "country": null,
+        "reason": "order Anker015 was under warranty until 2025-12-13"
+      },
+      "sop_evidence": {},
+      "awaiting_evidence": [],
+      "logistics_announced": false,
+      "proposal": null,
+      "case_id": "f7506230-5311-5f1e-9e9e-cceaeb7789d1",
+      "execution": null,
+      "gate_result": null,
+      "requested_remedy": null,
+      "consult_intent": null,
+      "last_consult_params": {},
+      "consult_params": {},
+      "consult_attempts": 0,
+      "consult_answered": false,
+      "emotion_trend": "stable",
+      "emotion_actions": [
+        "shorten_steps"
+      ],
+      "unresolved_turns": 1,
+      "emotion": {
+        "level": "dissatisfied",
+        "strategy": "reassure_and_shorten"
+      },
+      "human_request_info": false,
+      "human_decision_id": null,
+      "task_queue": [
+        {
+          "task_id": "80fc70e7701a5742bda48b2eed1177a7",
+          "intent": "replacement_request",
+          "quote": "Dear sale-team.Hello!\nOrder No: Anker015\nProduct Name: eufy Wearable Breast Pump S1 Pro\nProblem Description: One side of the pump stoped working. I tried to charge it over and over again but it stoped turning on. It’s been 24 months but this happed within 12 months but I had not known I can put in a claim. I hope I can get a replacement or you can fix it. Thank you\n\nProdcut SN: T8D04121\nSubmit Date: 2026-09-27T14:58:03.850Z",
+          "request_quote": "I hope I can get a replacement or you can fix it.",
+          "answer_request": null,
+          "answer_scope": "focus",
+          "status": "done",
+          "created_input_id": "8cb0f77154424656b870b065beddf2c6",
+          "business_reference": {
+            "status": "resolved",
+            "subject_id": "bb82cc89de1155c5b05b1bd54f235b48",
+            "candidate_ids": []
+          }
+        },
+        {
+          "task_id": "ae63c22f52c75a9f8c6f81be13466180",
+          "intent": "report_problem",
+          "quote": "Dear sale-team.Hello!\nOrder No: Anker015\nProduct Name: eufy Wearable Breast Pump S1 Pro\nProblem Description: One side of the pump stoped working. I tried to charge it over and over again but it stoped turning on. It’s been 24 months but this happed within 12 months but I had not known I can put in a claim. I hope I can get a replacement or you can fix it. Thank you\n\nProdcut SN: T8D04121\nSubmit Date: 2026-09-27T14:58:03.850Z",
+          "request_quote": null,
+          "answer_request": null,
+          "answer_scope": "focus",
+          "status": "active",
+          "created_input_id": "8cb0f77154424656b870b065beddf2c6",
+          "business_reference": {
+            "status": "resolved",
+            "subject_id": "bb82cc89de1155c5b05b1bd54f235b48",
+            "candidate_ids": []
+          }
+        }
+      ],
+      "emotion_track": [
+        {
+          "input_id": "8cb0f77154424656b870b065beddf2c6",
+          "level": "dissatisfied",
+          "source": "model"
+        }
+      ],
+      "fault_localization": {
+        "content_kinds": [
+          "document"
+        ],
+        "findings": [],
+        "image_quality": {
+          "usable": true,
+          "reasons": [],
+          "guidance": []
+        },
+        "model_hint": null,
+        "model_hint_cell": null,
+        "model_hint_image": null,
+        "conflicts_with_text": [],
+        "model_hint_verified": false,
+        "model_hint_readable": "unreadable"
+      },
+      "image_quality": {
+        "usable": true,
+        "reasons": [],
+        "guidance": []
+      },
+      "retake_skipped": false,
+      "retake_attempts": 0,
+      "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+      "status": "open",
+      "opened_at": "2026-10-10T00:29:24.539610+00:00",
+      "opened_by_input_id": "8cb0f77154424656b870b065beddf2c6",
+      "title": "One side of the pump stoped working",
+      "facts": [
+        {
+          "fact_id": "8317bb6a905a5365aef3812f557d3b68",
+          "kind": "symptom",
+          "context_field": null,
+          "value": "One side of the pump stoped working",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source": "device_message",
+          "subject": null,
+          "polarity": "affirmed",
+          "timing": null,
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "One side of the pump stoped working."
+        },
+        {
+          "fact_id": "47c8c14b9da553298cd5b0190eea711a",
+          "kind": "action_taken",
+          "context_field": null,
+          "value": "tried to charge it over and over again but it stoped turning on",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source": "device_message",
+          "subject": null,
+          "polarity": "affirmed",
+          "timing": null,
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "I tried to charge it over and over again but it stoped turning on."
+        },
+        {
+          "fact_id": "24568fdd9306595faf94cfc11c5a8a10",
+          "kind": "context",
+          "context_field": "serial_number",
+          "value": "T8D04121",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source": "user_statement",
+          "subject": null,
+          "polarity": "affirmed",
+          "timing": null,
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "Prodcut SN: T8D04121"
+        },
+        {
+          "fact_id": "961c873d73195fd18b125ae1f577cf82",
+          "kind": "observation",
+          "value": "图片：单据标题为 Invoice",
+          "quote": "单据标题为 Invoice",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "image_observation",
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "image_ids": [
+            "538854b48c035ba1b9b89a5492c7f6b6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00"
+        },
+        {
+          "fact_id": "de023938d9ad519fb588bfb4b439aca4",
+          "kind": "observation",
+          "value": "图片：Invoice No.: Anker015",
+          "quote": "Invoice No.: Anker015",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "image_observation",
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "image_ids": [
+            "538854b48c035ba1b9b89a5492c7f6b6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00"
+        },
+        {
+          "fact_id": "f895c7dbe73459119ab116f33e66f2d4",
+          "kind": "observation",
+          "value": "图片：商品 eufy Wearable Breast Pump S1 Pro",
+          "quote": "商品 eufy Wearable Breast Pump S1 Pro",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "image_observation",
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "image_ids": [
+            "538854b48c035ba1b9b89a5492c7f6b6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00"
+        },
+        {
+          "fact_id": "4702c0f98aa6548cb5fd2348a4903c43",
+          "kind": "observation",
+          "value": "图片：数量 1，单价 $294.00",
+          "quote": "数量 1，单价 $294.00",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "image_observation",
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "image_ids": [
+            "538854b48c035ba1b9b89a5492c7f6b6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00"
+        },
+        {
+          "fact_id": "c10e6962efdf507c9a659be348036591",
+          "kind": "observation",
+          "value": "图片：Grand Total $294.00",
+          "quote": "Grand Total $294.00",
+          "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+          "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "image_observation",
+          "source_entry_ids": [
+            "8cb0f77154424656b870b065beddf2c6"
+          ],
+          "image_ids": [
+            "538854b48c035ba1b9b89a5492c7f6b6"
+          ],
+          "recorded_at": "2026-10-10T00:29:24.539610+00:00"
+        }
+      ],
+      "issue_revision": 2,
+      "device_ref": {
+        "device_ref_id": "253c5add7f61568e96afaa7318be3b38",
+        "category": "Wearable Breast Pump",
+        "identity_status": "provisional",
+        "source_ids": [
+          "8cb0f77154424656b870b065beddf2c6"
+        ]
+      },
+      "handoff": {
+        "status": "not_requested"
+      }
+    }
+  },
+  "turn_decision": {
+    "input_id": "8cb0f77154424656b870b065beddf2c6",
+    "primary_intent": "report_problem",
+    "answer_scope": "focus",
+    "answer_request": null,
+    "secondary_intents": [],
+    "target_issue_id": "7fdb07f084615bb1aa54045771fa3484",
+    "reply_mode": "diagnose",
+    "clarification": null,
+    "allowed_operations": true,
+    "escalation_trigger": null,
+    "source_refs": [
+      "8cb0f77154424656b870b065beddf2c6"
+    ],
+    "patches": [
+      {
+        "op": "add",
+        "fact_id": "8317bb6a905a5365aef3812f557d3b68",
+        "input_id": "8cb0f77154424656b870b065beddf2c6"
+      },
+      {
+        "op": "add",
+        "fact_id": "47c8c14b9da553298cd5b0190eea711a",
+        "input_id": "8cb0f77154424656b870b065beddf2c6"
+      },
+      {
+        "op": "add",
+        "fact_id": "24568fdd9306595faf94cfc11c5a8a10",
+        "input_id": "8cb0f77154424656b870b065beddf2c6"
+      }
+    ],
+    "switched": true,
+    "pending_changes": [],
+    "resumed_pending": false,
+    "business_switched": false,
+    "business_ambiguous": false,
+    "operation_changed": false,
+    "diagnostic_request": true,
+    "human_request_source": null,
+    "request_rejections": [
+      {
+        "intent": "warranty_query",
+        "reason": "query_result_missing"
+      }
+    ],
+    "task_id": "ae63c22f52c75a9f8c6f81be13466180"
+  },
+  "guide_trace": [
+    {
+      "event": "step_ready",
+      "card_id": "de540040454e5c21ac21c23d386cff01",
+      "rewritten": false
+    },
+    {
+      "event": "step_anchor",
+      "evidence_key": "bp-0114#select_scope",
+      "match": "kb_qa",
+      "primary_evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+      "retrieved": true
+    }
+  ],
+  "diagnose_outcome": {
+    "mode": "evidence",
+    "note": null,
+    "knowledge_status": "ok",
+    "plan_id": "qa_bp_0114"
+  },
+  "model_trace": [
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 2
+    },
+    {
+      "task": "diagnose.vision",
+      "model_used": "deepseek/deepseek-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "diagnose.synthesize",
+      "model_used": "deepseek/deepseek-flash",
+      "lane": "domestic",
+      "attempts": 1
+    }
+  ],
+  "plans_ranked": [
+    {
+      "plan_id": "qa_bp_0114",
+      "version": 1,
+      "confidence": 0.55,
+      "evidence_ids": [
+        "eda2e4f1-6f07-4066-82e1-62aa68eb46b7"
+      ],
+      "rationale": "单侧不工作且无法开机，符合完全停止工作分支",
+      "supported_symptoms": [
+        "One side of the pump stoped working"
+      ],
+      "source": "synthesize"
+    },
+    {
+      "plan_id": "qa_bp_0037",
+      "version": 1,
+      "confidence": 0.5,
+      "evidence_ids": [
+        "c45151d7-171e-40df-a17b-99ba5d82adde"
+      ],
+      "rationale": "反复充电后仍无法开机，需换线换适配器并观察充电灯",
+      "supported_symptoms": [
+        "One side of the pump stoped working"
+      ],
+      "source": "synthesize"
+    }
+  ],
+  "symptoms": [
+    "One side of the pump stoped working"
+  ],
+  "next_action": {
+    "kind": "step",
+    "reason": "ranked_plan",
+    "plan_cursor": {
+      "plan_id": "qa_bp_0114",
+      "version": 1,
+      "step_id": "select_scope",
+      "source": "synthesize"
+    },
+    "question": null,
+    "basis": [],
+    "trace": {
+      "skipped": [],
+      "confidence": 0.55,
+      "switched_to": "qa_bp_0114",
+      "skipped_steps": []
+    },
+    "compat_rule": null,
+    "issue_id": "7fdb07f084615bb1aa54045771fa3484",
+    "input_id": "8cb0f77154424656b870b065beddf2c6",
+    "issue_revision": 2
+  },
+  "counters": {},
+  "stage": "guide",
+  "case_status": "closed_unresolved",
+  "_verify": null,
+  "unparsed_problem": null,
+  "risk_cases": [],
+  "safety_flags": [
+    {
+      "rule_id": "R6",
+      "source": "text",
+      "term": "replacement",
+      "ts": "2026-10-10T00:29:24.564904+00:00"
+    }
+  ]
+}

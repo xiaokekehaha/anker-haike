@@ -1,0 +1,438 @@
+{
+  "active_issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+  "issues": {
+    "21770bfe98ab534ba4ac66f1e6110ff7": {
+      "business_context": {
+        "version": 1,
+        "subjects": {},
+        "active_subject_id": null,
+        "status": "missing",
+        "candidate_ids": [],
+        "last_input_id": "348dbd21db5d44758d70b839a5f23063"
+      },
+      "case_status": "open",
+      "case_order_no": null,
+      "execution_key": null,
+      "human_involved": false,
+      "stage": "context",
+      "substage": null,
+      "pending_card": {
+        "card_id": "e3d9e34740315c65a23ad6fb907642e3",
+        "kind": "upload_receipt",
+        "payload": {},
+        "input_token": "db2163d801755de1a3c20521da62f584",
+        "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+        "status": "active",
+        "created_seq": 27
+      },
+      "product_confirmed": {
+        "sku": "T2080",
+        "name": "eufy Robot Vacuum Omni S1 Pro",
+        "category": "robot_vacuum",
+        "image": null,
+        "in_scope": true
+      },
+      "product_candidates": [],
+      "product_state": "confirmed_sku",
+      "category": "robot_vacuum",
+      "out_of_scope": false,
+      "clarification": null,
+      "abandoned_card": null,
+      "observations": [],
+      "product_hints": [
+        "S1 Pro",
+        "T2080A",
+        "AK7RCN1E15600379"
+      ],
+      "product_question": null,
+      "symptoms": [
+        "Battery abnormal"
+      ],
+      "unparsed_problem": null,
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "reason": "symptom_described",
+        "source_refs": [
+          "270e88a7fce8466f8829e19ac9dcc199"
+        ],
+        "missing_information": [],
+        "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+        "input_id": "270e88a7fce8466f8829e19ac9dcc199"
+      },
+      "evidence": {
+        "qa:rv-0138": {
+          "evidence_id": "qa:rv-0138",
+          "source": "qa_exact",
+          "doc_id": "rv-0138",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "rv-0138",
+          "snippet": "Please update the robot firmware to the latest version in the APP. Restart the robot and check if the robot works properly.",
+          "score": 1.0,
+          "status": "ok"
+        }
+      },
+      "current_evidence_ids": [
+        "qa:rv-0138"
+      ],
+      "image_observations": [],
+      "knowledge_status": "ok",
+      "plans_ranked": [
+        {
+          "plan_id": "qa_rv_0138",
+          "version": 1,
+          "confidence": 1.0,
+          "evidence_ids": [
+            "qa:rv-0138"
+          ],
+          "source": "exact_code",
+          "supported_symptoms": [
+            "Battery abnormal",
+            "E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance."
+          ]
+        }
+      ],
+      "retrieval_basis": {
+        "issue_revision": 1,
+        "plans_version": "0cc02e6531d6",
+        "sku": "T2080"
+      },
+      "retrieval_rounds": 0,
+      "rewrite_used": false,
+      "evidence_quality": null,
+      "query": "Battery abnormal",
+      "error_codes": [
+        "E41"
+      ],
+      "diagnose_outcome": {
+        "mode": "exact_code",
+        "note": "依据官方错误码说明",
+        "knowledge_status": "ok",
+        "plan_id": "qa_rv_0138"
+      },
+      "plan_cursor": null,
+      "steps_executed": [
+        {
+          "plan_id": "qa_rv_0138",
+          "step_id": "s1",
+          "card_id": "f505a73c9b1057a8b2381e93cd7aad6a",
+          "title": "Please update the robot firmware to the latest version in t…",
+          "instruction_src": "evidence:rv-0138#s1",
+          "kind": "action",
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null,
+          "ts": "2026-10-10T00:28:11.111899+00:00"
+        },
+        {
+          "plan_id": "qa_rv_0138",
+          "step_id": "s2",
+          "card_id": "6bd7739ed9fb51aea0127b64d81475f8",
+          "title": "Restart the robot and check if the robot works properly.",
+          "instruction_src": "evidence:rv-0138#s2",
+          "kind": "action",
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null,
+          "ts": "2026-10-10T00:28:11.167517+00:00"
+        }
+      ],
+      "displayed_knowledge_nodes": [],
+      "step_attempts": [
+        {
+          "plan_id": "qa_rv_0138",
+          "step_id": "s1",
+          "card_id": "f505a73c9b1057a8b2381e93cd7aad6a",
+          "title": "Please update the robot firmware to the latest version in t…",
+          "instruction_src": "evidence:rv-0138#s1",
+          "kind": "action",
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null,
+          "ts": "2026-10-10T00:28:11.111899+00:00"
+        },
+        {
+          "plan_id": "qa_rv_0138",
+          "step_id": "s2",
+          "card_id": "6bd7739ed9fb51aea0127b64d81475f8",
+          "title": "Restart the robot and check if the robot works properly.",
+          "instruction_src": "evidence:rv-0138#s2",
+          "kind": "action",
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null,
+          "ts": "2026-10-10T00:28:11.167517+00:00"
+        }
+      ],
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "counters": {
+        "executed": 2,
+        "advanced": 2,
+        "skipped": 0,
+        "plans_exhausted": 1
+      },
+      "exhausted_plans": [
+        "qa_rv_0138"
+      ],
+      "next_action": {
+        "kind": "handoff_offer",
+        "reason": "guide_exhausted",
+        "plan_cursor": null,
+        "question": null,
+        "basis": [
+          "f505a73c9b1057a8b2381e93cd7aad6a",
+          "6bd7739ed9fb51aea0127b64d81475f8"
+        ],
+        "trace": {},
+        "compat_rule": "R1",
+        "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+        "input_id": "348dbd21db5d44758d70b839a5f23063",
+        "issue_revision": 1
+      },
+      "receipt": {
+        "status": null,
+        "image_ids": [],
+        "fields": {},
+        "confidence": {},
+        "edited": [],
+        "verified_facts": {},
+        "conflicts": [],
+        "next_step": null,
+        "collection_reason": "R6"
+      },
+      "vision_status": null,
+      "processed_fault_image_ids": [],
+      "visual_product": null,
+      "visible_parts": [],
+      "service_context": {},
+      "context_sources": {},
+      "warranty": null,
+      "sop_evidence": {},
+      "awaiting_evidence": [],
+      "logistics_announced": false,
+      "proposal": null,
+      "case_id": "54b2edb3-1b3f-5bab-af84-2e5402c5d5e7",
+      "execution": null,
+      "gate_result": null,
+      "requested_remedy": null,
+      "consult_intent": null,
+      "last_consult_params": {},
+      "consult_params": {},
+      "consult_attempts": 0,
+      "consult_answered": false,
+      "emotion_trend": "stable",
+      "emotion_actions": [],
+      "unresolved_turns": 3,
+      "emotion": {
+        "level": null,
+        "strategy": "normal"
+      },
+      "human_request_info": false,
+      "human_decision_id": null,
+      "task_queue": [
+        {
+          "task_id": "641b2373684f5717a4d469b08427cbc0",
+          "intent": "report_problem",
+          "quote": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: AK7RCN1E15600379\nProblem Type: ERROR\nProblem Code: 20972545-\nProblem Push: E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Upload Images: []",
+          "request_quote": "E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance.",
+          "answer_request": null,
+          "answer_scope": "focus",
+          "status": "active",
+          "created_input_id": "270e88a7fce8466f8829e19ac9dcc199",
+          "business_reference": {
+            "status": "missing",
+            "subject_id": null,
+            "candidate_ids": []
+          }
+        }
+      ],
+      "emotion_track": [],
+      "fault_localization": null,
+      "image_quality": null,
+      "retake_skipped": false,
+      "retake_attempts": 0,
+      "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+      "status": "open",
+      "opened_at": "2026-10-10T00:28:07.749719+00:00",
+      "opened_by_input_id": "270e88a7fce8466f8829e19ac9dcc199",
+      "title": "Battery abnormal",
+      "facts": [
+        {
+          "fact_id": "e9fa0e87665b580cbcda26ed1c675a88",
+          "kind": "symptom",
+          "context_field": null,
+          "value": "Battery abnormal",
+          "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+          "device_ref_id": "4aa67ee0ccb755f1a1d892481ef748f0",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source": "device_message",
+          "subject": null,
+          "polarity": "affirmed",
+          "timing": null,
+          "source_entry_ids": [
+            "270e88a7fce8466f8829e19ac9dcc199"
+          ],
+          "recorded_at": "2026-10-10T00:28:07.749719+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "E41: Battery abnormal, task ended."
+        }
+      ],
+      "issue_revision": 1,
+      "device_ref": {
+        "device_ref_id": "4aa67ee0ccb755f1a1d892481ef748f0",
+        "category": "S1 Pro",
+        "identity_status": "provisional",
+        "source_ids": [
+          "270e88a7fce8466f8829e19ac9dcc199"
+        ]
+      },
+      "handoff": {
+        "status": "not_requested"
+      }
+    }
+  },
+  "turn_decision": {
+    "input_id": "348dbd21db5d44758d70b839a5f23063",
+    "primary_intent": "step_feedback",
+    "answer_scope": "focus",
+    "answer_request": null,
+    "secondary_intents": [],
+    "target_issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+    "reply_mode": "diagnose",
+    "clarification": null,
+    "allowed_operations": true,
+    "escalation_trigger": null,
+    "source_refs": [
+      "348dbd21db5d44758d70b839a5f23063"
+    ],
+    "patches": [],
+    "switched": false,
+    "pending_changes": [],
+    "resumed_pending": false,
+    "business_switched": false,
+    "business_ambiguous": false,
+    "operation_changed": false,
+    "diagnostic_request": false,
+    "human_request_source": null,
+    "request_rejections": []
+  },
+  "guide_trace": [
+    {
+      "event": "step_ready",
+      "card_id": "f505a73c9b1057a8b2381e93cd7aad6a",
+      "rewritten": false
+    },
+    {
+      "event": "step_anchor",
+      "evidence_key": "rv-0138#s1",
+      "match": "qa_exact",
+      "primary_evidence_id": "qa:rv-0138",
+      "retrieved": true
+    },
+    {
+      "event": "verify",
+      "feedback": "not_solved",
+      "outcome": "next",
+      "rule": "next_on:s2"
+    },
+    {
+      "event": "step_ready",
+      "card_id": "6bd7739ed9fb51aea0127b64d81475f8",
+      "rewritten": false
+    },
+    {
+      "event": "step_anchor",
+      "evidence_key": "rv-0138#s2",
+      "match": "qa_exact",
+      "primary_evidence_id": "qa:rv-0138",
+      "retrieved": true
+    },
+    {
+      "event": "reassess",
+      "feedback": "not_solved",
+      "kind": "handoff_offer",
+      "reason": "guide_exhausted"
+    }
+  ],
+  "diagnose_outcome": {
+    "mode": "exact_code",
+    "note": "依据官方错误码说明",
+    "knowledge_status": "ok",
+    "plan_id": "qa_rv_0138"
+  },
+  "model_trace": [
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    }
+  ],
+  "plans_ranked": [
+    {
+      "plan_id": "qa_rv_0138",
+      "version": 1,
+      "confidence": 1.0,
+      "evidence_ids": [
+        "qa:rv-0138"
+      ],
+      "source": "exact_code",
+      "supported_symptoms": [
+        "Battery abnormal",
+        "E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance."
+      ]
+    }
+  ],
+  "symptoms": [
+    "Battery abnormal"
+  ],
+  "next_action": {
+    "kind": "handoff_offer",
+    "reason": "guide_exhausted",
+    "plan_cursor": null,
+    "question": null,
+    "basis": [
+      "f505a73c9b1057a8b2381e93cd7aad6a",
+      "6bd7739ed9fb51aea0127b64d81475f8"
+    ],
+    "trace": {},
+    "compat_rule": "R1",
+    "issue_id": "21770bfe98ab534ba4ac66f1e6110ff7",
+    "input_id": "348dbd21db5d44758d70b839a5f23063",
+    "issue_revision": 1
+  },
+  "counters": {
+    "executed": 2,
+    "advanced": 2,
+    "skipped": 0,
+    "plans_exhausted": 1
+  },
+  "stage": "context",
+  "case_status": "open",
+  "_verify": {
+    "outcome": "escalate",
+    "rule": "R1",
+    "cause": "guide_exhausted"
+  },
+  "unparsed_problem": null,
+  "risk_cases": [],
+  "safety_flags": [
+    {
+      "rule_id": "R3",
+      "source": "text",
+      "term": "contact customer service",
+      "ts": "2026-10-10T00:28:07.762633+00:00"
+    }
+  ]
+}

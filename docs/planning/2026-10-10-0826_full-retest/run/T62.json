@@ -1,0 +1,1137 @@
+{
+  "id": "T62",
+  "started_at": "2026-10-10T00:29:53.414004+00:00",
+  "input": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "resumed": false,
+          "event_id": "e9be0edae6044b5fade9a8a561493918",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:53.533652+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "payload": {
+            "kind": "message",
+            "text": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "0322d337f5624824871c96d014accb34",
+          "input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:29:53.533652+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 3,
+          "event_id": "d71bda3a909047e2aa60f94b6bc8d433",
+          "recorded_at": "2026-10-10T00:29:53.624626+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 4,
+          "event_id": "906dce2143514876966e069ddb0b0cac",
+          "recorded_at": "2026-10-10T00:29:57.591338+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 5,
+          "event_id": "323051e597734a1d831aeeef6a875896",
+          "recorded_at": "2026-10-10T00:29:57.605668+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "5af8320d72c153dc99dc3b780b791b32",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 6,
+          "event_id": "087d8383e1c0436a8fa5e9761af9eaaf",
+          "recorded_at": "2026-10-10T00:29:57.616638+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "5af8320d72c153dc99dc3b780b791b32",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 7,
+          "event_id": "cab6047a42aa4ea9932e5988f7ec41de",
+          "recorded_at": "2026-10-10T00:29:58.281847+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": null,
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 8,
+          "event_id": "bff88e83b6ac45fcae520adf0798d2e6",
+          "recorded_at": "2026-10-10T00:30:02.181747+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+          "resolved_issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+              "title": "not cleaning in a straight line",
+              "status": "open"
+            }
+          ],
+          "event_id": "dd1ff338a8be52f4bde1aa8a3f2fc069",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:30:02.227511+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "source": "kb_qa",
+              "doc_id": "rv-0533",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+              "score": 0.01569940476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "source": "kb_qa",
+              "doc_id": "rv-0542",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "source": "kb_qa",
+              "doc_id": "rv-0526",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+              "score": 0.015089867667390875,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+              "source": "kb_qa",
+              "doc_id": "rv-0541",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues: miss vacuuming and mopping/miss cleaning some areas/some areas were not cleaned?\n1. The machine cannot reach cabinet edges or furniture bottoms that are lower than the machine's height.\n2. Do not close the door to the room being cleaned during the cleaning process.\nTips: Tips:\n1. The machine cannot reach cabinet edges or furniture bottoms tha",
+              "score": 0.014908579465541489,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+              "source": "kb_qa",
+              "doc_id": "rv-0535",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+              "snippet": "What should I do if my Omni C20 T2280‘s edge-hugging mopping can only display in the home cleaning mode?\nPlease note that to provide you with the ultimate in efficient edge cleaning, our edge-hugging mopping feature utilizes intelligent, collaborative logic. This requires the robot to first construct a comprehensive map of your entire home through precise navigation in home cleaning mode. During t",
+              "score": 0.01466011466011466,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0562",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+              "score": 0.014477611940298507,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+              "source": "kb_qa",
+              "doc_id": "rv-0519",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+              "snippet": "What should I do if my Omni C20 T2280 is set to to vacuum, but it only performs vacuum and mop tasks or pure mop task/The task should not include mopping/It should not be mopping/the mop is activated or washed when in vacuum mode?\nIf the machine is performing vacuuming and mopping when set to vacuum-only mode, follow these steps to troubleshoot: When starting a room-selected or scene-selected clea",
+              "score": 0.014298169136878813,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+              "source": "kb_qa",
+              "doc_id": "rv-0593",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 6030-The station's cleaning tray is not installed, please check?\n1. Please check that the cleaning tray is properly installed.\n2. Please check that the small magnet on the bottom of the cleaning tray is still in place.\n3. Do not use cleaning solutions other than those specified by eufy; check whether there is any liquid residue at the install",
+              "score": 0.014251366120218578,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+              "source": "kb_qa",
+              "doc_id": "rv-0513",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:the main unit has an odor/leaves a foul smell/leaves a damp smell/leaves a musty smell, and the mop has an odor?\n1. Do not use any cleaning solution other than the standard eufy brand cleaning solution;\n2. Clean the dust box regularly as prompted by the app to prevent blockage and odor.\n3. Replace the mop pad regularly.",
+              "score": 0.014041031432335779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "source": "kb_qa",
+              "doc_id": "rv-0523",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+              "score": 0.013859154929577464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "source": "kb_qa",
+              "doc_id": "rv-0565",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+              "score": 0.013639250555731976,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+              "source": "kb_qa",
+              "doc_id": "rv-0525",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+              "snippet": "What should I do if my Omni C20 T2280's cleaning tray is dirty?\nThe garbage on the cleaning tray is what falls onto the tray during deep self-cleaning the mop pad. Current technology cannot achieve fully automatic cleaning. If your home is dirty when you use the robot for the first time, the tray will become more dirty. We recommend that you clean the tray promptly after the first three uses of th",
+              "score": 0.013572969086987779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "73768995-d931-49b8-84e0-267c422aecd9",
+              "source": "kb_qa",
+              "doc_id": "rv-0527",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "73768995-d931-49b8-84e0-267c422aecd9",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:poor cleaning performance, weak suction power, fails to pick up debris, lacks sufficient suction power, fails to remove dust, fails to remove hair, provides incomplete cleaning, or has poor vacuuming performance?\nWe recommend cleaning the dust box filter, roller brush, and comb teeth of the robot vacuum, then starting a new task to see if the ",
+              "score": 0.013264414676761795,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+              "source": "kb_qa",
+              "doc_id": "rv-0536",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+              "snippet": "What should I do if my Omni C20 T2280 has cleaning issue on floors without base stations or Unable to clean on floors without base stations?\n1. Vacuuming-Only Task:\nPlace the robot on a floor without a base station and start a vacuuming-only task to begin cleaning.\n2. Vacuuming and Mopping Task:\nStart a vacuuming and mopping task on the base station. The base station will rinse the robot's mop pad",
+              "score": 0.013055555555555556,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "source": "kb_qa",
+              "doc_id": "rv-0559",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+              "score": 0.013035714285714286,
+              "status": "ok"
+            }
+          ],
+          "event_id": "48b58930d56d5bb6b7ba47daa1bcbfa0",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:30:02.229264+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "44c72a2a909c50ec8fbdb52270834ad9",
+          "reply_to_input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+          "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "event_id": "d821a8e582b458f69a3b825ba3abc058",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:30:02.235982+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "44c72a2a909c50ec8fbdb52270834ad9",
+          "delta": "I'm sorry this has taken so much of your time without a fix. Does the robot's path look crooked or overlapping on the map in the app, or does it drift off the map area?",
+          "event_id": "4f22386d215152b4a4000be7ce44e392",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:30:02.237860+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "44c72a2a909c50ec8fbdb52270834ad9",
+          "status": "completed",
+          "event_id": "615412d3462a51538846d78f35116cef",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:30:02.239609+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "9a394b8c9efd5cec8ccd1df566c34c83",
+          "recorded_at": "2026-10-10T00:30:02.240944+00:00",
+          "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+          "seq": 15,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "e4a4248706bd4c63975fcccde8ad2c82",
+  "stop_reason": "awaiting_free_text_or_no_action",
+  "snapshot": {
+    "session_id": "e4a4248706bd4c63975fcccde8ad2c82",
+    "version": 1,
+    "stage": "diagnose",
+    "substage": "retrieve",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:29:53.533652+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+        "kind": "user_message",
+        "id": "d652eaff6be44f2fa2727339eeb8ae6e",
+        "text": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:29:57.616638+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "5af8320d72c153dc99dc3b780b791b32",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-10T00:30:02.229593Z",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+            "source": "kb_qa",
+            "doc_id": "rv-0533",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+            "score": 0.01569940476190476,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+            "source": "kb_qa",
+            "doc_id": "rv-0542",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+            "score": 0.015638148667601683,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+            "source": "kb_qa",
+            "doc_id": "rv-0526",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+            "score": 0.015089867667390875,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+            "source": "kb_qa",
+            "doc_id": "rv-0541",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues: miss vacuuming and mopping/miss cleaning some areas/some areas were not cleaned?\n1. The machine cannot reach cabinet edges or furniture bottoms that are lower than the machine's height.\n2. Do not close the door to the room being cleaned during the cleaning process.\nTips: Tips:\n1. The machine cannot reach cabinet edges or furniture bottoms tha",
+            "score": 0.014908579465541489,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+            "source": "kb_qa",
+            "doc_id": "rv-0535",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+            "snippet": "What should I do if my Omni C20 T2280‘s edge-hugging mopping can only display in the home cleaning mode?\nPlease note that to provide you with the ultimate in efficient edge cleaning, our edge-hugging mopping feature utilizes intelligent, collaborative logic. This requires the robot to first construct a comprehensive map of your entire home through precise navigation in home cleaning mode. During t",
+            "score": 0.01466011466011466,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+            "source": "kb_qa",
+            "doc_id": "rv-0562",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+            "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+            "score": 0.014477611940298507,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+            "source": "kb_qa",
+            "doc_id": "rv-0519",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+            "snippet": "What should I do if my Omni C20 T2280 is set to to vacuum, but it only performs vacuum and mop tasks or pure mop task/The task should not include mopping/It should not be mopping/the mop is activated or washed when in vacuum mode?\nIf the machine is performing vacuuming and mopping when set to vacuum-only mode, follow these steps to troubleshoot: When starting a room-selected or scene-selected clea",
+            "score": 0.014298169136878813,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+            "source": "kb_qa",
+            "doc_id": "rv-0593",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 6030-The station's cleaning tray is not installed, please check?\n1. Please check that the cleaning tray is properly installed.\n2. Please check that the small magnet on the bottom of the cleaning tray is still in place.\n3. Do not use cleaning solutions other than those specified by eufy; check whether there is any liquid residue at the install",
+            "score": 0.014251366120218578,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+            "source": "kb_qa",
+            "doc_id": "rv-0513",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:the main unit has an odor/leaves a foul smell/leaves a damp smell/leaves a musty smell, and the mop has an odor?\n1. Do not use any cleaning solution other than the standard eufy brand cleaning solution;\n2. Clean the dust box regularly as prompted by the app to prevent blockage and odor.\n3. Replace the mop pad regularly.",
+            "score": 0.014041031432335779,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+            "source": "kb_qa",
+            "doc_id": "rv-0523",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+            "score": 0.013859154929577464,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+            "source": "kb_qa",
+            "doc_id": "rv-0565",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+            "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+            "score": 0.013639250555731976,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+            "source": "kb_qa",
+            "doc_id": "rv-0525",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+            "snippet": "What should I do if my Omni C20 T2280's cleaning tray is dirty?\nThe garbage on the cleaning tray is what falls onto the tray during deep self-cleaning the mop pad. Current technology cannot achieve fully automatic cleaning. If your home is dirty when you use the robot for the first time, the tray will become more dirty. We recommend that you clean the tray promptly after the first three uses of th",
+            "score": 0.013572969086987779,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "73768995-d931-49b8-84e0-267c422aecd9",
+            "source": "kb_qa",
+            "doc_id": "rv-0527",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "73768995-d931-49b8-84e0-267c422aecd9",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:poor cleaning performance, weak suction power, fails to pick up debris, lacks sufficient suction power, fails to remove dust, fails to remove hair, provides incomplete cleaning, or has poor vacuuming performance?\nWe recommend cleaning the dust box filter, roller brush, and comb teeth of the robot vacuum, then starting a new task to see if the ",
+            "score": 0.013264414676761795,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+            "source": "kb_qa",
+            "doc_id": "rv-0536",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+            "snippet": "What should I do if my Omni C20 T2280 has cleaning issue on floors without base stations or Unable to clean on floors without base stations?\n1. Vacuuming-Only Task:\nPlace the robot on a floor without a base station and start a vacuuming-only task to begin cleaning.\n2. Vacuuming and Mopping Task:\nStart a vacuuming and mopping task on the base station. The base station will rinse the robot's mop pad",
+            "score": 0.013055555555555556,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+            "source": "kb_qa",
+            "doc_id": "rv-0559",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+            "score": 0.013035714285714286,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:30:02.235982+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+        "kind": "assistant_message",
+        "message_id": "44c72a2a909c50ec8fbdb52270834ad9",
+        "text": "I'm sorry this has taken so much of your time without a fix. Does the robot's path look crooked or overlapping on the map in the app, or does it drift off the map area?",
+        "status": "completed",
+        "reply_to_input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+    "issues": [
+      {
+        "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+        "status": "open",
+        "title": "not cleaning in a straight line",
+        "task_queue": [
+          {
+            "task_id": "360746e0772c55e9aa6f07ea62eec87a",
+            "intent": "report_problem",
+            "quote": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+            "request_quote": null,
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "active",
+            "created_input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 15,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "e4a4248706bd4c63975fcccde8ad2c82",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:29:53.539242Z",
+      "last_run_at": "2026-10-10T00:30:02.242315Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+      "product_state": "confirmed_sku",
+      "sku": "T2280",
+      "category": "robot_vacuum",
+      "emotion_level": "angry",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 1,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "clarifying",
+      "outcome_reason": "applicability",
+      "outcome_at": null,
+      "total_latency_ms": 8803,
+      "model_calls": 3,
+      "tokens_in": 12391,
+      "tokens_out": 1002,
+      "raw_available_until": "2026-10-17T00:30:02.242315Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+        "session_id": "e4a4248706bd4c63975fcccde8ad2c82",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:29:53.539242Z",
+        "ended_at": "2026-10-10T00:30:02.242291Z",
+        "duration_ms": 8803,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "diagnose",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 8800,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3935,
+            "tokens_in": 4587,
+            "tokens_out": 400,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:57.553605Z"
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1933,
+            "tokens_in": 4716,
+            "tokens_out": 253,
+            "error_type": null,
+            "created_at": "2026-10-10T00:30:00.107241Z"
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1991,
+            "tokens_in": 3088,
+            "tokens_out": 349,
+            "error_type": null,
+            "created_at": "2026-10-10T00:30:02.141594Z"
+          }
+        ],
+        "tokens_in": 12391,
+        "tokens_out": 1002,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:53.539242Z",
+            "duration_ms": 4037,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3684,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 181,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6327
+                    }
+                  ],
+                  "actual_input_tokens": 4587
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:57.576579Z",
+            "duration_ms": 29,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:29:57.605639Z",
+            "duration_ms": 4664,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "decision": "clarify",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5205,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 346,
+                    "current": 181,
+                    "history": 0,
+                    "authority": 4678
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 250,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 205,
+                    "timezone": 7,
+                    "task_data": 3865,
+                    "issue_index": 144,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5816
+                    }
+                  ],
+                  "actual_input_tokens": 4716
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 3232,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 346,
+                    "current": 181,
+                    "history": 0,
+                    "authority": 2705
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 250,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 205,
+                    "timezone": 7,
+                    "task_data": 1892,
+                    "issue_index": 144,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3843
+                    }
+                  ],
+                  "actual_input_tokens": 3088
+                }
+              ],
+              "escalate_reason": null,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "idx": 4,
+            "node": "clarify",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:30:02.270537Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "clarify",
+            "started_at": "2026-10-10T00:30:02.273045Z",
+            "duration_ms": 23,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "8d5d9633e1ac44a18205f4b6026579c1",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 93,
+            "hits": 15,
+            "top_score": 0.0157,
+            "latency_ms": 656,
+            "query": "not cleaning in a straight line",
+            "created_at": "2026-10-10T00:29:58.253229Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "e4a4248706bd4c63975fcccde8ad2c82",
+      "version": 1,
+      "stage": "diagnose",
+      "substage": "retrieve",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:29:53.533652+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "kind": "user_message",
+          "id": "d652eaff6be44f2fa2727339eeb8ae6e",
+          "text": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:29:57.616638+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "5af8320d72c153dc99dc3b780b791b32",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-10T00:30:02.229593Z",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "source": "kb_qa",
+              "doc_id": "rv-0533",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+              "score": 0.01569940476190476,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "source": "kb_qa",
+              "doc_id": "rv-0542",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+              "score": 0.015638148667601683,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "source": "kb_qa",
+              "doc_id": "rv-0526",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+              "score": 0.015089867667390875,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+              "source": "kb_qa",
+              "doc_id": "rv-0541",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0bd862e4-a870-44cb-837c-ae0026ccf516",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues: miss vacuuming and mopping/miss cleaning some areas/some areas were not cleaned?\n1. The machine cannot reach cabinet edges or furniture bottoms that are lower than the machine's height.\n2. Do not close the door to the room being cleaned during the cleaning process.\nTips: Tips:\n1. The machine cannot reach cabinet edges or furniture bottoms tha",
+              "score": 0.014908579465541489,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+              "source": "kb_qa",
+              "doc_id": "rv-0535",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "42c0548c-05c3-4228-9787-a299791c3f17",
+              "snippet": "What should I do if my Omni C20 T2280‘s edge-hugging mopping can only display in the home cleaning mode?\nPlease note that to provide you with the ultimate in efficient edge cleaning, our edge-hugging mopping feature utilizes intelligent, collaborative logic. This requires the robot to first construct a comprehensive map of your entire home through precise navigation in home cleaning mode. During t",
+              "score": 0.01466011466011466,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0562",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+              "score": 0.014477611940298507,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+              "source": "kb_qa",
+              "doc_id": "rv-0519",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c132f470-10d7-4c86-8e51-a2a4daae49da",
+              "snippet": "What should I do if my Omni C20 T2280 is set to to vacuum, but it only performs vacuum and mop tasks or pure mop task/The task should not include mopping/It should not be mopping/the mop is activated or washed when in vacuum mode?\nIf the machine is performing vacuuming and mopping when set to vacuum-only mode, follow these steps to troubleshoot: When starting a room-selected or scene-selected clea",
+              "score": 0.014298169136878813,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+              "source": "kb_qa",
+              "doc_id": "rv-0593",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "61fd4fd7-f2e8-4c32-a87e-81f642572341",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 6030-The station's cleaning tray is not installed, please check?\n1. Please check that the cleaning tray is properly installed.\n2. Please check that the small magnet on the bottom of the cleaning tray is still in place.\n3. Do not use cleaning solutions other than those specified by eufy; check whether there is any liquid residue at the install",
+              "score": 0.014251366120218578,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+              "source": "kb_qa",
+              "doc_id": "rv-0513",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c483dc3c-4ff1-4908-982b-cce31c26fe79",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:the main unit has an odor/leaves a foul smell/leaves a damp smell/leaves a musty smell, and the mop has an odor?\n1. Do not use any cleaning solution other than the standard eufy brand cleaning solution;\n2. Clean the dust box regularly as prompted by the app to prevent blockage and odor.\n3. Replace the mop pad regularly.",
+              "score": 0.014041031432335779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "source": "kb_qa",
+              "doc_id": "rv-0523",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+              "score": 0.013859154929577464,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "source": "kb_qa",
+              "doc_id": "rv-0565",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+              "score": 0.013639250555731976,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+              "source": "kb_qa",
+              "doc_id": "rv-0525",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1d062961-a390-4b73-89d2-fffd0e25f669",
+              "snippet": "What should I do if my Omni C20 T2280's cleaning tray is dirty?\nThe garbage on the cleaning tray is what falls onto the tray during deep self-cleaning the mop pad. Current technology cannot achieve fully automatic cleaning. If your home is dirty when you use the robot for the first time, the tray will become more dirty. We recommend that you clean the tray promptly after the first three uses of th",
+              "score": 0.013572969086987779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "73768995-d931-49b8-84e0-267c422aecd9",
+              "source": "kb_qa",
+              "doc_id": "rv-0527",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "73768995-d931-49b8-84e0-267c422aecd9",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:poor cleaning performance, weak suction power, fails to pick up debris, lacks sufficient suction power, fails to remove dust, fails to remove hair, provides incomplete cleaning, or has poor vacuuming performance?\nWe recommend cleaning the dust box filter, roller brush, and comb teeth of the robot vacuum, then starting a new task to see if the ",
+              "score": 0.013264414676761795,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+              "source": "kb_qa",
+              "doc_id": "rv-0536",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c2798ede-a2f1-465d-a736-7fbe73b63398",
+              "snippet": "What should I do if my Omni C20 T2280 has cleaning issue on floors without base stations or Unable to clean on floors without base stations?\n1. Vacuuming-Only Task:\nPlace the robot on a floor without a base station and start a vacuuming-only task to begin cleaning.\n2. Vacuuming and Mopping Task:\nStart a vacuuming and mopping task on the base station. The base station will rinse the robot's mop pad",
+              "score": 0.013055555555555556,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "source": "kb_qa",
+              "doc_id": "rv-0559",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+              "score": 0.013035714285714286,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:30:02.235982+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "kind": "assistant_message",
+          "message_id": "44c72a2a909c50ec8fbdb52270834ad9",
+          "text": "I'm sorry this has taken so much of your time without a fix. Does the robot's path look crooked or overlapping on the map in the app, or does it drift off the map area?",
+          "status": "completed",
+          "reply_to_input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+      "issues": [
+        {
+          "issue_id": "d5270e58cd7f5143a1c43be95bda94de",
+          "status": "open",
+          "title": "not cleaning in a straight line",
+          "task_queue": [
+            {
+              "task_id": "360746e0772c55e9aa6f07ea62eec87a",
+              "intent": "report_problem",
+              "quote": "Why is my eufy omni c 20 not cleaning in a straight line? I bought a small robo vac and it cost pennies but is a much better machine. My eufy has been absolutely rubbish since day one",
+              "request_quote": null,
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "active",
+              "created_input_id": "d652eaff6be44f2fa2727339eeb8ae6e",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 15,
+      "latest_summaries": []
+    }
+  },
+  "cases": [],
+  "visible_text": "I'm sorry this has taken so much of your time without a fix. Does the robot's path look crooked or overlapping on the map in the app, or does it drift off the map area?",
+  "step_cards": [],
+  "intent": "report_problem",
+  "seconds": 10.19,
+  "complete": true
+}

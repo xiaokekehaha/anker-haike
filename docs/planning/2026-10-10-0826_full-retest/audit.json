@@ -1,0 +1,492 @@
+{
+  "cases": 63,
+  "complete": 63,
+  "evidence_valid": true,
+  "behavior_flags": {
+    "event_errors": [],
+    "turn_limit": [],
+    "awaiting_human_without_queue": []
+  },
+  "production_files_equal_to_previous": true,
+  "same_container_as_previous": true,
+  "runtime_stable": true,
+  "worktree_stable": true,
+  "production_fingerprint": "2b08514d232c2962bddc2671d56e08c3707d80422a6b47de86faf5a1af3a98db",
+  "started_at": "2026-10-10T00:27:20.544482+00:00",
+  "finished_at": "2026-10-10T00:30:04.063652+00:00",
+  "stop_distribution": {
+    "awaiting_confirm_proposal": 7,
+    "done": 4,
+    "awaiting_free_text_or_no_action": 17,
+    "awaiting_human": 7,
+    "awaiting_upload_receipt": 26,
+    "awaiting_question": 2
+  },
+  "action_cards": 57,
+  "all_cards": 59,
+  "journey_seconds": {
+    "median": 6.93,
+    "p95": 11.72,
+    "max": 18.79
+  },
+  "latency_note": "从首条消息到评测停止，含自动反馈和采证等待；不是首字延迟，不能与单轮回答速度混用。",
+  "review_covers_63_unique_cases": true,
+  "review_distribution": {
+    "可接受": 49,
+    "需改进": 13,
+    "资料待核": 1
+  },
+  "rates": {
+    "review_acceptance_all_cases": {
+      "numerator": 49,
+      "denominator": 63,
+      "percent": 77.78
+    },
+    "needs_improvement_all_cases": {
+      "numerator": 13,
+      "denominator": 63,
+      "percent": 20.63
+    },
+    "unverified_source_all_cases": {
+      "numerator": 1,
+      "denominator": 63,
+      "percent": 1.59
+    },
+    "review_acceptance_excluding_unverified": {
+      "numerator": 49,
+      "denominator": 62,
+      "percent": 79.03
+    },
+    "technical_completion_without_errors": {
+      "numerator": 63,
+      "denominator": 63,
+      "percent": 100.0
+    },
+    "human_handoff_share": {
+      "numerator": 7,
+      "denominator": 63,
+      "percent": 11.11
+    }
+  },
+  "rate_scope": "现有逐案评审的已覆盖内容合格率，综合回答、流程、交互及状态；不是独立事实正确率、设备解决率或稳定生产正确率。",
+  "responsibility_covers_63_unique_cases": true,
+  "responsibility_distribution": {
+    "等待用户或后续验证": {
+      "cases": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T10",
+        "T11",
+        "T15",
+        "T17",
+        "T18",
+        "T20",
+        "T21",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T28",
+        "T29",
+        "T30",
+        "T33",
+        "T34",
+        "T38",
+        "T39",
+        "T41",
+        "T46",
+        "T47",
+        "T49",
+        "T52",
+        "T54",
+        "T55",
+        "T56",
+        "T57",
+        "T59",
+        "T62"
+      ],
+      "numerator": 37,
+      "denominator": 63,
+      "percent": 58.73
+    },
+    "明确执行边界": {
+      "cases": [
+        "T9",
+        "T14",
+        "T42",
+        "T44",
+        "T45",
+        "T63"
+      ],
+      "numerator": 6,
+      "denominator": 63,
+      "percent": 9.52
+    },
+    "系统需修": {
+      "cases": [
+        "T12",
+        "T16",
+        "T19",
+        "T26",
+        "T27",
+        "T31",
+        "T32",
+        "T36",
+        "T37",
+        "T43",
+        "T48",
+        "T50",
+        "T53"
+      ],
+      "numerator": 13,
+      "denominator": 63,
+      "percent": 20.63
+    },
+    "知识缺口已确认": {
+      "cases": [
+        "T13",
+        "T40"
+      ],
+      "numerator": 2,
+      "denominator": 63,
+      "percent": 3.17
+    },
+    "当前诉求已回应": {
+      "cases": [
+        "T35",
+        "T58"
+      ],
+      "numerator": 2,
+      "denominator": 63,
+      "percent": 3.17
+    },
+    "源文疑点待核": {
+      "cases": [
+        "T51"
+      ],
+      "numerator": 1,
+      "denominator": 63,
+      "percent": 1.59
+    },
+    "知识根因待查": {
+      "cases": [
+        "T60",
+        "T61"
+      ],
+      "numerator": 2,
+      "denominator": 63,
+      "percent": 3.17
+    }
+  },
+  "coexisting_factors": {
+    "待确认": {
+      "cases": [
+        "T1",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T8",
+        "T10"
+      ],
+      "count": 7
+    },
+    "待事实": {
+      "cases": [
+        "T2",
+        "T7",
+        "T20",
+        "T21",
+        "T29",
+        "T38",
+        "T39",
+        "T41",
+        "T43",
+        "T46",
+        "T47",
+        "T50",
+        "T52",
+        "T53",
+        "T57",
+        "T60",
+        "T62"
+      ],
+      "count": 17
+    },
+    "记录待核": {
+      "cases": [
+        "T2",
+        "T47"
+      ],
+      "count": 2
+    },
+    "审批权限": {
+      "cases": [
+        "T9",
+        "T59"
+      ],
+      "count": 2
+    },
+    "模拟排障未解": {
+      "cases": [
+        "T11",
+        "T12",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T30",
+        "T31",
+        "T32",
+        "T33",
+        "T34",
+        "T36",
+        "T37",
+        "T51",
+        "T54",
+        "T55",
+        "T56"
+      ],
+      "count": 24
+    },
+    "待材料": {
+      "cases": [
+        "T11",
+        "T12",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T30",
+        "T31",
+        "T32",
+        "T33",
+        "T34",
+        "T36",
+        "T37",
+        "T42",
+        "T44",
+        "T49",
+        "T54",
+        "T55",
+        "T59"
+      ],
+      "count": 27
+    },
+    "混合知识节点": {
+      "cases": [
+        "T12",
+        "T26",
+        "T32",
+        "T36",
+        "T37"
+      ],
+      "count": 5
+    },
+    "QA覆盖缺口": {
+      "cases": [
+        "T13"
+      ],
+      "count": 1
+    },
+    "实体维修": {
+      "cases": [
+        "T14",
+        "T28",
+        "T42",
+        "T44"
+      ],
+      "count": 4
+    },
+    "已知事实未消费": {
+      "cases": [
+        "T16",
+        "T27",
+        "T31",
+        "T37",
+        "T53"
+      ],
+      "count": 5
+    },
+    "完成状态不一致": {
+      "cases": [
+        "T19",
+        "T53"
+      ],
+      "count": 2
+    },
+    "历史缺陷开放": {
+      "cases": [
+        "T23",
+        "T41"
+      ],
+      "count": 2
+    },
+    "正常说明": {
+      "cases": [
+        "T35"
+      ],
+      "count": 1
+    },
+    "源文缺引用": {
+      "cases": [
+        "T40"
+      ],
+      "count": 1
+    },
+    "引导性追问": {
+      "cases": [
+        "T43",
+        "T50"
+      ],
+      "count": 2
+    },
+    "安全交接": {
+      "cases": [
+        "T45"
+      ],
+      "count": 1
+    },
+    "原问题被覆盖": {
+      "cases": [
+        "T48"
+      ],
+      "count": 1
+    },
+    "证据不足待查": {
+      "cases": [
+        "T48",
+        "T60",
+        "T61"
+      ],
+      "count": 3
+    },
+    "输入歧义": {
+      "cases": [
+        "T50"
+      ],
+      "count": 1
+    },
+    "术语待核": {
+      "cases": [
+        "T51"
+      ],
+      "count": 1
+    },
+    "保修政策": {
+      "cases": [
+        "T51",
+        "T53"
+      ],
+      "count": 2
+    },
+    "等待继续": {
+      "cases": [
+        "T56"
+      ],
+      "count": 1
+    },
+    "投诉承接": {
+      "cases": [
+        "T58"
+      ],
+      "count": 1
+    },
+    "工具未接入": {
+      "cases": [
+        "T63"
+      ],
+      "count": 1
+    }
+  },
+  "responsibility_scope": "主组每案一次，按已证实系统缺陷优先分派；因素允许重叠，不可相加。待查不是已证实缺失，执行边界不是所有 agent 无法解决的全集。",
+  "historical_defects_not_reproduced": [
+    "T23",
+    "T41"
+  ],
+  "waiting_breakdown": {
+    "方案确认": {
+      "cases": [
+        "T1",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T8",
+        "T10"
+      ],
+      "count": 7
+    },
+    "事实或记录补充": {
+      "cases": [
+        "T2",
+        "T7",
+        "T20",
+        "T21",
+        "T29",
+        "T38",
+        "T39",
+        "T41",
+        "T46",
+        "T47",
+        "T52",
+        "T57",
+        "T62"
+      ],
+      "count": 13
+    },
+    "模拟排障后凭证": {
+      "cases": [
+        "T11",
+        "T15",
+        "T17",
+        "T18",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T28",
+        "T30",
+        "T33",
+        "T34",
+        "T54"
+      ],
+      "count": 13
+    },
+    "其他材料": {
+      "cases": [
+        "T49",
+        "T55",
+        "T59"
+      ],
+      "count": 3
+    },
+    "继续意愿": {
+      "cases": [
+        "T56"
+      ],
+      "count": 1
+    }
+  }
+}

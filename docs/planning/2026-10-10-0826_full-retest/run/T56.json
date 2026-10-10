@@ -1,0 +1,1814 @@
+{
+  "id": "T56",
+  "started_at": "2026-10-10T00:29:34.372814+00:00",
+  "input": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "resumed": false,
+          "event_id": "40341e1dcd8d4aea961337afb9d92cdf",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:34.530927+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "payload": {
+            "kind": "message",
+            "text": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "b193af7444564bce9493b49c81a537a9",
+          "input_id": "4833bc48b6c947de9cd9fc832ea8a566",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:29:34.530927+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 3,
+          "event_id": "9a0323f733ea4206aafd2d5d29f87950",
+          "recorded_at": "2026-10-10T00:29:34.590475+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 4,
+          "event_id": "c26c1a85a60d47b4be425cf4c4fef427",
+          "recorded_at": "2026-10-10T00:29:38.866115+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 5,
+          "event_id": "db559ff08e0d408aac0a7b1ae5d126eb",
+          "recorded_at": "2026-10-10T00:29:38.869788+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0c71e6ea5eb753e8b1eb52ddcc55e48e",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 6,
+          "event_id": "398725e39fb04efabbb3645af24bb1a7",
+          "recorded_at": "2026-10-10T00:29:38.871051+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0c71e6ea5eb753e8b1eb52ddcc55e48e",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 7,
+          "event_id": "c1c3a3ceace74d13aedc79f5a7f2e5be",
+          "recorded_at": "2026-10-10T00:29:39.125071+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 8,
+          "event_id": "cd6b9a12fdc14d2393e17f4e37dfaa69",
+          "recorded_at": "2026-10-10T00:29:41.137771+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 9,
+          "event_id": "91a675204cb548c796ced60a29405e41",
+          "recorded_at": "2026-10-10T00:29:41.203695+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_id": "4833bc48b6c947de9cd9fc832ea8a566",
+          "resolved_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "a89281a2a11853a1a594022d50970e12",
+              "title": "offline",
+              "status": "open"
+            }
+          ],
+          "event_id": "b49c12d4a08f52b3b3aa262c1adfd182",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:29:41.256196+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "source": "kb_qa",
+              "doc_id": "bp-0151",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+              "score": 0.01579861111111111,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+              "source": "kb_qa",
+              "doc_id": "bp-0186",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+              "snippet": "What should I do if SoloCam S340(T8170) goes offline?\n1. Check the camera battery level. If too low, charge it.\n2. Press and release the SYNC button. If LED is off, press and hold 2 seconds to power on.\n3. If recently relocated, move closer to the router.\n4. Remove the offline camera from the app and re-add it.\n* Check if your home network is set up as a dual-band network. You need to separate a 2",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+              "source": "kb_qa",
+              "doc_id": "bp-0152",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+              "snippet": "What do I do if SoloCam S340(T8170) goes offline?\n1. Check the camera's battery level. If it is too low, charge the battery.\n2. Press and release the SYNC button to check if the camera is switched off. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. If you recently relocated the camera, try to move it closer to the",
+              "score": 0.015365793980915095,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+              "source": "kb_qa",
+              "doc_id": "bp-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+              "snippet": "Does SoloCam S340(T8170) support cloud storage?\nNo, SoloCam S340(T8170) does not support cloud storage. Footage is saved locally to the built-in 8GB storage or to a connected HomeBase.",
+              "score": 0.01504032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+              "source": "kb_qa",
+              "doc_id": "bp-0212",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+              "snippet": "What should I do if SoloCam S340(T8170) has a poor signal or goes offline?\n1. Set the HomeBase working mode to Performance: HomeBase settings > General > Working Mode > Performance (Beta) --- check if connectivity improves.\n2. Move the camera closer to the HomeBase or router.\n3. Check for signal interference (thick walls, metal objects, microwave ovens).\n4. Restart the camera and HomeBase.\n5. If t",
+              "score": 0.014621059691482224,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+              "source": "kb_qa",
+              "doc_id": "bp-0274",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+              "snippet": "Can I use continuous recording on SoloCam S340 (T8170)?\nNo, SoloCam S340 does not support 24x7 continuous recording.",
+              "score": 0.014556692242114236,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "source": "kb_qa",
+              "doc_id": "bp-0223",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+              "score": 0.014217506631299734,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "source": "kb_qa",
+              "doc_id": "bp-0154",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+              "score": 0.014106988783433994,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+              "source": "kb_qa",
+              "doc_id": "bp-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+              "snippet": "Can SoloCam S340(T8170) work standalone without a HomeBase?\nYes, SoloCam S340(T8170) can work standalone by connecting directly to your router without a HomeBase.",
+              "score": 0.013831811263318113,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+              "source": "kb_qa",
+              "doc_id": "bp-0278",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+              "snippet": "Can I connect SoloCam S340 (T8170) to HomeBase S380?\nYes, you can connect SoloCam S340 (T8170) to HomeBase S380. There are two connection modes: it can be used by directly connecting to the router or by connecting to HomeBase S380. However, the firmware version of HomeBase S380 needs to be up to 3.3.2.6. After accessing the base station, the data is stored in the base station and shares the memory",
+              "score": 0.013640202702702702,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "source": "kb_qa",
+              "doc_id": "bp-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+              "score": 0.013536409516943041,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+              "source": "kb_qa",
+              "doc_id": "bp-0221",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+              "snippet": "Does SoloCam S340(T8170) support Alexa and Google Assistant?\nYes, SoloCam S340(T8170) supports streaming to Amazon Alexa Echo Show and Google Chromecast.",
+              "score": 0.013499999999999998,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+              "source": "kb_qa",
+              "doc_id": "bp-0179",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+              "snippet": "Is SoloCam S340(T8170) max resolution 3K regardless of HomeBase connection?\neufy Security SoloCam S340(T8170) cannot achieve 4K resolution regardless of whether it is connected to HomeBase. The S340 hardware supports a maximum resolution of 3K (2880x1620). It has no 4K output capability, and this specification is not affected by HomeBase connectivity. Dual-lens configuration: 3K wide-angle lens fo",
+              "score": 0.013157894736842105,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "source": "kb_qa",
+              "doc_id": "bp-0276",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+              "score": 0.013071895424836602,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+              "source": "kb_qa",
+              "doc_id": "bp-0262",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+              "snippet": "Can SoloCam S340(T8170) connect to HomeBase 3(T8030)?\nYes, SoloCam S340(T8170) can connect to HomeBase 3(T8030). Once connected, data is stored in the HomeBase and shares its memory. The HomeBase enhances the camera with additional AI features such as pet and face recognition.",
+              "score": 0.012830245976313392,
+              "status": "ok"
+            }
+          ],
+          "event_id": "6c97e5e52fe85beca028ea668393f0ed",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:29:41.257695+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "pending_id": "1ba1343b419c5b879a5e57f7a05f9242",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "4e77f6282bbe58668ba0aafb9513af83",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:29:41.266480+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "1ba1343b419c5b879a5e57f7a05f9242",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0151",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check the camera's battery level: If it is too low, charge…",
+            "instruction": "Check the camera's battery level: If it is too low, charge the battery.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "403ef182-12d9-4ac0-91f3-d56f3512b956"
+            ],
+            "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "event_id": "785e998382555c7287e649beab85f2d6",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:29:41.269099+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_token": "1c6487c6f38154b8be49a77dce4a9cc7",
+          "card_id": "1ba1343b419c5b879a5e57f7a05f9242",
+          "version": 1,
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 15,
+          "event_id": "d7cc83e984414693b2df69f0660f810f",
+          "recorded_at": "2026-10-10T00:29:41.270356+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "6f2fb671408c596f8c45d2964183a53b",
+          "recorded_at": "2026-10-10T00:29:41.272028+00:00",
+          "run_id": "9fd1595b08c04949bf1f378a42564640",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "resumed": false,
+          "event_id": "b8dc1f33374a4bdebd3c1871e6805b19",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:41.319806+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "1ba1343b419c5b879a5e57f7a05f9242",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "e56f06a69b0647ce96bc031054206911",
+            "input_token": "1c6487c6f38154b8be49a77dce4a9cc7",
+            "target_issue_id": "a89281a2a11853a1a594022d50970e12",
+            "expected_version": 1
+          },
+          "event_id": "7fc9d0b0e54a4e0bbae35116412974a5",
+          "input_id": "e56f06a69b0647ce96bc031054206911",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:29:41.319806+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 19,
+          "event_id": "ffffdd6c344e4f7b932a1998ff4a447f",
+          "recorded_at": "2026-10-10T00:29:41.353363+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 20,
+          "event_id": "7e35017ec2844c60b34c7cd10549e651",
+          "recorded_at": "2026-10-10T00:29:41.356672+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_id": "e56f06a69b0647ce96bc031054206911",
+          "resolved_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "a89281a2a11853a1a594022d50970e12",
+              "title": "offline",
+              "status": "open"
+            }
+          ],
+          "event_id": "3c09f21ac4a150ecbaa9718192a43b02",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:29:41.382813+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "pending_id": "1ba1343b419c5b879a5e57f7a05f9242",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "eda0748624c7547f818c639bf567afdb",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:29:41.383906+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "pending_id": "e0d22033aa485829a1e5cac8407198cf",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "81c077036ad15bb2ae2a4d149980b337",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:29:41.385385+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "e0d22033aa485829a1e5cac8407198cf",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0151",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Check if the camera is switched off: Press and release the…",
+            "instruction": "Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "403ef182-12d9-4ac0-91f3-d56f3512b956"
+            ],
+            "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "event_id": "8ec461ade2c256c581d3b59d2a57b86b",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:29:41.386661+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_token": "572c32f2052a50f481b3741cf2d6b9ad",
+          "card_id": "e0d22033aa485829a1e5cac8407198cf",
+          "version": 2,
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 26,
+          "event_id": "26041e890f3a4043abbfa26880a52206",
+          "recorded_at": "2026-10-10T00:29:41.387797+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "3db7fa98954551a1bb986c43c5ef11a4",
+          "recorded_at": "2026-10-10T00:29:41.389775+00:00",
+          "run_id": "a8cfc2167337418db411cab294371d08",
+          "seq": 27,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 28,
+          "type": "run_started",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "resumed": false,
+          "event_id": "cee94fc79dbf4b3385f2363d3f23eecd",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:41.407938+00:00"
+        },
+        {
+          "seq": 29,
+          "type": "input_received",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "e0d22033aa485829a1e5cac8407198cf",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "3df97ad5ec3948e9aab22340d4be5434",
+            "input_token": "572c32f2052a50f481b3741cf2d6b9ad",
+            "target_issue_id": "a89281a2a11853a1a594022d50970e12",
+            "expected_version": 2
+          },
+          "event_id": "440908d59e514691a105fe468c6c3fb8",
+          "input_id": "3df97ad5ec3948e9aab22340d4be5434",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:29:41.407938+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 30,
+          "event_id": "4b1cabc29e754020b91d8f4406f6a071",
+          "recorded_at": "2026-10-10T00:29:41.419104+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 31,
+          "event_id": "0b37479632bf403bbd717cd79066e005",
+          "recorded_at": "2026-10-10T00:29:41.422762+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 32,
+          "event_id": "61bd4c4044334fb4ac037bd14382a9e6",
+          "recorded_at": "2026-10-10T00:29:41.424592+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "input_id": "3df97ad5ec3948e9aab22340d4be5434",
+          "resolved_issue_id": "a89281a2a11853a1a594022d50970e12",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "a89281a2a11853a1a594022d50970e12",
+              "title": "offline",
+              "status": "open"
+            }
+          ],
+          "event_id": "f232df90b5d354d79743e9f53cc7d360",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 34,
+          "recorded_at": "2026-10-10T00:29:41.445890+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "pending_id": "e0d22033aa485829a1e5cac8407198cf",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "b6a29aba1c0c5eb999afb53f65e01afe",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 35,
+          "recorded_at": "2026-10-10T00:29:41.446867+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "542e166b1de653d8a09859fe0fbd0eb9",
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "reply_to_input_id": "3df97ad5ec3948e9aab22340d4be5434",
+          "event_id": "53ea9707799a597880cb31fee51da0f7",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 36,
+          "recorded_at": "2026-10-10T00:29:41.448205+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "542e166b1de653d8a09859fe0fbd0eb9",
+          "delta": "I can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team.",
+          "event_id": "f2a698927c6054f59af8aaedeaae5f25",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 37,
+          "recorded_at": "2026-10-10T00:29:41.449341+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "542e166b1de653d8a09859fe0fbd0eb9",
+          "status": "completed",
+          "event_id": "b90ffa0689f75180aeb61cc0f8ff2689",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 38,
+          "recorded_at": "2026-10-10T00:29:41.450590+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "21ec456430525b98aadf8c62379afa5e",
+          "recorded_at": "2026-10-10T00:29:41.451693+00:00",
+          "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+          "seq": 39,
+          "reason": "completed",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "c0256adbb59540e896b10653f59bf8ec",
+  "stop_reason": "awaiting_free_text_or_no_action",
+  "snapshot": {
+    "session_id": "c0256adbb59540e896b10653f59bf8ec",
+    "version": 3,
+    "stage": "guide",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:29:34.530927+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "user_message",
+        "id": "4833bc48b6c947de9cd9fc832ea8a566",
+        "text": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:29:38.871051+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "0c71e6ea5eb753e8b1eb52ddcc55e48e",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-10T00:29:41.257984Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "source": "kb_qa",
+            "doc_id": "bp-0151",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+            "score": 0.01579861111111111,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+            "source": "kb_qa",
+            "doc_id": "bp-0186",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+            "snippet": "What should I do if SoloCam S340(T8170) goes offline?\n1. Check the camera battery level. If too low, charge it.\n2. Press and release the SYNC button. If LED is off, press and hold 2 seconds to power on.\n3. If recently relocated, move closer to the router.\n4. Remove the offline camera from the app and re-add it.\n* Check if your home network is set up as a dual-band network. You need to separate a 2",
+            "score": 0.01544477028347996,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+            "source": "kb_qa",
+            "doc_id": "bp-0152",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+            "snippet": "What do I do if SoloCam S340(T8170) goes offline?\n1. Check the camera's battery level. If it is too low, charge the battery.\n2. Press and release the SYNC button to check if the camera is switched off. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. If you recently relocated the camera, try to move it closer to the",
+            "score": 0.015365793980915095,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+            "source": "kb_qa",
+            "doc_id": "bp-0244",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+            "snippet": "Does SoloCam S340(T8170) support cloud storage?\nNo, SoloCam S340(T8170) does not support cloud storage. Footage is saved locally to the built-in 8GB storage or to a connected HomeBase.",
+            "score": 0.01504032258064516,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+            "source": "kb_qa",
+            "doc_id": "bp-0212",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+            "snippet": "What should I do if SoloCam S340(T8170) has a poor signal or goes offline?\n1. Set the HomeBase working mode to Performance: HomeBase settings > General > Working Mode > Performance (Beta) --- check if connectivity improves.\n2. Move the camera closer to the HomeBase or router.\n3. Check for signal interference (thick walls, metal objects, microwave ovens).\n4. Restart the camera and HomeBase.\n5. If t",
+            "score": 0.014621059691482224,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+            "source": "kb_qa",
+            "doc_id": "bp-0274",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+            "snippet": "Can I use continuous recording on SoloCam S340 (T8170)?\nNo, SoloCam S340 does not support 24x7 continuous recording.",
+            "score": 0.014556692242114236,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+            "source": "kb_qa",
+            "doc_id": "bp-0223",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+            "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+            "score": 0.014217506631299734,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+            "source": "kb_qa",
+            "doc_id": "bp-0154",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+            "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+            "score": 0.014106988783433994,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+            "source": "kb_qa",
+            "doc_id": "bp-0263",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+            "snippet": "Can SoloCam S340(T8170) work standalone without a HomeBase?\nYes, SoloCam S340(T8170) can work standalone by connecting directly to your router without a HomeBase.",
+            "score": 0.013831811263318113,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+            "source": "kb_qa",
+            "doc_id": "bp-0278",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+            "snippet": "Can I connect SoloCam S340 (T8170) to HomeBase S380?\nYes, you can connect SoloCam S340 (T8170) to HomeBase S380. There are two connection modes: it can be used by directly connecting to the router or by connecting to HomeBase S380. However, the firmware version of HomeBase S380 needs to be up to 3.3.2.6. After accessing the base station, the data is stored in the base station and shares the memory",
+            "score": 0.013640202702702702,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+            "source": "kb_qa",
+            "doc_id": "bp-0224",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+            "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+            "score": 0.013536409516943041,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+            "source": "kb_qa",
+            "doc_id": "bp-0221",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+            "snippet": "Does SoloCam S340(T8170) support Alexa and Google Assistant?\nYes, SoloCam S340(T8170) supports streaming to Amazon Alexa Echo Show and Google Chromecast.",
+            "score": 0.013499999999999998,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+            "source": "kb_qa",
+            "doc_id": "bp-0179",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+            "snippet": "Is SoloCam S340(T8170) max resolution 3K regardless of HomeBase connection?\neufy Security SoloCam S340(T8170) cannot achieve 4K resolution regardless of whether it is connected to HomeBase. The S340 hardware supports a maximum resolution of 3K (2880x1620). It has no 4K output capability, and this specification is not affected by HomeBase connectivity. Dual-lens configuration: 3K wide-angle lens fo",
+            "score": 0.013157894736842105,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+            "source": "kb_qa",
+            "doc_id": "bp-0276",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+            "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+            "score": 0.013071895424836602,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+            "source": "kb_qa",
+            "doc_id": "bp-0262",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+            "snippet": "Can SoloCam S340(T8170) connect to HomeBase 3(T8030)?\nYes, SoloCam S340(T8170) can connect to HomeBase 3(T8030). Once connected, data is stored in the HomeBase and shares its memory. The HomeBase enhances the camera with additional AI features such as pet and face recognition.",
+            "score": 0.012830245976313392,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:29:41.269099+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "step_card",
+        "card_id": "1ba1343b419c5b879a5e57f7a05f9242",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_bp_0151",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Check the camera's battery level: If it is too low, charge…",
+          "instruction": "Check the camera's battery level: If it is too low, charge the battery.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "403ef182-12d9-4ac0-91f3-d56f3512b956"
+          ],
+          "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:29:41.319806+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "action",
+        "id": "e56f06a69b0647ce96bc031054206911",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:29:41.386661+00:00",
+        "first_seq": 25,
+        "last_seq": 25,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "step_card",
+        "card_id": "e0d22033aa485829a1e5cac8407198cf",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_bp_0151",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Check if the camera is switched off: Press and release the…",
+          "instruction": "Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "403ef182-12d9-4ac0-91f3-d56f3512b956"
+          ],
+          "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:29:41.407938+00:00",
+        "first_seq": 29,
+        "last_seq": 34,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "action",
+        "id": "3df97ad5ec3948e9aab22340d4be5434",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:29:41.448205+00:00",
+        "first_seq": 36,
+        "last_seq": 38,
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "kind": "assistant_message",
+        "message_id": "542e166b1de653d8a09859fe0fbd0eb9",
+        "text": "I can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team.",
+        "status": "completed",
+        "reply_to_input_id": "3df97ad5ec3948e9aab22340d4be5434",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "a89281a2a11853a1a594022d50970e12",
+    "issues": [
+      {
+        "issue_id": "a89281a2a11853a1a594022d50970e12",
+        "status": "open",
+        "title": "offline",
+        "task_queue": [
+          {
+            "task_id": "9bfb0bce0ae25a9198cf3f2d7fb90afb",
+            "intent": "report_problem",
+            "quote": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+            "request_quote": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week.",
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "active",
+            "created_input_id": "4833bc48b6c947de9cd9fc832ea8a566",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 39,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "c0256adbb59540e896b10653f59bf8ec",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:29:34.537485Z",
+      "last_run_at": "2026-10-10T00:29:41.452633Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+      "product_state": "confirmed_sku",
+      "sku": "T8170",
+      "category": "security_cam",
+      "emotion_level": "angry",
+      "fault_plan_ids": [
+        "qa_bp_0151",
+        "qa_bp_0186"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "in_progress",
+      "outcome_reason": null,
+      "outcome_at": null,
+      "total_latency_ms": 43,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:29:41.452633Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "9fd1595b08c04949bf1f378a42564640",
+        "session_id": "c0256adbb59540e896b10653f59bf8ec",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:29:34.537485Z",
+        "ended_at": "2026-10-10T00:29:41.273182Z",
+        "duration_ms": 6839,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6837,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 4274,
+            "tokens_in": 4574,
+            "tokens_out": 468,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:38.853653Z"
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1993,
+            "tokens_in": 4340,
+            "tokens_out": 334,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:41.011348Z"
+          }
+        ],
+        "tokens_in": 8914,
+        "tokens_out": 802,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:34.537485Z",
+            "duration_ms": 4327,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3665,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 162,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6308
+                    }
+                  ],
+                  "actual_input_tokens": 4574
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "a89281a2a11853a1a594022d50970e12",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:38.865105Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "security_cam",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:29:38.869810Z",
+            "duration_ms": 2353,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_bp_0151",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 4780,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 346,
+                    "current": 162,
+                    "history": 0,
+                    "authority": 4272
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 274,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 42,
+                    "decision": 219,
+                    "timezone": 7,
+                    "task_data": 3447,
+                    "issue_index": 137,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 5391
+                    }
+                  ],
+                  "actual_input_tokens": 4340
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:29:41.223700Z",
+            "duration_ms": 81,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0151",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:29:41.304890Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:29:41.304914Z",
+            "duration_ms": 13,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "9fd1595b08c04949bf1f378a42564640",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 149,
+            "hits": 15,
+            "top_score": 0.0158,
+            "latency_ms": 243,
+            "query": "SoloCam S340 offline",
+            "created_at": "2026-10-10T00:29:39.111062Z"
+          }
+        ]
+      },
+      {
+        "run_id": "a8cfc2167337418db411cab294371d08",
+        "session_id": "c0256adbb59540e896b10653f59bf8ec",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:29:41.321546Z",
+        "ended_at": "2026-10-10T00:29:41.391423Z",
+        "duration_ms": 69,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 66,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "a8cfc2167337418db411cab294371d08",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:41.321546Z",
+            "duration_ms": 25,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0151",
+              "category": "security_cam",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "a89281a2a11853a1a594022d50970e12",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "a8cfc2167337418db411cab294371d08",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:41.346588Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0151",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "a8cfc2167337418db411cab294371d08",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:29:41.351794Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0151",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "a8cfc2167337418db411cab294371d08",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:29:41.356129Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "a8cfc2167337418db411cab294371d08",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:29:41.356135Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+        "session_id": "c0256adbb59540e896b10653f59bf8ec",
+        "seq_no": 3,
+        "started_at": "2026-10-10T00:29:41.408992Z",
+        "ended_at": "2026-10-10T00:29:41.452625Z",
+        "duration_ms": 43,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 41,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:41.408992Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_bp_0151",
+              "category": "security_cam",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "a89281a2a11853a1a594022d50970e12",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:41.416705Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_bp_0151",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:29:41.418139Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "rule": "operation_conditions_unavailable",
+              "stage": "guide",
+              "verify": "pause",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+            "idx": 4,
+            "node": "dialogue",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:29:41.422749Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "1bee1ecc0b7d46559eb39ea3f245fa46",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "dialogue",
+            "started_at": "2026-10-10T00:29:41.424580Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c0256adbb59540e896b10653f59bf8ec",
+      "version": 3,
+      "stage": "guide",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:29:34.530927+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "user_message",
+          "id": "4833bc48b6c947de9cd9fc832ea8a566",
+          "text": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:29:38.871051+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "0c71e6ea5eb753e8b1eb52ddcc55e48e",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-10T00:29:41.257984Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "source": "kb_qa",
+              "doc_id": "bp-0151",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+              "snippet": "Why is SoloCam S340(T8170) showing offline in the app?\n1. Check the camera's battery level: If it is too low, charge the battery.\n2. Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. Check the camera's installation location: If you recently reloc",
+              "score": 0.01579861111111111,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+              "source": "kb_qa",
+              "doc_id": "bp-0186",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f98f756a-6946-4466-9e7f-ae5b7eb38bdd",
+              "snippet": "What should I do if SoloCam S340(T8170) goes offline?\n1. Check the camera battery level. If too low, charge it.\n2. Press and release the SYNC button. If LED is off, press and hold 2 seconds to power on.\n3. If recently relocated, move closer to the router.\n4. Remove the offline camera from the app and re-add it.\n* Check if your home network is set up as a dual-band network. You need to separate a 2",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+              "source": "kb_qa",
+              "doc_id": "bp-0152",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4b348cd0-4dd5-4577-85eb-201b7ba34831",
+              "snippet": "What do I do if SoloCam S340(T8170) goes offline?\n1. Check the camera's battery level. If it is too low, charge the battery.\n2. Press and release the SYNC button to check if the camera is switched off. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.\n3. If you recently relocated the camera, try to move it closer to the",
+              "score": 0.015365793980915095,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+              "source": "kb_qa",
+              "doc_id": "bp-0244",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "2a0863b4-345d-46fd-a1c9-8aeaf4a71af6",
+              "snippet": "Does SoloCam S340(T8170) support cloud storage?\nNo, SoloCam S340(T8170) does not support cloud storage. Footage is saved locally to the built-in 8GB storage or to a connected HomeBase.",
+              "score": 0.01504032258064516,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+              "source": "kb_qa",
+              "doc_id": "bp-0212",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ebffb860-182b-41e6-9635-56124dad2ba3",
+              "snippet": "What should I do if SoloCam S340(T8170) has a poor signal or goes offline?\n1. Set the HomeBase working mode to Performance: HomeBase settings > General > Working Mode > Performance (Beta) --- check if connectivity improves.\n2. Move the camera closer to the HomeBase or router.\n3. Check for signal interference (thick walls, metal objects, microwave ovens).\n4. Restart the camera and HomeBase.\n5. If t",
+              "score": 0.014621059691482224,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+              "source": "kb_qa",
+              "doc_id": "bp-0274",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "7e8f984d-9fbc-4db9-942a-eb9cf6308a30",
+              "snippet": "Can I use continuous recording on SoloCam S340 (T8170)?\nNo, SoloCam S340 does not support 24x7 continuous recording.",
+              "score": 0.014556692242114236,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "source": "kb_qa",
+              "doc_id": "bp-0223",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c95c1940-bcad-472e-9427-52c2dd451b17",
+              "snippet": "Is a subscription required to record video on SoloCam S340(T8170)?\nNo, SoloCam S340(T8170) does not require a subscription for recording. Footage is saved to the built-in 8GB storage or to a connected HomeBase. Note: Cloud storage is not supported.",
+              "score": 0.014217506631299734,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "source": "kb_qa",
+              "doc_id": "bp-0154",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "850b4f32-9b80-4f17-9e50-b978e9c3fcb2",
+              "snippet": "Does SoloCam S340(T8170) support a memory card and motion-activated recording?\nYes, the SoloCam S340 comes with a built-in 8GB eMMC for local storage. The camera is designed to record when motion is detected. Even if the solar power fails, the camera will continue to record using its built-in battery until it runs out of power. If the WiFi connection is lost, the camera will still record and save ",
+              "score": 0.014106988783433994,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+              "source": "kb_qa",
+              "doc_id": "bp-0263",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9b3f1f93-3e81-4de9-b3e6-2d2ac159030f",
+              "snippet": "Can SoloCam S340(T8170) work standalone without a HomeBase?\nYes, SoloCam S340(T8170) can work standalone by connecting directly to your router without a HomeBase.",
+              "score": 0.013831811263318113,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+              "source": "kb_qa",
+              "doc_id": "bp-0278",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "aa57e642-fc4f-4d28-9018-8411ff0fc243",
+              "snippet": "Can I connect SoloCam S340 (T8170) to HomeBase S380?\nYes, you can connect SoloCam S340 (T8170) to HomeBase S380. There are two connection modes: it can be used by directly connecting to the router or by connecting to HomeBase S380. However, the firmware version of HomeBase S380 needs to be up to 3.3.2.6. After accessing the base station, the data is stored in the base station and shares the memory",
+              "score": 0.013640202702702702,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "source": "kb_qa",
+              "doc_id": "bp-0224",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "d562ea00-778d-4c05-91d4-15a8e2e1f696",
+              "snippet": "Does SoloCam S340(T8170) support 24/7 continuous recording?\nNo, SoloCam S340(T8170) does not support 24/7 continuous recording. It uses event-triggered recording to preserve battery life.",
+              "score": 0.013536409516943041,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+              "source": "kb_qa",
+              "doc_id": "bp-0221",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "1c8dd036-f92e-4973-a93c-26561951a49c",
+              "snippet": "Does SoloCam S340(T8170) support Alexa and Google Assistant?\nYes, SoloCam S340(T8170) supports streaming to Amazon Alexa Echo Show and Google Chromecast.",
+              "score": 0.013499999999999998,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+              "source": "kb_qa",
+              "doc_id": "bp-0179",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "555482f3-db58-48be-82dc-ae2b03d6c17e",
+              "snippet": "Is SoloCam S340(T8170) max resolution 3K regardless of HomeBase connection?\neufy Security SoloCam S340(T8170) cannot achieve 4K resolution regardless of whether it is connected to HomeBase. The S340 hardware supports a maximum resolution of 3K (2880x1620). It has no 4K output capability, and this specification is not affected by HomeBase connectivity. Dual-lens configuration: 3K wide-angle lens fo",
+              "score": 0.013157894736842105,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "source": "kb_qa",
+              "doc_id": "bp-0276",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "47eb9c5b-e3d8-416f-a417-5de68f419857",
+              "snippet": "How do I reset SoloCam S340 (T8170) without the app?\nTo reset the SoloCam S340 (T8170) without the app, you can perform a hardware reset by pressing and holding the button on the camera for 15 seconds or more. This should reset the device to its default settings. However, please note that this method is typically used when the camera does not have any light effect indication, such as when it does ",
+              "score": 0.013071895424836602,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+              "source": "kb_qa",
+              "doc_id": "bp-0262",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe2ae60e-b07b-406f-92e9-4ecf518892e7",
+              "snippet": "Can SoloCam S340(T8170) connect to HomeBase 3(T8030)?\nYes, SoloCam S340(T8170) can connect to HomeBase 3(T8030). Once connected, data is stored in the HomeBase and shares its memory. The HomeBase enhances the camera with additional AI features such as pet and face recognition.",
+              "score": 0.012830245976313392,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:29:41.269099+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "step_card",
+          "card_id": "1ba1343b419c5b879a5e57f7a05f9242",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_bp_0151",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Check the camera's battery level: If it is too low, charge…",
+            "instruction": "Check the camera's battery level: If it is too low, charge the battery.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "403ef182-12d9-4ac0-91f3-d56f3512b956"
+            ],
+            "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:29:41.319806+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "action",
+          "id": "e56f06a69b0647ce96bc031054206911",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:29:41.386661+00:00",
+          "first_seq": 25,
+          "last_seq": 25,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "step_card",
+          "card_id": "e0d22033aa485829a1e5cac8407198cf",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_bp_0151",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Check if the camera is switched off: Press and release the…",
+            "instruction": "Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "403ef182-12d9-4ac0-91f3-d56f3512b956"
+            ],
+            "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:29:41.407938+00:00",
+          "first_seq": 29,
+          "last_seq": 34,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "action",
+          "id": "3df97ad5ec3948e9aab22340d4be5434",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:29:41.448205+00:00",
+          "first_seq": 36,
+          "last_seq": 38,
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "kind": "assistant_message",
+          "message_id": "542e166b1de653d8a09859fe0fbd0eb9",
+          "text": "I can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team.",
+          "status": "completed",
+          "reply_to_input_id": "3df97ad5ec3948e9aab22340d4be5434",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "a89281a2a11853a1a594022d50970e12",
+      "issues": [
+        {
+          "issue_id": "a89281a2a11853a1a594022d50970e12",
+          "status": "open",
+          "title": "offline",
+          "task_queue": [
+            {
+              "task_id": "9bfb0bce0ae25a9198cf3f2d7fb90afb",
+              "intent": "report_problem",
+              "quote": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of this shit",
+              "request_quote": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week.",
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "active",
+              "created_input_id": "4833bc48b6c947de9cd9fc832ea8a566",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 39,
+      "latest_summaries": []
+    }
+  },
+  "cases": [],
+  "visible_text": "\n\n\n\nI can't confirm the cause yet, so I won't add more steps for now. Everything so far is kept; we can continue when you're ready, or I can prepare a summary for our support team.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_bp_0151",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "Check the camera's battery level: If it is too low, charge…",
+      "instruction": "Check the camera's battery level: If it is too low, charge the battery.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "403ef182-12d9-4ac0-91f3-d56f3512b956"
+      ],
+      "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+      "media": [],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s2",
+      "plan_id": "qa_bp_0151",
+      "plan_version": 1,
+      "step_no": 2,
+      "title": "Check if the camera is switched off: Press and release the…",
+      "instruction": "Check if the camera is switched off: Press and release the SYNC button. If the LED does not light up, set the camera to ON in the camera settings or press and hold the camera for 2 seconds to boot up.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "403ef182-12d9-4ac0-91f3-d56f3512b956"
+      ],
+      "primary_evidence_id": "403ef182-12d9-4ac0-91f3-d56f3512b956",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 8.32,
+  "complete": true
+}

@@ -1,0 +1,1170 @@
+{
+  "id": "T27",
+  "started_at": "2026-10-10T00:28:13.040262+00:00",
+  "input": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "resumed": false,
+          "event_id": "51d280bad18e4ead89def6ca7b95365c",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:13.195826+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "6ff34591b66a4403a993da6f0c5a5cfc",
+          "input_id": "d2c7f77f5dfb461e9d7e230096709c2f",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:13.195826+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 3,
+          "event_id": "3994f73b4d1a4824972d07016d4528a4",
+          "recorded_at": "2026-10-10T00:28:13.224790+00:00"
+        },
+        {
+          "type": "ping",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 4,
+          "event_id": "1e3eff8771a34eb6afb5161b6b07fa61",
+          "recorded_at": "2026-10-10T00:28:18.230154+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 5,
+          "event_id": "5377ad70872b433598963c97b76e4eae",
+          "recorded_at": "2026-10-10T00:28:19.771013+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 6,
+          "event_id": "e8ed5f1cfca94fe6b53380534e107803",
+          "recorded_at": "2026-10-10T00:28:19.778154+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 7,
+          "event_id": "32d3d75824bb4cf4b7b905819823e616",
+          "recorded_at": "2026-10-10T00:28:19.781581+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 8,
+          "event_id": "d2e91002107244a9ba730f2465390f60",
+          "recorded_at": "2026-10-10T00:28:19.784036+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "input_id": "d2c7f77f5dfb461e9d7e230096709c2f",
+          "resolved_issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "ebbb438362c458bcafe897822763f4c7",
+              "title": "Rolling Mop Blockage. Please clean.、a Crack sound kept on repeating everything robots done with mop cleaning process、vacuum cannot start process",
+              "status": "open"
+            }
+          ],
+          "event_id": "3db9a1d280e45e74a0a80bc6edfb3062",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:28:19.804332+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0147",
+              "source": "qa_exact",
+              "doc_id": "rv-0147",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0147",
+              "snippet": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "50a36b0912de55b69f250e5cf26b3ad1",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:28:19.805222+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "pending_id": "df7b2f23844f5a6184a902625b59f948",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "496be589d4af53ef965b4ce9fe0a269a",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:28:19.806929+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "df7b2f23844f5a6184a902625b59f948",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0147",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+            "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+            "evidence_ids": [
+              "qa:rv-0147"
+            ],
+            "primary_evidence_id": "qa:rv-0147",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                "kind": "video"
+              }
+            ],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "event_id": "c1f7ea0402945a01908a5ad5af627ae1",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:28:19.807734+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "input_token": "f0eede25c50d5220a15ee143c1d6529b",
+          "card_id": "df7b2f23844f5a6184a902625b59f948",
+          "version": 1,
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 14,
+          "event_id": "25f52b6e9db14849a8d157f2d2364fc2",
+          "recorded_at": "2026-10-10T00:28:19.808502+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d3e650da931b5505bf48ecb57772dce6",
+          "recorded_at": "2026-10-10T00:28:19.809600+00:00",
+          "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+          "seq": 15,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 16,
+          "type": "run_started",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "resumed": false,
+          "event_id": "8cd14a51abe246c694e5d78db6eea1bc",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:19.821181+00:00"
+        },
+        {
+          "seq": 17,
+          "type": "input_received",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "df7b2f23844f5a6184a902625b59f948",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+            "input_token": "f0eede25c50d5220a15ee143c1d6529b",
+            "target_issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "expected_version": 1
+          },
+          "event_id": "4e4d427760824a46931b9f40f2e09b3e",
+          "input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:19.821181+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 18,
+          "event_id": "b4e26250012e459881db0554bed75364",
+          "recorded_at": "2026-10-10T00:28:19.831904+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 19,
+          "event_id": "dd946a4405c94423a7609d7432bb68ae",
+          "recorded_at": "2026-10-10T00:28:19.837387+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+          "resolved_issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "ebbb438362c458bcafe897822763f4c7",
+              "title": "Rolling Mop Blockage. Please clean.、a Crack sound kept on repeating everything robots done with mop cleaning process、vacuum cannot start process",
+              "status": "open"
+            }
+          ],
+          "event_id": "465e993a74c05c6ba02172f8a66356c0",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:28:19.855616+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "pending_id": "df7b2f23844f5a6184a902625b59f948",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "a5de2bfe86235d32ae0014dcec245fe6",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:28:19.856321+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+          "case_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "version": 2,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:19.831830+00:00",
+          "event_id": "8bd3099b9e045eb494f8ddb4f84dd5f5",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:28:19.857065+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "b4e332f96f98518c95803b69c7041564",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "reply_to_input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+          "event_id": "f7e62ec6b6a15b268d5bccd07d563405",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:28:19.858086+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "b4e332f96f98518c95803b69c7041564",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "1f8a7e664be65a7c9f26e321c2911262",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:28:19.858870+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "b4e332f96f98518c95803b69c7041564",
+          "status": "completed",
+          "event_id": "3a0f85da832955a1acbb6c7857a68f78",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 26,
+          "recorded_at": "2026-10-10T00:28:19.859854+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "pending_id": "1e2cf7d41e14509db646320135c67ef8",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "b3de27e0a6e0501aa7ff072815ecdf06",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 27,
+          "recorded_at": "2026-10-10T00:28:19.861673+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "input_token": "55b518b8456e5acebbc36e4f76687054",
+          "card_id": "1e2cf7d41e14509db646320135c67ef8",
+          "version": 2,
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 28,
+          "event_id": "795dec46de214fe08a5618d15cd31cd9",
+          "recorded_at": "2026-10-10T00:28:19.862078+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b70c20a39283521bac3d3110f330600e",
+          "recorded_at": "2026-10-10T00:28:19.862928+00:00",
+          "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+          "seq": 29,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+    "version": 2,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "ebbb438362c458bcafe897822763f4c7",
+      "kind": "upload_receipt",
+      "input_token": "55b518b8456e5acebbc36e4f76687054",
+      "card_id": "1e2cf7d41e14509db646320135c67ef8",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:13.195826+00:00",
+        "first_seq": 2,
+        "last_seq": 10,
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "user_message",
+        "id": "d2c7f77f5dfb461e9d7e230096709c2f",
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:28:19.805366Z",
+        "first_seq": 11,
+        "last_seq": 11,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0147",
+            "source": "qa_exact",
+            "doc_id": "rv-0147",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0147",
+            "snippet": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:19.807734+00:00",
+        "first_seq": 13,
+        "last_seq": 13,
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "step_card",
+        "card_id": "df7b2f23844f5a6184a902625b59f948",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0147",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+          "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+          "evidence_ids": [
+            "qa:rv-0147"
+          ],
+          "primary_evidence_id": "qa:rv-0147",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+              "kind": "video"
+            }
+          ],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:19.821181+00:00",
+        "first_seq": 17,
+        "last_seq": 21,
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "action",
+        "id": "2f77e4c30ed449c5b51c9f620f4401c7",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:19.857065+00:00",
+        "first_seq": 23,
+        "last_seq": 23,
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "case_changed",
+        "card_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+        "version": 2,
+        "case_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:28:19.831830+00:00"
+      },
+      {
+        "at": "2026-10-10T00:28:19.858086+00:00",
+        "first_seq": 24,
+        "last_seq": 26,
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "assistant_message",
+        "message_id": "b4e332f96f98518c95803b69c7041564",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "ebbb438362c458bcafe897822763f4c7",
+    "issues": [
+      {
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "status": "open",
+        "title": "Rolling Mop Blockage. Please clean.、a Crack sound kept on repeating everything robots done with mop cleaning process、vacuum cannot start process",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 29,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:13.201615Z",
+      "last_run_at": "2026-10-10T00:28:19.864327Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F[REDACTED]\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [
+        "qa_rv_0147"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 41,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:28:19.864327Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+        "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:13.201615Z",
+        "ended_at": "2026-10-10T00:28:19.810327Z",
+        "duration_ms": 6714,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 6712,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 6625,
+            "tokens_in": 4668,
+            "tokens_out": 715,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:19.736317Z"
+          }
+        ],
+        "tokens_in": 4668,
+        "tokens_out": 715,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:13.201615Z",
+            "duration_ms": 6667,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 4,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3766,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 263,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6409
+                    }
+                  ],
+                  "actual_input_tokens": 4668
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "ebbb438362c458bcafe897822763f4c7",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:19.869195Z",
+            "duration_ms": 14,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:19.883662Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0147",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:19.887090Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0147",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:19.889538Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d29ba0c2c57a4050ab9cedfca46e0b9b",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:19.889546Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+        "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:28:19.822678Z",
+        "ended_at": "2026-10-10T00:28:19.864321Z",
+        "duration_ms": 41,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 36,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:19.822678Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0147",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "ebbb438362c458bcafe897822763f4c7",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:19.829369Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:19.830770Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:28:19.831554Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:28:19.834732Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:28:19.835271Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "2af742ac5d6d4d159bf9244b8a79f5e6",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:19.835719Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "kind": "upload_receipt",
+        "input_token": "55b518b8456e5acebbc36e4f76687054",
+        "card_id": "1e2cf7d41e14509db646320135c67ef8",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:13.195826+00:00",
+          "first_seq": 2,
+          "last_seq": 10,
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "user_message",
+          "id": "d2c7f77f5dfb461e9d7e230096709c2f",
+          "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:28:19.805366Z",
+          "first_seq": 11,
+          "last_seq": 11,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0147",
+              "source": "qa_exact",
+              "doc_id": "rv-0147",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0147",
+              "snippet": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:19.807734+00:00",
+          "first_seq": 13,
+          "last_seq": 13,
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "step_card",
+          "card_id": "df7b2f23844f5a6184a902625b59f948",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0147",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+            "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+            "evidence_ids": [
+              "qa:rv-0147"
+            ],
+            "primary_evidence_id": "qa:rv-0147",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                "kind": "video"
+              }
+            ],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:19.821181+00:00",
+          "first_seq": 17,
+          "last_seq": 21,
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "action",
+          "id": "2f77e4c30ed449c5b51c9f620f4401c7",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:19.857065+00:00",
+          "first_seq": 23,
+          "last_seq": 23,
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "case_changed",
+          "card_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+          "version": 2,
+          "case_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:19.831830+00:00"
+        },
+        {
+          "at": "2026-10-10T00:28:19.858086+00:00",
+          "first_seq": 24,
+          "last_seq": 26,
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "assistant_message",
+          "message_id": "b4e332f96f98518c95803b69c7041564",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "ebbb438362c458bcafe897822763f4c7",
+      "issues": [
+        {
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "status": "open",
+          "title": "Rolling Mop Blockage. Please clean.、a Crack sound kept on repeating everything robots done with mop cleaning process、vacuum cannot start process",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 29,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+      "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+      "issue_id": "ebbb438362c458bcafe897822763f4c7",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:28:19.831830+00:00",
+      "updated_at": "2026-10-10T00:28:19.831830+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "c7da8e626e4943df97ce313d89ea4fdf",
+        "version": 2,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "ebbb438362c458bcafe897822763f4c7",
+          "kind": "upload_receipt",
+          "input_token": "55b518b8456e5acebbc36e4f76687054",
+          "card_id": "1e2cf7d41e14509db646320135c67ef8",
+          "version": 2
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:28:13.195826+00:00",
+            "first_seq": 2,
+            "last_seq": 10,
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "kind": "user_message",
+            "id": "d2c7f77f5dfb461e9d7e230096709c2f",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProduct SN: AMP3AC0F14201072\nProblem Type: warning\nProblem Code: 3212-The mop is stuck.\nProblem Push: Rolling Mop Blockage. Please clean.\nProblem Description: Rolling Mop Blockage. Please clean.\n\ntried the suggestion solution but error still persist. no blockage seen. roller mop area is clear. a Crack sound kept on repeating everything robots done with mop cleaning process. vacuum cannot start process\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:28:19.805366Z",
+            "first_seq": 11,
+            "last_seq": 11,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0147",
+                "source": "qa_exact",
+                "doc_id": "rv-0147",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0147",
+                "snippet": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:19.807734+00:00",
+            "first_seq": 13,
+            "last_seq": 13,
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "kind": "step_card",
+            "card_id": "df7b2f23844f5a6184a902625b59f948",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0147",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+              "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+              "evidence_ids": [
+                "qa:rv-0147"
+              ],
+              "primary_evidence_id": "qa:rv-0147",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+                  "kind": "video"
+                }
+              ],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:19.821181+00:00",
+            "first_seq": 17,
+            "last_seq": 21,
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "kind": "action",
+            "id": "2f77e4c30ed449c5b51c9f620f4401c7",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:19.857065+00:00",
+            "first_seq": 23,
+            "last_seq": 23,
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "kind": "case_changed",
+            "card_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+            "version": 2,
+            "case_id": "187c3631-bae4-59b2-93b0-c5a3f4d45d5e",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:28:19.831830+00:00"
+          },
+          {
+            "at": "2026-10-10T00:28:19.858086+00:00",
+            "first_seq": 24,
+            "last_seq": 26,
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "kind": "assistant_message",
+            "message_id": "b4e332f96f98518c95803b69c7041564",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "2f77e4c30ed449c5b51c9f620f4401c7",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "ebbb438362c458bcafe897822763f4c7",
+        "issues": [
+          {
+            "issue_id": "ebbb438362c458bcafe897822763f4c7",
+            "status": "open",
+            "title": "Rolling Mop Blockage. Please clean.、a Crack sound kept on repeating everything robots done with mop cleaning process、vacuum cannot start process",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 29,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0147",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "what should I do when T2353 Omni E25/T2352 Omni E28 has 3212 Error: Rolling mop…",
+      "instruction": "Remove the dirty water reservoir and check if the roller is entangled with foreign objects---especially strings, data cables, plastic bags, hair, etc. Clean out any debris to ensure the roller rotates properly. (Note:Please refer the video below. If you hear a clicking sound, it indicates that the roller is properly installed.)",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": "Before starting a cleaning task, tidy up cables and wires in advance to prevent roller jams.",
+      "evidence_ids": [
+        "qa:rv-0147"
+      ],
+      "primary_evidence_id": "qa:rv-0147",
+      "media": [
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/How-to-install-a-roller-mop-for-E25-E28.mp4",
+          "kind": "video"
+        }
+      ],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 8.08,
+  "complete": true
+}

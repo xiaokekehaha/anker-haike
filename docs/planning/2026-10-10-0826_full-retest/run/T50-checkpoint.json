@@ -1,0 +1,423 @@
+{
+  "active_issue_id": "460556d96d1c58869c4e1ed7a561b782",
+  "issues": {
+    "460556d96d1c58869c4e1ed7a561b782": {
+      "business_context": {
+        "version": 1,
+        "subjects": {},
+        "active_subject_id": null,
+        "status": "missing",
+        "candidate_ids": [],
+        "last_input_id": "6250d55c83ca485b94ad15763a13170e"
+      },
+      "case_status": null,
+      "case_order_no": null,
+      "execution_key": null,
+      "human_involved": false,
+      "stage": "diagnose",
+      "substage": "retrieve",
+      "pending_card": null,
+      "product_confirmed": {
+        "sku": "T8D04",
+        "name": "eufy Wearable Breast Pump S1 Pro",
+        "category": "breast_pump",
+        "image": null,
+        "in_scope": true
+      },
+      "product_candidates": [],
+      "product_state": "confirmed_sku",
+      "category": "breast_pump",
+      "out_of_scope": false,
+      "clarification": {
+        "reason": "applicability",
+        "attempts": 1,
+        "asked_run_id": "fb6f286ce771438980e685b126b8dad0",
+        "question": "Does the right side of your S1 Pro pump have no suction or noticeably weaker suction compared to the left side?",
+        "question_id": "6250d55c83ca485b94ad15763a13170e:applicability",
+        "asked_input_id": "6250d55c83ca485b94ad15763a13170e"
+      },
+      "abandoned_card": null,
+      "observations": [],
+      "product_hints": [
+        "S1"
+      ],
+      "product_question": null,
+      "symptoms": [
+        "left one does work"
+      ],
+      "unparsed_problem": null,
+      "diagnostic_decision": {
+        "outcome": "continue",
+        "reason": "symptom_described",
+        "source_refs": [
+          "6250d55c83ca485b94ad15763a13170e"
+        ],
+        "missing_information": [],
+        "issue_id": "460556d96d1c58869c4e1ed7a561b782",
+        "input_id": "6250d55c83ca485b94ad15763a13170e"
+      },
+      "evidence": {
+        "59f873ed-253d-4d21-b39e-271256b6072c": {
+          "evidence_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+          "source": "kb_qa",
+          "doc_id": "bp-0020",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "59f873ed-253d-4d21-b39e-271256b6072c",
+          "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) left and right motors perform differently?\n1. Check Assembly: Confirm that both sides have silicone breast shields, duckbill valves, and elasticity bowls correctly installed with no damage or reversal.\n2. Test Pump Hub Suction: Separate each pump hub from the cup, place on your palm, and compare suction between left and right.\n3. Reset Device: Pres",
+          "score": 0.01609079445145019,
+          "status": "ok"
+        },
+        "99ba42d1-7540-46f7-b632-8a605b1e49a8": {
+          "evidence_id": "99ba42d1-7540-46f7-b632-8a605b1e49a8",
+          "source": "kb_qa",
+          "doc_id": "bp-0097",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "99ba42d1-7540-46f7-b632-8a605b1e49a8",
+          "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) work for moms with elastic nipples?\nYes, eufy Wearable Breast Pump S1 Pro(T8D04) is designed with moms who have elastic nipples in mind, by providing a flange tunnel that is fit and long enough to accommodate the stretch.",
+          "score": 0.015365793980915095,
+          "status": "ok"
+        },
+        "6a98604a-6461-49a4-b817-64df1ff87d5c": {
+          "evidence_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+          "source": "kb_qa",
+          "doc_id": "bp-0127",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6a98604a-6461-49a4-b817-64df1ff87d5c",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) charging case not charging one side?\n1. Bad charging cable: Try placing the breast pump crosswise in the charging compartment to see if it can be charged normally. Also, check if there is adhesive or foreign matter in the magnetic suction head of the charging compartment, and clean it if necessary. Finally, press and hold the breast pump switch key for 12 secon",
+          "score": 0.015117056856187291,
+          "status": "ok"
+        },
+        "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9": {
+          "evidence_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+          "source": "kb_qa",
+          "doc_id": "bp-0123",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+          "snippet": "- If the noise persists after the above self-checks, please inform us.\n- Please first confirm according to the instructions in Steps One and Two, and provide us with the results (text + video/audio). We will provide you with further solutions as soon as possible.",
+          "score": 0.014477611940298507,
+          "status": "ok"
+        },
+        "f6012345-7c7b-4e8c-a1ed-58037ef3d4d3": {
+          "evidence_id": "f6012345-7c7b-4e8c-a1ed-58037ef3d4d3",
+          "source": "kb_qa",
+          "doc_id": "bp-0076",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "f6012345-7c7b-4e8c-a1ed-58037ef3d4d3",
+          "snippet": "Why does milk leak from the tunnel when transferring from eufy Wearable Breast Pump S1 Pro(T8D04)?\nHold the container with the flange side facing up to prevent leakage from the tunnel when transferring milk from eufy Wearable Breast Pump S1 Pro(T8D04).",
+          "score": 0.014092295957284515,
+          "status": "ok"
+        },
+        "8339a09d-52c4-4484-9c52-59f4450e85bf": {
+          "evidence_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+          "source": "kb_qa",
+          "doc_id": "bp-0058",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "8339a09d-52c4-4484-9c52-59f4450e85bf",
+          "snippet": "Does eufy Wearable Breast Pump S1 Pro(T8D04) emit harmful radiation?\nNo, eufy Wearable Breast Pump S1 Pro(T8D04) does not emit harmful radiation. The eufy Wearable Breast Pump series has passed the SAR (Specific Absorption Rate) test, confirming the radiation poses no risk to health.",
+          "score": 0.013947574334898278,
+          "status": "ok"
+        },
+        "fbab33f1-3c0f-4066-9754-00d94965e95e": {
+          "evidence_id": "fbab33f1-3c0f-4066-9754-00d94965e95e",
+          "source": "kb_qa",
+          "doc_id": "bp-0126",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "fbab33f1-3c0f-4066-9754-00d94965e95e",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) flange melting during sterilization?\nThe melting of the flange during sterilization of the Breast Pump S1 Pro (T8D04) is likely due to the wrong way of sterilizing. The reason is that the heating pads in the speaker cover, plastic terminals, PCB, and two-shot silicone shrinkage are inconsistent. Silicone shrinkage is between 1% - 5%, while other parts have been",
+          "score": 0.01348560700876095,
+          "status": "ok"
+        },
+        "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2": {
+          "evidence_id": "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2",
+          "source": "kb_qa",
+          "doc_id": "bp-0038",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2",
+          "snippet": "Why is the heating function on my Breast Pump S1 Pro (T8D04) not working?\n1. Clarify the Issue: Determine whether you cannot find the right temperature, the temperature range is too large, the heating doesn't work at all, or the temperature is too high/low.\n2. If Temperature is Too High: Lower the setting and run continuously for about 10 minutes to observe changes. If still too high, stop using a",
+          "score": 0.013082039911308203,
+          "status": "ok"
+        },
+        "56595d7f-4c02-4ba9-963f-df2fce0f44be": {
+          "evidence_id": "56595d7f-4c02-4ba9-963f-df2fce0f44be",
+          "source": "kb_qa",
+          "doc_id": "bp-0084",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "56595d7f-4c02-4ba9-963f-df2fce0f44be",
+          "snippet": "Why does the upper part of eufy Wearable Breast Pump S1 Pro(T8D04) feel hotter than the lower part?\nThe heating components of eufy Wearable Breast Pump S1 Pro(T8D04) are strategically positioned on the upper portion of the flange. This design provides a fast warm-up and comfortable experience while also preventing the inadvertent heating of milk in the container below, which would reduce the risk ",
+          "score": 0.012991869918699186,
+          "status": "ok"
+        },
+        "602b367c-6fe4-4d10-a776-594d7f13fa3f": {
+          "evidence_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+          "source": "kb_qa",
+          "doc_id": "bp-0120",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+          "snippet": "Why does my Breast Pump S1 Pro (T8D04) have weak suction?\n1. Inspect the duckbill valve and diaphragm for damage: Check for cracks, chips, holes, or tears. If a part is damaged, discontinue use and purchase a replacement.\n2. Check the assembly: Ensure that the four pieces (duckbill valve, flange tunnel, diaphragm, and pump hub) are correctly assembled and perfectly sealed.\n3. Adjust the wearing po",
+          "score": 0.01245945945945946,
+          "status": "ok"
+        },
+        "29ddf43c-fbde-4211-b40c-f51e90e5b91e": {
+          "evidence_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+          "source": "kb_qa",
+          "doc_id": "bp-0107",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+          "snippet": "Why does my Breast Pump S1 Pro (T8D04) smell like burning plastic or chemicals?\nThe burning plastic or chemical smell from your Breast Pump S1 Pro (T8D04) may be due to incorrect sterilization methods, which can cause the flanges to burn and melt, rendering the equipment unusable. Reason: The heating pads in the speaker cover, plastic terminals, PCB, and two-shot silicone shrinkage are inconsisten",
+          "score": 0.012081447963800904,
+          "status": "ok"
+        },
+        "6acceacc-4bbb-4d8c-bd77-0459f3896a1e": {
+          "evidence_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+          "source": "kb_qa",
+          "doc_id": "bp-0043",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+          "snippet": "What should I do if my Breast Pump S1 Pro (T8D04) has no suction at all?\n1. Factory Reset: Press and hold the Power button and + button simultaneously for about 5 seconds to restore factory settings, then try again.\n2. Test Main Unit: Remove the pump hub, place the suction port against your palm, and start the device to test suction. If you feel suction, the main unit works fine and the issue may ",
+          "score": 0.011963146704464918,
+          "status": "ok"
+        },
+        "b52939ec-687e-4569-b2d2-e407ee3244ea": {
+          "evidence_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "source": "kb_qa",
+          "doc_id": "bp-0123",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "b52939ec-687e-4569-b2d2-e407ee3244ea",
+          "snippet": "Why does my Breast Pump S1 Pro (T8D04) motor keep making abnormal noise?\n1. Identify the Problem\n1. Is the noise continuous or intermittent?\n2. When does it occur? (Is it present upon startup / During breast pumping / Only at high speed)\n3. Is it accompanied by decreased suction or other performance abnormalities?\n4. Please record a short video or audio clip (at least 10 seconds) to help us remote",
+          "score": 0.011634826182273725,
+          "status": "ok"
+        },
+        "c371c194-96f3-4934-bace-6f1684a0d2fa": {
+          "evidence_id": "c371c194-96f3-4934-bace-6f1684a0d2fa",
+          "source": "kb_qa",
+          "doc_id": "bp-0124",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "c371c194-96f3-4934-bace-6f1684a0d2fa",
+          "snippet": "Why is my Breast Pump S1 Pro (T8D04) heating function not working?\n1. Loose connections:\n- Firstly, press the heating pins firmly into the container oval notch.\n- Then, install the pump hub and push the hub firmly to seal the gap between the hub and the diaphragm.\n2. Dirty or corroded contacts:\n- Over time, heating contacts can accumulate dirt, debris, or oxidation, which can interfere with the el",
+          "score": 0.011556397551734187,
+          "status": "ok"
+        },
+        "eda2e4f1-6f07-4066-82e1-62aa68eb46b7": {
+          "evidence_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+          "source": "kb_qa",
+          "doc_id": "bp-0114",
+          "doc_version": "0cc02e6531d6",
+          "chunk_id": "eda2e4f1-6f07-4066-82e1-62aa68eb46b7",
+          "snippet": "Why did my Breast Pump S1 Pro (T8D04) stop working completely?\n1. Breast pump cannot be turned on\n- Unable to start\n1. Try pressing and holding the power button for 12 seconds to reset, then check if it can be turned on.\n2. Ensure that the indicator lights inside the charging case and the breast pump indicator light are both lit.\n3. Try placing the breast pump in a different charging case to charg",
+          "score": 0.011499118165784831,
+          "status": "ok"
+        }
+      },
+      "current_evidence_ids": [
+        "59f873ed-253d-4d21-b39e-271256b6072c",
+        "99ba42d1-7540-46f7-b632-8a605b1e49a8",
+        "6a98604a-6461-49a4-b817-64df1ff87d5c",
+        "94f9b7a6-b334-4e14-baf5-8fd191d9b8e9",
+        "f6012345-7c7b-4e8c-a1ed-58037ef3d4d3",
+        "8339a09d-52c4-4484-9c52-59f4450e85bf",
+        "fbab33f1-3c0f-4066-9754-00d94965e95e",
+        "ef290cc5-b926-4a6a-ba97-d4f9fbd8aec2",
+        "56595d7f-4c02-4ba9-963f-df2fce0f44be",
+        "602b367c-6fe4-4d10-a776-594d7f13fa3f",
+        "29ddf43c-fbde-4211-b40c-f51e90e5b91e",
+        "6acceacc-4bbb-4d8c-bd77-0459f3896a1e",
+        "b52939ec-687e-4569-b2d2-e407ee3244ea",
+        "c371c194-96f3-4934-bace-6f1684a0d2fa",
+        "eda2e4f1-6f07-4066-82e1-62aa68eb46b7"
+      ],
+      "image_observations": [],
+      "knowledge_status": "ok",
+      "plans_ranked": [],
+      "retrieval_basis": {
+        "issue_revision": 1,
+        "plans_version": "0cc02e6531d6",
+        "sku": "T8D04"
+      },
+      "retrieval_rounds": 1,
+      "rewrite_used": false,
+      "evidence_quality": null,
+      "query": "left one does work",
+      "error_codes": [],
+      "diagnose_outcome": {
+        "mode": "clarify",
+        "plan_id": "qa_bp_0020",
+        "question": "Does the right side of your S1 Pro pump have no suction or noticeably weaker suction compared to the left side?",
+        "evidence_ids": [
+          "59f873ed-253d-4d21-b39e-271256b6072c"
+        ],
+        "confidence": 0.7,
+        "reason": "needs_confirmation",
+        "attempts": 1
+      },
+      "plan_cursor": null,
+      "steps_executed": [],
+      "displayed_knowledge_nodes": [],
+      "step_attempts": [],
+      "operation_conditions": {
+        "paused": false,
+        "resources": {},
+        "resource_sources": {},
+        "resource_asks": {},
+        "blockers": [],
+        "skip_baseline": 0,
+        "continue_input_id": null
+      },
+      "counters": {},
+      "exhausted_plans": [],
+      "next_action": null,
+      "receipt": null,
+      "vision_status": null,
+      "processed_fault_image_ids": [],
+      "visual_product": null,
+      "visible_parts": [],
+      "service_context": {},
+      "context_sources": {},
+      "warranty": null,
+      "sop_evidence": {},
+      "awaiting_evidence": [],
+      "logistics_announced": false,
+      "proposal": null,
+      "case_id": null,
+      "execution": null,
+      "gate_result": null,
+      "requested_remedy": null,
+      "consult_intent": null,
+      "last_consult_params": {},
+      "consult_params": {},
+      "consult_attempts": 0,
+      "consult_answered": false,
+      "emotion_trend": "stable",
+      "emotion_actions": [],
+      "unresolved_turns": 1,
+      "emotion": {
+        "level": null,
+        "strategy": "normal"
+      },
+      "human_request_info": false,
+      "human_decision_id": null,
+      "task_queue": [],
+      "emotion_track": [],
+      "fault_localization": null,
+      "image_quality": null,
+      "retake_skipped": false,
+      "retake_attempts": 0,
+      "issue_id": "460556d96d1c58869c4e1ed7a561b782",
+      "status": "open",
+      "opened_at": "2026-10-10T00:29:16.470789+00:00",
+      "opened_by_input_id": "6250d55c83ca485b94ad15763a13170e",
+      "title": "left one does work",
+      "facts": [
+        {
+          "fact_id": "99903d5405f450828dd84be06a4cf64e",
+          "kind": "symptom",
+          "context_field": null,
+          "value": "left one does work",
+          "issue_id": "460556d96d1c58869c4e1ed7a561b782",
+          "device_ref_id": "578bcc675cc05e28b19d723784227203",
+          "status": "active",
+          "revision": 1,
+          "source_kind": "user_report",
+          "source": "user_statement",
+          "subject": "left one",
+          "polarity": "affirmed",
+          "timing": null,
+          "source_entry_ids": [
+            "6250d55c83ca485b94ad15763a13170e"
+          ],
+          "recorded_at": "2026-10-10T00:29:16.470789+00:00",
+          "occurred_at": null,
+          "time_expression": null,
+          "precision": null,
+          "quote": "the left one does work"
+        }
+      ],
+      "issue_revision": 1,
+      "device_ref": {
+        "device_ref_id": "578bcc675cc05e28b19d723784227203",
+        "category": "pump",
+        "identity_status": "provisional",
+        "source_ids": [
+          "6250d55c83ca485b94ad15763a13170e"
+        ]
+      },
+      "handoff": {
+        "status": "not_requested"
+      }
+    }
+  },
+  "turn_decision": {
+    "input_id": "6250d55c83ca485b94ad15763a13170e",
+    "primary_intent": "report_problem",
+    "answer_scope": "focus",
+    "answer_request": null,
+    "secondary_intents": [],
+    "target_issue_id": "460556d96d1c58869c4e1ed7a561b782",
+    "reply_mode": "diagnose",
+    "clarification": null,
+    "allowed_operations": true,
+    "escalation_trigger": null,
+    "source_refs": [
+      "6250d55c83ca485b94ad15763a13170e"
+    ],
+    "patches": [
+      {
+        "op": "add",
+        "fact_id": "99903d5405f450828dd84be06a4cf64e",
+        "input_id": "6250d55c83ca485b94ad15763a13170e"
+      }
+    ],
+    "switched": true,
+    "pending_changes": [],
+    "resumed_pending": false,
+    "business_switched": false,
+    "business_ambiguous": false,
+    "operation_changed": false,
+    "diagnostic_request": true,
+    "human_request_source": null,
+    "request_rejections": []
+  },
+  "guide_trace": null,
+  "diagnose_outcome": {
+    "mode": "clarify",
+    "plan_id": "qa_bp_0020",
+    "question": "Does the right side of your S1 Pro pump have no suction or noticeably weaker suction compared to the left side?",
+    "evidence_ids": [
+      "59f873ed-253d-4d21-b39e-271256b6072c"
+    ],
+    "confidence": 0.7,
+    "reason": "needs_confirmation",
+    "attempts": 1
+  },
+  "model_trace": [
+    {
+      "task": "intake",
+      "model_used": "dashscope/qwen3.7-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "diagnose.synthesize",
+      "model_used": "deepseek/deepseek-flash",
+      "lane": "domestic",
+      "attempts": 1
+    },
+    {
+      "task": "diagnose.synthesize",
+      "model_used": "deepseek/deepseek-flash",
+      "lane": "domestic",
+      "attempts": 1
+    }
+  ],
+  "plans_ranked": [],
+  "symptoms": [
+    "left one does work"
+  ],
+  "next_action": null,
+  "counters": {},
+  "stage": "diagnose",
+  "case_status": null,
+  "_verify": null,
+  "unparsed_problem": null,
+  "risk_cases": [],
+  "safety_flags": null
+}

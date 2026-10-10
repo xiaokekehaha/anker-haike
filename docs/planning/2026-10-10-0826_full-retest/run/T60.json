@@ -1,0 +1,1711 @@
+{
+  "id": "T60",
+  "started_at": "2026-10-10T00:29:47.479222+00:00",
+  "input": "This app is shit . I just want my hoover to clean with out all this bullshit",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "This app is shit . I just want my hoover to clean with out all this bullshit",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "resumed": false,
+          "event_id": "b98c345997db4a70b63eccfb5ce770a6",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:47.596588+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "payload": {
+            "kind": "message",
+            "text": "This app is shit . I just want my hoover to clean with out all this bullshit",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "6650f99d83824dc8a0dfc2907f4848c3",
+          "input_id": "518ae28f4fb54970affe4d06c2860c83",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:29:47.596588+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 3,
+          "event_id": "2ecc4946819946ef8df5e3752760badc",
+          "recorded_at": "2026-10-10T00:29:47.627268+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 4,
+          "event_id": "b709ab79e02c419fb24753aafe6a153b",
+          "recorded_at": "2026-10-10T00:29:51.505538+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 5,
+          "event_id": "8003982e51ff4d4ea4874c98816c2a98",
+          "recorded_at": "2026-10-10T00:29:51.523723+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0773c15170e8594ca7804b7dd7c98c99",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 6,
+          "event_id": "24ab6dbdf23740b480435386540d127a",
+          "recorded_at": "2026-10-10T00:29:51.532484+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "0773c15170e8594ca7804b7dd7c98c99",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "未找到匹配的官方说明",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 7,
+          "event_id": "b89cc16669614f88a1cf02ddf183340b",
+          "recorded_at": "2026-10-10T00:29:51.534571+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 8,
+          "event_id": "745aa8badc1248fdbd7164c5038f4f41",
+          "recorded_at": "2026-10-10T00:29:51.536275+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 9,
+          "event_id": "0025519c531c4320b045a81ff0872ed6",
+          "recorded_at": "2026-10-10T00:29:52.135170+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "input_id": "518ae28f4fb54970affe4d06c2860c83",
+          "resolved_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+              "title": "hoover to clean with out all this bullshit",
+              "status": "open"
+            }
+          ],
+          "event_id": "da5b85dcc45956edb34d31b73679a3df",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:29:52.151716+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:29:52.118934+00:00",
+          "event_id": "d4b3a901f30955ea97eaaee938cc0721",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:29:52.154006+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+          "reply_to_input_id": "518ae28f4fb54970affe4d06c2860c83",
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "event_id": "a1d5ed1a09a958a1b25e90a7b07e5680",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:29:52.156257+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+          "delta": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "2ef30737db255e3796dd4c38205cbace",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:29:52.157651+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+          "status": "completed",
+          "event_id": "60e0c02940bc586f980bb52f90856a55",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 15,
+          "recorded_at": "2026-10-10T00:29:52.159713+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "hoover to clean with out all this bullshit",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                "intent": "report_problem",
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "request_quote": "I just want my hoover to clean with out all this bullshit",
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "active",
+                "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "扫地机器人（型号未确认）",
+                "symptoms": "hoover to clean with out all this bullshit（hoover）"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "6c49486278c3516a897861dd77c0e66a",
+          "revision": 1,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "updated_at": "2026-10-10T00:29:47.596588+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "716abfd615da563a8348f35c39a6d316",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 16,
+          "recorded_at": "2026-10-10T00:29:52.161221+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "summary_id": "6c49486278c3516a897861dd77c0e66a",
+          "revision": 1,
+          "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-10T00:29:47.596588+00:00",
+          "event_id": "92c425bd405550d89e6a1c1a3e1b1d49",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 17,
+          "recorded_at": "2026-10-10T00:29:52.164712+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "6fd3e43b1f995b9c9fcf2ce1eec29035",
+          "recorded_at": "2026-10-10T00:29:52.166548+00:00",
+          "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+          "seq": 18,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "10e49755455047ebb9830c2bec5d4878",
+  "stop_reason": "awaiting_human",
+  "snapshot": {
+    "session_id": "10e49755455047ebb9830c2bec5d4878",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:29:47.596588+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "kind": "user_message",
+        "id": "518ae28f4fb54970affe4d06c2860c83",
+        "text": "This app is shit . I just want my hoover to clean with out all this bullshit",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:29:51.532484+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "0773c15170e8594ca7804b7dd7c98c99",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "未找到匹配的官方说明"
+      },
+      {
+        "at": "2026-10-10T00:29:52.154006+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "kind": "case_changed",
+        "card_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+        "version": 1,
+        "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "当前产品的这一问题没有可用的排障计划",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:29:52.118934+00:00"
+      },
+      {
+        "at": "2026-10-10T00:29:52.156257+00:00",
+        "first_seq": 13,
+        "last_seq": 15,
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "kind": "assistant_message",
+        "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+        "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "518ae28f4fb54970affe4d06c2860c83",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-10T00:29:52.161221+00:00",
+        "first_seq": 16,
+        "last_seq": 16,
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "kind": "escalation_summary",
+        "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+        "summary": {
+          "product": "扫地机器人（型号未确认）",
+          "problem": "hoover to clean with out all this bullshit",
+          "observations": [],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+              "intent": "report_problem",
+              "status": "active",
+              "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+              "answer_scope": "focus",
+              "request_quote": "I just want my hoover to clean with out all this bullshit",
+              "answer_request": null,
+              "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "level": "angry",
+              "source": "model",
+              "input_id": "518ae28f4fb54970affe4d06c2860c83"
+            }
+          ],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "扫地机器人（型号未确认）",
+              "symptoms": "hoover to clean with out all this bullshit（hoover）"
+            },
+            "missing": [],
+            "pending_requests": [
+              {
+                "intent": "report_problem",
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "status": "active"
+              }
+            ]
+          }
+        },
+        "summary_id": "6c49486278c3516a897861dd77c0e66a",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:29:47.596588+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+    "issues": [
+      {
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "status": "open",
+        "title": "hoover to clean with out all this bullshit",
+        "task_queue": [
+          {
+            "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+            "intent": "report_problem",
+            "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+            "request_quote": "I just want my hoover to clean with out all this bullshit",
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "waiting_human",
+            "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 18,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "kind": "escalation_summary",
+        "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+        "summary": {
+          "product": "扫地机器人（型号未确认）",
+          "problem": "hoover to clean with out all this bullshit",
+          "observations": [],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+              "intent": "report_problem",
+              "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+              "request_quote": "I just want my hoover to clean with out all this bullshit",
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "active",
+              "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "input_id": "518ae28f4fb54970affe4d06c2860c83",
+              "level": "angry",
+              "source": "model"
+            }
+          ],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "扫地机器人（型号未确认）",
+              "symptoms": "hoover to clean with out all this bullshit（hoover）"
+            },
+            "missing": [],
+            "pending_requests": [
+              {
+                "intent": "report_problem",
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "status": "active"
+              }
+            ]
+          }
+        },
+        "summary_id": "6c49486278c3516a897861dd77c0e66a",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:29:47.596588+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "journey": {
+    "session": {
+      "session_id": "10e49755455047ebb9830c2bec5d4878",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:29:47.599532Z",
+      "last_run_at": "2026-10-10T00:29:52.167817Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "This app is shit . I just want my hoover to clean with out all this bullshit",
+      "product_state": "category_only",
+      "sku": null,
+      "category": "robot_vacuum",
+      "emotion_level": "angry",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "no_match",
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 4568,
+      "model_calls": 2,
+      "tokens_in": 5663,
+      "tokens_out": 448,
+      "raw_available_until": "2026-10-17T00:29:52.167817Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+        "session_id": "10e49755455047ebb9830c2bec5d4878",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:29:47.599532Z",
+        "ended_at": "2026-10-10T00:29:52.167791Z",
+        "duration_ms": 4568,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 4559,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3835,
+            "tokens_in": 4558,
+            "tokens_out": 420,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:51.455046Z"
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "node": "summarize",
+            "task": "escalate.summary",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 571,
+            "tokens_in": 1105,
+            "tokens_out": 28,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:52.092834Z"
+          }
+        ],
+        "tokens_in": 5663,
+        "tokens_out": 448,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:47.599532Z",
+            "duration_ms": 3902,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3648,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 145,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6291
+                    }
+                  ],
+                  "actual_input_tokens": 4558
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:51.501707Z",
+            "duration_ms": 21,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "category_only"
+            }
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:29:51.523706Z",
+            "duration_ms": 12,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "escalate_reason": "R5",
+              "knowledge_status": "no_match",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 4,
+            "node": "escalate",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:29:51.536259Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 5,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:29:51.536265Z",
+            "duration_ms": 592,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize",
+              "context_metrics": [
+                {
+                  "task": "escalate.summary",
+                  "event": "context_built",
+                  "tokens": 1156,
+                  "truncated": false,
+                  "max_tokens": 7687,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 215,
+                    "current": 145,
+                    "history": 0,
+                    "authority": 796
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 262,
+                    "risks": 2,
+                    "handoff": 9,
+                    "decision": 202,
+                    "timezone": 7,
+                    "task_data": 27,
+                    "issue_index": 148,
+                    "step_attempts": 2,
+                    "active_issue_id": 29,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 42,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "escalate.summary",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 1253
+                    }
+                  ],
+                  "actual_input_tokens": 1105
+                }
+              ]
+            }
+          },
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-10T00:29:52.128625Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "909a961706f045c8b74dd6d23ebe1b6e",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "no_match",
+            "allowed_count": 0,
+            "hits": 0,
+            "top_score": null,
+            "latency_ms": 0,
+            "query": "扫地机器人 hoover to clean with out all this bullshit",
+            "created_at": "2026-10-10T00:29:51.510089Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "10e49755455047ebb9830c2bec5d4878",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:29:47.596588+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "kind": "user_message",
+          "id": "518ae28f4fb54970affe4d06c2860c83",
+          "text": "This app is shit . I just want my hoover to clean with out all this bullshit",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:29:51.532484+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "0773c15170e8594ca7804b7dd7c98c99",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "未找到匹配的官方说明"
+        },
+        {
+          "at": "2026-10-10T00:29:52.154006+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "kind": "case_changed",
+          "card_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "version": 1,
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:29:52.118934+00:00"
+        },
+        {
+          "at": "2026-10-10T00:29:52.156257+00:00",
+          "first_seq": 13,
+          "last_seq": 15,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "kind": "assistant_message",
+          "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+          "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "518ae28f4fb54970affe4d06c2860c83",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-10T00:29:52.161221+00:00",
+          "first_seq": 16,
+          "last_seq": 16,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "kind": "escalation_summary",
+          "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "hoover to clean with out all this bullshit",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                "answer_scope": "focus",
+                "request_quote": "I just want my hoover to clean with out all this bullshit",
+                "answer_request": null,
+                "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "518ae28f4fb54970affe4d06c2860c83"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "扫地机器人（型号未确认）",
+                "symptoms": "hoover to clean with out all this bullshit（hoover）"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "6c49486278c3516a897861dd77c0e66a",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:29:47.596588+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+      "issues": [
+        {
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "status": "open",
+          "title": "hoover to clean with out all this bullshit",
+          "task_queue": [
+            {
+              "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+              "intent": "report_problem",
+              "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+              "request_quote": "I just want my hoover to clean with out all this bullshit",
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "waiting_human",
+              "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 18,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+          "kind": "escalation_summary",
+          "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+          "summary": {
+            "product": "扫地机器人（型号未确认）",
+            "problem": "hoover to clean with out all this bullshit",
+            "observations": [],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                "intent": "report_problem",
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "request_quote": "I just want my hoover to clean with out all this bullshit",
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "active",
+                "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "扫地机器人（型号未确认）",
+                "symptoms": "hoover to clean with out all this bullshit（hoover）"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "6c49486278c3516a897861dd77c0e66a",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:29:47.596588+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+      "session_id": "10e49755455047ebb9830c2bec5d4878",
+      "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+      "sku": null,
+      "category": null,
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:29:52.102033+00:00",
+      "updated_at": "2026-10-10T00:29:52.118934+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 4543,
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "当前产品的这一问题没有可用的排障计划"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:52.117531+00:00"
+        },
+        {
+          "id": 4544,
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:52.117565+00:00"
+        },
+        {
+          "id": 4545,
+          "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null,
+              "rule_id": "R5"
+            },
+            "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "problem": "hoover to clean with out all this bullshit",
+            "product": "扫地机器人（型号未确认）",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "扫地机器人（型号未确认）",
+                "symptoms": "hoover to clean with out all this bullshit（hoover）"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "intent": "report_problem",
+                  "status": "active"
+                }
+              ]
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                "answer_scope": "focus",
+                "request_quote": "I just want my hoover to clean with out all this bullshit",
+                "answer_request": null,
+                "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.synthesize",
+                "attempts": 1,
+                "model_used": "skipped"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "518ae28f4fb54970affe4d06c2860c83"
+              }
+            ],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:52.118934+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "当前产品的这一问题没有可用的排障计划",
+          "cause": null,
+          "rule_id": "R5"
+        },
+        "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+        "emotion": {
+          "level": "angry",
+          "strategy": "direct_resolution"
+        },
+        "problem": "hoover to clean with out all this bullshit",
+        "product": "扫地机器人（型号未确认）",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "business": {
+          "kind": "device_fault",
+          "known": {
+            "product": "扫地机器人（型号未确认）",
+            "symptoms": "hoover to clean with out all this bullshit（hoover）"
+          },
+          "missing": [],
+          "pending_requests": [
+            {
+              "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+              "intent": "report_problem",
+              "status": "active"
+            }
+          ]
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+            "intent": "report_problem",
+            "status": "active",
+            "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+            "answer_scope": "focus",
+            "request_quote": "I just want my hoover to clean with out all this bullshit",
+            "answer_request": null,
+            "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.synthesize",
+            "attempts": 1,
+            "model_used": "skipped"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [],
+        "emotion_track": [
+          {
+            "level": "angry",
+            "source": "model",
+            "input_id": "518ae28f4fb54970affe4d06c2860c83"
+          }
+        ],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "10e49755455047ebb9830c2bec5d4878",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-10T00:29:47.596588+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "kind": "user_message",
+            "id": "518ae28f4fb54970affe4d06c2860c83",
+            "text": "This app is shit . I just want my hoover to clean with out all this bullshit",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:29:51.532484+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "0773c15170e8594ca7804b7dd7c98c99",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "未找到匹配的官方说明"
+          },
+          {
+            "at": "2026-10-10T00:29:52.154006+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "kind": "case_changed",
+            "card_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "version": 1,
+            "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "当前产品的这一问题没有可用的排障计划",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:29:52.118934+00:00"
+          },
+          {
+            "at": "2026-10-10T00:29:52.156257+00:00",
+            "first_seq": 13,
+            "last_seq": 15,
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "kind": "assistant_message",
+            "message_id": "aaf9c6473cb756baa6cfabbee84d76fa",
+            "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "518ae28f4fb54970affe4d06c2860c83",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-10T00:29:52.161221+00:00",
+            "first_seq": 16,
+            "last_seq": 16,
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "kind": "escalation_summary",
+            "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+            "summary": {
+              "product": "扫地机器人（型号未确认）",
+              "problem": "hoover to clean with out all this bullshit",
+              "observations": [],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "intent": "report_problem",
+                  "status": "active",
+                  "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                  "answer_scope": "focus",
+                  "request_quote": "I just want my hoover to clean with out all this bullshit",
+                  "answer_request": null,
+                  "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "level": "angry",
+                  "source": "model",
+                  "input_id": "518ae28f4fb54970affe4d06c2860c83"
+                }
+              ],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "扫地机器人（型号未确认）",
+                  "symptoms": "hoover to clean with out all this bullshit（hoover）"
+                },
+                "missing": [],
+                "pending_requests": [
+                  {
+                    "intent": "report_problem",
+                    "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                    "status": "active"
+                  }
+                ]
+              }
+            },
+            "summary_id": "6c49486278c3516a897861dd77c0e66a",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:29:47.596588+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+        "issues": [
+          {
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "status": "open",
+            "title": "hoover to clean with out all this bullshit",
+            "task_queue": [
+              {
+                "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                "intent": "report_problem",
+                "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                "request_quote": "I just want my hoover to clean with out all this bullshit",
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "waiting_human",
+                "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 18,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "c47a1a6f9bc65fef915a6b9ab11ece04",
+            "kind": "escalation_summary",
+            "card_id": "f3c922842c895257a0c49aa1ed30cb1c",
+            "summary": {
+              "product": "扫地机器人（型号未确认）",
+              "problem": "hoover to clean with out all this bullshit",
+              "observations": [],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "9db30306-1b91-5e04-b8de-b1b3a95fc083",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "9212f9d003f353c08bdc58ee868be3d4",
+                  "intent": "report_problem",
+                  "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                  "request_quote": "I just want my hoover to clean with out all this bullshit",
+                  "answer_request": null,
+                  "answer_scope": "focus",
+                  "status": "active",
+                  "created_input_id": "518ae28f4fb54970affe4d06c2860c83",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "input_id": "518ae28f4fb54970affe4d06c2860c83",
+                  "level": "angry",
+                  "source": "model"
+                }
+              ],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "扫地机器人（型号未确认）",
+                  "symptoms": "hoover to clean with out all this bullshit（hoover）"
+                },
+                "missing": [],
+                "pending_requests": [
+                  {
+                    "intent": "report_problem",
+                    "quote": "This app is shit . I just want my hoover to clean with out all this bullshit",
+                    "status": "active"
+                  }
+                ]
+              }
+            },
+            "summary_id": "6c49486278c3516a897861dd77c0e66a",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:29:47.596588+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": [],
+  "intent": "report_problem",
+  "seconds": 5.93,
+  "complete": true
+}

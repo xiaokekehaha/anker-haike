@@ -1,0 +1,1835 @@
+{
+  "id": "T12",
+  "started_at": "2026-10-10T00:27:40.992615+00:00",
+  "input": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "resumed": false,
+          "event_id": "4ed7cf8fd1154f2e905b55de2a345bf2",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:41.101333+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "b8af8895b6f44e16ba5400a96f59c5ab",
+          "input_id": "3041ff8450e8490a8a527c1a73ed9aef",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:27:41.101333+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 3,
+          "event_id": "dfc42e2526ce439095706b1aeb4861b0",
+          "recorded_at": "2026-10-10T00:27:41.183815+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 4,
+          "event_id": "5c939068ceaa4ae49403d12a4e3705db",
+          "recorded_at": "2026-10-10T00:27:44.669644+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 5,
+          "event_id": "2b22cadff6814678bee27af6f2429421",
+          "recorded_at": "2026-10-10T00:27:44.692563+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "810e36897cbb556597f0c5be67ae67c3",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 6,
+          "event_id": "c6e6dd5cb8194039a425ed235fd050a2",
+          "recorded_at": "2026-10-10T00:27:44.694793+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "810e36897cbb556597f0c5be67ae67c3",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 7,
+          "event_id": "e059828587ee4c6699c7157e0ba0fa57",
+          "recorded_at": "2026-10-10T00:27:47.651961+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 8,
+          "event_id": "9bd7f4df2c294b48924b6e377bb20356",
+          "recorded_at": "2026-10-10T00:27:49.519046+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 9,
+          "event_id": "ca8eb2b742954d1e86324f1a3274fb19",
+          "recorded_at": "2026-10-10T00:27:49.523930+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "input_id": "3041ff8450e8490a8a527c1a73ed9aef",
+          "resolved_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+              "title": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+              "status": "open"
+            }
+          ],
+          "event_id": "783f5613b2c95235bdc7bc5dca1e258f",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:27:49.545808+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "source": "kb_qa",
+              "doc_id": "rv-0021",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+              "source": "kb_qa",
+              "doc_id": "rv-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+              "snippet": "what should I do when T2353 Omni E25 has 6011 Error: Base station clean water tank is empty, please add water/Eufy E25 Clean water tank is full but still says it’s empty/6011-The water in the clean water tank is insufficient？\n*Could you please check if there is water in the base station's clean water tank? If not, please refill it and restart the cleaning task --- this should resolve the issue in ",
+              "score": 0.015905707196029774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "source": "kb_qa",
+              "doc_id": "rv-0148",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "source": "kb_qa",
+              "doc_id": "rv-0170",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+              "score": 0.01520966595593461,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+              "source": "kb_qa",
+              "doc_id": "rv-0210",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up sweep-only performs sweeping and mopping /Setting up vacuuming only but mopping /Mop activation when in vacuuming only mode /Wash mopping cloths when in vacuuming only mode /Tasks should not include mopping/The Robovac Omni E28/E25 switches to vacuum only mode or give instructions to just vacuum, but he always uses his mop?\n1. Afte",
+              "score": 0.015165165165165164,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "source": "kb_qa",
+              "doc_id": "rv-0050",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+              "score": 0.0149375,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0176",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up vacuum and mop mode, but it performs sweeping only /Setting up vacuuming-only mode goes into wash mode /Vacuuming only without mopping /Sweeping only without mopping?\nSet the sweeping and mopping mode but the machine performs sweep-only please follow the steps below to troubleshoot: It is possible that the carpet detection wave sen",
+              "score": 0.014492753623188404,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "source": "kb_qa",
+              "doc_id": "rv-0202",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+              "score": 0.013599419448476051,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+              "source": "kb_qa",
+              "doc_id": "rv-0166",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Poor self-empty function /Dustbin clogged or Overfilled and can't be emptied /Can't suck rubbish into the dust bag on the base station?\nIf there is a problem of dust box clogging, it is recommended that you turn on the pet mode in APP, if you are a multi-pet household, it is recommended that you set the dust collection frequency to 15min dust co",
+              "score": 0.013073917290784758,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0168",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is not cleaning/missing the area around the base station/the area around the base station is dirty?\nThe area around the Robot Vacuum base station is not automatically cleaned and thus may appear to be a bit dirty, this is indeed a trade-off in design to protect the equipment and optimise the overall experience; the area only accounts for a very ",
+              "score": 0.013061224489795919,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "source": "kb_qa",
+              "doc_id": "rv-0180",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+              "score": 0.01305064429127959,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "source": "kb_qa",
+              "doc_id": "rv-0119",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+              "score": 0.012975352112676055,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+              "source": "kb_qa",
+              "doc_id": "rv-0161",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 base station tray is dirty?\nThe rubbish on the base station tray comes from when the 'deep self-cleaning' cleans the 'roller mop', the current technology is not yet able to achieve fully automatic cleaning, the first time you use the Robot Vacuum home is relatively dirty in the case of the tray dirty problem will be exacerbated, it is recommende",
+              "score": 0.012849910661107801,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+              "source": "kb_qa",
+              "doc_id": "rv-0211",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+              "snippet": "Please find the link to the cleaning guide for the dust box and filter here: 2.The software logic sets the dust collection to start only when the cleaning time is greater than 15 minutes to avoid noise caused by starting the base station during peak hours. If the cleaning time of a single task is less than 15 minutes, dust collection will be performed in the next task;",
+              "score": 0.012474515800203874,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "909fbab0-1c66-437b-8381-235973339f12",
+              "source": "kb_qa",
+              "doc_id": "rv-0084",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "909fbab0-1c66-437b-8381-235973339f12",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Dirty water drips /Mopping leaks /Cleaning leaks /Dirty water leaks /Dirty water leaks everywhere /Dirty water drips left behind when cleaning /Dirty water traces left behind on the floor /Small water stains left behind on the floor /small puddles of water while mopping/Black liquid comes out when cleaning /Water residue left behind everywhere w",
+              "score": 0.012391975308641974,
+              "status": "ok"
+            }
+          ],
+          "event_id": "77dd68b323d454848c0f01ac4dc0921d",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:27:49.549218+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "pending_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "f590446284a05cf891aa47cc379564af",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:27:49.557271+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0021",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insuffic…",
+            "instruction": "To resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base station. If it's empty, fill it with water and then restart the cleaning task. In most cases, this simple step will resolve the problem. If your robot vacuum starts a task on the same floor where the base station is located, and the issue persists after refilling the water tank and starting a new mopping task, please feel free to contact us for further assistance. Please note: The alert you see is just a reminder from the device. When the robot is operating on a floor without a base station, and the clean water runs low, it will automatically switch to pure vacuum mode to continue the cleaning task. This is a normal protective mechanism designed to ensure the task can still run smoothly even when you're not at home. If the problem continues after refilling the water and starting a new mopping task, don't hesitate to reach out to us again. We're here to help.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e9626a00-6cb2-4d22-9e44-6f23f2862f47"
+            ],
+            "primary_evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "event_id": "0902cdc65c6255d591472a7ee9f0e9ef",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:27:49.561529+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "input_token": "10d4a841dada501c89b2c0c737e7ae19",
+          "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+          "version": 1,
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 15,
+          "event_id": "c0337050692b4ac58ae765699c9bff95",
+          "recorded_at": "2026-10-10T00:27:49.563189+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b81c49c96e4753ff842e65f2be0bdb24",
+          "recorded_at": "2026-10-10T00:27:49.565489+00:00",
+          "run_id": "a06c09b6d68247c78966ff512a372698",
+          "seq": 16,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 17,
+          "type": "run_started",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "resumed": false,
+          "event_id": "1574f6c0a0224904a6244e402bb5c91a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:49.619117+00:00"
+        },
+        {
+          "seq": 18,
+          "type": "input_received",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "cdc52e94247148288f0b2b78f3ed015f",
+            "input_token": "10d4a841dada501c89b2c0c737e7ae19",
+            "target_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "expected_version": 1
+          },
+          "event_id": "24ec811e599f49908d6c503e5e03cac4",
+          "input_id": "cdc52e94247148288f0b2b78f3ed015f",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:27:49.619117+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 19,
+          "event_id": "9363f4d648ac4d41851a3305b09d9e2a",
+          "recorded_at": "2026-10-10T00:27:49.635495+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 20,
+          "event_id": "cea2905afcfe4b058ad444c8efbbd07d",
+          "recorded_at": "2026-10-10T00:27:49.642645+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "input_id": "cdc52e94247148288f0b2b78f3ed015f",
+          "resolved_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+              "title": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+              "status": "open"
+            }
+          ],
+          "event_id": "70ca55306dcf5c44aa62898dbb86b221",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:27:49.662269+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "pending_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "64ddb7bab67b52d89772ad93d803e707",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:27:49.663614+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+          "case_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "version": 2,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:49.635734+00:00",
+          "event_id": "6a94932d0acb50c886091a2496f3d472",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:27:49.665776+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "2da7c2fb3b265c0cb70384b585591579",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "reply_to_input_id": "cdc52e94247148288f0b2b78f3ed015f",
+          "event_id": "34bd816dccb457e2811724838829c452",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:27:49.667068+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "2da7c2fb3b265c0cb70384b585591579",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "26d4121e17d25cbf9ea849362b41f92a",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 26,
+          "recorded_at": "2026-10-10T00:27:49.667945+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "2da7c2fb3b265c0cb70384b585591579",
+          "status": "completed",
+          "event_id": "8187fe657df952a490178ec499cbb0c9",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 27,
+          "recorded_at": "2026-10-10T00:27:49.669411+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "pending_id": "98c6f94dfe2e52acb15ef28f44e352f2",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "225b77ec588e5c29a58935f5f9844ed3",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 28,
+          "recorded_at": "2026-10-10T00:27:49.670260+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "input_token": "b0b3e41129d05cbe9a26b5ebcb9549d1",
+          "card_id": "98c6f94dfe2e52acb15ef28f44e352f2",
+          "version": 2,
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 29,
+          "event_id": "cce5d2cf9c354f0b80c04a990b93d5a8",
+          "recorded_at": "2026-10-10T00:27:49.670946+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "fa06126a44255f599fea6aae1784ae88",
+          "recorded_at": "2026-10-10T00:27:49.672314+00:00",
+          "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+          "seq": 30,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "aa9282648b174adab9895efe905097e9",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "aa9282648b174adab9895efe905097e9",
+    "version": 2,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+      "kind": "upload_receipt",
+      "input_token": "b0b3e41129d05cbe9a26b5ebcb9549d1",
+      "card_id": "98c6f94dfe2e52acb15ef28f44e352f2",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:27:41.101333+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "user_message",
+        "id": "3041ff8450e8490a8a527c1a73ed9aef",
+        "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:27:44.694793+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "810e36897cbb556597f0c5be67ae67c3",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源（部分截断）"
+      },
+      {
+        "at": "2026-10-10T00:27:49.549420Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "source": "kb_qa",
+            "doc_id": "rv-0021",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+            "score": 0.016393442622950817,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+            "source": "kb_qa",
+            "doc_id": "rv-0112",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+            "snippet": "what should I do when T2353 Omni E25 has 6011 Error: Base station clean water tank is empty, please add water/Eufy E25 Clean water tank is full but still says it’s empty/6011-The water in the clean water tank is insufficient？\n*Could you please check if there is water in the base station's clean water tank? If not, please refill it and restart the cleaning task --- this should resolve the issue in ",
+            "score": 0.015905707196029774,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+            "source": "kb_qa",
+            "doc_id": "rv-0148",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+            "score": 0.01544477028347996,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+            "source": "kb_qa",
+            "doc_id": "rv-0170",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+            "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+            "score": 0.01520966595593461,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+            "source": "kb_qa",
+            "doc_id": "rv-0210",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up sweep-only performs sweeping and mopping /Setting up vacuuming only but mopping /Mop activation when in vacuuming only mode /Wash mopping cloths when in vacuuming only mode /Tasks should not include mopping/The Robovac Omni E28/E25 switches to vacuum only mode or give instructions to just vacuum, but he always uses his mop?\n1. Afte",
+            "score": 0.015165165165165164,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+            "source": "kb_qa",
+            "doc_id": "rv-0050",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+            "score": 0.0149375,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+            "source": "kb_qa",
+            "doc_id": "rv-0176",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up vacuum and mop mode, but it performs sweeping only /Setting up vacuuming-only mode goes into wash mode /Vacuuming only without mopping /Sweeping only without mopping?\nSet the sweeping and mopping mode but the machine performs sweep-only please follow the steps below to troubleshoot: It is possible that the carpet detection wave sen",
+            "score": 0.014492753623188404,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+            "source": "kb_qa",
+            "doc_id": "rv-0202",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+            "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+            "score": 0.013599419448476051,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+            "source": "kb_qa",
+            "doc_id": "rv-0166",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Poor self-empty function /Dustbin clogged or Overfilled and can't be emptied /Can't suck rubbish into the dust bag on the base station?\nIf there is a problem of dust box clogging, it is recommended that you turn on the pet mode in APP, if you are a multi-pet household, it is recommended that you set the dust collection frequency to 15min dust co",
+            "score": 0.013073917290784758,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+            "source": "kb_qa",
+            "doc_id": "rv-0168",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is not cleaning/missing the area around the base station/the area around the base station is dirty?\nThe area around the Robot Vacuum base station is not automatically cleaned and thus may appear to be a bit dirty, this is indeed a trade-off in design to protect the equipment and optimise the overall experience; the area only accounts for a very ",
+            "score": 0.013061224489795919,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+            "source": "kb_qa",
+            "doc_id": "rv-0180",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+            "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+            "score": 0.01305064429127959,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+            "source": "kb_qa",
+            "doc_id": "rv-0119",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+            "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+            "score": 0.012975352112676055,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+            "source": "kb_qa",
+            "doc_id": "rv-0161",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 base station tray is dirty?\nThe rubbish on the base station tray comes from when the 'deep self-cleaning' cleans the 'roller mop', the current technology is not yet able to achieve fully automatic cleaning, the first time you use the Robot Vacuum home is relatively dirty in the case of the tray dirty problem will be exacerbated, it is recommende",
+            "score": 0.012849910661107801,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+            "source": "kb_qa",
+            "doc_id": "rv-0211",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+            "snippet": "Please find the link to the cleaning guide for the dust box and filter here: 2.The software logic sets the dust collection to start only when the cleaning time is greater than 15 minutes to avoid noise caused by starting the base station during peak hours. If the cleaning time of a single task is less than 15 minutes, dust collection will be performed in the next task;",
+            "score": 0.012474515800203874,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "909fbab0-1c66-437b-8381-235973339f12",
+            "source": "kb_qa",
+            "doc_id": "rv-0084",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "909fbab0-1c66-437b-8381-235973339f12",
+            "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Dirty water drips /Mopping leaks /Cleaning leaks /Dirty water leaks /Dirty water leaks everywhere /Dirty water drips left behind when cleaning /Dirty water traces left behind on the floor /Small water stains left behind on the floor /small puddles of water while mopping/Black liquid comes out when cleaning /Water residue left behind everywhere w",
+            "score": 0.012391975308641974,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:27:49.561529+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "step_card",
+        "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0021",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insuffic…",
+          "instruction": "To resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base station. If it's empty, fill it with water and then restart the cleaning task. In most cases, this simple step will resolve the problem. If your robot vacuum starts a task on the same floor where the base station is located, and the issue persists after refilling the water tank and starting a new mopping task, please feel free to contact us for further assistance. Please note: The alert you see is just a reminder from the device. When the robot is operating on a floor without a base station, and the clean water runs low, it will automatically switch to pure vacuum mode to continue the cleaning task. This is a normal protective mechanism designed to ensure the task can still run smoothly even when you're not at home. If the problem continues after refilling the water and starting a new mopping task, don't hesitate to reach out to us again. We're here to help.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "e9626a00-6cb2-4d22-9e44-6f23f2862f47"
+          ],
+          "primary_evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:27:49.619117+00:00",
+        "first_seq": 18,
+        "last_seq": 22,
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "action",
+        "id": "cdc52e94247148288f0b2b78f3ed015f",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:27:49.665776+00:00",
+        "first_seq": 24,
+        "last_seq": 24,
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "case_changed",
+        "card_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+        "version": 2,
+        "case_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:27:49.635734+00:00"
+      },
+      {
+        "at": "2026-10-10T00:27:49.667068+00:00",
+        "first_seq": 25,
+        "last_seq": 27,
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "assistant_message",
+        "message_id": "2da7c2fb3b265c0cb70384b585591579",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "cdc52e94247148288f0b2b78f3ed015f",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+    "issues": [
+      {
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "status": "open",
+        "title": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 30,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "aa9282648b174adab9895efe905097e9",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:27:41.109143Z",
+      "last_run_at": "2026-10-10T00:27:49.673138Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload I",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0021"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 52,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:27:49.673138Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "a06c09b6d68247c78966ff512a372698",
+        "session_id": "aa9282648b174adab9895efe905097e9",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:27:41.109143Z",
+        "ended_at": "2026-10-10T00:27:49.568707Z",
+        "duration_ms": 8459,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 8455,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3486,
+            "tokens_in": 4593,
+            "tokens_out": 383,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:44.630502Z"
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1864,
+            "tokens_in": 5120,
+            "tokens_out": 243,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:49.509610Z"
+          }
+        ],
+        "tokens_in": 9713,
+        "tokens_out": 626,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:41.109143Z",
+            "duration_ms": 3550,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3688,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 185,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6331
+                    }
+                  ],
+                  "actual_input_tokens": 4593
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:44.660076Z",
+            "duration_ms": 32,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:27:44.692544Z",
+            "duration_ms": 4823,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0021",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5629,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 356,
+                    "current": 185,
+                    "history": 0,
+                    "authority": 5088
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 270,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 203,
+                    "timezone": 7,
+                    "task_data": 4244,
+                    "issue_index": 159,
+                    "step_attempts": 2,
+                    "active_issue_id": 27,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 6240
+                    }
+                  ],
+                  "actual_input_tokens": 5120
+                }
+              ],
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:27:49.516464Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0021",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:27:49.521160Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:49.521165Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "a06c09b6d68247c78966ff512a372698",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 142,
+            "hits": 15,
+            "top_score": 0.0164,
+            "latency_ms": 2888,
+            "query": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+            "created_at": "2026-10-10T00:27:47.564025Z"
+          }
+        ]
+      },
+      {
+        "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+        "session_id": "aa9282648b174adab9895efe905097e9",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:27:49.620479Z",
+        "ended_at": "2026-10-10T00:27:49.673119Z",
+        "duration_ms": 52,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 48,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:49.620479Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0021",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:49.631709Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:27:49.634056Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:27:49.635308Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:27:49.639231Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:27:49.639746Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "8195dc9a51be46899f5d7b6d96b3936a",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:49.640288Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "aa9282648b174adab9895efe905097e9",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "kind": "upload_receipt",
+        "input_token": "b0b3e41129d05cbe9a26b5ebcb9549d1",
+        "card_id": "98c6f94dfe2e52acb15ef28f44e352f2",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:27:41.101333+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "user_message",
+          "id": "3041ff8450e8490a8a527c1a73ed9aef",
+          "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:27:44.694793+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "810e36897cbb556597f0c5be67ae67c3",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源（部分截断）"
+        },
+        {
+          "at": "2026-10-10T00:27:49.549420Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "source": "kb_qa",
+              "doc_id": "rv-0021",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+              "score": 0.016393442622950817,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+              "source": "kb_qa",
+              "doc_id": "rv-0112",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+              "snippet": "what should I do when T2353 Omni E25 has 6011 Error: Base station clean water tank is empty, please add water/Eufy E25 Clean water tank is full but still says it’s empty/6011-The water in the clean water tank is insufficient？\n*Could you please check if there is water in the base station's clean water tank? If not, please refill it and restart the cleaning task --- this should resolve the issue in ",
+              "score": 0.015905707196029774,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "source": "kb_qa",
+              "doc_id": "rv-0148",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+              "score": 0.01544477028347996,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "source": "kb_qa",
+              "doc_id": "rv-0170",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+              "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+              "score": 0.01520966595593461,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+              "source": "kb_qa",
+              "doc_id": "rv-0210",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up sweep-only performs sweeping and mopping /Setting up vacuuming only but mopping /Mop activation when in vacuuming only mode /Wash mopping cloths when in vacuuming only mode /Tasks should not include mopping/The Robovac Omni E28/E25 switches to vacuum only mode or give instructions to just vacuum, but he always uses his mop?\n1. Afte",
+              "score": 0.015165165165165164,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "source": "kb_qa",
+              "doc_id": "rv-0050",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+              "score": 0.0149375,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+              "source": "kb_qa",
+              "doc_id": "rv-0176",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up vacuum and mop mode, but it performs sweeping only /Setting up vacuuming-only mode goes into wash mode /Vacuuming only without mopping /Sweeping only without mopping?\nSet the sweeping and mopping mode but the machine performs sweep-only please follow the steps below to troubleshoot: It is possible that the carpet detection wave sen",
+              "score": 0.014492753623188404,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "source": "kb_qa",
+              "doc_id": "rv-0202",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+              "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+              "score": 0.013599419448476051,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+              "source": "kb_qa",
+              "doc_id": "rv-0166",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Poor self-empty function /Dustbin clogged or Overfilled and can't be emptied /Can't suck rubbish into the dust bag on the base station?\nIf there is a problem of dust box clogging, it is recommended that you turn on the pet mode in APP, if you are a multi-pet household, it is recommended that you set the dust collection frequency to 15min dust co",
+              "score": 0.013073917290784758,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+              "source": "kb_qa",
+              "doc_id": "rv-0168",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is not cleaning/missing the area around the base station/the area around the base station is dirty?\nThe area around the Robot Vacuum base station is not automatically cleaned and thus may appear to be a bit dirty, this is indeed a trade-off in design to protect the equipment and optimise the overall experience; the area only accounts for a very ",
+              "score": 0.013061224489795919,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "source": "kb_qa",
+              "doc_id": "rv-0180",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+              "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+              "score": 0.01305064429127959,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "source": "kb_qa",
+              "doc_id": "rv-0119",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+              "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+              "score": 0.012975352112676055,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+              "source": "kb_qa",
+              "doc_id": "rv-0161",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 base station tray is dirty?\nThe rubbish on the base station tray comes from when the 'deep self-cleaning' cleans the 'roller mop', the current technology is not yet able to achieve fully automatic cleaning, the first time you use the Robot Vacuum home is relatively dirty in the case of the tray dirty problem will be exacerbated, it is recommende",
+              "score": 0.012849910661107801,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+              "source": "kb_qa",
+              "doc_id": "rv-0211",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+              "snippet": "Please find the link to the cleaning guide for the dust box and filter here: 2.The software logic sets the dust collection to start only when the cleaning time is greater than 15 minutes to avoid noise caused by starting the base station during peak hours. If the cleaning time of a single task is less than 15 minutes, dust collection will be performed in the next task;",
+              "score": 0.012474515800203874,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "909fbab0-1c66-437b-8381-235973339f12",
+              "source": "kb_qa",
+              "doc_id": "rv-0084",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "909fbab0-1c66-437b-8381-235973339f12",
+              "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Dirty water drips /Mopping leaks /Cleaning leaks /Dirty water leaks /Dirty water leaks everywhere /Dirty water drips left behind when cleaning /Dirty water traces left behind on the floor /Small water stains left behind on the floor /small puddles of water while mopping/Black liquid comes out when cleaning /Water residue left behind everywhere w",
+              "score": 0.012391975308641974,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:27:49.561529+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "step_card",
+          "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0021",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insuffic…",
+            "instruction": "To resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base station. If it's empty, fill it with water and then restart the cleaning task. In most cases, this simple step will resolve the problem. If your robot vacuum starts a task on the same floor where the base station is located, and the issue persists after refilling the water tank and starting a new mopping task, please feel free to contact us for further assistance. Please note: The alert you see is just a reminder from the device. When the robot is operating on a floor without a base station, and the clean water runs low, it will automatically switch to pure vacuum mode to continue the cleaning task. This is a normal protective mechanism designed to ensure the task can still run smoothly even when you're not at home. If the problem continues after refilling the water and starting a new mopping task, don't hesitate to reach out to us again. We're here to help.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "e9626a00-6cb2-4d22-9e44-6f23f2862f47"
+            ],
+            "primary_evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:27:49.619117+00:00",
+          "first_seq": 18,
+          "last_seq": 22,
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "action",
+          "id": "cdc52e94247148288f0b2b78f3ed015f",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:27:49.665776+00:00",
+          "first_seq": 24,
+          "last_seq": 24,
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "case_changed",
+          "card_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+          "version": 2,
+          "case_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:49.635734+00:00"
+        },
+        {
+          "at": "2026-10-10T00:27:49.667068+00:00",
+          "first_seq": 25,
+          "last_seq": 27,
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "assistant_message",
+          "message_id": "2da7c2fb3b265c0cb70384b585591579",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "cdc52e94247148288f0b2b78f3ed015f",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+      "issues": [
+        {
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "status": "open",
+          "title": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 30,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+      "session_id": "aa9282648b174adab9895efe905097e9",
+      "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:27:49.635734+00:00",
+      "updated_at": "2026-10-10T00:27:49.635734+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "aa9282648b174adab9895efe905097e9",
+        "version": 2,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+          "kind": "upload_receipt",
+          "input_token": "b0b3e41129d05cbe9a26b5ebcb9549d1",
+          "card_id": "98c6f94dfe2e52acb15ef28f44e352f2",
+          "version": 2
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:27:41.101333+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "kind": "user_message",
+            "id": "3041ff8450e8490a8a527c1a73ed9aef",
+            "text": "Product Name: Omni E25\nProduct PN: T2353\nProblem Type: Issue\nProblem Description: Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task.\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:27:44.694793+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "810e36897cbb556597f0c5be67ae67c3",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源（部分截断）"
+          },
+          {
+            "at": "2026-10-10T00:27:49.549420Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+                "source": "kb_qa",
+                "doc_id": "rv-0021",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+                "snippet": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insufficient and downgrade to vacuum-only mode, or displays the error messages code-6536 Insufficient clean water, switched to Vacuum-Only mode, code-6537, the task was automatically downgraded to Vacuum-Only mode?\nTo resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base st",
+                "score": 0.016393442622950817,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+                "source": "kb_qa",
+                "doc_id": "rv-0112",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5219b4ae-b9c8-40d0-b29a-da2ba3822950",
+                "snippet": "what should I do when T2353 Omni E25 has 6011 Error: Base station clean water tank is empty, please add water/Eufy E25 Clean water tank is full but still says it’s empty/6011-The water in the clean water tank is insufficient？\n*Could you please check if there is water in the base station's clean water tank? If not, please refill it and restart the cleaning task --- this should resolve the issue in ",
+                "score": 0.015905707196029774,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+                "source": "kb_qa",
+                "doc_id": "rv-0148",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "be2fd69b-eff0-403a-9a71-ead2fdda0920",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7008 error/ Switched to Sweeping-Only Mode/ Sweep Mop switches to sweep-only mode?\nIn multi-floor tasks, the mop cannot be performed without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the sweeper back ",
+                "score": 0.01544477028347996,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+                "source": "kb_qa",
+                "doc_id": "rv-0170",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fe4bd223-62d8-4e03-bdcb-a8833d5c9642",
+                "snippet": "What should I do if my omni E28/E25/T2353/T2352 cannot clean on floors without a base station? / How can I use the omini E25/E28 robot on floors without a base station? My E25/E28 failed to clean another level without a base station.\nVacuum only: Please directly place the robot vacuum on the floor without a base station, starting the vacuum-only task to begin cleaning. Vacuum and mop: Please start",
+                "score": 0.01520966595593461,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+                "source": "kb_qa",
+                "doc_id": "rv-0210",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9772e1bc-f2cc-4a1d-960b-5ff6db152543",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up sweep-only performs sweeping and mopping /Setting up vacuuming only but mopping /Mop activation when in vacuuming only mode /Wash mopping cloths when in vacuuming only mode /Tasks should not include mopping/The Robovac Omni E28/E25 switches to vacuum only mode or give instructions to just vacuum, but he always uses his mop?\n1. Afte",
+                "score": 0.015165165165165164,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+                "source": "kb_qa",
+                "doc_id": "rv-0050",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "64ba535a-4e43-417f-95bb-7b6ed07fe8ec",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 has 7009 error/ Return the robot to the base station for self-cleaning/ Robot Vacuum put back alert?\nIn multi-floor tasks, the mop cannot be used without cleaning the mop. To ensure that the cleaning task continues, the robot will automatically downgrade to pure sweeping mode. If sweeping and mopping are required, please remember to put the swee",
+                "score": 0.0149375,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+                "source": "kb_qa",
+                "doc_id": "rv-0176",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "4649cecb-8b98-4655-8e61-6dfbefd8cb6a",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is setting up vacuum and mop mode, but it performs sweeping only /Setting up vacuuming-only mode goes into wash mode /Vacuuming only without mopping /Sweeping only without mopping?\nSet the sweeping and mopping mode but the machine performs sweep-only please follow the steps below to troubleshoot: It is possible that the carpet detection wave sen",
+                "score": 0.014492753623188404,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+                "source": "kb_qa",
+                "doc_id": "rv-0202",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e528a715-7d4b-41c3-8bed-248a1b87c25b",
+                "snippet": "Why does my T2353 Omni E25 / T2352 Omni E28 have less wastewater in the final dirty water tank than the clean water tank?\nThe clean water in the robot is mainly used to moisten and rinse the mop, mop the floor, and clean the mop. During the mopping process, the floor will absorb part of the water, which is related to the water absorption effect of different floor materials. The remaining water wil",
+                "score": 0.013599419448476051,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+                "source": "kb_qa",
+                "doc_id": "rv-0166",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "c9d65366-85a7-4362-8ae6-aa1ad19f52a9",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Poor self-empty function /Dustbin clogged or Overfilled and can't be emptied /Can't suck rubbish into the dust bag on the base station?\nIf there is a problem of dust box clogging, it is recommended that you turn on the pet mode in APP, if you are a multi-pet household, it is recommended that you set the dust collection frequency to 15min dust co",
+                "score": 0.013073917290784758,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+                "source": "kb_qa",
+                "doc_id": "rv-0168",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "777679e7-8905-43c0-be2b-8b09923c1e1a",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 is not cleaning/missing the area around the base station/the area around the base station is dirty?\nThe area around the Robot Vacuum base station is not automatically cleaned and thus may appear to be a bit dirty, this is indeed a trade-off in design to protect the equipment and optimise the overall experience; the area only accounts for a very ",
+                "score": 0.013061224489795919,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+                "source": "kb_qa",
+                "doc_id": "rv-0180",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "9ffdd085-be4c-4996-815e-ac20f7861932",
+                "snippet": "The Omni E28/E25/T2353/T2352 robot vacuum continuously attempts to wash the mop even after completing a wash, returns to the station to clean the mop in a short time or repeatedly tries to wash the mop.\nScenario 1: Water accumulation in the base station tray. Please follow these troubleshooting steps: -Check whether the dirty tank latch is securely fastened until you hear a clicking sound; -Verify",
+                "score": 0.01305064429127959,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ea706338-08d7-4282-94ac-12336abad51e",
+                "source": "kb_qa",
+                "doc_id": "rv-0119",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ea706338-08d7-4282-94ac-12336abad51e",
+                "snippet": "What should I do if my T2353 Omni E25 / T2352 Omni E28 is not mopping the floor/mopping not working/is mopping improper/not mopping despite settings for room clean/didn't mop even though I set it to room clean/has not mopping issue/Stops mopping/Didn’t mop?\n*I was sorry to hear that your robot vacuum is experiencing issues with mopping. To help us better understand and resolve the problem, could y",
+                "score": 0.012975352112676055,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+                "source": "kb_qa",
+                "doc_id": "rv-0161",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "59fe30f0-fea0-4397-b676-ebbc79487566",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 base station tray is dirty?\nThe rubbish on the base station tray comes from when the 'deep self-cleaning' cleans the 'roller mop', the current technology is not yet able to achieve fully automatic cleaning, the first time you use the Robot Vacuum home is relatively dirty in the case of the tray dirty problem will be exacerbated, it is recommende",
+                "score": 0.012849910661107801,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+                "source": "kb_qa",
+                "doc_id": "rv-0211",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f47ba414-2dc9-4396-a345-d38dcd1f7121",
+                "snippet": "Please find the link to the cleaning guide for the dust box and filter here: 2.The software logic sets the dust collection to start only when the cleaning time is greater than 15 minutes to avoid noise caused by starting the base station during peak hours. If the cleaning time of a single task is less than 15 minutes, dust collection will be performed in the next task;",
+                "score": 0.012474515800203874,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "909fbab0-1c66-437b-8381-235973339f12",
+                "source": "kb_qa",
+                "doc_id": "rv-0084",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "909fbab0-1c66-437b-8381-235973339f12",
+                "snippet": "What should I do when T2353 Omni E25 /T2352 Omni E28 Dirty water drips /Mopping leaks /Cleaning leaks /Dirty water leaks /Dirty water leaks everywhere /Dirty water drips left behind when cleaning /Dirty water traces left behind on the floor /Small water stains left behind on the floor /small puddles of water while mopping/Black liquid comes out when cleaning /Water residue left behind everywhere w",
+                "score": 0.012391975308641974,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:27:49.561529+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "kind": "step_card",
+            "card_id": "d20dfa3fb86b5b9b95d50d524b3a2e86",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0021",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insuffic…",
+              "instruction": "To resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base station. If it's empty, fill it with water and then restart the cleaning task. In most cases, this simple step will resolve the problem. If your robot vacuum starts a task on the same floor where the base station is located, and the issue persists after refilling the water tank and starting a new mopping task, please feel free to contact us for further assistance. Please note: The alert you see is just a reminder from the device. When the robot is operating on a floor without a base station, and the clean water runs low, it will automatically switch to pure vacuum mode to continue the cleaning task. This is a normal protective mechanism designed to ensure the task can still run smoothly even when you're not at home. If the problem continues after refilling the water and starting a new mopping task, don't hesitate to reach out to us again. We're here to help.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "e9626a00-6cb2-4d22-9e44-6f23f2862f47"
+              ],
+              "primary_evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:27:49.619117+00:00",
+            "first_seq": 18,
+            "last_seq": 22,
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "kind": "action",
+            "id": "cdc52e94247148288f0b2b78f3ed015f",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:27:49.665776+00:00",
+            "first_seq": 24,
+            "last_seq": 24,
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "kind": "case_changed",
+            "card_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+            "version": 2,
+            "case_id": "eb77e285-dd74-536f-9b72-1fcf6965f930",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:27:49.635734+00:00"
+          },
+          {
+            "at": "2026-10-10T00:27:49.667068+00:00",
+            "first_seq": 25,
+            "last_seq": 27,
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "kind": "assistant_message",
+            "message_id": "2da7c2fb3b265c0cb70384b585591579",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "cdc52e94247148288f0b2b78f3ed015f",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+        "issues": [
+          {
+            "issue_id": "e48845b4b4ef505fbce2f1a156ce7663",
+            "status": "open",
+            "title": "Cleaning has been switched to Vacuum-Only mode due to insufficient clean water",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 30,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0021",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "What Should I do If my T2353/Omni E25/T2352/Omni E28 shows clean water insuffic…",
+      "instruction": "To resolve the issue you're experiencing, please follow the steps below: Check the clean water tank in the base station. If it's empty, fill it with water and then restart the cleaning task. In most cases, this simple step will resolve the problem. If your robot vacuum starts a task on the same floor where the base station is located, and the issue persists after refilling the water tank and starting a new mopping task, please feel free to contact us for further assistance. Please note: The alert you see is just a reminder from the device. When the robot is operating on a floor without a base station, and the clean water runs low, it will automatically switch to pure vacuum mode to continue the cleaning task. This is a normal protective mechanism designed to ensure the task can still run smoothly even when you're not at home. If the problem continues after refilling the water and starting a new mopping task, don't hesitate to reach out to us again. We're here to help.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "e9626a00-6cb2-4d22-9e44-6f23f2862f47"
+      ],
+      "primary_evidence_id": "e9626a00-6cb2-4d22-9e44-6f23f2862f47",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 9.83,
+  "complete": true
+}

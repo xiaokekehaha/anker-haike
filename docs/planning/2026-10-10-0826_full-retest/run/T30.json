@@ -1,0 +1,1759 @@
+{
+  "id": "T30",
+  "started_at": "2026-10-10T00:28:21.124754+00:00",
+  "input": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+  "attachments": [
+    "T30.jpg"
+  ],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+        "attachments": [
+          "T30.jpg"
+        ],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "resumed": false,
+          "event_id": "41d5db781c4e4540aa579b7b90e63c31",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:21.182508+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "images": [
+              {
+                "mime": "image/jpeg",
+                "size": 331875,
+                "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+                "purpose": "fault",
+                "image_id": "39aa8b4af8ea50fc991a4b04272b2da8",
+                "created_at": "2026-10-10T00:28:21.170593+00:00"
+              }
+            ],
+            "purpose": "fault",
+            "image_ids": [
+              "39aa8b4af8ea50fc991a4b04272b2da8"
+            ],
+            "target_issue_id": null,
+            "attachment_hashes": [
+              "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5"
+            ],
+            "evaluation_source": "replay"
+          },
+          "event_id": "6d431ad742624e1897e31e6840986ead",
+          "input_id": "e34620a5e9894ef5a68aa72b6b506a4f",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:21.182508+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 3,
+          "event_id": "76d0cbb6e77f45708c442164e7f0dc39",
+          "recorded_at": "2026-10-10T00:28:21.226219+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 4,
+          "event_id": "2efde6598fd6429ba7d22ac2bd1e778a",
+          "recorded_at": "2026-10-10T00:28:24.932424+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "vision",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 5,
+          "event_id": "b88c81c6708a4494adfd331923d49aaf",
+          "recorded_at": "2026-10-10T00:28:24.937303+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "f1fdda69c4ac5ea29d2fbedca46aa2bb",
+          "name": "diagnose.vision",
+          "status": "started",
+          "summary": "识别 1 张故障照片",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 6,
+          "event_id": "a415c9f8cb1443db91915b4459b045eb",
+          "recorded_at": "2026-10-10T00:28:24.946040+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "f1fdda69c4ac5ea29d2fbedca46aa2bb",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "黑色圆角方形扫地机器人基站；机身正面红色eufy标志发光；机身下方印有3D MATRIX EYE字样；机身表面有灰尘与划痕；地面为木纹地板；基站污渍",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 7,
+          "event_id": "e453169b9e7645e1972c1fdb79e9e47c",
+          "recorded_at": "2026-10-10T00:28:26.910733+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 8,
+          "event_id": "dadf90dfaa2040df801d5d4bcd69ba31",
+          "recorded_at": "2026-10-10T00:28:26.921447+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 9,
+          "event_id": "e73ac7b7bffa4a729beffc69145f1288",
+          "recorded_at": "2026-10-10T00:28:26.950488+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 10,
+          "event_id": "9036e885084b47c6ab26f3294e5acb51",
+          "recorded_at": "2026-10-10T00:28:26.954567+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 11,
+          "event_id": "6f22b7bfe58e4fa9994a7ff5fdcddc77",
+          "recorded_at": "2026-10-10T00:28:26.962956+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_id": "e34620a5e9894ef5a68aa72b6b506a4f",
+          "resolved_issue_id": "840b519f0e165c758702784919ad57e9",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "840b519f0e165c758702784919ad57e9",
+              "title": "E4: Side brush abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "fc70fb9ec3a955bb9144c0e2fb693842",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:28:26.986769+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0443",
+              "source": "qa_exact",
+              "doc_id": "rv-0443",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0443",
+              "snippet": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it. Click the Start/Pause button again to test if the robot is functioning normally.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "f0fff1ab7df55c1ab19d33b4bd4687a2",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:28:26.987823+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "pending_id": "930f8f064c0d57f89b7c78a44ccd711c",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "b9bd0f4cb06e5feca7d4202445f7022e",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 15,
+          "recorded_at": "2026-10-10T00:28:26.989681+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0443",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the robot's dirty water reservoir, turn the robot up…",
+            "instruction": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0443"
+            ],
+            "primary_evidence_id": "qa:rv-0443",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/side-brushes.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": []
+          },
+          "seen": "From the photo I can see: base station dirty. If that's not right, just tell me.",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "event_id": "7c1b72c738ce5c6b9ad10f695d51f423",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 16,
+          "recorded_at": "2026-10-10T00:28:26.990866+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_token": "f802ce98b9a85be9b646a027122e96fc",
+          "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+          "version": 1,
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 17,
+          "event_id": "c6f01b3677774697a95af1cabc6f064d",
+          "recorded_at": "2026-10-10T00:28:26.991894+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "a30e0fe6067a5b7ab23eda6233078ea1",
+          "recorded_at": "2026-10-10T00:28:26.993522+00:00",
+          "run_id": "d10b34475558441b8daf76a66b1a1504",
+          "seq": 18,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 19,
+          "type": "run_started",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "resumed": false,
+          "event_id": "04ef41eb31444588ac5f712482a47bf9",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:27.010367+00:00"
+        },
+        {
+          "seq": 20,
+          "type": "input_received",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "82c2adb984354b96bfb1bdf4e05b953a",
+            "input_token": "f802ce98b9a85be9b646a027122e96fc",
+            "target_issue_id": "840b519f0e165c758702784919ad57e9",
+            "expected_version": 1
+          },
+          "event_id": "614cc0cb34d34ae9a61adee80be0490b",
+          "input_id": "82c2adb984354b96bfb1bdf4e05b953a",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:27.010367+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 21,
+          "event_id": "8ef644eee427433db36378498bb90ea3",
+          "recorded_at": "2026-10-10T00:28:27.024072+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 22,
+          "event_id": "c3e4cd2ab6a24b83a01b00e7b8c280ef",
+          "recorded_at": "2026-10-10T00:28:27.034255+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_id": "82c2adb984354b96bfb1bdf4e05b953a",
+          "resolved_issue_id": "840b519f0e165c758702784919ad57e9",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "840b519f0e165c758702784919ad57e9",
+              "title": "E4: Side brush abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "c0b40abdc00a52689360a71132658811",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:28:27.062328+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "pending_id": "930f8f064c0d57f89b7c78a44ccd711c",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "9c1870a24f1f5d6a94ba1cc67affa110",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:28:27.063267+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "pending_id": "caf08b6eedb254abaa5ec5a170e6af80",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "0d88749300fd5be5be9100a0ead4ea4b",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 26,
+          "recorded_at": "2026-10-10T00:28:27.064316+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0443",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Click the Start/Pause button again to test if the robot is…",
+            "instruction": "Click the Start/Pause button again to test if the robot is functioning normally.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0443"
+            ],
+            "primary_evidence_id": "qa:rv-0443",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "event_id": "f43bcf2406085616b289dc865056e258",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 27,
+          "recorded_at": "2026-10-10T00:28:27.065344+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_token": "1286ecbcd2cb5a73b3616fe4c407edd4",
+          "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+          "version": 2,
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 28,
+          "event_id": "5ca3f42b010c4c8299ab5f7296b48eb0",
+          "recorded_at": "2026-10-10T00:28:27.066307+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "d7ee3f7371525f82831ef19a3cad443b",
+          "recorded_at": "2026-10-10T00:28:27.067462+00:00",
+          "run_id": "589efda4290b4b449fbe56c6bedad339",
+          "seq": 29,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 30,
+          "type": "run_started",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "resumed": false,
+          "event_id": "7cc07efe1246456fb27b9fc4c0f7a35a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:27.079891+00:00"
+        },
+        {
+          "seq": 31,
+          "type": "input_received",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+            "input_token": "1286ecbcd2cb5a73b3616fe4c407edd4",
+            "target_issue_id": "840b519f0e165c758702784919ad57e9",
+            "expected_version": 2
+          },
+          "event_id": "05e95f83c416421a8aaa2300888d3adc",
+          "input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:27.079891+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 32,
+          "event_id": "e52b5b8380e241ed8d187a0b5e0042a4",
+          "recorded_at": "2026-10-10T00:28:27.091574+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 33,
+          "event_id": "44b189d3597141a98eefb84a025988d1",
+          "recorded_at": "2026-10-10T00:28:27.098157+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+          "resolved_issue_id": "840b519f0e165c758702784919ad57e9",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "840b519f0e165c758702784919ad57e9",
+              "title": "E4: Side brush abnormal, task ended",
+              "status": "open"
+            }
+          ],
+          "event_id": "2e85217238f852cd8ad23fd152f2f4ee",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 35,
+          "recorded_at": "2026-10-10T00:28:27.121969+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "pending_id": "caf08b6eedb254abaa5ec5a170e6af80",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "d016cc79d4f95af1ba4a175d72f995d0",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 36,
+          "recorded_at": "2026-10-10T00:28:27.122823+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+          "case_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:27.091519+00:00",
+          "event_id": "b91632aa3b115f5e971a3889467f27fa",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 37,
+          "recorded_at": "2026-10-10T00:28:27.123654+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "reply_to_input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+          "event_id": "e1a2eef63ee95e99b8e1f62350e732fa",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 38,
+          "recorded_at": "2026-10-10T00:28:27.124768+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "7f404d47c0f8506f8fe49c3112c883f5",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 39,
+          "recorded_at": "2026-10-10T00:28:27.125584+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+          "status": "completed",
+          "event_id": "900618db27dd5fc0b70ab66db8693e41",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 40,
+          "recorded_at": "2026-10-10T00:28:27.126649+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "pending_id": "24a576415c665a24b4e6924e8f7b6874",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "a72a83ce41185daf819aed7874d911db",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 41,
+          "recorded_at": "2026-10-10T00:28:27.127531+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "input_token": "ddd9f990895e57248262c255d1287723",
+          "card_id": "24a576415c665a24b4e6924e8f7b6874",
+          "version": 3,
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 42,
+          "event_id": "8ccb3eac58744be6bfe9fa857c616fff",
+          "recorded_at": "2026-10-10T00:28:27.128067+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "6d1b2aaaddd1506a893a4ef7d727cf33",
+          "recorded_at": "2026-10-10T00:28:27.129200+00:00",
+          "run_id": "e248274ec69344dab5942fa57f173caf",
+          "seq": 43,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "74cc72108bc243319b6cb45e3513acf1",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "74cc72108bc243319b6cb45e3513acf1",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "840b519f0e165c758702784919ad57e9",
+      "kind": "upload_receipt",
+      "input_token": "ddd9f990895e57248262c255d1287723",
+      "card_id": "24a576415c665a24b4e6924e8f7b6874",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:21.182508+00:00",
+        "first_seq": 2,
+        "last_seq": 13,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "user_message",
+        "id": "e34620a5e9894ef5a68aa72b6b506a4f",
+        "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+        "image_ids": [
+          "39aa8b4af8ea50fc991a4b04272b2da8"
+        ],
+        "images": [
+          {
+            "image_id": "39aa8b4af8ea50fc991a4b04272b2da8",
+            "purpose": "fault",
+            "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+            "mime": "image/jpeg",
+            "size": 331875
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:24.946040+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "f1fdda69c4ac5ea29d2fbedca46aa2bb",
+        "name": "diagnose.vision",
+        "status": "finished",
+        "summary": "黑色圆角方形扫地机器人基站；机身正面红色eufy标志发光；机身下方印有3D MATRIX EYE字样；机身表面有灰尘与划痕；地面为木纹地板；基站污渍"
+      },
+      {
+        "at": "2026-10-10T00:28:26.988057Z",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0443",
+            "source": "qa_exact",
+            "doc_id": "rv-0443",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0443",
+            "snippet": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it. Click the Start/Pause button again to test if the robot is functioning normally.",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:26.990866+00:00",
+        "first_seq": 16,
+        "last_seq": 16,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "step_card",
+        "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0443",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Remove the robot's dirty water reservoir, turn the robot up…",
+          "instruction": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0443"
+          ],
+          "primary_evidence_id": "qa:rv-0443",
+          "media": [
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+              "kind": "image"
+            },
+            {
+              "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/side-brushes.png",
+              "kind": "image"
+            }
+          ],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": "From the photo I can see: base station dirty. If that's not right, just tell me.",
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:27.010367+00:00",
+        "first_seq": 20,
+        "last_seq": 24,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "action",
+        "id": "82c2adb984354b96bfb1bdf4e05b953a",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:27.065344+00:00",
+        "first_seq": 27,
+        "last_seq": 27,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "step_card",
+        "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0443",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "Click the Start/Pause button again to test if the robot is…",
+          "instruction": "Click the Start/Pause button again to test if the robot is functioning normally.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0443"
+          ],
+          "primary_evidence_id": "qa:rv-0443",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:27.079891+00:00",
+        "first_seq": 31,
+        "last_seq": 35,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "action",
+        "id": "93b49b0cf63b4db588ca9d8d48e869d9",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:27.123654+00:00",
+        "first_seq": 37,
+        "last_seq": 37,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "case_changed",
+        "card_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+        "version": 3,
+        "case_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:28:27.091519+00:00"
+      },
+      {
+        "at": "2026-10-10T00:28:27.124768+00:00",
+        "first_seq": 38,
+        "last_seq": 40,
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "assistant_message",
+        "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "840b519f0e165c758702784919ad57e9",
+    "issues": [
+      {
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "status": "open",
+        "title": "E4: Side brush abnormal, task ended",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 43,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "74cc72108bc243319b6cb45e3513acf1",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:21.193383Z",
+      "last_run_at": "2026-10-10T00:28:27.130108Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: [REDACTED]E\nProblem Type: ERROR\nProblem Code: [REDACTED]-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact custom",
+      "product_state": "confirmed_sku",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0443"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 48,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:28:27.130108Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d10b34475558441b8daf76a66b1a1504",
+        "session_id": "74cc72108bc243319b6cb45e3513acf1",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:21.193383Z",
+        "ended_at": "2026-10-10T00:28:26.994666Z",
+        "duration_ms": 5801,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 5798,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3685,
+            "tokens_in": 4748,
+            "tokens_out": 472,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:24.901310Z"
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "node": "vision",
+            "task": "diagnose.vision",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1542,
+            "tokens_in": 2812,
+            "tokens_out": 153,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:26.839571Z"
+          }
+        ],
+        "tokens_in": 7560,
+        "tokens_out": 625,
+        "node_count": 8,
+        "nodes": [
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:21.193383Z",
+            "duration_ms": 3738,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3844,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 341,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6487
+                    }
+                  ],
+                  "actual_input_tokens": 4748
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "840b519f0e165c758702784919ad57e9",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:24.931415Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "decision": "read_images"
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 3,
+            "node": "vision",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:24.937284Z",
+            "duration_ms": 1984,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "diagnose",
+              "substage": "vision",
+              "vision_status": "ok",
+              "context_metrics": [
+                {
+                  "task": "diagnose.vision",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 2388
+                    }
+                  ],
+                  "actual_input_tokens": 2812
+                }
+              ],
+              "context_revision": 2
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 4,
+            "node": "disambiguate",
+            "prev_node": "vision",
+            "started_at": "2026-10-10T00:28:26.921428Z",
+            "duration_ms": 29,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 5,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:26.950466Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0443",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 6,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:26.954556Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0443",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 7,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:26.962935Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d10b34475558441b8daf76a66b1a1504",
+            "idx": 8,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:26.962941Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "589efda4290b4b449fbe56c6bedad339",
+        "session_id": "74cc72108bc243319b6cb45e3513acf1",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:28:27.011927Z",
+        "ended_at": "2026-10-10T00:28:27.068154Z",
+        "duration_ms": 56,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 54,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "589efda4290b4b449fbe56c6bedad339",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:27.011927Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0443",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": "ok",
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "840b519f0e165c758702784919ad57e9",
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "589efda4290b4b449fbe56c6bedad339",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:27.020809Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0443",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "589efda4290b4b449fbe56c6bedad339",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:27.022942Z",
+            "duration_ms": 11,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0443",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "589efda4290b4b449fbe56c6bedad339",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:27.034240Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "589efda4290b4b449fbe56c6bedad339",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:27.034245Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "e248274ec69344dab5942fa57f173caf",
+        "session_id": "74cc72108bc243319b6cb45e3513acf1",
+        "seq_no": 3,
+        "started_at": "2026-10-10T00:28:27.081721Z",
+        "ended_at": "2026-10-10T00:28:27.130102Z",
+        "duration_ms": 48,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 44,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:27.081721Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0443",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": "ok",
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "840b519f0e165c758702784919ad57e9",
+              "context_revision": 2,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:27.088732Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:27.090266Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:28:27.091188Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:28:27.094805Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:28:27.095278Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "e248274ec69344dab5942fa57f173caf",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:27.095833Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "74cc72108bc243319b6cb45e3513acf1",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "840b519f0e165c758702784919ad57e9",
+        "kind": "upload_receipt",
+        "input_token": "ddd9f990895e57248262c255d1287723",
+        "card_id": "24a576415c665a24b4e6924e8f7b6874",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:21.182508+00:00",
+          "first_seq": 2,
+          "last_seq": 13,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "user_message",
+          "id": "e34620a5e9894ef5a68aa72b6b506a4f",
+          "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+          "image_ids": [
+            "39aa8b4af8ea50fc991a4b04272b2da8"
+          ],
+          "images": [
+            {
+              "image_id": "39aa8b4af8ea50fc991a4b04272b2da8",
+              "purpose": "fault",
+              "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+              "mime": "image/jpeg",
+              "size": 331875
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:24.946040+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "f1fdda69c4ac5ea29d2fbedca46aa2bb",
+          "name": "diagnose.vision",
+          "status": "finished",
+          "summary": "黑色圆角方形扫地机器人基站；机身正面红色eufy标志发光；机身下方印有3D MATRIX EYE字样；机身表面有灰尘与划痕；地面为木纹地板；基站污渍"
+        },
+        {
+          "at": "2026-10-10T00:28:26.988057Z",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0443",
+              "source": "qa_exact",
+              "doc_id": "rv-0443",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0443",
+              "snippet": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it. Click the Start/Pause button again to test if the robot is functioning normally.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:26.990866+00:00",
+          "first_seq": 16,
+          "last_seq": 16,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "step_card",
+          "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0443",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Remove the robot's dirty water reservoir, turn the robot up…",
+            "instruction": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0443"
+            ],
+            "primary_evidence_id": "qa:rv-0443",
+            "media": [
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                "kind": "image"
+              },
+              {
+                "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/side-brushes.png",
+                "kind": "image"
+              }
+            ],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": "From the photo I can see: base station dirty. If that's not right, just tell me.",
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:27.010367+00:00",
+          "first_seq": 20,
+          "last_seq": 24,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "action",
+          "id": "82c2adb984354b96bfb1bdf4e05b953a",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:27.065344+00:00",
+          "first_seq": 27,
+          "last_seq": 27,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "step_card",
+          "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0443",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "Click the Start/Pause button again to test if the robot is…",
+            "instruction": "Click the Start/Pause button again to test if the robot is functioning normally.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0443"
+            ],
+            "primary_evidence_id": "qa:rv-0443",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:27.079891+00:00",
+          "first_seq": 31,
+          "last_seq": 35,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "action",
+          "id": "93b49b0cf63b4db588ca9d8d48e869d9",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:27.123654+00:00",
+          "first_seq": 37,
+          "last_seq": 37,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "case_changed",
+          "card_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+          "version": 3,
+          "case_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:27.091519+00:00"
+        },
+        {
+          "at": "2026-10-10T00:28:27.124768+00:00",
+          "first_seq": 38,
+          "last_seq": 40,
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "assistant_message",
+          "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "840b519f0e165c758702784919ad57e9",
+      "issues": [
+        {
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "status": "open",
+          "title": "E4: Side brush abnormal, task ended",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 43,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+      "session_id": "74cc72108bc243319b6cb45e3513acf1",
+      "issue_id": "840b519f0e165c758702784919ad57e9",
+      "sku": "T2080",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:28:27.091519+00:00",
+      "updated_at": "2026-10-10T00:28:27.091519+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "74cc72108bc243319b6cb45e3513acf1",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "840b519f0e165c758702784919ad57e9",
+          "kind": "upload_receipt",
+          "input_token": "ddd9f990895e57248262c255d1287723",
+          "card_id": "24a576415c665a24b4e6924e8f7b6874",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:28:21.182508+00:00",
+            "first_seq": 2,
+            "last_seq": 13,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "user_message",
+            "id": "e34620a5e9894ef5a68aa72b6b506a4f",
+            "text": "Product Name: S1 Pro\nProduct PN: T2080A\nProduct SN: 12345678E\nProblem Type: ERROR\nProblem Code: 20971524-\nProblem Push: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nProblem Description: E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance.\nJust changed the side brushes 2 days ago\n\nProblem Upload Images: [\"https://appliances-ohi-pr.s3.us-east-2.amazonaws.com/feedback/9c53c8fbb88c14708c1fc7ff8e08d4045ab9bd7c-MzcxMjg4MjQtZjNhOC00MTVmLWIyZTctNWJhNjhmZjljMzZm\"]",
+            "image_ids": [
+              "39aa8b4af8ea50fc991a4b04272b2da8"
+            ],
+            "images": [
+              {
+                "image_id": "39aa8b4af8ea50fc991a4b04272b2da8",
+                "purpose": "fault",
+                "sha256": "a23fb08feac3b073ffab78a54c86bddbeb7daf7da8be313868ba1f61f1e17fb5",
+                "mime": "image/jpeg",
+                "size": 331875
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:24.946040+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "f1fdda69c4ac5ea29d2fbedca46aa2bb",
+            "name": "diagnose.vision",
+            "status": "finished",
+            "summary": "黑色圆角方形扫地机器人基站；机身正面红色eufy标志发光；机身下方印有3D MATRIX EYE字样；机身表面有灰尘与划痕；地面为木纹地板；基站污渍"
+          },
+          {
+            "at": "2026-10-10T00:28:26.988057Z",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0443",
+                "source": "qa_exact",
+                "doc_id": "rv-0443",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0443",
+                "snippet": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it. Click the Start/Pause button again to test if the robot is functioning normally.",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:26.990866+00:00",
+            "first_seq": 16,
+            "last_seq": 16,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "step_card",
+            "card_id": "930f8f064c0d57f89b7c78a44ccd711c",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0443",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Remove the robot's dirty water reservoir, turn the robot up…",
+              "instruction": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0443"
+              ],
+              "primary_evidence_id": "qa:rv-0443",
+              "media": [
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+                  "kind": "image"
+                },
+                {
+                  "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/side-brushes.png",
+                  "kind": "image"
+                }
+              ],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": "From the photo I can see: base station dirty. If that's not right, just tell me.",
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:27.010367+00:00",
+            "first_seq": 20,
+            "last_seq": 24,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "action",
+            "id": "82c2adb984354b96bfb1bdf4e05b953a",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:27.065344+00:00",
+            "first_seq": 27,
+            "last_seq": 27,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "step_card",
+            "card_id": "caf08b6eedb254abaa5ec5a170e6af80",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0443",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "Click the Start/Pause button again to test if the robot is…",
+              "instruction": "Click the Start/Pause button again to test if the robot is functioning normally.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0443"
+              ],
+              "primary_evidence_id": "qa:rv-0443",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:27.079891+00:00",
+            "first_seq": 31,
+            "last_seq": 35,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "action",
+            "id": "93b49b0cf63b4db588ca9d8d48e869d9",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:27.123654+00:00",
+            "first_seq": 37,
+            "last_seq": 37,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "case_changed",
+            "card_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+            "version": 3,
+            "case_id": "9b6f94da-7098-5c12-a47f-acd88d22d476",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:28:27.091519+00:00"
+          },
+          {
+            "at": "2026-10-10T00:28:27.124768+00:00",
+            "first_seq": 38,
+            "last_seq": 40,
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "kind": "assistant_message",
+            "message_id": "3d50973f7d795f8ca1107629a9fbb946",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "93b49b0cf63b4db588ca9d8d48e869d9",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "840b519f0e165c758702784919ad57e9",
+        "issues": [
+          {
+            "issue_id": "840b519f0e165c758702784919ad57e9",
+            "status": "open",
+            "title": "E4: Side brush abnormal, task ended",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 43,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\n\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0443",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "Remove the robot's dirty water reservoir, turn the robot up…",
+      "instruction": "Remove the robot's dirty water reservoir, turn the robot upside down, remove the side brush, and check for any foreign objects wrapped around it.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0443"
+      ],
+      "primary_evidence_id": "qa:rv-0443",
+      "media": [
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/remove-dirty-water-reservoir.png",
+          "kind": "image"
+        },
+        {
+          "url": "https://d3pkbgk01oouhl.cloudfront.net/upload_file/prod/side-brushes.png",
+          "kind": "image"
+        }
+      ],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s2",
+      "plan_id": "qa_rv_0443",
+      "plan_version": 1,
+      "step_no": 2,
+      "title": "Click the Start/Pause button again to test if the robot is…",
+      "instruction": "Click the Start/Pause button again to test if the robot is functioning normally.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0443"
+      ],
+      "primary_evidence_id": "qa:rv-0443",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 7.28,
+  "complete": true
+}

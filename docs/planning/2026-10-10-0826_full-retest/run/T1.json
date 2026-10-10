@@ -1,0 +1,940 @@
+{
+  "id": "T1",
+  "started_at": "2026-10-10T00:27:20.638879+00:00",
+  "input": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "resumed": false,
+          "event_id": "e4b4c861efd44b898eb4b0d8fa03d78d",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:20.815422+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "payload": {
+            "kind": "message",
+            "text": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "5e2290851e474a0798bb71e81d12e38a",
+          "input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:27:20.815422+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 3,
+          "event_id": "c0ea6bdf5a4247d3aed30f0bdd7b26cb",
+          "recorded_at": "2026-10-10T00:27:21.625424+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "consult",
+          "substage": null,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 4,
+          "event_id": "27ed97feb1c6410aada82399b5399d88",
+          "recorded_at": "2026-10-10T00:27:25.384463+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "bbdcb2ed-8dcf-4131-be0c-20e83627cf51",
+          "name": "logistics.query",
+          "status": "started",
+          "summary": "Checking our after-sales tool",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 5,
+          "event_id": "ca0ab5d5ff7e43ae8dc6bbd90ffafa4d",
+          "recorded_at": "2026-10-10T00:27:25.402743+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "bbdcb2ed-8dcf-4131-be0c-20e83627cf51",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 6,
+          "event_id": "47581299017945bc8c3ba5ec6f722773",
+          "recorded_at": "2026-10-10T00:27:25.408290+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 7,
+          "event_id": "ca39b73806a346aaa47d5c9ac9b6d4ec",
+          "recorded_at": "2026-10-10T00:27:25.414307+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "propose",
+          "substage": null,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 8,
+          "event_id": "6c8bf0dd88284c4aa434e4f746551ef3",
+          "recorded_at": "2026-10-10T00:27:25.428273+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "propose",
+          "substage": null,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 9,
+          "event_id": "5140a41b6795473f9acdfee93d55815d",
+          "recorded_at": "2026-10-10T00:27:25.449340+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "resolved_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+              "title": "待描述的问题",
+              "status": "draft"
+            }
+          ],
+          "event_id": "d398cb782c095d8b8fc87bbdd3bc0afb",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:27:25.490021+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "ff45db9470db557cae934aeaac7d5924",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "event_id": "aba2bd1c3245534f80c7a166c72402ec",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:27:25.491932+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "ff45db9470db557cae934aeaac7d5924",
+          "delta": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)",
+          "event_id": "12677517240056929ec75d5b9c29bd75",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:27:25.493352+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "ff45db9470db557cae934aeaac7d5924",
+          "status": "completed",
+          "event_id": "811f1d5b9f1d52e0baab7b59717df12f",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:27:25.495118+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "version": 1,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker001"
+          },
+          "updated_at": "2026-10-10T00:27:25.421237+00:00",
+          "event_id": "370ed865dcd95a1fa1b7371b95f7b326",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 15,
+          "recorded_at": "2026-10-10T00:27:25.496800+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "version": 1,
+          "status": "awaiting_confirmation",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker001"
+          },
+          "updated_at": "2026-10-10T00:27:25.433303+00:00",
+          "event_id": "2a5d25b7ce265139929d687abf41bb50",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 16,
+          "recorded_at": "2026-10-10T00:27:25.501719+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "91141c8791455e20aaf1515247780ccc",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "event_id": "a1246a504b725a5cb10265c0cfd9de13",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 17,
+          "recorded_at": "2026-10-10T00:27:25.503917+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "91141c8791455e20aaf1515247780ccc",
+          "delta": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+          "event_id": "1eb1ee1e3c025d5fb9a18db3ff6ac8c8",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 18,
+          "recorded_at": "2026-10-10T00:27:25.504927+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "91141c8791455e20aaf1515247780ccc",
+          "status": "completed",
+          "event_id": "fdaac61db9a05912b3b1ac9293679216",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 19,
+          "recorded_at": "2026-10-10T00:27:25.506778+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "pending_id": "d2600265a62b5708b6c9a3a029439ad4",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "9359b3b431be51448098e2b517aba7b4",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 20,
+          "recorded_at": "2026-10-10T00:27:25.510756+00:00"
+        },
+        {
+          "type": "proposal_card",
+          "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+          "version": 1,
+          "options": [
+            {
+              "option_id": "carrier_investigation",
+              "type": "carrier_investigation",
+              "title": "Submit a carrier investigation request",
+              "detail": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+              "source": "sop"
+            }
+          ],
+          "decision_summary": "",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "event_id": "9d89d45e7bc1500a9fb02e133b27176f",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:27:25.513071+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "confirm_proposal",
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "input_token": "33beb1716de55f2bbad7287f1a6e813a",
+          "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+          "version": 1,
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 22,
+          "event_id": "d8a2457cf8f048b9aff8a723ac39d326",
+          "recorded_at": "2026-10-10T00:27:25.515116+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "318a1548453f5865bb6a487652c1b27b",
+          "recorded_at": "2026-10-10T00:27:25.519288+00:00",
+          "run_id": "782b552a484a4512b6a95d4912485a13",
+          "seq": 23,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "496b3f273ce942e49f37c56571881672",
+  "stop_reason": "awaiting_confirm_proposal",
+  "snapshot": {
+    "session_id": "496b3f273ce942e49f37c56571881672",
+    "version": 1,
+    "stage": "propose",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+      "kind": "confirm_proposal",
+      "input_token": "33beb1716de55f2bbad7287f1a6e813a",
+      "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+      "version": 1
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:27:20.815422+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "user_message",
+        "id": "7a9b6e3c9690464db9ffc2304a42a70e",
+        "text": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:27:25.402743+00:00",
+        "first_seq": 5,
+        "last_seq": 6,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "bbdcb2ed-8dcf-4131-be0c-20e83627cf51",
+        "name": "logistics.query",
+        "status": "finished",
+        "summary": "After-sales tool responded"
+      },
+      {
+        "at": "2026-10-10T00:27:25.491932+00:00",
+        "first_seq": 12,
+        "last_seq": 14,
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "assistant_message",
+        "message_id": "ff45db9470db557cae934aeaac7d5924",
+        "text": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)",
+        "status": "completed",
+        "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-10T00:27:25.496800+00:00",
+        "first_seq": 15,
+        "last_seq": 16,
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "case_changed",
+        "card_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+        "version": 1,
+        "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+        "status": "awaiting_confirmation",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {
+          "order_no": "Anker001"
+        },
+        "updated_at": "2026-10-10T00:27:25.433303+00:00"
+      },
+      {
+        "at": "2026-10-10T00:27:25.503917+00:00",
+        "first_seq": 17,
+        "last_seq": 19,
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "assistant_message",
+        "message_id": "91141c8791455e20aaf1515247780ccc",
+        "text": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+        "status": "completed",
+        "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-10T00:27:25.513071+00:00",
+        "first_seq": 21,
+        "last_seq": 21,
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "proposal_card",
+        "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+        "version": 1,
+        "options": [
+          {
+            "option_id": "carrier_investigation",
+            "type": "carrier_investigation",
+            "title": "Submit a carrier investigation request",
+            "detail": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+            "source": "sop"
+          }
+        ],
+        "decision_summary": "",
+        "retry": false,
+        "chosen_option_id": null,
+        "declined_reason": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+    "issues": [
+      {
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "status": "draft",
+        "title": "待描述的问题",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 23,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "496b3f273ce942e49f37c56571881672",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:27:20.835532Z",
+      "last_run_at": "2026-10-10T00:27:25.524720Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is [REDACTED]",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": "dissatisfied",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": "order_verified",
+      "outcome": "awaiting_user",
+      "outcome_reason": "confirm_proposal",
+      "outcome_at": null,
+      "total_latency_ms": 4689,
+      "model_calls": 1,
+      "tokens_in": 4572,
+      "tokens_out": 324,
+      "raw_available_until": "2026-10-17T00:27:25.524720Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "782b552a484a4512b6a95d4912485a13",
+        "session_id": "496b3f273ce942e49f37c56571881672",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:27:20.835532Z",
+        "ended_at": "2026-10-10T00:27:25.524713Z",
+        "duration_ms": 4689,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "propose",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 4664,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3696,
+            "tokens_in": 4572,
+            "tokens_out": 324,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:25.313622Z"
+          }
+        ],
+        "tokens_in": 4572,
+        "tokens_out": 324,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:20.835532Z",
+            "duration_ms": 4545,
+            "status": "ok",
+            "summary": {
+              "rule": "R6",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "logistics_query",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3665,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 162,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6308
+                    }
+                  ],
+                  "actual_input_tokens": 4572
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 2,
+            "node": "consult",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:25.380633Z",
+            "duration_ms": 33,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 3,
+            "node": "service_context",
+            "prev_node": "consult",
+            "started_at": "2026-10-10T00:27:25.413708Z",
+            "duration_ms": 12,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "category": "robot_vacuum",
+              "product_state": "confirmed_sku",
+              "receipt_status": "order_verified",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 4,
+            "node": "propose",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:27:25.425940Z",
+            "duration_ms": 15,
+            "status": "ok",
+            "summary": {
+              "stage": "propose",
+              "escalate_reason": null
+            }
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 5,
+            "node": "advance_tasks",
+            "prev_node": "propose",
+            "started_at": "2026-10-10T00:27:25.441573Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "advance_tasks",
+            "started_at": "2026-10-10T00:27:25.445331Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "782b552a484a4512b6a95d4912485a13",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:27:25.445723Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "496b3f273ce942e49f37c56571881672",
+      "version": 1,
+      "stage": "propose",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "kind": "confirm_proposal",
+        "input_token": "33beb1716de55f2bbad7287f1a6e813a",
+        "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+        "version": 1
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:27:20.815422+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "user_message",
+          "id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "text": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:27:25.402743+00:00",
+          "first_seq": 5,
+          "last_seq": 6,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "bbdcb2ed-8dcf-4131-be0c-20e83627cf51",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded"
+        },
+        {
+          "at": "2026-10-10T00:27:25.491932+00:00",
+          "first_seq": 12,
+          "last_seq": 14,
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "assistant_message",
+          "message_id": "ff45db9470db557cae934aeaac7d5924",
+          "text": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)",
+          "status": "completed",
+          "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-10T00:27:25.496800+00:00",
+          "first_seq": 15,
+          "last_seq": 16,
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "case_changed",
+          "card_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "version": 1,
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "status": "awaiting_confirmation",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {
+            "order_no": "Anker001"
+          },
+          "updated_at": "2026-10-10T00:27:25.433303+00:00"
+        },
+        {
+          "at": "2026-10-10T00:27:25.503917+00:00",
+          "first_seq": 17,
+          "last_seq": 19,
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "assistant_message",
+          "message_id": "91141c8791455e20aaf1515247780ccc",
+          "text": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+          "status": "completed",
+          "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-10T00:27:25.513071+00:00",
+          "first_seq": 21,
+          "last_seq": 21,
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "proposal_card",
+          "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+          "version": 1,
+          "options": [
+            {
+              "option_id": "carrier_investigation",
+              "type": "carrier_investigation",
+              "title": "Submit a carrier investigation request",
+              "detail": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+              "source": "sop"
+            }
+          ],
+          "decision_summary": "",
+          "retry": false,
+          "chosen_option_id": null,
+          "declined_reason": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+      "issues": [
+        {
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "status": "draft",
+          "title": "待描述的问题",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 23,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+      "session_id": "496b3f273ce942e49f37c56571881672",
+      "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "awaiting_confirmation",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": {
+        "status": "offered",
+        "options": [
+          {
+            "type": "carrier_investigation",
+            "title": "Submit a carrier investigation request",
+            "detail": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+            "source": "sop",
+            "option_id": "carrier_investigation"
+          }
+        ],
+        "excluded": [],
+        "user_confirmed": false,
+        "chosen_option_id": null
+      },
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {
+        "order_no": "Anker001"
+      },
+      "opened_at": "2026-10-10T00:27:25.414254+00:00",
+      "updated_at": "2026-10-10T00:27:25.433303+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 4497,
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "seq": 1,
+          "type": "order_identified",
+          "payload": {
+            "order_no": "Anker001"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:25.421237+00:00"
+        },
+        {
+          "id": 4498,
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "seq": 2,
+          "type": "status_changed",
+          "payload": {
+            "to": "proposing",
+            "from": "open",
+            "reason": "按 SOP 生成服务单方案"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:25.431268+00:00"
+        },
+        {
+          "id": 4501,
+          "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+          "seq": 3,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_confirmation",
+            "from": "proposing",
+            "reason": "等待客户确认提交"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:25.433303+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "496b3f273ce942e49f37c56571881672",
+        "version": 1,
+        "stage": "propose",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+          "kind": "confirm_proposal",
+          "input_token": "33beb1716de55f2bbad7287f1a6e813a",
+          "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+          "version": 1
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:27:20.815422+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "kind": "user_message",
+            "id": "7a9b6e3c9690464db9ffc2304a42a70e",
+            "text": "The vacuum did not arrive. Only the replacement parts kit. Was the vacuum shipped? What should I do？My order is Anker001",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:27:25.402743+00:00",
+            "first_seq": 5,
+            "last_seq": 6,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "bbdcb2ed-8dcf-4131-be0c-20e83627cf51",
+            "name": "logistics.query",
+            "status": "finished",
+            "summary": "After-sales tool responded"
+          },
+          {
+            "at": "2026-10-10T00:27:25.491932+00:00",
+            "first_seq": 12,
+            "last_seq": 14,
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "kind": "assistant_message",
+            "message_id": "ff45db9470db557cae934aeaac7d5924",
+            "text": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)",
+            "status": "completed",
+            "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-10T00:27:25.496800+00:00",
+            "first_seq": 15,
+            "last_seq": 16,
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "kind": "case_changed",
+            "card_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+            "version": 1,
+            "case_id": "b5e45b59-7d77-5f2c-b47b-ffff41bc995b",
+            "status": "awaiting_confirmation",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {
+              "order_no": "Anker001"
+            },
+            "updated_at": "2026-10-10T00:27:25.433303+00:00"
+          },
+          {
+            "at": "2026-10-10T00:27:25.503917+00:00",
+            "first_seq": 17,
+            "last_seq": 19,
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "kind": "assistant_message",
+            "message_id": "91141c8791455e20aaf1515247780ccc",
+            "text": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+            "status": "completed",
+            "reply_to_input_id": "7a9b6e3c9690464db9ffc2304a42a70e",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-10T00:27:25.513071+00:00",
+            "first_seq": 21,
+            "last_seq": 21,
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "kind": "proposal_card",
+            "card_id": "d2600265a62b5708b6c9a3a029439ad4",
+            "version": 1,
+            "options": [
+              {
+                "option_id": "carrier_investigation",
+                "type": "carrier_investigation",
+                "title": "Submit a carrier investigation request",
+                "detail": "Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+                "source": "sop"
+              }
+            ],
+            "decision_summary": "",
+            "retry": false,
+            "chosen_option_id": null,
+            "declined_reason": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "41987c7b9d3c51769de2a4749d76a844",
+        "issues": [
+          {
+            "issue_id": "41987c7b9d3c51769de2a4749d76a844",
+            "status": "draft",
+            "title": "待描述的问题",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 23,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "Order Anker001:\n• Fedex Anker1234567: delivered on 2026-09-21 (E235311B)\n• Amazon Logistic Anker1234567-1: delivered on 2026-09-23 (E235311B)Tracking shows the package as delivered, so under our after-sales policy we can't send another shipment. If you really haven't received it, I can submit a carrier investigation request and a colleague will check with the carrier.",
+  "step_cards": [],
+  "intent": "logistics_query",
+  "seconds": 6.13,
+  "complete": true
+}

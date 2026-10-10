@@ -1,0 +1,1315 @@
+{
+  "id": "T13",
+  "started_at": "2026-10-10T00:27:42.099568+00:00",
+  "input": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "resumed": false,
+          "event_id": "72225330520548a09eca493ee0b9fe74",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:27:42.170202+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "payload": {
+            "kind": "message",
+            "text": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "c4cd6c2d5706494db2796b410a24612a",
+          "input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:27:42.170202+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 3,
+          "event_id": "ca4eab3074134ccb9a1a0fda88fb2cc2",
+          "recorded_at": "2026-10-10T00:27:42.274753+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 4,
+          "event_id": "8998affb9cee46a996908477ad2dbd9c",
+          "recorded_at": "2026-10-10T00:27:46.484799+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 5,
+          "event_id": "523d7ae3773b4065b7dae2a2a190c039",
+          "recorded_at": "2026-10-10T00:27:46.487073+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 6,
+          "event_id": "e247052c8ae14e9db624a0271a542c52",
+          "recorded_at": "2026-10-10T00:27:46.503533+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 7,
+          "event_id": "aa9656e4cba24ce195195c975782ba59",
+          "recorded_at": "2026-10-10T00:27:47.275094+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+          "resolved_issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "b7945497c728536ab427a925f88cfb6f",
+              "title": "Er is een communicatiefout tussen de robot en de station.",
+              "status": "open"
+            }
+          ],
+          "event_id": "26c0659af6d75faa9fb99b9dccfd376b",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:27:47.286740+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:47.256557+00:00",
+          "event_id": "e14a576d1cc45916b8ee4fbf2d664438",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:27:47.287894+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "08d9549ea65d5a31a64ab391bf799752",
+          "reply_to_input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "event_id": "7c1302c42b1e503aab690a72ebcc04ba",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:27:47.289503+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "08d9549ea65d5a31a64ab391bf799752",
+          "delta": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "6f8e640e805656b2801f29cfbd89f84e",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:27:47.290590+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "08d9549ea65d5a31a64ab391bf799752",
+          "status": "completed",
+          "event_id": "db463049e11a5417a863e443a9d1426c",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:27:47.292026+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "a99211849d4159caa977a39299ffe007",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni E25",
+            "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+            "observations": [
+              "错误码 5116 未在官方知识库收录，需人工核实",
+              "客户填写的产品：Omni E25 / T2353"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [],
+            "emotion_track": [],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni E25",
+                "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+              },
+              "missing": [],
+              "pending_requests": []
+            }
+          },
+          "summary_id": "3cb83410456859549b8cc00697843922",
+          "revision": 1,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "updated_at": "2026-10-10T00:27:42.170202+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "92669b5457265915beb85de2f0e89075",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:27:47.293181+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "summary_id": "3cb83410456859549b8cc00697843922",
+          "revision": 1,
+          "card_id": "a99211849d4159caa977a39299ffe007",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-10T00:27:42.170202+00:00",
+          "event_id": "249ee21b8cf459c6848428df5903f8d7",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 15,
+          "recorded_at": "2026-10-10T00:27:47.296151+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "4449c37728165976ba3f83581f1f0aaa",
+          "recorded_at": "2026-10-10T00:27:47.297541+00:00",
+          "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+          "seq": 16,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+  "stop_reason": "awaiting_human",
+  "snapshot": {
+    "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:27:42.170202+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "kind": "user_message",
+        "id": "c7649db35b5b49ac9f6e86517aecacf0",
+        "text": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:27:47.287894+00:00",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "kind": "case_changed",
+        "card_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+        "version": 1,
+        "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "当前产品的这一问题没有可用的排障计划",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:27:47.256557+00:00"
+      },
+      {
+        "at": "2026-10-10T00:27:47.289503+00:00",
+        "first_seq": 11,
+        "last_seq": 13,
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "kind": "assistant_message",
+        "message_id": "08d9549ea65d5a31a64ab391bf799752",
+        "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-10T00:27:47.293181+00:00",
+        "first_seq": 14,
+        "last_seq": 14,
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "kind": "escalation_summary",
+        "card_id": "a99211849d4159caa977a39299ffe007",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni E25",
+          "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+          "observations": [
+            "错误码 5116 未在官方知识库收录，需人工核实",
+            "客户填写的产品：Omni E25 / T2353"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [],
+          "emotion_track": [],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "eufy Robot Vacuum Omni E25",
+              "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+            },
+            "missing": [],
+            "pending_requests": []
+          }
+        },
+        "summary_id": "3cb83410456859549b8cc00697843922",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:27:42.170202+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "b7945497c728536ab427a925f88cfb6f",
+    "issues": [
+      {
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "status": "open",
+        "title": "Er is een communicatiefout tussen de robot en de station.",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 16,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "kind": "escalation_summary",
+        "card_id": "a99211849d4159caa977a39299ffe007",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni E25",
+          "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+          "observations": [
+            "错误码 5116 未在官方知识库收录，需人工核实",
+            "客户填写的产品：Omni E25 / T2353"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": null,
+            "strategy": "normal"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [],
+          "emotion_track": [],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "eufy Robot Vacuum Omni E25",
+              "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+            },
+            "missing": [],
+            "pending_requests": []
+          }
+        },
+        "summary_id": "3cb83410456859549b8cc00697843922",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:27:42.170202+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "journey": {
+    "session": {
+      "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:27:42.175658Z",
+      "last_run_at": "2026-10-10T00:27:47.298485Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact o",
+      "product_state": "confirmed_sku",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "code_miss",
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 5122,
+      "model_calls": 2,
+      "tokens_in": 5711,
+      "tokens_out": 484,
+      "raw_available_until": "2026-10-17T00:27:47.298485Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+        "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:27:42.175658Z",
+        "ended_at": "2026-10-10T00:27:47.298457Z",
+        "duration_ms": 5122,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 5117,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 4262,
+            "tokens_in": 4655,
+            "tokens_out": 453,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:46.475383Z"
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "node": "summarize",
+            "task": "escalate.summary",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 741,
+            "tokens_in": 1056,
+            "tokens_out": 31,
+            "error_type": null,
+            "created_at": "2026-10-10T00:27:47.239132Z"
+          }
+        ],
+        "tokens_in": 5711,
+        "tokens_out": 484,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:27:42.175658Z",
+            "duration_ms": 4308,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3751,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 248,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6394
+                    }
+                  ],
+                  "actual_input_tokens": 4655
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "b7945497c728536ab427a925f88cfb6f",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:27:46.483939Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:27:46.486782Z",
+            "duration_ms": 16,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "retrieve",
+              "escalate_reason": "R5",
+              "knowledge_status": "code_miss"
+            }
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 4,
+            "node": "escalate",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:27:46.503535Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 5,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:27:46.503544Z",
+            "duration_ms": 764,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize",
+              "context_metrics": [
+                {
+                  "task": "escalate.summary",
+                  "event": "context_built",
+                  "tokens": 1109,
+                  "truncated": false,
+                  "max_tokens": 7687,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 215,
+                    "current": 248,
+                    "history": 0,
+                    "authority": 646
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 2,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 198,
+                    "timezone": 7,
+                    "task_data": 59,
+                    "issue_index": 149,
+                    "step_attempts": 2,
+                    "active_issue_id": 24,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 60,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "escalate.summary",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 1206
+                    }
+                  ],
+                  "actual_input_tokens": 1056
+                }
+              ]
+            }
+          },
+          {
+            "run_id": "3be317bd58fe43a2b00d8d9c37c3e1ce",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-10T00:27:47.267902Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:27:42.170202+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "kind": "user_message",
+          "id": "c7649db35b5b49ac9f6e86517aecacf0",
+          "text": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:27:47.287894+00:00",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "kind": "case_changed",
+          "card_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "version": 1,
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:27:47.256557+00:00"
+        },
+        {
+          "at": "2026-10-10T00:27:47.289503+00:00",
+          "first_seq": 11,
+          "last_seq": 13,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "kind": "assistant_message",
+          "message_id": "08d9549ea65d5a31a64ab391bf799752",
+          "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-10T00:27:47.293181+00:00",
+          "first_seq": 14,
+          "last_seq": 14,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "kind": "escalation_summary",
+          "card_id": "a99211849d4159caa977a39299ffe007",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni E25",
+            "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+            "observations": [
+              "错误码 5116 未在官方知识库收录，需人工核实",
+              "客户填写的产品：Omni E25 / T2353"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [],
+            "emotion_track": [],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni E25",
+                "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+              },
+              "missing": [],
+              "pending_requests": []
+            }
+          },
+          "summary_id": "3cb83410456859549b8cc00697843922",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:27:42.170202+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "b7945497c728536ab427a925f88cfb6f",
+      "issues": [
+        {
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "status": "open",
+          "title": "Er is een communicatiefout tussen de robot en de station.",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 16,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "b7945497c728536ab427a925f88cfb6f",
+          "kind": "escalation_summary",
+          "card_id": "a99211849d4159caa977a39299ffe007",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni E25",
+            "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+            "observations": [
+              "错误码 5116 未在官方知识库收录，需人工核实",
+              "客户填写的产品：Omni E25 / T2353"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [],
+            "emotion_track": [],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni E25",
+                "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+              },
+              "missing": [],
+              "pending_requests": []
+            }
+          },
+          "summary_id": "3cb83410456859549b8cc00697843922",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:27:42.170202+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+      "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+      "issue_id": "b7945497c728536ab427a925f88cfb6f",
+      "sku": "T2353",
+      "category": "robot_vacuum",
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:27:47.244627+00:00",
+      "updated_at": "2026-10-10T00:27:47.256557+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 4522,
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "当前产品的这一问题没有可用的排障计划"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:47.256092+00:00"
+        },
+        {
+          "id": 4523,
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:47.256146+00:00"
+        },
+        {
+          "id": 4524,
+          "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null,
+              "rule_id": "R5"
+            },
+            "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "emotion": {
+              "level": null,
+              "strategy": "normal"
+            },
+            "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+            "product": "eufy Robot Vacuum Omni E25",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni E25",
+                "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+              },
+              "missing": [],
+              "pending_requests": []
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [
+              "错误码 5116 未在官方知识库收录，需人工核实",
+              "客户填写的产品：Omni E25 / T2353"
+            ],
+            "emotion_track": [],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:27:47.256557+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "当前产品的这一问题没有可用的排障计划",
+          "cause": null,
+          "rule_id": "R5"
+        },
+        "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+        "emotion": {
+          "level": null,
+          "strategy": "normal"
+        },
+        "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+        "product": "eufy Robot Vacuum Omni E25",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "business": {
+          "kind": "device_fault",
+          "known": {
+            "product": "eufy Robot Vacuum Omni E25",
+            "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+          },
+          "missing": [],
+          "pending_requests": []
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [
+          "错误码 5116 未在官方知识库收录，需人工核实",
+          "客户填写的产品：Omni E25 / T2353"
+        ],
+        "emotion_track": [],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "925ecf0aa5d542f29f76eebd004602eb",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-10T00:27:42.170202+00:00",
+            "first_seq": 2,
+            "last_seq": 9,
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "kind": "user_message",
+            "id": "c7649db35b5b49ac9f6e86517aecacf0",
+            "text": "Productnaam: Omni E25\nProduct PN: T2353\nProduct-SN:\nProbleemtype: ERROR\nProbleemcode: 5116-Communicatieafwijking\nProbleempush: Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice.\nProbleembeschrijving: Er is een communicatiefout tussen de robot en het station. Neem\ncontact op met de klantenservice.\nGeüploade afbeeldingen van probleem: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:27:47.287894+00:00",
+            "first_seq": 10,
+            "last_seq": 10,
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "kind": "case_changed",
+            "card_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "version": 1,
+            "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "当前产品的这一问题没有可用的排障计划",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:27:47.256557+00:00"
+          },
+          {
+            "at": "2026-10-10T00:27:47.289503+00:00",
+            "first_seq": 11,
+            "last_seq": 13,
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "kind": "assistant_message",
+            "message_id": "08d9549ea65d5a31a64ab391bf799752",
+            "text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "c7649db35b5b49ac9f6e86517aecacf0",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-10T00:27:47.293181+00:00",
+            "first_seq": 14,
+            "last_seq": 14,
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "kind": "escalation_summary",
+            "card_id": "a99211849d4159caa977a39299ffe007",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni E25",
+              "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+              "observations": [
+                "错误码 5116 未在官方知识库收录，需人工核实",
+                "客户填写的产品：Omni E25 / T2353"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [],
+              "emotion_track": [],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "eufy Robot Vacuum Omni E25",
+                  "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+                },
+                "missing": [],
+                "pending_requests": []
+              }
+            },
+            "summary_id": "3cb83410456859549b8cc00697843922",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:27:42.170202+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "b7945497c728536ab427a925f88cfb6f",
+        "issues": [
+          {
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "status": "open",
+            "title": "Er is een communicatiefout tussen de robot en de station.",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 16,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "b7945497c728536ab427a925f88cfb6f",
+            "kind": "escalation_summary",
+            "card_id": "a99211849d4159caa977a39299ffe007",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni E25",
+              "problem": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem",
+              "observations": [
+                "错误码 5116 未在官方知识库收录，需人工核实",
+                "客户填写的产品：Omni E25 / T2353"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": null,
+                "strategy": "normal"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "cab84ab6-f782-5012-96e1-40a5ec0bb396",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [],
+              "emotion_track": [],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "eufy Robot Vacuum Omni E25",
+                  "symptoms": "Er is een communicatiefout tussen de robot en het station. Neem contact op met de klantenservice. Er is een communicatiefout tussen de robot en het station. Neem"
+                },
+                "missing": [],
+                "pending_requests": []
+              }
+            },
+            "summary_id": "3cb83410456859549b8cc00697843922",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:27:42.170202+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": [],
+  "intent": "report_problem",
+  "seconds": 6.55,
+  "complete": true
+}

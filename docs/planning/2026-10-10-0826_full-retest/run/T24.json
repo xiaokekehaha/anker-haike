@@ -1,0 +1,1212 @@
+{
+  "id": "T24",
+  "started_at": "2026-10-10T00:28:07.983757+00:00",
+  "input": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "resumed": false,
+          "event_id": "2bc2e5bbf14d45f882769eac16219702",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:08.134131+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "payload": {
+            "kind": "message",
+            "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "dfb735a0060d4ce39eca78eccc32127e",
+          "input_id": "2447e0088c2b4aac9d70f27b27a433bb",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:08.134131+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 3,
+          "event_id": "f307fc1138534fe9baebe7a396c2e5b4",
+          "recorded_at": "2026-10-10T00:28:08.157465+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 4,
+          "event_id": "9a05b5bb15b34a96899ca5ff0733f1c2",
+          "recorded_at": "2026-10-10T00:28:11.782366+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 5,
+          "event_id": "0e95de0d43eb421aa406eb915c35942b",
+          "recorded_at": "2026-10-10T00:28:11.789083+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 6,
+          "event_id": "b8ebe6f7b70a470d80d2e47f5c62c26d",
+          "recorded_at": "2026-10-10T00:28:11.795045+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 7,
+          "event_id": "4a29f93288b64f76b272a902e6659c21",
+          "recorded_at": "2026-10-10T00:28:11.800512+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "input_id": "2447e0088c2b4aac9d70f27b27a433bb",
+          "resolved_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+              "title": "Sprinkler error",
+              "status": "open"
+            }
+          ],
+          "event_id": "81c3a06d23fc5d80bb5a5695f68bec7d",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:28:11.820685+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0273",
+              "source": "qa_exact",
+              "doc_id": "rv-0273",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0273",
+              "snippet": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues. If the error persists,our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware iss",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "6a16a9acd17a55a68ee5cbcdd3263ab1",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:28:11.821867+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "pending_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "d3a19ab855a05cd6aee443e9e291400c",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:28:11.823465+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0273",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Please try unplugging and replugging the base station power…",
+            "instruction": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0273"
+            ],
+            "primary_evidence_id": "qa:rv-0273",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "event_id": "127b8bf79e235a8e934e1c58d1251dea",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:28:11.824501+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "input_token": "ae3b0dc2b40555949394d2fe78732f83",
+          "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+          "version": 1,
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 13,
+          "event_id": "19fd321a219c4b36ac42c14d191d9a4d",
+          "recorded_at": "2026-10-10T00:28:11.825338+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "428aaadb2a8f507882d0d37f1b85dc99",
+          "recorded_at": "2026-10-10T00:28:11.826567+00:00",
+          "run_id": "70ff57371ca249ba983c4886ed197a4c",
+          "seq": 14,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 15,
+          "type": "run_started",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "resumed": false,
+          "event_id": "edb5f64e80784c9bab350696212f9903",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:11.838663+00:00"
+        },
+        {
+          "seq": 16,
+          "type": "input_received",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+            "input_token": "ae3b0dc2b40555949394d2fe78732f83",
+            "target_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "expected_version": 1
+          },
+          "event_id": "0910f875549043cda235d3d3263aaaec",
+          "input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:11.838663+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 17,
+          "event_id": "c7ba33fa494b4595be362e97ab2b8f9f",
+          "recorded_at": "2026-10-10T00:28:11.850279+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 18,
+          "event_id": "7e256d1178464ab2958a548eca8bac12",
+          "recorded_at": "2026-10-10T00:28:11.852293+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 19,
+          "event_id": "a228d2330e8343dd944a6a54429039f1",
+          "recorded_at": "2026-10-10T00:28:11.856913+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+          "resolved_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+              "title": "Sprinkler error",
+              "status": "open"
+            }
+          ],
+          "event_id": "4029e15b241e51cb8c5bc0d45731fbb4",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:28:11.874453+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "pending_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "82f3d76db5505d259409d072b1a450a7",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:28:11.875264+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+          "case_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "version": 2,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:11.852231+00:00",
+          "event_id": "a0452550d92e595e9ab172ea7adb8274",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:28:11.875964+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "reply_to_input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+          "event_id": "d3d413d1beac5789a09f297743064d34",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 24,
+          "recorded_at": "2026-10-10T00:28:11.876919+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "f2cc82ff69275f8bbe2bb8cef40a4d58",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 25,
+          "recorded_at": "2026-10-10T00:28:11.877622+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+          "status": "completed",
+          "event_id": "75bc197406205ddba838c78e779343d9",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 26,
+          "recorded_at": "2026-10-10T00:28:11.878616+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "pending_id": "93241e77835156a084f398b97bc4b05d",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "5027e549a551526d8ef947b144528c94",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 27,
+          "recorded_at": "2026-10-10T00:28:11.879540+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "input_token": "e7f6e8ee56ca5fbea90c3124817fc700",
+          "card_id": "93241e77835156a084f398b97bc4b05d",
+          "version": 2,
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 28,
+          "event_id": "578e077b825946c7b9357baf72351608",
+          "recorded_at": "2026-10-10T00:28:11.880765+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ecb1164ba9f25aac9c0947217e34a970",
+          "recorded_at": "2026-10-10T00:28:11.881846+00:00",
+          "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+          "seq": 29,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "d9d4492728204789909ca6aeaf285a70",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "d9d4492728204789909ca6aeaf285a70",
+    "version": 2,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+      "kind": "upload_receipt",
+      "input_token": "e7f6e8ee56ca5fbea90c3124817fc700",
+      "card_id": "93241e77835156a084f398b97bc4b05d",
+      "version": 2
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:08.134131+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "user_message",
+        "id": "2447e0088c2b4aac9d70f27b27a433bb",
+        "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:28:11.822024Z",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0273",
+            "source": "qa_exact",
+            "doc_id": "rv-0273",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0273",
+            "snippet": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues. If the error persists,our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware iss",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:11.824501+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "step_card",
+        "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0273",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "Please try unplugging and replugging the base station power…",
+          "instruction": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0273"
+          ],
+          "primary_evidence_id": "qa:rv-0273",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:11.838663+00:00",
+        "first_seq": 16,
+        "last_seq": 21,
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "action",
+        "id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:11.875964+00:00",
+        "first_seq": 23,
+        "last_seq": 23,
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "case_changed",
+        "card_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+        "version": 2,
+        "case_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:28:11.852231+00:00"
+      },
+      {
+        "at": "2026-10-10T00:28:11.876919+00:00",
+        "first_seq": 24,
+        "last_seq": 26,
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "assistant_message",
+        "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+    "issues": [
+      {
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "status": "open",
+        "title": "Sprinkler error",
+        "task_queue": [
+          {
+            "task_id": "b02bc88b09905dedae99fd3223739125",
+            "intent": "report_problem",
+            "quote": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+            "request_quote": "Base station clean water pump error",
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "pending",
+            "created_input_id": "2447e0088c2b4aac9d70f27b27a433bb",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 29,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "d9d4492728204789909ca6aeaf285a70",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:08.138065Z",
+      "last_run_at": "2026-10-10T00:28:11.883037Z",
+      "runs": 2,
+      "user_messages": 1,
+      "first_question": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0273"
+      ],
+      "steps_executed": 1,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 41,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:28:11.883037Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "70ff57371ca249ba983c4886ed197a4c",
+        "session_id": "d9d4492728204789909ca6aeaf285a70",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:08.138065Z",
+        "ended_at": "2026-10-10T00:28:11.827318Z",
+        "duration_ms": 3689,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 3687,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3599,
+            "tokens_in": 4615,
+            "tokens_out": 396,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:11.750757Z"
+          }
+        ],
+        "tokens_in": 4615,
+        "tokens_out": 396,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:08.138065Z",
+            "duration_ms": 3640,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3711,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 208,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6354
+                    }
+                  ],
+                  "actual_input_tokens": 4615
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:11.778496Z",
+            "duration_ms": 10,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:11.789054Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0273",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:11.795028Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0273",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:11.798101Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "70ff57371ca249ba983c4886ed197a4c",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:11.798109Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+        "session_id": "d9d4492728204789909ca6aeaf285a70",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:28:11.841193Z",
+        "ended_at": "2026-10-10T00:28:11.883030Z",
+        "duration_ms": 41,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 37,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 8,
+        "nodes": [
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:11.841193Z",
+            "duration_ms": 7,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0273",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:11.848227Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R3",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0273",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:11.849396Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "guide",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 4,
+            "node": "escalate",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:11.852022Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 5,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:28:11.852026Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 6,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:28:11.854551Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 7,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:28:11.855049Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "4981a519f0934afe8bb7b4c564d17f1e",
+            "idx": 8,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:11.855498Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "d9d4492728204789909ca6aeaf285a70",
+      "version": 2,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "kind": "upload_receipt",
+        "input_token": "e7f6e8ee56ca5fbea90c3124817fc700",
+        "card_id": "93241e77835156a084f398b97bc4b05d",
+        "version": 2
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:08.134131+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "user_message",
+          "id": "2447e0088c2b4aac9d70f27b27a433bb",
+          "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:28:11.822024Z",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0273",
+              "source": "qa_exact",
+              "doc_id": "rv-0273",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0273",
+              "snippet": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues. If the error persists,our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware iss",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:11.824501+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "step_card",
+          "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0273",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "Please try unplugging and replugging the base station power…",
+            "instruction": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0273"
+            ],
+            "primary_evidence_id": "qa:rv-0273",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:11.838663+00:00",
+          "first_seq": 16,
+          "last_seq": 21,
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "action",
+          "id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:11.875964+00:00",
+          "first_seq": 23,
+          "last_seq": 23,
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "case_changed",
+          "card_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+          "version": 2,
+          "case_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:11.852231+00:00"
+        },
+        {
+          "at": "2026-10-10T00:28:11.876919+00:00",
+          "first_seq": 24,
+          "last_seq": 26,
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "assistant_message",
+          "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+      "issues": [
+        {
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "status": "open",
+          "title": "Sprinkler error",
+          "task_queue": [
+            {
+              "task_id": "b02bc88b09905dedae99fd3223739125",
+              "intent": "report_problem",
+              "quote": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+              "request_quote": "Base station clean water pump error",
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "pending",
+              "created_input_id": "2447e0088c2b4aac9d70f27b27a433bb",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 29,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+      "session_id": "d9d4492728204789909ca6aeaf285a70",
+      "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:28:11.852231+00:00",
+      "updated_at": "2026-10-10T00:28:11.852231+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "d9d4492728204789909ca6aeaf285a70",
+        "version": 2,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+          "kind": "upload_receipt",
+          "input_token": "e7f6e8ee56ca5fbea90c3124817fc700",
+          "card_id": "93241e77835156a084f398b97bc4b05d",
+          "version": 2
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:28:08.134131+00:00",
+            "first_seq": 2,
+            "last_seq": 9,
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "kind": "user_message",
+            "id": "2447e0088c2b4aac9d70f27b27a433bb",
+            "text": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:28:11.822024Z",
+            "first_seq": 10,
+            "last_seq": 10,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0273",
+                "source": "qa_exact",
+                "doc_id": "rv-0273",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0273",
+                "snippet": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues. If the error persists,our engineering team has determined that this error is caused by a hardware malfunction. Please rest assured that if your product experiences a hardware iss",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:11.824501+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "kind": "step_card",
+            "card_id": "c5833e2ca5645f8ca27f2dfcaaad47e4",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0273",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "Please try unplugging and replugging the base station power…",
+              "instruction": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0273"
+              ],
+              "primary_evidence_id": "qa:rv-0273",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:11.838663+00:00",
+            "first_seq": 16,
+            "last_seq": 21,
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "kind": "action",
+            "id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:11.875964+00:00",
+            "first_seq": 23,
+            "last_seq": 23,
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "kind": "case_changed",
+            "card_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+            "version": 2,
+            "case_id": "f73dbef0-1c8c-5cd0-9e1c-ac48fbb248a9",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:28:11.852231+00:00"
+          },
+          {
+            "at": "2026-10-10T00:28:11.876919+00:00",
+            "first_seq": 24,
+            "last_seq": 26,
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "kind": "assistant_message",
+            "message_id": "ad96bf2f59145642ba0ab36d9a9c5536",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "adcc4a7d03f1490fa1ff5d15e388d4f2",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+        "issues": [
+          {
+            "issue_id": "844a0b89fc7759f39206e37bfa2b8c60",
+            "status": "open",
+            "title": "Sprinkler error",
+            "task_queue": [
+              {
+                "task_id": "b02bc88b09905dedae99fd3223739125",
+                "intent": "report_problem",
+                "quote": "Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: ERROR\nProblem Code: 6013-Water injection device is abnormal\nProblem Push: Error: Sprinkler error, please contact customer service.\nProblem Description: Base station clean water pump error\nProblem Upload Images: []",
+                "request_quote": "Base station clean water pump error",
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "pending",
+                "created_input_id": "2447e0088c2b4aac9d70f27b27a433bb",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 29,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0273",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "Please try unplugging and replugging the base station power…",
+      "instruction": "Please try unplugging and replugging the base station power cable. Note that after unplugging the power cable, wait 10 seconds before replugging it, and then restart the cleaning task. Observe whether the error continues.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0273"
+      ],
+      "primary_evidence_id": "qa:rv-0273",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 5.05,
+  "complete": true
+}

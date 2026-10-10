@@ -1,0 +1,1531 @@
+{
+  "id": "T22",
+  "started_at": "2026-10-10T00:28:02.801887+00:00",
+  "input": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "resumed": false,
+          "event_id": "d0aaf37306954019834a59736effe10a",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:02.959301+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "payload": {
+            "kind": "message",
+            "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "1402b1518a714f2c9f3d430e6e69c072",
+          "input_id": "b7837597f09e42a49d4f63566a4f1b01",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:28:02.959301+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 3,
+          "event_id": "14af7f0c01ef4aadbc31da860548534e",
+          "recorded_at": "2026-10-10T00:28:03.010373+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 4,
+          "event_id": "48ad45c87bae4ec98fea22b1242c7722",
+          "recorded_at": "2026-10-10T00:28:06.186362+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 5,
+          "event_id": "f75c2dd163ce4b00a319a00805831251",
+          "recorded_at": "2026-10-10T00:28:06.213966+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 6,
+          "event_id": "e4ad3d499cd94c0eaa9269cda21c51d3",
+          "recorded_at": "2026-10-10T00:28:06.218501+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 7,
+          "event_id": "268b618dbe764dbbba3e975d3bd426b6",
+          "recorded_at": "2026-10-10T00:28:06.220321+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_id": "b7837597f09e42a49d4f63566a4f1b01",
+          "resolved_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "b7cdc98a142a50e283399f9484937629",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:28:06.248354+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0106",
+              "source": "qa_exact",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0106",
+              "snippet": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ],
+          "event_id": "de1358450efd5857ba086cef26037d3d",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:28:06.249315+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "pending_id": "dd95635230805c4482b52b30e57bfc99",
+          "status": "active",
+          "reason": "presented",
+          "version": 1,
+          "event_id": "5f58f61f1d5556c08222a26f7d4d3d08",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:28:06.250832+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "dd95635230805c4482b52b30e57bfc99",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "If the robot is often stuck on the edge of stairs or furnit…",
+            "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "event_id": "65dbdecd193651b0a93a8583915aa777",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:28:06.251717+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_token": "59af24163e1756a9982274a1d7f07899",
+          "card_id": "dd95635230805c4482b52b30e57bfc99",
+          "version": 1,
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 13,
+          "event_id": "4250d3f798cb40d2bc6ee8f1c35583f0",
+          "recorded_at": "2026-10-10T00:28:06.253864+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "e416630cea085c5297102bc5c7908cff",
+          "recorded_at": "2026-10-10T00:28:06.255896+00:00",
+          "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+          "seq": 14,
+          "reason": "awaiting_input",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 15,
+          "type": "run_started",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "resumed": false,
+          "event_id": "4b864a2e78b14aacad8c9b6a32737797",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:06.280804+00:00"
+        },
+        {
+          "seq": 16,
+          "type": "input_received",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "dd95635230805c4482b52b30e57bfc99",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+            "input_token": "59af24163e1756a9982274a1d7f07899",
+            "target_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "expected_version": 1
+          },
+          "event_id": "faa387f85a7140d69a9c87dc7379878b",
+          "input_id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:06.280804+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 17,
+          "event_id": "b17d1bf520c1439d84ef72fe681ca1cd",
+          "recorded_at": "2026-10-10T00:28:06.293470+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "guide",
+          "substage": null,
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 18,
+          "event_id": "1960aa4ffa0f416abd35f9d245213a3b",
+          "recorded_at": "2026-10-10T00:28:06.296218+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+          "resolved_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "version": 2,
+          "issues": [
+            {
+              "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "a924ec713d265f248b5410641a07a122",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 20,
+          "recorded_at": "2026-10-10T00:28:06.313281+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "pending_id": "dd95635230805c4482b52b30e57bfc99",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 2,
+          "event_id": "3a36dc44b8e35406852b2c79fea9f7d0",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 21,
+          "recorded_at": "2026-10-10T00:28:06.314121+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "pending_id": "c0e9136f7266515a9ec03faddc742354",
+          "status": "active",
+          "reason": "presented",
+          "version": 2,
+          "event_id": "6500d3f9c40d5e0e9a528948e7916c64",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 22,
+          "recorded_at": "2026-10-10T00:28:06.314956+00:00"
+        },
+        {
+          "type": "step_card",
+          "card_id": "c0e9136f7266515a9ec03faddc742354",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the robot continues to display errors on flat ground, pl…",
+            "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": [],
+            "kind": "action",
+            "options": []
+          },
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "event_id": "7b4e8b4a61745536b29926aed944534d",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 23,
+          "recorded_at": "2026-10-10T00:28:06.315752+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "step_feedback",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_token": "44d3f4ac126d5c09a6a7d2916ea6bdfc",
+          "card_id": "c0e9136f7266515a9ec03faddc742354",
+          "version": 2,
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 24,
+          "event_id": "8eb8c21bfe3b483f9da07b5307320974",
+          "recorded_at": "2026-10-10T00:28:06.316434+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "b9ec2ba94e0f531786b5aaae0723a753",
+          "recorded_at": "2026-10-10T00:28:06.317726+00:00",
+          "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+          "seq": 25,
+          "reason": "awaiting_input",
+          "version": 2
+        }
+      ]
+    },
+    {
+      "input": {
+        "kind": "step_feedback",
+        "payload": {
+          "feedback": "not_solved"
+        }
+      },
+      "events": [
+        {
+          "seq": 26,
+          "type": "run_started",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "resumed": false,
+          "event_id": "966fdccfc8a247b99e42a36b37736420",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:28:06.330109+00:00"
+        },
+        {
+          "seq": 27,
+          "type": "input_received",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "payload": {
+            "kind": "step_feedback",
+            "card_id": "c0e9136f7266515a9ec03faddc742354",
+            "payload": {
+              "note": null,
+              "answer": null,
+              "feedback": "not_solved"
+            },
+            "action_id": "b93a547d8bca486dba0607f0a8424692",
+            "input_token": "44d3f4ac126d5c09a6a7d2916ea6bdfc",
+            "target_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "expected_version": 2
+          },
+          "event_id": "343f4a8cfafb463e814fdd212b50f24f",
+          "input_id": "b93a547d8bca486dba0607f0a8424692",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_kind": "action",
+          "recorded_at": "2026-10-10T00:28:06.330109+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 28,
+          "event_id": "c5d7b1fb9971449db853822438310194",
+          "recorded_at": "2026-10-10T00:28:06.341830+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "context",
+          "substage": null,
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 29,
+          "event_id": "5d0eed1f408f46a7a4bcb473aa6c03dc",
+          "recorded_at": "2026-10-10T00:28:06.347868+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_id": "b93a547d8bca486dba0607f0a8424692",
+          "resolved_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "version": 3,
+          "issues": [
+            {
+              "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "title": "Wiel raakt de grond niet",
+              "status": "open"
+            }
+          ],
+          "event_id": "dee0845081e357da9810be0fcd7de2e2",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 31,
+          "recorded_at": "2026-10-10T00:28:06.369354+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "pending_id": "c0e9136f7266515a9ec03faddc742354",
+          "status": "consumed",
+          "reason": "step_feedback",
+          "version": 3,
+          "event_id": "06a10852a004538284b1f3819ebc8be6",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 32,
+          "recorded_at": "2026-10-10T00:28:06.370769+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+          "case_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "version": 3,
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:06.341776+00:00",
+          "event_id": "66fe46f253475ae591cb3b53b76fe0a2",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 33,
+          "recorded_at": "2026-10-10T00:28:06.371626+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "reply_to_input_id": "b93a547d8bca486dba0607f0a8424692",
+          "event_id": "cbc46f4e93695ebea925d9f5ea11b9da",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 34,
+          "recorded_at": "2026-10-10T00:28:06.372825+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+          "delta": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "event_id": "a23621a800cc5516ab318a949a562a21",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 35,
+          "recorded_at": "2026-10-10T00:28:06.373774+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+          "status": "completed",
+          "event_id": "e2d88489700d5524a271bb53fcaec5de",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 36,
+          "recorded_at": "2026-10-10T00:28:06.375080+00:00"
+        },
+        {
+          "type": "pending_changed",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "pending_id": "a9999e1e4b2e53ca931e145097e0606a",
+          "status": "active",
+          "reason": "presented",
+          "version": 3,
+          "event_id": "f8bec665ee625a068fa04bc8256a2f5d",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 37,
+          "recorded_at": "2026-10-10T00:28:06.376161+00:00"
+        },
+        {
+          "type": "awaiting_input",
+          "kind": "upload_receipt",
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "input_token": "eca04680a01758cd8aad175bb75c339b",
+          "card_id": "a9999e1e4b2e53ca931e145097e0606a",
+          "version": 3,
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 38,
+          "event_id": "9b772e68b1634befbad561e163d68a2e",
+          "recorded_at": "2026-10-10T00:28:06.376840+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "2edb3cbcd5a6560c998730c9754ab5e4",
+          "recorded_at": "2026-10-10T00:28:06.378222+00:00",
+          "run_id": "879b0081812342648030639b3b8a299c",
+          "seq": 39,
+          "reason": "awaiting_input",
+          "version": 3
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "8200f6815d584038bc4b8527abe91679",
+  "stop_reason": "awaiting_upload_receipt",
+  "snapshot": {
+    "session_id": "8200f6815d584038bc4b8527abe91679",
+    "version": 3,
+    "stage": "context",
+    "substage": null,
+    "active_run": null,
+    "pending_input": {
+      "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+      "kind": "upload_receipt",
+      "input_token": "eca04680a01758cd8aad175bb75c339b",
+      "card_id": "a9999e1e4b2e53ca931e145097e0606a",
+      "version": 3
+    },
+    "timeline": [
+      {
+        "at": "2026-10-10T00:28:02.959301+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "user_message",
+        "id": "b7837597f09e42a49d4f63566a4f1b01",
+        "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:28:06.249505Z",
+        "first_seq": 10,
+        "last_seq": 10,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "qa:rv-0106",
+            "source": "qa_exact",
+            "doc_id": "rv-0106",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "rv-0106",
+            "snippet": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "score": 1.0,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:28:06.251717+00:00",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "step_card",
+        "card_id": "dd95635230805c4482b52b30e57bfc99",
+        "version": 1,
+        "step": {
+          "step_id": "s1",
+          "plan_id": "qa_rv_0106",
+          "plan_version": 1,
+          "step_no": 1,
+          "title": "If the robot is often stuck on the edge of stairs or furnit…",
+          "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0106"
+          ],
+          "primary_evidence_id": "qa:rv-0106",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:06.280804+00:00",
+        "first_seq": 16,
+        "last_seq": 20,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "action",
+        "id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:06.315752+00:00",
+        "first_seq": 23,
+        "last_seq": 23,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "step_card",
+        "card_id": "c0e9136f7266515a9ec03faddc742354",
+        "version": 2,
+        "step": {
+          "step_id": "s2",
+          "plan_id": "qa_rv_0106",
+          "plan_version": 1,
+          "step_no": 2,
+          "title": "If the robot continues to display errors on flat ground, pl…",
+          "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+          "expected_result": "After this step, check whether the problem is resolved.",
+          "caution": null,
+          "evidence_ids": [
+            "qa:rv-0106"
+          ],
+          "primary_evidence_id": "qa:rv-0106",
+          "media": [],
+          "kind": "action",
+          "options": [],
+          "context": null
+        },
+        "seen": null,
+        "feedback": "not_solved",
+        "note": null,
+        "answer": null
+      },
+      {
+        "at": "2026-10-10T00:28:06.330109+00:00",
+        "first_seq": 27,
+        "last_seq": 31,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "action",
+        "id": "b93a547d8bca486dba0607f0a8424692",
+        "label": "反馈排障结果",
+        "action_kind": "step_feedback"
+      },
+      {
+        "at": "2026-10-10T00:28:06.371626+00:00",
+        "first_seq": 33,
+        "last_seq": 33,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "case_changed",
+        "card_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+        "version": 3,
+        "case_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+        "status": "open",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "案件状态更新",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:28:06.341776+00:00"
+      },
+      {
+        "at": "2026-10-10T00:28:06.372825+00:00",
+        "first_seq": 34,
+        "last_seq": 36,
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "assistant_message",
+        "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+        "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+        "status": "completed",
+        "reply_to_input_id": "b93a547d8bca486dba0607f0a8424692",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+    "issues": [
+      {
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "status": "open",
+        "title": "Wiel raakt de grond niet",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 39,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "8200f6815d584038bc4b8527abe91679",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:28:02.962374Z",
+      "last_run_at": "2026-10-10T00:28:06.379788Z",
+      "runs": 3,
+      "user_messages": 1,
+      "first_question": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLa",
+      "product_state": "confirmed_sku",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "emotion_level": null,
+      "fault_plan_ids": [
+        "qa_rv_0106"
+      ],
+      "steps_executed": 2,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_user",
+      "outcome_reason": "upload_receipt",
+      "outcome_at": null,
+      "total_latency_ms": 47,
+      "model_calls": 0,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "raw_available_until": "2026-10-17T00:28:06.379788Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+        "session_id": "8200f6815d584038bc4b8527abe91679",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:28:02.962374Z",
+        "ended_at": "2026-10-10T00:28:06.257948Z",
+        "duration_ms": 3295,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 3291,
+        "card_kind": "step_card",
+        "model_calls": [
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3174,
+            "tokens_in": 4764,
+            "tokens_out": 411,
+            "error_type": null,
+            "created_at": "2026-10-10T00:28:06.165732Z"
+          }
+        ],
+        "tokens_in": 4764,
+        "tokens_out": 411,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:02.962374Z",
+            "duration_ms": 3221,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3858,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 355,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6501
+                    }
+                  ],
+                  "actual_input_tokens": 4764
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:06.184360Z",
+            "duration_ms": 29,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:28:06.213946Z",
+            "duration_ms": 4,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "plan_id": "qa_rv_0106",
+              "substage": "retrieve",
+              "knowledge_status": "ok"
+            }
+          },
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 4,
+            "node": "guide",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:28:06.218483Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 5,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:06.220308Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "00f98d12b985488ab2d63c69c7c681f0",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:06.220312Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+        "session_id": "8200f6815d584038bc4b8527abe91679",
+        "seq_no": 2,
+        "started_at": "2026-10-10T00:28:06.282190Z",
+        "ended_at": "2026-10-10T00:28:06.318369Z",
+        "duration_ms": 36,
+        "entry": "action:step_feedback",
+        "stage_from": "guide",
+        "stage_to": "guide",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": null,
+        "card_ready_ms": 34,
+        "card_kind": "step_card",
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 5,
+        "nodes": [
+          {
+            "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:06.282190Z",
+            "duration_ms": 8,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:06.291032Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "next_on:s2",
+              "stage": "verify",
+              "verify": "next",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+            "idx": 3,
+            "node": "guide",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:06.292447Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "substage": null
+            }
+          },
+          {
+            "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+            "idx": 4,
+            "node": "await_input",
+            "prev_node": "guide",
+            "started_at": "2026-10-10T00:28:06.294722Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "d39e8fb6ce4f48adb6dcbe196c8c3d6f",
+            "idx": 5,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:06.295177Z",
+            "duration_ms": 2,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      },
+      {
+        "run_id": "879b0081812342648030639b3b8a299c",
+        "session_id": "8200f6815d584038bc4b8527abe91679",
+        "seq_no": 3,
+        "started_at": "2026-10-10T00:28:06.332139Z",
+        "ended_at": "2026-10-10T00:28:06.379778Z",
+        "duration_ms": 47,
+        "entry": "action:step_feedback",
+        "stage_from": "context",
+        "stage_to": "context",
+        "done_reason": "awaiting_input",
+        "error_code": null,
+        "first_visible_ms": 42,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [],
+        "tokens_in": 0,
+        "tokens_out": 0,
+        "node_count": 7,
+        "nodes": [
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:28:06.332139Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": {
+              "stage": "guide",
+              "plan_id": "qa_rv_0106",
+              "category": "robot_vacuum",
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 0,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "confirmed_sku",
+              "vision_status": null,
+              "primary_intent": "step_feedback",
+              "escalate_reason": null,
+              "target_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+              "context_revision": 1,
+              "knowledge_status": "ok",
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 2,
+            "node": "apply_action",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:28:06.338588Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": {
+              "rule": "R1",
+              "stage": "verify",
+              "verify": "escalate",
+              "substage": null,
+              "escalate_reason": "R1"
+            }
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 3,
+            "node": "escalate",
+            "prev_node": "apply_action",
+            "started_at": "2026-10-10T00:28:06.340470Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 4,
+            "node": "service_context",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:28:06.341435Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": {
+              "stage": "context",
+              "escalate_reason": "R6"
+            }
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 5,
+            "node": "prepare_receipt",
+            "prev_node": "service_context",
+            "started_at": "2026-10-10T00:28:06.345134Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 6,
+            "node": "await_input",
+            "prev_node": "prepare_receipt",
+            "started_at": "2026-10-10T00:28:06.345648Z",
+            "duration_ms": 0,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "879b0081812342648030639b3b8a299c",
+            "idx": 7,
+            "node": "commit_issue",
+            "prev_node": "await_input",
+            "started_at": "2026-10-10T00:28:06.346086Z",
+            "duration_ms": 3,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "8200f6815d584038bc4b8527abe91679",
+      "version": 3,
+      "stage": "context",
+      "substage": null,
+      "active_run": null,
+      "pending_input": {
+        "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "kind": "upload_receipt",
+        "input_token": "eca04680a01758cd8aad175bb75c339b",
+        "card_id": "a9999e1e4b2e53ca931e145097e0606a",
+        "version": 3
+      },
+      "timeline": [
+        {
+          "at": "2026-10-10T00:28:02.959301+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "user_message",
+          "id": "b7837597f09e42a49d4f63566a4f1b01",
+          "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:28:06.249505Z",
+          "first_seq": 10,
+          "last_seq": 10,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "qa:rv-0106",
+              "source": "qa_exact",
+              "doc_id": "rv-0106",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "rv-0106",
+              "snippet": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "score": 1.0,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:28:06.251717+00:00",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "step_card",
+          "card_id": "dd95635230805c4482b52b30e57bfc99",
+          "version": 1,
+          "step": {
+            "step_id": "s1",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 1,
+            "title": "If the robot is often stuck on the edge of stairs or furnit…",
+            "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:06.280804+00:00",
+          "first_seq": 16,
+          "last_seq": 20,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "action",
+          "id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:06.315752+00:00",
+          "first_seq": 23,
+          "last_seq": 23,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "step_card",
+          "card_id": "c0e9136f7266515a9ec03faddc742354",
+          "version": 2,
+          "step": {
+            "step_id": "s2",
+            "plan_id": "qa_rv_0106",
+            "plan_version": 1,
+            "step_no": 2,
+            "title": "If the robot continues to display errors on flat ground, pl…",
+            "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+            "expected_result": "After this step, check whether the problem is resolved.",
+            "caution": null,
+            "evidence_ids": [
+              "qa:rv-0106"
+            ],
+            "primary_evidence_id": "qa:rv-0106",
+            "media": [],
+            "kind": "action",
+            "options": [],
+            "context": null
+          },
+          "seen": null,
+          "feedback": "not_solved",
+          "note": null,
+          "answer": null
+        },
+        {
+          "at": "2026-10-10T00:28:06.330109+00:00",
+          "first_seq": 27,
+          "last_seq": 31,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "action",
+          "id": "b93a547d8bca486dba0607f0a8424692",
+          "label": "反馈排障结果",
+          "action_kind": "step_feedback"
+        },
+        {
+          "at": "2026-10-10T00:28:06.371626+00:00",
+          "first_seq": 33,
+          "last_seq": 33,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "case_changed",
+          "card_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+          "version": 3,
+          "case_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+          "status": "open",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "案件状态更新",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:28:06.341776+00:00"
+        },
+        {
+          "at": "2026-10-10T00:28:06.372825+00:00",
+          "first_seq": 34,
+          "last_seq": 36,
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "assistant_message",
+          "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+          "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+          "status": "completed",
+          "reply_to_input_id": "b93a547d8bca486dba0607f0a8424692",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+      "issues": [
+        {
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "status": "open",
+          "title": "Wiel raakt de grond niet",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 39,
+      "latest_summaries": []
+    }
+  },
+  "cases": [
+    {
+      "case_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+      "session_id": "8200f6815d584038bc4b8527abe91679",
+      "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+      "sku": "T2351",
+      "category": "robot_vacuum",
+      "status": "open",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:28:06.341776+00:00",
+      "updated_at": "2026-10-10T00:28:06.341776+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 0,
+      "events": [],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": null,
+      "snapshot": {
+        "session_id": "8200f6815d584038bc4b8527abe91679",
+        "version": 3,
+        "stage": "context",
+        "substage": null,
+        "active_run": null,
+        "pending_input": {
+          "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+          "kind": "upload_receipt",
+          "input_token": "eca04680a01758cd8aad175bb75c339b",
+          "card_id": "a9999e1e4b2e53ca931e145097e0606a",
+          "version": 3
+        },
+        "timeline": [
+          {
+            "at": "2026-10-10T00:28:02.959301+00:00",
+            "first_seq": 2,
+            "last_seq": 9,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "user_message",
+            "id": "b7837597f09e42a49d4f63566a4f1b01",
+            "text": "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\nNaam van de klant: Eufy\nMobiel:\nGebruikerstelefoon: android SM-S938B, 16\nInlogland:NL\nLand van accountregistratie: NL\nLand van mobiel systeem: NL\nAPP-versie: ktor-client\nLogstatus: true\n\nProductnaam: X10 Pro Omni\nProduct-PN: T2351\nProduct-SN:\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\nProbleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\nProbleembeschrijving: Wiel raakt de grond niet.\nGeüploade afbeeldingen van het probleem:null",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:28:06.249505Z",
+            "first_seq": 10,
+            "last_seq": 10,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "qa:rv-0106",
+                "source": "qa_exact",
+                "doc_id": "rv-0106",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "rv-0106",
+                "snippet": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app. If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+                "score": 1.0,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:28:06.251717+00:00",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "step_card",
+            "card_id": "dd95635230805c4482b52b30e57bfc99",
+            "version": 1,
+            "step": {
+              "step_id": "s1",
+              "plan_id": "qa_rv_0106",
+              "plan_version": 1,
+              "step_no": 1,
+              "title": "If the robot is often stuck on the edge of stairs or furnit…",
+              "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0106"
+              ],
+              "primary_evidence_id": "qa:rv-0106",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:06.280804+00:00",
+            "first_seq": 16,
+            "last_seq": 20,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "action",
+            "id": "1d27fdd3d98e439fb0d1e1b661a1a6ba",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:06.315752+00:00",
+            "first_seq": 23,
+            "last_seq": 23,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "step_card",
+            "card_id": "c0e9136f7266515a9ec03faddc742354",
+            "version": 2,
+            "step": {
+              "step_id": "s2",
+              "plan_id": "qa_rv_0106",
+              "plan_version": 1,
+              "step_no": 2,
+              "title": "If the robot continues to display errors on flat ground, pl…",
+              "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+              "expected_result": "After this step, check whether the problem is resolved.",
+              "caution": null,
+              "evidence_ids": [
+                "qa:rv-0106"
+              ],
+              "primary_evidence_id": "qa:rv-0106",
+              "media": [],
+              "kind": "action",
+              "options": [],
+              "context": null
+            },
+            "seen": null,
+            "feedback": "not_solved",
+            "note": null,
+            "answer": null
+          },
+          {
+            "at": "2026-10-10T00:28:06.330109+00:00",
+            "first_seq": 27,
+            "last_seq": 31,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "action",
+            "id": "b93a547d8bca486dba0607f0a8424692",
+            "label": "反馈排障结果",
+            "action_kind": "step_feedback"
+          },
+          {
+            "at": "2026-10-10T00:28:06.371626+00:00",
+            "first_seq": 33,
+            "last_seq": 33,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "case_changed",
+            "card_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+            "version": 3,
+            "case_id": "5b21bc28-24ee-50ee-884d-cf688257870b",
+            "status": "open",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "案件状态更新",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:28:06.341776+00:00"
+          },
+          {
+            "at": "2026-10-10T00:28:06.372825+00:00",
+            "first_seq": 34,
+            "last_seq": 36,
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "kind": "assistant_message",
+            "message_id": "ccabe983116f5d1eb831d68d13681a0c",
+            "text": "To check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+            "status": "completed",
+            "reply_to_input_id": "b93a547d8bca486dba0607f0a8424692",
+            "model_tier": null,
+            "replaces": null
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+        "issues": [
+          {
+            "issue_id": "52ad81bc4d9b5f2abb25ac56f5b56734",
+            "status": "open",
+            "title": "Wiel raakt de grond niet",
+            "task_queue": []
+          }
+        ],
+        "last_event_seq": 39,
+        "latest_summaries": []
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "\n\n\n\nTo check the warranty I'll need your order details. Please share your order number. If you bought it from another seller, please upload your proof of purchase showing the seller name, country of purchase and purchase date.",
+  "step_cards": [
+    {
+      "step_id": "s1",
+      "plan_id": "qa_rv_0106",
+      "plan_version": 1,
+      "step_no": 1,
+      "title": "If the robot is often stuck on the edge of stairs or furnit…",
+      "instruction": "If the robot is often stuck on the edge of stairs or furniture and triggers this warning, it is recommended to set a no-go zone in the app.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0106"
+      ],
+      "primary_evidence_id": "qa:rv-0106",
+      "media": [],
+      "kind": "action",
+      "options": []
+    },
+    {
+      "step_id": "s2",
+      "plan_id": "qa_rv_0106",
+      "plan_version": 1,
+      "step_no": 2,
+      "title": "If the robot continues to display errors on flat ground, pl…",
+      "instruction": "If the robot continues to display errors on flat ground, please try restarting the robot and see if it becomes normal.",
+      "expected_result": "After this step, check whether the problem is resolved.",
+      "caution": null,
+      "evidence_ids": [
+        "qa:rv-0106"
+      ],
+      "primary_evidence_id": "qa:rv-0106",
+      "media": [],
+      "kind": "action",
+      "options": []
+    }
+  ],
+  "intent": "report_problem",
+  "seconds": 4.73,
+  "complete": true
+}

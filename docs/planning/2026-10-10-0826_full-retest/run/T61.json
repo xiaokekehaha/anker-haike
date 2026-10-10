@@ -1,0 +1,2559 @@
+{
+  "id": "T61",
+  "started_at": "2026-10-10T00:29:49.138292+00:00",
+  "input": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "resumed": false,
+          "event_id": "177c635ae2b24dda9775419c25d52b11",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:49.288620+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "payload": {
+            "kind": "message",
+            "text": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "79b9a98604ea4b73ab3cf40d4769a5c1",
+          "input_id": "265631e674f944da882cbfc3d1082606",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:29:49.288620+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 3,
+          "event_id": "c36a8b1cae8b47e5a2dd6d3e3078e5d3",
+          "recorded_at": "2026-10-10T00:29:49.334432+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "disambiguate",
+          "substage": null,
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 4,
+          "event_id": "d115fa039d7843b38c934d67f79c30aa",
+          "recorded_at": "2026-10-10T00:29:53.081008+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "diagnose",
+          "substage": "retrieve",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 5,
+          "event_id": "e9c5ab2d244c4eac9e24e0f31a0451d1",
+          "recorded_at": "2026-10-10T00:29:53.099971+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "258d311c2dc4513e9befe62ccce55a26",
+          "name": "knowledge.search",
+          "status": "started",
+          "summary": "检索知识库",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 6,
+          "event_id": "8a474a8e4bc24742bf79636b17afd03d",
+          "recorded_at": "2026-10-10T00:29:53.117781+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "258d311c2dc4513e9befe62ccce55a26",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 7,
+          "event_id": "379521470a60439ba327b1c71e55914e",
+          "recorded_at": "2026-10-10T00:29:53.485241+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "escalate",
+          "substage": "summarize",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 8,
+          "event_id": "d84b0c8fd78f4d02b6ab56dae63b9b6a",
+          "recorded_at": "2026-10-10T00:29:55.486255+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "awaiting_human",
+          "substage": null,
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 9,
+          "event_id": "a0c7526109e545f9a203ac107e0c8f5c",
+          "recorded_at": "2026-10-10T00:29:56.329986+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "97dd78920d7f57ffb15963505567757c",
+          "input_id": "265631e674f944da882cbfc3d1082606",
+          "resolved_issue_id": "97dd78920d7f57ffb15963505567757c",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "97dd78920d7f57ffb15963505567757c",
+              "title": "going off 2 hours before schedule、cleans are not being recorded",
+              "status": "open"
+            }
+          ],
+          "event_id": "feb87813f17e568b8799d0f591d6587b",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:29:56.343878+00:00"
+        },
+        {
+          "type": "evidence",
+          "items": [
+            {
+              "evidence_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+              "source": "kb_qa",
+              "doc_id": "rv-0551",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 5015-Low battery, scheduled cleaning failed/Low battery, failed to start scheduled cleaning?\nThe robot is in low battery and cannot start a scheduled task. Please charge it and try again. Tips: A full charge of the robot takes approximately 5 hours. It is recommended that the time between scheduled cleaning tasks and the end of the previous t",
+              "score": 0.015767934520943667,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "source": "kb_qa",
+              "doc_id": "rv-0526",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+              "score": 0.01545893719806763,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+              "source": "kb_qa",
+              "doc_id": "rv-0522",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7051-Task in progress, failed to start scheduled cleaning?\nIf there are other tasks that have not yet been completed when the scheduled task is triggered, please ensure that the previous task has been completed and the robot is not currently cleaning, resuming, recharging, collecting dust, performing system upgrades, or performing voice upgra",
+              "score": 0.015089867667390875,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+              "source": "kb_qa",
+              "doc_id": "rv-0564",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7055-Base station not found, the mop cannot be wetted or washed. Cleaning will continue with vacuum only/The robot does not start from the base station.Cleaning will continue with vacuum only/keeps saying washing the mops but then leaves the base and says it can't mop since it didn't start from the base?\n1. Delete the existing map, place the ",
+              "score": 0.014832427536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "source": "kb_qa",
+              "doc_id": "rv-0542",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+              "score": 0.01419836956521739,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "source": "kb_qa",
+              "doc_id": "rv-0523",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+              "score": 0.013856852103120758,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+              "source": "kb_qa",
+              "doc_id": "rv-0514",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues: Poor dust collection; clogged dust box; clogged air duct in the station; overfilled dust box that cannot be emptied; inability to collect dust into the dust bag?\nIf the dust box becomes clogged, it's recommended to set the dust collection frequency to high if you have multiple pets. Clean the dust box and filter thoroughly, then restart the t",
+              "score": 0.01373952779893374,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0562",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+              "score": 0.013419117647058823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "source": "kb_qa",
+              "doc_id": "rv-0565",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+              "score": 0.013293650793650793,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "source": "kb_qa",
+              "doc_id": "rv-0533",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+              "score": 0.01309090909090909,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+              "source": "kb_qa",
+              "doc_id": "rv-0532",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The station is noisy/the dirty water pumping is noisy, and the dust collection is noisy?\n1. Dust collection will not occur during Do Not Disturb periods. If you frequently start cleaning task during Do Not Disturb periods, please manually clean the dust bin and filter afterward.\n2. We fully understand that the noise generated during dust colle",
+              "score": 0.012959827612744342,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "source": "kb_qa",
+              "doc_id": "rv-0559",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+              "score": 0.012889457959880495,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0530",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+              "snippet": "What should I do if my Omni C20 T2280 has low cleaning efficiency issue?\nLow cleaning efficiency issue will be optimized with the latest firmware version. Please upgrade the firmware to the latest after receiving the firmware update push and run a new cleaning task to confirm whether the issue has been resolved. If the issue persists, please enable log upload in the app. We'll transfer the issue t",
+              "score": 0.012828282828282828,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+              "source": "kb_qa",
+              "doc_id": "rv-0552",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 6015-The clean water tank is insufficient or not in place, please check?\nPlease put the clean water tank in place make sure that the clean water tank is full and see if the device still reports an error.",
+              "score": 0.012777777777777779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+              "source": "kb_qa",
+              "doc_id": "rv-0524",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7034-Unable to find the starting point, robot will stop running?\n1. This error message occurs when the robot does not depart from the base station and needs to return to its starting point after cleaning, but is blocked by an obstacle or door, causing it to stop. You can manually return the robot to the base station to charge, clear the obsta",
+              "score": 0.012646174406949547,
+              "status": "ok"
+            }
+          ],
+          "event_id": "4a097e82479c5cacb719cb1eb2cf8883",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:29:56.345690+00:00"
+        },
+        {
+          "type": "case_changed",
+          "card_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "version": 1,
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:29:56.316861+00:00",
+          "event_id": "a4a2d6856dd659af9e40d70cac159f5b",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 13,
+          "recorded_at": "2026-10-10T00:29:56.352560+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "e445c01caea05c28891fb87be8a8b14d",
+          "reply_to_input_id": "265631e674f944da882cbfc3d1082606",
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "event_id": "2f08b5639c605e44b314dcafeaeee254",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 14,
+          "recorded_at": "2026-10-10T00:29:56.355621+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "e445c01caea05c28891fb87be8a8b14d",
+          "delta": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "event_id": "7aa2b133b122532494e2f959996ecdd0",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 15,
+          "recorded_at": "2026-10-10T00:29:56.358414+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "e445c01caea05c28891fb87be8a8b14d",
+          "status": "completed",
+          "event_id": "dab24ce1562a53fa8e17384c8e880889",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 16,
+          "recorded_at": "2026-10-10T00:29:56.361366+00:00"
+        },
+        {
+          "type": "escalation_summary",
+          "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni C20",
+            "problem": "going off 2 hours before schedule；cleans are not being recorded",
+            "observations": [
+              "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+              "尚无适用步骤，待人工核实：cleans are not being recorded"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                "intent": "report_problem",
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "request_quote": null,
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "active",
+                "created_input_id": "265631e674f944da882cbfc3d1082606",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "265631e674f944da882cbfc3d1082606",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni C20",
+                "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+          "revision": 1,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "updated_at": "2026-10-10T00:29:49.288620+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested",
+          "event_id": "1f822638894a5139a27ef008a119ba5c",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 17,
+          "recorded_at": "2026-10-10T00:29:56.363658+00:00"
+        },
+        {
+          "type": "summary_updated",
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+          "revision": 1,
+          "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+          "previous_card_id": null,
+          "source_through_seq": 2,
+          "updated_at": "2026-10-10T00:29:49.288620+00:00",
+          "event_id": "c3e8569654825f48b5d3a8bc488f2736",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 18,
+          "recorded_at": "2026-10-10T00:29:56.366525+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "7be9de88847953fe84c9ac35eef2d7b4",
+          "recorded_at": "2026-10-10T00:29:56.368004+00:00",
+          "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+          "seq": 19,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "62d3178ebf914361b19cf426229d5aaa",
+  "stop_reason": "awaiting_human",
+  "snapshot": {
+    "session_id": "62d3178ebf914361b19cf426229d5aaa",
+    "version": 1,
+    "stage": "awaiting_human",
+    "substage": "summarize",
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:29:49.288620+00:00",
+        "first_seq": 2,
+        "last_seq": 11,
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "kind": "user_message",
+        "id": "265631e674f944da882cbfc3d1082606",
+        "text": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:29:53.117781+00:00",
+        "first_seq": 6,
+        "last_seq": 7,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "258d311c2dc4513e9befe62ccce55a26",
+        "name": "knowledge.search",
+        "status": "finished",
+        "summary": "命中 15 条来源"
+      },
+      {
+        "at": "2026-10-10T00:29:56.346088Z",
+        "first_seq": 12,
+        "last_seq": 12,
+        "issue_id": null,
+        "kind": "evidence",
+        "items": [
+          {
+            "evidence_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+            "source": "kb_qa",
+            "doc_id": "rv-0551",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 5015-Low battery, scheduled cleaning failed/Low battery, failed to start scheduled cleaning?\nThe robot is in low battery and cannot start a scheduled task. Please charge it and try again. Tips: A full charge of the robot takes approximately 5 hours. It is recommended that the time between scheduled cleaning tasks and the end of the previous t",
+            "score": 0.015767934520943667,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+            "source": "kb_qa",
+            "doc_id": "rv-0526",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+            "score": 0.01545893719806763,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+            "source": "kb_qa",
+            "doc_id": "rv-0522",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7051-Task in progress, failed to start scheduled cleaning?\nIf there are other tasks that have not yet been completed when the scheduled task is triggered, please ensure that the previous task has been completed and the robot is not currently cleaning, resuming, recharging, collecting dust, performing system upgrades, or performing voice upgra",
+            "score": 0.015089867667390875,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+            "source": "kb_qa",
+            "doc_id": "rv-0564",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7055-Base station not found, the mop cannot be wetted or washed. Cleaning will continue with vacuum only/The robot does not start from the base station.Cleaning will continue with vacuum only/keeps saying washing the mops but then leaves the base and says it can't mop since it didn't start from the base?\n1. Delete the existing map, place the ",
+            "score": 0.014832427536231884,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+            "source": "kb_qa",
+            "doc_id": "rv-0542",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+            "score": 0.01419836956521739,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+            "source": "kb_qa",
+            "doc_id": "rv-0523",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+            "score": 0.013856852103120758,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+            "source": "kb_qa",
+            "doc_id": "rv-0514",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues: Poor dust collection; clogged dust box; clogged air duct in the station; overfilled dust box that cannot be emptied; inability to collect dust into the dust bag?\nIf the dust box becomes clogged, it's recommended to set the dust collection frequency to high if you have multiple pets. Clean the dust box and filter thoroughly, then restart the t",
+            "score": 0.01373952779893374,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+            "source": "kb_qa",
+            "doc_id": "rv-0562",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+            "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+            "score": 0.013419117647058823,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+            "source": "kb_qa",
+            "doc_id": "rv-0565",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+            "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+            "score": 0.013293650793650793,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+            "source": "kb_qa",
+            "doc_id": "rv-0533",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+            "score": 0.01309090909090909,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+            "source": "kb_qa",
+            "doc_id": "rv-0532",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+            "snippet": "What should I do if my Omni C20 T2280 has these issues:The station is noisy/the dirty water pumping is noisy, and the dust collection is noisy?\n1. Dust collection will not occur during Do Not Disturb periods. If you frequently start cleaning task during Do Not Disturb periods, please manually clean the dust bin and filter afterward.\n2. We fully understand that the noise generated during dust colle",
+            "score": 0.012959827612744342,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+            "source": "kb_qa",
+            "doc_id": "rv-0559",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+            "score": 0.012889457959880495,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+            "source": "kb_qa",
+            "doc_id": "rv-0530",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+            "snippet": "What should I do if my Omni C20 T2280 has low cleaning efficiency issue?\nLow cleaning efficiency issue will be optimized with the latest firmware version. Please upgrade the firmware to the latest after receiving the firmware update push and run a new cleaning task to confirm whether the issue has been resolved. If the issue persists, please enable log upload in the app. We'll transfer the issue t",
+            "score": 0.012828282828282828,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+            "source": "kb_qa",
+            "doc_id": "rv-0552",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 6015-The clean water tank is insufficient or not in place, please check?\nPlease put the clean water tank in place make sure that the clean water tank is full and see if the device still reports an error.",
+            "score": 0.012777777777777779,
+            "status": "ok"
+          },
+          {
+            "evidence_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+            "source": "kb_qa",
+            "doc_id": "rv-0524",
+            "doc_version": "0cc02e6531d6",
+            "chunk_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+            "snippet": "What should I do if my Omni C20 T2280 reports a warning 7034-Unable to find the starting point, robot will stop running?\n1. This error message occurs when the robot does not depart from the base station and needs to return to its starting point after cleaning, but is blocked by an obstacle or door, causing it to stop. You can manually return the robot to the base station to charge, clear the obsta",
+            "score": 0.012646174406949547,
+            "status": "ok"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-10T00:29:56.352560+00:00",
+        "first_seq": 13,
+        "last_seq": 13,
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "kind": "case_changed",
+        "card_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+        "version": 1,
+        "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+        "status": "awaiting_approval",
+        "complaint_risk": false,
+        "priority": "normal",
+        "owner": null,
+        "reason": "当前产品的这一问题没有可用的排障计划",
+        "external_refs": {},
+        "updated_at": "2026-10-10T00:29:56.316861+00:00"
+      },
+      {
+        "at": "2026-10-10T00:29:56.355621+00:00",
+        "first_seq": 14,
+        "last_seq": 16,
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "kind": "assistant_message",
+        "message_id": "e445c01caea05c28891fb87be8a8b14d",
+        "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+        "status": "completed",
+        "reply_to_input_id": "265631e674f944da882cbfc3d1082606",
+        "model_tier": null,
+        "replaces": null
+      },
+      {
+        "at": "2026-10-10T00:29:56.363658+00:00",
+        "first_seq": 17,
+        "last_seq": 17,
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "kind": "escalation_summary",
+        "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni C20",
+          "problem": "going off 2 hours before schedule；cleans are not being recorded",
+          "observations": [
+            "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+            "尚无适用步骤，待人工核实：cleans are not being recorded"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+              "intent": "report_problem",
+              "status": "active",
+              "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+              "answer_scope": "focus",
+              "request_quote": null,
+              "answer_request": null,
+              "created_input_id": "265631e674f944da882cbfc3d1082606",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "level": "angry",
+              "source": "model",
+              "input_id": "265631e674f944da882cbfc3d1082606"
+            }
+          ],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "eufy Robot Vacuum Omni C20",
+              "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+            },
+            "missing": [],
+            "pending_requests": [
+              {
+                "intent": "report_problem",
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "status": "active"
+              }
+            ]
+          }
+        },
+        "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:29:49.288620+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "97dd78920d7f57ffb15963505567757c",
+    "issues": [
+      {
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "status": "open",
+        "title": "going off 2 hours before schedule、cleans are not being recorded",
+        "task_queue": [
+          {
+            "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+            "intent": "report_problem",
+            "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+            "request_quote": null,
+            "answer_request": null,
+            "answer_scope": "focus",
+            "status": "waiting_human",
+            "created_input_id": "265631e674f944da882cbfc3d1082606",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ]
+      }
+    ],
+    "last_event_seq": 19,
+    "latest_summaries": [
+      {
+        "at": null,
+        "first_seq": 0,
+        "last_seq": 0,
+        "issue_id": "97dd78920d7f57ffb15963505567757c",
+        "kind": "escalation_summary",
+        "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+        "summary": {
+          "product": "eufy Robot Vacuum Omni C20",
+          "problem": "going off 2 hours before schedule；cleans are not being recorded",
+          "observations": [
+            "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+            "尚无适用步骤，待人工核实：cleans are not being recorded"
+          ],
+          "hypotheses": [],
+          "steps": [],
+          "reason": {
+            "rule_id": "R5",
+            "text": "当前产品的这一问题没有可用的排障计划",
+            "cause": null
+          },
+          "emotion": {
+            "level": "angry",
+            "strategy": "direct_resolution"
+          },
+          "receipt": {
+            "status": "not_collected",
+            "verified_facts": {},
+            "conflicts": [],
+            "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+          },
+          "model_trace": [
+            {
+              "task": "intake",
+              "model_used": "dashscope/qwen3.7-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "diagnose.synthesize",
+              "model_used": "deepseek/deepseek-flash",
+              "lane": "domestic",
+              "attempts": 1
+            },
+            {
+              "task": "escalate.summary_polish",
+              "model_used": "skipped",
+              "lane": "domestic",
+              "attempts": 1
+            }
+          ],
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "warranty": null,
+          "recommended_options": [],
+          "gate_result": null,
+          "task_queue": [
+            {
+              "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+              "intent": "report_problem",
+              "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+              "request_quote": null,
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "active",
+              "created_input_id": "265631e674f944da882cbfc3d1082606",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ],
+          "emotion_track": [
+            {
+              "input_id": "265631e674f944da882cbfc3d1082606",
+              "level": "angry",
+              "source": "model"
+            }
+          ],
+          "draft_reply": null,
+          "business": {
+            "kind": "device_fault",
+            "known": {
+              "product": "eufy Robot Vacuum Omni C20",
+              "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+            },
+            "missing": [],
+            "pending_requests": [
+              {
+                "intent": "report_problem",
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "status": "active"
+              }
+            ]
+          }
+        },
+        "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+        "revision": 1,
+        "updated_at": "2026-10-10T00:29:49.288620+00:00",
+        "source_through_seq": 2,
+        "previous_card_id": null,
+        "handoff_status": "requested"
+      }
+    ]
+  },
+  "journey": {
+    "session": {
+      "session_id": "62d3178ebf914361b19cf426229d5aaa",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:29:49.292741Z",
+      "last_run_at": "2026-10-10T00:29:56.369266Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+      "product_state": "confirmed_sku",
+      "sku": "T2280",
+      "category": "robot_vacuum",
+      "emotion_level": "angry",
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": "ok",
+      "receipt_status": null,
+      "outcome": "awaiting_human",
+      "outcome_reason": "awaiting_approval",
+      "outcome_at": null,
+      "total_latency_ms": 7076,
+      "model_calls": 4,
+      "tokens_in": 14054,
+      "tokens_out": 552,
+      "raw_available_until": "2026-10-17T00:29:56.369266Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+        "session_id": "62d3178ebf914361b19cf426229d5aaa",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:29:49.292741Z",
+        "ended_at": "2026-10-10T00:29:56.369233Z",
+        "duration_ms": 7076,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "awaiting_human",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 7067,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 3708,
+            "tokens_in": 4572,
+            "tokens_out": 498,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:53.031782Z"
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 1140,
+            "tokens_in": 4912,
+            "tokens_out": 7,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:54.617462Z"
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "node": "retrieve",
+            "task": "diagnose.synthesize",
+            "model_used": "deepseek/deepseek-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 697,
+            "tokens_in": 3146,
+            "tokens_out": 7,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:55.375131Z"
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "node": "summarize",
+            "task": "escalate.summary",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 830,
+            "tokens_in": 1424,
+            "tokens_out": 40,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:56.287236Z"
+          }
+        ],
+        "tokens_in": 14054,
+        "tokens_out": 552,
+        "node_count": 6,
+        "nodes": [
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:49.292741Z",
+            "duration_ms": 3776,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 2,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "report_problem",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3659,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 156,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6302
+                    }
+                  ],
+                  "actual_input_tokens": 4572
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "97dd78920d7f57ffb15963505567757c",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 2,
+            "node": "disambiguate",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:53.069565Z",
+            "duration_ms": 30,
+            "status": "ok",
+            "summary": {
+              "stage": "disambiguate",
+              "category": "robot_vacuum",
+              "decision": "continue",
+              "out_of_scope": false,
+              "product_state": "confirmed_sku"
+            }
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 3,
+            "node": "retrieve",
+            "prev_node": "disambiguate",
+            "started_at": "2026-10-10T00:29:53.099847Z",
+            "duration_ms": 2325,
+            "status": "ok",
+            "summary": {
+              "stage": "diagnose",
+              "substage": "retrieve",
+              "rewrite_used": false,
+              "context_metrics": [
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 5433,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 346,
+                    "current": 156,
+                    "history": 0,
+                    "authority": 4931
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 493,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 190,
+                    "timezone": 7,
+                    "task_data": 3920,
+                    "issue_index": 154,
+                    "step_attempts": 2,
+                    "active_issue_id": 23,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 6044
+                    }
+                  ],
+                  "actual_input_tokens": 4912
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "context_built",
+                  "tokens": 3280,
+                  "truncated": false,
+                  "max_tokens": 7174,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 346,
+                    "current": 156,
+                    "history": 0,
+                    "authority": 2778
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 493,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 190,
+                    "timezone": 7,
+                    "task_data": 1768,
+                    "issue_index": 154,
+                    "step_attempts": 2,
+                    "active_issue_id": 23,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "event": "model_call",
+                  "model": "deepseek/deepseek-flash",
+                  "attempts": [
+                    {
+                      "alias": "deepseek",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 3891
+                    }
+                  ],
+                  "actual_input_tokens": 3146
+                }
+              ],
+              "escalate_reason": "R5",
+              "knowledge_status": "ok",
+              "retrieval_rounds": 1
+            }
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 4,
+            "node": "escalate",
+            "prev_node": "retrieve",
+            "started_at": "2026-10-10T00:29:55.425308Z",
+            "duration_ms": 5,
+            "status": "ok",
+            "summary": {
+              "stage": "escalate"
+            }
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 5,
+            "node": "summarize",
+            "prev_node": "escalate",
+            "started_at": "2026-10-10T00:29:55.431031Z",
+            "duration_ms": 892,
+            "status": "ok",
+            "summary": {
+              "stage": "awaiting_human",
+              "substage": "summarize",
+              "context_metrics": [
+                {
+                  "task": "escalate.summary",
+                  "event": "context_built",
+                  "tokens": 1414,
+                  "truncated": false,
+                  "max_tokens": 7687,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 215,
+                    "current": 156,
+                    "history": 0,
+                    "authority": 1043
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 8,
+                    "facts": 493,
+                    "risks": 2,
+                    "handoff": 9,
+                    "product": 45,
+                    "decision": 190,
+                    "timezone": 7,
+                    "task_data": 32,
+                    "issue_index": 154,
+                    "step_attempts": 2,
+                    "active_issue_id": 23,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 64,
+                    "session_preferences": 2,
+                    "operation_conditions": 42
+                  }
+                },
+                {
+                  "task": "escalate.summary",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 8000,
+                      "estimated_input_tokens": 1511
+                    }
+                  ],
+                  "actual_input_tokens": 1424
+                }
+              ]
+            }
+          },
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "idx": 6,
+            "node": "commit_issue",
+            "prev_node": "summarize",
+            "started_at": "2026-10-10T00:29:56.323935Z",
+            "duration_ms": 9,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": [
+          {
+            "run_id": "d9f4c46b32d84540b23a4d6366b5a2f3",
+            "node": "retrieve",
+            "round": 1,
+            "kb": "kb_qa",
+            "status": "ok",
+            "allowed_count": 93,
+            "hits": 15,
+            "top_score": 0.0158,
+            "latency_ms": 337,
+            "query": "going off 2 hours before schedule cleans are not being recorded",
+            "created_at": "2026-10-10T00:29:53.420528Z"
+          }
+        ]
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "62d3178ebf914361b19cf426229d5aaa",
+      "version": 1,
+      "stage": "awaiting_human",
+      "substage": "summarize",
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:29:49.288620+00:00",
+          "first_seq": 2,
+          "last_seq": 11,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "kind": "user_message",
+          "id": "265631e674f944da882cbfc3d1082606",
+          "text": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:29:53.117781+00:00",
+          "first_seq": 6,
+          "last_seq": 7,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "258d311c2dc4513e9befe62ccce55a26",
+          "name": "knowledge.search",
+          "status": "finished",
+          "summary": "命中 15 条来源"
+        },
+        {
+          "at": "2026-10-10T00:29:56.346088Z",
+          "first_seq": 12,
+          "last_seq": 12,
+          "issue_id": null,
+          "kind": "evidence",
+          "items": [
+            {
+              "evidence_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+              "source": "kb_qa",
+              "doc_id": "rv-0551",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 5015-Low battery, scheduled cleaning failed/Low battery, failed to start scheduled cleaning?\nThe robot is in low battery and cannot start a scheduled task. Please charge it and try again. Tips: A full charge of the robot takes approximately 5 hours. It is recommended that the time between scheduled cleaning tasks and the end of the previous t",
+              "score": 0.015767934520943667,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "source": "kb_qa",
+              "doc_id": "rv-0526",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+              "score": 0.01545893719806763,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+              "source": "kb_qa",
+              "doc_id": "rv-0522",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7051-Task in progress, failed to start scheduled cleaning?\nIf there are other tasks that have not yet been completed when the scheduled task is triggered, please ensure that the previous task has been completed and the robot is not currently cleaning, resuming, recharging, collecting dust, performing system upgrades, or performing voice upgra",
+              "score": 0.015089867667390875,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+              "source": "kb_qa",
+              "doc_id": "rv-0564",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7055-Base station not found, the mop cannot be wetted or washed. Cleaning will continue with vacuum only/The robot does not start from the base station.Cleaning will continue with vacuum only/keeps saying washing the mops but then leaves the base and says it can't mop since it didn't start from the base?\n1. Delete the existing map, place the ",
+              "score": 0.014832427536231884,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "source": "kb_qa",
+              "doc_id": "rv-0542",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+              "score": 0.01419836956521739,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "source": "kb_qa",
+              "doc_id": "rv-0523",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+              "score": 0.013856852103120758,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+              "source": "kb_qa",
+              "doc_id": "rv-0514",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues: Poor dust collection; clogged dust box; clogged air duct in the station; overfilled dust box that cannot be emptied; inability to collect dust into the dust bag?\nIf the dust box becomes clogged, it's recommended to set the dust collection frequency to high if you have multiple pets. Clean the dust box and filter thoroughly, then restart the t",
+              "score": 0.01373952779893374,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0562",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+              "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+              "score": 0.013419117647058823,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "source": "kb_qa",
+              "doc_id": "rv-0565",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+              "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+              "score": 0.013293650793650793,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "source": "kb_qa",
+              "doc_id": "rv-0533",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+              "score": 0.01309090909090909,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+              "source": "kb_qa",
+              "doc_id": "rv-0532",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+              "snippet": "What should I do if my Omni C20 T2280 has these issues:The station is noisy/the dirty water pumping is noisy, and the dust collection is noisy?\n1. Dust collection will not occur during Do Not Disturb periods. If you frequently start cleaning task during Do Not Disturb periods, please manually clean the dust bin and filter afterward.\n2. We fully understand that the noise generated during dust colle",
+              "score": 0.012959827612744342,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "source": "kb_qa",
+              "doc_id": "rv-0559",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+              "score": 0.012889457959880495,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+              "source": "kb_qa",
+              "doc_id": "rv-0530",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+              "snippet": "What should I do if my Omni C20 T2280 has low cleaning efficiency issue?\nLow cleaning efficiency issue will be optimized with the latest firmware version. Please upgrade the firmware to the latest after receiving the firmware update push and run a new cleaning task to confirm whether the issue has been resolved. If the issue persists, please enable log upload in the app. We'll transfer the issue t",
+              "score": 0.012828282828282828,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+              "source": "kb_qa",
+              "doc_id": "rv-0552",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 6015-The clean water tank is insufficient or not in place, please check?\nPlease put the clean water tank in place make sure that the clean water tank is full and see if the device still reports an error.",
+              "score": 0.012777777777777779,
+              "status": "ok"
+            },
+            {
+              "evidence_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+              "source": "kb_qa",
+              "doc_id": "rv-0524",
+              "doc_version": "0cc02e6531d6",
+              "chunk_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+              "snippet": "What should I do if my Omni C20 T2280 reports a warning 7034-Unable to find the starting point, robot will stop running?\n1. This error message occurs when the robot does not depart from the base station and needs to return to its starting point after cleaning, but is blocked by an obstacle or door, causing it to stop. You can manually return the robot to the base station to charge, clear the obsta",
+              "score": 0.012646174406949547,
+              "status": "ok"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-10T00:29:56.352560+00:00",
+          "first_seq": 13,
+          "last_seq": 13,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "kind": "case_changed",
+          "card_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "version": 1,
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "status": "awaiting_approval",
+          "complaint_risk": false,
+          "priority": "normal",
+          "owner": null,
+          "reason": "当前产品的这一问题没有可用的排障计划",
+          "external_refs": {},
+          "updated_at": "2026-10-10T00:29:56.316861+00:00"
+        },
+        {
+          "at": "2026-10-10T00:29:56.355621+00:00",
+          "first_seq": 14,
+          "last_seq": 16,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "kind": "assistant_message",
+          "message_id": "e445c01caea05c28891fb87be8a8b14d",
+          "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+          "status": "completed",
+          "reply_to_input_id": "265631e674f944da882cbfc3d1082606",
+          "model_tier": null,
+          "replaces": null
+        },
+        {
+          "at": "2026-10-10T00:29:56.363658+00:00",
+          "first_seq": 17,
+          "last_seq": 17,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "kind": "escalation_summary",
+          "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni C20",
+            "problem": "going off 2 hours before schedule；cleans are not being recorded",
+            "observations": [
+              "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+              "尚无适用步骤，待人工核实：cleans are not being recorded"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                "answer_scope": "focus",
+                "request_quote": null,
+                "answer_request": null,
+                "created_input_id": "265631e674f944da882cbfc3d1082606",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "265631e674f944da882cbfc3d1082606"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni C20",
+                "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:29:49.288620+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "97dd78920d7f57ffb15963505567757c",
+      "issues": [
+        {
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "status": "open",
+          "title": "going off 2 hours before schedule、cleans are not being recorded",
+          "task_queue": [
+            {
+              "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+              "intent": "report_problem",
+              "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+              "request_quote": null,
+              "answer_request": null,
+              "answer_scope": "focus",
+              "status": "waiting_human",
+              "created_input_id": "265631e674f944da882cbfc3d1082606",
+              "business_reference": {
+                "status": "missing",
+                "subject_id": null,
+                "candidate_ids": []
+              }
+            }
+          ]
+        }
+      ],
+      "last_event_seq": 19,
+      "latest_summaries": [
+        {
+          "at": null,
+          "first_seq": 0,
+          "last_seq": 0,
+          "issue_id": "97dd78920d7f57ffb15963505567757c",
+          "kind": "escalation_summary",
+          "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+          "summary": {
+            "product": "eufy Robot Vacuum Omni C20",
+            "problem": "going off 2 hours before schedule；cleans are not being recorded",
+            "observations": [
+              "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+              "尚无适用步骤，待人工核实：cleans are not being recorded"
+            ],
+            "hypotheses": [],
+            "steps": [],
+            "reason": {
+              "rule_id": "R5",
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null
+            },
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "receipt": {
+              "status": "not_collected",
+              "verified_facts": {},
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+            },
+            "model_trace": [
+              {
+                "task": "intake",
+                "model_used": "dashscope/qwen3.7-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "diagnose.synthesize",
+                "model_used": "deepseek/deepseek-flash",
+                "lane": "domestic",
+                "attempts": 1
+              },
+              {
+                "task": "escalate.summary_polish",
+                "model_used": "skipped",
+                "lane": "domestic",
+                "attempts": 1
+              }
+            ],
+            "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "warranty": null,
+            "recommended_options": [],
+            "gate_result": null,
+            "task_queue": [
+              {
+                "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                "intent": "report_problem",
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "request_quote": null,
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "active",
+                "created_input_id": "265631e674f944da882cbfc3d1082606",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "emotion_track": [
+              {
+                "input_id": "265631e674f944da882cbfc3d1082606",
+                "level": "angry",
+                "source": "model"
+              }
+            ],
+            "draft_reply": null,
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni C20",
+                "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "intent": "report_problem",
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "status": "active"
+                }
+              ]
+            }
+          },
+          "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+          "revision": 1,
+          "updated_at": "2026-10-10T00:29:49.288620+00:00",
+          "source_through_seq": 2,
+          "previous_card_id": null,
+          "handoff_status": "requested"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+      "session_id": "62d3178ebf914361b19cf426229d5aaa",
+      "issue_id": "97dd78920d7f57ffb15963505567757c",
+      "sku": "T2280",
+      "category": "robot_vacuum",
+      "status": "awaiting_approval",
+      "complaint_risk": false,
+      "priority": "normal",
+      "warranty": null,
+      "proposal": null,
+      "chosen_option_id": null,
+      "gate_result": null,
+      "owner": null,
+      "external_refs": {},
+      "opened_at": "2026-10-10T00:29:56.297532+00:00",
+      "updated_at": "2026-10-10T00:29:56.316861+00:00",
+      "closed_at": null,
+      "reopened_count": 0,
+      "revision": 3,
+      "events": [
+        {
+          "id": 4546,
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "seq": 1,
+          "type": "status_changed",
+          "payload": {
+            "to": "awaiting_approval",
+            "from": "open",
+            "reason": "当前产品的这一问题没有可用的排障计划"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:56.311287+00:00"
+        },
+        {
+          "id": 4547,
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "seq": 2,
+          "type": "review_requested",
+          "payload": {
+            "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+            "requested": "human_support"
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:56.316106+00:00"
+        },
+        {
+          "id": 4548,
+          "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+          "seq": 3,
+          "type": "handoff_summary",
+          "payload": {
+            "steps": [],
+            "reason": {
+              "text": "当前产品的这一问题没有可用的排障计划",
+              "cause": null,
+              "rule_id": "R5"
+            },
+            "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "emotion": {
+              "level": "angry",
+              "strategy": "direct_resolution"
+            },
+            "problem": "going off 2 hours before schedule；cleans are not being recorded",
+            "product": "eufy Robot Vacuum Omni C20",
+            "receipt": {
+              "status": "not_collected",
+              "conflicts": [],
+              "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+              "verified_facts": {}
+            },
+            "business": {
+              "kind": "device_fault",
+              "known": {
+                "product": "eufy Robot Vacuum Omni C20",
+                "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+              },
+              "missing": [],
+              "pending_requests": [
+                {
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "intent": "report_problem",
+                  "status": "active"
+                }
+              ]
+            },
+            "warranty": null,
+            "hypotheses": [],
+            "task_queue": [
+              {
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "intent": "report_problem",
+                "status": "active",
+                "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                "answer_scope": "focus",
+                "request_quote": null,
+                "answer_request": null,
+                "created_input_id": "265631e674f944da882cbfc3d1082606",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ],
+            "draft_reply": null,
+            "gate_result": null,
+            "model_trace": [
+              {
+                "lane": "domestic",
+                "task": "intake",
+                "attempts": 1,
+                "model_used": "dashscope/qwen3.7-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.synthesize",
+                "attempts": 1,
+                "model_used": "deepseek/deepseek-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "diagnose.synthesize",
+                "attempts": 1,
+                "model_used": "deepseek/deepseek-flash"
+              },
+              {
+                "lane": "domestic",
+                "task": "escalate.summary_polish",
+                "attempts": 1,
+                "model_used": "skipped"
+              }
+            ],
+            "observations": [
+              "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+              "尚无适用步骤，待人工核实：cleans are not being recorded"
+            ],
+            "emotion_track": [
+              {
+                "level": "angry",
+                "source": "model",
+                "input_id": "265631e674f944da882cbfc3d1082606"
+              }
+            ],
+            "recommended_options": []
+          },
+          "actor": "system",
+          "at": "2026-10-10T00:29:56.316861+00:00"
+        }
+      ],
+      "decisions": [],
+      "commitments": [],
+      "handoff_summary": {
+        "steps": [],
+        "reason": {
+          "text": "当前产品的这一问题没有可用的排障计划",
+          "cause": null,
+          "rule_id": "R5"
+        },
+        "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+        "emotion": {
+          "level": "angry",
+          "strategy": "direct_resolution"
+        },
+        "problem": "going off 2 hours before schedule；cleans are not being recorded",
+        "product": "eufy Robot Vacuum Omni C20",
+        "receipt": {
+          "status": "not_collected",
+          "conflicts": [],
+          "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证",
+          "verified_facts": {}
+        },
+        "business": {
+          "kind": "device_fault",
+          "known": {
+            "product": "eufy Robot Vacuum Omni C20",
+            "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+          },
+          "missing": [],
+          "pending_requests": [
+            {
+              "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+              "intent": "report_problem",
+              "status": "active"
+            }
+          ]
+        },
+        "warranty": null,
+        "hypotheses": [],
+        "task_queue": [
+          {
+            "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+            "intent": "report_problem",
+            "status": "active",
+            "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+            "answer_scope": "focus",
+            "request_quote": null,
+            "answer_request": null,
+            "created_input_id": "265631e674f944da882cbfc3d1082606",
+            "business_reference": {
+              "status": "missing",
+              "subject_id": null,
+              "candidate_ids": []
+            }
+          }
+        ],
+        "draft_reply": null,
+        "gate_result": null,
+        "model_trace": [
+          {
+            "lane": "domestic",
+            "task": "intake",
+            "attempts": 1,
+            "model_used": "dashscope/qwen3.7-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.synthesize",
+            "attempts": 1,
+            "model_used": "deepseek/deepseek-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "diagnose.synthesize",
+            "attempts": 1,
+            "model_used": "deepseek/deepseek-flash"
+          },
+          {
+            "lane": "domestic",
+            "task": "escalate.summary_polish",
+            "attempts": 1,
+            "model_used": "skipped"
+          }
+        ],
+        "observations": [
+          "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+          "尚无适用步骤，待人工核实：cleans are not being recorded"
+        ],
+        "emotion_track": [
+          {
+            "level": "angry",
+            "source": "model",
+            "input_id": "265631e674f944da882cbfc3d1082606"
+          }
+        ],
+        "recommended_options": []
+      },
+      "snapshot": {
+        "session_id": "62d3178ebf914361b19cf426229d5aaa",
+        "version": 1,
+        "stage": "awaiting_human",
+        "substage": "summarize",
+        "active_run": null,
+        "pending_input": null,
+        "timeline": [
+          {
+            "at": "2026-10-10T00:29:49.288620+00:00",
+            "first_seq": 2,
+            "last_seq": 11,
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "kind": "user_message",
+            "id": "265631e674f944da882cbfc3d1082606",
+            "text": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+            "image_ids": [],
+            "images": []
+          },
+          {
+            "at": "2026-10-10T00:29:53.117781+00:00",
+            "first_seq": 6,
+            "last_seq": 7,
+            "issue_id": null,
+            "kind": "tool",
+            "tool_id": "258d311c2dc4513e9befe62ccce55a26",
+            "name": "knowledge.search",
+            "status": "finished",
+            "summary": "命中 15 条来源"
+          },
+          {
+            "at": "2026-10-10T00:29:56.346088Z",
+            "first_seq": 12,
+            "last_seq": 12,
+            "issue_id": null,
+            "kind": "evidence",
+            "items": [
+              {
+                "evidence_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+                "source": "kb_qa",
+                "doc_id": "rv-0551",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "f9bb054b-5bda-4fda-8aeb-3bbfb1473ff5",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 5015-Low battery, scheduled cleaning failed/Low battery, failed to start scheduled cleaning?\nThe robot is in low battery and cannot start a scheduled task. Please charge it and try again. Tips: A full charge of the robot takes approximately 5 hours. It is recommended that the time between scheduled cleaning tasks and the end of the previous t",
+                "score": 0.015767934520943667,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+                "source": "kb_qa",
+                "doc_id": "rv-0526",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "5394a4e4-34e0-46f8-8531-1777c40e440d",
+                "snippet": "What should I do if my Omni C20 T2280 has these issues:The area around the base station is dirty/The area around the base station is not cleaned/missed cleaning?\nThe area around the robot's base station isn't automatically cleaned, so it may appear a bit dirty. This is a design trade-off to protect the device and optimize the overall experience. This area only occupies a very small cleaning area, ",
+                "score": 0.01545893719806763,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+                "source": "kb_qa",
+                "doc_id": "rv-0522",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "e8f4a147-a6f7-4b79-915f-df79afecca01",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 7051-Task in progress, failed to start scheduled cleaning?\nIf there are other tasks that have not yet been completed when the scheduled task is triggered, please ensure that the previous task has been completed and the robot is not currently cleaning, resuming, recharging, collecting dust, performing system upgrades, or performing voice upgra",
+                "score": 0.015089867667390875,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+                "source": "kb_qa",
+                "doc_id": "rv-0564",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "feb1450d-a1ec-4235-a571-8caf25e04d82",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 7055-Base station not found, the mop cannot be wetted or washed. Cleaning will continue with vacuum only/The robot does not start from the base station.Cleaning will continue with vacuum only/keeps saying washing the mops but then leaves the base and says it can't mop since it didn't start from the base?\n1. Delete the existing map, place the ",
+                "score": 0.014832427536231884,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+                "source": "kb_qa",
+                "doc_id": "rv-0542",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "524730a0-6816-4e7b-a2cc-6a2910d17067",
+                "snippet": "What should I do if my Omni C20 T2280 has these issues:Repeated cleaning/Overlapping cleaning paths\n/Cleaning the same area/Cleaning an area that has already been cleaned?\nThis issue requires our technical team to analyze the cause of the problem based on your cleaning history and actual cleaning scenarios to provide a corresponding troubleshooting solution. Please provide your device ID, enable u",
+                "score": 0.01419836956521739,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+                "source": "kb_qa",
+                "doc_id": "rv-0523",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "b39d3b09-837b-44cc-b8b8-ed86e5348f1c",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 7050-Certain zones were not cleaned as they could not be accessed?\n1. Obstacles, doors, virtual walls, no-go zone, or pets may prevent the robot from cleaning specific areas or rooms.\n2. A mismatch between the map and the actual environment may cause path planning errors. We recommend redrawing the map.\nIf the troubleshooting cannot solve the",
+                "score": 0.013856852103120758,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+                "source": "kb_qa",
+                "doc_id": "rv-0514",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "6fe46380-4fe7-4296-ba41-a7ba8b6fb0cc",
+                "snippet": "What should I do if my Omni C20 T2280 has these issues: Poor dust collection; clogged dust box; clogged air duct in the station; overfilled dust box that cannot be emptied; inability to collect dust into the dust bag?\nIf the dust box becomes clogged, it's recommended to set the dust collection frequency to high if you have multiple pets. Clean the dust box and filter thoroughly, then restart the t",
+                "score": 0.01373952779893374,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+                "source": "kb_qa",
+                "doc_id": "rv-0562",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "faa2d57d-3a4e-4c68-a70e-c6a6131e1d2d",
+                "snippet": "What should I do if my Omni C20 T2280 fails to return to the station, cannot return to the base, does not return to station/base?\n1. Clear any obstacles around the base station. Ensure the base station is placed on a flat surface, not carpet or uneven surfaces. Ensure the base station is powered on and the white light on the base station is on.\n2. Wipe the infrared lenses of the base station and r",
+                "score": 0.013419117647058823,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+                "source": "kb_qa",
+                "doc_id": "rv-0565",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "676934e4-ceb2-41da-975c-90f30a888c70",
+                "snippet": "What should I do if my Omni C20 T2280 encounters the following problems: inaccurate mapping/inaccurate map/overlapped map/wrong map?\n1. Mapping accuracy is affected by the environment. The map becomes more accurate with each cleaning cycle. If inaccurate mapping occurs, you can manually edit the map (e.g., divide or merge rooms).\n2. For overlapping/incorrect map issues, please avoid manually movin",
+                "score": 0.013293650793650793,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+                "source": "kb_qa",
+                "doc_id": "rv-0533",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "616fdd26-9b6e-4022-8c94-f5d7cbb09f6d",
+                "snippet": "What should I do if my Omni C20 T2280 has these issues:unable to clean walls or corners; poor cleaning of cabinet edges;Poor cleaning of baseboard edges;Unable to clean all edges;Miss cleaning corners;avoid cleaning the edges of the room?\nA robot requires a certain clearance (usually 2-3mm above the body height) to enter cabinets or furniture for cleaning. If the clearance is below this height, th",
+                "score": 0.01309090909090909,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+                "source": "kb_qa",
+                "doc_id": "rv-0532",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "fc55bf2a-7960-4db2-a0c3-a3b3fcf3bf40",
+                "snippet": "What should I do if my Omni C20 T2280 has these issues:The station is noisy/the dirty water pumping is noisy, and the dust collection is noisy?\n1. Dust collection will not occur during Do Not Disturb periods. If you frequently start cleaning task during Do Not Disturb periods, please manually clean the dust bin and filter afterward.\n2. We fully understand that the noise generated during dust colle",
+                "score": 0.012959827612744342,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+                "source": "kb_qa",
+                "doc_id": "rv-0559",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "0328b412-7388-4647-a56a-58c9127f4c7c",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 7022-Positioning failed, re-build the map, and start a new cleaning？\n1. If your home environment has changed significantly, causing it to mismatch with the existing map (avoid placing the robot in narrow or obstructed areas, such as near a sofa at close height).\n2. When the robot reports this error, it will delete the existing map and rebuild",
+                "score": 0.012889457959880495,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+                "source": "kb_qa",
+                "doc_id": "rv-0530",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "adf0c8bc-1b2d-4117-89c1-25ecfc778c2d",
+                "snippet": "What should I do if my Omni C20 T2280 has low cleaning efficiency issue?\nLow cleaning efficiency issue will be optimized with the latest firmware version. Please upgrade the firmware to the latest after receiving the firmware update push and run a new cleaning task to confirm whether the issue has been resolved. If the issue persists, please enable log upload in the app. We'll transfer the issue t",
+                "score": 0.012828282828282828,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+                "source": "kb_qa",
+                "doc_id": "rv-0552",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "a05d1e69-24a6-4e5c-af28-2d51518ad0ea",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 6015-The clean water tank is insufficient or not in place, please check?\nPlease put the clean water tank in place make sure that the clean water tank is full and see if the device still reports an error.",
+                "score": 0.012777777777777779,
+                "status": "ok"
+              },
+              {
+                "evidence_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+                "source": "kb_qa",
+                "doc_id": "rv-0524",
+                "doc_version": "0cc02e6531d6",
+                "chunk_id": "ee0c9301-b602-400f-9d72-1f4ad711287e",
+                "snippet": "What should I do if my Omni C20 T2280 reports a warning 7034-Unable to find the starting point, robot will stop running?\n1. This error message occurs when the robot does not depart from the base station and needs to return to its starting point after cleaning, but is blocked by an obstacle or door, causing it to stop. You can manually return the robot to the base station to charge, clear the obsta",
+                "score": 0.012646174406949547,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "at": "2026-10-10T00:29:56.352560+00:00",
+            "first_seq": 13,
+            "last_seq": 13,
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "kind": "case_changed",
+            "card_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "version": 1,
+            "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+            "status": "awaiting_approval",
+            "complaint_risk": false,
+            "priority": "normal",
+            "owner": null,
+            "reason": "当前产品的这一问题没有可用的排障计划",
+            "external_refs": {},
+            "updated_at": "2026-10-10T00:29:56.316861+00:00"
+          },
+          {
+            "at": "2026-10-10T00:29:56.355621+00:00",
+            "first_seq": 14,
+            "last_seq": 16,
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "kind": "assistant_message",
+            "message_id": "e445c01caea05c28891fb87be8a8b14d",
+            "text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+            "status": "completed",
+            "reply_to_input_id": "265631e674f944da882cbfc3d1082606",
+            "model_tier": null,
+            "replaces": null
+          },
+          {
+            "at": "2026-10-10T00:29:56.363658+00:00",
+            "first_seq": 17,
+            "last_seq": 17,
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "kind": "escalation_summary",
+            "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni C20",
+              "problem": "going off 2 hours before schedule；cleans are not being recorded",
+              "observations": [
+                "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+                "尚无适用步骤，待人工核实：cleans are not being recorded"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "intent": "report_problem",
+                  "status": "active",
+                  "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                  "answer_scope": "focus",
+                  "request_quote": null,
+                  "answer_request": null,
+                  "created_input_id": "265631e674f944da882cbfc3d1082606",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "level": "angry",
+                  "source": "model",
+                  "input_id": "265631e674f944da882cbfc3d1082606"
+                }
+              ],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "eufy Robot Vacuum Omni C20",
+                  "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+                },
+                "missing": [],
+                "pending_requests": [
+                  {
+                    "intent": "report_problem",
+                    "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                    "status": "active"
+                  }
+                ]
+              }
+            },
+            "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:29:49.288620+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ],
+        "last_error": null,
+        "cancelled_run": null,
+        "active_issue_id": "97dd78920d7f57ffb15963505567757c",
+        "issues": [
+          {
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "status": "open",
+            "title": "going off 2 hours before schedule、cleans are not being recorded",
+            "task_queue": [
+              {
+                "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                "intent": "report_problem",
+                "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                "request_quote": null,
+                "answer_request": null,
+                "answer_scope": "focus",
+                "status": "waiting_human",
+                "created_input_id": "265631e674f944da882cbfc3d1082606",
+                "business_reference": {
+                  "status": "missing",
+                  "subject_id": null,
+                  "candidate_ids": []
+                }
+              }
+            ]
+          }
+        ],
+        "last_event_seq": 19,
+        "latest_summaries": [
+          {
+            "at": null,
+            "first_seq": 0,
+            "last_seq": 0,
+            "issue_id": "97dd78920d7f57ffb15963505567757c",
+            "kind": "escalation_summary",
+            "card_id": "79310d65ed9550c4b5ac85f70556ac6d",
+            "summary": {
+              "product": "eufy Robot Vacuum Omni C20",
+              "problem": "going off 2 hours before schedule；cleans are not being recorded",
+              "observations": [
+                "尚无适用步骤，待人工核实：going off 2 hours before schedule",
+                "尚无适用步骤，待人工核实：cleans are not being recorded"
+              ],
+              "hypotheses": [],
+              "steps": [],
+              "reason": {
+                "rule_id": "R5",
+                "text": "当前产品的这一问题没有可用的排障计划",
+                "cause": null
+              },
+              "emotion": {
+                "level": "angry",
+                "strategy": "direct_resolution"
+              },
+              "receipt": {
+                "status": "not_collected",
+                "verified_facts": {},
+                "conflicts": [],
+                "next_step": "摘要已整理；如需质保核实，可向客服补充购买凭证"
+              },
+              "model_trace": [
+                {
+                  "task": "intake",
+                  "model_used": "dashscope/qwen3.7-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "diagnose.synthesize",
+                  "model_used": "deepseek/deepseek-flash",
+                  "lane": "domestic",
+                  "attempts": 1
+                },
+                {
+                  "task": "escalate.summary_polish",
+                  "model_used": "skipped",
+                  "lane": "domestic",
+                  "attempts": 1
+                }
+              ],
+              "case_id": "19929d49-fbff-5398-b918-95fd218b0ead",
+              "warranty": null,
+              "recommended_options": [],
+              "gate_result": null,
+              "task_queue": [
+                {
+                  "task_id": "915cc6bb7fe350c48ff7fd138f9b8ba2",
+                  "intent": "report_problem",
+                  "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                  "request_quote": null,
+                  "answer_request": null,
+                  "answer_scope": "focus",
+                  "status": "active",
+                  "created_input_id": "265631e674f944da882cbfc3d1082606",
+                  "business_reference": {
+                    "status": "missing",
+                    "subject_id": null,
+                    "candidate_ids": []
+                  }
+                }
+              ],
+              "emotion_track": [
+                {
+                  "input_id": "265631e674f944da882cbfc3d1082606",
+                  "level": "angry",
+                  "source": "model"
+                }
+              ],
+              "draft_reply": null,
+              "business": {
+                "kind": "device_fault",
+                "known": {
+                  "product": "eufy Robot Vacuum Omni C20",
+                  "symptoms": "going off 2 hours before schedule，before schedule；cleans are not being recorded"
+                },
+                "missing": [],
+                "pending_requests": [
+                  {
+                    "intent": "report_problem",
+                    "quote": "omni c20  isn’t following my schedule it’s going off 2 hours before and the cleans are not being recorded by your dumb app",
+                    "status": "active"
+                  }
+                ]
+              }
+            },
+            "summary_id": "d86f7ea85a8d5115bb7729975b4d07ac",
+            "revision": 1,
+            "updated_at": "2026-10-10T00:29:49.288620+00:00",
+            "source_through_seq": 2,
+            "previous_card_id": null,
+            "handoff_status": "requested"
+          }
+        ]
+      },
+      "executions": []
+    }
+  ],
+  "visible_text": "I'm sorry this has taken so much of your time without a fix. I couldn't confirm official troubleshooting guidance for this issue. I've submitted the issue and supporting information for review by a colleague. You can add information here while waiting.",
+  "step_cards": [],
+  "intent": "report_problem",
+  "seconds": 8.43,
+  "complete": true
+}

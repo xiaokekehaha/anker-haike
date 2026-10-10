@@ -1,0 +1,73 @@
+{
+  "status": "ok",
+  "lane": "domestic",
+  "cache_ttl_s": 3.0,
+  "components": {
+    "db": {
+      "status": "ok",
+      "latency_ms": 34
+    },
+    "redis": {
+      "status": "ok",
+      "latency_ms": 28
+    },
+    "weknora": {
+      "status": "ok",
+      "latency_ms": 24
+    },
+    "models": {
+      "domestic": {
+        "status": "ok",
+        "providers_ready": [
+          "dashscope",
+          "deepseek",
+          "zhipu"
+        ],
+        "default": true
+      },
+      "overseas": {
+        "status": "unconfigured",
+        "detail": "missing api key for: anthropic, google",
+        "providers_ready": [],
+        "default": false
+      },
+      "zhipu": {
+        "status": "ok",
+        "providers_ready": [
+          "dashscope",
+          "deepseek",
+          "zhipu"
+        ],
+        "default": false
+      }
+    }
+  },
+  "alerts": {
+    "sinks": [],
+    "active": [],
+    "rules": {
+      "model_chain_failed": {
+        "active": false,
+        "fired_total": 0,
+        "suppressed_total": 0
+      },
+      "retrieval_empty_rate": {
+        "active": false,
+        "fired_total": 0,
+        "suppressed_total": 0
+      },
+      "queue_rejections": {
+        "active": false,
+        "fired_total": 0,
+        "suppressed_total": 0
+      },
+      "health_check_failed": {
+        "active": false,
+        "fired_total": 0,
+        "suppressed_total": 0
+      }
+    },
+    "model_fail_streak": 0,
+    "health_fail_streak": 0
+  }
+}

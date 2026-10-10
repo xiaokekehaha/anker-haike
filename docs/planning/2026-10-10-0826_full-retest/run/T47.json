@@ -1,0 +1,453 @@
+{
+  "id": "T47",
+  "started_at": "2026-10-10T00:29:07.373999+00:00",
+  "input": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States",
+  "attachments": [],
+  "turns": [
+    {
+      "input": {
+        "text": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States",
+        "attachments": [],
+        "source": "official_original"
+      },
+      "events": [
+        {
+          "seq": 1,
+          "type": "run_started",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "resumed": false,
+          "event_id": "dd401920cc894dffb21bab0a153d1ab3",
+          "deadline_ms": 25000,
+          "recorded_at": "2026-10-10T00:29:07.508213+00:00"
+        },
+        {
+          "seq": 2,
+          "type": "input_received",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "payload": {
+            "kind": "message",
+            "text": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States",
+            "images": [],
+            "purpose": "fault",
+            "image_ids": [],
+            "target_issue_id": null,
+            "attachment_hashes": [],
+            "evaluation_source": "replay"
+          },
+          "event_id": "6b53a124839a49dc9690afe4df9af3b4",
+          "input_id": "10e7de56df0e4fdaaeda931c7457b3f2",
+          "issue_id": null,
+          "input_kind": "message",
+          "recorded_at": "2026-10-10T00:29:07.508213+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "intake",
+          "substage": null,
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 3,
+          "event_id": "4516e00b1410498db3d0a7b0ae6ca1ca",
+          "recorded_at": "2026-10-10T00:29:07.540837+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "consult",
+          "substage": null,
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 4,
+          "event_id": "214b0bd6b36d446f8250010fa2438e8d",
+          "recorded_at": "2026-10-10T00:29:09.917762+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8d92d617-1d69-4ed4-ab43-d1fabbfd5250",
+          "name": "logistics.query",
+          "status": "started",
+          "summary": "Checking our after-sales tool",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 5,
+          "event_id": "dc45815979b3425b9d841ebf9581f3cc",
+          "recorded_at": "2026-10-10T00:29:09.922569+00:00"
+        },
+        {
+          "type": "tool_call",
+          "tool_id": "8d92d617-1d69-4ed4-ab43-d1fabbfd5250",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 6,
+          "event_id": "bc8292b71dda469cb15f08ba4d351a09",
+          "recorded_at": "2026-10-10T00:29:09.927584+00:00"
+        },
+        {
+          "type": "progress",
+          "stage": "done",
+          "substage": null,
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 7,
+          "event_id": "94d6a293b88c4b7494979e6e52498a17",
+          "recorded_at": "2026-10-10T00:29:09.938863+00:00"
+        },
+        {
+          "type": "issue_changed",
+          "active_issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "input_id": "10e7de56df0e4fdaaeda931c7457b3f2",
+          "resolved_issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "version": 1,
+          "issues": [
+            {
+              "issue_id": "11fccb4adb2752769b3fed021aa09584",
+              "title": "AnkerDirect",
+              "status": "open"
+            }
+          ],
+          "event_id": "62c7f63a02275200914cd288c0a67d41",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 9,
+          "recorded_at": "2026-10-10T00:29:09.959390+00:00"
+        },
+        {
+          "type": "message_start",
+          "message_id": "b5e1c9b0d245511fbfc3e5e7d0388bb7",
+          "issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "reply_to_input_id": "10e7de56df0e4fdaaeda931c7457b3f2",
+          "event_id": "96b09ce19c3f5af8b1da31726184f6f3",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 10,
+          "recorded_at": "2026-10-10T00:29:09.960795+00:00"
+        },
+        {
+          "type": "message",
+          "message_id": "b5e1c9b0d245511fbfc3e5e7d0388bb7",
+          "delta": "Order Anker010:\n• Amazon Logistics Anker1234567-13: delivered on 2025-12-07 (T8D04121)\nThe order record shows T8D04121; I don't see a separate shipment for T8D02181-80. If this part came from a separate order or a service replacement, please share that order number or case number and I'll check it.",
+          "event_id": "2df9026ee5bb5e10bae435d2366fa0e7",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 11,
+          "recorded_at": "2026-10-10T00:29:09.961991+00:00"
+        },
+        {
+          "type": "message_end",
+          "message_id": "b5e1c9b0d245511fbfc3e5e7d0388bb7",
+          "status": "completed",
+          "event_id": "e2a9382d459e5c92add176a8ba8c0d92",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 12,
+          "recorded_at": "2026-10-10T00:29:09.963319+00:00"
+        },
+        {
+          "type": "done",
+          "event_id": "ffa37d43253457e1a30eafb94e3f9474",
+          "recorded_at": "2026-10-10T00:29:09.964469+00:00",
+          "run_id": "14d3985fdfb344a8a3418be31530da7a",
+          "seq": 13,
+          "reason": "completed",
+          "version": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "session_id": "6bbc33d3c1684ff182a4fc8e9cb47930",
+  "stop_reason": "done",
+  "snapshot": {
+    "session_id": "6bbc33d3c1684ff182a4fc8e9cb47930",
+    "version": 1,
+    "stage": "done",
+    "substage": null,
+    "active_run": null,
+    "pending_input": null,
+    "timeline": [
+      {
+        "at": "2026-10-10T00:29:07.508213+00:00",
+        "first_seq": 2,
+        "last_seq": 9,
+        "issue_id": "11fccb4adb2752769b3fed021aa09584",
+        "kind": "user_message",
+        "id": "10e7de56df0e4fdaaeda931c7457b3f2",
+        "text": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States",
+        "image_ids": [],
+        "images": []
+      },
+      {
+        "at": "2026-10-10T00:29:09.922569+00:00",
+        "first_seq": 5,
+        "last_seq": 6,
+        "issue_id": null,
+        "kind": "tool",
+        "tool_id": "8d92d617-1d69-4ed4-ab43-d1fabbfd5250",
+        "name": "logistics.query",
+        "status": "finished",
+        "summary": "After-sales tool responded"
+      },
+      {
+        "at": "2026-10-10T00:29:09.960795+00:00",
+        "first_seq": 10,
+        "last_seq": 12,
+        "issue_id": "11fccb4adb2752769b3fed021aa09584",
+        "kind": "assistant_message",
+        "message_id": "b5e1c9b0d245511fbfc3e5e7d0388bb7",
+        "text": "Order Anker010:\n• Amazon Logistics Anker1234567-13: delivered on 2025-12-07 (T8D04121)\nThe order record shows T8D04121; I don't see a separate shipment for T8D02181-80. If this part came from a separate order or a service replacement, please share that order number or case number and I'll check it.",
+        "status": "completed",
+        "reply_to_input_id": "10e7de56df0e4fdaaeda931c7457b3f2",
+        "model_tier": null,
+        "replaces": null
+      }
+    ],
+    "last_error": null,
+    "cancelled_run": null,
+    "active_issue_id": "11fccb4adb2752769b3fed021aa09584",
+    "issues": [
+      {
+        "issue_id": "11fccb4adb2752769b3fed021aa09584",
+        "status": "open",
+        "title": "AnkerDirect",
+        "task_queue": []
+      }
+    ],
+    "last_event_seq": 13,
+    "latest_summaries": []
+  },
+  "journey": {
+    "session": {
+      "session_id": "6bbc33d3c1684ff182a4fc8e9cb47930",
+      "lane": "domestic",
+      "created_at": "2026-10-10T00:29:07.512868Z",
+      "last_run_at": "2026-10-10T00:29:09.965282Z",
+      "runs": 1,
+      "user_messages": 1,
+      "first_question": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: [REDACTED]\nSN: T8D02P[REDACTED]EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite",
+      "product_state": "unknown",
+      "sku": null,
+      "category": null,
+      "emotion_level": null,
+      "fault_plan_ids": [],
+      "steps_executed": 0,
+      "clarifications": 0,
+      "knowledge_status": null,
+      "receipt_status": null,
+      "outcome": "consult_answered",
+      "outcome_reason": null,
+      "outcome_at": "2026-10-10T00:29:09.965282Z",
+      "total_latency_ms": 2452,
+      "model_calls": 1,
+      "tokens_in": 4641,
+      "tokens_out": 278,
+      "raw_available_until": "2026-10-17T00:29:09.965282Z",
+      "raw_available": true
+    },
+    "runs": [
+      {
+        "run_id": "14d3985fdfb344a8a3418be31530da7a",
+        "session_id": "6bbc33d3c1684ff182a4fc8e9cb47930",
+        "seq_no": 1,
+        "started_at": "2026-10-10T00:29:07.512868Z",
+        "ended_at": "2026-10-10T00:29:09.965275Z",
+        "duration_ms": 2452,
+        "entry": "message",
+        "stage_from": "intake",
+        "stage_to": "done",
+        "done_reason": "completed",
+        "error_code": null,
+        "first_visible_ms": 2450,
+        "card_ready_ms": null,
+        "card_kind": null,
+        "model_calls": [
+          {
+            "run_id": "14d3985fdfb344a8a3418be31530da7a",
+            "node": "understand",
+            "task": "intake",
+            "model_used": "dashscope/qwen3.7-flash",
+            "lane": "domestic",
+            "status": "ok",
+            "attempts": 1,
+            "fallback_used": false,
+            "stream": false,
+            "latency_ms": 2362,
+            "tokens_in": 4641,
+            "tokens_out": 278,
+            "error_type": null,
+            "created_at": "2026-10-10T00:29:09.893025Z"
+          }
+        ],
+        "tokens_in": 4641,
+        "tokens_out": 278,
+        "node_count": 4,
+        "nodes": [
+          {
+            "run_id": "14d3985fdfb344a8a3418be31530da7a",
+            "idx": 1,
+            "node": "understand",
+            "prev_node": null,
+            "started_at": "2026-10-10T00:29:07.512868Z",
+            "duration_ms": 2402,
+            "status": "ok",
+            "summary": {
+              "stage": "intake",
+              "category": null,
+              "substage": null,
+              "reply_mode": "diagnose",
+              "patch_count": 1,
+              "out_of_scope": false,
+              "rewrite_used": false,
+              "product_state": "unknown",
+              "vision_status": null,
+              "primary_intent": "logistics_query",
+              "context_metrics": [
+                {
+                  "task": "intake",
+                  "event": "context_built",
+                  "tokens": 3729,
+                  "truncated": false,
+                  "max_tokens": 13141,
+                  "cache_dropped": false,
+                  "omitted_entries": 0,
+                  "token_breakdown": {
+                    "system": 3355,
+                    "current": 226,
+                    "history": 0,
+                    "authority": 148
+                  },
+                  "authority_tokens": {
+                    "now": 27,
+                    "task": 5,
+                    "facts": 2,
+                    "risks": 2,
+                    "decision": 2,
+                    "timezone": 7,
+                    "issue_index": 2,
+                    "step_attempts": 2,
+                    "business_subject": 20,
+                    "context_revision": 2,
+                    "conversation_view": 38,
+                    "session_preferences": 2
+                  }
+                },
+                {
+                  "task": "intake",
+                  "event": "model_call",
+                  "model": "dashscope/qwen3.7-flash",
+                  "attempts": [
+                    {
+                      "alias": "qwen-flash",
+                      "outcome": "ok",
+                      "input_budget": 16000,
+                      "estimated_input_tokens": 6372
+                    }
+                  ],
+                  "actual_input_tokens": 4641
+                }
+              ],
+              "escalate_reason": null,
+              "target_issue_id": "11fccb4adb2752769b3fed021aa09584",
+              "context_revision": 1,
+              "knowledge_status": null,
+              "retrieval_rounds": 0,
+              "allowed_operations": true,
+              "escalation_trigger": null,
+              "human_request_source": null
+            }
+          },
+          {
+            "run_id": "14d3985fdfb344a8a3418be31530da7a",
+            "idx": 2,
+            "node": "consult",
+            "prev_node": "understand",
+            "started_at": "2026-10-10T00:29:09.915198Z",
+            "duration_ms": 18,
+            "status": "ok",
+            "summary": {
+              "stage": "done"
+            }
+          },
+          {
+            "run_id": "14d3985fdfb344a8a3418be31530da7a",
+            "idx": 3,
+            "node": "advance_tasks",
+            "prev_node": "consult",
+            "started_at": "2026-10-10T00:29:09.934189Z",
+            "duration_ms": 1,
+            "status": "ok",
+            "summary": null
+          },
+          {
+            "run_id": "14d3985fdfb344a8a3418be31530da7a",
+            "idx": 4,
+            "node": "commit_issue",
+            "prev_node": "advance_tasks",
+            "started_at": "2026-10-10T00:29:09.936090Z",
+            "duration_ms": 6,
+            "status": "ok",
+            "summary": null
+          }
+        ],
+        "retrieval_calls": []
+      }
+    ],
+    "case": null,
+    "snapshot": {
+      "session_id": "6bbc33d3c1684ff182a4fc8e9cb47930",
+      "version": 1,
+      "stage": "done",
+      "substage": null,
+      "active_run": null,
+      "pending_input": null,
+      "timeline": [
+        {
+          "at": "2026-10-10T00:29:07.508213+00:00",
+          "first_seq": 2,
+          "last_seq": 9,
+          "issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "kind": "user_message",
+          "id": "10e7de56df0e4fdaaeda931c7457b3f2",
+          "text": "Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\nOrder: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, \nCalifornia, 91764\nUnited States",
+          "image_ids": [],
+          "images": []
+        },
+        {
+          "at": "2026-10-10T00:29:09.922569+00:00",
+          "first_seq": 5,
+          "last_seq": 6,
+          "issue_id": null,
+          "kind": "tool",
+          "tool_id": "8d92d617-1d69-4ed4-ab43-d1fabbfd5250",
+          "name": "logistics.query",
+          "status": "finished",
+          "summary": "After-sales tool responded"
+        },
+        {
+          "at": "2026-10-10T00:29:09.960795+00:00",
+          "first_seq": 10,
+          "last_seq": 12,
+          "issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "kind": "assistant_message",
+          "message_id": "b5e1c9b0d245511fbfc3e5e7d0388bb7",
+          "text": "Order Anker010:\n• Amazon Logistics Anker1234567-13: delivered on 2025-12-07 (T8D04121)\nThe order record shows T8D04121; I don't see a separate shipment for T8D02181-80. If this part came from a separate order or a service replacement, please share that order number or case number and I'll check it.",
+          "status": "completed",
+          "reply_to_input_id": "10e7de56df0e4fdaaeda931c7457b3f2",
+          "model_tier": null,
+          "replaces": null
+        }
+      ],
+      "last_error": null,
+      "cancelled_run": null,
+      "active_issue_id": "11fccb4adb2752769b3fed021aa09584",
+      "issues": [
+        {
+          "issue_id": "11fccb4adb2752769b3fed021aa09584",
+          "status": "open",
+          "title": "AnkerDirect",
+          "task_queue": []
+        }
+      ],
+      "last_event_seq": 13,
+      "latest_summaries": []
+    }
+  },
+  "cases": [],
+  "visible_text": "Order Anker010:\n• Amazon Logistics Anker1234567-13: delivered on 2025-12-07 (T8D04121)\nThe order record shows T8D04121; I don't see a separate shipment for T8D02181-80. If this part came from a separate order or a service replacement, please share that order number or case number and I'll check it.",
+  "step_cards": [],
+  "intent": "logistics_query",
+  "seconds": 3.77,
+  "complete": true
+}
