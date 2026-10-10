@@ -3,6 +3,9 @@
 - 问句（bp-0123「continuous or intermittent」）：原话已答 → 记一条 step_attempts（answer.source=fact），与卡片回答走同一条重放边（T46 原评测）。
 - 条件步骤（rv-0106「If the robot is often stuck on the edge of stairs…」）：原话否定条件 → 跳过；
   后面的兄弟条件成立（「continues to display errors on flat ground」）→ 前面未知的条件步骤一并跳过（T22）。
+- 同计划已处理的兄弟条件作对照一并给模型，不采纳其判定：只给一条孤立条件时，原话里的否定句
+  （「has not been stuck at stairs」）会被套到平地条件上（T22 复测 B06-r2）。
+- 只靠「不成立」不能让计划耗尽：最后一个可发步骤照发，用户一句话就能纠正；错跳则整段排障直接转人工。
 模型只给判定和用户原话引文，服务端逐字校验引文、选项与步骤 id；不确定一律 unknown，照常发卡。
 同一计划在同一事实修订号下只判一次；只在有用户自述事实时调用。
 """
@@ -45,7 +48,9 @@ class FactCheck(BaseModel):
 INSTRUCTION = (
     "判断用户已经说过的话是否回答了下列排障步骤，只依据 <data> 中 user_messages 的用户原文，不推测、不补全。\n"
     "- question 步骤：用户原话已经回答时 status=answered；有选项时 option 逐字取其中一个，对不上就留空并在 text 写简短回答。\n"
-    "- condition 步骤：condition 是该步骤的适用场景。用户原话表明场景成立用 satisfied，明确不成立用 negated；没提到用 unknown。\n"
+    "- condition 步骤：condition 是该步骤的适用场景。用户原话表明这个场景成立用 satisfied，明确说这个场景没发生用 negated；没提到用 unknown。"
+    "否定一个场景不等于否定另一个场景：逐条判断，quote 必须是针对本条场景的那一句。\n"
+    "- [reference] 是已处理过的步骤，只用来对照，不要输出它们。\n"
     "- answered / satisfied / negated 必须在 quote 逐字引用支撑它的用户原话；助手说过的话和步骤原文都不是依据。\n"
     "- 不确定一律 unknown。只输出 JSON。"
 )
@@ -73,8 +78,8 @@ def candidates(plan: Plan, state: dict[str, Any]) -> list[PlanStep]:
     return [s for s in plan.steps if s.instruction_src not in answered and (s.kind == "question" or s.condition)]
 
 
-def _steps_text(steps: list[PlanStep], library: PlanLibrary) -> str:
-    lines = []
+def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[PlanStep] = ()) -> str:
+    lines = [f"- {s.step_id} [reference] {s.condition}" for s in reference]
     for s in steps:
         if s.kind == "question":
             options = f"（选项：{' / '.join(s.options)}）" if s.options else ""
@@ -105,8 +110,9 @@ def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str]) -> di
     return out
 
 
-def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """否定的条件步骤跳过；某个条件步骤成立时，它前面还未知的条件步骤也跳过（兄弟场景互斥）。"""
+def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]], pending: set[str]) -> dict[str, dict[str, Any]]:
+    """否定的条件步骤跳过；某个条件步骤成立时，它前面还未知的条件步骤也跳过（兄弟场景互斥）。
+    pending 是还没处理过的步骤：否定判定若会跳过其中最后一个操作步骤（计划就此耗尽），不跳，照发。"""
     conditioned = [s.step_id for s in plan.steps if s.condition]
     satisfied = [i for i, sid in enumerate(conditioned) if (verdicts.get(sid) or {}).get("status") == "satisfied"]
     last = satisfied[-1] if satisfied else -1
@@ -117,6 +123,12 @@ def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]]) -> dict[str, dict[st
             steps[sid] = {**verdicts.get(sid, {"status": "unknown"}), "skip": True}
         elif sid in verdicts:
             steps[sid] = verdicts[sid]
+    remaining = [s.step_id for s in plan.steps if s.step_id in pending and s.kind == "action"
+                 and not (steps.get(s.step_id) or {}).get("skip")]
+    if not remaining and not satisfied:
+        tail = next((s.step_id for s in reversed(plan.steps) if s.step_id in pending and s.kind == "action"), None)
+        if tail in steps:
+            steps[tail] = {**steps[tail], "skip": False, "kept": "last_step"}
     return steps
 
 
@@ -130,6 +142,7 @@ async def check_plan_facts(
     if (checks.get(plan.plan_id) or {}).get("issue_revision") == revision:
         return {}
     steps = candidates(plan, state)
+    reference = [s for s in plan.steps if s.condition and s not in steps]
     if (router is None or budget_ms < 1000 or not steps
             or not any(f.get("source") == "user_statement" for f in _active_facts(state))):
         return {}
@@ -140,7 +153,7 @@ async def check_plan_facts(
         ("system", compose_system_prompt((state.get("emotion") or {}).get("strategy", "normal"), {
             "stage": "guide", "product": (state.get("product_confirmed") or {}).get("name"), "symptoms": state.get("symptoms"),
         })),
-        ("human", INSTRUCTION + "\n排障步骤：\n" + wrap_data(_steps_text(steps, library), kind="plan_steps") + "\n"
+        ("human", INSTRUCTION + "\n排障步骤：\n" + wrap_data(_steps_text(steps, library, reference), kind="plan_steps") + "\n"
          + wrap_data("\n---\n".join(corpus), kind="user_messages") + "\n" + wrap_data(facts_text, kind="structured_facts")),
     ]
     try:
@@ -149,7 +162,8 @@ async def check_plan_facts(
         log.warning("fact check unavailable session=%s plan=%s: %s", session_id, plan.plan_id, type(exc).__name__)
         return {}
     verdicts = accept(steps, result.parsed.steps, corpus)
-    checks[plan.plan_id] = {"issue_revision": revision, "steps": _skips(plan, verdicts)}
+    pending = {s.step_id for s in plan.steps if s.instruction_src not in {a.get("instruction_src") for a in answered_history(state)}}
+    checks[plan.plan_id] = {"issue_revision": revision, "steps": _skips(plan, verdicts, pending)}
     now = datetime.now(UTC).isoformat()
     answered = [
         {"plan_id": plan.plan_id, "step_id": s.step_id, "card_id": step_card_id(session_id, plan.plan_id, s.step_id),

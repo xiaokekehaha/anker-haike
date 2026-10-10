@@ -18,3 +18,30 @@
 | T48 | 型号句覆盖绿灯问题 | 未改，仍覆盖（不在本任务范围） |
 
 T22 第二轮模型没给 feedback（判为 report_problem），卡因新症状撤销后重新检索，由 fact_check 选到 s2；结果正确，但 s1 没有记反馈。
+
+## T22 复测不稳定（Codex round-02 B06-r2）与修复
+
+问题：第二轮意图模型同时给出 step_feedback，P1 把 s1 记 not_solved、游标推进到 s2；fact_check 只把 s2 一条条件给模型，
+模型把原话里「has not been stuck at stairs」的否定套到平地条件上，判 s2 negated；引文校验只验原话存在，拦不住语义错。
+跳过 s2 后计划耗尽（MAX_GUIDES=1）→ 转人工 → 进质保要订单。成功轮 B06-r1 没有反馈，s1、s2 同时给模型，判对。
+
+两处设计缺陷：只给孤立条件、没有对照；一次轻量判定「不成立」就能让计划耗尽，错跳代价远大于多发一张卡。
+
+修复（fact_check）：
+- 已处理的兄弟条件以 [reference] 一并给模型，只采纳未处理步骤的判定；提示补「否定一个场景不等于否定另一个场景」；
+- 否定判定若会跳过最后一个未处理的操作步骤且没有兄弟条件成立，该步骤照发（kept=last_step）。
+
+验证：新增 3 项（含 B06-r2 路径的 HTTP 回归，去掉保护即失败）；全量 1187 passed / 2 skipped；
+make up 后真实连跑 T22 6 次：5 次 s1 → s2；1 次首轮意图被判 product_question、未进排障（另一问题，见下）。
+
+## 另一个 T22 问题：首轮 App 报错表单被判成 product_question
+
+第 1 次复跑首轮意图模型把带 Probleemcode 7002 的 App 报错表单判成 product_question，走产品咨询，不发卡；
+第二轮报现象时错误码只从本轮原文解析，精确命中路径没触发，synthesize 又因 rationale 超 80 字 schema 失败三次，最终转人工。
+用户决定一起修：
+- interpret.device_code_report：App 报错表单带错误码时，product_question 改为 report_problem（官方 63 单 17 张带码表单金标全是 report_problem），接在 logistics_correction 共用入口；
+- exact_code_hits：错误码从本问题所有事实来源的用户原话里取，首轮没进排障时后续轮次仍能精确命中。
+synthesize 的 rationale 超 80 字 schema 失败未改：精确命中后不再调用 synthesize。
+
+验证：新增 2 项（去掉任一修复即失败）；全量 1189 passed / 2 skipped；make up 后真实连跑 T22 8 次，8/8 为 s1 → s2。
+其中 1 次首轮仍出现「device troubleshooting → delivery status」多诉求提示（模型给出不存在的物流次诉求，Codex 早先记录的旧现象），未处理。

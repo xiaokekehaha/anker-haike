@@ -1586,7 +1586,11 @@ def exact_code_hits(state: SessionState, scope: KnowledgeScope) -> dict[str, Any
     from app.official.qa_index import get_qa_index
 
     index = get_qa_index()
-    texts = [state.get("text") or "", *[str(s) for s in state.get("symptoms") or []]]
+    # 本问题所有用户原话里的码：首轮表单被读成别的意图（T22 复跑：判成产品咨询）时，后面报现象也要能精确命中
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id")) or {}
+    sources = {sid for f in issue.get("facts") or [] if f.get("status") == "active" for sid in f.get("source_entry_ids") or []}
+    earlier = [m.get("text") or "" for m in state.get("messages") or [] if m.get("role") == "user" and m.get("input_id") in sources]
+    texts = [state.get("text") or "", *earlier, *[str(s) for s in state.get("symptoms") or []]]
     codes: list[str] = list(dict.fromkeys(c for t in texts for c in parse_message(t).codes))
     codes += [c for c in state.get("error_codes") or [] if c not in codes]
     if not codes:

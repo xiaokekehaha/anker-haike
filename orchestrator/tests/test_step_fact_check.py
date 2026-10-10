@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.guide.fact_check import StepCheck, _skips, accept, candidates
+from app.guide.fact_check import StepCheck, _skips, _steps_text, accept, candidates
 from app.knowledge.runtime import set_knowledge_adapter
 from app.plans.qa import qa_plan_library, step_condition
 from tests.conversation_runtime import conversation as base_conversation_fixture
@@ -56,13 +56,41 @@ def test_accept_requires_user_quote_and_card_option():
     assert free["s3"] == {"status": "answered", "option": None, "text": "While pumping", "quote": "while the pump is running"}
 
 
+BOTH = {"s1", "s2"}
+
+
 def test_sibling_condition_satisfied_skips_the_earlier_unknown_one():
     plan = LIB.get("qa_rv_0106")
-    assert _skips(plan, {"s2": {"status": "satisfied", "quote": "flat floor"}}) == {
+    assert _skips(plan, {"s2": {"status": "satisfied", "quote": "flat floor"}}, BOTH) == {
         "s1": {"status": "unknown", "skip": True}, "s2": {"status": "satisfied", "quote": "flat floor"}}
-    assert _skips(plan, {"s1": {"status": "negated", "quote": "not been stuck"}})["s1"]["skip"] is True
-    assert "s2" not in _skips(plan, {"s1": {"status": "negated", "quote": "not been stuck"}})
-    assert _skips(plan, {"s1": {"status": "satisfied", "quote": "stuck on stairs"}}) == {"s1": {"status": "satisfied", "quote": "stuck on stairs"}}
+    assert _skips(plan, {"s1": {"status": "negated", "quote": "not been stuck"}}, BOTH)["s1"]["skip"] is True
+    assert "s2" not in _skips(plan, {"s1": {"status": "negated", "quote": "not been stuck"}}, BOTH)
+    assert _skips(plan, {"s1": {"status": "satisfied", "quote": "stuck on stairs"}}, BOTH) == {
+        "s1": {"status": "satisfied", "quote": "stuck on stairs"}}
+
+
+def test_negated_verdict_alone_cannot_exhaust_the_plan():
+    """T22 复测 B06-r2：s1 已反馈，只剩 s2；模型把平地条件误判 negated。最后一个可发步骤照发，不因一次判定转人工。"""
+    plan = LIB.get("qa_rv_0106")
+    kept = _skips(plan, {"s2": {"status": "negated", "quote": "x"}}, {"s2"})
+    assert kept["s2"]["skip"] is False
+    both = _skips(plan, {"s1": {"status": "negated", "quote": "a"}, "s2": {"status": "negated", "quote": "b"}}, BOTH)
+    assert both["s1"]["skip"] is True and both["s2"]["skip"] is False
+
+
+def test_handled_sibling_conditions_are_shown_as_reference():
+    """只剩一条条件时把已处理的兄弟条件作对照给模型，模型才分得清原话里的否定句针对哪个场景。"""
+    plan = LIB.get("qa_rv_0106")
+    state = {"step_attempts": [{"plan_id": "qa_rv_0106", "step_id": "s1", "instruction_src": "evidence:rv-0106#s1",
+                                "kind": "action", "feedback": "not_solved"}]}
+    steps = candidates(plan, state)
+    assert [s.step_id for s in steps] == ["s2"]
+    text = _steps_text(steps, LIB, [s for s in plan.steps if s.condition and s not in steps])
+    assert "s1 [reference] the robot is often stuck on the edge of stairs" in text
+    assert "s2 [condition] the robot continues to display errors on flat ground" in text
+    # 模型即便输出了对照步骤的判定，也不采纳
+    assert accept(steps, [StepCheck(step_id="s1", status="negated", quote="has not been stuck")],
+                  ["It has not been stuck at stairs or furniture."]) == {}
 
 
 T22 = ("Productnaam: X10 Pro Omni\nProduct-PN: T2351\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\n"
@@ -139,3 +167,62 @@ async def test_fact_check_failure_falls_back_to_the_first_step(conversation):
         "facts": [{"value": "Happens continuously on an open, flat floor", "quote": "This happens continuously on an open, flat floor"}],
     })
     assert next(e for e in events if e["type"] == "step_card")["step"]["step_id"] == "s1"
+
+
+async def test_t22_feedback_then_misjudged_restart_condition_still_sends_restart(conversation):
+    """T22 复测 B06-r2：第二轮模型同时给反馈（s1 记 not_solved），条件判定又把 s2 判 negated；仍发 s2，不进质保。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0106"))
+    events = await conversation.send(T22, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "Wiel raakt de grond niet", "quote": "Wiel raakt de grond niet"}],
+    })
+    assert next(e for e in events if e["type"] == "step_card")["step"]["step_id"] == "s1"
+    conversation.models["guide.step"].script = [{"steps": [{"step_id": "s2", "status": "negated", "quote": FLAT}]}]
+    events = await conversation.send(FLAT, {
+        "primary_intent": "report_problem", "secondary_intents": ["step_feedback"], "device_relation": "current",
+        "feedback": "not_solved", "feedback_quote": FLAT,
+        "facts": [{"value": "Happens continuously on an open, flat floor", "quote": "This happens continuously on an open, flat floor"}],
+    })
+    assert next(e for e in events if e["type"] == "step_card")["step"]["step_id"] == "s2"
+    state = await conversation.state()
+    assert state["stage"] == "guide" and not state.get("escalate_reason")
+    assert state["step_checks"]["qa_rv_0106"]["steps"]["s2"]["kept"] == "last_step"
+    prompt = str(conversation.models["guide.step"].calls[-1])
+    assert "s1 [reference]" in prompt
+
+
+def test_app_report_with_error_code_is_never_a_product_question():
+    """T22 复跑：带 7002 的 App 报错表单被判 product_question，走产品咨询不发卡。带码表单一律按故障。"""
+    from app.conversation.interpret import TurnInterpretation, device_code_report
+
+    meaning = TurnInterpretation(primary_intent="product_question", secondary_intents=["report_problem", "logistics_query"])
+    fixed = device_code_report(meaning, T22)
+    assert fixed.primary_intent == "report_problem" and fixed.secondary_intents == ["logistics_query"]
+    question = TurnInterpretation(primary_intent="product_question")
+    assert device_code_report(question, "How do I set a no-go zone on my X10 Pro Omni?").primary_intent == "product_question"
+    # 接在模型输出与降级规则共用的纠正入口上
+    from app.conversation.interpret import logistics_correction
+    assert logistics_correction(meaning, T22).primary_intent == "report_problem"
+
+
+async def test_error_code_from_an_earlier_turn_still_hits_the_official_guide(conversation):
+    """首轮表单没进排障（意图被读成别的）；第二轮只报现象，错误码仍从本问题首轮原话取，精确命中 rv-0106。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0106"))
+    conversation.models["guide.step"].script = [{"steps": [
+        {"step_id": "s1", "status": "negated", "quote": "It has not been stuck at stairs or furniture"},
+        {"step_id": "s2", "status": "satisfied", "quote": "This happens continuously on an open, flat floor"},
+    ]}]
+    await conversation.send(T22, {
+        "primary_intent": "history_query", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "Wiel raakt de grond niet", "quote": "Wiel raakt de grond niet"}],
+    })
+    conversation.models["diagnose.synthesize"].script = []
+    events = await conversation.send(FLAT, {
+        "primary_intent": "report_problem", "device_relation": "current",
+        "facts": [{"value": "Happens continuously on an open, flat floor", "quote": "This happens continuously on an open, flat floor"}],
+    })
+    card = next(e for e in events if e["type"] == "step_card")
+    assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0106", "s2")
+    state = await conversation.state()
+    assert state["error_codes"] == ["7002"] and state["plans_ranked"][0]["source"] == "exact_code"
+    assert not conversation.models["diagnose.synthesize"].calls

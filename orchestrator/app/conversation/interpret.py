@@ -190,12 +190,25 @@ PARTS_PURCHASE_WORDS = re.compile(
 )
 
 
+def device_code_report(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
+    """设备 App 报错表单带错误码 = 设备在报故障，不是功能咨询（T22：7002 表单约 1/6 被判 product_question，
+    走产品咨询不发卡）。官方 63 单里 17 张带码的 App 报错单金标全是 report_problem。无码表单不约束。"""
+    parsed = parse_message(text)
+    if meaning.primary_intent != "product_question" or parsed.format != "app_report" or not parsed.codes:
+        return meaning
+    return meaning.model_copy(update={
+        "primary_intent": "report_problem",
+        "secondary_intents": [i for i in meaning.secondary_intents if i not in {"report_problem", "product_question"}],
+    })
+
+
 def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
     """模型把物流诉求判成别的意图时，按原话里的客观线索纠正。
 
     几条都只在**原话**上判断，不看会话状态：纠的是这一句被读错，不是推翻用户后续的说法。
     """
     meaning = constrain_requests(meaning, text)
+    meaning = device_code_report(meaning, text)
     if PARTS_PURCHASE_WORDS.search(text.replace("’", "'")) and "parts_purchase" not in (meaning.primary_intent, *meaning.secondary_intents):
         # 保留模型读到的故障诉求，把配件采购作为并列诉求补进队列（优先级由 tasks 决定）
         meaning = meaning.model_copy(update={"secondary_intents": [*meaning.secondary_intents, "parts_purchase"]})
