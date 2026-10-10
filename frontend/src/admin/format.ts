@@ -6,6 +6,11 @@ import type { Outcome } from './types';
 export const OUTCOME: Record<Outcome, { label: string; role: Role; hint: string }> = {
   resolved: { label: '已解决', role: 'good', hint: '给出结束语，用户确认解决' },
   escalated: { label: '需人工处理', role: 'warning', hint: '问题摘要已整理；是否接单以实际人工状态为准' },
+  closed_unresolved: { label: '已结束但未解决', role: 'serious', hint: '本次服务流程已结束，设备问题未确认解决' },
+  executed_closed: { label: '办理已结案', role: 'good', hint: '业务执行已完成并结案' },
+  human_executed: { label: '人工办理已结案', role: 'good', hint: '有人工处理记录的已结案业务' },
+  consult_answered: { label: '咨询已答复', role: 'good', hint: '已提供所需说明，不表示设备已修复' },
+  awaiting_human: { label: '等待人工审核', role: 'neutral', hint: '已进入审核流程，不表示真人已接单' },
   abandoned: { label: '已放弃', role: 'serious', hint: '等用户回应但长时间没有下文' },
   errored: { label: '出错', role: 'critical', hint: '节点异常或超时' },
   awaiting_user: { label: '等用户', role: 'neutral', hint: '正等卡片反馈' },
@@ -20,8 +25,8 @@ export type Role = 'good' | 'warning' | 'critical' | 'serious' | 'neutral';
 /** 堆叠顺序：good → warning → critical → serious → neutral。
  *  这个相邻顺序通过了 dataviz 的 CVD 与常视觉分辨检查（warning 与 serious 不相邻）。 */
 export const STACK_ORDER: Outcome[] = [
-  'resolved', 'escalated', 'errored', 'abandoned',
-  'awaiting_user', 'clarifying', 'in_progress', 'interrupted', 'unknown',
+  'resolved', 'executed_closed', 'human_executed', 'consult_answered', 'escalated', 'errored', 'closed_unresolved', 'abandoned',
+  'awaiting_human', 'awaiting_user', 'clarifying', 'in_progress', 'interrupted', 'unknown',
 ];
 
 export function outcomeLabel(outcome: string): string {
@@ -38,6 +43,7 @@ export const REASON_TEXT: Record<string, string> = {
   R2: '官方步骤已用尽', R3: '用户要求人工', R4: '安全风险',
   R5: '没有对应的官方说明', R6: '转质保判断', R7: '继续处理所需信息待确认', R8: '不在支持范围',
   solved: '用户确认解决', plan_done: '官方步骤执行完毕',
+  case_closed_unresolved: '流程结束，问题未解决', case_closed: '业务已结案',
   server_restarted: '服务重启打断', node_failed: '节点异常',
   deadline_exceeded: '超过时限', no_checkpoint: '数据已过保留期',
   step_feedback: '等步骤反馈', select_product: '等选择产品',

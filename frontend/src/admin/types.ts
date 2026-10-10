@@ -4,7 +4,8 @@ import type { SessionSnapshot } from '../types/snapshot';
 
 export type Outcome =
   | 'resolved' | 'escalated' | 'abandoned' | 'awaiting_user'
-  | 'clarifying' | 'in_progress' | 'errored' | 'interrupted' | 'unknown';
+  | 'clarifying' | 'in_progress' | 'errored' | 'interrupted' | 'unknown'
+  | 'closed_unresolved' | 'executed_closed' | 'human_executed' | 'consult_answered' | 'awaiting_human';
 
 export type SessionRow = {
   session_id: string;

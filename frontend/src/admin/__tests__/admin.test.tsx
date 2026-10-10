@@ -139,7 +139,17 @@ describe('图表与口径', () => {
   });
 
   test('堆叠顺序常量与渲染顺序一致', () => {
-    expect(STACK_ORDER.slice(0, 4)).toEqual(['resolved', 'escalated', 'errored', 'abandoned']);
+    expect(STACK_ORDER.filter((key) => ['resolved', 'escalated', 'errored', 'abandoned'].includes(key)))
+      .toEqual(['resolved', 'escalated', 'errored', 'abandoned']);
+  });
+
+  test('未解决关闭与等待人工显示独立结局，不显示为已解决', () => {
+    const { container } = render(<OutcomeStack totals={{ closed_unresolved: 2, awaiting_human: 1 }} />);
+    expect(screen.getByText('已结束但未解决')).toBeInTheDocument();
+    expect(screen.getByText('等待人工审核')).toBeInTheDocument();
+    expect(screen.queryByText('已解决')).not.toBeInTheDocument();
+    expect(container.querySelectorAll('.stack > span')).toHaveLength(2);
+    expect(reasonText('case_closed_unresolved')).toBe('流程结束，问题未解决');
   });
 
   test('徽标同时给出颜色与文字', () => {
