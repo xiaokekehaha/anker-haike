@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+from app.analytics.outcome import derive_outcome
 from app.analytics.schema import NodeRun, SessionFacts
 from app.observability.privacy import sanitize
 
@@ -100,59 +101,8 @@ def classify(
     error_code: str | None = None,
     pending: bool = False,
 ) -> tuple[str, str | None]:
-    """(outcome, outcome_reason)。判定顺序即 01_design.md §5.3 的表格顺序。"""
-    if not values:
-        # checkpoint 已按 TTL 清理：不知道这会话是怎么收尾的，不要算进任何率
-        return "unknown", "no_checkpoint"
-    if done_reason == "error":
-        # 进程重启打断的 run 不是产品失败（票 08 reconcile 写的 server_restarted）：
-        # 用户可能重发后继续，成败未知，不进解决率的分子与分母
-        if error_code == "server_restarted":
-            return "interrupted", error_code
-        return "errored", error_code
-    case_status = values.get("case_status")
-    if case_status == "closed":
-        return ("human_executed" if values.get("human_involved") else "executed_closed"), "case_closed"
-    if case_status == "closed_unresolved":
-        return "closed_unresolved", "case_closed_unresolved"
-    if case_status == "escalated_summary":
-        return "escalated", values.get("escalate_reason")
-    if case_status in {"awaiting_approval", "approved", "rejected"} or values.get("stage") == "awaiting_human":
-        return "awaiting_human", case_status
-    if values.get("consult_answered"):
-        return "consult_answered", None
-    stage = values.get("stage")
-    closing = any(
-        isinstance(m, dict) and m.get("kind") == "closing"
-        for m in (values.get("visible_messages") or [])
-    )
-    if stage == "done" and closing:
-        verify = values.get("_verify") or {}
-        return "resolved", verify.get("rule") or "solved"
-    issue = (values.get("issues") or {}).get(values.get("active_issue_id"), {})
-    summary = issue.get("latest_summary")
-    if summary and issue.get("handoff", {}).get("status") == "prepared":
-        return "escalated", summary["summary"]["reason"]["rule_id"]
-    if not values.get("issues") and values.get("escalation_summary"):
-        return "escalated", values.get("escalate_reason")
-    if stage == "escalate":
-        # 摘要还没写完（等凭证 / 等确认）：仍在升级流程里，不算已升级
-        return "awaiting_user" if pending else "in_progress", values.get("escalate_reason")
-    if pending:
-        return "awaiting_user", _pending_kind(values)
-    if done_reason == "cancelled":
-        return "in_progress", "cancelled"
-    clarification = values.get("clarification")
-    if isinstance(clarification, dict) and clarification.get("asked_run_id") == values.get(
-        "run_id"
-    ):
-        return "clarifying", clarification.get("reason")
-    return "in_progress", None
-
-
-def _pending_kind(values: dict[str, Any]) -> str | None:
-    card = values.get("pending_card")
-    return card.get("kind") if isinstance(card, dict) else None
+    """(outcome, outcome_reason)。口径只在 analytics/outcome.derive_outcome 定义一次；这里是 checkpoint 派生入口。"""
+    return derive_outcome(values, done_reason=done_reason, error_code=error_code, pending=pending)
 
 
 def is_abandoned(outcome: str, last_run_at: datetime, stage: str | None, *, after_hours: float) -> bool:

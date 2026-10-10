@@ -44,6 +44,7 @@ export const REASON_TEXT: Record<string, string> = {
   R5: '没有对应的官方说明', R6: '转质保判断', R7: '继续处理所需信息待确认', R8: '不在支持范围',
   solved: '用户确认解决', plan_done: '官方步骤执行完毕',
   case_closed_unresolved: '流程结束，问题未解决', case_closed: '业务已结案',
+  partial_closed: '案件已结，仍有诉求在办', cancelled: '本轮已取消',
   server_restarted: '服务重启打断', node_failed: '节点异常',
   deadline_exceeded: '超过时限', no_checkpoint: '数据已过保留期',
   step_feedback: '等步骤反馈', select_product: '等选择产品',
