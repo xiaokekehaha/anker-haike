@@ -44,6 +44,14 @@ def _without_nulls(value):
     return value
 
 
+# 模型会读的事实 / 步骤字段。其余（issue_id、device_ref_id、source_entry_ids、recorded_at、revision、card_id、
+# instruction_src、ts…）是存储与回溯用的，每条事实约 250 token，密集会话里 facts + step_attempts 能占掉半个预算
+# （T55 补照片一轮 10.1k vs 7.0k，候选为空直接 R5）。intake 要用完整记录做 corrections，不投影。
+_MODEL_FACT_FIELDS = ("fact_id", "kind", "context_field", "value", "subject", "polarity", "timing", "quote", "status",
+                      "source", "occurred_at", "time_expression", "superseded_by_input_id")
+_MODEL_STEP_FIELDS = ("plan_id", "step_id", "title", "kind", "feedback", "note", "answer")
+
+
 def _model_authority(authority: dict, task: str | None) -> dict:
     """Project model data only; preserve identities, evidence and business state in storage."""
     authority = _without_nulls(authority)
@@ -62,6 +70,8 @@ def _model_authority(authority: dict, task: str | None) -> dict:
             key: value for key, value in decision.items()
             if key not in {"patches", "pending_changes"}
         }
+        authority["facts"] = [{k: f[k] for k in _MODEL_FACT_FIELDS if k in f} for f in authority.get("facts") or []]
+        authority["step_attempts"] = [{k: s[k] for k in _MODEL_STEP_FIELDS if k in s} for s in authority.get("step_attempts") or []]
     return authority
 
 
