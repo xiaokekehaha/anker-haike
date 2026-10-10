@@ -57,7 +57,9 @@ async def test_product_question_after_two_steps_reaches_production_json_model():
     # 2026-09-26：口述购买日期（context_field=purchase_date 与一句抽取规则）使 system 从 2593 升到 2641。
     # 2026-10-08：product_question 意图两段提示（见 docs/planning/2026-10-08-1921_product-knowledge-consult/）约 +150，
     #   设备安全说明补「噪音大、担心坏掉不算」（63 工单回放 T36 误判 R4）约 +15，system 从 2641 升到 2810。
-    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4400
+    # 2026-10-09：R7 请求证据协议与并列维修提示使固定输入实测为 4573；
+    # 仅更新固定开销回归阈值，生产 16000 输入预算与下面的密集历史保护不变。
+    assert context["token_breakdown"]["system"] + context["token_breakdown"]["authority"] <= 4630
     assert meaning.answer_request is not None
     assert "ANKER-A1289" in render_answer(meaning.answer_request, conversation_view(state, "issue"))
     assert state == before
@@ -213,7 +215,8 @@ def test_intake_schema_preserves_null_fields_and_limits_fixed_overhead():
     assert schema["properties"]["primary_intent"]["$ref"] == "#/$defs/Intent"
     assert TurnInterpretation.model_validate({"primary_intent": "social", "history_request": None}).history_request is None
     # 同上：2026-09-18 新增 operation_update（118 token）后由 2462 升到 2519。
-    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2560
+    # 2026-10-09：增加有类型的 request_quotes 后实测 2599，保留 51 token 余量。
+    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2650
     messages = [HumanMessage(content="字" * 8000)]
     spec = load_models_config(CONFIG_DIR / "models.yaml").models["qwen-flash"]
     assert budget_error(messages, spec, task="intake") is None

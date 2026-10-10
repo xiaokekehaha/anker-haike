@@ -138,14 +138,13 @@ def test_question_options_are_split_from_parentheses_and_slashes():
     assert question_options("Is it accompanied by decreased suction?") == ()
 
 
-def test_kind_distribution_is_mostly_actions():
-    """规则分类的粗界：非操作段落不到 15%，问句不多于 10 段；超出说明规则跑偏。"""
-    from collections import Counter
-
-    counts = Counter(s.kind for g in get_qa_index().guides.values() for s in g.steps)
-    total = sum(counts.values())
-    assert counts["action"] / total >= 0.85, counts
-    assert counts["question"] <= 10 and counts["material_request"] <= 20 and counts["handoff"] <= 20, counts
+def test_answer_entries_retain_their_typed_content():
+    """单段答案也进入节点库；不能再用“操作至少 85%”奖励把说明错当操作。"""
+    guides = list(get_qa_index().guides.values())
+    assert len(guides) == len(OfficialData().qa)
+    assert all(g.steps and all(s.text for s in g.steps) for g in guides)
+    assert get_qa_index().guides["rv-0076"].steps[0].kind == "statement"
+    assert get_qa_index().guides["rv-0028"].steps[0].kind == "handoff"
 
 
 def test_bp_0123_steps_are_typed_and_overridden():

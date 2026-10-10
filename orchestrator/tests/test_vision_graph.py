@@ -11,6 +11,8 @@ from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
+from app.models.fake import FakeChatModel
+from app.models.router import ModelRouter
 from app.models.runtime import set_model_router
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
@@ -27,6 +29,10 @@ INTAKE_OK = {
     "symptoms": ["吸力变小"],
     "wants_human": False,
 }
+BRUSH_HYPOTHESIS = {"hypotheses": [{
+    "plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["chunk-rv-0272"],
+    "applicability": "supported", "supported_symptoms": ["滚刷缠绕大量毛发"],
+}]}
 
 
 @pytest.fixture
@@ -88,12 +94,13 @@ async def test_brush_hair_photo_yields_observation_and_continues(mem_runtime, im
         [
             INTAKE_OK,
             {"observations": ["滚刷缠绕大量毛发", "尘盒已满"], "visible_parts": ["滚刷", "尘盒"]},
+            BRUSH_HYPOTHESIS,
         ],
     )
     set_model_router(router)
     async with _client() as client:
         sid = (await client.post("/sessions")).json()["session_id"]
-        # 图片只有两张脚本输出：intake + vision；后续 synthesize / reply 调用会拿到 ScriptExhausted → 降级路径
+        # 读图和方案适用性分别提供假模型结果，出卡不能依赖模型失败后的检索顺序。
         events = await _send_with_images(client, sid, "eufy X10 Pro Omni 滚刷这样正常吗")
     calls = _tool(events, "diagnose.vision")
     assert [c["status"] for c in calls] == ["started", "finished"]
@@ -158,15 +165,34 @@ async def test_vision_chain_failure_does_not_break_run(mem_runtime, img_store, t
     calls = _tool(events, "diagnose.vision")
     assert [c["status"] for c in calls] == ["started", "failed"]
     assert calls[0]["summary"] == "识别 2 张故障照片" and "失败" in calls[1]["summary"]
-    assert events[-1]["reason"] == "awaiting_input"  # 票 34：读图 → 检索 → 步骤卡  # 流程不中断
+    assert events[-1]["reason"] == "completed"
+    assert not any(e["type"] in {"error", "step_card"} for e in events)
     st = await _state(sid)
     assert st["vision_status"] == "failed" and st["image_observations"] == []
-    assert st.get("escalate_reason") is None and "retrieve" in [
+    assert st.get("escalate_reason") == "R5" and "retrieve" in [
         e.get("substage") for e in events if e["type"] == "progress"
     ]
     assert any(
         t["task"] == "diagnose.vision" and t["model_used"] == "skipped" for t in st["model_trace"]
     )
+
+
+async def test_vision_failure_with_valid_text_diagnosis_can_continue(mem_runtime, img_store, tmp_path):
+    router, text_model = _router(tmp_path, CONFIG, [INTAKE_OK, {"hypotheses": [{
+        "plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["chunk-rv-0272"],
+        "applicability": "supported", "supported_symptoms": ["吸力变小"],
+    }]}])
+    vision_model = FakeChatModel(script=[RuntimeError("vision down")] * 8)
+    set_model_router(ModelRouter(
+        router.registry,
+        model_factory=lambda resolved, route: vision_model if resolved.spec.vision else text_model,
+    ))
+    async with _client() as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events = await _send_with_images(client, sid, "eufy X10 Pro Omni 吸力变小")
+    assert _tool(events, "diagnose.vision")[-1]["status"] == "failed"
+    assert any(e["type"] == "step_card" for e in events)
+    assert not any(e["type"] == "error" for e in events)
 
 
 async def test_no_vision_model_available_hints_user_to_describe(mem_runtime, img_store, tmp_path):
@@ -321,6 +347,7 @@ async def test_step_card_echoes_what_the_photo_showed_once(mem_runtime, img_stor
                     {"part": "吸口", "phenomenon": "正常", "evidence": "无异物"},
                 ],
             },
+            BRUSH_HYPOTHESIS,
         ],
     )
     set_model_router(router)

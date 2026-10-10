@@ -130,8 +130,8 @@ async def test_question_card_rejects_feedback_and_action_card_rejects_answer(con
     assert resp.status_code == 409 and resp.json()["code"] == "invalid_selection"
 
 
-async def test_user_reported_actions_skip_matching_steps(conversation):
-    """T36：用户已换滤网与刷子、已清洁 → rv-0244 里滤网 / 滚刷 / 边刷的清洁步骤跳过，记 user_reported。"""
+async def test_unspecified_cleaning_does_not_skip_all_component_checks(conversation):
+    """更换滤网/刷子不代表清洁全部部件；cleaned everything 没有可核对的对象范围。"""
     set_knowledge_adapter(QAHitAdapter("rv-0244"))
     conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
         "plan_id": "qa_rv_0244", "confidence": 0.9, "evidence_ids": ["chunk-rv-0244"],
@@ -147,7 +147,6 @@ async def test_user_reported_actions_skip_matching_steps(conversation):
     })
     state = await conversation.state()
     dropped = [t for t in state["guide_trace"] if t.get("event") == "step_dropped" and t.get("reason") == "user_reported"]
-    assert dropped, state["guide_trace"]
+    assert not dropped, state["guide_trace"]
     card = next(e for e in events if e["type"] == "step_card")
-    # 清洁 / 更换类步骤全部跳过，剩下的是检查拖布支架是否开裂（s6）
-    assert card["step"]["step_id"] == "s6"
+    assert card["step"]["step_id"] == "s2"

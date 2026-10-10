@@ -90,19 +90,19 @@ def test_subject_level_mismatch_asks_about_the_part_itself():
         allowed=_allowed("qa_bp_0067"), evidence_ids={"e1"}, symptoms={"charging case will not charge"},
         facts=facts, error_codes=[], max_n=3,
     )
-    assert kept == [] and "subject_mismatch:qa_bp_0067" in dropped
+    assert kept == [] and "charging_recipient_mismatch:qa_bp_0067" in dropped
     assert "charging case itself" in clar[0]["question"]
 
 
-def test_subject_contained_in_candidate_is_fine():
+def test_matching_model_subject_cannot_override_official_recipient():
     facts = [{"kind": "symptom", "value": "charging case will not charge", "quote": "x",
               "subject": "charging case", "polarity": "affirmed", "status": "active"}]
-    kept, _, _ = filter_hypotheses(
+    kept, dropped, _ = filter_hypotheses(
         [_hyp("qa_bp_0067", supported_symptoms=["charging case will not charge"], matched_subject="charging case")],
         allowed=_allowed("qa_bp_0067"), evidence_ids={"e1"}, symptoms={"charging case will not charge"},
         facts=facts, error_codes=[], max_n=3,
     )
-    assert [k["plan_id"] for k in kept] == ["qa_bp_0067"]
+    assert kept == [] and "charging_recipient_mismatch:qa_bp_0067" in dropped
 
 
 def test_different_code_same_model_is_not_applicable():
@@ -218,7 +218,7 @@ def test_part_level_subject_still_conflicts():
         allowed=_allowed("qa_bp_0067"), evidence_ids={"e1"}, symptoms={"charging case will not charge"},
         facts=facts, error_codes=[], max_n=3,
     )
-    assert kept == [] and "subject_mismatch:qa_bp_0067" in dropped
+    assert kept == [] and "charging_recipient_mismatch:qa_bp_0067" in dropped
 
 
 def test_same_head_noun_is_not_a_subject_conflict():

@@ -19,9 +19,14 @@ from app.catalog import ProductCatalog
 from app.conversation.interpret import TurnInterpretation
 from app.images import InMemoryImageStore
 from app.images.runtime import set_image_store
+from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.sessions.cards import set_catalog
 from app.settings import settings
+from tests.conversation_runtime import conversation as conversation_fixture
+from tests.fake_qa import QAHitAdapter
+
+conversation = conversation_fixture
 
 
 @pytest.fixture
@@ -383,17 +388,18 @@ async def test_complaint_marks_existing_case_priority(l3_runtime, monkeypatch):
         assert l3_runtime.backend.create_calls == 0
 
 
-async def test_out_of_warranty_continues_pending_troubleshooting(l3_runtime, monkeypatch):
+async def test_out_of_warranty_continues_pending_troubleshooting(l3_runtime, monkeypatch, conversation):
     """T51：过保只是关闭免费换货这一项；同一句里的排障请求仍要处理，不能留 pending 却把会话标成 done（2026-10-09 I6）。"""
-    from app.knowledge.runtime import set_knowledge_adapter
-    from tests.fake_qa import QAHitAdapter
-
     text = "I need help with possibly a replacement for my breast pump. It won't hold the battery and keeps cutting off. Order Anker014"
     interpret_as(monkeypatch, {text: TurnInterpretation(
         primary_intent="replacement_request", secondary_intents=["report_problem"], device_relation="current",
         facts=[{"value": "won't hold the battery, keeps cutting off", "quote": "It won't hold the battery and keeps cutting off"}],
     )})
     set_knowledge_adapter(QAHitAdapter("bp-0043"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_bp_0043", "confidence": 0.9, "evidence_ids": ["chunk-bp-0043"],
+        "applicability": "supported", "supported_symptoms": ["won't hold the battery, keeps cutting off"],
+    }]}]
     try:
         await _out_of_warranty_then_troubleshoot(client_text=text, l3_runtime=l3_runtime)
     finally:
@@ -418,6 +424,17 @@ async def _out_of_warranty_then_troubleshoot(*, client_text, l3_runtime):
         assert "waiting to be processed" not in text_out
         assert any(e["type"] == "step_card" for e in rows), [e["type"] for e in rows]
         assert state["requested_remedy"] is None
+        for _ in range(15):
+            if (state.get("pending_card") or {}).get("kind") != "step_feedback":
+                break
+            rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+            assert not any(e["type"] == "error" for e in rows), rows
+            assert "waiting to be processed" not in said(rows)
+            state = await state_of(sid)
+        assert state["stage"] == "done"
+        assert all(task["status"] == "done" for task in state["task_queue"])
+        assert (await l3_runtime.cases.store.get(state["case_id"]))["status"] == "closed_unresolved"
+        assert l3_runtime.backend.create_calls == 0
 
 
 async def test_handoff_after_closed_case_records_without_requeue(l3_runtime, monkeypatch):
@@ -435,7 +452,10 @@ async def test_handoff_after_closed_case_records_without_requeue(l3_runtime, mon
         case = await l3_runtime.cases.store.get(state["case_id"])
         assert case["status"] == "closed_unresolved"
         # 无知识库 → R5：摘要只记录进已关闭案件，不入队、不说「已提交审核」
-        assert state["stage"] != "awaiting_human" and "submitted" not in said(rows)
+        assert state["stage"] == "done" and "not resolved" in said(rows)
+        assert all(task["status"] == "done" for task in state["task_queue"])
+        assert "I've submitted" not in said(rows)
+        assert not any(e["type"] == "escalation_summary" for e in rows)
         assert any(e["type"] == "handoff_summary" for e in case["events"])
 
 
@@ -444,6 +464,7 @@ async def test_t9_summary_is_refreshed_with_logistics_after_handoff(l3_runtime, 
     text = "I am writing about the shipping of the vacuum, order Anker008. If you have not shipped, don't and let's first talk about your other products."
     interpret_as(monkeypatch, {text: TurnInterpretation(
         primary_intent="order_change", secondary_intents=["logistics_query"], device_relation="current",
+        request_quotes={"logistics_query": "I am writing about the shipping of the vacuum"},
     )})
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]

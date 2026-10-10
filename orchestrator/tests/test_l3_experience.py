@@ -80,7 +80,7 @@ def test_metric_denominator_ratings_and_exclusion():
             ("resolved", 5),
             ("executed_closed", 4),
             ("consult_answered", 3),
-            ("escalated_human", 1),
+            ("escalated", 1),
             ("human_executed", 2),
             ("awaiting_human", None),
             ("in_progress", None),

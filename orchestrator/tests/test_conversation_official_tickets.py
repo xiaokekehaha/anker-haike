@@ -1,4 +1,4 @@
-"""主办方真实工单首封消息走完整会话图（无模型、无知识库）：错误码精确命中官方 Q&A、硬件故障直进质保、未收录码转人工。"""
+"""主办方真实工单走完整会话图（模型及知识库均为测试替身）：精确码、症状诊断、质保与交接。"""
 
 import asyncio
 import uuid
@@ -12,9 +12,12 @@ from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.official.models import OfficialData
 from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
+from tests.conversation_runtime import conversation as conversation_fixture
 from tests.fake_qa import QAHitAdapter
 from tests.test_conversation_l3 import act, events, interpret_as, said, send, state_of
 from tests.test_conversation_l3 import l3_runtime as l3_runtime  # noqa: PLC0414
+
+conversation = conversation_fixture
 
 TICKETS = {t.id: t.body for t in OfficialData().tickets}
 
@@ -60,19 +63,18 @@ async def test_unindexed_code_is_handed_off_not_guessed(l3_runtime, report_inten
 
 
 async def test_restart_then_warranty_entry_ends_in_the_warranty_flow(l3_runtime, report_intent):
-    # T28：2111 滚刷错误，官方 Q&A 先让重启，仍未解决才走质保（rv-0256 拆成两步）
+    # T28：2111 滚刷错误，重启后仍未解决才走质保；硬件结论不是第二次操作。
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         sid = (await client.post("/sessions")).json()["session_id"]
         rows = events(await send(client, sid, TICKETS["T28"]))
         card = next(e for e in rows if e["type"] == "step_card")
         assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0256", "s1")
         rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
-        second = next(e for e in rows if e["type"] == "step_card")
-        assert second["step"]["step_id"] == "s2" and "engineering team" in second["step"]["instruction"]
-        rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
         state = await state_of(sid)
-    # 质保步仍未解决 → 计划用尽，按 SOP 进入订单质保判断（先收订单 / 凭证），不再出操作步骤
-    assert state["escalate_reason"] == "R6" and state["stage"] == "context"
+    # 一次真实排障失败后进入订单质保判断；无“对硬件结论反馈失败”的虚假动作。
+    assert state["stage"] == "context"
+    assert state["counters"]["executed"] == 1
+    assert any(t.get("reason") == "handoff_step" for t in state["guide_trace"])
     assert not [e for e in rows if e["type"] == "step_card"]
     assert any(e["type"] == "awaiting_input" for e in rows)
 
@@ -86,8 +88,17 @@ async def _feedback_until_no_card(client, sid, limit=8):
     return rows
 
 
-async def test_t55_main_case_troubleshoots_then_checks_order_warranty(l3_runtime, report_intent):
+async def test_t55_main_case_troubleshoots_then_checks_order_warranty(l3_runtime, conversation, report_intent, monkeypatch):
     # T55：RMA 表单「S1 Pro Wearable Breast Pump」同名型号由品类词消歧 → 官方 Q&A 排障 → 未解决 → 订单 Anker016 保内 → 收 SOP 证据
+    symptom = "It clicks but does not suction."
+    interpret_as(monkeypatch, {TICKETS["T55"]: TurnInterpretation(
+        primary_intent="report_problem", device_relation="current",
+        facts=[{"value": symptom, "quote": symptom}],
+    )})
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_bp_0102", "confidence": 0.9, "evidence_ids": ["chunk-bp-0102"],
+        "applicability": "supported", "supported_symptoms": [symptom],
+    }]}]
     set_knowledge_adapter(QAHitAdapter("bp-0102"))
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
@@ -104,12 +115,22 @@ async def test_t55_main_case_troubleshoots_then_checks_order_warranty(l3_runtime
     assert set(state["awaiting_evidence"]) == {"photo_or_video", "serial_number"}
 
 
-async def test_t29_out_of_warranty_order_is_declined_after_troubleshooting(l3_runtime, report_intent):
-    set_knowledge_adapter(QAHitAdapter("rv-0236"))
+async def test_t29_out_of_warranty_order_is_declined_after_troubleshooting(l3_runtime, conversation, report_intent, monkeypatch):
+    symptom = "Water tray will not empty."
+    interpret_as(monkeypatch, {TICKETS["T29"]: TurnInterpretation(
+        primary_intent="report_problem", device_relation="current",
+        facts=[{"value": symptom, "quote": symptom}],
+    )})
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0254", "confidence": 0.9, "evidence_ids": ["chunk-rv-0254"],
+        "applicability": "supported", "supported_symptoms": [symptom],
+    }]}]
+    set_knowledge_adapter(QAHitAdapter("rv-0254"))
     try:
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             sid = (await client.post("/sessions")).json()["session_id"]
-            events(await send(client, sid, TICKETS["T29"]))
+            first = events(await send(client, sid, TICKETS["T29"]))
+            assert next(e for e in first if e["type"] == "step_card")["step"]["plan_id"] == "qa_rv_0254"
             rows = await _feedback_until_no_card(client, sid)
             state = await state_of(sid)
     finally:
@@ -479,7 +500,10 @@ def test_an_explicit_hold_request_is_kept_whatever_the_model_reads():
 def _t9_intent(monkeypatch, primary, secondary):
     async def interpret(router, state, **kwargs):
         if state.get("entry") == "message" and state.get("text") == TICKETS["T9"]:
-            return TurnInterpretation(primary_intent=primary, secondary_intents=secondary, device_relation="current"), {"source": "test"}
+            return TurnInterpretation(
+                primary_intent=primary, secondary_intents=secondary, device_relation="current",
+                request_quotes={"logistics_query": "I am writing to inquire about the shipping of the vacuum I purchased in the 7th."},
+            ), {"source": "test"}
         return TurnInterpretation(primary_intent="logistics_query", device_relation="current"), {"source": "test"}
 
     monkeypatch.setattr(semantic, "interpret_turn", interpret)
@@ -561,7 +585,10 @@ def _order_change_intents(monkeypatch):
     async def interpret(router, state, **kwargs):
         text = state.get("text") or ""
         if state.get("entry") == "message" and text == HOLD:
-            return TurnInterpretation(primary_intent="order_change", secondary_intents=["logistics_query"], device_relation="current"), {"source": "test"}
+            return TurnInterpretation(
+                primary_intent="order_change", secondary_intents=["logistics_query"], device_relation="current",
+                request_quotes={"logistics_query": "tell me its shipping date"},
+            ), {"source": "test"}
         if state.get("entry") == "message" and text == CANCEL:
             return TurnInterpretation(primary_intent="order_change", device_relation="current"), {"source": "test"}
         return TurnInterpretation(primary_intent="supplement", device_relation="current"), {"source": "test"}

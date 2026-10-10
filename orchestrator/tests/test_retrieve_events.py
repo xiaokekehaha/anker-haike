@@ -11,7 +11,10 @@ from app.main import app
 from app.rules import RulesService, set_rules_service
 from app.sessions import sse
 from app.settings import REPO_ROOT
+from tests.conversation_runtime import conversation as conversation_fixture
 from tests.message_form import message_form
+
+conversation = conversation_fixture
 
 RULES = REPO_ROOT / "config" / "rules" / "safety_terms.yaml"
 
@@ -57,7 +60,15 @@ async def _run(text: str, adapter):
         set_rules_service(None)
 
 
-async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
+async def test_a1_text_emits_tool_row_and_evidence(mem_runtime, conversation):
+    conversation.models["intake"].script = [{
+        "primary_intent": "report_problem", "device_relation": "current",
+        "facts": [{"value": "不吸了", "quote": "不吸了"}],
+    }]
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["chunk-c12"],
+        "applicability": "supported", "supported_symptoms": ["不吸了"],
+    }]}]
     ad = FakeAdapter("ok")
     _, _, events, snap, state = await _run("eufy X10 Pro Omni 扫地机不吸了，滚刷缠了很多头发", ad)
     for e in events:
@@ -76,7 +87,7 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     )
     ev = next(e for e in events if e["type"] == "evidence")
     assert ev["items"][0]["evidence_id"] == "chunk-c12" and ev["items"][0]["status"] == "ok"
-    # 检索范围来自确认的产品；查询用抽取到的症状，本测试模型关闭 → 退回原文
+    # 检索范围来自确认的产品，查询使用有原文支持的症状；出卡另需诊断适用性结果。
     kb, query, scope = ad.calls[0]
     assert (kb, scope.product_state, scope.sku, scope.category) == (
         "kb_qa",
@@ -92,7 +103,16 @@ async def test_a1_text_emits_tool_row_and_evidence(mem_runtime):
     assert tool_item["status"] == "finished"
 
 
-async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime):
+async def test_repeat_input_reuses_evidence_without_retrieving(mem_runtime, conversation):
+    symptom = "地上的灰尘和碎屑都吸不干净"
+    conversation.models["intake"].script = [{
+        "primary_intent": intent, "device_relation": "current",
+        "facts": [{"value": symptom, "quote": symptom}],
+    } for intent in ("report_problem", "supplement")]
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0272", "confidence": 0.9, "evidence_ids": ["chunk-c12"],
+        "applicability": "supported", "supported_symptoms": [symptom],
+    }]}]
     ad = FakeAdapter("ok")
     set_knowledge_adapter(ad)
     set_rules_service(RulesService(RULES, hot_reload=False))
