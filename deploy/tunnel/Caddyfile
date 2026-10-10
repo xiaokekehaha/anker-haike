@@ -1,0 +1,27 @@
+{
+	admin 127.0.0.1:2019
+	persist_config off
+	default_sni {$PUBLIC_IP}
+}
+
+https://{$PUBLIC_IP} {
+	tls {
+		issuer acme https://acme-v02.api.letsencrypt.org/directory {
+			profile shortlived
+		}
+	}
+
+	basic_auth {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+
+	# 公网入口用于客户聊天；管理员页面仍从本机访问。
+	@admin path /admin /admin/*
+	respond @admin 403
+
+	reverse_proxy 127.0.0.1:15173 {
+		# 本机 Vite 接受回环地址的 Host，SSE 和 WebSocket 由 Caddy 透传。
+		header_up Host 127.0.0.1:5173
+		header_up -Authorization
+	}
+}
