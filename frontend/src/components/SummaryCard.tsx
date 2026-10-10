@@ -8,11 +8,12 @@ const STATUS: Record<string, string> = {
   needs_manual_check: '需人工核实', dealer_authorized: '授权经销商', dealer_unauthorized: '非授权经销商',
 };
 
-const FEEDBACK_LABELS: Record<Feedback, string> = {
+const FEEDBACK_LABELS: Record<NonNullable<Feedback>, string> = {
   solved: '已解决', not_solved: '已操作，仍有问题', cannot_do: '无法操作',
 };
 
-const stepText = (x: ExecutedStep) => `${x.title}（${FEEDBACK_LABELS[x.feedback]}）`;
+/** 操作卡记反馈，问句卡记客户的回答（与后端 step_text 同款）。 */
+export const stepText = (x: ExecutedStep) => `${x.title}（${x.feedback ? FEEDBACK_LABELS[x.feedback] : `回答：${x.answer ?? ''}`}）`;
 
 export const FACT_LABELS: Record<string, string> = {
   order_no: '订单号', purchase_date: '购买日期', address: '收货地址', dealer: '授权经销商', country: '购买国家',

@@ -729,15 +729,36 @@
     },
     "ExecutedStep": {
       "additionalProperties": false,
+      "description": "排查记录的一条：操作步骤带 feedback；问句卡（2026-10-10 段落拆分后的诊断问句、确认问句）带 answer，\n是客户选的选项或短答原文。两者恰有一个。",
       "properties": {
-        "feedback": {
-          "enum": [
-            "solved",
-            "not_solved",
-            "cannot_do"
+        "answer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ],
-          "title": "Feedback",
-          "type": "string"
+          "default": null,
+          "title": "Answer"
+        },
+        "feedback": {
+          "anyOf": [
+            {
+              "enum": [
+                "solved",
+                "not_solved",
+                "cannot_do"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Feedback"
         },
         "step_id": {
           "title": "Step Id",
@@ -750,8 +771,7 @@
       },
       "required": [
         "step_id",
-        "title",
-        "feedback"
+        "title"
       ],
       "title": "ExecutedStep",
       "type": "object"

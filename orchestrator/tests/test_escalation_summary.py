@@ -8,7 +8,9 @@ from httpx import ASGITransport, AsyncClient
 
 from app.escalation.summary import (
     build_summary,
+    executed_step,
     reassurance_text,
+    step_text,
     summary_card_id,
     summary_to_text,
 )
@@ -212,3 +214,19 @@ def test_business_block_lists_missing_fields():
     state = {"text": "it is broken", "active_issue_id": "i", "issues": {"i": {"facts": []}}}
     s = build_summary(state, reason="R5", lane="domestic")
     assert s.business.kind == "unknown" and set(s.business.missing) >= {"product", "symptoms"}
+
+
+def test_question_card_answers_are_listed_in_the_step_record():
+    """段落拆分后的问句卡（T26 清洁液使用史、T36 拆刷后的声音）：回答进排查记录，说明卡和没回答的卡不进。"""
+    attempts = [
+        {"step_id": "s2", "title": "Inspect the lens", "kind": "action", "feedback": "not_solved"},
+        {"step_id": "s3", "title": "Added third-party fluid?", "kind": "question", "feedback": None,
+         "answer": {"option": "Not sure", "text": None, "unavailable": False}},
+        {"step_id": "s4", "title": "Upload a video", "kind": "material_request", "feedback": None,
+         "answer": {"option": None, "text": None, "unavailable": True}},
+        {"step_id": "s1", "title": "Identify the problem", "kind": "statement", "feedback": None, "answer": None},
+    ]
+    steps = [step for a in attempts if (step := executed_step(a)) is not None]
+    assert [step_text(s) for s in steps] == [
+        "Inspect the lens（已操作，仍有问题）", "Added third-party fluid?（回答：Not sure）", "Upload a video（回答：暂时没有）",
+    ]

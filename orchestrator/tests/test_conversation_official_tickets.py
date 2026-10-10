@@ -1,6 +1,7 @@
 """主办方真实工单走完整会话图（模型及知识库均为测试替身）：精确码、症状诊断、质保与交接。"""
 
 import asyncio
+import re
 import uuid
 
 import pytest
@@ -8,10 +9,11 @@ from httpx import ASGITransport, AsyncClient
 
 import app.conversation.interpret as semantic
 from app.conversation.interpret import TurnInterpretation
+from app.escalation.summary import build_summary, summary_to_text
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.official.models import OfficialData
-from app.official.qa_index import get_qa_index
+from app.official.qa_index import _typed_step, get_qa_index, load_overrides
 from app.plans.runtime import get_plan_library
 from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
 from tests.conversation_runtime import conversation as conversation_fixture
@@ -136,18 +138,12 @@ def test_rv_0063_liquid_question_is_split_from_the_foam_check():
     ([{}, {"at": "again", "colour": "red"}], "unknown override keys"),
 ])
 def test_parts_overrides_are_validated(parts, message):
-    from app.official.qa_index import _typed_step
-
     with pytest.raises(ValueError, match=message):
         _typed_step(1, 1, "Check the tank. Check the tank again.", warranty=False, overrides={1: {"parts": parts}})
 
 
 def test_parts_rejoin_into_the_original_paragraph():
     # 切出来的文字拼回去就是原段落（只去掉列表符号），不增删原文
-    import re
-
-    from app.official.qa_index import load_overrides
-
     index = get_qa_index()
     for qa_id, entry in load_overrides().items():
         for pos, spec in entry.items():
@@ -180,6 +176,9 @@ async def test_t26_liquid_answer_is_recorded_before_the_foam_check(l3_runtime, r
         state = await state_of(sid)
     assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
     assert "To check the warranty" in said(rows)
+    # 转人工摘要的排查记录：操作卡记反馈，问句卡记回答
+    record = summary_to_text(build_summary(state, reason="R6", lane="domestic"))
+    assert "（回答：Not sure）" in record and "Shake the base station's clean water tank and check for foam（已操作，仍有问题）" in record
 
 
 T36_GONE, T36_CHIRP, T36_OTHER = "The noise is gone", "Still noisy, with a chirping sound", "Still noisy, another kind of sound"

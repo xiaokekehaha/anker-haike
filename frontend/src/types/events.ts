@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/events.schema.json
-// SHA-256: 5460c58db571359bfd219cb4abc923254234fe9960f564489220889979a02490
+// SHA-256: 403588f03a4f84b6d8db48b0897640cbf5553d7ed8c8390298f1abf32987e3f2
 
 /**
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
@@ -350,7 +350,8 @@ export type Source1 = 'sop' | 'human';
 export type Title1 = string;
 export type Type16 = 'replace' | 'refund' | 'reship' | 'carrier_investigation';
 export type RecommendedOptions = ProposalOption[];
-export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
+export type Answer = string | null;
+export type Feedback = ('solved' | 'not_solved' | 'cannot_do') | null;
 export type StepId1 = string;
 export type Title2 = string;
 export type Steps = ExecutedStep[];
@@ -969,11 +970,15 @@ export interface ProposalOption {
   type: Type16;
 }
 /**
+ * 排查记录的一条：操作步骤带 feedback；问句卡（2026-10-10 段落拆分后的诊断问句、确认问句）带 answer，
+ * 是客户选的选项或短答原文。两者恰有一个。
+ *
  * This interface was referenced by `ServerEventSchema`'s JSON-Schema
  * via the `definition` "ExecutedStep".
  */
 export interface ExecutedStep {
-  feedback: Feedback;
+  answer?: Answer;
+  feedback?: Feedback;
   step_id: StepId1;
   title: Title2;
 }

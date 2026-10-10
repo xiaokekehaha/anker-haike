@@ -18,7 +18,7 @@ const CASE: ServiceCase = {
   proposal: { options: [{ option_id: 'replace', type: 'replace', title: '提交换货单', detail: '保内故障经排查仍未解决', source: 'sop' }], chosen_option_id: 'replace' },
   handoff_summary: {
     product: 'eufy Wearable Breast Pump S1 Pro', problem: '左侧无吸力', observations: ['图片：吸奶器机身'],
-    steps: [{ step_id: 's1', title: '检查隔膜', feedback: 'not_solved' }],
+    steps: [{ step_id: 's1', title: '检查隔膜', feedback: 'not_solved' }, { step_id: 's2', title: '收到时按钮就坏了吗', answer: 'No' }],
     reason: { rule_id: 'R6', text: '提交条件未满足：缺少：产品 SN' },
     emotion: { level: 'calm', strategy: 'normal' },
     receipt: { status: 'order_verified', verified_facts: { order_no: 'Anker016', sku: 'T8D04121', amount: '349.99' } },
@@ -52,7 +52,8 @@ describe('CaseDetail', () => {
     open(CASE);
     await waitFor(() => expect(screen.getByText('转人工原因：提交条件未满足：缺少：产品 SN')).toBeInTheDocument());
     expect(screen.getByText('左侧无吸力')).toBeInTheDocument();
-    expect(screen.getByText('检查隔膜（仍有问题）')).toBeInTheDocument();
+    // 与对话侧摘要卡同款：操作卡记反馈，问句卡记回答
+    expect(screen.getByText('检查隔膜（已操作，仍有问题）；收到时按钮就坏了吗（回答：No）')).toBeInTheDocument();
     expect(screen.getByText('订单金额')).toBeInTheDocument();
     expect(screen.getByText('349.99')).toBeInTheDocument();
     expect(screen.getByText('已整理订单、质保判断与证据，请核实后继续处理。')).toBeInTheDocument();

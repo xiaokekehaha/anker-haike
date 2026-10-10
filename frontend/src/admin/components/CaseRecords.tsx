@@ -1,11 +1,10 @@
 /** 案件页中栏：AI 交接摘要与办理记录（执行、承诺、事件）。数据来自 GET /admin/api/cases/{id}。 */
-import { FACT_LABELS } from '../../components/SummaryCard';
+import { FACT_LABELS, stepText } from '../../components/SummaryCard';
 import { CASE_LABELS } from '../../state/progress';
 import type { EscalationSummary } from '../../types/snapshot';
 import { when } from '../format';
 import type { CaseEvent, CaseExecution } from '../l3';
 
-const FEEDBACK_TEXT: Record<string, string> = { solved: '已解决', not_solved: '仍有问题', cannot_do: '无法操作' };
 const EXECUTION_TEXT: Record<string, string> = { running: '执行中', succeeded: '成功', failed: '失败', stale: '已被接管' };
 const SOURCE_TEXT: Record<string, string> = { clause: '政策条款', receipt: '办理回执', action_config: '动作配置', human_decision: '人工决定' };
 const EVENT_TEXT: Record<string, string> = {
@@ -31,7 +30,7 @@ function eventDetail(event: CaseEvent): string {
 export function HandoffSummary({ summary }: { summary: EscalationSummary | null | undefined }) {
   if (!summary) return <p className="muted" style={{ fontSize: 12.5 }}>案件尚未交接人工，没有交接摘要。</p>;
   const facts = Object.entries(summary.receipt.verified_facts ?? {});
-  const steps = (summary.steps ?? []).map((s) => `${s.title}（${FEEDBACK_TEXT[s.feedback] ?? s.feedback}）`);
+  const steps = (summary.steps ?? []).map(stepText);
   return (
     <div className="handoff" aria-label="交接摘要">
       <p className="notice" data-kind="handoff-reason">转人工原因：{summary.reason.text}</p>

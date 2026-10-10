@@ -71,3 +71,13 @@ def test_step_card_step_object_nesting_and_summary_object_nesting():
     assert summ.summary.reason.rule_id == "R2"
     assert summ.summary.steps[0].feedback == "not_solved"
     assert summ.summary.receipt.status == "not_collected"
+
+
+def test_executed_step_needs_exactly_one_of_feedback_or_answer():
+    from haike_contracts.common import ExecutedStep
+
+    assert ExecutedStep(step_id="s3", title="是否加过第三方清洁液", answer="Not sure").feedback is None
+    with pytest.raises(ValidationError):
+        ExecutedStep(step_id="s3", title="x")
+    with pytest.raises(ValidationError):
+        ExecutedStep(step_id="s3", title="x", feedback="not_solved", answer="No")

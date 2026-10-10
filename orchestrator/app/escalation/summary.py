@@ -97,6 +97,21 @@ def _executed_steps_text(executed: list[tuple[str, Feedback]]) -> str:
     return "，".join(parts) or "尚无已执行的排查记录"
 
 
+def executed_step(attempt: dict[str, Any]) -> ExecutedStep | None:
+    """排查记录的一条：操作卡记反馈；问句卡记客户选的选项或短答（T26 清洁液使用史、T36 拆刷后的声音），
+    人工能看到是在哪一步回答的。说明卡、没有回答的卡不记。"""
+    title = attempt.get("title") or attempt["step_id"]
+    if attempt.get("feedback"):
+        return ExecutedStep(step_id=attempt["step_id"], title=title, feedback=attempt["feedback"])
+    answer = attempt.get("answer") or {}
+    text = "暂时没有" if answer.get("unavailable") else (answer.get("option") or answer.get("text") or "").strip()
+    return ExecutedStep(step_id=attempt["step_id"], title=title, answer=text) if text else None
+
+
+def step_text(step: ExecutedStep) -> str:
+    return f"{step.title}（{FEEDBACK_LABELS[step.feedback]}）" if step.feedback else f"{step.title}（回答：{step.answer}）"
+
+
 def next_action_text(state: dict[str, Any], next_action: dict[str, Any] | None) -> str | None:
     if not next_action or next_action.get("issue_id") not in {None, state.get("active_issue_id")}:
         return None
@@ -175,11 +190,7 @@ def build_summary(
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
-    steps = [
-        ExecutedStep(step_id=s["step_id"], title=s.get("title", s["step_id"]), feedback=s["feedback"])
-        for s in feedback_history(state)
-        if s.get("feedback")
-    ]
+    steps = [step for s in feedback_history(state) if (step := executed_step(s)) is not None]
     trace = [
         ModelTraceItem(
             task=t["task"],
@@ -366,14 +377,7 @@ def summary_to_text(s: EscalationSummary) -> str:
         f"【问题】{s.problem}",
         f"【观察】{'；'.join(s.observations) or '无'}",
         f"【假设】{'；'.join(s.hypotheses) or '无'}",
-        "【排查记录】"
-        + (
-            "；".join(
-                f"{x.title}（{FEEDBACK_LABELS[x.feedback]}）"
-                for x in s.steps
-            )
-            or "无"
-        ),
+        "【排查记录】" + ("；".join(step_text(x) for x in s.steps) or "无"),
         f"【升级原因】{s.reason.rule_id}：{s.reason.text}",
         *([
             f"【业务】{s.business.kind}；已知：" + ("；".join(f"{k}={v}" for k, v in s.business.known.items()) or "无")

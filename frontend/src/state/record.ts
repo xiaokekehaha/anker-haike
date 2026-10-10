@@ -21,9 +21,10 @@ export const HANDOFF_LABELS: Record<HandoffStatus, string> = {
   cancelled: '人工请求已取消',
 };
 
-export const FEEDBACK_LABELS: Record<Feedback, string> = { solved: '解决了', not_solved: '还没解决', cannot_do: '做不到' };
+// 生成的 Feedback 允许为空（排查记录里问句卡只有回答，2026-10-10）；这里只给真实反馈配文案
+export const FEEDBACK_LABELS: Record<NonNullable<Feedback>, string> = { solved: '解决了', not_solved: '还没解决', cannot_do: '做不到' };
 
-export type RecordStep = { card_id: string; no: number; title: string; feedback: Feedback | null; note: string | null; pending: boolean };
+export type RecordStep = { card_id: string; no: number; title: string; feedback: Feedback; note: string | null; pending: boolean };
 
 export type ServiceRecord = {
   product: { name: string; category: string | null } | null;

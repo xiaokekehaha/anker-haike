@@ -51,6 +51,19 @@ describe('SummaryCard 的真实结束原因（design §3.5）', () => {
     expect(summaryToText(skipped)).not.toMatch(/已执行步骤|cannot_do/);
   });
 
+  it('问句卡的回答写进排查记录，和操作反馈区分开（T26 清洁液使用史）', () => {
+    const answered: EscalationSummary = {
+      ...summary,
+      steps: [
+        { step_id: 's2', title: '检查注水口传感器镜片', feedback: 'not_solved' },
+        { step_id: 's3', title: '是否往基站清水箱加过第三方清洁液', answer: 'Not sure' },
+      ],
+    };
+    const { container } = render(<SummaryCard summary={answered} />);
+    expect(container).toHaveTextContent('是否往基站清水箱加过第三方清洁液（回答：Not sure）');
+    expect(summaryToText(answered)).toContain('【排查记录】检查注水口传感器镜片（已操作，仍有问题）；是否往基站清水箱加过第三方清洁液（回答：Not sure）');
+  });
+
   it('accepted 才显示人工已接单', () => {
     const { container } = render(<SummaryCard summary={summary} handoffStatus="accepted" />);
     expect(container.querySelector('[data-kind="handoff-status"]')).toHaveTextContent('人工已接单');

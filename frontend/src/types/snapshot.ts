@@ -1,6 +1,6 @@
 // Generated file. Do not edit; run npm --prefix frontend run contracts:generate.
 // Source: contracts/schema/snapshot.schema.json
-// SHA-256: e849ed4733924c11e2615d117253b83261978b98e716b6a9f38f192a23d2d72f
+// SHA-256: dc7834e9a57d2425fc43c83a0ee4a267a5c14ee9d29830f81e24640f8df191d0
 
 export type ActiveIssueId = string | null;
 export type DeadlineAt = string;
@@ -79,7 +79,8 @@ export type Source = 'sop' | 'human';
 export type Title = string;
 export type Type = 'replace' | 'refund' | 'reship' | 'carrier_investigation';
 export type RecommendedOptions = ProposalOption[];
-export type Feedback = 'solved' | 'not_solved' | 'cannot_do';
+export type Answer = string | null;
+export type Feedback = ('solved' | 'not_solved' | 'cannot_do') | null;
 export type StepId = string;
 export type Title1 = string;
 export type Steps = ExecutedStep[];
@@ -539,11 +540,15 @@ export interface ProposalOption {
   type: Type;
 }
 /**
+ * 排查记录的一条：操作步骤带 feedback；问句卡（2026-10-10 段落拆分后的诊断问句、确认问句）带 answer，
+ * 是客户选的选项或短答原文。两者恰有一个。
+ *
  * This interface was referenced by `SessionSnapshotSchema`'s JSON-Schema
  * via the `definition` "ExecutedStep".
  */
 export interface ExecutedStep {
-  feedback: Feedback;
+  answer?: Answer;
+  feedback?: Feedback;
   step_id: StepId;
   title: Title1;
 }

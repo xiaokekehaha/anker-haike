@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
 
 class Strict(BaseModel):
@@ -163,9 +163,19 @@ class ReceiptOutcome(Strict):
 
 
 class ExecutedStep(Strict):
+    """排查记录的一条：操作步骤带 feedback；问句卡（2026-10-10 段落拆分后的诊断问句、确认问句）带 answer，
+    是客户选的选项或短答原文。两者恰有一个。"""
+
     step_id: str
     title: str
-    feedback: Feedback
+    feedback: Feedback | None = None
+    answer: str | None = None
+
+    @model_validator(mode="after")
+    def _feedback_or_answer(self) -> ExecutedStep:
+        if (self.feedback is None) == (self.answer is None):
+            raise ValueError("ExecutedStep needs exactly one of feedback / answer")
+        return self
 
 
 class EscalationReason(Strict):
