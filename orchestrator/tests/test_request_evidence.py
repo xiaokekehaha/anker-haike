@@ -31,6 +31,36 @@ def test_metadata_missing_and_ungrounded_quotes_cannot_create_a_query(text, quot
     assert rejected == [{"intent": "warranty_query", "reason": reason}]
 
 
+T22_FORM = ("Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00\nFirmwareversie: v3.4.85\n\n"
+            "Productnaam: X10 Pro Omni\nProduct-PN: T2351\nProbleemtype: WARNING\nProbleemcode: 7002-De robot zweeft in de lucht.\n"
+            "Probleempush: Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie.\n"
+            "Probleembeschrijving: Wiel raakt de grond niet.\n")
+
+
+@pytest.mark.parametrize("quote", [
+    "Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00",  # 横跨两行元数据（T22 真实复跑）
+    "Inzenddatum: 2026-09-03T05:46:35-07:00",  # 不在固定名单里的字段名
+    "Firmwareversie: v3.4.85",
+])
+def test_t22_form_metadata_lines_cannot_create_a_logistics_request(quote):
+    """T22：模型引「Bron / Inzenddatum」两行元数据当物流请求，首轮多出「设备排障 → 物流状态」提示。"""
+    meaning = TurnInterpretation(primary_intent="report_problem", secondary_intents=["logistics_query"],
+                                 request_quotes={"report_problem": "Probleembeschrijving: Wiel raakt de grond niet.",
+                                                 "logistics_query": quote})
+    result, rejected = ground_additional_queries(meaning, T22_FORM)
+    assert result.secondary_intents == []
+    assert rejected == [{"intent": "logistics_query", "reason": "metadata_is_not_request"}]
+
+
+def test_description_inside_a_form_can_still_carry_a_request():
+    """表单里用户自己写的描述仍可提出并列请求，不被当成元数据。"""
+    text = T22_FORM.replace("Probleembeschrijving: Wiel raakt de grond niet.",
+                            "Probleembeschrijving: Wiel raakt de grond niet. Where is my order?")
+    meaning = TurnInterpretation(primary_intent="report_problem", secondary_intents=["logistics_query"],
+                                 request_quotes={"logistics_query": "Where is my order?"})
+    assert ground_additional_queries(meaning, text)[0].secondary_intents == ["logistics_query"]
+
+
 def test_identical_primary_and_secondary_quotes_are_not_independent_requests():
     text = "When will my order arrive?"
     result, rejected = ground_additional_queries(TurnInterpretation(

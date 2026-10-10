@@ -45,3 +45,15 @@ synthesize 的 rationale 超 80 字 schema 失败未改：精确命中后不再�
 
 验证：新增 2 项（去掉任一修复即失败）；全量 1189 passed / 2 skipped；make up 后真实连跑 T22 8 次，8/8 为 s1 → s2。
 其中 1 次首轮仍出现「device troubleshooting → delivery status」多诉求提示（模型给出不存在的物流次诉求，Codex 早先记录的旧现象），未处理。
+
+## T22 首轮多出「设备排障 → 物流状态」提示
+
+问题：意图模型给 T22 表单加了 logistics_query 次诉求，引文是 `Bron: eufy_mega\nInzenddatum: 2026-09-03T05:46:35-07:00` 两行元数据。
+现有请求证据校验（ground_additional_queries）只认固定名单里的字段名（Order No / Country / Source…），且要求引文落在单行内：
+Inzenddatum（提交日期）不在名单里，引文又横跨两行，于是放行，任务队列多一个物流任务，回复开头出现多诉求排序提示。
+
+修复（request_constraints）：表单格式（app_report / rma）已识别时，凡是「字段: 值」行都算元数据（描述与推送除外，那是用户 / 设备在说话）；
+引文由若干整行元数据拼成也判 metadata_is_not_request。用户在描述里写的并列请求不受影响。
+
+验证：新增 4 项（去掉修复 3 项失败）；全量 1193 passed / 2 skipped（另有 test_outcome_boundaries 4 项真实 Postgres 用例偶发失败、重跑通过，与本改动无关）；
+make up 后真实连跑 T22 首轮 12 次，0 次物流提示、12 次首卡 s1。这 12 次模型本身也没给物流次诉求，修复路径只由单测覆盖，真实环境未触发。

@@ -6,7 +6,7 @@ import re
 from typing import TYPE_CHECKING
 
 from app.conversation.quotes import normalize
-from app.official.message import LABELS
+from app.official.message import LABELS, parse_message
 
 if TYPE_CHECKING:
     from app.conversation.interpret import TurnInterpretation
@@ -45,12 +45,33 @@ METADATA_LINE = re.compile(
     r"^\s*(?:" + "|".join([*METADATA_LABELS, "Problem Type", "Probleemtype", "Problemtyp", "Submit Date", "Purchase proof"])
     + r")\s*[:：].*$", re.IGNORECASE | re.MULTILINE,
 )
+# 表单的「字段: 值」行。字段名有十几种语言与写法（Inzenddatum、Firmwareversie、Gebruikerstelefoon…），
+# 名单穷举不完；表单格式已识别时，凡是这种行都是元数据。描述与推送是用户 / 设备在说话，不算。
+FORM_LINE = re.compile(r"^[ \t]*([^:：\n]{2,40}?)[ \t]*[:：][^\n]*$", re.MULTILINE)
+SPOKEN_LABELS = re.compile(r"^(?:" + "|".join([*LABELS["description"], *LABELS["push"]]) + r")$", re.IGNORECASE)
+
+
+def _metadata_spans(text: str) -> list[str]:
+    spans = [normalize(match.group()) for match in METADATA_LINE.finditer(text)]
+    if parse_message(text).format in {"app_report", "rma"}:
+        spans += [normalize(m.group()) for m in FORM_LINE.finditer(text) if not SPOKEN_LABELS.match(m.group(1).strip())]
+    return spans
+
+
+def _only_metadata(quote: str, spans: list[str]) -> bool:
+    """引文落在一行元数据里，或由若干整行元数据拼成（「Bron: eufy_mega\\nInzenddatum: …」横跨两行，T22）。"""
+    if any(quote in span for span in spans):
+        return True
+    rest = quote
+    for span in sorted(spans, key=len, reverse=True):
+        rest = rest.replace(span, " ")
+    return bool(spans) and not normalize(rest)
 
 
 def ground_additional_queries(meaning: TurnInterpretation, text: str) -> tuple[TurnInterpretation, list[dict[str, str]]]:
     """业务排序之后校验并列查询：内部取数或元数据不等于另一个用户请求。"""
     source = normalize(text)
-    metadata = [normalize(match.group()) for match in METADATA_LINE.finditer(text)]
+    metadata = _metadata_spans(text)
     primary_quote = normalize(meaning.request_quotes.get(meaning.primary_intent, ""))
     kept, rejected = [], []
     for intent in meaning.secondary_intents:
@@ -60,7 +81,7 @@ def ground_additional_queries(meaning: TurnInterpretation, text: str) -> tuple[T
         quote = normalize(meaning.request_quotes.get(intent, ""))
         reason = (
             "request_quote_missing" if not quote else "request_quote_ungrounded" if quote not in source
-            else "metadata_is_not_request" if any(quote in span for span in metadata)
+            else "metadata_is_not_request" if _only_metadata(quote, metadata)
             else "duplicate_request_quote" if quote == primary_quote else None
         )
         if reason is None and intent in {"order_query", "warranty_query"}:
