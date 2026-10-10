@@ -44,6 +44,8 @@ class Hypothesis(BaseModel):
     )
     matched_subject: str | None = Field(default=None, max_length=80, description="该方案针对的部件或对象，摘自候选标题/正文原话")
     matched_timing: str | None = Field(default=None, max_length=80, description="该方案针对的时机或方向，摘自候选原话；没有留空")
+    matched_section: str | None = Field(default=None, max_length=120, description="候选列出多个故障小节时，用户现象对应的小节标题逐字；不能确定留空")
+    missing_fact: str | None = Field(default=None, max_length=120, description="needs_confirmation 时，clarification_question 要确认的那个前提，摘自候选原文")
 
 
 class PlansRanked(BaseModel):
@@ -68,6 +70,8 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
         clarification_question=(str | None, Field(default=None, max_length=300)),
         matched_subject=(str | None, Field(default=None, max_length=80)),
         matched_timing=(str | None, Field(default=None, max_length=80)),
+        matched_section=(str | None, Field(default=None, max_length=120)),
+        missing_fact=(str | None, Field(default=None, max_length=120)),
     )
     return create_model(
         "PlansRankedEnum",
@@ -163,6 +167,51 @@ def _subject_conflicts(user_subject: str, candidate_subject: str) -> bool:
     return _PART_FAMILY.get(user_head, user_head) != _PART_FAMILY.get(cand_head, cand_head)
 
 
+# 追问要确认的前提若已被用户说过，就不该再问（T41 第十轮：用户已说「没跑过拖地」，仍被问「不跑拖地是否也报错」）。
+# 比对只看内容词：前提原话与事实的 value / subject / quote 共享至少一个词干（mop ~ mopping、charg ~ charging）。
+# 设备词、填充词和「error / problem」这类泛词不算内容词，避免「the error」就把任何前提当成已知。
+_GENERIC_WORDS = {
+    "error", "problem", "issue", "fault", "warning", "message", "code", "task", "cycle", "time", "times", "again",
+    "still", "also", "when", "after", "before", "with", "without", "from", "into", "that", "this", "have", "has",
+    "been", "does", "did", "not", "any", "new", "run", "running", "perform", "performed", "try", "tried", "use", "used",
+    "please", "check", "whether", "confirm", "ensure", "make", "sure", "you", "your", "and", "the", "for", "are", "was",
+}
+
+
+def _stems(text: str | None) -> set[str]:
+    out = set()
+    for w in re.findall(r"[a-z][a-z\-]+", _norm(text)):
+        if w in _GENERIC_WORDS or w in _DEVICE_WORDS or w in _FILLER_WORDS or len(w) < 3:
+            continue
+        for suffix in ("ies", "ing", "ed", "es", "s"):
+            if w.endswith(suffix) and len(w) - len(suffix) >= 3:
+                w = w[: -len(suffix)] + ("y" if suffix == "ies" else "")
+                break
+        out.add(w)
+    return out
+
+
+def _covers(missing_fact: str, fact: dict[str, Any]) -> bool:
+    need = _stems(missing_fact)
+    have = _stems(" ".join(str(fact.get(k) or "") for k in ("value", "subject", "quote")))
+    return any(a == b or (len(a) >= 4 and (a.startswith(b) or b.startswith(a))) for a in need for b in have)
+
+
+def precondition_status(missing_fact: str | None, facts: list[dict[str, Any]]) -> tuple[str, dict[str, Any] | None]:
+    """(unknown | negated | affirmed, 覆盖它的事实)。否定事实覆盖 → 前提不成立；
+    用户已做 / 已观察到（action_taken / observation）且肯定 → 前提已知成立；只有症状词面相近不算已知，仍要问。"""
+    if not missing_fact:
+        return "unknown", None
+    for f in facts:
+        if f.get("status", "active") != "active" or not _covers(missing_fact, f):
+            continue
+        if f.get("polarity") == "negated":
+            return "negated", f
+        if f.get("kind") in {"action_taken", "observation"} and f.get("polarity", "affirmed") == "affirmed":
+            return "affirmed", f
+    return "unknown", None
+
+
 CLARIFY_TEMPLATES = {
     "polarity_uncertain": 'You mentioned "{quote}". Which side or part has the problem, and what exactly is it doing?',
     "timing_mismatch": "You said it happened {timing}. Is that right, and does the app show any warning at that moment?",
@@ -233,10 +282,21 @@ def filter_hypotheses(
             clarify(h, "subject_mismatch", CLARIFY_TEMPLATES["subject_mismatch"].format(subject=mismatched["subject"]))
             continue
         if h.get("applicability") != "supported":
-            dropped.append(f"not_supported:{pid}")
             if h.get("applicability") == "needs_confirmation":
-                clarify(h, "needs_confirmation", h.get("clarification_question") or "")
-            continue
+                known, fact = precondition_status(h.get("missing_fact"), facts)
+                if known == "negated":
+                    dropped.append(f"precondition_negated:{pid}")  # 用户已说没做过 / 没发生：不适用，也不再问
+                    continue
+                if known == "affirmed":
+                    dropped.append(f"precondition_known:{pid}")  # 用户已说做过 / 观察到：前提成立，按 supported 继续
+                    h = {**h, "applicability": "supported", "rationale": f"前提已知：{(fact or {}).get('value', '')}"[:80]}
+                else:
+                    dropped.append(f"not_supported:{pid}")
+                    clarify(h, "needs_confirmation", h.get("clarification_question") or "")
+                    continue
+            else:
+                dropped.append(f"not_supported:{pid}")
+                continue
         if not covered:
             dropped.append(f"no_supported_symptom:{pid}")
             continue
@@ -247,6 +307,12 @@ def filter_hypotheses(
         if not ev:
             dropped.append(f"no_evidence:{pid}")
             continue
+        # 多故障小节的候选：模型指出的小节必须逐字等于计划首问的某个选项，服务端才替用户选分支（T53）
+        section = h.get("matched_section")
+        first = plan.first_step()
+        if section and not (first.kind == "question" and section in first.branches):
+            dropped.append(f"section_unverified:{pid}")
+            section = None
         kept.append(
             {
                 "plan_id": pid,
@@ -256,6 +322,7 @@ def filter_hypotheses(
                 "rationale": (h.get("rationale") or "")[:80],
                 "supported_symptoms": covered,
                 "source": "synthesize",
+                **({"matched_section": section} if section else {}),
             }
         )
     kept.sort(key=lambda x: -x["confidence"])
@@ -276,6 +343,8 @@ INSTRUCTION = (
     "- supported_symptoms 只能逐字选择给定的有效症状；不能把共同主题当作覆盖，不能声称一个方案解决所有并列问题。\n"
     "- matched_subject / matched_timing 摘自候选标题或正文：该方案针对哪个部件、哪种时机；structured_facts 里用户的 subject / timing 与之不同层级或方向相反时不是 supported。\n"
     "- action_taken 是用户已经做过的操作；候选只是重复这些动作则 not_applicable，否则在 rationale 里说明新增的检查点。\n"
+    "- 候选标注了「小节」时，用户现象明确属于其中一个小节就把该小节标题逐字填进 matched_section；不确定留空，不要猜。\n"
+    "- needs_confirmation 时同时填 missing_fact：要确认的那个前提在候选原文里的原话（如 perform a new mopping task）。\n"
     "- 没有任何计划能解释时输出空列表。只输出 JSON。"
 )
 
@@ -286,7 +355,11 @@ def active_facts(state: dict[str, Any]) -> list[dict[str, Any]]:
 
 def synthesis_messages(state, allowed, evidence, observations, max_hypotheses) -> list[tuple[str, str]]:
     """只构造本次可见候选；完整会话来源与预算由 prepare_messages 统一加入。"""
-    plans_text = "\n".join(f"- {p.plan_id}：{p.fault}（首步：{p.steps[0].title}）" for p in allowed)
+    plans_text = "\n".join(
+        f"- {p.plan_id}：{p.fault}（首步：{p.steps[0].title}）"
+        + (f"（小节：{' / '.join(p.steps[0].options)}）" if p.steps[0].kind == "question" and p.steps[0].branches else "")
+        for p in allowed
+    )
     ev_text = "\n".join(render_evidence(e) for e in evidence)
     obs_text = "\n".join(observations) if observations else "（无图片观察）"
     symptoms = list(dict.fromkeys(str(s) for s in [*(state.get("symptoms") or []), *observations] if str(s).strip()))

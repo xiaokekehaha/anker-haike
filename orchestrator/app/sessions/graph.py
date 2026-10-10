@@ -2397,6 +2397,25 @@ def _diagnose_outcome(
     mode = "exact_code" if exact_hits else "evidence"
     note = {"evidence": None, "exact_code": "依据官方错误码说明"}[mode]
     plan = get_plan_library().get(first["plan_id"])
+    entry = plan.first_step()
+    answered: dict[str, Any] = {}
+    # 问句先对事实（T53）：计划首问是「你遇到哪种故障」而模型已从现象核实了小节，就替用户记一条回答，
+    # 直接从该小节首步开始；回答写进 step_attempts，与用户点选走同一条重放边（decide_next / prepare_step）。
+    if first.get("matched_section") and entry.kind == "question" and first["matched_section"] in entry.branches:
+        from app.guide.steps import step_card_id
+
+        option = first["matched_section"]
+        answered = {
+            "step_attempts": [*((state or {}).get("step_attempts") or []), {
+                "plan_id": plan.plan_id, "step_id": entry.step_id,
+                "card_id": step_card_id((state or {}).get("session_id", ""), plan.plan_id, entry.step_id),
+                "title": entry.title, "instruction_src": entry.instruction_src, "kind": entry.kind,
+                "feedback": None, "note": None, "answer": {"option": option, "source": "fact"},
+                "ts": datetime.now(UTC).isoformat(),
+            }],
+            "guide_trace": [{"event": "question_answered_from_facts", "plan_id": plan.plan_id,
+                             "step_id": entry.step_id, "option": option}],
+        }
     return {
         "diagnose_outcome": {
             "mode": mode,
@@ -2407,9 +2426,10 @@ def _diagnose_outcome(
         "plan_cursor": {
             "plan_id": plan.plan_id,
             "version": plan.version,
-            "step_id": plan.first_step().step_id,
+            "step_id": entry.branches[first["matched_section"]] if answered else entry.step_id,
             "source": first.get("source"),
         },
+        **answered,
         **settled,
     }
 
