@@ -100,8 +100,13 @@ def fallback_reply(state: dict) -> str:
             return "I'm sorry this isn't resolved. There's still an unconfirmed safety concern with this device, so please stop using and charging it; I can prepare what we know for our support team."
         attempts = feedback_history(state)
         detail = "I've noted the steps you couldn't do; they won't count as done. " if any(s.get("feedback") == "cannot_do" for s in attempts) else "We won't add more steps for now. "
+        # 首封就抱怨、此前没有任何排障或案件时，「haven't solved this yet」预设了不存在的服务历史（T58）
+        tried = bool(attempts or state.get("case_id"))
         if state.get("case_id"):
             return f"I'm sorry we haven't solved this yet. {detail}Your service case and open items are kept; progress with our team will show in the case record."
+        if not tried:
+            return ("I'm sorry about the trouble with your device. Tell me what it is doing (or any error shown in the app) "
+                    "and I'll check the official guidance; if you'd rather have a person help, I can prepare a summary for our support team.")
         return f"I'm sorry we haven't solved this yet. {detail}You can pause, or tell me whether you'd rather answer questions or try the device; if you'd like a person to help, I can prepare a summary for our support team."
     if intent == "history_query":
         entries = [

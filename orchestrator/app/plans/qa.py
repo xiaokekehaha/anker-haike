@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import re
 
-from app.official.qa_index import Guide, QAIndex, get_qa_index
+from app.official.qa_index import MATERIAL, Guide, QAIndex, get_qa_index
 from app.plans.library import PlanLibrary
 from app.plans.models import PlansConfig
 
@@ -20,6 +20,10 @@ from app.plans.models import PlansConfig
 EXPECTED = "After this step, check whether the problem is resolved."
 ANSWER_EXPECTED = "Pick the option that matches, or describe it in a few words."
 MATERIAL_EXPECTED = "Upload it here if you have it, or tell me you don't have it right now."
+# 操作步骤里顺带要照片 / 视频（25 段，如 rv-0073「could you please provide a photo or video…」）：只拆显示不拆步骤，
+# 写明「解决了没有」和「上传材料」是两件事，客户点「未解决」不等于已经交了材料（T40）。
+ACTION_WITH_MATERIAL_EXPECTED = ("After trying this, tell me whether the problem is resolved. The photo or video it mentions "
+                                 "is separate: upload it here whenever you can, it isn't needed to answer this card.")
 EXPECTED_BY_KIND = {"action": EXPECTED, "question": ANSWER_EXPECTED, "material_request": MATERIAL_EXPECTED,
                     "statement": "No action needed here.", "handoff": "A support colleague will continue from here."}
 TIPS_LEAD = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\s*[:：]?\s*", re.IGNORECASE)
@@ -130,7 +134,8 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             # 单步答案的首句就是正文开头，当标题只会重复；用 Q&A 标题（问的是什么问题）更有信息量
             "title": (step_title(guide.title, 80) if len(texts) == 1 else step_title(step.text)) or guide.title[:60],
             "instruction_src": f"evidence:{key}",
-            "expected_result": EXPECTED_BY_KIND[kind],
+            "expected_result": ACTION_WITH_MATERIAL_EXPECTED if kind == "action" and MATERIAL.search(step.text)
+            else EXPECTED_BY_KIND[kind],
             "caution": TIPS_LEAD.sub("", guide.tips).strip() or None,
             "next_on": next_on,
             "kind": kind,

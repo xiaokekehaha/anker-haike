@@ -42,6 +42,13 @@ REFUND_WORDS = re.compile(
     re.IGNORECASE,
 )
 QUERY_INTENTS = frozenset({"order_query", "warranty_query", "logistics_query"})
+# 「I don't have my receipt right now」是在说缺资料，不是要查订单（B17 被读成 order_query，
+# 回复前多出「按顺序处理：换货 → 订单详情」）。问句不受影响：「I don't have my order number, can you find it?」
+LACKS_MATERIAL = re.compile(
+    r"\b(?:don'?t|do not|can'?t|cannot)\s+(?:have|find)\b[^.?!]{0,40}?\b"
+    r"(?:receipt|invoice|proof of purchase|order (?:number|no)|tracking (?:number|no))\b[^?]*$",
+    re.IGNORECASE,
+)
 QUERY_FIELDS = {
     "order_query": frozenset({"order_no", "sku", "purchase_date", "amount", "address", "serial_number", "seller", "country"}),
     "warranty_query": frozenset({"warranty_end"}),
@@ -89,7 +96,8 @@ def ground_additional_queries(meaning: TurnInterpretation, text: str) -> tuple[T
         reason = (
             "request_quote_missing" if not quote else "request_quote_ungrounded" if quote not in source
             else "metadata_is_not_request" if _only_metadata(quote, metadata)
-            else "duplicate_request_quote" if quote == primary_quote else None
+            else "duplicate_request_quote" if quote == primary_quote
+            else "lacks_material_not_query" if LACKS_MATERIAL.search(quote) else None
         )
         if reason is None and intent in {"order_query", "warranty_query"}:
             answer = meaning.answer_request

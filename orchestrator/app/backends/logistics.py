@@ -62,6 +62,9 @@ SOP_TEXT = {
     "presale": "This item is a pre-order and hasn't shipped yet. It will be sent on the expected ship date.",
     "unknown": "The tracking information is incomplete, so I'll pass this to a colleague to check.",
 }
+# 客户已要求暂缓 / 取消且已交人工（T9）：预售结论只能说原计划，不能再说「会按日期寄出」，否则读起来像无视了暂缓请求。
+PRESALE_ON_HOLD = ("This item is a pre-order and hasn't shipped yet; its original expected ship date is shown above. "
+                   "Whether it is held or cancelled is up to the colleague handling your request.")
 
 # reship_eligible 有两条互不相同的来路，理由必须分开说，否则会说出与事实相反的话：
 # 退回发件人，和「在途但已过预计送达日」。后者常见于多包裹订单 —— T5（Anker005）的主机包裹
@@ -75,9 +78,11 @@ RESHIP_REASON = {
 }
 
 
-def sop_text(order: Order, as_of: date) -> str:
+def sop_text(order: Order, as_of: date, *, change_pending: bool = False) -> str:
     """客户可见的 SOP 结论。只有 reship_eligible 需要看具体来路，其余按 verdict 取。"""
     v = verdict(order, as_of)
+    if v == "presale" and change_pending:
+        return PRESALE_ON_HOLD
     if v != "reship_eligible":
         return SOP_TEXT[v]
     pkg = main_package(order)

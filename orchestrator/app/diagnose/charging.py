@@ -58,6 +58,14 @@ def charging_relation(text: str) -> ChargingRelation | None:
     return ChargingRelation(subject, endpoint(location.group(1)) if location else None)
 
 
+def _fact_relation(fact: dict) -> ChargingRelation | None:
+    if fact.get("kind") != "symptom" or fact.get("status", "active") != "active" or fact.get("polarity", "affirmed") != "affirmed":
+        return None
+    return charging_relation(fact.get("quote") or "") or charging_relation(
+        f"{fact.get('subject') or ''} {fact.get('value') or ''}"
+    )
+
+
 def check_charging_recipient(title: str, covered_facts: list[dict], facts: list[dict]) -> tuple[Literal["unrelated", "matched", "mismatch", "unknown"], str | None]:
     """返回（关系核验结果，冲突时应围绕哪个对象澄清）。
 
@@ -65,14 +73,15 @@ def check_charging_recipient(title: str, covered_facts: list[dict], facts: list[
     """
     candidate = charging_relation(title)
     if candidate is None:
+        # 标题没写充电关系，但客户说的是充电盒自身不进电，而标题根本不涉及充电盒（B11：盒自身灯不亮，
+        # 却选了 bp-0025「泵开不了机」让长按泵电源键）。整机自己充不上电（T31 机器人）不在此列。
+        stated = [r for fact in covered_facts if (r := _fact_relation(fact))]
+        if any(r.recipient == "charging case" for r in stated) and not re.search(r"\bcases?\b", title, re.IGNORECASE):
+            return "mismatch", "charging case"
         return "unrelated", None
 
     def relation(fact):
-        if fact.get("kind") != "symptom" or fact.get("status", "active") != "active" or fact.get("polarity", "affirmed") != "affirmed":
-            return None
-        return charging_relation(fact.get("quote") or "") or charging_relation(
-            f"{fact.get('subject') or ''} {fact.get('value') or ''}"
-        )
+        return _fact_relation(fact)
 
     for fact in facts:
         known = relation(fact)

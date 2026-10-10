@@ -318,10 +318,12 @@ def customer_gave_order_no(state) -> bool:
 # 由 diagnose_outcome 驱动，不自己下判断：hardware_malfunction 是官方 Q&A 原文给的结论
 # （rv-0028 这类 kind=warranty 条目），physical_damage 是客户自己描述的可见损坏。
 HARDWARE_BASIS = {
+    # 只说明为什么转去售后，不先替客户确认在保（T14：「it's covered by warranty service」读起来像已确认免费）
     "hardware_malfunction": "Based on the official guidance for this error code, this is a hardware malfunction, "
-                            "so it's covered by warranty service rather than further troubleshooting.",
+                            "so the next step is an after-sales review rather than further troubleshooting; "
+                            "whether it's covered by warranty depends on the check below.",
     "physical_damage": "From the damage you've described, this isn't something troubleshooting can fix, "
-                       "so it goes to warranty service.",
+                       "so the next step is an after-sales review; whether it's covered by warranty depends on the check below.",
 }
 
 
@@ -812,7 +814,10 @@ async def consult(state):
         if kind == "logistics.query" and receipt["status"] == "packages":
             order = await services.backend.get_order(receipt["order_no"])
             verdict = logistics.verdict(order, as_of(state))
-            logistics_note = f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages) + "\n" + logistics.sop_text(order, as_of(state))
+            change_pending = any(t["intent"] == "order_change" and t["status"] == "waiting_human"
+                                 for t in state.get("task_queue") or [])
+            logistics_note = (f"Order {order.order_no}:\n" + "\n".join("• " + logistics.describe(p) for p in order.packages)
+                              + "\n" + logistics.sop_text(order, as_of(state), change_pending=change_pending))
             # 客户问的配件 / 描述的包裹内容与订单记录对不上：先说差异，不把旧整机签收当成配件已发（T47 / T2）
             mismatch = record_mismatch_note(
                 state.get("text") or "", order_skus=[line.sku for line in order.lines],
