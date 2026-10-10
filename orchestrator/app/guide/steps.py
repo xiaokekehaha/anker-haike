@@ -17,12 +17,12 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
-from app.conversation.operation_conditions import answered_history, step_unavailable
+from app.conversation.operation_conditions import answered_history, step_check, step_unavailable
 from app.models.router import ModelRouter
 from app.official.qa_index import ACTION_VERB, MATERIAL
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
-from app.plans.qa import customer_text, customer_voice, guide_of
+from app.plans.qa import customer_text, customer_voice, guide_of, step_title
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
@@ -66,6 +66,14 @@ def _evidence_for(
     return sorted(set(ids))
 
 
+def skipped_note(instruction: str, quote: str | None) -> str:
+    """因客户已做过 / 已说明状态而跳过的步骤，在下一张卡上说一声（T36：已换滤网，滤网堵塞检查不再发）。
+    步骤取首句（卡片标题会截断成「…」）；引客户原话（可能不是英文），不替客户改写。"""
+    step = step_title(customer_text(instruction), 160).rstrip(" .…")
+    said = f' ("{quote.strip()}")' if quote and quote.strip() else ""
+    return f'I\'ve skipped "{step}" because what you told us already covers it{said}.'
+
+
 def _advance_in_plan(plan: Plan, step_id: str, *, option: str | None = None) -> str | None:
     """消费节点后沿已回答分支推进；到 DONE / EXHAUSTED 返回 None。"""
     nxt = plan.next_step_id(step_id, "not_solved", option=option)
@@ -106,6 +114,24 @@ async def prepare_step(
     context: list[str] = []  # 说明段落不单独出卡，附在下一张卡上（I4：标题 / 结论不是操作，不要求反馈）
     explanation_evidence: dict[str, dict] = {}
     displayed_nodes = list(state.get("displayed_knowledge_nodes") or [])
+
+    def announce_skip(step: PlanStep, quote: str | None) -> None:
+        # 每个跳过的步骤只说一次（同 statement 的 displayed_nodes 去重）
+        key = f"skipped:{step.instruction_src}"
+        if key not in displayed_nodes:
+            context.append(skipped_note(library.evidence_snippet(step.instruction_src), quote))
+            displayed_nodes.append(key)
+
+    def announce_done_before(until: str | None) -> None:
+        # 客户已做过的步骤（fact_check 判 done）常在选步时就被跳过（decide_next._first_open_step），走不到下面的循环；
+        # 发布到它后面的步骤（或计划走完）时说明一次（T36「已换滤网」的滤网堵塞检查）
+        order = [s.step_id for s in plan.steps]
+        stop = order.index(until) if until in order else len(order)
+        for skipped in plan.steps[:stop]:
+            check = step_check(state, plan.plan_id, skipped.step_id)
+            if check.get("status") == "done" and check.get("skip"):
+                announce_skip(skipped, check.get("quote"))
+
     while step_id is not None:
         step = plan.step(step_id)
         if step.source_gap:
@@ -133,7 +159,7 @@ async def prepare_step(
             break
         unavailable = step_unavailable(state, plan.plan_id, step)
         if unavailable == "condition_not_met":
-            # 适用条件已被用户原话否定，或兄弟条件成立（fact_check）：这一步不适用，沿计划往后走
+            # 适用条件已被用户原话否定，或兄弟条件成立，或用户已经做过（fact_check）：这一步不适用，沿计划往后走
             dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": unavailable})
             step_id = _advance_in_plan(plan, step_id)
             continue
@@ -152,6 +178,7 @@ async def prepare_step(
         # 用户自述已做过的排查（已换滤网、已清洁触点）：同部件同动作的步骤不再让他做一遍（I5：T27 / T36 / T37）
         if step.kind == "action" and (done := matches_reported(source_text, reported)):
             dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "user_reported", "reported": done})
+            announce_skip(step, done)
             step_id = _advance_in_plan(plan, step_id)
             continue
         evidence_ids = _evidence_for(step, plan, allowed_evidence, ranked_evidence)
@@ -190,6 +217,7 @@ async def prepare_step(
         if published_evidence:
             evidence_ids = sorted({*evidence_ids, *published_evidence})
         card_id = step_card_id(session_id, plan.plan_id, step_id)
+        announce_done_before(step_id)
         return StepPrep(
             "ready",
             step={
@@ -225,6 +253,7 @@ async def prepare_step(
                 "retrieved": not published_evidence,
             },
         )
+    announce_done_before(None)
     only_explanation = all(s.kind == "statement" for s in plan.steps)
     return StepPrep("explained" if only_explanation else "exhausted", dropped=dropped,
                     explanation="\n\n".join(context), evidence=explanation_evidence, displayed_nodes=displayed_nodes)

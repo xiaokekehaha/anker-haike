@@ -14,6 +14,7 @@ from app.knowledge.runtime import set_knowledge_adapter
 from app.plans.qa import qa_plan_library, step_condition
 from tests.conversation_runtime import conversation as base_conversation_fixture
 from tests.fake_qa import QAHitAdapter
+from tests.test_conversation_l3 import act
 from tests.test_conversation_l3 import l3_runtime as l3_runtime_fixture
 
 base_conversation = base_conversation_fixture
@@ -269,6 +270,8 @@ async def test_t16_installed_filter_goes_straight_to_the_magnet_check(conversati
     })
     card = next(e for e in events if e["type"] == "step_card")
     assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0056", "s2")
+    # 跳过的那一步在下一张卡上说明，并引客户原话
+    assert 'I\'ve skipped "' in card["step"]["context"] and "It is fully installed and clean" in card["step"]["context"]
     state = await conversation.state()
     assert state["step_checks"]["qa_rv_0056"]["steps"]["s1"] == {
         "status": "done", "quote": "It is fully installed and clean", "skip": True}
@@ -307,6 +310,38 @@ async def test_t37_full_tank_does_not_get_the_refill_card(conversation, l3_runti
                    "quote": "Terwijl de schoonwater tank nog vol is"}],
     })
     assert not any(e["type"] == "step_card" for e in events)
+    # 唯一一步被跳过、计划耗尽：没有下一张卡，跳过说明作为消息发出
+    said = "".join(e.get("delta", "") for e in events if e["type"] == "message")
+    assert 'I\'ve skipped "' in said and "Terwijl de schoonwater tank nog vol is" in said
     state = await conversation.state()
     assert state["step_checks"]["qa_rv_0021"]["steps"]["s1"]["skip"] is True
     assert "qa_rv_0021" in state["exhausted_plans"]
+
+
+T36 = ("Productnaam: S1 Pro\nProduct-PN: T2080A\nProbleemtype: Probleem met het toestel\nProbleemomschrijving: Tijdens het "
+       "stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoongemaakt maar "
+       "het harde geluid blijft. Ik ben bang dat de stofzuigermotor kapot gaat.\nGeüploade afbeeldingen van het probleem: []")
+
+
+async def test_t36_replaced_filters_skip_the_filter_clog_check(conversation, l3_runtime):
+    """T36：客户已换全部滤网和刷子并清洁过。rv-0316 的滤网堵塞检查（s2）跳过并在下一张卡上说明；
+    万向轮（没点名）、滚刷盖条与安装位（没换）仍然要查。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0316"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0316", "confidence": 0.8, "evidence_ids": ["chunk-rv-0316"],
+        "applicability": "supported", "supported_symptoms": ["loud noise while vacuuming"],
+    }]}]
+    replaced = "Alle filters en borstels zijn vervangen en alles is schoongemaakt"
+    conversation.models["guide.step"].script = [{"steps": [
+        {"step_id": "s1", "status": "unknown"}, {"step_id": "s2", "status": "done", "quote": replaced},
+        {"step_id": "s3", "status": "unknown"}, {"step_id": "s4", "status": "unknown"}]}]
+    events = await conversation.send(T36, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["S1 Pro"],
+        "facts": [{"value": "loud noise while vacuuming", "quote": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid."},
+                  {"kind": "action_taken", "value": "filters and brushes replaced, everything cleaned", "quote": replaced}],
+    })
+    assert next(e for e in events if e["type"] == "step_card")["step"]["step_id"] == "s1"
+    events = conversation.check(await act(conversation.client, conversation.sid, "step_feedback", {"feedback": "not_solved"}))
+    card = next(e for e in events if e["type"] == "step_card")["step"]
+    assert card["step_id"] == "s3"
+    assert "the high-performance filter are clogged" in card["context"] and replaced in card["context"]
