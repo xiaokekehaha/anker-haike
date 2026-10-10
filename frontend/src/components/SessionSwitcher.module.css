@@ -4,6 +4,8 @@
 .select:disabled { opacity: .6; cursor: wait; }
 .newButton { flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; border-radius: 9px; padding: 6px 12px; }
 .newButton:hover:not(:disabled) { border-color: var(--accent); }
+/* 空白会话时禁用不是在加载，不用全局的 wait 光标 */
+.newButton:disabled { cursor: default; }
 @media (max-width: 660px) {
   .switcher { width: 100%; }
   .select { flex: 1; max-width: none; }

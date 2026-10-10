@@ -8,6 +8,7 @@ type Props = {
   recent: RecentSession[];
   /** 正在运行 / 恢复，或有待输入卡片：新建前要确认 */
   interruptible: boolean;
+  /** 只禁用切换列表；新建按钮在处理中仍可点，走中断确认 */
   busy: boolean;
   onNew: () => void;
   onSwitch: (id: string) => void;
@@ -45,7 +46,7 @@ export function SessionSwitcher({ currentId, recent, interruptible, busy, onNew,
           {options.map((s) => <option key={s.id} value={s.id}>{optionLabel(s, s.id === currentId)}</option>)}
         </select>
       )}
-      <button type="button" className={styles.newButton} onClick={handleNew} disabled={busy || !currentId} title={currentId ? '开始一个新会话；当前会话可从列表切回' : '当前已是新会话'}>
+      <button type="button" className={styles.newButton} onClick={handleNew} disabled={!currentId} title={currentId ? '开始一个新会话；当前会话可从列表切回' : '当前已是新会话'}>
         <span aria-hidden="true">＋</span> 新建会话
       </button>
     </div>

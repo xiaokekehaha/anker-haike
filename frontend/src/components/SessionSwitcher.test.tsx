@@ -38,6 +38,17 @@ describe('SessionSwitcher', () => {
     expect(onNew).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps 新建会话 clickable while a run is in progress so the user can interrupt it', () => {
+    const onNew = vi.fn();
+    vi.stubGlobal('confirm', vi.fn().mockReturnValue(true));
+    render(<SessionSwitcher currentId="a" recent={recent} interruptible busy onNew={onNew} onSwitch={vi.fn()} />);
+    expect(screen.getByLabelText('切换会话')).toBeDisabled();
+    const button = screen.getByRole('button', { name: '新建会话' });
+    expect(button).toBeEnabled();
+    fireEvent.click(button);
+    expect(onNew).toHaveBeenCalledTimes(1);
+  });
+
   it('shows a freshly created session even before it reaches the recent list', () => {
     render(<SessionSwitcher currentId="fresh" recent={recent} interruptible={false} busy={false} onNew={vi.fn()} onSwitch={vi.fn()} />);
     expect((screen.getByLabelText('切换会话') as HTMLSelectElement).value).toBe('fresh');
