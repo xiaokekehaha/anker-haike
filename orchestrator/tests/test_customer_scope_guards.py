@@ -100,11 +100,14 @@ def test_a_concrete_fault_beside_a_working_part_still_uses_the_model_question():
 
 
 def test_t36_noise_card_keeps_the_checks_but_not_the_replacement_promise():
-    """T36：噪声卡在核保之前写「we will send you a suitable replacement unit」。"""
-    text = customer_text(LIB.evidence_snippet(LIB.get("qa_rv_0341").steps[0].instruction_src))
-    assert "removing the roller brush and cover" in text and "mopping mode" in text
-    assert "replacement unit" not in text and "by sending you" not in text
-    assert text.endswith("depends on a warranty check.")
+    """T36：噪声卡在核保之前写「we will send you a suitable replacement unit」。
+    rv-0341 已由 qa_overrides.yaml 拆成诊断问句 + 各分支步骤，检查合在一起看。"""
+    texts = [customer_text(LIB.evidence_snippet(s.instruction_src)) for s in LIB.get("qa_rv_0341").steps]
+    joined = "\n".join(texts)
+    assert "removing the roller brush and cover" in joined and "mopping mode" in joined
+    assert "replacement unit" not in joined and "by sending you" not in joined
+    handoffs = [t for s, t in zip(LIB.get("qa_rv_0341").steps, texts, strict=True) if s.kind == "handoff"]
+    assert handoffs and all(t.strip() == "Whether a replacement or part can be sent depends on a warranty check." for t in handoffs)
 
 
 def test_t53_out_of_warranty_card_does_not_ask_for_a_shipping_address():

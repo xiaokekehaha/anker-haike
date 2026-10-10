@@ -11,6 +11,8 @@ from app.conversation.interpret import TurnInterpretation
 from app.knowledge.runtime import set_knowledge_adapter
 from app.main import app
 from app.official.models import OfficialData
+from app.official.qa_index import get_qa_index
+from app.plans.runtime import get_plan_library
 from app.sessions.l3 import NOT_EXECUTABLE_HANDOFF
 from tests.conversation_runtime import conversation as conversation_fixture
 from tests.fake_qa import QAHitAdapter
@@ -79,12 +81,205 @@ async def test_restart_then_warranty_entry_ends_in_the_warranty_flow(l3_runtime,
     assert any(e["type"] == "awaiting_input" for e in rows)
 
 
-async def _feedback_until_no_card(client, sid, limit=8):
+RV_0023_FINE = "The seal ring and tank parts look fine, but the error still shows after reinstalling"
+RV_0023_BROKEN = "The seal ring is deformed or broken"
+
+
+def test_rv_0023_hardware_conclusion_is_a_confirmation_question():
+    # T19：s2「上述检查无异常且重装后仍报错 → 基站硬件问题」改成确认问句，卡片标题来自 qa_overrides.yaml
+    plan = get_plan_library().get("qa_rv_0023")
+    s1, s2 = plan.step("s1"), plan.step("s2")
+    assert s1.kind == "action" and s1.next_on.not_solved == "s2"
+    assert s2.kind == "question" and s2.options == [RV_0023_FINE, RV_0023_BROKEN]
+    assert s2.title == "After checking the clean water tank, which matches what you see?"
+
+
+@pytest.mark.parametrize("option", [RV_0023_FINE, RV_0023_BROKEN])
+async def test_t19_not_solved_asks_which_case_before_the_warranty_check(l3_runtime, report_intent, option):
+    # T19：清水箱检查「未解决」不等于检查无异常；先确认是密封圈损坏还是无异常仍报错，再进订单质保判断
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, TICKETS["T19"]))
+        card = next(e for e in rows if e["type"] == "step_card")
+        assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0023", "s1")
+        rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+        card = next(e for e in rows if e["type"] == "step_card")
+        assert card["step"]["step_id"] == "s2" and card["step"]["kind"] == "question"
+        assert "hardware problem" not in said(rows) and "warranty" not in said(rows)
+        rows = events(await act(client, sid, "step_feedback", {"answer": {"option": option, "text": None, "unavailable": False}}))
+        state = await state_of(sid)
+    assert state["stage"] == "context"
+    assert state["next_action"]["reason"] == "guide_exhausted"
+    # 转售后先说为什么（官方排查已走完仍未解决），再索单；不替客户确认在保
+    assert "The official troubleshooting for this issue is complete" in said(rows)
+    assert "To check the warranty" in said(rows)
+    issue = state["issues"][state["active_issue_id"]]
+    assert any(option in f["value"] for f in issue["facts"] if f["kind"] == "observation")
+
+
+def test_rv_0063_liquid_question_is_split_from_the_foam_check():
+    # T26：第 3 段「是否加过第三方清洁液」单独成问句卡；观察泡沫与有泡沫才排水仍是一张操作卡
+    plan = get_plan_library().get("qa_rv_0063")
+    assert [s.step_id for s in plan.steps] == ["s1", "s2", "s3", "s3b"]
+    s3, s3b = plan.step("s3"), plan.step("s3b")
+    assert s3.kind == "question" and s3.options == ["Yes", "No", "Not sure"] and s3.next_on.not_solved == "s3b"
+    assert s3b.kind == "action" and s3b.title == "Shake the base station's clean water tank and check for foam"
+    library = get_plan_library()
+    head, tail = library.evidence_snippet(s3.instruction_src), library.evidence_snippet(s3b.instruction_src)
+    assert head.startswith("We would like to confirm with you") and "foam" not in head
+    assert tail.startswith("After shaking") and tail.endswith("perform the cleaning task.")
+
+
+@pytest.mark.parametrize(("parts", "message"), [
+    ([{}, {"at": "Check the tank"}], "exactly once"),
+    ([{}, {"at": "again"}, {"at": "Check the tank. "}], "order"),
+    ([{}, {"at": "again", "colour": "red"}], "unknown override keys"),
+])
+def test_parts_overrides_are_validated(parts, message):
+    from app.official.qa_index import _typed_step
+
+    with pytest.raises(ValueError, match=message):
+        _typed_step(1, 1, "Check the tank. Check the tank again.", warranty=False, overrides={1: {"parts": parts}})
+
+
+def test_parts_rejoin_into_the_original_paragraph():
+    # 切出来的文字拼回去就是原段落（只去掉列表符号），不增删原文
+    import re
+
+    from app.official.qa_index import load_overrides
+
+    index = get_qa_index()
+    for qa_id, entry in load_overrides().items():
+        for pos, spec in entry.items():
+            if not spec.get("parts"):
+                continue
+            step = index.guides[qa_id].steps[pos - 1]
+            joined = "".join(part.text for part in step.parts)
+            assert re.sub(r"[\s-]+", "", joined) == re.sub(r"[\s-]+", "", step.text), (qa_id, pos)
+
+
+async def test_t26_liquid_answer_is_recorded_before_the_foam_check(l3_runtime, report_intent):
+    # T26：未解决两次后先问清洁液使用史（答案写成客户事实），再发泡沫 / 排水操作卡；操作卡未解决才进质保
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, TICKETS["T26"]))
+        cards = [next(e for e in rows if e["type"] == "step_card")["step"]]
+        for _ in range(2):
+            rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+            cards.append(next(e for e in rows if e["type"] == "step_card")["step"])
+        assert [(c["step_id"], c["kind"]) for c in cards] == [("s1", "action"), ("s2", "action"), ("s3", "question")]
+        rows = events(await act(client, sid, "step_feedback", {"answer": {"option": "Not sure", "text": None, "unavailable": False}}))
+        foam = next(e for e in rows if e["type"] == "step_card")["step"]
+        assert (foam["step_id"], foam["kind"]) == ("s3b", "action")
+        assert foam["instruction"].startswith("After shaking the base station's clean water tank, check for foam.")
+        state = await state_of(sid)
+        assert state["counters"]["executed"] == 2
+        issue = state["issues"][state["active_issue_id"]]
+        assert any("Not sure" in f["value"] for f in issue["facts"] if f["kind"] == "observation")
+        rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+        state = await state_of(sid)
+    assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
+    assert "To check the warranty" in said(rows)
+
+
+T36_GONE, T36_CHIRP, T36_OTHER = "The noise is gone", "Still noisy, with a chirping sound", "Still noisy, another kind of sound"
+
+
+async def _t36_session(client, monkeypatch, conversation):
+    symptom = "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid."
+    interpret_as(monkeypatch, {TICKETS["T36"]: TurnInterpretation(
+        primary_intent="report_problem", device_relation="current", facts=[{"value": symptom, "quote": symptom}],
+    )})
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [
+        {"plan_id": "qa_rv_0341", "confidence": 0.9, "evidence_ids": ["chunk-rv-0341"],
+         "applicability": "supported", "supported_symptoms": [symptom]},
+        {"plan_id": "qa_rv_0316", "confidence": 0.8, "evidence_ids": ["chunk-rv-0316"],
+         "applicability": "supported", "supported_symptoms": [symptom]},
+    ]}]
+    sid = (await client.post("/sessions")).json()["session_id"]
+    rows = events(await send(client, sid, TICKETS["T36"]))
+    card = next(e for e in rows if e["type"] == "step_card")["step"]
+    assert (card["plan_id"], card["step_id"], card["kind"]) == ("qa_rv_0341", "s1", "question")
+    return sid
+
+
+def _answer(option):
+    return {"answer": {"option": option, "text": None, "unavailable": False}}
+
+
+async def test_t36_noise_gone_without_the_brush_goes_to_the_warranty_check(l3_runtime, conversation, report_intent, monkeypatch):
+    # T36：rv-0341 诊断树。拆下滚刷后噪音消失 → 官方结论滚刷问题 → 质保判断；没有「未解决」也不换下一条指南
+    set_knowledge_adapter(QAHitAdapter("rv-0341", "rv-0316"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = await _t36_session(client, monkeypatch, conversation)
+            rows = events(await act(client, sid, "step_feedback", _answer(T36_GONE)))
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert not [e for e in rows if e["type"] == "step_card"]
+    assert "likely caused by the roller brush" in said(rows)
+    assert "We can resolve this by sending" not in said(rows)
+    assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
+
+
+async def test_t36_chirping_tries_mopping_mode_then_goes_to_the_warranty_check(l3_runtime, conversation, report_intent, monkeypatch):
+    set_knowledge_adapter(QAHitAdapter("rv-0341", "rv-0316"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = await _t36_session(client, monkeypatch, conversation)
+            rows = events(await act(client, sid, "step_feedback", _answer(T36_CHIRP)))
+            card = next(e for e in rows if e["type"] == "step_card")["step"]
+            assert (card["step_id"], card["kind"]) == ("s1d", "action") and "mopping mode" in card["instruction"]
+            rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert "replacement unit" not in said(rows)
+    assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
+
+
+async def test_t36_other_noise_falls_through_to_the_component_guide(l3_runtime, conversation, report_intent, monkeypatch):
+    # 其他声音 rv-0341 原文没有覆盖：本指南结束，交给候选里的分部件检查 rv-0316，不直接判换机；
+    # rv-0341 不算走完的一条指南，rv-0316 的四项都发完才进质保（不是第一项未解决就停）
+    set_knowledge_adapter(QAHitAdapter("rv-0341", "rv-0316"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = await _t36_session(client, monkeypatch, conversation)
+            rows = events(await act(client, sid, "step_feedback", _answer(T36_OTHER)))
+            cards = [next(e for e in rows if e["type"] == "step_card")["step"]]
+            rows = await _feedback_until_no_card(client, sid, on_card=cards.append)
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert [(c["plan_id"], c["step_id"]) for c in cards] == [("qa_rv_0316", f"s{i}") for i in range(1, 5)]
+    assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
+
+
+def test_bp_0114_sixth_paragraph_is_split_and_drops_the_repeated_reset():
+    # T53：第 6 段的「Software error → 长按 12 秒重置」与第 2 段重复，不再出卡；出厂按钮损坏先确认再走换机结论
+    plan = get_plan_library().get("qa_bp_0114")
+    library = get_plan_library()
+    ids = [s.step_id for s in plan.steps]
+    assert ids[ids.index("s6"):ids.index("s7")] == ["s6", "s6c", "s6d", "s6e"]
+    texts = [library.evidence_snippet(plan.step(i).instruction_src) for i in ("s6", "s6c", "s6d", "s6e")]
+    assert not any("12 seconds" in t for t in texts)
+    assert plan.step("s6").next_on.not_solved == "s6c"
+    s6c = plan.step("s6c")
+    assert s6c.kind == "question" and s6c.next_on.not_solved == "s6e"
+    assert s6c.branches == {"Yes, it was damaged on arrival": "s6d", "No": "s6e"}
+    assert plan.step("s6d").kind == "handoff" and plan.step("s6e").kind == "action"
+
+
+async def _feedback_until_no_card(client, sid, limit=8, on_card=None):
     rows = []
     for _ in range(limit):
         rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
-        if not any(e["type"] == "step_card" for e in rows):
+        card = next((e["step"] for e in rows if e["type"] == "step_card"), None)
+        if card is None:
             break
+        if on_card:
+            on_card(card)
     return rows
 
 
@@ -376,6 +571,9 @@ def test_no_order_number_given_is_not_reported_as_a_failed_lookup():
     # 来路不明时不编理由
     assert hardware_basis({"diagnose_outcome": {"mode": "evidence"}}) is None
     assert hardware_basis({}) is None
+    # 官方指南走完仍未解决（T19 / T36）：说明转售后的原因
+    assert "troubleshooting for this issue is complete" in hardware_basis({"next_action": {"reason": "guide_exhausted"}})
+    assert hardware_basis({"next_action": {"reason": "no_supported_followup"}}) is None
 
 
 def test_read_only_lookups_do_not_announce_a_processing_order():

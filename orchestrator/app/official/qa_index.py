@@ -78,7 +78,11 @@ class Step:
     warranty: bool = False
     kind: StepKind = "action"
     options: tuple[str, ...] = ()
-    branches: dict[str, int] = field(default_factory=dict)  # 选项 → 段落位置 pos（question 用）
+    # 选项 → 目标（question 用）：int 是段落位置 pos；str 是本条计划的 step_id（s3b）或 "EXHAUSTED"
+    branches: dict[str, int | str] = field(default_factory=dict)
+    default: int | str | None = None  # 回答不在选项里时去哪儿；None 沿原文顺序走下一步
+    title: str = ""  # 人工审核给的卡片标题（question 卡只显示标题与选项，原文段落不是问句时必须给）
+    parts: tuple[Step, ...] = ()  # 人工审核把一段拆成多步（段内问句、诊断树）；为空即整段一步
     disabled: bool = False
     disabled_reason: str = ""
     source_gap: bool = False
@@ -284,8 +288,8 @@ def overrides_path() -> Path:
 
 @lru_cache(maxsize=1)
 def load_overrides(path: Path | None = None) -> dict[str, dict[int, dict]]:
-    """人工审核结果：{qa_id: {pos: {kind / options / branches / disabled / reason}}}。pos 是段落在原文中的位置（从 1 起），
-    不是原文编号 —— bp-0123 的「Step 1:」与「1.」编号都是 1。文件不存在视为空。"""
+    """人工审核结果：{qa_id: {pos: spec}}。pos 是段落在原文中的位置（从 1 起），
+    不是原文编号 —— bp-0123 的「Step 1:」与「1.」编号都是 1。文件不存在视为空。字段见 qa_overrides.yaml 文件头。"""
     import yaml
 
     target = path or overrides_path()
@@ -295,16 +299,53 @@ def load_overrides(path: Path | None = None) -> dict[str, dict[int, dict]]:
     return {str(qa_id): {int(no): dict(spec or {}) for no, spec in (entries or {}).items()} for qa_id, entries in raw.items()}
 
 
-def _typed_step(no: int, pos: int, text: str, *, warranty: bool, overrides: dict[int, dict]) -> Step:
-    spec = overrides.get(pos, {})
+SPEC_KEYS = {"kind", "title", "options", "branches", "default", "disabled", "reason"}
+
+
+def _target(value: int | str) -> int | str:
+    return value if isinstance(value, int) else str(value)
+
+
+def _spec_step(no: int, pos: int, text: str, spec: dict, *, warranty: bool) -> Step:
+    if unknown := set(spec) - SPEC_KEYS:
+        raise ValueError(f"unknown override keys in paragraph {pos}: {sorted(unknown)}")
     kind: StepKind = spec.get("kind") or classify_step(text)
     options = tuple(spec.get("options") or (question_options(text) if kind == "question" else ()))
     return Step(
         no=no, text=strip_urls(text), media=media_of(text), warranty=warranty or kind == "handoff",
-        kind=kind, options=options, branches={str(k): int(v) for k, v in (spec.get("branches") or {}).items()},
+        kind=kind, options=options, branches={str(k): _target(v) for k, v in (spec.get("branches") or {}).items()},
+        default=_target(spec["default"]) if spec.get("default") is not None else None,
+        title=str(spec.get("title") or ""),
         disabled=bool(spec.get("disabled")), disabled_reason=str(spec.get("reason") or ""),
         source_gap=bool(DANGLING_REFERENCE.search(text)),
     )
+
+
+def _split_parts(no: int, pos: int, text: str, specs: list[dict]) -> tuple[Step, ...]:
+    """按审核锚点切段：第一部分从段首开始（不写 at），之后每部分从它的 at 开始；at 在段内必须唯一且依次后移。
+    切出来的文字拼回去就是原段落，不增删原文。"""
+    text = strip_urls(text)
+    starts = [0]
+    for spec in specs[1:]:
+        anchor = str(spec.get("at") or "")
+        if not anchor or text.count(anchor) != 1:
+            raise ValueError(f"parts anchor must occur exactly once in paragraph {pos}: {anchor!r}")
+        starts.append(text.index(anchor))
+    if specs[0].get("at") or starts != sorted(starts) or len(set(starts)) != len(starts):
+        raise ValueError(f"parts anchors must follow the paragraph order in paragraph {pos}")
+    bounds = [*starts, len(text)]
+    # 段内的「- 」列表符号归给哪一块都不对，去掉；其余原文一字不改
+    pieces = [text[bounds[i]:bounds[i + 1]].strip(" -\n") for i in range(len(specs))]
+    return tuple(_spec_step(no, pos, piece, {k: v for k, v in spec.items() if k != "at"}, warranty=bool(WARRANTY.search(piece)))
+                 for piece, spec in zip(pieces, specs, strict=True))
+
+
+def _typed_step(no: int, pos: int, text: str, *, warranty: bool, overrides: dict[int, dict]) -> Step:
+    spec = overrides.get(pos, {})
+    step = _spec_step(no, pos, text, {k: v for k, v in spec.items() if k != "parts"}, warranty=warranty)
+    if spec.get("parts"):
+        step = replace(step, parts=_split_parts(no, pos, text, list(spec["parts"])))
+    return step
 
 
 def answer_body(content: str, tips: str) -> str:

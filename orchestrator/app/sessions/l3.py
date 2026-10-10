@@ -314,10 +314,13 @@ def customer_gave_order_no(state) -> bool:
     return any(parse_message(t or "").order_no for t in texts)
 
 
-# 走到质保判断的两条「免排障」来路，各自对应一句说明为什么现在谈保修。
-# 由 diagnose_outcome 驱动，不自己下判断：hardware_malfunction 是官方 Q&A 原文给的结论
-# （rv-0028 这类 kind=warranty 条目），physical_damage 是客户自己描述的可见损坏。
+# 走到质保判断的三条来路，各自对应一句说明为什么现在谈保修。不自己下判断：
+# hardware_malfunction 是官方 Q&A 原文给的结论（rv-0028 这类 kind=warranty 条目），physical_damage 是客户自己描述的
+# 可见损坏，两者由 diagnose_outcome 驱动；guide_exhausted 是官方指南走完仍未解决，或诊断树的回答走到了官方交售后结论
+# （rv-0341「拆下滚刷后噪音消失」），由 decide_next 的 next_action 驱动（T19 / T36：原先只有一句索单，没说为什么转售后）。
 HARDWARE_BASIS = {
+    "guide_exhausted": "The official troubleshooting for this issue is complete and the problem isn't resolved, "
+                       "so the next step is an after-sales review; whether it's covered by warranty depends on the check below.",
     # 只说明为什么转去售后，不先替客户确认在保（T14：「it's covered by warranty service」读起来像已确认免费）
     "hardware_malfunction": "Based on the official guidance for this error code, this is a hardware malfunction, "
                             "so the next step is an after-sales review rather than further troubleshooting; "
@@ -328,11 +331,13 @@ HARDWARE_BASIS = {
 
 
 def hardware_basis(state) -> str | None:
-    """为什么这单直接进了质保判断。没有明确来路时返回 None，不编理由。"""
+    """为什么这单进了质保判断。没有明确来路时返回 None，不编理由。"""
     outcome = state.get("diagnose_outcome") or {}
-    if outcome.get("mode") != "warranty":
-        return None
-    return HARDWARE_BASIS.get(outcome.get("reason"))
+    if outcome.get("mode") == "warranty":
+        return HARDWARE_BASIS.get(outcome.get("reason"))
+    if (state.get("next_action") or {}).get("reason") == "guide_exhausted":
+        return HARDWARE_BASIS["guide_exhausted"]
+    return None
 
 
 def stated_dealer(state) -> WarrantyDecision | None:

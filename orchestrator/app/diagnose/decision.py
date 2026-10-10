@@ -244,6 +244,32 @@ def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str
     return None, skipped
 
 
+def replay_end(library, plan_id: str, state) -> str:
+    """沿已回答的边重放计划，看它停在哪儿：handoff = 走到官方交售后结论段；question_exit = 选中了审核写成
+    EXHAUSTED 的选项（诊断树里原文没覆盖的那一支）；open = 其余（有未回答的步骤，或步骤走完）。"""
+    try:
+        plan = library.get(plan_id)
+    except KeyError:
+        return "open"
+    answered = {s.get("instruction_src"): s for s in answered_history(state)}
+    step_id, seen = plan.first_step().step_id, set()
+    while step_id not in {"DONE", "EXHAUSTED"} and step_id not in seen:
+        seen.add(step_id)
+        step = plan.step(step_id)
+        if step.kind == "handoff":
+            return "handoff"
+        record = answered.get(step.instruction_src)
+        if record is None and step.kind != "statement":
+            return "open"
+        record = record or {}
+        option = (record.get("answer") or {}).get("option")
+        # 只认审核显式写成 EXHAUSTED 的选项分支（原文没覆盖的那一支）；问句答完自然走完计划的不算
+        if step.kind == "question" and step.branches.get(option) == "EXHAUSTED":
+            return "question_exit"
+        step_id = plan.next_step_id(step_id, record.get("feedback") or "not_solved", option=option)
+    return "open"
+
+
 def decide_next(state, *, library) -> NextAction:
     """按 design §3.3 的顺序选下一动作：风险 → 用户意愿 → 已恢复 → 操作条件 → 可发布步骤 → 人工出口。
 
@@ -270,7 +296,12 @@ def decide_next(state, *, library) -> NextAction:
         return result("resolved", "user_confirmed_resolved")
     if conditions.paused:
         return result("pause", "user_paused")
-    if len(exhausted) >= MAX_GUIDES and any(s.get("feedback") == "not_solved" for s in executed):
+    # 诊断树判定原文没覆盖的指南（rv-0341「其他声音」）不算走完一条：交给下一条候选指南完整排查（T36）。
+    # 诊断树的一支直接得出官方交售后结论时，没有「未解决」也进质保判断（rv-0341「拆下滚刷后噪音消失」）。
+    ends = {pid: replay_end(library, pid, state) for pid in exhausted}
+    counted = [pid for pid in exhausted if ends[pid] != "question_exit"]
+    if len(counted) >= MAX_GUIDES and (any(s.get("feedback") == "not_solved" for s in executed)
+                                       or "handoff" in ends.values()):
         return result("handoff_offer", "guide_exhausted")
     if decision.get("primary_intent") == "complaint" and not decision.get("diagnostic_request"):
         return result("pause", "complaint_reduce_burden")

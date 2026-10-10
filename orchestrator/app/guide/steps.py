@@ -26,6 +26,7 @@ from app.plans.qa import customer_text, customer_voice, guide_of
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
+PART_ID = re.compile(r"^s(\d+)([b-h]?)$")
 GUIDE_BUDGET_MS = 6000
 
 
@@ -330,9 +331,11 @@ def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:
     guide = guide_of(plan_id)
     if guide is None:
         return []
-    index = int(step_id.removeprefix("s")) - 1 if step_id.startswith("s") and step_id[1:].isdigit() else -1
-    if index < 0:
+    # 审核拆分的段落 s{pos}、s{pos}b…同属原文第 pos 段：段落图示只挂在第一部分，不在每张卡上重复
+    match = PART_ID.match(step_id)
+    if match is None or match.group(2):
         return []
+    index = int(match.group(1)) - 1
     media = guide.steps[index].media if guide.kind == "steps" and 0 <= index < len(guide.steps) else guide.media
     return [{"url": m.url, "kind": m.kind} for m in media]
 

@@ -93,13 +93,22 @@ def step_condition(text: str) -> str | None:
     return match.group("cond").strip()
 
 
+PART_SUFFIX = ("", "b", "c", "d", "e", "f", "g", "h")
+
+
+def target(value: int | str) -> str:
+    """覆写里的分支目标：段落位置 → 该段第一步；step_id / EXHAUSTED 原样（存在性由 Plan 校验）。"""
+    return f"s{value}" if isinstance(value, int) else value
+
+
 def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
-    texts = [(pos, s) for pos, s in enumerate(guide.steps, 1) if not s.disabled]
-    evidence: dict[str, dict] = {}
-    steps = []
     # 步骤 id 按原文位置编号（s{pos}）：编号在条目里会重复（rv-0004、bp-0114 每段从 1 起），
     # 禁用的段落跳过但不重排，card_id 由 step_id 派生，覆写一段不能让后面的卡全部换 id。
-    positions = [pos for pos, _ in texts]
+    # 审核拆分的段落（parts）依次是 s{pos}、s{pos}b、s{pos}c…；禁用的部分同样跳过不重排。分支写段落位置时指向该段第一部分。
+    texts = [(pos, f"s{pos}{PART_SUFFIX[i]}", part) for pos, s in enumerate(guide.steps, 1) if not s.disabled
+             for i, part in enumerate(s.parts or (s,)) if not part.disabled]
+    evidence: dict[str, dict] = {}
+    steps = []
     if guide.sections:
         key = f"{guide.qa_id}#select_scope"
         instruction = "Which of these problems are you experiencing? Choose the matching section."
@@ -112,11 +121,10 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             "next_on": {"solved": "EXHAUSTED", "not_solved": "EXHAUSTED", "cannot_do": "EXHAUSTED"},
             "required_resources": [],
         })
-    for i, (pos, step) in enumerate(texts):
-        step_id = f"s{pos}"
-        nxt = f"s{positions[i + 1]}" if i + 1 < len(positions) else "EXHAUSTED"
+    for i, (pos, step_id, step) in enumerate(texts):
+        nxt = texts[i + 1][1] if i + 1 < len(texts) else "EXHAUSTED"
         section = next((s for s in guide.sections if s.start <= pos <= s.end), None)
-        if section and (i + 1 == len(positions) or positions[i + 1] > section.end):
+        if section and (i + 1 == len(texts) or texts[i + 1][0] > section.end):
             nxt = "EXHAUSTED"
         key = f"{guide.qa_id}#{step_id}"
         evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": step.text}
@@ -128,11 +136,12 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
         elif kind == "handoff":
             next_on = {"solved": "DONE", "not_solved": "EXHAUSTED", "cannot_do": "EXHAUSTED"}
         else:
-            next_on = {"solved": nxt, "not_solved": nxt, "cannot_do": nxt}
+            fallback = target(step.default) if step.default is not None else nxt
+            next_on = {"solved": fallback, "not_solved": fallback, "cannot_do": fallback}
         steps.append({
             "step_id": step_id,
             # 单步答案的首句就是正文开头，当标题只会重复；用 Q&A 标题（问的是什么问题）更有信息量
-            "title": (step_title(guide.title, 80) if len(texts) == 1 else step_title(step.text)) or guide.title[:60],
+            "title": step.title or (step_title(guide.title, 80) if len(texts) == 1 else step_title(step.text)) or guide.title[:60],
             "instruction_src": f"evidence:{key}",
             "expected_result": ACTION_WITH_MATERIAL_EXPECTED if kind == "action" and MATERIAL.search(step.text)
             else EXPECTED_BY_KIND[kind],
@@ -141,7 +150,7 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             "kind": kind,
             "source_gap": step.source_gap,
             "options": list(step.options),
-            "branches": {option: f"s{target}" for option, target in step.branches.items()},
+            "branches": {option: target(t) for option, t in step.branches.items()},
             "required_resources": ["device"] if kind == "action" else [],
             "condition": step_condition(step.text) if kind == "action" else None,
         })

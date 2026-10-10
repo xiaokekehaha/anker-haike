@@ -44,7 +44,8 @@ async def test_selected_fault_is_reconstructed_from_answer_history(option, expec
         seen.append(current)
         assert len(seen) <= len(plan.steps)
         current = plan.next_step_id(current, "not_solved")
-    assert seen == ([f"s{i}" for i in range(2, 7)] if expected == "s2" else [f"s{i}" for i in range(8, 13)])
+    # 第 6 段由 qa_overrides.yaml 拆成 s6 / s6c / s6d / s6e（T53），未解决沿 s6 → s6c → s6e 走
+    assert seen == (["s2", "s3", "s4", "s5", "s6", "s6c", "s6e"] if expected == "s2" else [f"s{i}" for i in range(8, 13)])
     assert step_media(plan.plan_id, "select_scope") == []
 
 

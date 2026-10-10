@@ -1,7 +1,11 @@
 # 对官方 Q&A 段落的人工审核结果（2026-10-09 第二批）。只改执行方式，原文不动；原文在 qa.yaml 里按生成文件约定不手改。
 # 每条按 qa_id 与段落位置 pos（从 1 起，按原文出现顺序；原文编号会重复，如 bp-0123 的「Step 1:」与「1.」都是 1）定位。
 # 可写：kind（question / action / statement / material_request / handoff）、options（question 的选项原文）、
-# branches（选项 → 段落位置）、disabled + reason（已核实不适用的段落，不生成步骤但保留原文）。
+# title（卡片标题；原文段落不是问句而改成 question 时必须给，question 卡只显示标题与选项）、
+# branches（选项 → 目标：数字是段落位置，字符串是本条的 step_id 或 EXHAUSTED）、default（回答不在选项里时的目标）、
+# disabled + reason（已核实不适用的段落，不生成步骤但保留原文）、
+# parts（一段拆成多步：段内夹问句、段内诊断树。每部分可写上面的字段；第一部分从段首开始，之后每部分写 at = 段内唯一的
+# 原文锚点，从锚点处切开，依次生成 s{pos}、s{pos}b、s{pos}c…；切出的文字拼起来就是原段落）。
 bp-0123:
   1: {kind: statement}                                   # 「Identify the Problem」是标题
   3: {kind: question, options: ["Upon startup", "During breast pumping", "Only at high speed"]}
@@ -10,3 +14,40 @@ bp-0123:
   11: {kind: handoff}
 bp-0032:
   1: {kind: question, options: ["Breast shield opening", "Bottle connection"], branches: {"Breast shield opening": 2, "Bottle connection": 3}}
+rv-0023:
+  # 原文第 2 段「上述检查无异常且重装后仍报错 → 基站硬件问题」的前提要客户确认，不能由第 1 段的「未解决」推出（T19）
+  2: {kind: question, title: "After checking the clean water tank, which matches what you see?",
+      options: ["The seal ring and tank parts look fine, but the error still shows after reinstalling", "The seal ring is deformed or broken"]}
+rv-0063:
+  # 第 3 段先问是否加过第三方清洁液（背景，不决定是否排水），再观察泡沫、有泡沫才排水换水：
+  # 问句单独成卡收答案，观察与条件操作保持一张操作卡（T26）
+  3:
+    parts:
+      - {kind: question, title: "Have you ever added third-party disinfectant or cleaning fluid directly to the base station clean water tank?",
+         options: ["Yes", "No", "Not sure"]}
+      - {at: "After shaking the base station's clean water tank", title: "Shake the base station's clean water tank and check for foam"}
+rv-0341:
+  # 一段里是噪音来源的诊断树，一个「未解决」回不了是哪一支（T36）。先问拆下滚刷和盖板后噪音怎样：
+  # 消失 → 滚刷问题，进售后；吱吱声 → 试拖地模式，仍响 → 进售后；其他声音原文未覆盖 → 本指南结束，交给其他候选指南
+  1:
+    parts:
+      - {kind: question, title: "After removing the roller brush and its cover, does the noise go away?",
+         options: ["The noise is gone", "Still noisy, with a chirping sound", "Still noisy, another kind of sound"],
+         branches: {"The noise is gone": s1b, "Still noisy, with a chirping sound": s1d, "Still noisy, another kind of sound": EXHAUSTED},
+         default: EXHAUSTED}
+      - {at: "If the noise disappears after removing the roller brush and cover", kind: statement}
+      - {at: "We can resolve this by sending you a new rolling brush", kind: handoff}
+      - {at: "If the noise persists after removing the roller brush and cover and sounds like", kind: action, title: "Try running the robot in mopping mode"}
+      - {at: "If the noise persists even after removing the roller brush", kind: handoff}
+      - {at: "Please try the suggestions in the article below", disabled: true, reason: "文章链接已作为 s1 卡的官方链接展示，这一句不单独成步骤"}
+bp-0114:
+  # 第 6 段塞了 4 个子病因（T53）：磁吸线充电；软件错误的 12 秒重置与第 2 段重复，客户已反馈过；
+  # 出厂按钮损坏要先确认是到货就坏，才走官方的换机结论；电池耗尽换充电器和线
+  6:
+    parts:
+      - {kind: action}
+      - {at: "Software error", disabled: true, reason: "长按电源 12 秒重置与本节第 2 段相同"}
+      - {at: "Damaged button", kind: question, title: "Was the power button already damaged when you received the pump?",
+         options: ["Yes, it was damaged on arrival", "No"], branches: {"Yes, it was damaged on arrival": s6d, "No": s6e}, default: s6e}
+      - {at: "Please provide your shipping address", kind: handoff}
+      - {at: "Breast pump battery depleted", kind: action, title: "Charge the pump with a different charger and cable"}
