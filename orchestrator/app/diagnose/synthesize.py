@@ -234,6 +234,11 @@ def filter_hypotheses(
     seen: set[str] = set()
     by_value = {f.get("value"): f for f in facts if f.get("kind") == "symptom" and f.get("status", "active") == "active"}
     codes = {c.upper() for c in error_codes}
+    # 唯一的「现象」只是哪部分正常（T50「the left one does work」）：模型不把它列进 supported_symptoms 时，
+    # 会转而用 needs_confirmation 自拟追问，替客户假定另一侧的故障（T50 右侧吸力、B10 反转成左侧没吸力）。
+    # 没有任何确定现象与错误码时，每个候选都只能先问哪里有问题。
+    only_uncertain = None if codes or any(f.get("polarity", "affirmed") != "uncertain" for f in by_value.values()) \
+        else next(iter(by_value.values()), None)
 
     def clarify(h, reason, question):
         ev = [e for e in (h.get("evidence_ids") or []) if e in evidence_ids]
@@ -259,7 +264,7 @@ def filter_hypotheses(
             continue
         covered = list(dict.fromkeys(s for s in h.get("supported_symptoms", []) if s in symptoms))
         covered_facts = [by_value[s] for s in covered if s in by_value]
-        uncertain = next((f for f in covered_facts if f.get("polarity") == "uncertain"), None)
+        uncertain = next((f for f in covered_facts if f.get("polarity") == "uncertain"), None) or only_uncertain
         if uncertain:
             dropped.append(f"polarity_uncertain:{pid}")
             clarify(h, "polarity_uncertain", CLARIFY_TEMPLATES["polarity_uncertain"].format(quote=uncertain.get("quote") or uncertain["value"]))

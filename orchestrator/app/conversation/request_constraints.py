@@ -34,6 +34,13 @@ ONLY_WARRANTY = re.compile(
     r"\bonly (?:check|tell me about) (?:my |the )?warranty\b|只(?:查|问)(?:一下)?保修",
     re.IGNORECASE,
 )
+# 退款要有客户原话。「I hope I can get a replacement or you can fix it」只有换货与维修（T53 / B15 多出退款任务，
+# 同一原文的 R05 却没有）：模型把「换不了就退」当成客户诉求，等于替客户创造业务目标。
+REFUND_WORDS = re.compile(
+    r"\brefund|money back|reimburs|\breturn(?:ing)? (?:it|this|them|the|my)\b|send (?:it|this|them) back"
+    r"|退款|退钱|退货|terugbetal|terugsturen|rückerstatt|zurückschicken|rembours|reembols|devoluci",
+    re.IGNORECASE,
+)
 QUERY_INTENTS = frozenset({"order_query", "warranty_query", "logistics_query"})
 QUERY_FIELDS = {
     "order_query": frozenset({"order_no", "sku", "purchase_date", "amount", "address", "serial_number", "seller", "country"}),
@@ -98,7 +105,21 @@ def ground_additional_queries(meaning: TurnInterpretation, text: str) -> tuple[T
     return meaning.model_copy(update={"secondary_intents": kept}), rejected
 
 
+def ground_refund(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
+    """与其他诉求并列的退款必须有退款原话，否则去掉；单独的退款诉求不动（没有可替代的意图，不猜）。"""
+    intents = [meaning.primary_intent, *meaning.secondary_intents]
+    if "refund_request" not in intents or len(set(intents)) < 2 or REFUND_WORDS.search(text.replace("’", "'")):
+        return meaning
+    rest = [i for i in intents if i != "refund_request"]
+    return meaning.model_copy(update={
+        "primary_intent": rest[0],
+        "secondary_intents": rest[1:],
+        "request_quotes": {k: v for k, v in meaning.request_quotes.items() if k != "refund_request"},
+    })
+
+
 def constrain_requests(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
+    meaning = ground_refund(meaning, text)
     normalized = text.replace("’", "'").replace("ʼ", "'")
     clauses = [part.strip() for part in re.split(r"[.!?;\n]+", normalized) if part.strip()]
     tracking = [part for part in clauses if TRACKING_FAILURE.fullmatch(part)]

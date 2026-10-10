@@ -53,6 +53,29 @@ def customer_voice(text: str) -> str:
     return text
 
 
+# 官方 Q&A 的排障段落里夹着售后承诺（12 句：rv-0341「we will send you a suitable replacement unit」、
+# bp-0114「Please provide your shipping address so that we can replace the device」等）。
+# 排障卡发出时还没核保，过保的客户也会看到（T36 先承诺换机后核保；T53 已拒过保，卡里又要地址换机）。
+# 主办方 SOP 里换货只走「核保 → 提交服务单 → 转人工」，所以承诺句一律不进客户可见文字，原文仍在证据里。
+SERVICE_PROMISE = re.compile(
+    r"\b(?:provide|share|send)\s+(?:us\s+)?(?:with\s+)?your\s+(?:shipping|mailing|delivery)\s+address\b"
+    r"|\bwe\s+(?:will|'ll|can|shall)\s+(?:ship|send|replace|resolve this by sending)\b",
+    re.IGNORECASE,
+)
+CLAUSE = re.compile(r"[^.!?;\n]+[.!?;]*[ \t]*|\n")
+PROMISE_NOTE = "Whether a replacement or part can be sent depends on a warranty check."
+
+
+def customer_text(text: str) -> str:
+    """客户可见的官方步骤文字：去掉售后承诺分句，再改成对客户说话的口吻。"""
+    clauses = CLAUSE.findall(text)
+    kept = [c for c in clauses if not SERVICE_PROMISE.search(c)]
+    if len(kept) < len(clauses):
+        lines = [line.rstrip() for line in "".join(kept).splitlines()]
+        text = "\n".join(line for line in lines if line.strip(" -*•")).strip() + " " + PROMISE_NOTE
+    return customer_voice(text)
+
+
 def step_title(text: str, limit: int = 60) -> str:
     first = SENTENCE.split(text.strip(), maxsplit=1)[0].strip()
     return first if len(first) <= limit else first[: limit - 1].rstrip() + "…"

@@ -22,7 +22,7 @@ from app.models.router import ModelRouter
 from app.official.qa_index import ACTION_VERB, MATERIAL
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
-from app.plans.qa import customer_voice, guide_of
+from app.plans.qa import customer_text, customer_voice, guide_of
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
@@ -119,7 +119,7 @@ async def prepare_step(
             source_text = library.evidence_snippet(step.instruction_src)
             node_key = f"{step.instruction_src}@{library.evidence[step.evidence_key].doc_version}"
             if node_key not in displayed_nodes:
-                context.append(customer_voice(source_text))
+                context.append(customer_text(source_text))
                 displayed_nodes.append(node_key)
                 _, published, _ = _primary_evidence(step, library, source_text, allowed_evidence)
                 explanation_evidence.update(published)
@@ -197,7 +197,7 @@ async def prepare_step(
                 "plan_version": plan.version,
                 "step_no": step_no_of(plan, step_id),
                 "title": customer_voice(step.title),
-                "instruction": customer_voice(source_text),
+                "instruction": customer_text(source_text),
                 "expected_result": step.expected_result,
                 "caution": "；".join(filter(None, [step.caution, *[c for c in step.stop_conditions if c != source_text]])) or None,
                 "evidence_ids": evidence_ids,

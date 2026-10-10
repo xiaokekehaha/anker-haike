@@ -90,10 +90,10 @@ def fallback_reply(state: dict) -> str:
             check = get_rules_service().check_pre_step(instruction=instruction, title=step.title, caution=step.caution, conditional_notice=instruction in step.stop_conditions)
             if check.action != "drop":
                 caution = " ".join(filter(None, [step.caution, *step.stop_conditions]))
-                # 安全检查用原文，发给客户的改成对客户说话的口吻（见 plans.qa.customer_voice）
-                from app.plans.qa import customer_voice
+                # 安全检查用原文，发给客户的去掉售后承诺、改成对客户说话的口吻（见 plans.qa.customer_text）
+                from app.plans.qa import customer_text
 
-                return f"This step hasn't been done yet. How to do it: {customer_voice(instruction)} {caution} When you're ready, reply \"retry this step\", or we can pause."
+                return f"This step hasn't been done yet. How to do it: {customer_text(instruction)} {caution} When you're ready, reply \"retry this step\", or we can pause."
         return prefix + pause_text(state)
     if intent == "complaint":
         if not decision.get("allowed_operations", True):

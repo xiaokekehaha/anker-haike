@@ -190,6 +190,27 @@ PARTS_PURCHASE_WORDS = re.compile(
 )
 
 
+# 「the left one does work」说的是哪部分正常，不是故障现象。提示词要求这类句子标 uncertain，
+# 模型仍会标 affirmed（T50），之后的追问就替客户假定了「右侧没吸力」（T50），甚至反转成「左侧没吸力」（B10）。
+NORMAL_OPERATION = re.compile(
+    r"\b(?:does|do|is|are)\s+work(?:ing)?\b|\bworks?\s+(?:fine|well|normally|ok|okay)\b|\bworking\s+(?:fine|well|normally)\b"
+    r"|\b(?:it|one|side|pump|unit)\s+works\b|\bwerkt\b|\bfunktioniert\b|\bfonctionne\b|\bfunciona\b",
+    re.IGNORECASE,
+)
+NEGATED_OPERATION = re.compile(r"n't|n’t|\bnot\b|\bno longer\b|\bnever\b|\bniet\b|\bnicht\b|\bne\b|\bno\b|\bstop", re.IGNORECASE)
+
+
+def normal_operation_is_uncertain(facts: list[FactCandidate]) -> list[FactCandidate]:
+    """只说某部分正常的「现象」改为 uncertain：由服务端问哪里有问题，不让候选方案替客户选对象。"""
+    return [
+        f.model_copy(update={"polarity": "uncertain"})
+        if f.kind == "symptom" and f.polarity == "affirmed"
+        and NORMAL_OPERATION.search(f.quote) and not NEGATED_OPERATION.search(f.quote)
+        else f
+        for f in facts
+    ]
+
+
 def device_code_report(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
     """设备 App 报错表单带错误码 = 设备在报故障，不是功能咨询（T22：7002 表单约 1/6 被判 product_question，
     走产品咨询不发卡）。官方 63 单里 17 张带码的 App 报错单金标全是 report_problem。无码表单不约束。"""
@@ -209,6 +230,7 @@ def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpre
     """
     meaning = constrain_requests(meaning, text)
     meaning = device_code_report(meaning, text)
+    meaning = meaning.model_copy(update={"facts": normal_operation_is_uncertain(meaning.facts)})
     if PARTS_PURCHASE_WORDS.search(text.replace("’", "'")) and "parts_purchase" not in (meaning.primary_intent, *meaning.secondary_intents):
         # 保留模型读到的故障诉求，把配件采购作为并列诉求补进队列（优先级由 tasks 决定）
         meaning = meaning.model_copy(update={"secondary_intents": [*meaning.secondary_intents, "parts_purchase"]})
@@ -328,8 +350,8 @@ async def complete_problem_facts(
                                      session_id=state.get("session_id"), lane=lane)
     except (ContextBudgetExceeded, ModelInvokeError, CapacityExceeded) as exc:
         return meaning, {"outcome": "unavailable", "attempts": len(getattr(exc, "attempts", []))}
-    accepted = [f for f in result.parsed.facts if f.kind == "symptom" and normalize(f.quote)
-                and normalize(f.quote) in normalize(parsed.description)]
+    accepted = normal_operation_is_uncertain([f for f in result.parsed.facts if f.kind == "symptom" and normalize(f.quote)
+                                              and normalize(f.quote) in normalize(parsed.description)])
     return meaning.model_copy(update={"facts": [*meaning.facts, *accepted]}), {
         "outcome": "extracted" if accepted else "empty", "accepted": len(accepted), "model_used": result.model_used,
         "attempts": len(result.attempts),
