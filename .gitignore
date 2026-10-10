@@ -72,7 +72,27 @@ docs/planning/2026-10-09-*/**/*.txt
 docs/planning/2026-10-09-*/**/*.jpg
 docs/planning/2026-10-09-*/**/*.jpeg
 docs/planning/2026-10-09-*/**/*.png
+
+# 2026-10-10 评测与复现：沿用本地产物忽略范围，Markdown 结论与复核文档入库
+docs/planning/2026-10-10-*/**/*.json
+docs/planning/2026-10-10-*/**/*.py
+docs/planning/2026-10-10-*/**/*.log
+docs/planning/2026-10-10-*/**/*.diff
+docs/planning/2026-10-10-*/**/*.txt
+docs/planning/2026-10-10-*/**/*.jpg
+docs/planning/2026-10-10-*/**/*.jpeg
+docs/planning/2026-10-10-*/**/*.png
+
+# 评测原始会话：统一只留本机，不依赖日期或任务名，规划与报告文档入库
+docs/planning/**/conversations/
+
+# 多轮复现与复测：完整会话和逐轮翻译只留本机，结论与根因文档入库
+docs/planning/*_multiturn-reproduction/完整会话记录.md
+docs/planning/*_post-makeup-multiturn-retest/本次原文完整会话.md
+docs/planning/*_post-makeup-multiturn-retest/**/原文完整会话.md
+docs/planning/*_post-makeup-multiturn-retest/**/回复原文与中文翻译.md
+
 # 视觉模型对比：原始 jsonl、铭牌照片与明细 json 只留本机，methodology.md 入库
 reports/vision-comparison-20261009/*.jsonl
-reports/vision-comparison-20261009/*.json
+reports/vision-comparison-*/*.json
 reports/vision-comparison-20261009/inputs/
