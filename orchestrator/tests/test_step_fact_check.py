@@ -87,7 +87,7 @@ def test_handled_sibling_conditions_are_shown_as_reference():
     assert [s.step_id for s in steps] == ["s2"]
     text = _steps_text(steps, LIB, [s for s in plan.steps if s.condition and s not in steps])
     assert "s1 [reference] the robot is often stuck on the edge of stairs" in text
-    assert "s2 [condition] the robot continues to display errors on flat ground" in text
+    assert "s2 [action] [condition] the robot continues to display errors on flat ground" in text
     # 模型即便输出了对照步骤的判定，也不采纳
     assert accept(steps, [StepCheck(step_id="s1", status="negated", quote="has not been stuck")],
                   ["It has not been stuck at stairs or furniture."]) == {}
@@ -226,3 +226,87 @@ async def test_error_code_from_an_earlier_turn_still_hits_the_official_guide(con
     state = await conversation.state()
     assert state["error_codes"] == ["7002"] and state["plans_ranked"][0]["source"] == "exact_code"
     assert not conversation.models["diagnose.synthesize"].calls
+
+
+# ---- 已做过的操作步骤（2026-10-10 官方 63 单复测 P1：T16 T27 T31 T37）----
+
+T16 = ("Product Name: X10 Pro Omni\nProduct PN: T2351\nProduct SN:\nProblem Type: WARNING\n"
+       "Problem Code: 2310-The dust box or filter is not in place.\nProblem Push: Please insert dustbin and filter.\n"
+       "Problem Description: The dustbin or filter is not installed. It is fully installed and clean\nProblem Upload Images: []")
+
+
+def test_done_action_requires_a_customer_quote_not_the_device_push():
+    """「Please insert dustbin and filter」是设备推送，不能当成客户装过；「It is fully installed and clean」才是。"""
+    plan = LIB.get("qa_rv_0056")
+    steps = candidates(plan, {})
+    assert [s.step_id for s in steps] == ["s1", "s2"]
+    push = "Please insert dustbin and filter."
+    assert accept(steps, [StepCheck(step_id="s1", status="done", quote="Please insert dustbin and filter")], [T16], push) == {}
+    assert accept(steps, [StepCheck(step_id="s1", status="done", quote="It is fully installed and clean")], [T16], push) == {
+        "s1": {"status": "done", "quote": "It is fully installed and clean"}}
+    # 没有条件的操作步骤不接受条件判定
+    assert accept(steps, [StepCheck(step_id="s1", status="negated", quote="It is fully installed and clean")], [T16], push) == {}
+
+
+def test_done_action_can_exhaust_the_plan_unlike_a_negated_condition():
+    """T37：唯一一步（空箱加水）客户已说水箱满；跳过后计划耗尽，按 SOP 进质保，不再让客户加水。"""
+    plan = LIB.get("qa_rv_0021")
+    assert _skips(plan, {"s1": {"status": "done", "quote": "tank is full"}}, {"s1"}) == {
+        "s1": {"status": "done", "quote": "tank is full", "skip": True}}
+
+
+async def test_t16_installed_filter_goes_straight_to_the_magnet_check(conversation):
+    """T16：表单描述已写「It is fully installed and clean」，首卡不再问滤网装没装，直接查磁铁。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0056"))
+    conversation.models["guide.step"].script = [{"steps": [
+        {"step_id": "s1", "status": "done", "quote": "It is fully installed and clean"},
+        {"step_id": "s2", "status": "satisfied", "quote": "It is fully installed and clean"},
+    ]}]
+    events = await conversation.send(T16, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "dustbin or filter not installed warning while fully installed",
+                   "quote": "The dustbin or filter is not installed. It is fully installed and clean"}],
+    })
+    card = next(e for e in events if e["type"] == "step_card")
+    assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0056", "s2")
+    state = await conversation.state()
+    assert state["step_checks"]["qa_rv_0056"]["steps"]["s1"] == {
+        "status": "done", "quote": "It is fully installed and clean", "skip": True}
+    assert state["counters"].get("executed", 0) == 0
+
+
+async def test_form_with_only_the_device_push_does_not_call_the_check(conversation):
+    """描述字段只是推送原文时没有客户自己的话，不调用核对，照常从首步发卡。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0056"))
+    text = T16.replace("The dustbin or filter is not installed. It is fully installed and clean", "Please insert dustbin and filter.")
+    events = await conversation.send(text, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "insert dustbin and filter", "quote": "Please insert dustbin and filter."}],
+    })
+    assert next(e for e in events if e["type"] == "step_card")["step"]["step_id"] == "s1"
+    assert not conversation.models["guide.step"].calls
+
+
+T37 = ("Productnaam: Omni E28\nProduct-PN: T2352\nProbleemtype: issue\nProbleemomschrijving: Ik krijg steeds de melding in de app "
+       "“voeg water toe” als de dweil wordt gewassen. Terwijl de schoonwater tank nog vol is. De robot gaat vervolgens over op alleen vegen.\n\n"
+       "Slang in tank is in orde. Rubbers zijn in orde. Hoe op te lossen?\nGeüploade afbeeldingen van het probleem: []")
+
+
+async def test_t37_full_tank_does_not_get_the_refill_card(conversation, l3_runtime):
+    """T37：客户说水箱是满的，唯一一步「空了就加水」不再发；计划耗尽后不发卡，进入下一步决策（质保 / 人工）。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0021"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0021", "confidence": 0.8, "evidence_ids": ["chunk-rv-0021"],
+        "applicability": "supported", "supported_symptoms": ["add water warning while clean water tank is full"],
+    }]}]
+    conversation.models["guide.step"].script = [{"steps": [
+        {"step_id": "s1", "status": "done", "quote": "Terwijl de schoonwater tank nog vol is"}]}]
+    events = await conversation.send(T37, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["Omni E28"],
+        "facts": [{"value": "add water warning while clean water tank is full",
+                   "quote": "Terwijl de schoonwater tank nog vol is"}],
+    })
+    assert not any(e["type"] == "step_card" for e in events)
+    state = await conversation.state()
+    assert state["step_checks"]["qa_rv_0021"]["steps"]["s1"]["skip"] is True
+    assert "qa_rv_0021" in state["exhausted_plans"]

@@ -6,8 +6,11 @@
 - 同计划已处理的兄弟条件作对照一并给模型，不采纳其判定：只给一条孤立条件时，原话里的否定句
   （「has not been stuck at stairs」）会被套到平地条件上（T22 复测 B06-r2）。
 - 只靠「不成立」不能让计划耗尽：最后一个可发步骤照发，用户一句话就能纠正；错跳则整段排障直接转人工。
+- 操作步骤（2026-10-10 官方 63 单复测 P1：T16 T27 T31 T37）：原话表明已经做过这一步，或已确认这一步要查的
+  情况不存在（「It is fully installed」「no blockage seen」「tank is still full」「wiped the contacts」）→ done，跳过。
+  done 可以让计划耗尽：客户自己说试过仍未解决，按 SOP 进质保判断，不再让他重做一遍。
 模型只给判定和用户原话引文，服务端逐字校验引文、选项与步骤 id；不确定一律 unknown，照常发卡。
-同一计划在同一事实修订号下只判一次；只在有用户自述事实时调用。
+同一计划在同一事实修订号下只判一次；只在用户自己写过话（自述事实或表单问题描述）时调用。
 """
 
 from __future__ import annotations
@@ -19,10 +22,11 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from app.conversation.operation_conditions import answered_history
-from app.conversation.quotes import quoted
+from app.conversation.quotes import normalize, quoted
 from app.guide.steps import step_card_id
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
+from app.official.message import parse_message
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
 from app.prompts import compose_system_prompt, wrap_data
@@ -34,7 +38,7 @@ TASK = "guide.step"
 class StepCheck(BaseModel):
     model_config = ConfigDict(extra="forbid")
     step_id: str
-    status: Literal["answered", "satisfied", "negated", "unknown"]
+    status: Literal["answered", "satisfied", "negated", "done", "unknown"]
     option: str | None = Field(default=None, description="question 步骤：逐字取选项之一；对不上留空")
     text: str | None = Field(default=None, max_length=200, description="question 步骤选项对不上时的简短回答")
     quote: str | None = Field(default=None, description="支撑判定的用户原话，逐字摘录")
@@ -50,8 +54,12 @@ INSTRUCTION = (
     "- question 步骤：用户原话已经回答时 status=answered；有选项时 option 逐字取其中一个，对不上就留空并在 text 写简短回答。\n"
     "- condition 步骤：condition 是该步骤的适用场景。用户原话表明这个场景成立用 satisfied，明确说这个场景没发生用 negated；没提到用 unknown。"
     "否定一个场景不等于否定另一个场景：逐条判断，quote 必须是针对本条场景的那一句。\n"
+    "- action 步骤：用户原话表明已经做过这一步，或已经确认这一步要检查的情况不存在、部件正常时用 done；"
+    "步骤让用户检查某个状态（有没有水、装没装好、有没有异物），用户已经说明了该状态，也是 done（例：用户说水箱是满的，"
+    "对「检查水箱有没有水，没有就加水」是 done）。用户原话可能是任何语言，按意思判断，quote 逐字摘原文。"
+    "只是故障现象、设备推送原文、或只做了相近但不同的操作都用 unknown。\n"
     "- [reference] 是已处理过的步骤，只用来对照，不要输出它们。\n"
-    "- answered / satisfied / negated 必须在 quote 逐字引用支撑它的用户原话；助手说过的话和步骤原文都不是依据。\n"
+    "- answered / satisfied / negated / done 必须在 quote 逐字引用支撑它的用户原话；助手说过的话和步骤原文都不是依据。\n"
     "- 不确定一律 unknown。只输出 JSON。"
 )
 
@@ -73,9 +81,9 @@ def user_corpus(state: dict[str, Any]) -> list[str]:
 
 
 def candidates(plan: Plan, state: dict[str, Any]) -> list[PlanStep]:
-    """还没回答的问句和带适用条件的操作步骤。"""
+    """还没回答的问句与操作步骤（操作步骤核对是否已做过，带适用条件的还核对条件）。"""
     answered = {s.get("instruction_src") for s in answered_history(state)}
-    return [s for s in plan.steps if s.instruction_src not in answered and (s.kind == "question" or s.condition)]
+    return [s for s in plan.steps if s.instruction_src not in answered and s.kind in {"question", "action"}]
 
 
 def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[PlanStep] = ()) -> str:
@@ -85,12 +93,14 @@ def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[Pla
             options = f"（选项：{' / '.join(s.options)}）" if s.options else ""
             lines.append(f"- {s.step_id} [question] {library.evidence_snippet(s.instruction_src)}{options}")
         else:
-            lines.append(f"- {s.step_id} [condition] {s.condition}")
+            condition = f" [condition] {s.condition}" if s.condition else ""
+            lines.append(f"- {s.step_id} [action]{condition} {library.evidence_snippet(s.instruction_src)[:400]}")
     return "\n".join(lines)
 
 
-def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str]) -> dict[str, dict[str, Any]]:
-    """服务端校验：步骤 id 在候选内、判定与步骤类型相符、引文逐字出自用户原话、选项逐字在卡上。"""
+def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str], push: str = "") -> dict[str, dict[str, Any]]:
+    """服务端校验：步骤 id 在候选内、判定与步骤类型相符、引文逐字出自用户原话、选项逐字在卡上。
+    done 的引文不能只是设备推送原文（「Please insert dustbin and filter」是设备在说话，不是客户做过）。"""
     by_id = {s.step_id: s for s in steps}
     out: dict[str, dict[str, Any]] = {}
     for item in raw:
@@ -105,19 +115,25 @@ def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str]) -> di
             if item.status != "answered" or not (option or text):
                 continue
             out[step.step_id] = {"status": "answered", "option": option, "text": None if option else text, "quote": item.quote}
-        elif item.status in {"satisfied", "negated"}:
+        elif item.status == "done" and not (push and normalize(item.quote) in normalize(push)):
+            out[step.step_id] = {"status": "done", "quote": item.quote}
+        elif item.status in {"satisfied", "negated"} and step.condition:
             out[step.step_id] = {"status": item.status, "quote": item.quote}
     return out
 
 
 def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]], pending: set[str]) -> dict[str, dict[str, Any]]:
     """否定的条件步骤跳过；某个条件步骤成立时，它前面还未知的条件步骤也跳过（兄弟场景互斥）。
-    pending 是还没处理过的步骤：否定判定若会跳过其中最后一个操作步骤（计划就此耗尽），不跳，照发。"""
+    已做过（done）的操作步骤跳过。
+    pending 是还没处理过的步骤：只因条件否定就会跳过其中最后一个操作步骤（计划就此耗尽）时，不跳，照发；
+    客户原话说已经做过的不在此列。"""
     conditioned = [s.step_id for s in plan.steps if s.condition]
     satisfied = [i for i, sid in enumerate(conditioned) if (verdicts.get(sid) or {}).get("status") == "satisfied"]
     last = satisfied[-1] if satisfied else -1
-    steps = {}
+    steps = {sid: {**v, "skip": True} for sid, v in verdicts.items() if v.get("status") == "done"}
     for i, sid in enumerate(conditioned):
+        if sid in steps:
+            continue
         status = (verdicts.get(sid) or {}).get("status", "unknown")
         if status == "negated" or (status == "unknown" and i < last):
             steps[sid] = {**verdicts.get(sid, {"status": "unknown"}), "skip": True}
@@ -127,9 +143,19 @@ def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]], pending: set[str]) -
                  and not (steps.get(s.step_id) or {}).get("skip")]
     if not remaining and not satisfied:
         tail = next((s.step_id for s in reversed(plan.steps) if s.step_id in pending and s.kind == "action"), None)
-        if tail in steps:
+        if tail in steps and steps[tail].get("status") != "done":
             steps[tail] = {**steps[tail], "skip": False, "kept": "last_step"}
     return steps
+
+
+def user_wrote(state: dict[str, Any]) -> bool:
+    """用户自己写过话：有自述事实，或表单的问题描述不只是设备推送原文（T16 / T31 的描述在表单字段里）。"""
+    facts = _active_facts(state)
+    if any(f.get("source") == "user_statement" or f.get("kind") in {"action_taken", "observation"} for f in facts):
+        return True
+    fields = parse_message(state.get("text") or "").fields
+    description = normalize(fields.get("description") or "")
+    return bool(description) and description != normalize(fields.get("push") or "")
 
 
 async def check_plan_facts(
@@ -143,8 +169,7 @@ async def check_plan_facts(
         return {}
     steps = candidates(plan, state)
     reference = [s for s in plan.steps if s.condition and s not in steps]
-    if (router is None or budget_ms < 1000 or not steps
-            or not any(f.get("source") == "user_statement" for f in _active_facts(state))):
+    if router is None or budget_ms < 1000 or not steps or not user_wrote(state):
         return {}
     corpus = user_corpus(state)
     facts_text = "\n".join(f"- kind={f.get('kind')} polarity={f.get('polarity', 'affirmed')} value={f.get('value')}"
@@ -161,7 +186,8 @@ async def check_plan_facts(
     except (ModelInvokeError, CapacityExceeded, ValidationError) as exc:
         log.warning("fact check unavailable session=%s plan=%s: %s", session_id, plan.plan_id, type(exc).__name__)
         return {}
-    verdicts = accept(steps, result.parsed.steps, corpus)
+    push = "\n".join(parse_message(text).fields.get("push") or "" for text in corpus)
+    verdicts = accept(steps, result.parsed.steps, corpus, push)
     pending = {s.step_id for s in plan.steps if s.instruction_src not in {a.get("instruction_src") for a in answered_history(state)}}
     checks[plan.plan_id] = {"issue_revision": revision, "steps": _skips(plan, verdicts, pending)}
     now = datetime.now(UTC).isoformat()

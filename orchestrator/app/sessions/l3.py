@@ -11,6 +11,7 @@
 import hashlib
 import json
 import os
+import re
 from datetime import date
 
 from haike_contracts.common import WarrantyDecision
@@ -253,7 +254,7 @@ async def service_context(state):
         # 「没查到订单」只有在客户真给过订单号时才成立。App 自动生成的报障表单（T14）根本没有订单号，
         # 这时说「I couldn't find an order」是假话，而且把「为什么现在谈质保」这一步跳过了：
         # 应当先说明官方指引已把这个故障判定为硬件问题、可走保修，再问订单。
-        say(state, " ".join(filter(None, [
+        say(state, PROOF_LATER if lacks_identifier(state) else " ".join(filter(None, [
             hardware_basis(state),
             "I couldn't find that order number." if customer_gave_order_no(state)
             else "To check the warranty I'll need your order details.",
@@ -273,6 +274,35 @@ PROOF_REQUEST = (
     "Please share your order number. If you bought it from another seller, please upload your proof of "
     "purchase showing the seller name, country of purchase and purchase date."
 )
+# 客户已经说手上没有单号 / 凭证（B12「I don't have the order number or tracking number with me right now」、
+# B17「I don't have my receipt right now. Do not submit any replacement request yet」）：逐字再要一遍等于没听见。
+# 资料仍是必需的，改为说明去哪找、现在不会提交任何申请，等客户补上再继续。
+# 必须同时出现单号 / 凭证类名词：T31「the robot can't get past critical low battery」不是缺资料。
+IDENTIFIER_NOUN = (r"(?:receipt|invoice|proof of purchase|order (?:number|no\.?|confirmation)|tracking (?:number|no\.?)"
+                   r"|bon|bonnetje|factuur|ordernummer|trackingnummer|rechnung|bestellnummer|beleg|facture|recibo|factura)")
+LACKS_IDENTIFIER = re.compile(
+    r"\b(?:don'?t|do not|doesn'?t|can'?t|cannot|couldn'?t)\s+(?:have|find|locate)\b[^.?!]{0,40}?\b" + IDENTIFIER_NOUN
+    + r"|\bno\s+" + IDENTIFIER_NOUN + r"|\b(?:lost|threw away|misplaced)\b[^.?!]{0,20}?\b" + IDENTIFIER_NOUN
+    + r"|\b(?:heb|habe|n'ai|no tengo)\b[^.?!]{0,30}?\b" + IDENTIFIER_NOUN + r"\b[^.?!]{0,20}\b(?:niet|nicht|pas)\b"
+    + r"|\b" + IDENTIFIER_NOUN + r"\b[^.?!]{0,20}\b(?:kwijt|niet bij de hand)"
+    + r"|没有(?:订单号?|单号|运单号?|凭证|收据|发票)|找不到(?:订单号?|单号|运单号?|凭证|收据|发票)",
+    re.IGNORECASE,
+)
+PROOF_LATER = (
+    "Understood. Without an order number or proof of purchase I can't check the warranty, so nothing will be "
+    "submitted for now. The order number is in your order confirmation email or your account on the store you "
+    "bought from; for another seller, a photo of the receipt or invoice works. Send it here whenever you have it "
+    "and I'll continue from this point."
+)
+TRACKING_LATER = (
+    "No problem. I can't look up the delivery without an order number or tracking number. The order number is in "
+    "your order confirmation email, and the tracking number is in the shipping notification. Send either one here "
+    "when you have it and I'll check the status straight away."
+)
+
+
+def lacks_identifier(state) -> bool:
+    return bool(LACKS_IDENTIFIER.search((state.get("text") or "").replace("’", "'")))
 
 
 def customer_gave_order_no(state) -> bool:
@@ -757,6 +787,7 @@ async def consult(state):
                 state,
                 "This involves more than one order. Please tell me which order number you'd like me to check."
                 if binding.status == "ambiguous"
+                else TRACKING_LATER if kind == "logistics.query" and lacks_identifier(state)
                 else "Please share your order number or tracking number and I'll look it up."
                 if kind == "logistics.query"
                 else "I need the order number to look up this order information.",
