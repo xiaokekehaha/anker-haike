@@ -28,6 +28,8 @@ services:
       # 演示期保留 7 天：观测台的会话详情靠原始快照回看完整时间线（analytics 事实本身不受此 TTL 影响）
       RETENTION_SESSION_HOURS: ${RETENTION_SESSION_HOURS:-168}
       LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:-http://langfuse-web:3000}
+      # 2026-10-10 回放中一次 SIGSEGV（退出码 139）没有留下栈：段错误时把各线程 Python 栈打到 stderr，便于定位原生扩展
+      PYTHONFAULTHANDLER: "1"
     ports:
       - "${ORCHESTRATOR_PORT:-8000}:8000"
     volumes:
