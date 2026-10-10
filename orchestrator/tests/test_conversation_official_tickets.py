@@ -760,3 +760,30 @@ async def test_t23_battery_error_push_gets_the_official_step_not_r4(l3_runtime, 
     assert state["escalate_reason"] is None
     card = next(e for e in rows if e["type"] == "step_card")
     assert card["step"]["plan_id"] == "qa_rv_0138"
+
+
+async def test_t23_no_order_skip_receipt_reaches_the_review_queue(l3_runtime, monkeypatch):
+    """T23 走完 rv-0138 两步仍未解决、没有订单号、跳过凭证：质保无法确认 → 真实入人工队列，案件里有交接摘要，
+    不再在 summarize 撞 CaseConflict（2026-10-10 复测，约 20 单同路径）。"""
+    async def interpret(router, state, **kwargs):
+        return TurnInterpretation(
+            primary_intent="report_problem", device_relation="current",
+            facts=[{"value": "Battery abnormal", "quote": "E41: Battery abnormal, task ended."}],
+        ), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, TICKETS["T23"]))
+        for _ in range(2):
+            assert any(e["type"] == "step_card" for e in rows)
+            rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+        state = await state_of(sid)
+        assert (state.get("pending_card") or {}).get("kind") == "upload_receipt"
+        rows = events(await act(client, sid, "skip_receipt", {"reason": "none"}))
+        state = await state_of(sid)
+    assert not [e for e in rows if e["type"] == "error"], [e for e in rows if e["type"] == "error"]
+    assert state["stage"] == "awaiting_human" and state["case_status"] == "awaiting_approval"
+    assert any(e["type"] == "escalation_summary" and e.get("handoff_status") == "requested" for e in rows)
+    case = await l3_runtime.cases.store.get(state["case_id"])
+    assert any(e["type"] == "handoff_summary" for e in case["events"])

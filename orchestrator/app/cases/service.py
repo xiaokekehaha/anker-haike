@@ -19,7 +19,10 @@ TRANSITIONS = {
     "closed": {"reopened"},
     "closed_unresolved": {"reopened"},
     "reopened": {"tracking", "proposing"},
-    "escalated_summary": {"reopened"},
+    # 质保无法确认时先落 escalated_summary（摘要已备好），summarize 随后 hand_off 才真正入人工队列。
+    # 以前这条边不存在：R1 排障走完、没有订单号、跳过凭证的每一单都在 summarize 里撞 CaseConflict，
+    # 客户看到「案件等待处理」，案件里却没有交接摘要（2026-10-10 复测：T11/T16/T18/T23 等约 20 单）。
+    "escalated_summary": {"reopened", "awaiting_approval"},
 }
 
 

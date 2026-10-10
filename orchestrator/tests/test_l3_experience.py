@@ -398,3 +398,17 @@ def test_remedy_closed_completes_the_active_task_even_when_it_is_troubleshooting
         {"task_id": "b", "intent": "report_problem", "status": "pending"},
     ]}
     assert remedy_closed(state)["completed_task_intent"] == "replacement_request"
+
+
+async def test_prepared_summary_can_still_enter_the_review_queue():
+    """质保无法确认 → escalated_summary（摘要已备好）→ summarize 的 hand_off 入人工队列。
+    这条迁移以前不存在，排障走完、没有订单号、跳过凭证的每一单都在 summarize 撞 CaseConflict（2026-10-10 复测）。"""
+    cases = CaseService()
+    row = await cases.open("s", "i", {"sku": "T2080"})
+    row = await cases.transition(row["case_id"], "escalated_summary", "质保状态无法确认")
+    summary = {"reason": {"rule_id": "R6", "text": "x"}}
+    row = await cases.hand_off(row["case_id"], requested="human_support", quote="", input_id="i1",
+                               reason="需人工", summary_of=lambda r: summary)
+    assert row["status"] == "awaiting_approval"
+    assert [e["payload"]["to"] for e in row["events"] if e["type"] == "status_changed"] == ["escalated_summary", "awaiting_approval"]
+    assert any(e["type"] == "handoff_summary" for e in row["events"])
