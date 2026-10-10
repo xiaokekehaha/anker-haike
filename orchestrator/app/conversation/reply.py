@@ -23,7 +23,7 @@ log = logging.getLogger("conversation.reply")
 
 ACKNOWLEDGEMENT = {
     "dissatisfied": "I'm sorry this hasn't been a good experience. ",
-    "angry": "I'm sorry this has taken so much of your time without a fix. ",
+    "angry": "I'm sorry about the frustration. ",
     "complaint_risk": "I'm sorry we haven't met your expectations. ",
 }
 

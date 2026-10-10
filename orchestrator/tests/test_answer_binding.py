@@ -136,6 +136,10 @@ async def test_t22_feedback_with_new_symptom_keeps_the_card_and_records_feedback
     assert nxt["step"]["step_id"] == "s2"
 
 
+# 型号已确认、现象具体：问清了，冲突类澄清用尽后走知识缺失出口，不是信息不足
+KNOWN = {"product_state": "confirmed_sku", "active_issue_id": "i", "issues": {"i": {"facts": [
+    {"fact_id": "f", "kind": "symptom", "status": "active", "value": "charging case will not charge",
+     "quote": "My charging case will not charge"}]}}}
 CHARGING_Q = "When the charging case itself is connected to power, what does its charging indicator show?"
 
 
@@ -143,17 +147,17 @@ def test_t52_same_clarification_answered_once_is_not_asked_again():
     """T52：对象冲突的模板追问已经问过、用户也答了，同类冲突不再追问（换对象也不问）；没有其他候选时交接。"""
     clar = [{"plan_id": "qa_bp_0039", "question": CHARGING_Q, "evidence_ids": ["e1"], "confidence": 0.55,
              "reason": "charging_recipient_mismatch"}]
-    first = _diagnose_outcome([], knowledge_status="ok", exact_hits=[], clarifications=clar, previous_outcome=None, state={})
+    first = _diagnose_outcome([], knowledge_status="ok", exact_hits=[], clarifications=clar, previous_outcome=None, state=KNOWN)
     assert first["diagnose_outcome"]["mode"] == "clarify" and first["diagnose_outcome"]["question"] == CHARGING_Q
     second = _diagnose_outcome([], knowledge_status="ok", exact_hits=[], clarifications=clar,
-                               previous_outcome=first["diagnose_outcome"], state={})
+                               previous_outcome=first["diagnose_outcome"], state=KNOWN)
     assert second["diagnose_outcome"]["mode"] != "clarify"
     # 真实复跑：候选换成 bp-0127 后改问「泵自身接电时指示灯」——同一类冲突，不再问
     pump = [{**clar[0], "plan_id": "qa_bp_0127",
              "question": "When the pump itself is connected to power, what does its charging indicator show?"}]
     assert _diagnose_outcome([], knowledge_status="ok", exact_hits=[], clarifications=pump,
-                             previous_outcome=first["diagnose_outcome"], state={})["diagnose_outcome"]["mode"] != "clarify"
+                             previous_outcome=first["diagnose_outcome"], state=KNOWN)["diagnose_outcome"]["mode"] != "clarify"
     timing = [{**clar[0], "question": "You said it happened 2 hours before. Is that right?", "reason": "timing_mismatch"}]
     third = _diagnose_outcome([], knowledge_status="ok", exact_hits=[], clarifications=[*clar, *timing],
-                              previous_outcome=first["diagnose_outcome"], state={})
+                              previous_outcome=first["diagnose_outcome"], state=KNOWN)
     assert third["diagnose_outcome"]["question"] == timing[0]["question"]

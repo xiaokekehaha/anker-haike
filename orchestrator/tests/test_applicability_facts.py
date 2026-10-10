@@ -164,8 +164,10 @@ async def test_no_match_without_symptom_fact_asks_before_handoff(conversation):
     """T60：只有情绪和「想让它正常清扫」、没有现象也没有错误码，知识库无命中 → 先问现象，两次无效后才交人工。"""
     set_knowledge_adapter(NoMatch())
     text = "This app is shit . I just want my X10 Pro Omni to clean with out all this bullshit"
+    # 真实模型会把愿望改写成一条泛化现象（2026-10-10 复跑 3/3），不是零条事实；改写句不算客户报告的具体现象
     meaning = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
-               "emotion_level": "angry", "emotion_cues": ["shit"], "facts": []}
+               "emotion_level": "angry", "emotion_cues": ["shit"],
+               "facts": [{"value": "X10 Pro Omni not cleaning properly", "quote": "I just want my X10 Pro Omni to clean"}]}
     first = await conversation.send(text, meaning)
     assert not any(e["type"] == "escalation_summary" for e in first)
     assert "describe what the device is doing" in "".join(e.get("delta", "") for e in first)

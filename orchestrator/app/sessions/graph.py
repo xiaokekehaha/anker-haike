@@ -39,7 +39,7 @@ from app.diagnose import (
     should_rewrite,
     synthesize,
 )
-from app.diagnose.decision import confirmed_symptom
+from app.diagnose.decision import missing_for_retrieval, retry_after_handoff
 from app.diagnose.grade import apply_assessment, grade_hits
 from app.diagnose.localization import part_categories, signature_matches
 from app.diagnose.query import category_label, product_term
@@ -1505,7 +1505,7 @@ def route_entry(state: SessionState) -> str:
         if state.get("human_request_info") and intent in {"supplement","correct","answer_pending"}:
             return "service_context"
         if state.get("case_id") and state.get("stage") == "awaiting_human":
-            return "dialogue"
+            return "disambiguate" if retry_after_handoff(state) else "dialogue"
         if intent == "report_problem" and decision.get("allowed_operations") and not state.get("pending_card"):
             return "disambiguate"
     if decision.get("diagnostic_request") and decision.get("allowed_operations") and not state.get("pending_card"):
@@ -1843,7 +1843,7 @@ async def retrieve(state: SessionState) -> SessionState:
             "error_codes": exact["codes"],
             "plans_ranked": [],
             "diagnose_outcome": {"mode": "escalate", "reason": "R5", "knowledge_status": "code_miss",
-                                 "codes": exact["codes"]},
+                                 "codes": exact["codes"], "cause": "knowledge_gap"},
             "escalate_reason": "R5",
             "plan_cursor": None,
             "observations": [*(state.get("observations") or []),
@@ -2369,16 +2369,27 @@ def _diagnose_outcome(
             "_decision": {"outcome": "clarify", "reason": "applicability", "question": candidate["question"]},
             "escalate_reason": None, "plan_cursor": None,
         }
-    if not plans_ranked and knowledge_status == "no_match" and state is not None and not confirmed_symptom(state):
-        # 只有情绪或「想让它正常工作」（T60）：没有可核对的现象也没有错误码，知识库自然无命中。
-        # 这时交人工只是把空摘要推给同事；先问现象，与 disambiguate 的症状追问共用同一个预算，问满才 R5。
+    # 检索落空，或有命中但没有一条适用：输入不够具体时都一样，先问（T60 复跑：选完型号后命中但全部不适用）
+    if not plans_ranked and knowledge_status in {"no_match", "ok"} and state is not None and missing_for_retrieval(state):
+        # 信息不足不是知识缺失（T60）：型号没定、或没有客户原话支持的具体现象时，检索的输入本身太泛，落空是意料之中。
+        # 先问缺的那一项（型号优先：官方 Q&A 按型号分化），与 disambiguate 的追问共用同一个预算，问满才交接。
+        missing = missing_for_retrieval(state)
         clar = dict(state.get("clarification") or {})
+        if "product" in missing and state.get("category") and not state.get("prepare_card_calls"):
+            catalog = get_catalog()
+            cands = [p.to_candidate().model_dump() for p in catalog.products if p.category == state["category"] and p.in_scope]
+            if 1 < len(cands) <= clarify_mod.MAX_MODEL_CARD:
+                return {
+                    "diagnose_outcome": {"mode": "clarify", "reason": "product_missing", "missing": missing},
+                    "_decision": {"outcome": "model_card"}, "product_candidates": cands,
+                    "escalate_reason": None, "plan_cursor": None,
+                }
         subject = clarify_mod.clarify_subject("symptom")
         asked = int(clar.get("attempts") or 0) if clar.get("question") and clar.get("subject") == subject else 0
-        if asked < clarify_mod.MAX_CLARIFICATIONS:
+        if "symptoms" in missing and asked < clarify_mod.MAX_CLARIFICATIONS:
             # 计数由 clarify 节点的 count_attempt 统一 +1；这里只把预算绑定到「症状」这个主题，不改 attempts。
             return {
-                "diagnose_outcome": {"mode": "clarify", "reason": "symptom_missing", "attempts": asked + 1},
+                "diagnose_outcome": {"mode": "clarify", "reason": "symptom_missing", "attempts": asked + 1, "missing": missing},
                 "_decision": {"outcome": "clarify", "reason": "symptom"},
                 "clarification": {**clar, "reason": "symptom", "subject": subject} if clar.get("reason") == "symptom"
                 else {"reason": "symptom", "attempts": 0, "subject": subject},
@@ -2392,6 +2403,9 @@ def _diagnose_outcome(
                 "mode": "escalate",
                 "reason": "R5",
                 "knowledge_status": knowledge_status,
+                # 交接摘要据此区分「问过仍不够」与「问清了资料没有」（T60）
+                "cause": ("insufficient_information" if state is not None and missing_for_retrieval(state) else "knowledge_gap")
+                if knowledge_status in {"no_match", "ok"} else None,
             },
             "escalate_reason": "R5",
             "plan_cursor": None,
@@ -2450,6 +2464,8 @@ def _diagnose_outcome(
 def route_after_retrieve(state: SessionState) -> str:
     if state.get("escalate_reason"):
         return "escalate"
+    if (state.get("_decision") or {}).get("outcome") == "model_card":
+        return "prepare_card"
     if (state.get("diagnose_outcome") or {}).get("mode") == "clarify":
         return "clarify"
     # Only guide may publish operations, after evidence and pre-step policy checks.
@@ -2568,6 +2584,14 @@ async def guide(state: SessionState) -> SessionState:
                 update["current_evidence_ids"] = list(dict.fromkeys([*state.get("current_evidence_ids", []), *prep.evidence]))
             if prep.model_trace:
                 update["model_trace"] = [*state.get("model_trace", []), prep.model_trace]
+            if state.get("case_status") == "awaiting_approval" and state.get("case_id") and get_services() is not None:
+                # 客户补信息后找到了官方步骤（T60 方案 A）：人工尚未处理的交接撤回队列，案件回到排障
+                row = await get_services().cases.resume_diagnosis(
+                    state["case_id"], input_id=state["input_id"], quote=state.get("text") or "")
+                get_stream_writer()(case_event(row, issue_id=state["active_issue_id"], reason="客户补充信息后找到官方排查步骤"))
+                update.update(case_status=row["status"], escalate_reason=None,
+                              task_queue=[{**t, "status": "active"} if t.get("status") == "waiting_human" else t
+                                          for t in state.get("task_queue", [])])
             return update
         if prep.outcome == "blocked":
             return {**update, **_apply_next_action(work)}
@@ -2892,7 +2916,11 @@ async def summarize(state: SessionState) -> SessionState:
                                            for task in state.get("task_queue", [])])
         writer(case_event(row, issue_id=state["active_issue_id"], reason=summary.reason.text))
     text = reassurance_text(reason, dict(state))
-    if handoff_status == "requested":
+    if handoff_status == "requested" and state.get("case_status") == "awaiting_approval":
+        # 已在人工队列里，客户补的信息仍没查到官方步骤：只更新交接记录，如实说明，不重复「已提交」也不承诺去查（T60）
+        text = ("Thanks, I've added this to your case for the support colleague. "
+                "I still couldn't find official troubleshooting guidance that matches it, so they'll continue from here.")
+    elif handoff_status == "requested":
         text = (
             ("For your safety, please stop using the device and do not charge it. " if reason == "R4" else
              "I couldn't confirm official troubleshooting guidance for this issue. " if reason == "R5" else "")
@@ -3207,7 +3235,8 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
         },
     )
     g.add_conditional_edges(
-        "retrieve", route_after_retrieve, {"reply": "reply", "guide": "guide", "escalate": "escalate", "clarify": "clarify"}
+        "retrieve", route_after_retrieve,
+        {"reply": "reply", "guide": "guide", "escalate": "escalate", "clarify": "clarify", "prepare_card": "prepare_card"}
     )
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(

@@ -45,6 +45,28 @@ class DiagnosticDecision:
         }
 
 
+RETRYABLE_HANDOFF = {"R5", "R7"}  # 交接原因是「没有官方指引」或「追问后仍不明」：客户补了信息，排障可能重新可行
+
+
+def retry_after_handoff(state) -> bool:
+    """等人工审核期间客户补了新的具体现象或产品身份，是否回到排障（T60 方案 A）。
+
+    只在交接原因是缺指引 / 缺信息、人工还没作出决定、本轮确实带来新的事实时重试。客户要求人工（R3）、
+    安全（R4）、质保与订单类交接都不撤回：那些交接的原因不会因为多一条现象而消失。"""
+    decision = state.get("turn_decision") or {}
+    if (state.get("stage") != "awaiting_human" or state.get("case_status") != "awaiting_approval"
+            or state.get("human_decision_id") or state.get("requested_remedy")):
+        return False
+    if (state.get("diagnose_outcome") or {}).get("reason") not in RETRYABLE_HANDOFF and state.get("escalate_reason") not in RETRYABLE_HANDOFF:
+        return False
+    if not decision.get("allowed_operations", True) or decision.get("escalation_trigger"):
+        return False
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    added = {p["fact_id"] for p in decision.get("patches") or [] if p.get("op") in {"add", "replace"}}
+    new_symptom = any(f["fact_id"] in added and concrete(f) for f in _active_facts(issue))
+    return new_symptom or bool(decision.get("product_answered"))
+
+
 def described(state, issue) -> bool:
     """本问题已有可检索的现象：模型抽取的现象事实、intake 现象、或消息里的错误码 / 结构化问题描述。"""
     from app.official.message import parse_message
@@ -63,19 +85,35 @@ def described(state, issue) -> bool:
     return len(words) >= 6 or len(re.findall(r"[一-鿿]", rest)) >= 12
 
 
-def confirmed_symptom(state, issue=None) -> bool:
-    """有可核对的现象：肯定极性的症状事实，或消息里的错误码。否定句和「坏了 / 不行」这类泛泛之词不算。
-
-    described() 还会按词数放行检索（给知识库一次机会）；但放行不等于已经问清，澄清预算不能因此清零（T60）。"""
-    issue = issue if issue is not None else (state.get("issues") or {}).get(state.get("active_issue_id"), {})
-    facts = [f for f in _active_facts(issue) if f.get("polarity", "affirmed") == "affirmed"]
-    return bool(facts or state.get("error_codes") or parse_codes(state.get("text") or ""))
-
-
 def parse_codes(text: str) -> tuple[str, ...]:
     from app.official.message import parse_message
 
     return parse_message(text).codes
+
+
+# 「I just want my hoover to clean」：客户在说想要什么结果，不是设备在做什么。这是愿望句式（一小类语法结构），
+# 不是现象词表；模型有时改写成「not cleaning properly」，有时原样抄成现象（T60 复跑两种都出现）。
+WISH = re.compile(r"\b(?:i|we)\s+(?:just\s+|only\s+|really\s+)?(?:want|wish|would like|need)\b[^.!?]*\bto\b"
+                  r"|我(?:只|就)?(?:想|希望|要)(?:让)?它", re.IGNORECASE)
+
+
+def concrete(fact: dict) -> bool:
+    """客户原话支持的具体现象：引文不是一句愿望。模型对现象的正常归纳（「going off 2 hours before」→
+    「starts two hours early」）不算改写，不按词面比对。"""
+    return not WISH.search(fact.get("quote") or "")
+
+
+def missing_for_retrieval(state, issue=None) -> list[str]:
+    """检索落空时，输入还缺什么：product（型号未确认）/ symptoms（没有客户原话支持的具体现象）。
+    空列表 = 已问清仍查不到，是知识缺失；非空 = 信息不足，先问再交接（T60）。错误码本身就是具体现象。"""
+    issue = issue if issue is not None else (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    missing = []
+    if state.get("product_state") != "confirmed_sku":
+        missing.append("product")
+    facts = [f for f in _active_facts(issue) if f.get("polarity", "affirmed") == "affirmed" and concrete(f)]
+    if not (facts or state.get("error_codes") or parse_codes(state.get("text") or "")):
+        missing.append("symptoms")
+    return missing
 
 
 def fact_codes(state) -> list[str]:
@@ -126,6 +164,9 @@ def explanation(state):
         if state.get("case_id"):
             return "This case has been closed. If the problem persists, please describe what is happening so we can review the case."
         return "This issue was marked as resolved. If it comes back, describe what's happening and I'll check the right guidance again."
+    if state.get("case_id") and state.get("case_status") == "awaiting_approval":
+        # 已在人工队列：不再承诺「我去查官方资料」——这一轮不会去查（T60）
+        return "Your case is with a support colleague. Anything you add here goes into the case; describe what the device is doing and I'll include it."
     if state.get("exhausted_plans"):
         return "The applicable troubleshooting steps have been tried and it isn't resolved yet. I can prepare the steps you tried for our support team; I won't repeat steps you've already done."
     return "There's no troubleshooting step to give yet. Tell me more about the problem (or the error code shown in the app) and I'll check the official guidance; if none applies, I'll say so."

@@ -25,6 +25,7 @@ from haike_contracts.common import (
 from app.conversation.business import BusinessContext
 from app.conversation.operation_conditions import conditions_for, feedback_history
 from app.conversation.tasks import NOT_EXECUTABLE
+from app.diagnose.decision import concrete, missing_for_retrieval
 from app.diagnose.query import category_label
 from app.official.message import parse_message
 from app.sessions.receipt import receipt_outcome
@@ -61,6 +62,13 @@ def _user_texts(state: dict[str, Any]) -> list[str]:
 NEXT_ACTION_TEXT = {
     "no_supported_followup": "{steps}，现有资料没有进一步可执行的排查操作",
     "knowledge_coverage_missing": "当前资料没有适用于该现象的排查路径",
+}
+
+MISSING_LABELS = {"product": "型号", "symptoms": "具体现象"}
+# R5 的两种真实原因（T60）：问过仍信息不足，与问清了但官方资料没有覆盖，接手的人要做的事不同
+R5_CAUSE_TEXT = {
+    "insufficient_information": "追问后仍缺少检索所需信息（{missing}），官方资料未能定位到适用条目",
+    "knowledge_gap": "型号与现象已明确，官方资料没有覆盖该问题",
     "user_requested_human": "用户明确要求人工服务",
     "safety_risk": "存在待核实的安全风险，已停止相关操作",
     "burden_prefer_proposal": "用户不愿继续逐步排查，转为服务方案",
@@ -159,6 +167,11 @@ def build_summary(
     next_action = state.get("next_action") or {}
     if next_action.get("compat_rule", reason) == reason and next_action_text(state, next_action):
         reason_text = next_action_text(state, next_action)
+    outcome = state.get("diagnose_outcome") or {}
+    r5_cause = outcome.get("cause") if reason == "R5" and outcome.get("reason") == "R5" else None
+    if r5_cause in R5_CAUSE_TEXT:
+        missing = missing_for_retrieval(state, issue)
+        reason_text = R5_CAUSE_TEXT[r5_cause].format(missing="、".join(MISSING_LABELS.get(m, m) for m in missing) or "无")
     if reason_terms:
         reason_text += f"；命中词：{'、'.join(reason_terms)}"
     emotion = state.get("emotion") or {}
@@ -208,7 +221,7 @@ def build_summary(
         reason=EscalationReason(
             rule_id=reason,
             text=reason_text,
-            cause=next_action.get("reason") if next_action.get("compat_rule", reason) == reason else None,
+            cause=r5_cause or (next_action.get("reason") if next_action.get("compat_rule", reason) == reason else None),
         ),
         emotion=Emotion(
             level=emotion.get("level"), strategy=emotion.get("strategy", "normal")
@@ -244,7 +257,9 @@ def problem_text(state: dict[str, Any], facts: list[dict[str, Any]]) -> str:
     """问题字段：肯定极性的症状事实 → 表单推送 / 描述原文 → issue 标题；都没有才写占位。
 
     T22 / T34 首测：模型没抽出事实，摘要就写「尚未记录具体故障现象」，而表单里明明写着「Wiel raakt de grond niet」。"""
-    symptoms = [f["value"] for f in facts if f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"]
+    affirmed = [f for f in facts if f["kind"] == "symptom" and f.get("polarity", "affirmed") != "negated"]
+    # 引文只是一句愿望的「现象」（T60「hoover not cleaning properly」）附上客户原话，接手的人能看出哪些是客户说的、哪些是归纳的
+    symptoms = [f["value"] + (f'（客户原话：「{f["quote"]}」）' if not concrete(f) and f.get("quote") else "") for f in affirmed]
     if symptoms:
         return "；".join(symptoms)
     parsed = parse_message(state.get("text") or "")
@@ -318,6 +333,8 @@ def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product
     parsed = parse_message(state.get("text") or "")
     if parsed.login_country:
         known["login_country"] = parsed.login_country
+    if "symptoms" in known and "symptoms" in missing_for_retrieval(state):
+        known.pop("symptoms")  # 只有泛称 / 愿望、没有客户原话支持的具体现象（T60）
     missing = [field for field in REQUIRED_BY_KIND[kind] if field not in known]
     pending = [PendingRequest(intent=t["intent"], quote=t.get("quote") or "", status=t["status"])
                for t in tasks if t.get("status") in {"pending", "active", "waiting_human"}]

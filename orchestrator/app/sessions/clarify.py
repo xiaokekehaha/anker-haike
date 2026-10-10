@@ -214,7 +214,7 @@ def symptom_decision(
 ) -> Decision:
     """产品已定之后的症状判定：继续 / 问一句 / 升级。disambiguate 与产品卡片选中后（apply_action）共用，
     否则「我的 S1 Pro 出问题了」选完型号会在没有任何现象的情况下直接下发第一条计划的步骤。"""
-    from app.diagnose.decision import confirmed_symptom, decide_symptoms, fact_codes
+    from app.diagnose.decision import decide_symptoms, fact_codes, missing_for_retrieval
     product = confirmed or {}
     category = product.get("category") or update.get("category") or category
     decision = decide_symptoms({**state, **update})
@@ -222,7 +222,8 @@ def symptom_decision(
     if decision.outcome == "continue":
         # 抽到肯定极性的症状 / 错误码才算回答了现象。只按词数放行检索的回答（「I told you, it doesn't work」）
         # 保留预算：检索命中则由 _diagnose_outcome 清零，没命中则继续计数，问满再交人工（T60）。
-        if clar.get("reason") != "symptom" or confirmed_symptom({**state, **update}):
+        # 模型改写的泛化现象（T60「hoover not cleaning properly」）不算回答了现象，与检索落空的判断同一口径。
+        if clar.get("reason") != "symptom" or "symptoms" not in missing_for_retrieval({**state, **update}):
             update["clarification"] = None
         codes = set(fact_codes({**state, **update}))
         available = get_plans().allowed_for(category=category, sku=product.get("sku"))

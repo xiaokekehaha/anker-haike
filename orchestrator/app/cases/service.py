@@ -10,7 +10,8 @@ TRANSITIONS = {
     "diagnosing": {"proposing", "awaiting_approval"},
     "proposing": {"awaiting_confirmation", "awaiting_approval", "closed_unresolved", "escalated_summary"},
     "awaiting_confirmation": {"proposing", "executing", "awaiting_approval", "closed_unresolved"},
-    "awaiting_approval": {"approved", "rejected", "awaiting_confirmation", "closed"},
+    # 交接原因是「没有官方指引」、人工还没处理时，客户补的信息让排障重新可行：撤回队列回到排障（T60）
+    "awaiting_approval": {"approved", "rejected", "awaiting_confirmation", "closed", "diagnosing"},
     "approved": {"executing", "awaiting_approval", "closed"},
     "executing": {"tracking", "executing_failed", "awaiting_approval"},
     "executing_failed": {"executing", "proposing", "awaiting_approval", "closed_unresolved"},
@@ -362,6 +363,20 @@ class CaseService:
                 row["proposal"] = {**row["proposal"], "user_confirmed": False, "chosen_option_id": None}
             row["chosen_option_id"] = None
             _event(row, "request_changed", {"input_id": input_id, "quote": quote, "requested": requested}, "user")
+
+        return await self.store.mutate(case_id, apply)
+
+    async def resume_diagnosis(self, case_id, *, input_id, quote):
+        """客户补充信息后排障找到了官方步骤：人工尚未处理的交接撤回队列，回到排障（T60 方案 A）。
+        人工已作出决定的案件不撤回；同一输入重试不重复写。"""
+
+        def apply(row):
+            if any(e["type"] == "customer_supplied_info" and e["payload"]["input_id"] == input_id for e in row["events"]):
+                return
+            if row["status"] != "awaiting_approval" or row["decisions"]:
+                raise CaseConflict("人工已接手或案件状态已变化，不能撤回")
+            _transition(row, "diagnosing", "客户补充信息后找到官方排查步骤，撤回人工队列", "user")
+            _event(row, "customer_supplied_info", {"input_id": input_id, "quote": quote}, "user")
 
         return await self.store.mutate(case_id, apply)
 
