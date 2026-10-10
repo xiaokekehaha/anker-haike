@@ -6,10 +6,9 @@ import styles from './SessionSwitcher.module.css';
 type Props = {
   currentId: string | null;
   recent: RecentSession[];
-  /** 正在运行 / 恢复，或有待输入卡片：新建前要确认 */
-  interruptible: boolean;
-  /** 只禁用切换列表；新建按钮在处理中仍可点，走中断确认 */
+  /** 只禁用切换列表；新建按钮在处理中仍可点 */
   busy: boolean;
+  /** 中断确认由调用方做（与 logo 回首页共用） */
   onNew: () => void;
   onSwitch: (id: string) => void;
 };
@@ -21,16 +20,11 @@ export function optionLabel(s: RecentSession, isCurrent: boolean): string {
   return `${isCurrent ? '（当前）' : ''}${title}${stage ? ` · ${stage}` : ''}`;
 }
 
-export function SessionSwitcher({ currentId, recent, interruptible, busy, onNew, onSwitch }: Props) {
+export function SessionSwitcher({ currentId, recent, busy, onNew, onSwitch }: Props) {
   // 当前会话尚未写入列表（刚创建）时也要能显示为选中项
   const options = currentId && !recent.some((s) => s.id === currentId)
     ? [{ id: currentId, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), title: null, stage: null }, ...recent]
     : recent;
-
-  function handleNew() {
-    if (interruptible && !window.confirm('当前排查会中断，确定开始新会话？旧会话仍可从列表切回。')) return;
-    onNew();
-  }
 
   return (
     <div className={styles.switcher}>
@@ -46,7 +40,7 @@ export function SessionSwitcher({ currentId, recent, interruptible, busy, onNew,
           {options.map((s) => <option key={s.id} value={s.id}>{optionLabel(s, s.id === currentId)}</option>)}
         </select>
       )}
-      <button type="button" className={styles.newButton} onClick={handleNew} disabled={!currentId} title={currentId ? '开始一个新会话；当前会话可从列表切回' : '当前已是新会话'}>
+      <button type="button" className={styles.newButton} onClick={onNew} disabled={!currentId} title={currentId ? '开始一个新会话；当前会话可从列表切回' : '当前已是新会话'}>
         <span aria-hidden="true">＋</span> 新建会话
       </button>
     </div>

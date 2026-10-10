@@ -7,7 +7,6 @@ import type { PendingInput } from '../types/snapshot';
 import styles from './Composer.module.css';
 
 export type Attachment = { id: string; file: File; previewUrl: string | null };
-type SkipReason = 'none' | 'unreadable' | 'later';
 type Props = {
   value: string;
   onChange: (v: string) => void;
@@ -15,8 +14,7 @@ type Props = {
   offline?: boolean;
   /** 返回 false 表示未被服务端接收，保留附件与草稿。 */
   onSend?: (text: string, files: File[], purpose: ImagePurpose) => void | boolean | Promise<void | boolean>;
-  onRequestHuman?: () => void;
-  onSkipReceipt?: (reason: SkipReason) => void | Promise<void>;
+  onSkipReceipt?: () => void | Promise<void>;
   pendingKind?: PendingInput['kind'] | null;
   purpose?: ImagePurpose;
   maxImages?: number;
@@ -57,7 +55,7 @@ function autoGrow(el: HTMLTextAreaElement | null) {
   el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
 }
 
-export function Composer({ value, onChange, offline, inputRef, onSend, onRequestHuman, onSkipReceipt, pendingKind = null, purpose = 'fault', maxImages = 3, busy: runBusy = false, onCancel, presetFiles = null }: Props) {
+export function Composer({ value, onChange, offline, inputRef, onSend, onSkipReceipt, pendingKind = null, purpose = 'fault', maxImages = 3, busy: runBusy = false, onCancel, presetFiles = null }: Props) {
   const inputId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
   const localRef = useRef<HTMLTextAreaElement>(null);
@@ -190,12 +188,12 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
     }
   }
 
-  async function skip(reason: SkipReason) {
+  async function skip() {
     if (inputBlocked || submittingRef.current || !onSkipReceipt) return;
     submittingRef.current = true;
     setSubmitting(true);
     const batch = generation.current;
-    try { await onSkipReceipt(reason); }
+    try { await onSkipReceipt(); }
     catch { if (batch === generation.current) setImageError('暂时无法跳过，请重试。'); }
     finally { if (batch === generation.current) { submittingRef.current = false; setSubmitting(false); } }
   }
@@ -239,16 +237,12 @@ export function Composer({ value, onChange, offline, inputRef, onSend, onRequest
             placeholder={placeholder}
             aria-describedby={keyHint ? `${inputId}-hint ${inputId}-keys` : `${inputId}-hint`} />
           {runBusy && onCancel && <button type="button" className={styles.ghost} onClick={onCancel}>取消</button>}
-          {onRequestHuman && <button type="button" className={styles.ghost} disabled={offline} onClick={onRequestHuman}>请求人工</button>}
           <button type="submit" className={styles.send} disabled={!canSend}>{submitting ? '提交中…' : receipt ? '上传凭证' : '发送'}</button>
         </div>
       </div>
       {receipt && onSkipReceipt && (
-        <div className={styles.skipOptions} aria-label="暂不上传凭证">
-          <span>暂不上传：</span>
-          <button type="button" disabled={inputBlocked} onClick={() => void skip('none')}>没有凭证，跳过</button>
-          <button type="button" disabled={inputBlocked} onClick={() => void skip('unreadable')}>看不清，跳过</button>
-          <button type="button" disabled={inputBlocked} onClick={() => void skip('later')}>稍后再提供</button>
+        <div className={styles.skipOptions}>
+          <button type="button" disabled={inputBlocked} onClick={() => void skip()}>暂时没有凭证，跳过</button>
         </div>
       )}
       {imageError && <p role="alert" className={styles.imageError}>{imageError}</p>}

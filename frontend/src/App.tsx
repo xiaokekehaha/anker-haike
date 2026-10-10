@@ -54,6 +54,15 @@ export function App() {
     });
   }
 
+  /** 新建会话按钮与 logo 共用：空白会话不动作；处理中或有待回答卡片先确认中断。 */
+  function goHome() {
+    if (!state.id) return;
+    const interruptible = busy || state.pendingInput !== null || state.activeRun !== null;
+    if (interruptible && !window.confirm('当前排查会中断，确定开始新会话？旧会话仍可从列表切回。')) return;
+    setRecordOpen(false);
+    void session.startNew();
+  }
+
   const onAction = (kind: Parameters<typeof session.act>[0]['kind'], payload: Record<string, unknown>) => void session.act({ kind, payload });
   const onIssueAction = (kind: 'new_issue' | 'resume_issue', target_issue_id?: string) => void session.act({ kind, target_issue_id });
   const record = deriveRecord(state);
@@ -70,13 +79,12 @@ export function App() {
   return (
     <div className={styles.app} data-ui={state.ui}>
       <a href="#main" className={styles.skip}>跳到主要内容</a>
-      <HeaderBar {...health}>
+      <HeaderBar {...health} onHome={goHome}>
         <SessionSwitcher
           currentId={state.id}
           recent={session.recent}
-          interruptible={busy || state.pendingInput !== null || state.activeRun !== null}
           busy={busy}
-          onNew={() => void session.startNew()}
+          onNew={goHome}
           onSwitch={(id) => void session.switchTo(id)}
         />
       </HeaderBar>
@@ -103,14 +111,13 @@ export function App() {
               key={composerContext}
               pendingKind={pendingKind}
               purpose={receiptUpload ? 'receipt' : 'fault'}
-              onSkipReceipt={(reason) => session.act({ kind: 'skip_receipt', payload: { reason } })}
+              onSkipReceipt={() => session.act({ kind: 'skip_receipt', payload: { reason: 'none' } })}
               inputRef={composerRef}
               value={draft}
               onChange={setDraft}
               offline={false}
               busy={busy || state.pendingActionId !== null}
               onSend={(text, files, purpose) => session.send(text, { files, purpose })}
-              onRequestHuman={hasHistory ? undefined : () => void session.requestHuman()}
               onCancel={state.activeRun ? () => void session.cancel() : undefined}
               presetFiles={presetFiles}
             />

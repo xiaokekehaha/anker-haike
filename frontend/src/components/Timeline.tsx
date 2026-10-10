@@ -49,7 +49,7 @@ function renderCard(item: CardItem, active: boolean, disabled: boolean, onAction
     case 'step_card':
       return <StepCard key={item.card_id} item={item} active={active} disabled={disabled} onHover={onHover} onReply={(reply) => onAction('step_feedback', { feedback: reply.feedback ?? null, note: reply.note ?? null, answer: reply.answer ?? null })} />;
     case 'receipt_card':
-      return <ReceiptCard key={item.card_id} item={item} active={active} disabled={disabled} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={(reason) => onAction('skip_receipt', { reason })} />;
+      return <ReceiptCard key={item.card_id} item={item} active={active} disabled={disabled} onConfirm={(fields, edited) => onAction('confirm_receipt', { fields, edited })} onSkip={() => onAction('skip_receipt', { reason: 'unreadable' })} />;
     case 'proposal_card':
       return <ProposalCard key={item.card_id} item={item} active={active} disabled={disabled} onConfirm={(option_id) => onAction('confirm_proposal', { option_id })} onDecline={(reason) => onAction('decline_proposal', { reason })} />;
     case 'execution_card':

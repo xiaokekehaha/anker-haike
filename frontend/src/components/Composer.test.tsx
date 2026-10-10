@@ -88,15 +88,12 @@ describe('pending input modes', () => {
   // CM 交接契约 §7 / 验收 A35：四种 pending 下都允许纯文字追问，卡片操作另走动作接口。
   it.each(['select_product', 'confirm_receipt'] as const)('keeps plain text and photos available while a %s card waits', async (pendingKind) => {
     const onSend = vi.fn().mockResolvedValue(true);
-    const onRequestHuman = vi.fn();
-    render(<Composer value="顺便问一下保修多久" onChange={vi.fn()} onSend={onSend} onRequestHuman={onRequestHuman} pendingKind={pendingKind} />);
+    render(<Composer value="顺便问一下保修多久" onChange={vi.fn()} onSend={onSend} pendingKind={pendingKind} />);
     expect(screen.getByLabelText('描述你的问题')).toBeEnabled();
     expect(screen.getByTestId('image-input')).toBeEnabled();
     expect(screen.getByRole('button', { name: '发送' })).toBeEnabled();
     fireEvent.submit(screen.getByRole('form', { name: '发送消息' }));
     await waitFor(() => expect(onSend).toHaveBeenCalledWith('顺便问一下保修多久', [], 'fault'));
-    fireEvent.click(screen.getByRole('button', { name: '请求人工' }));
-    expect(onRequestHuman).toHaveBeenCalledOnce();
   });
 
   it('allows a text-only question while waiting for the receipt, and sends attachments as purpose=receipt', async () => {
@@ -117,11 +114,12 @@ describe('pending input modes', () => {
     await waitFor(() => expect(onSend).toHaveBeenCalledWith('发票在公司，明天补', [], 'receipt'));
   });
 
-  it.each([['没有凭证，跳过', 'none'], ['看不清，跳过', 'unreadable'], ['稍后再提供', 'later']] as const)('passes the reason for %s', async (label, reason) => {
+  it('offers a single skip option while waiting for the receipt', async () => {
     const onSkipReceipt = vi.fn();
     render(<Composer value="" onChange={vi.fn()} pendingKind="upload_receipt" onSkipReceipt={onSkipReceipt} />);
-    fireEvent.click(screen.getByRole('button', { name: label }));
-    await waitFor(() => expect(onSkipReceipt).toHaveBeenCalledWith(reason));
+    expect(screen.queryByRole('button', { name: '请求人工' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '暂时没有凭证，跳过' }));
+    await waitFor(() => expect(onSkipReceipt).toHaveBeenCalledOnce());
   });
 
   it('preserves attachments and draft when the server rejects the upload', async () => {

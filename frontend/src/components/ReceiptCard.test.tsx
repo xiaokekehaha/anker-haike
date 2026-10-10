@@ -37,8 +37,8 @@ describe('receipt field confirmation', () => {
     fireEvent.change(screen.getByLabelText('购买商家'), { target: { value: '示例专卖店' } });
     fireEvent.click(screen.getByRole('button', { name: /^确认$/ }));
     expect(onConfirm).toHaveBeenCalledWith({ seller: '示例专卖店' }, ['seller']);
-    fireEvent.click(screen.getByRole('button', { name: '看不清，跳过' }));
-    expect(onSkip).toHaveBeenCalledWith('unreadable');
+    fireEvent.click(screen.getByRole('button', { name: '信息有误，交人工核实' }));
+    expect(onSkip).toHaveBeenCalledOnce();
   });
 
   it('preserves edits on identical replay but replaces them when authoritative fields change', () => {

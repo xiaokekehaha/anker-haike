@@ -86,13 +86,31 @@ describe('A3 receipt workflow through App and HTTP/SSE', () => {
     expect(screen.getByText('凭证核实事实')).toBeVisible();
   });
 
+  it('logo returns to the home page after confirming the interruption, without reloading', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json(snapshot())));
+    const confirm = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
+    vi.stubGlobal('confirm', confirm);
+    render(<App />);
+    await screen.findByRole('form', { name: '上传购买凭证' });
+    const logo = screen.getByRole('link', { name: 'Anker 智能服务首页' });
+    fireEvent.click(logo);
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(screen.getByRole('form', { name: '上传购买凭证' })).toBeInTheDocument();
+    fireEvent.click(logo);
+    await waitFor(() => expect(screen.queryByRole('form', { name: '上传购买凭证' })).not.toBeInTheDocument());
+    expect(screen.getByRole('button', { name: /扫地机器人/ })).toBeVisible();
+    expect(sessionStorage.getItem('haike.session_id')).toBeNull();
+    fireEvent.click(logo);
+    expect(confirm).toHaveBeenCalledTimes(2);
+  });
+
   it('skips collection with a reason and reaches the uncollected summary', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(json(snapshot())).mockResolvedValueOnce(sse(finalEvents('not_collected')))
       .mockResolvedValueOnce(json(snapshot({ version: 9, pending_input: null, timeline: [{ kind: 'escalation_summary', summary_id: 'summary-1', revision: 1, source_through_seq: 1, updated_at: '2026-09-13T00:00:00Z', card_id: 'summary',
         summary: { ...summary, receipt: { ...summary.receipt, status: 'not_collected' } } }] })));
     vi.stubGlobal('fetch', fetch);
     render(<App />);
-    fireEvent.click(await screen.findByRole('button', { name: '没有凭证，跳过' }));
+    fireEvent.click(await screen.findByRole('button', { name: '暂时没有凭证，跳过' }));
     await waitFor(() => expect(document.querySelector('[data-ui]')).toHaveAttribute('data-ui', 'idle'));
     expect(JSON.parse(fetch.mock.calls[1]?.[1].body)).toMatchObject({ kind: 'skip_receipt', expected_version: 4, card_id: 'upload', input_token: 'upload', payload: { reason: 'none' } });
     expect(screen.queryByRole('form', { name: '上传购买凭证' })).not.toBeInTheDocument();

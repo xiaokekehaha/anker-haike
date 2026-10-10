@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { ModelDialog } from './ModelDialog';
 import styles from './HeaderBar.module.css';
 
-type Props = HealthState & { refresh: () => void; children?: ReactNode };
+type Props = HealthState & { refresh: () => void; onHome?: () => void; children?: ReactNode };
 
 function statusLabel(status: ComponentStatus | undefined, failed: boolean) {
   if (failed) return '连接异常';
@@ -15,7 +15,7 @@ function statusLabel(status: ComponentStatus | undefined, failed: boolean) {
 }
 
 /** 48 px 头部：品牌 + 会话切换 + 一个服务状态点。组件明细（模型 / 知识库 / 数据库）是运维信息，收进点开的弹层。 */
-export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh, children }: Props) {
+export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh, onHome, children }: Props) {
   const [modelsOpen, setModelsOpen] = useState(false);
   const modelsButton = useRef<HTMLButtonElement>(null);
   const services = [
@@ -27,7 +27,9 @@ export function HeaderBar({ snapshot, error, refreshing, checkedAt, refresh, chi
 
   return (
     <header className={styles.header}>
-      <a className={styles.brand} href="/" aria-label="Anker 智能服务首页">
+      {/* 页内回首页（新会话）；整页刷新会按 sessionStorage 恢复原会话，等于没动。带修饰键时保留浏览器默认（新标签页打开）。 */}
+      <a className={styles.brand} href="/" aria-label="Anker 智能服务首页"
+        onClick={(e) => { if (!onHome || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; e.preventDefault(); onHome(); }}>
         <span className={styles.mark} aria-hidden="true">✦</span>
         <span className={styles.brandText}><strong>智能服务</strong><span className={styles.brandCaption}>ANKER · SMART CARE</span></span>
       </a>
