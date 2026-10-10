@@ -742,3 +742,21 @@ def test_a_parts_purchase_request_is_kept_whatever_the_model_reads():
     # 没有采购原话的故障描述不受影响
     plain = TurnInterpretation(primary_intent="report_problem")
     assert logistics_correction(plain, "The brush guard snapped off and it doesn't clean well.") == plain
+
+
+async def test_t23_battery_error_push_gets_the_official_step_not_r4(l3_runtime, monkeypatch):
+    """T23（第十轮）：模型把设备推送「E41: Battery abnormal」标成 reported；来源是设备文案、词表未命中，
+    不建 R4，按精确错误码下发 rv-0138。"""
+    async def interpret(router, state, **kwargs):
+        return TurnInterpretation(
+            primary_intent="report_problem", device_relation="current",
+            facts=[{"value": "Battery abnormal", "quote": "E41: Battery abnormal, task ended."}],
+            device_safety_assertion="reported", device_safety_quote="E41: Battery abnormal, task ended.",
+        ), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    rows, state = await _first_turn("T23")
+    assert state["risk_cases"] == []
+    assert state["escalate_reason"] is None
+    card = next(e for e in rows if e["type"] == "step_card")
+    assert card["step"]["plan_id"] == "qa_rv_0138"

@@ -102,6 +102,16 @@ def quote_source(quote: str | None, spans: list[str]) -> str:
     return "device_message" if quote and any(normalize(quote) in normalize(span) for span in spans) else "user_statement"
 
 
+SAFETY_CONFIRM_QUESTION = (
+    "Before we continue, I need to check one thing for your safety: is there any smoke, burning smell, "
+    "visible swelling of the battery, leaking liquid, or is the device too hot to touch? Please reply yes or no."
+)
+
+
+def _unconfirmed_risk(risks: list[dict], target: str | None) -> dict | None:
+    return next((r for r in risks if r.get("status") == "unconfirmed" and r.get("issue_id") in {None, target}), None)
+
+
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
     issues = copy.deepcopy(state.get("issues") or {})
     iid, at = state["input_id"], state["at"]
@@ -378,29 +388,40 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         issue["status"] = "open"
         issue["title"] = "、".join(issue["symptoms"])
     risks = copy.deepcopy(state.get("risk_cases") or [])
-    new_risk = (
-        meaning.device_safety_assertion == "reported" and quoted(meaning.device_safety_quote, text)
-    )
+    # R4 语义门（2026-10-10）：模型标 reported 且原话存在，只证明「客户说过这句话」，不证明它是物理危险。
+    # T23 第十轮：设备推送「E41: Battery abnormal」被当成安全事件。与 R3 同一模式——引文落在设备字段里不算用户报告；
+    # 用户自己写的但词表没命中，先问一句封闭式确认（期间暂停动作），确认再升级；词表命中仍立即 R4，保护不降。
+    claimed = meaning.device_safety_assertion == "reported" and quoted(meaning.device_safety_quote, text)
+    claim_source = quote_source(meaning.device_safety_quote, spans) if claimed else None
     validated_negation = meaning.device_safety_assertion == "negated" and bool(
         quoted(meaning.device_safety_quote, text)
     )
-    uncertain_risk = precheck_risk and not new_risk and not validated_negation
-    if new_risk or uncertain_risk:
+    pending = _unconfirmed_risk(risks, target)
+    new_risk = (precheck_risk and not validated_negation) or (claimed and claim_source == "user_statement" and pending is not None)
+    unconfirmed_claim = claimed and claim_source == "user_statement" and not new_risk
+    if unconfirmed_claim:
+        clarify = clarify or SAFETY_CONFIRM_QUESTION
+    if pending is not None and (new_risk or validated_negation):
+        pending["status"] = "reported" if new_risk else "cleared"
+        pending.setdefault("source_input_ids", []).append(iid)
+    elif new_risk or unconfirmed_claim:
         risk_target = target if new_device or meaning.device_relation == "current" else None
         risks.append(
             {
                 "risk_id": stable_id(iid, "risk"),
                 "rule_id": "R4",
-                "status": "reported",
+                "status": "reported" if new_risk else "unconfirmed",
                 "source_input_ids": [iid],
                 "reported_at": at,
                 "issue_id": risk_target,
                 "device_ref_id": issue["device_ref"]["device_ref_id"] if risk_target else None,
                 "restriction": "no_operations",
-                "policy_version": "2026-09-13",
+                "policy_version": "2026-10-10",
                 "last_evidence_seq": state.get("input_seq"),
+                **({"quote": meaning.device_safety_quote} if claimed else {}),
             }
         )
+    uncertain_risk = False
     corrected_sources = {
         source
         for f in facts
@@ -420,7 +441,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
                 risk["status"] = "disputed"
                 risk.setdefault("dispute_refs", []).append(iid)
     restriction = any(
-        r["status"] in {"reported", "disputed"}
+        r["status"] in {"reported", "disputed", "unconfirmed"}
         and (
             r.get("issue_id") in {None, target}
             or issue["status"] == "draft"
