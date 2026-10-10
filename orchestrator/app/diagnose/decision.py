@@ -20,6 +20,7 @@ from app.conversation.operation_conditions import (
     step_unavailable,
     support_question,
 )
+from app.guide.verify import unanswered
 
 
 def _active_facts(issue):
@@ -262,11 +263,17 @@ def replay_end(library, plan_id: str, state) -> str:
         if record is None and step.kind != "statement":
             return "open"
         record = record or {}
-        option = (record.get("answer") or {}).get("option")
-        # 只认审核显式写成 EXHAUSTED 的选项分支（原文没覆盖的那一支）；问句答完自然走完计划的不算
-        if step.kind == "question" and step.branches.get(option) == "EXHAUSTED":
+        answer = record.get("answer") or {}
+        option = answer.get("option")
+        # 审核显式写成 EXHAUSTED 的选项分支（原文没覆盖的那一支），或重发后仍答「还没检查 / 不知道」（B21）：
+        # 计划没有走完，不算一条走完的指南，也不能说「官方排查已完成」
+        if step.kind == "question" and (step.branches.get(option) == "EXHAUSTED" or unanswered(step, answer)):
             return "question_exit"
         step_id = plan.next_step_id(step_id, record.get("feedback") or "not_solved", option=option)
+        # 有选项的问句收到对不上任何选项的短答、计划就此结束：答非所问不等于走完（B25「拆了还响，是吱吱声」打成文字，
+        # 没走到试拖地模式那一支，rv-0341 不该算一条走完的指南）
+        if step.kind == "question" and step_id == "EXHAUSTED" and step.options and option is None and (answer.get("text") or "").strip():
+            return "question_exit"
     return "open"
 
 

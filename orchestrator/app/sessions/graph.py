@@ -2240,8 +2240,10 @@ async def retrieve(state: SessionState) -> SessionState:
     trace += plans.pop("retrieval_trace", [])
     # 首批无法支持操作时，给被预算裁掉的候选一次机会；单次上下文预算保持不变。
     # 不重试已读片段，不重新查询知识库，也不把 needs_confirmation 当成 supported。
+    # 首批已有待确认的追问（needs_confirmation）就先问，不补查：补查只看得到被裁掉的几条、没有首批作对照，
+    # 容易把勉强沾边的候选判成适用并顶掉首批的追问（T36：首批 rv-0341 待确认 0.62，补查把「集尘时异响」rv-0315 判适用）。
     omitted = [hit for hit in candidates if selection.excluded.get(hit.evidence_id) in {"item_limit", "char_limit"}]
-    if not plans.get("plans_ranked") and omitted and get_model_router() is not None:
+    if not plans.get("plans_ranked") and not plans.get("clarifications") and omitted and get_model_router() is not None:
         if _remaining_ms(state) >= rcfg.retrieval.min_remaining_for_second_round_ms:
             recovery = pack_hits(
                 omitted, max_items=rcfg.retrieval.final_k,

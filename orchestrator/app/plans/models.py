@@ -38,6 +38,9 @@ class PlanStep(_Strict):
     kind: StepKind = "action"
     options: list[str] = Field(default_factory=list)
     branches: dict[str, str] = Field(default_factory=dict)
+    # 问句里表示「还没做 / 不知道」的选项：选它或答非所问的短答时卡片不算答完，带提示重发（B21：「I have not checked」
+    # 不等于检查无异常）。为空则沿用原语义：短答走 next_on。
+    retry_options: list[str] = Field(default_factory=list)
     source_gap: bool = False
     # 2026-10-10：「If <条件>, …」开头的操作步骤只在条件成立时适用；进指南前与用户原话核对（app/guide/fact_check.py）
     condition: str | None = None
@@ -95,6 +98,8 @@ class Plan(_Strict):
                     raise ValueError(f"step {s.step_id}.branches[{option!r}] -> {target!r} is not another step_id of this plan")
                 if option not in s.options:
                     raise ValueError(f"step {s.step_id}.branches[{option!r}] is not one of its options")
+            if not set(s.retry_options) <= set(s.options):
+                raise ValueError(f"step {s.step_id}.retry_options must be among its options")
         return self
 
     def step(self, step_id: str) -> PlanStep:

@@ -64,6 +64,31 @@ async def test_omitted_candidate_gets_second_bounded_pass(conversation):
     assert "qa_rv_0271" not in first_prompt and "qa_rv_0271" in second_prompt
 
 
+async def test_first_pass_clarification_is_asked_before_recovery(conversation):
+    """T36：首批 rv-0341 待确认（有追问），补查曾把被裁掉的「集尘时异响」rv-0315 判适用并顶掉追问。
+    首批已有追问就先问，不再补查。"""
+    set_knowledge_adapter(ManyCandidates())
+    model = conversation.models["diagnose.synthesize"]
+    model.script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0272", "confidence": 0.62, "evidence_ids": ["c0"],
+        "applicability": "needs_confirmation", "supported_symptoms": [],
+        "clarification_question": "Is the hair wrapped around the roller brush?",
+    }]}, {"hypotheses": [{
+        "plan_id": "qa_rv_0271", "confidence": 0.9, "evidence_ids": ["c13"],
+        "applicability": "supported", "supported_symptoms": ["El robot está desconectado"],
+    }]}]
+    events = await conversation.send("X10 Pro Omni: El robot está desconectado", {
+        "primary_intent": "report_problem", "device_relation": "current",
+        "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "El robot está desconectado", "quote": "El robot está desconectado"}],
+    })
+    assert len(model.calls) == 1
+    assert not any(e["type"] == "step_card" for e in events)
+    assert "Is the hair wrapped" in "".join(e.get("delta", "") for e in events)
+    state = await conversation.state()
+    assert not any(t.get("event") == "context_recovery" for t in state["retrieval_trace"])
+
+
 async def test_supported_first_pass_does_not_retry(conversation):
     set_knowledge_adapter(ManyCandidates())
     conversation.models["diagnose.synthesize"].script[0]["hypotheses"][0]["evidence_ids"] = ["c0"]

@@ -70,6 +70,15 @@ def step_payload_error(step: dict[str, Any], payload: dict[str, Any]) -> str | N
     return None
 
 
+def unanswered(step, answer: dict[str, Any] | None) -> bool:
+    """问句收到的是「还没做 / 不知道」：选了审核标的 retry 选项，或有选项的问句收到对不上任何选项的短答。
+    只对标了 retry_options 的问句生效，其余问句的短答照旧走 next_on（bp-0032「somewhere near the rim」）。"""
+    if step.kind != "question" or not step.retry_options:
+        return False
+    option = (answer or {}).get("option")
+    return option in step.retry_options or (option is None and bool(_answer_text(answer)))
+
+
 def _answer_text(answer: dict[str, Any] | None) -> str:
     if not answer:
         return ""
@@ -107,6 +116,7 @@ def apply_feedback(
             "title": step.title,
             "instruction_src": step.instruction_src,
             "kind": step.kind,
+            **({"options": list(step.options)} if step.kind == "question" else {}),
             "feedback": feedback,
             "note": note,
             "answer": answer,
@@ -122,6 +132,14 @@ def apply_feedback(
         observation = None
         missing = None
         text = _answer_text(answer)
+        if unanswered(step, answer) and not any(
+                a.get("retry") and a.get("instruction_src") == step.instruction_src for a in attempts[:-1]):
+            # 「还没检查 / 不知道」不是答案（B21）：记下原话，这张卡不算答完，带提示重发一次；再答不上来才按原边走
+            attempt["retry"] = True
+            observation = {"kind": "observation", "value": f"{step.title}: {text}", "quote": text,
+                           "subject": step.title.rstrip("?"), "polarity": "uncertain", "source": "user_statement"}
+            return result("next", dict(cursor), counters, executed, exhausted,
+                          trace={"rule": "question_retry"}, observation=observation)
         if step.kind == "question" and text:
             observation = {"kind": "observation", "value": f"{step.title}: {text}", "quote": text,
                            "subject": step.title.rstrip("?"), "polarity": "affirmed", "source": "user_statement"}

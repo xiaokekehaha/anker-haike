@@ -151,6 +151,7 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             "source_gap": step.source_gap,
             "options": list(step.options),
             "branches": {option: target(t) for option, t in step.branches.items()},
+            "retry_options": list(step.retry_options),
             "required_resources": ["device"] if kind == "action" else [],
             "condition": step_condition(step.text) if kind == "action" else None,
         })

@@ -92,6 +92,26 @@ def candidates(plan: Plan, state: dict[str, Any]) -> list[PlanStep]:
     return [s for s in plan.steps if s.instruction_src not in answered and s.kind in {"question", "action"}]
 
 
+def carried_answers(plan: Plan, state: dict[str, Any], *, session_id: str, now: str) -> list[dict[str, Any]]:
+    """同一个问题在另一条指南里已经答过：问句标题与选项完全一致时直接沿用那次的选项（B26：rv-0341 已答
+    「拆下滚刷后仍响、不是吱吱声」，换到 rv-0349 不再问第二遍）。只认客户自己选的选项，不认 fact 推断与「还没检查」。"""
+    previous = {(a.get("title"), tuple(a.get("options") or ())): a for a in answered_history(state)
+                if a.get("kind") == "question" and (a.get("answer") or {}).get("option") and (a.get("answer") or {}).get("source") != "fact"}
+    answered_src = {a.get("instruction_src") for a in answered_history(state)}
+    out = []
+    for step in plan.steps:
+        if step.kind != "question" or step.instruction_src in answered_src:
+            continue
+        hit = previous.get((step.title, tuple(step.options)))
+        if hit is None or hit.get("plan_id") == plan.plan_id:
+            continue
+        out.append({"plan_id": plan.plan_id, "step_id": step.step_id, "card_id": step_card_id(session_id, plan.plan_id, step.step_id),
+                    "title": step.title, "instruction_src": step.instruction_src, "kind": step.kind, "options": list(step.options),
+                    "feedback": None, "note": None, "ts": now,
+                    "answer": {**hit["answer"], "source": "carried", "from_plan": hit.get("plan_id")}})
+    return out
+
+
 def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[PlanStep] = ()) -> str:
     lines = [f"- {s.step_id} [reference] {s.condition}" for s in reference]
     for s in steps:
@@ -169,14 +189,21 @@ async def check_plan_facts(
     lane: str, session_id: str, budget_ms: int,
 ) -> dict[str, Any]:
     """返回要合并进状态的 {step_checks, step_attempts, guide_trace}；无需判定或判定不可用时返回 {}。"""
+    now = datetime.now(UTC).isoformat()
+    # 别的指南里答过的同一个问题先确定性沿用（不靠模型，也不受下面「每个计划只判一次」的限制）
+    carried = carried_answers(plan, state, session_id=session_id, now=now)
+    if carried:
+        state = {**state, "step_attempts": [*(state.get("step_attempts") or []), *carried]}
+    carried_update: dict[str, Any] = {"step_attempts": state["step_attempts"], "guide_trace": [
+        {"event": "answer_carried", "plan_id": plan.plan_id, "steps": [a["step_id"] for a in carried]}]} if carried else {}
     revision = _issue(state).get("issue_revision")
     checks = dict(state.get("step_checks") or {})
     if (checks.get(plan.plan_id) or {}).get("issue_revision") == revision:
-        return {}
+        return carried_update
     steps = candidates(plan, state)
     reference = [s for s in plan.steps if s.condition and s not in steps]
     if router is None or budget_ms < 1000 or not steps or not user_wrote(state):
-        return {}
+        return carried_update
     corpus = user_corpus(state)
     facts_text = "\n".join(f"- kind={f.get('kind')} polarity={f.get('polarity', 'affirmed')} value={f.get('value')}"
                            for f in _active_facts(state)) or "（无）"
@@ -191,12 +218,11 @@ async def check_plan_facts(
         result = await router.invoke(TASK, messages, FactCheck, budget_ms=budget_ms, session_id=session_id, lane=lane)
     except (ModelInvokeError, CapacityExceeded, ValidationError) as exc:
         log.warning("fact check unavailable session=%s plan=%s: %s", session_id, plan.plan_id, type(exc).__name__)
-        return {}
+        return carried_update
     push = "\n".join(parse_message(text).fields.get("push") or "" for text in corpus)
     verdicts = accept(steps, result.parsed.steps, corpus, push)
     pending = {s.step_id for s in plan.steps if s.instruction_src not in {a.get("instruction_src") for a in answered_history(state)}}
     checks[plan.plan_id] = {"issue_revision": revision, "steps": _skips(plan, verdicts, pending)}
-    now = datetime.now(UTC).isoformat()
     answered = [
         {"plan_id": plan.plan_id, "step_id": s.step_id, "card_id": step_card_id(session_id, plan.plan_id, s.step_id),
          "title": s.title, "instruction_src": s.instruction_src, "kind": s.kind, "feedback": None, "note": None,
@@ -204,10 +230,10 @@ async def check_plan_facts(
          "ts": now}
         for s in steps if (v := verdicts.get(s.step_id)) and v["status"] == "answered"
     ]
-    trace = [{"event": "fact_check", "plan_id": plan.plan_id, "model_used": result.model_used,
-              "verdicts": {sid: v["status"] for sid, v in verdicts.items()},
-              "skipped": sorted(sid for sid, v in checks[plan.plan_id]["steps"].items() if v.get("skip"))}]
+    trace = [*carried_update.get("guide_trace", []), {"event": "fact_check", "plan_id": plan.plan_id, "model_used": result.model_used,
+             "verdicts": {sid: v["status"] for sid, v in verdicts.items()},
+             "skipped": sorted(sid for sid, v in checks[plan.plan_id]["steps"].items() if v.get("skip"))}]
     update: dict[str, Any] = {"step_checks": checks, "guide_trace": trace}
-    if answered:
+    if answered or carried:
         update["step_attempts"] = [*(state.get("step_attempts") or []), *answered]
     return update

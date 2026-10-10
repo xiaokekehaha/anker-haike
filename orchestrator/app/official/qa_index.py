@@ -81,6 +81,7 @@ class Step:
     # 选项 → 目标（question 用）：int 是段落位置 pos；str 是本条计划的 step_id（s3b）或 "EXHAUSTED"
     branches: dict[str, int | str] = field(default_factory=dict)
     default: int | str | None = None  # 回答不在选项里时去哪儿；None 沿原文顺序走下一步
+    retry_options: tuple[str, ...] = ()  # 表示「还没做 / 不知道」的选项：卡片不算答完，带提示重发（B21）
     title: str = ""  # 人工审核给的卡片标题（question 卡只显示标题与选项，原文段落不是问句时必须给）
     parts: tuple[Step, ...] = ()  # 人工审核把一段拆成多步（段内问句、诊断树）；为空即整段一步
     disabled: bool = False
@@ -299,7 +300,7 @@ def load_overrides(path: Path | None = None) -> dict[str, dict[int, dict]]:
     return {str(qa_id): {int(no): dict(spec or {}) for no, spec in (entries or {}).items()} for qa_id, entries in raw.items()}
 
 
-SPEC_KEYS = {"kind", "title", "options", "branches", "default", "disabled", "reason"}
+SPEC_KEYS = {"kind", "title", "options", "branches", "default", "retry_options", "disabled", "reason"}
 
 
 def _target(value: int | str) -> int | str:
@@ -315,6 +316,7 @@ def _spec_step(no: int, pos: int, text: str, spec: dict, *, warranty: bool) -> S
         no=no, text=strip_urls(text), media=media_of(text), warranty=warranty or kind == "handoff",
         kind=kind, options=options, branches={str(k): _target(v) for k, v in (spec.get("branches") or {}).items()},
         default=_target(spec["default"]) if spec.get("default") is not None else None,
+        retry_options=tuple(spec.get("retry_options") or ()),
         title=str(spec.get("title") or ""),
         disabled=bool(spec.get("disabled")), disabled_reason=str(spec.get("reason") or ""),
         source_gap=bool(DANGLING_REFERENCE.search(text)),

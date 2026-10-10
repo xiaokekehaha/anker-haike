@@ -85,6 +85,7 @@ async def test_restart_then_warranty_entry_ends_in_the_warranty_flow(l3_runtime,
 
 RV_0023_FINE = "The seal ring and tank parts look fine, but the error still shows after reinstalling"
 RV_0023_BROKEN = "The seal ring is deformed or broken"
+RV_0023_UNCHECKED = "I haven't checked yet"
 
 
 def test_rv_0023_hardware_conclusion_is_a_confirmation_question():
@@ -92,7 +93,8 @@ def test_rv_0023_hardware_conclusion_is_a_confirmation_question():
     plan = get_plan_library().get("qa_rv_0023")
     s1, s2 = plan.step("s1"), plan.step("s2")
     assert s1.kind == "action" and s1.next_on.not_solved == "s2"
-    assert s2.kind == "question" and s2.options == [RV_0023_FINE, RV_0023_BROKEN]
+    assert s2.kind == "question" and s2.options == [RV_0023_FINE, RV_0023_BROKEN, RV_0023_UNCHECKED]
+    assert s2.retry_options == [RV_0023_UNCHECKED]
     assert s2.title == "After checking the clean water tank, which matches what you see?"
 
 
@@ -117,6 +119,30 @@ async def test_t19_not_solved_asks_which_case_before_the_warranty_check(l3_runti
     assert "To check the warranty" in said(rows)
     issue = state["issues"][state["active_issue_id"]]
     assert any(option in f["value"] for f in issue["facts"] if f["kind"] == "observation")
+
+
+@pytest.mark.parametrize("answer", [
+    {"option": RV_0023_UNCHECKED, "text": None, "unavailable": False},
+    {"option": None, "text": "I do not know. I have not checked the base station seal or reinstalled the tank.", "unavailable": False},
+])
+async def test_b21_unchecked_answer_resends_the_card_instead_of_concluding(l3_runtime, report_intent, answer):
+    # B21：确认题答「还没检查 / 不知道」不能当成检查无异常、说官方排查已完成；带提示重发一次，
+    # 再答不上来按原边走，但不算走完的指南（不说 troubleshooting is complete）
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        events(await send(client, sid, TICKETS["T19"]))
+        events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+        rows = events(await act(client, sid, "step_feedback", {"answer": answer}))
+        card = next(e for e in rows if e["type"] == "step_card")["step"]
+        assert card["step_id"] == "s2" and "haven't checked this yet" in card["context"]
+        assert "troubleshooting for this issue is complete" not in said(rows)
+        state = await state_of(sid)
+        issue = state["issues"][state["active_issue_id"]]
+        assert any(f["polarity"] == "uncertain" for f in issue["facts"] if f["kind"] == "observation")
+        rows = events(await act(client, sid, "step_feedback", {"answer": answer}))
+        state = await state_of(sid)
+    assert "troubleshooting for this issue is complete" not in said(rows)
+    assert state["next_action"]["reason"] != "guide_exhausted"
 
 
 def test_rv_0063_liquid_question_is_split_from_the_foam_check():
@@ -253,6 +279,62 @@ async def test_t36_other_noise_falls_through_to_the_component_guide(l3_runtime, 
         set_knowledge_adapter(None)
     assert [(c["plan_id"], c["step_id"]) for c in cards] == [("qa_rv_0316", f"s{i}") for i in range(1, 5)]
     assert state["stage"] == "context" and state["next_action"]["reason"] == "guide_exhausted"
+
+
+def test_rv_0349_noise_entry_is_split_into_article_question_and_video():
+    # B25：rv-0349 一段里是「试文章 + 拆下滚刷后停不停 + 拍视频」，拆成操作卡、问句卡、材料卡；
+    # 问句与 rv-0341 第一问标题、选项一致，客户在一条里答过另一条不再问
+    plan, library = get_plan_library().get("qa_rv_0349"), get_plan_library()
+    assert [(s.step_id, s.kind) for s in plan.steps] == [("s1", "action"), ("s1b", "question"), ("s1c", "material_request")]
+    first = get_plan_library().get("qa_rv_0341").step("s1")
+    assert (plan.step("s1b").title, plan.step("s1b").options) == (first.title, first.options)
+    assert library.evidence_snippet(plan.step("s1b").instruction_src).startswith("Also, please let us know whether the noise stops")
+
+
+async def test_b26_noise_answer_from_rv_0341_is_not_asked_again_in_rv_0349(l3_runtime, conversation, report_intent, monkeypatch):
+    # B26：rv-0341 已答「拆下滚刷仍响、不是吱吱声」，转到 rv-0349 时同一个问题直接沿用，不再发第二遍
+    set_knowledge_adapter(QAHitAdapter("rv-0341", "rv-0349"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            symptom = "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid."
+            interpret_as(monkeypatch, {TICKETS["T36"]: TurnInterpretation(
+                primary_intent="report_problem", device_relation="current", facts=[{"value": symptom, "quote": symptom}])})
+            conversation.models["diagnose.synthesize"].script = [{"hypotheses": [
+                {"plan_id": "qa_rv_0341", "confidence": 0.9, "evidence_ids": ["chunk-rv-0341"],
+                 "applicability": "supported", "supported_symptoms": [symptom]},
+                {"plan_id": "qa_rv_0349", "confidence": 0.8, "evidence_ids": ["chunk-rv-0349"],
+                 "applicability": "supported", "supported_symptoms": [symptom]},
+            ]}]
+            sid = (await client.post("/sessions")).json()["session_id"]
+            events(await send(client, sid, TICKETS["T36"]))
+            rows = events(await act(client, sid, "step_feedback", _answer(T36_OTHER)))
+            cards = [next(e for e in rows if e["type"] == "step_card")["step"]]
+            assert (cards[0]["plan_id"], cards[0]["step_id"]) == ("qa_rv_0349", "s1")
+            rows = events(await act(client, sid, "step_feedback", {"feedback": "not_solved"}))
+            card = next((e for e in rows if e["type"] == "step_card"), None)
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert card is not None and (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0349", "s1c")
+    carried = next(a for a in state["step_attempts"] if a["plan_id"] == "qa_rv_0349" and a["step_id"] == "s1b")
+    assert carried["answer"]["option"] == T36_OTHER and carried["answer"]["source"] == "carried"
+
+
+async def test_b25_free_text_noise_answer_does_not_count_rv_0341_as_walked(l3_runtime, conversation, report_intent, monkeypatch):
+    # B25：rv-0341 第一问用文字回答（对不上选项），没走到任何分支：rv-0341 不算走完的指南，rv-0316 四项都发完才进质保
+    set_knowledge_adapter(QAHitAdapter("rv-0341", "rv-0316"))
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = await _t36_session(client, monkeypatch, conversation)
+            text = "No, the noise does not disappear after removing the roller brush and cover. It is a squeaking sound."
+            rows = events(await act(client, sid, "step_feedback", {"answer": {"option": None, "text": text, "unavailable": False}}))
+            cards = [next(e for e in rows if e["type"] == "step_card")["step"]]
+            rows = await _feedback_until_no_card(client, sid, on_card=cards.append)
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    assert [(c["plan_id"], c["step_id"]) for c in cards] == [("qa_rv_0316", f"s{i}") for i in range(1, 5)]
+    assert state["next_action"]["reason"] == "guide_exhausted"
 
 
 def test_bp_0114_sixth_paragraph_is_split_and_drops_the_repeated_reset():

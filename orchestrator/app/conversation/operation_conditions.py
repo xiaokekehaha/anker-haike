@@ -77,8 +77,9 @@ def execution_history(state: dict) -> list[dict]:
 
 def answered_history(state: dict) -> list[dict]:
     """已消费的卡：真实执行过的操作，加上已回答的问句 / 已读的说明 / 已回应的材料请求（第二批 I4）。
-    它们都不该再发一遍，但只有操作计入 executed 计数。"""
-    return [s for s in feedback_history(state) if s.get("feedback") in {"solved", "not_solved"} or s.get("kind") not in {None, "action"}]
+    它们都不该再发一遍，但只有操作计入 executed 计数。「还没检查 / 不知道」的问句回答（retry）不算答完。"""
+    return [s for s in feedback_history(state) if s.get("feedback") in {"solved", "not_solved"}
+            or (s.get("kind") not in {None, "action"} and not s.get("retry"))]
 
 
 def conditions_for(state: dict) -> OperationConditions:

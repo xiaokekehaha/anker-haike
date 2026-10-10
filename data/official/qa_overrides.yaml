@@ -3,6 +3,7 @@
 # 可写：kind（question / action / statement / material_request / handoff）、options（question 的选项原文）、
 # title（卡片标题；原文段落不是问句而改成 question 时必须给，question 卡只显示标题与选项）、
 # branches（选项 → 目标：数字是段落位置，字符串是本条的 step_id 或 EXHAUSTED）、default（回答不在选项里时的目标）、
+# retry_options（表示「还没做 / 不知道」的选项：选它或答非所问的短答时卡片不算答完，带提示重发一次）、
 # disabled + reason（已核实不适用的段落，不生成步骤但保留原文）、
 # parts（一段拆成多步：段内夹问句、段内诊断树。每部分可写上面的字段；第一部分从段首开始，之后每部分写 at = 段内唯一的
 # 原文锚点，从锚点处切开，依次生成 s{pos}、s{pos}b、s{pos}c…；切出的文字拼起来就是原段落）。
@@ -15,9 +16,12 @@ bp-0123:
 bp-0032:
   1: {kind: question, options: ["Breast shield opening", "Bottle connection"], branches: {"Breast shield opening": 2, "Bottle connection": 3}}
 rv-0023:
-  # 原文第 2 段「上述检查无异常且重装后仍报错 → 基站硬件问题」的前提要客户确认，不能由第 1 段的「未解决」推出（T19）
+  # 原文第 2 段「上述检查无异常且重装后仍报错 → 基站硬件问题」的前提要客户确认，不能由第 1 段的「未解决」推出（T19）；
+  # 客户说还没检查 / 不知道时不能当成检查无异常（B21）
   2: {kind: question, title: "After checking the clean water tank, which matches what you see?",
-      options: ["The seal ring and tank parts look fine, but the error still shows after reinstalling", "The seal ring is deformed or broken"]}
+      options: ["The seal ring and tank parts look fine, but the error still shows after reinstalling", "The seal ring is deformed or broken",
+                "I haven't checked yet"],
+      retry_options: ["I haven't checked yet"]}
 rv-0063:
   # 第 3 段先问是否加过第三方清洁液（背景，不决定是否排水），再观察泡沫、有泡沫才排水换水：
   # 问句单独成卡收答案，观察与条件操作保持一张操作卡（T26）
@@ -40,6 +44,24 @@ rv-0341:
       - {at: "If the noise persists after removing the roller brush and cover and sounds like", kind: action, title: "Try running the robot in mopping mode"}
       - {at: "If the noise persists even after removing the roller brush", kind: handoff}
       - {at: "Please try the suggestions in the article below", disabled: true, reason: "文章链接已作为 s1 卡的官方链接展示，这一句不单独成步骤"}
+rv-0349:
+  # 一段里是「试文章里的建议 + 拆下滚刷和护罩后噪音停不停 + 拍短视频」（B25 / B26），按原文顺序拆三步。
+  # 问句选项与 rv-0341 第一问一致：客户在 rv-0341 答过的，fact_check 按同一事实作答，不再问第二遍
+  1:
+    parts:
+      - {kind: action, title: "Try the suggestions in the official article"}
+      - {at: "Also, please let us know whether the noise stops", kind: question,
+         title: "After removing the roller brush and its cover, does the noise go away?",
+         options: ["The noise is gone", "Still noisy, with a chirping sound", "Still noisy, another kind of sound"]}
+      - {at: "We would appreciate a short video", kind: material_request, title: "Share a short video of the noise"}
+rv-0061:
+  # 整段是一封客服邮件：问候与原因说明 + 胶带临时方案 + 不想试就走保修（T32）。不拆时首句是问候语，
+  # 跳过说明引用了「I hope this message finds you well」；客户「反复重装水箱」也被当成做过了这一步，胶带方案没展示
+  1:
+    parts:
+      - {kind: statement}
+      - {at: "*📝 Temporary Solution*", kind: action, title: "Fix the dirty water reservoir sensor with a piece of tape"}
+      - {at: "*If you encounter any issues during the process", kind: handoff}
 bp-0114:
   # 第 6 段塞了 4 个子病因（T53）：磁吸线充电；软件错误的 12 秒重置与第 2 段重复，客户已反馈过；
   # 出厂按钮损坏要先确认是到货就坏，才走官方的换机结论；电池耗尽换充电器和线

@@ -345,3 +345,34 @@ async def test_t36_replaced_filters_skip_the_filter_clog_check(conversation, l3_
     card = next(e for e in events if e["type"] == "step_card")["step"]
     assert card["step_id"] == "s3"
     assert "the high-performance filter are clogged" in card["context"] and replaced in card["context"]
+
+
+T32 = ("Product Name: Omni E25\nProduct PN: T2353\nProblem Type: ERROR\nProblem Code: 3021-The sewage tank of the robot is not in place.\n"
+       "Problem Description: The robot keeps saying remove and install the dirty water tank. I took out the water tank and reinstalled it. "
+       "It stopped then started going off again. Went back and reinstalled it again seemed fine\nProblem Upload Images: []")
+
+
+async def test_t32_reinstalling_the_tank_does_not_skip_the_tape_fix(conversation, l3_runtime):
+    """T32：rv-0061 是整段客服邮件，拆成问候说明 + 胶带操作卡 + 交售后。客户反复重装水箱不等于贴过胶带：
+    胶带卡照发、带图示；问候语不会出现在跳过说明里。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0061"))
+    conversation.models["guide.step"].script = [{"steps": [{"step_id": "s1b", "status": "unknown"}]}]
+    events = await conversation.send(T32, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["Omni E25"],
+        "facts": [{"value": "dirty water tank not in place error", "quote": "The robot keeps saying remove and install the dirty water tank."},
+                  {"kind": "action_taken", "value": "reinstalled the water tank", "quote": "I took out the water tank and reinstalled it."}],
+    })
+    card = next(e for e in events if e["type"] == "step_card")["step"]
+    assert (card["plan_id"], card["step_id"]) == ("qa_rv_0061", "s1b")
+    assert "tape" in card["instruction"] and card["media"]
+    # 问候与原因作为说明附在卡上（官方原文），但不是跳过说明
+    assert "slight misalignment of the detection sensor" in card["context"]
+    assert "I've skipped" not in card["context"]
+
+
+def test_skip_note_uses_the_reviewed_card_title_not_a_greeting():
+    from app.guide.steps import skipped_note
+
+    step = LIB.get("qa_rv_0061").step("s1b")
+    note = skipped_note(step, LIB.evidence_snippet(step.instruction_src), "I took out the water tank and reinstalled it.")
+    assert note.startswith('I\'ve skipped "Fix the dirty water reservoir sensor with a piece of tape"') and "hope" not in note

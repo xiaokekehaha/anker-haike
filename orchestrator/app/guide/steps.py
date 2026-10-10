@@ -22,7 +22,7 @@ from app.models.router import ModelRouter
 from app.official.qa_index import ACTION_VERB, MATERIAL
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
-from app.plans.qa import customer_text, customer_voice, guide_of, step_title
+from app.plans.qa import PART_SUFFIX, customer_text, customer_voice, guide_of, step_title
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
@@ -66,12 +66,19 @@ def _evidence_for(
     return sorted(set(ids))
 
 
-def skipped_note(instruction: str, quote: str | None) -> str:
+RETRY_NOTE = ("You said you haven't checked this yet. Once you've had a chance to look, pick the option that matches; "
+              "the next step depends on what you find.")
+
+
+def skipped_note(step: PlanStep, instruction: str, quote: str | None) -> str:
     """因客户已做过 / 已说明状态而跳过的步骤，在下一张卡上说一声（T36：已换滤网，滤网堵塞检查不再发）。
-    步骤取首句（卡片标题会截断成「…」）；引客户原话（可能不是英文），不替客户改写。"""
-    step = step_title(customer_text(instruction), 160).rstrip(" .…")
+    用审核写的卡片标题；没有时取正文首句（标题会截断成「…」）。去掉 Markdown 星号，问候语不算步骤（T32 曾引用
+    「I hope this message finds you well」）。引客户原话（可能不是英文），不替客户改写。"""
+    first = step_title(customer_text(instruction).replace("*", ""), 160)
+    title = step.title.replace("*", "").strip()
+    name = (title if title and not title.endswith("…") else first).rstrip(" .…")
     said = f' ("{quote.strip()}")' if quote and quote.strip() else ""
-    return f'I\'ve skipped "{step}" because what you told us already covers it{said}.'
+    return f'I\'ve skipped "{name}" because what you told us already covers it{said}.'
 
 
 def _advance_in_plan(plan: Plan, step_id: str, *, option: str | None = None) -> str | None:
@@ -119,7 +126,7 @@ async def prepare_step(
         # 每个跳过的步骤只说一次（同 statement 的 displayed_nodes 去重）
         key = f"skipped:{step.instruction_src}"
         if key not in displayed_nodes:
-            context.append(skipped_note(library.evidence_snippet(step.instruction_src), quote))
+            context.append(skipped_note(step, library.evidence_snippet(step.instruction_src), quote))
             displayed_nodes.append(key)
 
     def announce_done_before(until: str | None) -> None:
@@ -218,6 +225,10 @@ async def prepare_step(
             evidence_ids = sorted({*evidence_ids, *published_evidence})
         card_id = step_card_id(session_id, plan.plan_id, step_id)
         announce_done_before(step_id)
+        last = next((a for a in reversed(state.get("step_attempts") or []) if a.get("instruction_src") == step.instruction_src), None)
+        if last and last.get("retry"):
+            # 上次答的是「还没检查 / 不知道」（B21）：重发这张卡，说明为什么还要回答
+            context.append(RETRY_NOTE)
         return StepPrep(
             "ready",
             step={
@@ -360,12 +371,23 @@ def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:
     guide = guide_of(plan_id)
     if guide is None:
         return []
-    # 审核拆分的段落 s{pos}、s{pos}b…同属原文第 pos 段：段落图示只挂在第一部分，不在每张卡上重复
+    # 审核拆分的段落 s{pos}、s{pos}b…同属原文第 pos 段：段落图示只挂在第一张出卡的部分（说明 / 交人工不出卡），
+    # 不在每张卡上重复（T32 rv-0061：问候说明 + 胶带操作，图示属于胶带那张）
     match = PART_ID.match(step_id)
-    if match is None or match.group(2):
+    if match is None:
         return []
     index = int(match.group(1)) - 1
-    media = guide.steps[index].media if guide.kind == "steps" and 0 <= index < len(guide.steps) else guide.media
+    if not 0 <= index < len(guide.steps):
+        return []
+    paragraph = guide.steps[index]
+    if paragraph.parts:
+        # 后缀按部分在原段里的位置编（同 plans/qa.py PART_SUFFIX），禁用的部分不重排
+        carded = next((i for i, part in enumerate(paragraph.parts) if not part.disabled and part.kind not in {"statement", "handoff"}), 0)
+        if match.group(2) != PART_SUFFIX[carded]:
+            return []
+    elif match.group(2):
+        return []
+    media = paragraph.media if guide.kind == "steps" or paragraph.parts else guide.media
     return [{"url": m.url, "kind": m.kind} for m in media]
 
 
