@@ -113,6 +113,10 @@ def classify(
     case_status = values.get("case_status")
     if case_status == "closed":
         return ("human_executed" if values.get("human_involved") else "executed_closed"), "case_closed"
+    if case_status == "closed_unresolved":
+        return "closed_unresolved", "case_closed_unresolved"
+    if case_status == "escalated_summary":
+        return "escalated", values.get("escalate_reason")
     if case_status in {"awaiting_approval", "approved", "rejected"} or values.get("stage") == "awaiting_human":
         return "awaiting_human", case_status
     if values.get("consult_answered"):
@@ -203,7 +207,7 @@ def session_facts(
             if isinstance(p, dict) and p.get("plan_id")
         }
     )
-    terminal = outcome in ("resolved", "escalated", "errored")
+    terminal = outcome in ("resolved", "escalated", "errored", "closed_unresolved", "executed_closed", "human_executed", "consult_answered")
     return SessionFacts(
         session_id=session_id,
         lane=lane,

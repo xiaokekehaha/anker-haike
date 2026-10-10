@@ -382,7 +382,7 @@ REASSURANCE = {
         "For your safety, please stop using the device and do not charge it. "
         "I've put together a record of this issue so a support colleague can look into it."
     ),
-    "R3": "I've prepared a summary of your issue for our support team. Live hand-over to an agent isn't connected yet.",
+    "R3": "I've prepared a summary of your issue for our support team. This summary alone does not confirm submission or that an agent has picked it up.",
 }
 DEFAULT_REASSURANCE = "I've put together a record of this issue so a support colleague can continue from here."
 CUSTOMER_BOUNDARY = {
@@ -392,7 +392,7 @@ CUSTOMER_BOUNDARY = {
 
 
 def reassurance_text(reason: str, state: dict[str, Any] | None = None) -> str:
-    """结束时对用户的说明：有真实原因时如实说明覆盖边界（design §4），并保持「已整理 / 未接入」的区分。"""
+    """结束时如实说明知识覆盖与已整理记录；实际提交状态由案件记录决定。"""
     next_action = (state or {}).get("next_action") or {}
     if state is not None and next_action.get("kind") == "handoff_offer" and next_action.get("compat_rule") == reason:
         detail = next_action_text(state, next_action)
@@ -400,6 +400,6 @@ def reassurance_text(reason: str, state: dict[str, Any] | None = None) -> str:
         if detail and boundary:
             return (
                 f"{boundary}. I've put together the issue and the steps you tried so a support colleague can continue; "
-                "live hand-over isn't connected yet. If anything changes, tell me and we'll continue from the record."
+                "the summary alone does not confirm submission for review. If anything changes, tell me and we'll continue from the record."
             )
     return REASSURANCE.get(reason, DEFAULT_REASSURANCE)

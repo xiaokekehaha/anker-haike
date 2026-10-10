@@ -12,15 +12,17 @@ card_id = uuid5(session_id, plan_id, step_id)，重跑稳定。
 
 from __future__ import annotations
 
+import re
 import uuid
 from dataclasses import dataclass, field
 from typing import Any
 
 from app.conversation.operation_conditions import answered_history, step_unavailable
 from app.models.router import ModelRouter
+from app.official.qa_index import ACTION_VERB, MATERIAL
 from app.plans.library import PlanLibrary
 from app.plans.models import Plan, PlanStep
-from app.plans.qa import customer_voice
+from app.plans.qa import customer_voice, guide_of
 from app.rules.service import RulesService
 
 NS = uuid.UUID("2b0f5a9e-64c2-4c7d-9c0a-7f3d1e6a8b21")
@@ -33,7 +35,7 @@ def step_card_id(session_id: str, plan_id: str, step_id: str) -> str:
 
 @dataclass
 class StepPrep:
-    outcome: str  # ready | exhausted | blocked
+    outcome: str  # ready | exhausted | blocked | explained | source_gap
     step: dict[str, Any] | None = None  # 契约 TroubleshootStep 形状
     card_id: str | None = None
     plan_cursor: dict[str, Any] | None = None
@@ -43,6 +45,8 @@ class StepPrep:
     evidence: dict[str, dict[str, Any]] = field(default_factory=dict)
     # 主引用从哪儿来：qa_exact / kb_qa 表示本轮已有这条 Q&A，none 表示退回本地发布
     anchor: dict[str, Any] | None = None
+    explanation: str = ""
+    displayed_nodes: list[str] = field(default_factory=list)
 
 
 def _evidence_for(
@@ -61,9 +65,9 @@ def _evidence_for(
     return sorted(set(ids))
 
 
-def _advance_in_plan(plan: Plan, step_id: str) -> str | None:
-    """步骤被丢弃时的「取下一步」：按 not_solved 路径推进；到 DONE / EXHAUSTED 返回 None。"""
-    nxt = plan.next_step_id(step_id, "not_solved")
+def _advance_in_plan(plan: Plan, step_id: str, *, option: str | None = None) -> str | None:
+    """消费节点后沿已回答分支推进；到 DONE / EXHAUSTED 返回 None。"""
+    nxt = plan.next_step_id(step_id, "not_solved", option=option)
     return None if nxt in ("DONE", "EXHAUSTED") else nxt
 
 
@@ -95,14 +99,30 @@ async def prepare_step(
         ),
         [],
     )
-    executed_src = {s.get("instruction_src") for s in answered_history(state)}
+    answered = {s.get("instruction_src"): s for s in answered_history(state)}
     reported = user_reported_actions(state)
     dropped: list[dict[str, Any]] = []
     context: list[str] = []  # 说明段落不单独出卡，附在下一张卡上（I4：标题 / 结论不是操作，不要求反馈）
+    explanation_evidence: dict[str, dict] = {}
+    displayed_nodes = list(state.get("displayed_knowledge_nodes") or [])
     while step_id is not None:
         step = plan.step(step_id)
+        if step.source_gap:
+            source_text = library.evidence_snippet(step.instruction_src)
+            _, published, _ = _primary_evidence(step, library, source_text, allowed_evidence)
+            explanation_evidence.update(published)
+            context.append("The supplied official source refers to further instructions, but does not include them or a link. I can't provide those missing steps from this source.")
+            return StepPrep("source_gap", dropped=[*dropped, {
+                "plan_id": plan.plan_id, "step_id": step_id, "reason": "source_reference_missing",
+            }], explanation="\n\n".join(context), evidence=explanation_evidence, displayed_nodes=displayed_nodes)
         if step.kind == "statement":
-            context.append(customer_voice(library.evidence_snippet(step.instruction_src)))
+            source_text = library.evidence_snippet(step.instruction_src)
+            node_key = f"{step.instruction_src}@{library.evidence[step.evidence_key].doc_version}"
+            if node_key not in displayed_nodes:
+                context.append(customer_voice(source_text))
+                displayed_nodes.append(node_key)
+                _, published, _ = _primary_evidence(step, library, source_text, allowed_evidence)
+                explanation_evidence.update(published)
             dropped.append({"plan_id": plan.plan_id, "step_id": step_id, "reason": "statement_context"})
             step_id = _advance_in_plan(plan, step_id)
             continue
@@ -116,11 +136,11 @@ async def prepare_step(
                 "plan_id": plan.plan_id, "step_id": step_id, "reason": unavailable,
             }])
         # 跨计划去重：与已执行步骤 instruction_src 相同 → 跳过（09 §3.4）
-        if step.instruction_src in executed_src:
+        if step.instruction_src in answered:
             dropped.append(
                 {"plan_id": plan.plan_id, "step_id": step_id, "reason": "duplicate_instruction_src"}
             )
-            step_id = _advance_in_plan(plan, step_id)
+            step_id = _advance_in_plan(plan, step_id, option=(answered[step.instruction_src].get("answer") or {}).get("option"))
             continue
         source_text = library.evidence_snippet(step.instruction_src)
         # 用户自述已做过的排查（已换滤网、已清洁触点）：同部件同动作的步骤不再让他做一遍（I5：T27 / T36 / T37）
@@ -183,6 +203,7 @@ async def prepare_step(
                 **({"context": "\n".join(context)} if context else {}),
             },
             card_id=card_id,
+            displayed_nodes=displayed_nodes,
             plan_cursor={
                 "plan_id": plan.plan_id,
                 "version": plan.version,
@@ -198,7 +219,9 @@ async def prepare_step(
                 "retrieved": not published_evidence,
             },
         )
-    return StepPrep("exhausted", dropped=dropped)
+    only_explanation = all(s.kind == "statement" for s in plan.steps)
+    return StepPrep("explained" if only_explanation else "exhausted", dropped=dropped,
+                    explanation="\n\n".join(context), evidence=explanation_evidence, displayed_nodes=displayed_nodes)
 
 
 def _primary_evidence(
@@ -240,64 +263,71 @@ def _primary_evidence(
     )
 
 
-# 「同部件 + 同动作」才算做过：部件词与动作词各取一个交集。只认词表里的词，
-# 「cleaned everything」没有部件词 → 匹配所有清洁步骤的部件；「replaced the filter」只匹配滤网的更换。
+# 未知对象不是通配符；未确认完整覆盖的复合卡保留，由客户反馈后再推进。
 PART_WORDS = (
     "filter", "brush", "roller", "side brush", "tank", "contact", "valve", "shield", "mop", "sensor", "base", "dock",
     "station", "bin", "dust box", "lid", "cover", "seal", "ring", "nozzle", "pin", "port", "wheel", "tray", "hose",
     "tube", "bottle", "diaphragm", "pad", "battery", "charger", "cable", "case", "hub", "app", "firmware",
 )
 ACTION_WORDS = {
-    "clean": ("clean", "cleaned", "cleaning", "wipe", "wiped", "wiping", "rinse", "rinsed", "wash", "washed"),
-    "replace": ("replace", "replaced", "replacing", "change", "changed", "swap", "swapped", "new"),
+    "clean": ("clean", "cleaned", "wipe", "wiped", "rinse", "rinsed", "wash", "washed"),
+    "replace": ("replace", "replaced", "change", "changed", "swap", "swapped"),
     "restart": ("restart", "restarted", "reboot", "rebooted", "reset", "power cycle", "powered off"),
-    "refill": ("refill", "refilled", "fill", "filled", "top up", "topped up", "full"),
+    "refill": ("refill", "refilled", "fill", "filled", "top up", "topped up"),
     "reinstall": ("reinstall", "reinstalled", "reseat", "reseated", "reattach", "reattached", "re-install"),
     "update": ("update", "updated", "upgrade", "upgraded"),
 }
+ACTION_PATTERNS = {name: re.compile(r"\b(?:" + "|".join(re.escape(form) for form in forms) + r")\b", re.IGNORECASE)
+                   for name, forms in ACTION_WORDS.items()}
+PART_PATTERNS = {part: re.compile(r"\b" + re.escape(part) + r"(?:s|es)?\b", re.IGNORECASE) for part in PART_WORDS}
+CONTACT_SYNONYMS = re.compile(r"\belectrical connections?\b", re.IGNORECASE)
 
 
 def _parts(text: str) -> set[str]:
-    low = text.casefold()
-    return {p for p in PART_WORDS if p in low}
+    normalized = CONTACT_SYNONYMS.sub("contact", text)
+    return {part for part, pattern in PART_PATTERNS.items() if pattern.search(normalized)}
 
 
 def _actions(text: str) -> set[str]:
-    low = text.casefold()
-    return {name for name, forms in ACTION_WORDS.items() if any(f in low for f in forms)}
+    return {name for name, pattern in ACTION_PATTERNS.items() if pattern.search(text)}
 
 
 def user_reported_actions(state: dict[str, Any]) -> list[dict[str, Any]]:
     issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
     out = []
     for fact in issue.get("facts", []):
-        if fact.get("status") == "active" and fact.get("kind") == "action_taken":
+        if (fact.get("status") == "active" and fact.get("kind") == "action_taken"
+                and fact.get("polarity", "affirmed") == "affirmed"
+                and fact.get("source_kind", "user_report") == "user_report"
+                and fact.get("source") in {None, "user_statement", "device_message"}):
             text = " ".join(filter(None, [fact.get("value"), fact.get("subject")]))
             out.append({"value": fact.get("value"), "parts": _parts(text), "actions": _actions(text)})
     return out
 
 
 def matches_reported(instruction: str, reported: list[dict[str, Any]]) -> str | None:
-    """步骤正文与某条已做操作同部件同动作时返回那条操作原话；没有部件词的操作（「cleaned everything」）按动作匹配。"""
+    """只有明确对象、全部动作被同一用户报告覆盖的卡才能整体跳过；疑问或材料要求不消费。"""
     parts, actions = _parts(instruction), _actions(instruction)
-    if not actions:
+    verbs = [match.group() for match in ACTION_VERB.finditer(instruction)]
+    if not parts or not actions or not verbs or "?" in instruction or MATERIAL.search(instruction):
+        return None
+    # Unknown operations (inspect/remove/ensure…) cannot disappear because a cleaning word also occurs.
+    if any(not _actions(verb) for verb in verbs):
         return None
     for item in reported:
-        if not item["actions"] & actions:
-            continue
-        if not item["parts"] or item["parts"] & parts:
+        if actions <= item["actions"] and parts <= item["parts"]:
             return item["value"]
     return None
 
 
 def step_media(plan_id: str, step_id: str) -> list[dict[str, str]]:
     """官方 Q&A 步骤附带的图片 / 视频链接；非 Q&A 计划（测试夹具）为空。"""
-    from app.plans.qa import guide_of
-
     guide = guide_of(plan_id)
     if guide is None:
         return []
     index = int(step_id.removeprefix("s")) - 1 if step_id.startswith("s") and step_id[1:].isdigit() else -1
+    if index < 0:
+        return []
     media = guide.steps[index].media if guide.kind == "steps" and 0 <= index < len(guide.steps) else guide.media
     return [{"url": m.url, "kind": m.kind} for m in media]
 

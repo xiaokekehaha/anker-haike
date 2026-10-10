@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -57,6 +57,11 @@ STEP_LINE = re.compile(r"^[\s*•\-]*(?:Step\s*)?(\d{1,2})\s*[.)、:：]\s*(.+)$
 TIPS_LINE = re.compile(r"^[\s*•\-]*(?:Additional\s+)?Tips?\b", re.IGNORECASE)
 URL = re.compile(r"https?://[^\s)\]>\"']+")
 ASKS_MEDIA = re.compile(r"\b(?:send|provide|upload|share|attach)\b[^.]{0,60}\b(?:photo|picture|image|video)s?\b", re.IGNORECASE)
+DANGLING_REFERENCE = re.compile(
+    r"\b(?:steps?|instructions?|guides?|articles?|videos?|links?)\b[^\n]{0,100}"
+    r"\b(?:found at|available at|provided at|(?:shown|listed|provided) below)\s*:\s*$",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -76,6 +81,14 @@ class Step:
     branches: dict[str, int] = field(default_factory=dict)  # 选项 → 段落位置 pos（question 用）
     disabled: bool = False
     disabled_reason: str = ""
+    source_gap: bool = False
+
+
+@dataclass(frozen=True)
+class FaultSection:
+    title: str
+    start: int
+    end: int
 
 
 @dataclass(frozen=True)
@@ -92,6 +105,7 @@ class Guide:
     asks_media: bool = False
     visible: bool = True
     category: str = ""
+    sections: tuple[FaultSection, ...] = ()
 
     @property
     def plan_id(self) -> str:
@@ -189,9 +203,9 @@ CATEGORY = {"Breast Pump": "breast_pump", "SoloCam": "security_cam"}
 ACTION_VERB = re.compile(
     r"\b(?:check|clean|remove|press|turn|restart|reboot|reset|replace|place|ensure|make sure|fill|wipe|install|update|"
     r"open|close|try|use|disconnect|connect|charge|empty|re-?install|tighten|hold|move|put|take out|pull|push|unplug|"
-    r"plug|power|switch|run|start|confirm|verify|adjust|set|enable|disable|delete|re-?add|log in|test|compare|inspect|"
+    r"plug|power(?=\s+(?:on|off|up|down|cycle)\b)|switch|run|start|confirm|verify|adjust|set|enable|disable|delete|re-?add|log in|test|compare|inspect|"
     r"look|shake|dry|rinse|align|separate|flip|rotate|lift|lower|change|disassemble|reassemble|attach|detach|wash|"
-    r"calibrate|pair|re-?pair|add|download|upgrade|contact)\b",
+    r"calibrate|pair|re-?pair|add|download|upgrade|contact|apply|attempt|observe)\b",
     re.IGNORECASE,
 )
 MATERIAL = re.compile(
@@ -206,6 +220,16 @@ HANDOFF = re.compile(
 )
 HEADING = re.compile(r"^(?:step\s*\w+\s*[:：]\s*)?[A-Z][\w &/,()'-]{2,60}:?$")
 STATEMENT_LEAD = re.compile(r"^(?:when|if|this|it is normal|the (?:robot|device|app|noise|base station)|note|during|after|under)\b", re.IGNORECASE)
+DESCRIPTIVE = re.compile(
+    r"\b(?:will|may|can)\b|^(?:the\s+.+?\s+(?:is|are|has|uses?)\b)",
+    re.IGNORECASE,
+)
+REQUEST = re.compile(
+    r"(?:^|[.!?:;,]\s+|\n)\s*[-*•]*\s*(?:please\s+)?"
+    r"(?:(?:you\s+(?:can|may|should|must|need to)|it is (?:recommended|advised) to)\s+)?"
+    r"(?:(?:\w+ly|first|then|also|further)\s+)*" + ACTION_VERB.pattern,
+    re.IGNORECASE,
+)
 QUESTION_PAREN = re.compile(r"\(([^()]*?/[^()]*?)\)\s*$")
 QUESTION_OR = re.compile(r"\b(?:is|are|does|do)\s+(?:it|the \w+(?: \w+)?)\s+(\w[\w-]*)\s+or\s+(\w[\w-]*)\s*\?$", re.IGNORECASE)
 
@@ -228,9 +252,14 @@ def classify_step(text: str) -> StepKind:
         return "material_request"
     if HANDOFF.match(head) and not ACTION_VERB.search(" ".join(body)):
         return "handoff"
+    # A condition describing the warranty outcome is not a customer operation.
+    if WARRANTY.search(text) and not REQUEST.search(text):
+        return "handoff"
+    if DESCRIPTIVE.search(head) and not REQUEST.search(text):
+        return "statement"
     if HEADING.match(head) and not ACTION_VERB.search(head):
         return "action" if ACTION_VERB.search(" ".join(body)) else "statement"
-    if STATEMENT_LEAD.match(head) and not ACTION_VERB.search(head):
+    if STATEMENT_LEAD.match(head) and not REQUEST.search(text):
         return "statement"
     return "action"
 
@@ -274,6 +303,7 @@ def _typed_step(no: int, pos: int, text: str, *, warranty: bool, overrides: dict
         no=no, text=strip_urls(text), media=media_of(text), warranty=warranty or kind == "handoff",
         kind=kind, options=options, branches={str(k): int(v) for k, v in (spec.get("branches") or {}).items()},
         disabled=bool(spec.get("disabled")), disabled_reason=str(spec.get("reason") or ""),
+        source_gap=bool(DANGLING_REFERENCE.search(text)),
     )
 
 
@@ -285,20 +315,54 @@ def answer_body(content: str, tips: str) -> str:
     return content[: match.start()].rstrip() if match else content
 
 
+INDEX_FIELD = re.compile(r"^\s*(?:Applicable Models|Applicable Error Codes(?: or problem codes)?|Core Symptoms)\s*:", re.IGNORECASE)
+FAULT_HEADING = re.compile(r"\b(?:cannot|unable|malfunction|error|failure|not working|stops? working)\b", re.IGNORECASE)
+
+
+def fault_sections(content: str) -> tuple[FaultSection, ...]:
+    """仅识别明确故障标题下的嵌套编号检查；阶段性操作标题不能推断为互斥故障。"""
+    roots: list[tuple[int, str, bool]] = []
+    pos = 0
+    for raw in content.splitlines():
+        line = raw.strip()
+        if TIPS_LINE.match(line):
+            break
+        match = STEP_LINE.match(line)
+        if not match:
+            continue
+        pos += 1
+        nested = line.startswith(("-", "*", "•")) or raw.startswith(("  ", "\t"))
+        if nested and roots:
+            start, title, _ = roots[-1]
+            roots[-1] = (start, title, True)
+        elif not nested:
+            roots.append((pos, match.group(2).strip(), False))
+    if len(roots) < 2 or not all(nested and FAULT_HEADING.search(title) and not REQUEST.search(title)
+                                  for _, title, nested in roots):
+        return ()
+    return tuple(FaultSection(title, start, roots[i + 1][0] - 1 if i + 1 < len(roots) else pos)
+                 for i, (start, title, _) in enumerate(roots))
+
+
 def build_guide(entry: QAEntry, overrides: dict[int, dict] | None = None) -> Guide:
-    raw_steps, tips = split_steps(entry.content)
+    content = "\n".join(line for line in entry.content.splitlines() if not INDEX_FIELD.match(line))
+    raw_steps, tips = split_steps(content)
     overrides = overrides if overrides is not None else load_overrides().get(entry.id, {})
+    sections = fault_sections(content) if not any(s.get("branches") for s in overrides.values()) else ()
     steps = tuple(
         _typed_step(n, pos, text, warranty=bool(WARRANTY.search(text)), overrides=overrides)
         for pos, (n, text) in enumerate(raw_steps, 1)
     )
+    starts = {s.start for s in sections}
+    steps = tuple(replace(step, kind="statement") if pos in starts and not overrides.get(pos, {}).get("kind") else step
+                  for pos, step in enumerate(steps, 1))
     warranty = bool(WARRANTY.search(entry.content))
-    if len(steps) < 2 and warranty and (pre := FIRST_TRY.match(strip_urls(entry.content))):
+    if len(steps) < 2 and warranty and (pre := FIRST_TRY.match(entry.content)):
         # 「Please try restarting… If the restarting could not fix the issue, … hardware malfunction」：
         # 先给一步「重启」，仍未解决再走质保（25 条），不能一上来就判硬件故障。
         steps = (
-            Step(no=1, text=pre.group(1).strip()),
-            Step(no=2, text=strip_lead_in(strip_urls(entry.content[pre.end():])).strip(), warranty=True),
+            _typed_step(1, 1, pre.group(1).strip(), warranty=False, overrides=overrides),
+            _typed_step(2, 2, entry.content[pre.end():].strip(), warranty=True, overrides=overrides),
         )
     if len(steps) >= 2:
         kind: Kind = "steps"
@@ -306,19 +370,22 @@ def build_guide(entry: QAEntry, overrides: dict[int, dict] | None = None) -> Gui
         kind = "warranty"
     else:
         kind = "answer"
+    if not steps:
+        steps = (_typed_step(1, 1, strip_lead_in(answer_body(content, tips)), warranty=warranty, overrides=overrides),)
     return Guide(
         qa_id=entry.id,
         title=entry.title,
         pns=tuple(entry.pn),
         codes=title_codes(entry.title),
         kind=kind,
-        steps=steps if kind == "steps" else (),
+        steps=steps,
         answer=strip_lead_in(strip_urls(answer_body(entry.content, tips))),
         tips=strip_urls(tips),
         media=media_of(entry.content),
         asks_media=bool(ASKS_MEDIA.search(entry.content)),
         visible=entry.visible,
         category=CATEGORY.get(entry.directory[1], "robot_vacuum"),
+        sections=sections,
     )
 
 

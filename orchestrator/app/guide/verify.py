@@ -94,8 +94,7 @@ def apply_feedback(
     if step.kind != "action":
         # 问句 / 说明 / 材料请求不是操作：不计 executed / skipped，不走 solved / not_solved 的语义。
         # 问句按 branches 分支，其余向后走；回答写成一条 observation 事实，材料暂缺记为待补（I4）。
-        target = step.branches.get(answer.get("option")) if step.kind == "question" and answer and answer.get("option") else None
-        nxt = target or plan.next_step_id(step_id, "not_solved")
+        nxt = plan.next_step_id(step_id, "not_solved", option=(answer or {}).get("option"))
         observation = None
         missing = None
         text = _answer_text(answer)

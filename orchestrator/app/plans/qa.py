@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import re
 
-from app.official.qa_index import Guide, QAIndex, Step, get_qa_index
+from app.official.qa_index import Guide, QAIndex, get_qa_index
 from app.plans.library import PlanLibrary
 from app.plans.models import PlansConfig
 
@@ -54,18 +54,30 @@ def step_title(text: str, limit: int = 60) -> str:
 
 
 def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
-    if guide.kind == "steps":
-        texts = [(pos, s) for pos, s in enumerate(guide.steps, 1) if not s.disabled]
-    else:
-        texts = [(1, Step(no=1, text=guide.answer, warranty=guide.kind == "warranty"))]
+    texts = [(pos, s) for pos, s in enumerate(guide.steps, 1) if not s.disabled]
     evidence: dict[str, dict] = {}
     steps = []
     # 步骤 id 按原文位置编号（s{pos}）：编号在条目里会重复（rv-0004、bp-0114 每段从 1 起），
     # 禁用的段落跳过但不重排，card_id 由 step_id 派生，覆写一段不能让后面的卡全部换 id。
     positions = [pos for pos, _ in texts]
+    if guide.sections:
+        key = f"{guide.qa_id}#select_scope"
+        instruction = "Which of these problems are you experiencing? Choose the matching section."
+        options = [section.title for section in guide.sections]
+        evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": instruction + "\n" + "\n".join(options)}
+        steps.append({
+            "step_id": "select_scope", "title": instruction, "instruction_src": f"evidence:{key}",
+            "expected_result": ANSWER_EXPECTED, "kind": "question", "options": options,
+            "branches": {section.title: f"s{section.start}" for section in guide.sections},
+            "next_on": {"solved": "EXHAUSTED", "not_solved": "EXHAUSTED", "cannot_do": "EXHAUSTED"},
+            "required_resources": [],
+        })
     for i, (pos, step) in enumerate(texts):
         step_id = f"s{pos}"
         nxt = f"s{positions[i + 1]}" if i + 1 < len(positions) else "EXHAUSTED"
+        section = next((s for s in guide.sections if s.start <= pos <= s.end), None)
+        if section and (i + 1 == len(positions) or positions[i + 1] > section.end):
+            nxt = "EXHAUSTED"
         key = f"{guide.qa_id}#{step_id}"
         evidence[key] = {"source": "kb_qa", "doc_version": version, "snippet": step.text}
         kind = step.kind
@@ -86,8 +98,10 @@ def plan_of(guide: Guide, version: str) -> tuple[dict, dict[str, dict]]:
             "caution": TIPS_LEAD.sub("", guide.tips).strip() or None,
             "next_on": next_on,
             "kind": kind,
+            "source_gap": step.source_gap,
             "options": list(step.options),
             "branches": {option: f"s{target}" for option, target in step.branches.items()},
+            "required_resources": ["device"] if kind == "action" else [],
         })
     plan = {
         "plan_id": guide.plan_id,

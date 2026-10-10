@@ -38,6 +38,7 @@ class PlanStep(_Strict):
     kind: StepKind = "action"
     options: list[str] = Field(default_factory=list)
     branches: dict[str, str] = Field(default_factory=dict)
+    source_gap: bool = False
 
     @field_validator("instruction_src")
     @classmethod
@@ -101,10 +102,13 @@ class Plan(_Strict):
         return self.steps[0]
 
     def next_step_id(
-        self, step_id: str, feedback: Literal["solved", "not_solved", "cannot_do"]
+        self, step_id: str, feedback: Literal["solved", "not_solved", "cannot_do"], *, option: str | None = None,
     ) -> str:
-        """规则推进：返回下一 step_id 或 DONE / EXHAUSTED（09 §3.2）。"""
-        return getattr(self.step(step_id).next_on, feedback)
+        """按反馈和已回答选项沿图推进；重放与即时反馈使用同一条边。"""
+        step = self.step(step_id)
+        if step.kind == "question" and option in step.branches:
+            return step.branches[option]
+        return getattr(step.next_on, feedback)
 
     def applies(self, *, category: str, sku: str | None = None) -> bool:
         if self.applies_to.category != category or sku in self.applies_to.excluded_skus:

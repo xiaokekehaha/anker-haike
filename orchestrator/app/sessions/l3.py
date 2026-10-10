@@ -332,6 +332,13 @@ async def propose(state):
     case = await services.cases.store.get(state["case_id"])
     if case["status"] in {"approved", "awaiting_approval"} and (requested := changed_request(state, case)):
         return await _pause_for_changed_request(state, requested)
+    if case["status"] in {"closed", "closed_unresolved"}:
+        say(state, "This case is closed, and the problem is not resolved. No new service request has been submitted."
+            if case["status"] == "closed_unresolved"
+            else "This case has already been closed. No new service request has been submitted.")
+        return {**inactive_case_state(state), "stage": "done", "substage": None,
+                "escalate_reason": None, "plan_cursor": None, "case_status": case["status"],
+                **remedy_closed({**state, "requested_remedy": None})}
     if case["status"] not in {
         "open", "diagnosing", "proposing", "rejected", "reopened",
         "awaiting_confirmation", "tracking", "executing_failed",
@@ -1091,7 +1098,7 @@ async def advance_tasks(state):
         update.update(
             text=task["quote"],
             business_context=task_business(task, business).model_dump(mode="json"),
-            turn_decision={**state.get("turn_decision", {}), "primary_intent": task["intent"], "secondary_intents": [], "task_id": task["task_id"], "answer_request": None, "answer_scope": "focus", "clarification": None},
+            turn_decision={**state.get("turn_decision", {}), "primary_intent": task["intent"], "secondary_intents": [], "task_id": task["task_id"], "answer_request": task.get("answer_request"), "answer_scope": task.get("answer_scope", "focus"), "clarification": None},
             l3_route="consult"
             if task["intent"] in CONSULT_INTENTS
             else "await_input"

@@ -77,7 +77,9 @@ def build_query(state: dict[str, Any]) -> str:
     if not symptoms:
         # App 报错 / RMA 表单只取问题描述与推送提示：表头、订单字段和图片链接会冲淡检索（63 单评测 recall 4/13 → 7/13）
         text = str(state.get("text") or "")
-        raw = _clean_part(parse_message(text).problem_text or URLS.sub(" ", text))
+        unparsed = state.get("unparsed_problem") or {}
+        retained = str(unparsed.get("text") or "") if unparsed.get("status") == "unparsed" else ""
+        raw = _clean_part(parse_message(text).problem_text or retained or URLS.sub(" ", text))
         symptoms = [raw] if raw else []
     if not symptoms:
         return ""

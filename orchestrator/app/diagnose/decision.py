@@ -119,6 +119,12 @@ def explanation(state):
             "or choose \"can't do it\" on the card."
         )
     if state.get("stage") == "done":
+        if (state.get("diagnose_outcome") or {}).get("mode") == "explained":
+            return "The official explanation has been provided; this does not mark the device as repaired. If it doesn't match what you're seeing, describe the difference so we can review it."
+        if state.get("case_status") == "closed_unresolved":
+            return "This case is closed, but the problem is not resolved. No new service request has been submitted. Please describe any new information if you need further help."
+        if state.get("case_id"):
+            return "This case has been closed. If the problem persists, please describe what is happening so we can review the case."
         return "This issue was marked as resolved. If it comes back, describe what's happening and I'll check the right guidance again."
     if state.get("exhausted_plans"):
         return "The applicable troubleshooting steps have been tried and it isn't resolved yet. I can prepare the steps you tried for our support team; I won't repeat steps you've already done."
@@ -170,18 +176,28 @@ class NextAction:
 
 
 def _first_open_step(plan, executed_src: set[str], executed_steps: set[tuple[str, str]], state=None):
-    """第一个未执行的步骤与途中跳过的步骤（同 instruction_src 已执行 → 不重复建议）。"""
+    """重放已答节点的出边，查找所选分支中的未执行步骤；数组位置不代表执行顺序。"""
     skipped = []
-    for step in plan.steps:
+    answered = {s.get("instruction_src"): s for s in answered_history(state or {})}
+    step_id = plan.first_step().step_id
+    visited = set()
+    while step_id not in {"DONE", "EXHAUSTED"} and step_id not in visited:
+        visited.add(step_id)
+        step = plan.step(step_id)
+        recorded = answered.get(step.instruction_src) or {}
+        nxt = plan.next_step_id(step_id, "not_solved", option=(recorded.get("answer") or {}).get("option"))
         unavailable = step_unavailable(state or {}, plan.plan_id, step)
         if unavailable:
             skipped.append({"plan_id": plan.plan_id, "step_id": step.step_id, "reason": unavailable})
+            step_id = nxt
             continue
         if (plan.plan_id, step.step_id) in executed_steps:
             skipped.append({"plan_id": plan.plan_id, "step_id": step.step_id, "reason": "already_executed"})
+            step_id = nxt
             continue
         if step.instruction_src in executed_src:
             skipped.append({"plan_id": plan.plan_id, "step_id": step.step_id, "reason": "duplicate_instruction_src"})
+            step_id = nxt
             continue
         return step, skipped
     return None, skipped

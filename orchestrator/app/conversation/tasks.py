@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from app.conversation.business import BusinessContext
 from app.conversation.reduce import stable_id
+from app.conversation.request_constraints import QUERY_FIELDS
 
 PRIORITY = {
     "request_human": 0,
@@ -64,9 +65,10 @@ def task_business(task, business):
     )
 
 
-def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
+def enqueue(tasks, primary, secondary, text, input_id, *, business=None, request_quotes=None, answer_request=None, answer_scope="focus"):
     result = deepcopy(tasks)
     business = business or BusinessContext()
+    request_quotes = request_quotes or {}
     # Once the user resolves an active task's missing/ambiguous target, keep
     # that selection for subsequent suspension and completion.
     for task in result:
@@ -106,11 +108,15 @@ def enqueue(tasks, primary, secondary, text, input_id, *, business=None):
     for intent in incoming:
         key = identity(intent, reference)
         if key not in existing:
+            fields = [f for f in answer_request.fields if f in QUERY_FIELDS.get(intent, ())] if answer_request else []
             result.append(
                 {
                     "task_id": stable_id(input_id, intent),
                     "intent": intent,
                     "quote": text,
+                    "request_quote": request_quotes.get(intent),
+                    "answer_request": {"fields": fields, "quote": answer_request.quote} if fields else None,
+                    "answer_scope": answer_scope,
                     "status": "active" if intent == primary else "pending",
                     "created_input_id": input_id,
                     "business_reference": reference,

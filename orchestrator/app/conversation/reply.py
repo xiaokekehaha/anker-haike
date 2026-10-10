@@ -102,7 +102,7 @@ def fallback_reply(state: dict) -> str:
         detail = "I've noted the steps you couldn't do; they won't count as done. " if any(s.get("feedback") == "cannot_do" for s in attempts) else "We won't add more steps for now. "
         if state.get("case_id"):
             return f"I'm sorry we haven't solved this yet. {detail}Your service case and open items are kept; progress with our team will show in the case record."
-        return f"I'm sorry we haven't solved this yet. {detail}You can pause, or tell me whether you'd rather answer questions or try the device; if you'd like a person to help, I can prepare a summary (live hand-over isn't connected yet)."
+        return f"I'm sorry we haven't solved this yet. {detail}You can pause, or tell me whether you'd rather answer questions or try the device; if you'd like a person to help, I can prepare a summary for our support team."
     if intent == "history_query":
         entries = [
             e
@@ -129,7 +129,7 @@ def fallback_reply(state: dict) -> str:
             return "The handoff is recorded in your service case. The case record contains the review outcome and any next steps."
         if (issue.get("handoff") or {}).get("status") != "prepared":
             return "No summary has been prepared for our support team yet, and nothing has been handed over. You can keep describing the issue, or ask me to prepare a summary for an agent."
-        return "I've prepared a record of the issue. Live hand-over isn't connected yet, so I can't confirm an agent has picked it up; you can copy the summary to our support team."
+        return "I've prepared a record of the issue, but I don't have confirmation that it has been submitted for review. The prepared summary alone does not mean an agent has picked it up."
     from app.diagnose.decision import explanation, owns_diagnostic_reply
     if owns_diagnostic_reply(state) and intent not in {"history_query", "social", "resume_issue"} and not (state.get("stage") != "done" and intent == "explain" and state.get("pending_card") and state["pending_card"].get("kind") != "step_feedback"):
         return explanation(state)

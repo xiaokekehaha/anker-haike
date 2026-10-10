@@ -5,6 +5,9 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from app.conversation.quotes import normalize
+from app.official.message import LABELS
+
 if TYPE_CHECKING:
     from app.conversation.interpret import TurnInterpretation
 
@@ -31,6 +34,47 @@ ONLY_WARRANTY = re.compile(
     r"\bonly (?:check|tell me about) (?:my |the )?warranty\b|只(?:查|问)(?:一下)?保修",
     re.IGNORECASE,
 )
+QUERY_INTENTS = frozenset({"order_query", "warranty_query", "logistics_query"})
+QUERY_FIELDS = {
+    "order_query": frozenset({"order_no", "sku", "purchase_date", "amount", "address", "serial_number", "seller", "country"}),
+    "warranty_query": frozenset({"warranty_end"}),
+    "logistics_query": frozenset({"tracking_no", "service_order_no", "logistics_status", "carrier", "updated_at"}),
+}
+METADATA_LABELS = [label for key, labels in LABELS.items() if key not in {"description", "push"} for label in labels]
+METADATA_LINE = re.compile(
+    r"^\s*(?:" + "|".join([*METADATA_LABELS, "Problem Type", "Probleemtype", "Problemtyp", "Submit Date", "Purchase proof"])
+    + r")\s*[:：].*$", re.IGNORECASE | re.MULTILINE,
+)
+
+
+def ground_additional_queries(meaning: TurnInterpretation, text: str) -> tuple[TurnInterpretation, list[dict[str, str]]]:
+    """业务排序之后校验并列查询：内部取数或元数据不等于另一个用户请求。"""
+    source = normalize(text)
+    metadata = [normalize(match.group()) for match in METADATA_LINE.finditer(text)]
+    primary_quote = normalize(meaning.request_quotes.get(meaning.primary_intent, ""))
+    kept, rejected = [], []
+    for intent in meaning.secondary_intents:
+        if intent not in QUERY_INTENTS:
+            kept.append(intent)
+            continue
+        quote = normalize(meaning.request_quotes.get(intent, ""))
+        reason = (
+            "request_quote_missing" if not quote else "request_quote_ungrounded" if quote not in source
+            else "metadata_is_not_request" if any(quote in span for span in metadata)
+            else "duplicate_request_quote" if quote == primary_quote else None
+        )
+        if reason is None and intent in {"order_query", "warranty_query"}:
+            answer = meaning.answer_request
+            answer_quote = normalize(answer.quote) if answer else ""
+            if not answer or not QUERY_FIELDS[intent].intersection(answer.fields):
+                reason = "query_result_missing"
+            elif not answer_quote or answer_quote not in source or not (quote in answer_quote or answer_quote in quote):
+                reason = "query_result_ungrounded"
+        if reason:
+            rejected.append({"intent": intent, "reason": reason})
+        else:
+            kept.append(intent)
+    return meaning.model_copy(update={"secondary_intents": kept}), rejected
 
 
 def constrain_requests(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
@@ -70,9 +114,9 @@ def constrain_requests(meaning: TurnInterpretation, text: str) -> TurnInterpreta
     # A fact may be refund background or a past event. Only a grounded, current
     # request for diagnostic help can repair a missing troubleshooting task.
     if (
-        meaning.primary_intent in {"warranty_query", "order_query", "complaint", "unknown"}
+        meaning.primary_intent in {"warranty_query", "order_query", "complaint", "unknown", "replacement_request", "refund_request"}
         and request and request in text and not DECLINES_DIAGNOSIS.search(normalized)
-        and any(f.kind == "symptom" and f.quote and f.quote in request for f in meaning.facts)
+        and any(f.kind == "symptom" and f.quote and f.quote in text for f in meaning.facts)
         and "report_problem" not in meaning.secondary_intents
     ):
         meaning = meaning.model_copy(update={"secondary_intents": [*meaning.secondary_intents, "report_problem"]})

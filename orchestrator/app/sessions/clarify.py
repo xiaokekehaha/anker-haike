@@ -33,7 +33,7 @@ FIXED_QUESTIONS: dict[str, str] = {
         "Which product is this? For example: robot vacuum X10 Pro Omni, Omni E25 / E28, S1 Pro or Omni C20; "
         "S1 Pro wearable breast pump; or SoloCam S340 camera. The model number (e.g. T2351) also works."
     ),
-    "symptom": "Could you describe what the device is doing, or tell me the error code shown in the app (e.g. 3212 or E41)?",
+    "symptom": "Could you describe what the device is doing, or tell me any warning message or error code shown in the app?",
     "conflict": "Earlier we confirmed {confirmed}, and now you mentioned {mentioned}. Which one should we look at?",
 }
 

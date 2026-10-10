@@ -12,6 +12,7 @@ from app.conversation.operation_conditions import (
     update_conditions,
 )
 from app.conversation.quotes import normalize, quoted
+from app.official.message import parse_message
 
 # The diagnostic engine sees a projection. Only these fields may return to an issue.
 ISSUE_FIELDS = {
@@ -34,6 +35,7 @@ ISSUE_FIELDS = {
     "product_hints": [],
     "product_question": None,
     "symptoms": [],
+    "unparsed_problem": None,
     "diagnostic_decision": None,
     "evidence": {},
     "current_evidence_ids": [],
@@ -49,6 +51,7 @@ ISSUE_FIELDS = {
     "diagnose_outcome": None,
     "plan_cursor": None,
     "steps_executed": [],
+    "displayed_knowledge_nodes": [],
     "step_attempts": [],
     "operation_conditions": {},
     "counters": {},
@@ -82,8 +85,6 @@ def device_message_spans(text: str) -> list[str]:
     T11：「Click to contact customer service for assistance」出现在 Problem Push 里，是错误码附带的固定文案。
     引文落在这些字段里说明是设备在说话，不能当作用户自己的请求；作为故障现象仍然有效。
     """
-    from app.official.message import parse_message
-
     fields = parse_message(text or "").fields
     spans = []
     for key in ("push", "description"):
@@ -244,11 +245,32 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             facts.append(replacement)
     if meaning.primary_intent == "correct" and not meaning.corrections:
         clarify = clarify or "您刚才哪句话说错了？请告诉我正确的设备或现象，我会更新对应记录。"
-    for index, candidate in enumerate(meaning.facts):
+    candidates = list(meaning.facts)
+    parsed = parse_message(text)
+    grounded_symptoms = [candidate for candidate in candidates if candidate.kind == "symptom" and quoted(candidate.quote, text)]
+    if grounded_symptoms and issue.get("unparsed_problem"):
+        issue["unparsed_problem"] = {**issue["unparsed_problem"], "status": "interpreted", "interpreted_by_input_id": iid}
+    if (
+        meaning.primary_intent == "report_problem"
+        and state.get("entry") != "action"
+        and parsed.format in {"app_report", "rma"}
+        and parsed.description
+        and not grounded_symptoms
+        and not meaning.corrections
+    ):
+        # 原文证据和语义事实是两层：解析未完成不代表用户“不确定”。
+        issue["unparsed_problem"] = {"text": parsed.description, "source_entry_ids": [iid], "status": "unparsed"}
+    for index, candidate in enumerate(candidates):
         if not quoted(candidate.quote, text):
             continue
-        if any(f["value"] == candidate.value and f["status"] == "active" for f in facts):
-            continue
+        previous = next((f for f in facts if f["value"] == candidate.value
+                         and f["kind"] == candidate.kind and f["status"] == "active"), None)
+        if previous:
+            if previous.get("polarity") != "uncertain" or candidate.polarity == "uncertain":
+                continue
+            # 新的、有本轮引文支持的明确事实可确认原先不确定的记录；保留旧版本来源。
+            previous["status"] = "superseded"
+            previous["superseded_by_input_id"] = iid
         fact = {
             "fact_id": stable_id(iid, "add", index),
             "kind": candidate.kind,
@@ -257,7 +279,7 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "issue_id": target,
             "device_ref_id": issue["device_ref"]["device_ref_id"],
             "status": "active",
-            "revision": 1,
+            "revision": previous["revision"] + 1 if previous else 1,
             "source_kind": "user_report",
             "source": quote_source(candidate.quote, spans),
             "subject": candidate.subject,
@@ -270,8 +292,11 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
             "precision": candidate.precision,
             "quote": candidate.quote,
         }
+        if previous:
+            fact["supersedes"] = previous["fact_id"]
         facts.append(fact)
-        applied.append({"op": "add", "fact_id": fact["fact_id"], "input_id": iid})
+        applied.append({"op": "replace" if previous else "add",
+                        "fact_id": previous["fact_id"] if previous else fact["fact_id"], "input_id": iid})
     hints = [
         hint
         for hint in meaning.product_hints
@@ -528,8 +553,6 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
 
 
 def parse_codes(text: str) -> tuple[str, ...]:
-    from app.official.message import parse_message
-
     return parse_message(text or "").codes
 
 

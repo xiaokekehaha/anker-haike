@@ -57,7 +57,8 @@ A1_SCRIPTS = {"intake": [INTAKE_A1] * 4, "diagnose.synthesize": [SYNTH_A1] * 4, 
 HAIR_TEXT = "eufy X10 Pro Omni 扫地机不吸了，滚刷缠了很多头发"
 INTAKE_HAIR = {"primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
                "facts": [{"value": "不吸了", "quote": "$current"}, {"value": "滚刷缠头发", "quote": "$current"}]}
-SYNTH_HAIR = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.85, "evidence_ids": ["c21"]}]}
+SYNTH_HAIR = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.85, "evidence_ids": ["c21"],
+                               "applicability": "supported", "supported_symptoms": ["不吸了", "滚刷缠头发"]}]}
 
 
 @dataclass
@@ -408,7 +409,8 @@ async def scn_correction(ctx: Ctx):
     # 换计划才能同时验证 stale_version 与 stale_card 两条 409
     # X10 Pro Omni 滚刷缠发（rv-0272）→ 纠正为 Omni E28：新型号检索命中 E28 的滚刷卡住条目（rv-0189），计划随之更换
     e28_hit = ToolResult("ok", [hit("c22", "Omni E28 has 2112 Error: Roller brush stuck. Check whether the rolling brush is entangled with hair.", doc="rv-0189")], allowed_count=2)
-    synth_e28 = {"hypotheses": [{"plan_id": "qa_rv_0189", "confidence": 0.8, "evidence_ids": ["c22"]}]}
+    synth_e28 = {"hypotheses": [{"plan_id": "qa_rv_0189", "confidence": 0.8, "evidence_ids": ["c22"],
+                                "applicability": "supported", "supported_symptoms": ["不吸了", "滚刷缠头发"]}]}
     scripts = {**A1_SCRIPTS, "intake": [INTAKE_HAIR, {**REDX, "product_hints": ["Omni E28"]}],
                "diagnose.synthesize": [SYNTH_HAIR, synth_e28]}
     async with Harness(ctx.dir("corr"), scripts=scripts, adapter=ScriptedAdapter({"kb_qa": [OK_HAIR(), e28_hit]})) as h:
@@ -542,7 +544,8 @@ DEBRIS_TEXT = "eufy X10 Pro Omni 它跑完了，地上还是一堆渣"
 # 改写须保留原症状词（「渣」）；中文同义词表已随自建手册删除，不再靠同义映射放行
 REWRITE_GOOD = {"query": "扫地机器人 清扫后地上还有渣"}
 REWRITE_BAD = {"query": "扫地机器人 清扫后地上还有渣 电机损坏"}  # 新增原因词 → 拒绝
-SYNTH_ONE = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.7, "evidence_ids": ["c21"]}]}
+SYNTH_ONE = {"hypotheses": [{"plan_id": "qa_rv_0272", "confidence": 0.7, "evidence_ids": ["c21"],
+                              "applicability": "supported", "supported_symptoms": ["跑完了地上还是一堆渣"]}]}
 
 
 @scenario("rewrite_decision_table", "rewrite", "改写决策表：十一种上下文的触发 / 跳过原因（充分性取代「有命中即不改写」）", "09 §4.1；票 32")

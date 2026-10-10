@@ -3,7 +3,7 @@
 from app.diagnose.config import RetrievalConfig, get_retrieval_config, load_retrieval_config
 from app.diagnose.query import build_query, normalize_query
 from app.diagnose.rewrite import RewriteDecision, rewrite_query, should_rewrite, validate_rewrite
-from app.diagnose.synthesize import Hypothesis, PlansRanked, default_plans_ranked, synthesize
+from app.diagnose.synthesize import Hypothesis, PlansRanked, synthesize
 
 __all__ = [
     "Hypothesis",
@@ -11,7 +11,6 @@ __all__ = [
     "RetrievalConfig",
     "RewriteDecision",
     "build_query",
-    "default_plans_ranked",
     "get_retrieval_config",
     "load_retrieval_config",
     "normalize_query",

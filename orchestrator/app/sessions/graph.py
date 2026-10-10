@@ -23,12 +23,14 @@ from langgraph.graph.state import CompiledStateGraph
 from app.actions.runtime import get_services
 from app.cases.service import case_event
 from app.context.budget import fit_prompt_budget
+from app.conversation.answers import AnswerRequest
 from app.conversation.effects import durable_node
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.product_questions import answer_product_question, handles_product_question
 from app.conversation.quotes import quoted
-from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream
+from app.conversation.reply import acknowledge_current_turn, offer_human_after_stream, say_text
+from app.conversation.request_constraints import ground_additional_queries
 from app.conversation.tasks import REMEDY_INTENTS
 from app.diagnose import (
     build_query,
@@ -63,6 +65,7 @@ from app.rules import get_rules_service
 from app.sessions import clarify as clarify_mod
 from app.sessions import receipt as receipt_mod
 from app.sessions.cards import candidates_key, current_version, derive_card_id, get_catalog
+from app.sessions.l3 import propose as propose_service_case
 from app.sessions.streaming import stream_to_writer
 
 log = logging.getLogger("sessions.graph")
@@ -107,6 +110,7 @@ class SessionState(TypedDict, total=False):
     completed_task_intent: str | None
     # 刚处理完的任务记成什么：done（默认）或 waiting_human（已交人工，见 tasks.next_task）
     task_outcome: str | None
+    displayed_knowledge_nodes: list[str]
     retake_skipped: bool
     input_id: str
     base_version: int
@@ -164,6 +168,7 @@ class SessionState(TypedDict, total=False):
     product_hints: list[str]
     product_question: dict | None
     symptoms: list[str]
+    unparsed_problem: dict[str, str | list[str]] | None
     diagnostic_decision: dict[str, Any]
     model_trace: list[dict[str, Any]]
     # 票 28：检索结果。evidence 按 evidence_id 去重累积，供 step.evidence_ids 引用；knowledge_status 为最近一次四态
@@ -1105,13 +1110,17 @@ async def understand(state: SessionState) -> SessionState:
             from app.conversation.tasks import task_business
             resumed_task = task
             state = {**state, "business_context": task_business(task, BusinessContext.restore(state)).model_dump(mode="json")}
-            meaning = meaning.model_copy(update={"primary_intent": task["intent"], "secondary_intents": [], "business_reference": None, "answer_request": None})
+            meaning = meaning.model_copy(update={
+                "primary_intent": task["intent"], "secondary_intents": [], "business_reference": None,
+                "answer_request": AnswerRequest.model_validate(task["answer_request"]) if task.get("answer_request") else None,
+            })
         else:
             meaning = meaning.model_copy(update={"primary_intent": "unknown", "clarification": "请说明要优先处理哪项需求。"})
     if get_services() is not None and meaning.secondary_intents:
         from app.conversation.tasks import ordered_intents
         intents=ordered_intents(meaning.primary_intent, meaning.secondary_intents)
         meaning=meaning.model_copy(update={"primary_intent":intents[0],"secondary_intents":intents[1:]})
+    meaning, request_rejections = ground_additional_queries(meaning, text)
     if (
         get_services() is not None
         and meaning.primary_intent in {"refund_request", "replacement_request"}
@@ -1166,6 +1175,7 @@ async def understand(state: SessionState) -> SessionState:
         business_order_no=business_order_no,
         new_business_subject=requested_business is not None and requested_business.status == "missing",
     )
+    update["turn_decision"]["request_rejections"] = request_rejections
     if context.get("source") == "product_question":
         update["turn_decision"]["product_answered"] = True
     update["l3_route"] = None
@@ -1190,10 +1200,17 @@ async def understand(state: SessionState) -> SessionState:
         ).model_dump(mode="json")
         from app.conversation.tasks import enqueue
         from app.sessions.l3 import say
-        tasks, notice = enqueue(update.get("task_queue") or [],meaning.primary_intent,meaning.secondary_intents,text,state["input_id"], business=BusinessContext.restore({**state, **update}))
+        tasks, notice = enqueue(update.get("task_queue") or [], meaning.primary_intent, meaning.secondary_intents,
+                                text, state["input_id"], business=BusinessContext.restore({**state, **update}),
+                                request_quotes=meaning.request_quotes, answer_request=meaning.answer_request,
+                                answer_scope=update["turn_decision"].get("answer_scope", "focus"))
         if resumed_task:
             tasks = [{**task, "status": "active" if task["task_id"] == resumed_task["task_id"] else "pending"} if task["status"] in {"pending", "active"} else task for task in tasks]
             update["turn_decision"]["task_id"] = resumed_task["task_id"]
+            update["turn_decision"]["answer_scope"] = resumed_task.get("answer_scope", "focus")
+            # This request was grounded when queued; the short resume command
+            # need not repeat its original question quote.
+            update["turn_decision"]["answer_request"] = resumed_task.get("answer_request")
         update["task_queue"]=tasks
         if notice:
             say({**state,**update},notice)
@@ -1226,6 +1243,13 @@ async def understand(state: SessionState) -> SessionState:
                 "attempts": context.get("attempts", 1),
             },
         ]
+        recovery = context.get("problem_description") or {}
+        if recovery and recovery.get("outcome") != "not_needed":
+            update["model_trace"].append({
+                "task": "intake", "purpose": "problem_description", "input_id": state["input_id"],
+                "model_used": recovery.get("model_used", "skipped"), "lane": context.get("lane", _lane()),
+                "attempts": recovery.get("attempts", 0), "outcome": recovery["outcome"], "accepted": recovery.get("accepted", 0),
+            })
     pending = update.get("pending_card") or {}
     current_input = next(
         (e for e in state.get("history", []) if e["entry_id"] == state["input_id"]), {}
@@ -2312,10 +2336,19 @@ def _diagnose_outcome(
     clarifications: list[dict] = (), previous_outcome: dict | None = None,
     state: SessionState | None = None,
 ) -> dict[str, Any]:
-    """有假设 → 进 guide；来源 synthesize（模型按证据排序）或 retrieval_order（模型不可用时按命中顺序）；无候选 → R5。"""
+    """经过适用性核验或精确码核实的方案进入 guide；无可执行方案先澄清或交接。"""
     clarifications = [candidate for candidate in clarifications if candidate["plan_id"] not in exhausted_plans]
     previous = previous_outcome or {}
     attempts = previous.get("attempts", 0) if previous.get("mode") == "clarify" else 0
+    if (not plans_ranked and (state or {}).get("unparsed_problem", {})
+            and state["unparsed_problem"].get("status") == "unparsed" and not state.get("error_codes")
+            and attempts < clarify_mod.MAX_CLARIFICATIONS):
+        question = "I've kept your description. Please confirm the main fault you want help with, in one sentence."
+        return {
+            "diagnose_outcome": {"mode": "clarify", "reason": "unparsed_problem", "attempts": attempts + 1, "question": question},
+            "_decision": {"outcome": "clarify", "reason": "applicability", "question": question},
+            "escalate_reason": None, "plan_cursor": None,
+        }
     if not plans_ranked and clarifications and attempts < clarify_mod.MAX_CLARIFICATIONS:
         candidate = clarifications[0]
         return {
@@ -2417,6 +2450,9 @@ async def guide(state: SessionState) -> SessionState:
             budget_ms=budget,
         )
         trace += [{"event": "step_dropped", **d} for d in prep.dropped]
+        if prep.outcome != "blocked":
+            update["displayed_knowledge_nodes"] = prep.displayed_nodes
+            work["displayed_knowledge_nodes"] = prep.displayed_nodes
         if prep.outcome == "ready":
             from app.conversation.reduce import stable_id
             published_card_id = stable_id(state["input_id"], state["active_issue_id"], prep.card_id)
@@ -2492,6 +2528,28 @@ async def guide(state: SessionState) -> SessionState:
             return update
         if prep.outcome == "blocked":
             return {**update, **_apply_next_action(work)}
+        if prep.explanation:
+            message_id = uuid.uuid5(uuid.NAMESPACE_URL, f"{state['input_id']}:knowledge-explanation").hex
+            say_text(dict(state), writer, message_id, prep.explanation)
+            update["visible_messages"] = [*state.get("visible_messages", []), {
+                "message_id": message_id, "kind": "knowledge_explanation", "text": prep.explanation, "model_tier": None,
+            }]
+            if prep.evidence:
+                writer({"type": "evidence", "items": list(prep.evidence.values())})
+                update["evidence"] = {**state.get("evidence", {}), **prep.evidence}
+                update["current_evidence_ids"] = list(dict.fromkeys([*state.get("current_evidence_ids", []), *prep.evidence]))
+        if prep.outcome == "source_gap":
+            return {**update, "pending_card": None, "plan_cursor": None, "consult_answered": False,
+                    "escalate_reason": "R5", "_verify": {"outcome": "escalate", "rule": "R5"},
+                    "next_action": {"kind": "handoff_offer", "reason": "knowledge_coverage_missing", "compat_rule": "R5",
+                                    "issue_id": state.get("active_issue_id"), "input_id": state.get("input_id")},
+                    "guide_trace": [*trace, {"event": "knowledge_source_gap"}]}
+        if prep.outcome == "explained":
+            return {**update, "stage": "done", "pending_card": None, "plan_cursor": None,
+                    "next_action": None, "_verify": {"outcome": "explained"},
+                    "consult_answered": True,
+                    "diagnose_outcome": {"mode": "explained", "plan_id": (work.get("plan_cursor") or {}).get("plan_id")},
+                    "guide_trace": [*trace, {"event": "knowledge_explained"}]}
         # exhausted：本计划没有可下发的步骤 → 标记耗尽，依据事实重新决策
         cursor = work.get("plan_cursor") or {}
         out = exhaust_plan(work, cursor.get("plan_id", ""))
@@ -2537,6 +2595,8 @@ def route_after_guide(state: SessionState) -> str:
     if state.get("escalate_reason"):
         return "escalate"
     verify = state.get("_verify") or {}
+    if verify.get("outcome") == "explained":
+        return route_after_close(state)
     if verify.get("outcome") == "ask":
         return "ask_operation"
     if verify.get("outcome") == "done":
@@ -2755,10 +2815,20 @@ async def summarize(state: SessionState) -> SessionState:
             complaint_risk=complaint_flagged(state),
         )
         summary.case_id = row["case_id"]
-        if state.get("summary_refresh") or row["status"] in {"closed", "closed_unresolved"}:
+        if not state.get("summary_refresh") and row["status"] in {"closed", "closed_unresolved"}:
+            if reason in {"R3", "R4"}:
+                # 新的人工请求或安全事件不能被先前的免费服务结论吞掉。
+                row = await services.cases.reopen(
+                    row["case_id"], expected_revision=row["revision"],
+                    input_id=state["input_id"], quote=state.get("text") or summary.reason.text,
+                )
+            else:
+                await services.cases.record_handoff(row["case_id"], summary.model_dump(mode="json"))
+                return await propose_service_case({**state, "case_id": row["case_id"]})
+        if not state.get("summary_refresh") and row["status"] == "reopened":
+            row = await services.cases.transition(row["case_id"], "proposing", "重新受理后准备人工审核")
+        if state.get("summary_refresh"):
             # 更新摘要不重新发起审批，也不撤回人工已经作出的决定。
-            # 案件已按质保结论关闭（过保 / 非授权）后继续排障又走到交接：免费服务资格的结论是终局，
-            # 不再入人工队列，只把排障记录写进案件（closed_unresolved 只能 reopened，入队会撞非法迁移）。
             row = await services.cases.record_handoff(row["case_id"], summary.model_dump(mode="json"))
         else:
             row = await services.cases.hand_off(
@@ -2770,6 +2840,8 @@ async def summarize(state: SessionState) -> SessionState:
         handoff_status = "requested" if row["status"] == "awaiting_approval" else (
             ((state.get("issues") or {}).get(state["active_issue_id"], {}).get("handoff") or {}).get("status", "prepared")
         )
+        if handoff_status == "not_requested":
+            handoff_status = "prepared"
         case_update = {"case_id": row["case_id"], "case_status": row["status"]}
         if row["status"] == "awaiting_approval":
             case_update.update(stage="awaiting_human", pending_card=None,
@@ -2838,6 +2910,7 @@ async def summarize(state: SessionState) -> SessionState:
     return {
         "stage": "escalate",
         "substage": "summarize",
+        "l3_route": "commit_issue",
         "issues": issues,
         "escalation_summary": dict(event, reason=reason),
         **case_update,
@@ -3010,7 +3083,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     )
     g.add_edge("prepare_receipt", "await_input")
     g.add_edge("receipt_extract", "await_input")  # 票 40：确认字段卡片
-    g.add_edge("summarize", "commit_issue")
+    g.add_conditional_edges("summarize", l3.route, {"commit_issue": "commit_issue", "advance_tasks": "advance_tasks"})
     g.add_node("disambiguate", durable_node(disambiguate))
     g.add_node("prepare_card", durable_node(prepare_card))
     g.add_node("await_input", durable_node(await_input))
@@ -3096,7 +3169,8 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges("reply", route_after_reply, {"guide": "guide", "end": "commit_issue"})
     g.add_conditional_edges(
         "guide", route_after_guide,
-        {"await_input": "await_input", "escalate": "escalate", "ask_operation": "ask_operation", "close": "close", "dialogue": "dialogue"},
+        {"await_input": "await_input", "escalate": "escalate", "ask_operation": "ask_operation", "close": "close", "dialogue": "dialogue",
+         "advance_tasks": "advance_tasks", "commit_issue": "commit_issue"},
     )
     g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

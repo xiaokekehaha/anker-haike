@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import NAMESPACE_URL, uuid5
 
 SELF_MANAGED = {"resolved", "executed_closed", "consult_answered"}
-TERMINAL = SELF_MANAGED | {"escalated_human", "abandoned", "human_executed"}
+TERMINAL = SELF_MANAGED | {"escalated", "closed_unresolved", "abandoned", "human_executed"}
 
 # The live dashboard and retention snapshot use the same final metric projection.
 METRIC_ROWS_SQL = """select e.episode_id,e.session_id,e.issue_id,e.case_id,e.source,e.updated_at,
@@ -14,7 +14,8 @@ METRIC_ROWS_SQL = """select e.episode_id,e.session_id,e.issue_id,e.case_id,e.sou
         from analytics.cases a where a.session_id=e.session_id order by a.labeled_at desc limit 1),e.intent_correct) as intent_correct,
     h.human_involved,
     case when c.status='closed' then case when h.human_involved then 'human_executed' else 'executed_closed' end
-        when c.status in ('closed_unresolved','escalated_summary') then 'escalated_human'
+        when c.status='closed_unresolved' then 'closed_unresolved'
+        when c.status='escalated_summary' then 'escalated'
         when c.status in ('awaiting_approval','approved','rejected') then 'awaiting_human'
         when c.case_id is not null then 'in_progress' else e.outcome end as outcome
     from service_episodes e left join satisfaction_ratings r using(session_id,issue_id)
@@ -31,19 +32,17 @@ def episode(values, case=None):
     outcome, _ = classify(values, done_reason="completed", pending=bool(values.get("pending_card")))
     human = bool(case and case.get("decisions")) or values.get("human_involved", False)
     if case:
+        human = human or any(e.get("actor", "").startswith("agent:") for e in case.get("events", []))
         if case["status"] == "closed":
-            human = human or any(
-                e.get("actor", "").startswith("agent:") for e in case.get("events", [])
-            )
             outcome = "human_executed" if human else "executed_closed"
-        elif case["status"] in {"closed_unresolved", "escalated_summary"}:
-            outcome = "escalated_human"
+        elif case["status"] == "closed_unresolved":
+            outcome = "closed_unresolved"
+        elif case["status"] == "escalated_summary":
+            outcome = "escalated"
         elif case["status"] in {"awaiting_approval", "approved", "rejected"}:
             outcome = "awaiting_human"
         else:
             outcome = "in_progress"
-    if outcome == "escalated":
-        outcome = "escalated_human"
     sid, iid = values["session_id"], values["active_issue_id"]
     return {
         "episode_id": str(uuid5(NAMESPACE_URL, f"{sid}:{iid}:episode")),

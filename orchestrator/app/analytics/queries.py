@@ -199,6 +199,7 @@ class Queries:
             )
             select count(*) as sessions,
                    count(*) filter (where outcome = 'resolved') as resolved,
+                   count(*) filter (where outcome = 'closed_unresolved') as closed_unresolved,
                    count(*) filter (where outcome = 'escalated') as escalated,
                    count(*) filter (where outcome = 'escalated'
                                       and outcome_reason = any(%(system)s)) as escalated_system,
@@ -399,8 +400,9 @@ def _rates(totals: dict[str, Any]) -> dict[str, float | None]:
     system = int(totals.get("escalated_system") or 0)
     abandoned = int(totals.get("abandoned") or 0)
     escalated = int(totals.get("escalated") or 0)
-    self_denom = resolved + system + abandoned
-    closed_denom = resolved + escalated
+    unresolved = int(totals.get("closed_unresolved") or 0)
+    self_denom = resolved + system + abandoned + unresolved
+    closed_denom = resolved + escalated + unresolved
     return {
         # 系统该负责的部分里，自己解决掉的比例
         "self_service": round(resolved / self_denom, 4) if self_denom else None,

@@ -1,8 +1,7 @@
 """diagnose.synthesize（03 §1.4 步骤 3；09 §3.2）：强推理档、tag=internal，输出最多 3 个假设。
 
 每个假设必须引用当前允许集合内的 plan_id（枚举由 PlanLibrary.allowed_for 决定）与状态里已有的 evidence_ids；
-不在枚举内的 plan_id 丢弃并记录，无效 evidence_id 剔除。无证据（no_match / unavailable）时不调模型，
-按候选（本轮命中的官方 Q&A，已按检索顺序）给出 plans_ranked 并标注来源 retrieval_order。
+不在枚举内的 plan_id 丢弃并记录，无效 evidence_id 剔除。无证据或判断不可用时不产生可执行方案。
 """
 
 from __future__ import annotations
@@ -11,8 +10,13 @@ import logging
 import re
 from typing import Any, Literal
 
+from langchain_core.messages import convert_to_messages
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, create_model
 
+from app.context.budget import context_input_budget, measure_input
+from app.context.builder import ContextBudgetExceeded
+from app.context.runtime import prepare_messages
+from app.diagnose.charging import charging_question, check_charging_recipient
 from app.knowledge.context import render_evidence
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
@@ -70,20 +74,6 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
         __config__=ConfigDict(extra="forbid"),
         hypotheses=(list[hyp], Field(default_factory=list, max_length=5)),
     )  # type: ignore[valid-type]
-
-
-def default_plans_ranked(allowed: list[Plan], *, source: str = "retrieval_order") -> list[dict[str, Any]]:
-    """无证据 / 模型不可用时的降级：候选按检索命中顺序（错误码精确命中在前），置信度统一 0.3，标注来源。"""
-    return [
-        {
-            "plan_id": p.plan_id,
-            "version": p.version,
-            "confidence": 0.3,
-            "evidence_ids": [],
-            "source": source,
-        }
-        for p in allowed
-    ]
 
 
 # 用户说「提前 / 过早」而候选讲「没能启动」：同一个关键词（schedule）下两种相反的事实（T61）。
@@ -230,8 +220,14 @@ def filter_hypotheses(
             dropped.append(f"timing_mismatch:{pid}")
             clarify(h, "timing_mismatch", CLARIFY_TEMPLATES["timing_mismatch"].format(timing=timed["timing"]))
             continue
+        charging_status, charging_subject = check_charging_recipient(plan.fault, covered_facts, facts)
+        if charging_status in {"mismatch", "unknown"}:
+            reason = f"charging_recipient_{charging_status}"
+            dropped.append(f"{reason}:{pid}")
+            clarify(h, reason, charging_question(charging_subject))
+            continue
         mismatched = next((f for f in covered_facts if f.get("subject") and h.get("matched_subject")
-                           and _subject_conflicts(f["subject"], h["matched_subject"])), None)
+                           and charging_status != "matched" and _subject_conflicts(f["subject"], h["matched_subject"])), None)
         if mismatched:
             dropped.append(f"subject_mismatch:{pid}")
             clarify(h, "subject_mismatch", CLARIFY_TEMPLATES["subject_mismatch"].format(subject=mismatched["subject"]))
@@ -288,40 +284,8 @@ def active_facts(state: dict[str, Any]) -> list[dict[str, Any]]:
     return [f for f in issue.get("facts", []) if f.get("status") == "active"]
 
 
-async def synthesize(
-    router: ModelRouter | None,
-    *,
-    state: dict[str, Any],
-    allowed: list[Plan],
-    evidence: list[dict[str, Any]],
-    observations: list[str],
-    budget_ms: int,
-    max_hypotheses: int,
-    session_id: str | None,
-    lane: str,
-) -> dict[str, Any]:
-    """evidence 由检索上下文层选择并预算；输入、引用白名单与模型实际可见集合一致。"""
-    allowed_by_id = {p.plan_id: p for p in allowed}
-    if not allowed:
-        return {
-            "plans_ranked": [],
-            "dropped": [],
-            "model_trace": None,
-            "degraded": "no_allowed_plans",
-        }
-    if not evidence or router is None:
-        reason = "no_evidence" if not evidence else "router_unavailable"
-        return {
-            "plans_ranked": default_plans_ranked(allowed),
-            "dropped": [],
-            "model_trace": {
-                "task": "diagnose.synthesize",
-                "model_used": "skipped",
-                "lane": lane,
-                "attempts": 1,
-            },
-            "degraded": reason,
-        }
+def synthesis_messages(state, allowed, evidence, observations, max_hypotheses) -> list[tuple[str, str]]:
+    """只构造本次可见候选；完整会话来源与预算由 prepare_messages 统一加入。"""
     plans_text = "\n".join(f"- {p.plan_id}：{p.fault}（首步：{p.steps[0].title}）" for p in allowed)
     ev_text = "\n".join(render_evidence(e) for e in evidence)
     obs_text = "\n".join(observations) if observations else "（无图片观察）"
@@ -357,7 +321,7 @@ async def synthesize(
         + "\n"
         + wrap_data(ev_text, kind="retrieved_snippets")
     )
-    messages = [
+    return [
         (
             "system",
             compose_system_prompt(
@@ -371,6 +335,58 @@ async def synthesize(
         ),
         ("human", human),
     ]
+
+
+async def synthesize(
+    router: ModelRouter | None,
+    *,
+    state: dict[str, Any],
+    allowed: list[Plan],
+    evidence: list[dict[str, Any]],
+    observations: list[str],
+    budget_ms: int,
+    max_hypotheses: int,
+    session_id: str | None,
+    lane: str,
+) -> dict[str, Any]:
+    """先检查完整消息预算；候选和引用白名单仅覆盖模型本次实际可见的证据。"""
+    skipped = {"task": "diagnose.synthesize", "model_used": "skipped", "lane": lane, "attempts": 0}
+    if not allowed or not evidence or router is None:
+        reason = "no_allowed_plans" if not allowed else "no_evidence" if not evidence else "router_unavailable"
+        return {"plans_ranked": [], "dropped": [], "model_trace": skipped, "degraded": reason}
+    visible_plans, visible_evidence = list(allowed), list(evidence)
+    budget_dropped = []
+    while True:
+        try:
+            messages = prepare_messages(
+                "diagnose.synthesize",
+                synthesis_messages(state, visible_plans, visible_evidence, observations, max_hypotheses),
+                PlansRanked,
+            )
+            required = measure_input(convert_to_messages(list(messages)))["text_tokens"]
+            limit = context_input_budget("diagnose.synthesize", PlansRanked)
+            if required > limit:
+                raise ContextBudgetExceeded("synthesis_input_exceeds_budget", required, limit)
+            break
+        except ContextBudgetExceeded:
+            # 每轮删一条低优先级证据，最多 len(evidence)-1 次；必要事实和原始证据不改写。
+            if len(visible_evidence) <= 1:
+                return {"plans_ranked": [], "dropped": budget_dropped,
+                        "model_trace": skipped, "degraded": "context_budget_exceeded"}
+            removed = visible_evidence.pop()
+            budget_dropped.append(f"budget:evidence:{removed['evidence_id']}")
+            doc = removed.get("doc_id")
+            if doc and not any(item.get("doc_id") == doc for item in visible_evidence):
+                remaining = []
+                for plan in visible_plans:
+                    if any(step.evidence_key.partition("#")[0] == doc for step in plan.steps):
+                        budget_dropped.append(f"budget:plan:{plan.plan_id}")
+                    else:
+                        remaining.append(plan)
+                visible_plans = remaining
+            if not visible_plans:
+                return {"plans_ranked": [], "dropped": budget_dropped,
+                        "model_trace": skipped, "degraded": "context_budget_exceeded"}
     # 宽松解析再按枚举过滤：单个越界 plan_id 只丢弃该假设，不让整批作废（枚举写在提示里；
     # _schema_with_enum 供原生 json_schema 模型或票 33 严格模式选用）
     try:
@@ -397,8 +413,8 @@ async def synthesize(
             "synthesize degraded session=%s: %s attempts=%s", session_id, str(exc)[:200], attempts
         )
         return {
-            "plans_ranked": default_plans_ranked(allowed),
-            "dropped": [],
+            "plans_ranked": [],
+            "dropped": budget_dropped,
             "attempts": attempts,
             "model_trace": {
                 "task": "diagnose.synthesize",
@@ -411,13 +427,14 @@ async def synthesize(
     # 前提未知不能成为可执行计划，但有官方证据的候选可以发起事实澄清。
     kept, dropped, clarifications = filter_hypotheses(
         raw,
-        allowed=allowed_by_id,
-        evidence_ids={e["evidence_id"] for e in evidence},
-        symptoms=set(symptoms),
-        facts=facts,
-        error_codes=error_codes,
+        allowed={p.plan_id: p for p in visible_plans},
+        evidence_ids={e["evidence_id"] for e in visible_evidence},
+        symptoms={str(s) for s in [*(state.get("symptoms") or []), *observations] if str(s).strip()},
+        facts=active_facts(state),
+        error_codes=list(state.get("error_codes") or []),
         max_n=max_hypotheses,
     )
+    dropped = budget_dropped + dropped
     for d in dropped:
         log.info(
             "synthesize dropped hypothesis session=%s %s",
