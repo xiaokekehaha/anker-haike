@@ -178,3 +178,25 @@ async def test_new_issue_does_not_inherit_question(conversation, knowledge):
     assert not state.get("product_question")
     assert state["issues"][first]["product_question"]["question"] == QUESTION
     assert not knowledge[1]
+
+
+async def test_t48_model_reply_classified_as_question_keeps_original_question(conversation, knowledge):
+    """T48：等型号时用户只报型号，模型却判 product_question；原问题不能被型号句覆盖，检索仍用原问题。"""
+    await conversation.send(QUESTION, {"primary_intent": "product_question", "device_relation": "current"})
+    await conversation.send("The product is S1 Pro Breast Pump, model T8D04.", {
+        "primary_intent": "product_question", "device_relation": "current", "product_hints": ["S1 Pro", "T8D04"],
+    })
+    state = await conversation.state()
+    assert state["product_question"]["question"] == QUESTION
+    assert state["product_question"]["status"] == "answered"
+    assert state["product_confirmed"]["sku"] == "T8D04"
+    assert knowledge[1][0]["query_text"] == QUESTION
+
+
+async def test_new_question_with_model_while_awaiting_product_replaces_the_question(conversation, knowledge):
+    """等型号时用户换了个问题并带上型号：这是新问题，按新问题检索。"""
+    await conversation.send("绿灯是什么意思", {"primary_intent": "product_question", "device_relation": "current"})
+    await conversation.send(DIRECT, {"primary_intent": "product_question", "product_hints": ["T8D04"]})
+    state = await conversation.state()
+    assert state["product_question"]["question"] == DIRECT
+    assert knowledge[1][0]["query_text"] == DIRECT

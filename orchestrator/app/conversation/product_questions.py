@@ -86,12 +86,29 @@ def _say(state: dict, writer: Callable[[dict], None], text: str) -> None:
     writer({"type": "message_end", "message_id": message_id, "status": "completed"})
 
 
+# 新的提问：问号，或句首疑问词。「The product is S1 Pro, model T8D04.」两者都没有。
+ASKS = re.compile(
+    r"[?？]|(?:^|[.!。！\n]\s*)(?:what|how|why|when|where|which|can|could|does|do|is|are|should|will|"
+    r"如何|怎么|怎样|为什么|为何|能不能|可以|是否|哪)",
+    re.IGNORECASE,
+)
+
+
+def answers_identity(state: dict, task: dict, catalog: ProductCatalog) -> bool:
+    """等型号的咨询收到的是产品身份，不是新问题（T48：补型号被判成 product_question，原「绿灯」问题被型号句覆盖）。"""
+    if task.get("status") != "awaiting_product":
+        return False
+    text = state.get("text", "")
+    names_product = bool(catalog.get(parse_message(text).pn or "") or catalog.lookup_product(text) or catalog.category_hint(text))
+    return names_product and not ASKS.search(text)
+
+
 async def answer_product_question(
     state: dict, *, writer: Callable[[dict], None], catalog: ProductCatalog,
     adapter: KnowledgeAdapter | None, router: ModelRouter | None, rules: RulesService, lane: str,
 ) -> dict:
     task = dict(state.get("product_question") or {})
-    if (state.get("turn_decision") or {}).get("primary_intent") == "product_question":
+    if (state.get("turn_decision") or {}).get("primary_intent") == "product_question" and not answers_identity(state, task, catalog):
         task = {"question": state["text"], "source_input_id": state["input_id"], "status": "resolving_product", "candidate_skus": []}
     update = {"product_question": task, "context_revision": state.get("context_revision", 0) + 1}
     issues = copy.deepcopy(state.get("issues") or {})
