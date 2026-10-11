@@ -123,3 +123,13 @@ def test_no_official_step_renders_a_service_promise():
     offenders = [key for key, ev in plans_config(get_qa_index()).evidence.items()
                  if SERVICE_PROMISE.search(customer_text(ev.snippet))]
     assert not offenders, offenders
+
+
+def test_over_long_rationale_is_clipped_not_rejected():
+    """B25 第二次回放：deepseek 中文 rationale 超 80 字，整批 schema_error、第一轮直接 R5。截断而不是作废。"""
+    from app.diagnose.synthesize import PlansRanked
+
+    parsed = PlansRanked.model_validate({"hypotheses": [{
+        "plan_id": "qa_rv_0341", "confidence": 0.6, "applicability": "needs_confirmation",
+        "supported_symptoms": [], "rationale": "噪音问题需先判断来源" * 20}]})
+    assert len(parsed.hypotheses[0].rationale) == 80

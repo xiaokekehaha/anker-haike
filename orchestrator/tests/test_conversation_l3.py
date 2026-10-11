@@ -437,6 +437,42 @@ async def _out_of_warranty_then_troubleshoot(*, client_text, l3_runtime):
         assert l3_runtime.backend.create_calls == 0
 
 
+async def test_b15_accepting_expiry_and_asking_to_troubleshoot_does_not_reopen_the_case(l3_runtime, monkeypatch, conversation):
+    """B15：过保拒绝后客户说「I understand the warranty has expired. Please still help me troubleshoot」。
+    这是继续排障，不是复开换货：不重开案件、不再拒一次，当前排障卡继续。"""
+    text = "I need help with possibly a replacement for my breast pump. It won't hold the battery and keeps cutting off. Order Anker014"
+    follow = "I understand the replacement warranty has expired. Please still help me troubleshoot the pump that keeps cutting off."
+    interpret_as(monkeypatch, {
+        text: TurnInterpretation(
+            primary_intent="replacement_request", secondary_intents=["report_problem"], device_relation="current",
+            facts=[{"value": "won't hold the battery, keeps cutting off", "quote": "It won't hold the battery and keeps cutting off"}]),
+        follow: TurnInterpretation(
+            primary_intent="report_problem", device_relation="current",
+            diagnostic_request_quote="Please still help me troubleshoot the pump that keeps cutting off.",
+            facts=[{"value": "pump keeps cutting off", "quote": "the pump that keeps cutting off"}]),
+    })
+    set_knowledge_adapter(QAHitAdapter("bp-0043"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_bp_0043", "confidence": 0.9, "evidence_ids": ["chunk-bp-0043"],
+        "applicability": "supported", "supported_symptoms": ["won't hold the battery, keeps cutting off"],
+    }]}] * 2
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            sid = (await client.post("/sessions")).json()["session_id"]
+            events(await send(client, sid, text))
+            state = await state_of(sid)
+            assert (await l3_runtime.cases.store.get(state["case_id"]))["status"] == "closed_unresolved"
+            rows = events(await send(client, sid, follow))
+            state = await state_of(sid)
+    finally:
+        set_knowledge_adapter(None)
+    reply = said(rows)
+    assert "reopened your original case" not in reply and "warranty has expired" not in reply
+    case = await l3_runtime.cases.store.get(state["case_id"])
+    assert case["status"] == "closed_unresolved" and not case.get("reopened_count")
+    assert state["stage"] != "done"
+
+
 async def test_handoff_after_closed_case_records_without_requeue(l3_runtime, monkeypatch):
     """过保结案后排障走到交接：案件已关闭，只记录摘要，不再入人工队列（否则 closed_unresolved → awaiting_approval 非法迁移）。"""
     text = "I need help with possibly a replacement for my breast pump. It won't hold the battery and keeps cutting off. Order Anker014"

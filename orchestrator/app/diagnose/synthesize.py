@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from langchain_core.messages import convert_to_messages
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, create_model
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, ValidationError, create_model
 
 from app.context.budget import context_input_budget, measure_input
 from app.context.builder import ContextBudgetExceeded
@@ -26,6 +26,15 @@ from app.prompts import compose_system_prompt, wrap_data
 log = logging.getLogger("diagnose.synthesize")
 
 
+def _clip(limit: int):
+    """自由说明字段超长就截断，不让整批假设作废（2026-10-10 B25：deepseek 中文 rationale 超 80 字，两次重试全部 schema_error，
+    第一轮直接 R5 转人工）。上限仍写在 schema 里提示模型；plan_id / applicability 等判定字段照旧严格校验。"""
+    return BeforeValidator(lambda v: v[:limit] if isinstance(v, str) else v)
+
+
+Rationale = Annotated[str, _clip(80)]
+
+
 class Hypothesis(BaseModel):
     model_config = ConfigDict(extra="forbid")
     plan_id: str = Field(description="只能是允许列表中的计划 id")
@@ -37,7 +46,7 @@ class Hypothesis(BaseModel):
     evidence_ids: list[str] = Field(
         default_factory=list, description="支撑该假设的证据 id，取自提供的片段"
     )
-    rationale: str = Field(default="", max_length=80)
+    rationale: Rationale = Field(default="", max_length=80)
     clarification_question: str | None = Field(
         default=None, max_length=300,
         description="needs_confirmation 时用一句英文询问文档要求但尚未知的入口前提；只确认事实，不要求执行操作",
@@ -66,7 +75,7 @@ def _schema_with_enum(plan_ids: list[str]) -> type[BaseModel]:
         applicability=(Literal["supported", "needs_confirmation", "not_applicable"], Field()),
         supported_symptoms=(list[str], Field()),
         evidence_ids=(list[str], Field(default_factory=list)),
-        rationale=(str, Field(default="", max_length=80)),
+        rationale=(Rationale, Field(default="", max_length=80)),
         clarification_question=(str | None, Field(default=None, max_length=300)),
         matched_subject=(str | None, Field(default=None, max_length=80)),
         matched_timing=(str | None, Field(default=None, max_length=80)),

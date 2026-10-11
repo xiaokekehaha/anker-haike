@@ -984,6 +984,10 @@ async def reopening_request(state, meaning):
         raise ValueError("案件不属于当前问题")
     if row["status"] not in {"closed", "closed_unresolved", "escalated_summary", "reopened"}:
         return None
+    if eligibility_closed(row) and decision.get("primary_intent") not in REMEDY_INTENTS:
+        # 案件因过保 / 非授权经销商结案，客户只是要继续排障（B15「I understand the replacement warranty has expired.
+        # Please still help me troubleshoot」）：重开只会再走一遍质保、再拒一次，还把排障任务一起结束。按排障继续，不重开
+        return None
     business = BusinessContext.restore(state)
     binding = business.bind("warranty.check")
     order_no = row.get("external_refs", {}).get("order_no")
@@ -996,6 +1000,11 @@ async def reopening_request(state, meaning):
                                  "or with the other order you just asked about."}
     return {"case_id": row["case_id"], "expected_revision": row["revision"], "quote": quote,
             "transition": row["status"] != "reopened"}
+
+
+def eligibility_closed(row) -> bool:
+    """案件因免费服务资格（过保 / 非授权经销商）结案：资格结论不会因为客户再描述一次故障而改变。"""
+    return row["status"] == "closed_unresolved" and (row.get("warranty") or {}).get("status") in {"out_of_warranty", "unauthorized_dealer"}
 
 
 def inactive_case_state(state):

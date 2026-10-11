@@ -87,6 +87,10 @@ def check_charging_recipient(title: str, covered_facts: list[dict], facts: list[
         known = relation(fact)
         if known and candidate.provider == known.recipient and candidate.recipient != known.recipient:
             return "mismatch", known.recipient
+        # 充电盒自身不进电时，泵充不上只是下游结果（B11「My charging case will not charge therefore I cannot charge my
+        # pump motors」）：讲泵 / 马达受电的条目没处理供电源头，先查盒子
+        if known and known.recipient == "charging case" and candidate.recipient == "pump":
+            return "mismatch", "charging case"
     known_relations = [known for fact in covered_facts if (known := relation(fact))]
     for known in known_relations:
         if known.recipient != candidate.recipient:

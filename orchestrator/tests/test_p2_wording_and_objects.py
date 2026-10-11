@@ -59,6 +59,16 @@ def test_b11_charging_case_fault_does_not_match_a_pump_power_guide():
     assert check_charging_recipient(LIB.get("qa_bp_0127").fault, CASE_DEAD, CASE_DEAD)[0] == "matched"
 
 
+def test_b11_pump_motor_guide_is_rejected_when_the_case_itself_has_no_power():
+    """B11 复测：盒自身不进电，泵充不上只是下游；bp-0122「泵马达不充电」靠「泵充不上」这条下游事实被判 matched，
+    还因为「盒灯不亮」被当成前提已知而直接出卡。供电源头没解决，讲泵受电的条目不适用。"""
+    downstream = [{"kind": "symptom", "value": "cannot charge pump motors", "quote": "therefore I cannot charge my pump motors",
+                   "subject": "pump motors", "status": "active"}]
+    assert check_charging_recipient(LIB.get("qa_bp_0122").fault, downstream, CASE_DEAD + downstream) == ("mismatch", "charging case")
+    # 只说泵在盒里充不上（盒子本身没说有问题）时，泵受电条目照常适用
+    assert check_charging_recipient(LIB.get("qa_bp_0122").fault, downstream, downstream)[0] == "matched"
+
+
 def test_robot_not_charging_is_unaffected():
     """T31：整机自己充不上电，标题不写 case 也不算对象不同。"""
     robot = [{"kind": "symptom", "value": "robot won't charge", "quote": "The robot won't charge when it is at the base station",
