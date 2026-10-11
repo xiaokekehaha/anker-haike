@@ -7,7 +7,7 @@ import asyncio
 from app.diagnose.config import RetrievalConfig, get_retrieval_config
 from app.knowledge.adapter import HINTS, Hit, KnowledgeScope, ToolResult
 from app.knowledge.rerank import RerankOutcome
-from app.knowledge.search import interleave_kbs, search_round
+from app.knowledge.search import fuse_queries, interleave_kbs, search_round
 
 SCOPE = KnowledgeScope("confirmed_sku", "robot_vacuum", "T2351")
 
@@ -141,3 +141,47 @@ async def test_rerank_applies_per_kb_and_falls_back_on_failure():
         allow_rerank=False,
     )
     assert rr3.calls == []
+
+
+# ---- 原文 + 英文现象描述双路（intake 的 search_query_en，2026-10-11） ----
+
+
+async def test_english_description_adds_a_second_query_and_fuses_by_rank():
+    """T57 / T59：原文没召回的连接条目由英文描述补进来；两路都命中的条目排前。"""
+    ad = RecordingAdapter({
+        ("kb_qa", "Mijn robot is losgekoppeld"): ToolResult("ok", [_hit("a", 0.9), _hit("b", 0.8), _hit("c", 0.7)]),
+        ("kb_qa", "robot shows offline in the app"): ToolResult("ok", [_hit("wifi", 0.9), _hit("b", 0.8)]),
+    })
+    out = await search_round(ad, "Mijn robot is losgekoppeld", SCOPE, 5, cfg=_cfg(), round_no=1, session_id="s",
+                             run_id="r", english="robot shows offline in the app")
+    assert ad.calls == [("kb_qa", "Mijn robot is losgekoppeld"), ("kb_qa", "robot shows offline in the app")]
+    ids = [h.evidence_id for h in out.results["kb_qa"].hits]
+    assert ids[0] == "b" and "wifi" in ids and set(ids) == {"a", "b", "c", "wifi"}
+    assert out.queries == ["Mijn robot is losgekoppeld", "robot shows offline in the app"]
+    # trace 里两路各一条，能分别看到各自的命中（评审 §7：区分原文与英文两路）
+    by_query = {t["query"]: t["hit_ids"] for t in out.trace if t.get("kb") == "kb_qa"}
+    assert by_query == {"Mijn robot is losgekoppeld": ["a", "b", "c"], "robot shows offline in the app": ["wifi", "b"]}
+    b = next(h for h in out.results["kb_qa"].hits if h.evidence_id == "b")
+    assert b.source_queries == ("Mijn robot is losgekoppeld", "robot shows offline in the app")
+
+
+def test_original_query_outranks_the_english_paraphrase():
+    """T18：英文转述丢了原文推送里的信号，等权合并会把原文第 1 的金标挤出前 5。原文为主：原文第 1 仍在英文第 1 之前。"""
+    primary = ToolResult("ok", [_hit("gold", 0.9), _hit("p2", 0.8), _hit("p3", 0.7)])
+    extra = ToolResult("ok", [_hit("e1", 0.9), _hit("e2", 0.8), _hit("e3", 0.7)])
+    ids = [h.evidence_id for h in fuse_queries(primary, extra, 5).hits]
+    assert ids[0] == "gold" and len(ids) == 5
+
+
+async def test_same_or_missing_english_does_not_add_a_query():
+    for english in (None, "", "robot offline", "ROBOT OFFLINE"):
+        ad = RecordingAdapter({("kb_qa", "robot offline"): ToolResult("ok", [_hit("a", 0.9)])})
+        out = await search_round(ad, "robot offline", SCOPE, 5, cfg=_cfg(), round_no=1, session_id="s", run_id="r", english=english)
+        assert ad.calls == [("kb_qa", "robot offline")] and out.queries == ["robot offline"]
+
+
+def test_one_empty_side_keeps_the_other():
+    hits = ToolResult("ok", [_hit("a", 0.9)])
+    empty = ToolResult("no_match", hint=HINTS["no_match"])
+    assert fuse_queries(hits, empty, 5) is hits
+    assert fuse_queries(empty, hits, 5) is hits

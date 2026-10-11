@@ -1,10 +1,10 @@
-"""haike-kb eval：63 单工单首封 → 检索范围与查询；打分、汇总与报告（纯函数，不连 WeKnora）。"""
+"""haike-kb eval：63 单工单首封 → 检索范围与查询；打分、汇总与报告（不连 WeKnora，检索用假适配器）。"""
 
 from __future__ import annotations
 
 from app.diagnose.query import build_query
-from app.knowledge.adapter import Hit
-from app.knowledge.eval import case_state, gold_of, render_markdown, score_case, summarize
+from app.knowledge.adapter import Hit, ToolResult
+from app.knowledge.eval import case_state, evaluate, gold_of, render_markdown, score_case, summarize
 from app.official.models import OfficialData
 
 BODIES = {t.id: t.body for t in OfficialData().tickets}
@@ -80,3 +80,31 @@ def test_query_does_not_repeat_a_subject_already_in_the_symptom():
         "issues": {"i": {"facts": [{"kind": "symptom", "value": "charging case will not charge", "subject": "charging case", "status": "active"}]}},
     }
     assert build_query(state) == "charging case will not charge"
+
+
+
+class _Adapter:
+    """按查询返回预设命中，记录收到的查询（评测与线上共用 search_round）。"""
+
+    def __init__(self, table):
+        self.table, self.queries = table, []
+
+    async def refresh_index(self):
+        return None
+
+    async def hybrid_search(self, kb, query, top_k, allow):
+        self.queries.append(query)
+        return ToolResult("ok", [_hit(d) for d in self.table.get(query, [])], kb=kb, query=query, allowed_count=5)
+
+
+async def test_eval_uses_the_english_description_like_the_graph():
+    """--english：评测与线上 retrieve 一样原文 + 英文双路，报告逐单记下用了哪句英文。"""
+    case = {"id": "T43", "language": "es", "qa_gold": ["rv-0271"]}
+    query = build_query(case_state(case, BODIES["T43"])[0])
+    adapter = _Adapter({query: ["rv-0106", "rv-0107"], "robot cannot connect to Wi-Fi": ["rv-0271"]})
+    single = await evaluate(adapter, [case], BODIES, top_k=5)
+    assert single[0]["hit"] is False and adapter.queries == [query]
+    adapter.queries.clear()
+    dual = await evaluate(adapter, [case], BODIES, top_k=5, english={"T43": "robot cannot connect to Wi-Fi"})
+    assert adapter.queries == [query, "robot cannot connect to Wi-Fi"]
+    assert dual[0]["hit"] is True and dual[0]["query_en"] == "robot cannot connect to Wi-Fi"

@@ -1,0 +1,916 @@
+{
+ "arm": "single-relabeled",
+ "summary": {
+  "cases": 33,
+  "semantic_cases": 16,
+  "recall@5": "69%",
+  "exact_also_retrieved@5": "100%",
+  "no_scope": 1,
+  "no_match": 0,
+  "unavailable": 0,
+  "latency_p50_ms": 219,
+  "latency_p95_ms": 378,
+  "by_language": {
+   "en": {
+    "n": 11,
+    "recall@5": "64%"
+   },
+   "nl": {
+    "n": 3,
+    "recall@5": "100%"
+   },
+   "fr": {
+    "n": 1,
+    "recall@5": "100%"
+   },
+   "es": {
+    "n": 1,
+    "recall@5": "0%"
+   }
+  },
+  "kb_ver": "0cc02e6531d6+text-embedding-v4",
+  "rerank": false
+ },
+ "rows": [
+  {
+   "id": "T11",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0481"
+   ],
+   "query": "EB1L: The robot encountered an error while adding clean water. Task ended. Click to contact customer service for assista",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 405,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0481",
+    "rv-0445",
+    "rv-0458",
+    "rv-0456",
+    "rv-0460"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T12",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "rv-0021"
+   ],
+   "query": "Due to insufficient clean water, cleaning has been switched to Vacuum-Only mode to complete the task",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2353"
+   },
+   "latency_ms": 219,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0021",
+    "rv-0148",
+    "rv-0112",
+    "rv-0210",
+    "rv-0050"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T14",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0028"
+   ],
+   "query": "Wall sensor not working, please check",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2352"
+   },
+   "latency_ms": 294,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0028",
+    "rv-0055",
+    "rv-0213",
+    "rv-0193",
+    "rv-0033"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T15",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0428"
+   ],
+   "query": "EB03: Base station dust emptying duct blocked, task ended",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 378,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0428",
+    "rv-0432",
+    "rv-0446",
+    "rv-0440",
+    "rv-0445"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T16",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0056"
+   ],
+   "query": "Please insert dustbin and filter. The dustbin or filter is not installed. It is fully installed and clean",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 227,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0056",
+    "rv-0248",
+    "rv-0253",
+    "rv-0246",
+    "rv-0071"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T17",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0498"
+   ],
+   "query": "The portable deep cleaning machine is incorrectly positioned",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2352"
+   },
+   "latency_ms": 202,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0498",
+    "rv-0489",
+    "rv-0491",
+    "rv-0486",
+    "rv-0485"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T18",
+   "language": "nl",
+   "exact": true,
+   "gold": [
+    "rv-0147"
+   ],
+   "query": "De mop met rol is verstopt, gelieve schoon te maken. Klik hier om de stappen te bekijken. Nieuw uit de doos. Alle besche",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2352"
+   },
+   "latency_ms": 243,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0147",
+    "rv-0080",
+    "rv-0140",
+    "rv-0188",
+    "rv-0149"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T19",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0023"
+   ],
+   "query": "Please fill the base station water tank with water and put it back. The water in the clean water tank in the station is ",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 462,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0023",
+    "rv-0241",
+    "rv-0236",
+    "rv-0242",
+    "rv-0245"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T20",
+   "language": "nl",
+   "exact": false,
+   "gold": [
+    "rv-0218",
+    "rv-0106",
+    "rv-0107"
+   ],
+   "query": "Kan positie niet bepalen. Taak wordt beëindigd en robot gaat naar thuisbasis",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 182,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0106",
+    "rv-0107",
+    "rv-0218",
+    "rv-0109",
+    "rv-0105"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T21",
+   "language": "fr",
+   "exact": false,
+   "gold": [
+    "rv-0231",
+    "rv-0235",
+    "rv-0113",
+    "rv-0114"
+   ],
+   "query": "Bonjour depuis 2 semaines je réussi pas à faire fonctionne mon aspirateur il dit tjrs la même chose capteur laser bloque",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 180,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0113",
+    "rv-0235",
+    "rv-0224",
+    "rv-0253",
+    "rv-0114"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T22",
+   "language": "nl",
+   "exact": true,
+   "gold": [
+    "rv-0106"
+   ],
+   "query": "Wiel raakt de grond niet, verplaats de robot naar een nieuwe positie. Wiel raakt de grond niet",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 210,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0105",
+    "rv-0106",
+    "rv-0099",
+    "rv-0107",
+    "rv-0102"
+   ],
+   "hit": true,
+   "first_rank": 2
+  },
+  {
+   "id": "T23",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0138"
+   ],
+   "query": "E41: Battery abnormal, task ended. Please try restarting or contact customer service for assistance",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 209,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0138",
+    "rv-0437",
+    "rv-0459",
+    "rv-0439",
+    "rv-0463"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T24",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0273"
+   ],
+   "query": "Error: Sprinkler error, please contact customer service. Base station clean water pump error",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 205,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0273",
+    "rv-0282",
+    "rv-0023",
+    "rv-0241",
+    "rv-0242"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T25",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0451"
+   ],
+   "query": "E53: TrueAI sensor abnormal, task ended. Please try restarting or contact customer service for assistance",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 208,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0451",
+    "rv-0449",
+    "rv-0437",
+    "rv-0436",
+    "rv-0439"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T26",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0063"
+   ],
+   "query": "E23: Robot clean water level abnormal, task ended. Click to contact customer service for assistance",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 215,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0453",
+    "rv-0457",
+    "rv-0063",
+    "rv-0482",
+    "rv-0484"
+   ],
+   "hit": true,
+   "first_rank": 3
+  },
+  {
+   "id": "T27",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0147"
+   ],
+   "query": "Rolling Mop Blockage. Please clean",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2353"
+   },
+   "latency_ms": 169,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0080",
+    "rv-0147",
+    "rv-0188",
+    "rv-0119",
+    "rv-0148"
+   ],
+   "hit": true,
+   "first_rank": 2
+  },
+  {
+   "id": "T28",
+   "language": "de",
+   "exact": true,
+   "gold": [
+    "rv-0256"
+   ],
+   "query": "Fehler: Fehler an der Bürstenrolle. Wenden Sie sich an den Kundendienst. Fehler an der Bürstenrolle",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 309,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0256",
+    "rv-0257",
+    "rv-0272",
+    "rv-0228",
+    "rv-0277"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T30",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0443"
+   ],
+   "query": "E4: Side brush abnormal, task ended. Please try restarting or contact customer service for assistance",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 196,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0443",
+    "rv-0441",
+    "rv-0447",
+    "rv-0455",
+    "rv-0449"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T32",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0061"
+   ],
+   "query": "Please install the dirty water reservoir. [Click here to view installation steps.] The dirty water reservoir has been re",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2353"
+   },
+   "latency_ms": 265,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0061",
+    "rv-0078",
+    "rv-0059",
+    "rv-0084",
+    "rv-0060"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T33",
+   "language": "en",
+   "exact": true,
+   "gold": [
+    "rv-0439"
+   ],
+   "query": "E5A: Gyroscope abnormal, task ended. Click to contact customer service for assistance",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 205,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0439",
+    "rv-0455",
+    "rv-0459",
+    "rv-0449",
+    "rv-0405"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T36",
+   "language": "nl",
+   "exact": false,
+   "gold": [
+    "rv-0341",
+    "rv-0316",
+    "rv-0349",
+    "rv-0339"
+   ],
+   "query": "Tijdens het stofzuigen maakt de stofzuiger enorm veel geluid. Alle filters en borstels zijn vervangen en alles is schoon",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2080"
+   },
+   "latency_ms": 243,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0306",
+    "rv-0358",
+    "rv-0316",
+    "rv-0337",
+    "rv-0315"
+   ],
+   "hit": true,
+   "first_rank": 3
+  },
+  {
+   "id": "T37",
+   "language": "nl",
+   "exact": false,
+   "gold": [
+    "rv-0111",
+    "rv-0163",
+    "rv-0062"
+   ],
+   "query": "Ik krijg steeds de melding in de app “voeg water toe” als de dweil wordt gewassen. Terwijl de schoonwater tank nog vol i",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2352"
+   },
+   "latency_ms": 222,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0202",
+    "rv-0021",
+    "rv-0111",
+    "rv-0180",
+    "rv-0061"
+   ],
+   "hit": true,
+   "first_rank": 3
+  },
+  {
+   "id": "T39",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "rv-0271",
+    "rv-0098",
+    "rv-0014"
+   ],
+   "query": "The robot is offline. a",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 355,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0107",
+    "rv-0106",
+    "rv-0105",
+    "rv-0109",
+    "rv-0267"
+   ],
+   "hit": false,
+   "first_rank": null
+  },
+  {
+   "id": "T40",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "rv-0371"
+   ],
+   "query": "",
+   "query_en": null,
+   "status": "no_scope",
+   "hit": false,
+   "first_rank": null,
+   "doc_ids": [],
+   "latency_ms": 0
+  },
+  {
+   "id": "T43",
+   "language": "es",
+   "exact": false,
+   "gold": [
+    "rv-0271",
+    "rv-0098",
+    "rv-0014"
+   ],
+   "query": "El robot está desconectado",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "robot_vacuum",
+    "sku": "T2351"
+   },
+   "latency_ms": 237,
+   "status": "ok",
+   "doc_ids": [
+    "rv-0106",
+    "rv-0107",
+    "rv-0105",
+    "rv-0109",
+    "rv-0100"
+   ],
+   "hit": false,
+   "first_rank": null
+  },
+  {
+   "id": "T44",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0127",
+    "bp-0039"
+   ],
+   "query": "Hi there, I’m reaching out because I’ve been absolutely lovely my Eufy pumps but there have been a couple issues with th",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "breast_pump",
+    "sku": "T8D04"
+   },
+   "latency_ms": 198,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0067",
+    "bp-0064",
+    "bp-0070",
+    "bp-0065",
+    "bp-0039"
+   ],
+   "hit": true,
+   "first_rank": 5
+  },
+  {
+   "id": "T46",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0123"
+   ],
+   "query": "Motor making awful noise. Less than a month old and it’s not the pump I use daily. It’s been used around 20 times total",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "breast_pump",
+    "sku": "T8D04"
+   },
+   "latency_ms": 189,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0123",
+    "bp-0036",
+    "bp-0034",
+    "bp-0061",
+    "bp-0027"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T52",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0039",
+    "bp-0127",
+    "bp-0067"
+   ],
+   "query": "My charging case will not charge therefore I cannot charge my pump motors. I am an exclusive pumper",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "breast_pump",
+    "sku": "T8D04"
+   },
+   "latency_ms": 188,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0067",
+    "bp-0039",
+    "bp-0122",
+    "bp-0016",
+    "bp-0127"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T54",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0125",
+    "bp-0043",
+    "bp-0090",
+    "bp-0102",
+    "bp-0040"
+   ],
+   "query": "Eufy S1 pro breast pump not suctioning",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "breast_pump",
+    "sku": "T8D04"
+   },
+   "latency_ms": 205,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0097",
+    "bp-0051",
+    "bp-0090",
+    "bp-0125",
+    "bp-0088"
+   ],
+   "hit": true,
+   "first_rank": 3
+  },
+  {
+   "id": "T55",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0102",
+    "bp-0043",
+    "bp-0090"
+   ],
+   "query": "I have been using this breast pump for less than three weeks and the left pump will no longer suction. It clicks but doe",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "breast_pump",
+    "sku": "T8D04"
+   },
+   "latency_ms": 202,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0102",
+    "bp-0023",
+    "bp-0090",
+    "bp-0120",
+    "bp-0020"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T56",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0152",
+    "bp-0186",
+    "bp-0151",
+    "bp-0212"
+   ],
+   "query": "Why is it when I need my SoloCam S340 there offline. Even hooked up for one week. Is that your warranty? I'm sick of thi",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "security_cam",
+    "sku": "T8170"
+   },
+   "latency_ms": 221,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0152",
+    "bp-0151",
+    "bp-0186",
+    "bp-0154",
+    "bp-0276"
+   ],
+   "hit": true,
+   "first_rank": 1
+  },
+  {
+   "id": "T57",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0164",
+    "bp-0152",
+    "bp-0229",
+    "bp-0186"
+   ],
+   "query": "All of the cameras are not working except one, the system does not record any more. This system is truly terrible. Not s",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "security_cam",
+    "sku": "T8170"
+   },
+   "latency_ms": 253,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0154",
+    "bp-0176",
+    "bp-0228",
+    "bp-0166",
+    "bp-0163"
+   ],
+   "hit": false,
+   "first_rank": null
+  },
+  {
+   "id": "T59",
+   "language": "en",
+   "exact": false,
+   "gold": [
+    "bp-0152",
+    "bp-0212",
+    "bp-0272",
+    "bp-0176",
+    "bp-0175"
+   ],
+   "query": "My 2 SoloCam S340 are always loosing connection and nit reliable junk but . My other ones solo cam c20 which I paid less",
+   "query_en": null,
+   "scope": {
+    "product_state": "confirmed_sku",
+    "category": "security_cam",
+    "sku": "T8170"
+   },
+   "latency_ms": 275,
+   "status": "ok",
+   "doc_ids": [
+    "bp-0278",
+    "bp-0154",
+    "bp-0179",
+    "bp-0163",
+    "bp-0156"
+   ],
+   "hit": false,
+   "first_rank": null
+  }
+ ]
+}

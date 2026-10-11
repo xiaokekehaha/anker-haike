@@ -126,6 +126,10 @@ class TurnInterpretation(BaseModel):
     history_request: HistoryRequest | None = None
     device_safety_assertion: Literal["reported", "negated", "uncertain", "none"] = Field(default="none", description="仅判断设备物理安全隐患，如冒烟、漏液、鼓包、触电；没有此类设备安全内容时必须 none。投诉、差评和生气不属于设备安全隐患")
     device_safety_quote: str | None = Field(default=None, description="本轮设备物理安全描述的逐字原话；不能引用投诉或情绪表达")
+    search_query_en: str | None = Field(
+        default=None, max_length=160,
+        description="有故障现象时用英文转述现象供检索；不加原因、型号、错误码；无现象留空",
+    )
 
 
 class BusinessReference(BaseModel):
@@ -137,7 +141,7 @@ class BusinessReference(BaseModel):
 
 TurnInterpretation.model_rebuild()
 
-INTERPRET_PROMPT_VERSION = "2026-10-10.1"  # 问句 / 材料卡的文字回答用 pending_answer.step_answer
+INTERPRET_PROMPT_VERSION = "2026-10-11.1"  # search_query_en：英文现象描述只用于检索（官方 Q&A 是英文）
 
 # 63 单实测（2026-10-08）：「没收到货 / 什么时候发货 + 订单号」被模型判成 order_query 4 单（T1 T3 T7 T9），
 # 订单查询只回订单字段，客户问的物流没有回答。原话有配送词且没问订单字段时按物流处理。

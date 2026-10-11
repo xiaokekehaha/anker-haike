@@ -314,3 +314,50 @@ def test_quote_tolerates_a_typo_on_one_edge_word():
     assert not quoted("lost maps", text)
     assert not quoted("discovered i had", text)
     assert not quoted("discovered i had lost the chart", text)
+
+
+
+# ---- intake 的英文现象描述只用于检索（search_query_en，2026-10-11） ----
+
+T43 = "Nombre del producto: X10 Pro Omni\nNúmero de parte del producto: T2351\nDescripción del problema: El robot está desconectado."
+
+
+def test_english_search_query_is_kept_for_retrieval_only():
+    state = turn({}, "i1", T43, primary_intent="report_problem", device_relation="current", product_hints=["X10 Pro Omni"],
+                 facts=[{"value": "desconectado", "quote": "El robot está desconectado."}],
+                 search_query_en="robot is disconnected")
+    assert state["search_query_en"] == "robot is disconnected"
+    # 不是事实，不进症状 / 观察 / 标题
+    issue = state["issues"][state["active_issue_id"]]
+    assert all("disconnected" not in f["value"] for f in issue["facts"])
+    assert "robot is disconnected" not in state["symptoms"] and "robot is disconnected" not in issue["title"]
+
+
+def test_english_search_query_needs_a_symptom_and_no_invented_codes():
+    # 没有现象的轮次不记（只有情绪 / 订单问题）
+    none = turn({}, "i1", "Where is my order Anker001?", primary_intent="logistics_query", search_query_en="order not delivered")
+    assert none.get("search_query_en") is None
+    # 原文没有的型号 / 错误码不收（会把检索带偏）
+    invented = turn({}, "i1", T43, primary_intent="report_problem", device_relation="current",
+                    facts=[{"value": "desconectado", "quote": "El robot está desconectado."}],
+                    search_query_en="robot offline error 5112")
+    assert invented.get("search_query_en") is None
+    kept = turn({}, "i1", T43, primary_intent="report_problem", device_relation="current",
+                facts=[{"value": "desconectado", "quote": "El robot está desconectado."}],
+                search_query_en="X10 Pro Omni T2351 robot is disconnected")
+    assert kept["search_query_en"] == "X10 Pro Omni T2351 robot is disconnected"
+
+
+def test_english_search_query_follows_the_issue_and_later_symptoms():
+    """评审 §7：摘要绑定本轮事实；没有新现象的轮次沿用，新现象替换，切换到另一台设备的问题不带过去。"""
+    state = turn({}, "i1", T43, primary_intent="report_problem", device_relation="current", product_hints=["X10 Pro Omni"],
+                 facts=[{"value": "desconectado", "quote": "El robot está desconectado."}], search_query_en="robot is disconnected")
+    follow = turn(state, "i2", "¿Y ahora?", primary_intent="unknown", device_relation="current")
+    assert follow["search_query_en"] == "robot is disconnected"
+    detail = turn(follow, "i3", "La app dice que el robot está sin conexión.", primary_intent="supplement", device_relation="current",
+                  facts=[{"value": "app shows offline", "quote": "La app dice que el robot está sin conexión."}],
+                  search_query_en="app shows robot offline")
+    assert detail["search_query_en"] == "app shows robot offline"
+    other = turn(detail, "i4", "Mis auriculares no suenan", primary_intent="report_problem", device_relation="other",
+                 product_hints=["auriculares"], device_category="earbuds", facts=[{"value": "no suenan", "quote": "no suenan"}])
+    assert other["active_issue_id"] != detail["active_issue_id"] and other.get("search_query_en") is None

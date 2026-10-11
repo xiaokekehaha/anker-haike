@@ -45,7 +45,7 @@ cases:
 - {id: T18, intent: report_problem, language: nl, pn: T2352, codes: ['3212'], sop: troubleshoot, qa_exact: rv-0147}
 - {id: T19, intent: report_problem, language: en, pn: T2351, codes: ['6011'], sop: troubleshoot, qa_exact: rv-0023}
 - {id: T20, intent: report_problem, language: nl, pn: T2351, sop: troubleshoot, qa_gold: [rv-0218, rv-0106, rv-0107], note: 无法定位，附基站照片}
-- {id: T21, intent: report_problem, language: fr, pn: T2351, sop: troubleshoot, note: 激光传感器堵塞}
+- {id: T21, intent: report_problem, language: fr, pn: T2351, sop: troubleshoot, qa_gold: [rv-0231, rv-0235, rv-0113, rv-0114], note: 激光传感器堵塞（2026-10-11 补金标：报警文字对应的激光传感器条目）}
 - {id: T22, intent: report_problem, language: nl, pn: T2351, codes: ['7002'], sop: troubleshoot, qa_exact: rv-0106}
 - {id: T23, intent: report_problem, language: en, pn: T2080, codes: [E41], sop: troubleshoot, qa_exact: rv-0138}
 - {id: T24, intent: report_problem, language: en, pn: T2351, codes: ['6013'], sop: troubleshoot, qa_exact: rv-0273, note: 末步硬件故障 → 质保}
@@ -60,14 +60,14 @@ cases:
 - {id: T33, intent: report_problem, language: en, pn: T2080, codes: [E5A], sop: troubleshoot, qa_exact: rv-0439}
 - {id: T34, intent: report_problem, language: en, pn: T2080, sop: troubleshoot, note: 维修后地图丢失，情绪}
 - {id: T35, intent: report_problem, language: en, pn: T2353, sop: explain, note: 低电回充是正常提示}
-- {id: T36, intent: report_problem, language: nl, pn: T2080, sop: troubleshoot, note: 噪音大}
+- {id: T36, intent: report_problem, language: nl, pn: T2080, sop: troubleshoot, qa_gold: [rv-0341, rv-0316, rv-0349, rv-0339], note: 噪音大（2026-10-11 补金标：吸尘时噪音条目，不含集尘时 rv-0315）}
 - {id: T37, intent: report_problem, language: nl, pn: T2352, sop: troubleshoot, qa_gold: [rv-0111, rv-0163, rv-0062], note: 满水仍报缺水}
 - {id: T38, intent: report_problem, language: en, order_no: Anker012, sop: out_of_warranty, forbid: [free_replacement]}
-- {id: T39, intent: report_problem, language: en, pn: T2351, sop: troubleshoot, note: 离线}
+- {id: T39, intent: report_problem, language: en, pn: T2351, sop: troubleshoot, qa_gold: [rv-0271, rv-0098, rv-0014], note: 离线（2026-10-11 补金标：Wi-Fi / 离线条目）}
 - {id: T40, intent: report_problem, language: en, sop: troubleshoot, qa_gold: [rv-0371], note: S1 Pro 清洁液不出}
 - {id: T41, intent: report_problem, language: en, pn: T2352, sop: troubleshoot, note: 烘干故障 + 等待插头寄送（多诉求）}
 - {id: T42, intent: report_problem, language: en, pn: T2080, sop: warranty_by_qa, note: 塑料件脱落漏水，附照片；无订单 → 追订单 / 经销商（2026-10-08 复核）}
-- {id: T43, intent: report_problem, language: es, pn: T2351, sop: troubleshoot, note: 离线}
+- {id: T43, intent: report_problem, language: es, pn: T2351, sop: troubleshoot, qa_gold: [rv-0271, rv-0098, rv-0014], note: 离线（2026-10-11 补金标：Wi-Fi / 离线条目）}
 - {id: T44, intent: replacement_request, language: en, sop: warranty_by_qa, qa_gold: [bp-0127, bp-0039], note: 充电盒针脚卡死；原文要求保修换货，无订单（2026-10-08 复核）}
 - {id: T45, intent: report_problem, language: en, sop: safety_human, note: 加热烫伤；Aeroflow 授权经销商 12 个月保内}
 - {id: T46, intent: report_problem, language: en, order_no: Anker013, sop: warranty_replace, qa_gold: [bp-0123], note: 电机异响；异响不等于无吸力，吸力条目不作金标；首卡应为事实问句（2026-10-09 复核）}

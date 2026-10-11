@@ -219,7 +219,8 @@ def test_intake_schema_preserves_null_fields_and_limits_fixed_overhead():
     assert TurnInterpretation.model_validate({"primary_intent": "social", "history_request": None}).history_request is None
     # 同上：2026-09-18 新增 operation_update（118 token）后由 2462 升到 2519。
     # 2026-10-09：增加有类型的 request_quotes 后实测 2599，保留 51 token 余量。
-    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2650
+    # 2026-10-11：增加 search_query_en（英文现象描述只进检索）后实测 2689，保留 51 token 余量。
+    assert estimate_tokens(json.dumps(schema, ensure_ascii=False, separators=(",", ":"))) <= 2740
     # 介于默认预算与 intake 预算之间的输入：intake 放得下，其他任务超限（预算以 config/conversation.yaml 为准）
     cfg = conversation_config()
     assert cfg.input_budget("intake") > cfg.input_budget("reply.stream")

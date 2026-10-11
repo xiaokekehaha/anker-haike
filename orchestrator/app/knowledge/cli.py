@@ -203,6 +203,9 @@ def main(argv: list[str] | None = None) -> int:
     ev.add_argument(
         "--config", default=None, help="覆盖 config/retrieval.yaml（各对照组的开关文件）"
     )
+    ev.add_argument(
+        "--english", default=None, help="工单 id → 英文现象描述的 JSON（intake 的 search_query_en），给了就双路检索"
+    )
     sub.add_parser("verify")
     s = sub.add_parser("search")
     s.add_argument("query")
@@ -223,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
                     top_k=args.top_k,
                     out_dir=Path(args.out_dir),
                     config_path=Path(args.config) if args.config else None,
+                    english_path=Path(args.english) if args.english else None,
                 )
             )
         if args.cmd == "verify":

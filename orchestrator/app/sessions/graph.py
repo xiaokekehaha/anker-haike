@@ -170,6 +170,7 @@ class SessionState(TypedDict, total=False):
     product_hints: list[str]
     product_question: dict | None
     symptoms: list[str]
+    search_query_en: str | None  # intake 的英文现象描述，只用于检索
     unparsed_problem: dict[str, str | list[str]] | None
     diagnostic_decision: dict[str, Any]
     model_trace: list[dict[str, Any]]
@@ -1667,6 +1668,7 @@ async def _search_round(
     run_id: str,
     remaining_ms: int | None = None,
     allow_rerank: bool = True,
+    english: str | None = None,
 ):
     """一轮：委托 app.knowledge.search.search_round（阶段 3：原 query + 可选同义变体 × 两库并发 → RRF → 可选 rerank，
     + 可选本地 FAQ）。开关全关时 = 两库各一次并发（P0-1）。返回 (results, trace_entries)。"""
@@ -1684,6 +1686,7 @@ async def _search_round(
         run_id=run_id,
         reranker=_reranker(rcfg) if rcfg.rerank.enabled else None,
         allow_rerank=allow_rerank,
+        english=english,
     )
     for t in out.trace:
         if "event" not in t:
@@ -2007,6 +2010,7 @@ async def retrieve(state: SessionState) -> SessionState:
         session_id=session_id,
         run_id=run_id,
         remaining_ms=_remaining_ms(state),
+        english=state.get("search_query_en"),
     )
     # 票 30 的 vision 节点已在本 run 先行读图（R4 已在其后直接升级）；这里只消费观察项
     observations = (

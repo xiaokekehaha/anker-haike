@@ -83,7 +83,9 @@ async def evaluate(
     *,
     top_k: int,
     cfg: RetrievalConfig | None = None,
+    english: dict[str, str] | None = None,
 ) -> list[dict[str, Any]]:
+    """english：工单 id → intake 给的英文现象描述（search_query_en）。给了就与原文查询双路检索，与线上 retrieve 一致。"""
     cfg = cfg or get_retrieval_config()
     await adapter.refresh_index()
     reranker = (
@@ -105,6 +107,7 @@ async def evaluate(
         }
         query = build_query(state) if scope is not None else ""
         row["query"] = query[:120]
+        row["query_en"] = (english or {}).get(case["id"])
         if not query or scope is None:
             row.update({"status": "no_scope", "hit": False, "first_rank": None, "doc_ids": [], "latency_ms": 0})
             rows.append(row)
@@ -114,6 +117,7 @@ async def evaluate(
         out = await search_round(
             adapter, query, scope, cfg.retrieval.candidate_k,
             cfg=cfg, round_no=1, session_id="eval", run_id=case["id"], reranker=reranker,
+            english=row["query_en"],
         )
         hits = select_hits(interleave_kbs(out.results), cfg.retrieval.final_k)
         row["latency_ms"] = int((time.perf_counter() - t0) * 1000)
@@ -204,6 +208,7 @@ async def run_eval(
     top_k: int,
     out_dir: Path,
     config_path: Path | None = None,
+    english_path: Path | None = None,
 ) -> int:
     from app.diagnose.config import load_retrieval_config
     from app.knowledge.cli import MANIFEST
@@ -214,7 +219,8 @@ async def run_eval(
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     async with client as c:
         adapter = WeKnoraKnowledgeAdapter(c, manifest["knowledge_bases"])
-        rows = await evaluate(adapter, data.get("cases") or [], bodies, top_k=top_k, cfg=cfg)
+        english = json.loads(english_path.read_text(encoding="utf-8")) if english_path else None
+        rows = await evaluate(adapter, data.get("cases") or [], bodies, top_k=top_k, cfg=cfg, english=english)
     summary = summarize(rows, top_k=top_k)
     summary["kb_ver"] = manifest.get("kb_ver")
     summary["rerank"] = cfg.rerank.enabled

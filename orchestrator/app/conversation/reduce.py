@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import re
 import uuid
 
 from app.conversation.interpret import TurnInterpretation
@@ -35,6 +36,9 @@ ISSUE_FIELDS = {
     "product_hints": [],
     "product_question": None,
     "symptoms": [],
+    # intake 给的英文现象描述，只参与检索（官方 Q&A 是英文，T43 西语「desconectado」与英文条目没有词面交集）；
+    # 不是事实，不进摘要和适用性判断
+    "search_query_en": None,
     "unparsed_problem": None,
     "diagnostic_decision": None,
     "evidence": {},
@@ -121,6 +125,21 @@ def answers_pending_step(meaning: TurnInterpretation, pending: dict | None, text
     if answer is not None and answer.kind == "step_answer":
         return bool(quoted(answer.quote, text))
     return meaning.feedback is not None and bool(quoted(meaning.feedback_quote, text))
+
+
+_CODE_OR_MODEL = re.compile(r"\b(?:T\d{4}[A-Z0-9]*|T8D\d+|E[0-9A-Z]{1,3}|EB[0-9A-Z]{1,2}|\d{4})\b")
+
+
+def search_query_en(meaning: TurnInterpretation, text: str) -> str | None:
+    """本轮报告了现象时的英文检索描述；不允许出现原文没有的型号 / 错误码（检索范围与精确命中另有来源，凭空的码会把检索带偏）。
+    没有现象的轮次返回 None，保留上一轮的描述。"""
+    english = " ".join((meaning.search_query_en or "").split())
+    if not english or not any(f.kind == "symptom" for f in meaning.facts):
+        return None
+    source = text.upper()
+    if any(token.upper() not in source for token in _CODE_OR_MODEL.findall(english)):
+        return None
+    return english[:160]
 
 
 def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool = False, business_order_no: str | None = None, new_business_subject: bool = False) -> dict:
@@ -365,6 +384,8 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         )
         issue["pending_card"] = None
         resumed_pending = False
+    if (english := search_query_en(meaning, text)) is not None:
+        issue["search_query_en"] = english
     # 否定句（「没有冒烟」「no suction loss」）是反证，不是现象：留在 facts 里供摘要与适用性核对，不进症状。
     issue["symptoms"] = [
         f["value"] for f in facts

@@ -256,3 +256,33 @@ async def test_t43_one_word_symptom_with_no_applicable_candidate_asks_once_befor
     })
     assert any(e["type"] == "escalation_summary" for e in second)
     assert len(model.calls) == 2
+
+
+
+class RecordingQueries:
+    """记录检索收到的查询：原文与英文现象描述各一次。"""
+
+    def __init__(self):
+        self.queries = []
+
+    async def hybrid_search(self, kb, query, top_k, allow):
+        self.queries.append(query)
+        hits = [Hit("c12", "k12", "c12", "rv-0272", "v1", kb, "Official robot troubleshooting guidance", 0.9)]
+        return ToolResult("ok", hits, kb=kb, query=query)
+
+
+async def test_intake_english_description_is_searched_alongside_the_original(conversation):
+    """2026-10-11：intake 的 search_query_en 只进检索，与原文各查一次；trace 里两路各一条，事实里没有这句英文。"""
+    adapter = RecordingQueries()
+    set_knowledge_adapter(adapter)
+    await conversation.send("X10 Pro Omni: El robot está desconectado de la app.", {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "facts": [{"value": "robot desconectado de la app", "quote": "El robot está desconectado de la app."}],
+        "search_query_en": "robot shows offline in the app",
+    })
+    assert "robot shows offline in the app" in adapter.queries and len(adapter.queries) >= 2
+    state = await conversation.state()
+    searched = [t["query"] for t in state["retrieval_trace"] if t.get("kb") == "kb_qa" and t.get("round") == 1]
+    assert "robot shows offline in the app" in searched and len(searched) == 2
+    issue = state["issues"][state["active_issue_id"]]
+    assert all("offline in the app" not in f["value"] for f in issue["facts"])
