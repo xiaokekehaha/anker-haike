@@ -193,3 +193,29 @@ async def test_error_code_missing_from_official_qa_is_a_knowledge_gap(conversati
     summary = next(e for e in events if e["type"] == "escalation_summary")["summary"]
     assert summary["reason"]["cause"] == "knowledge_gap"
     assert "官方资料没有覆盖" in summary["reason"]["text"]
+
+
+async def test_t60_wish_only_candidate_is_not_executed_after_the_model_is_chosen(conversation):
+    """21:03 续测 T60：补完型号 C20 后，synthesize 把 rv-0527「C20 清洁效果差」判 supported，supported_symptoms 只有那句
+    愿望（「I just want my hoover to clean」）→ 发说明后整条结束。愿望句不是可判定的现象：不出方案，先问具体现象。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0527"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0527", "confidence": 0.72, "evidence_ids": ["chunk-rv-0527"],
+        "applicability": "supported", "supported_symptoms": ["C20 not cleaning properly"],
+    }]}]
+    events = await conversation.send(T60.replace("hoover", "Omni C20"), {**T60_MEANING, "product_hints": ["Omni C20"],
+                                     "facts": [{"value": "C20 not cleaning properly", "quote": "I just want my Omni C20 to clean"}]})
+    assert not any(e["type"] == "step_card" for e in events)
+    assert "describe what the device is doing" in said(events)
+    state = await conversation.state()
+    assert state["stage"] != "done"
+    assert any("wish_only:qa_rv_0527" in str(t.get("dropped")) for t in state["retrieval_trace"] if t.get("event") == "synthesize")
+
+
+def test_rv_0527_recommendation_is_an_action_not_an_explanation():
+    """T60：rv-0527「We recommend cleaning the dust box filter… then starting a new task… so that we can provide…」
+    第二句的 can 曾让整段被判成说明，指南走「已解释」直接结束、客户没有反馈入口。"""
+    from app.official.qa_index import classify_step, get_qa_index
+
+    assert get_qa_index().guides["rv-0527"].steps[0].kind == "action"
+    assert classify_step("The robot can detect carpets automatically.") == "statement"

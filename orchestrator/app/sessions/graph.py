@@ -11,6 +11,7 @@ import copy
 import logging
 import operator
 import os
+import re
 import uuid
 from datetime import UTC, datetime
 from typing import Annotated, Any, TypedDict
@@ -2339,6 +2340,20 @@ async def _synthesize_step(
     return update
 
 
+def vague_symptoms(state: SessionState) -> bool:
+    """本问题的现象全都只有一两个词、又没有错误码：一句话太笼统，检索词和英文资料对不上（T43「desconectado」）。"""
+    if state.get("error_codes"):
+        return False
+    issue = (state.get("issues") or {}).get(state.get("active_issue_id"), {})
+    symptoms = [f for f in issue.get("facts", []) if f.get("status") == "active" and f.get("kind") == "symptom"
+                and f.get("polarity", "affirmed") == "affirmed"]
+    def short(value: str) -> bool:
+        # 拉丁字母按词数，汉字按字数（「不吸了」「滚刷缠头发」本身就是具体现象）
+        return not re.search(r"[一-鿿]", value) and len(re.findall(r"[^\W\d_]+", value)) <= 2
+
+    return bool(symptoms) and all(short(str(f.get("value") or "")) for f in symptoms)
+
+
 def _diagnose_outcome(
     plans_ranked: list[dict[str, Any]], *, knowledge_status: str, exact_hits: list[str],
     exhausted_plans: list[str] = (),
@@ -2397,6 +2412,19 @@ def _diagnose_outcome(
                 else {"reason": "symptom", "attempts": 0, "subject": subject},
                 "escalate_reason": None, "plan_cursor": None,
             }
+    # 现象只有一个笼统的词（T43 西语「El robot está desconectado」→ 症状「desconectado」）：召回有结果、却没有一条适用、
+    # 模型也没提追问。检索词与英文资料对不上，不是资料没有：先请客户具体说一次（App 提示、在做什么时发生），带着新描述
+    # 重新检索；只问一次，答完仍查不到再交人工。已有具体描述（多个词）的现象落空照旧交人工。
+    if (not plans_ranked and knowledge_status == "ok" and state is not None and not clarifications
+            and previous.get("reason") != "vague_symptom" and vague_symptoms(state)):
+        question = ("I want to make sure I find the right official guidance. Could you describe it in a bit more detail: "
+                    "what exactly happens (for example, the app shows the robot offline, it can't connect to Wi-Fi, or it stops "
+                    "while cleaning), and is there any message or error code in the app?")
+        return {
+            "diagnose_outcome": {"mode": "clarify", "reason": "vague_symptom", "attempts": attempts + 1, "question": question},
+            "_decision": {"outcome": "clarify", "reason": "applicability", "question": question},
+            "escalate_reason": None, "plan_cursor": None,
+        }
     # 走到这里，症状追问已经有了结果（命中方案或交人工）：澄清预算用完，不再带到下一轮
     settled = {"clarification": None} if (state or {}).get("clarification", {}) and (state or {})["clarification"].get("reason") == "symptom" else {}
     if not plans_ranked:

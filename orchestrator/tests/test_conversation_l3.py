@@ -531,6 +531,25 @@ async def test_t47_hub_query_is_not_answered_with_the_old_main_unit_delivery(l3_
         assert not any(e["type"] == "proposal_card" for e in rows)
 
 
+async def test_t47_form_fields_in_the_request_still_get_the_mismatch_note(l3_runtime, monkeypatch):
+    """21:03 续测 T47：模型把客户贴的表单字段（SKU / SN / 地址 / 商家）都列进 answer_request，超出物流字段，
+    走了逐字段答复，回出「Product model: T8D04121」「Tracking number: no confirmed record yet」。对不上时照样先说差异。"""
+    text = ("Is there a tracking number for my shipment yet?\nSKU: T8D02181-80 (S1/S1 Pro Pump Hub Brown)\nQuantity: 1\n"
+            "Order: Anker010\nSN: T8D02P20262058EB\nAddress:\nAnkerDirect\n5250 Ontario Mills Parkway, \nSuite 300, Ontario, "
+            "\nCalifornia, 91764\nUnited States")
+    interpret_as(monkeypatch, {text: TurnInterpretation(
+        primary_intent="logistics_query", secondary_intents=["order_query"], device_relation="current",
+        answer_request={"fields": ["tracking_no", "order_no", "sku", "serial_number", "address", "seller", "country"],
+                        "quote": "Is there a tracking number for my shipment yet?"},
+    )})
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        sid = (await client.post("/sessions")).json()["session_id"]
+        rows = events(await send(client, sid, text))
+    said_text = said(rows)
+    assert "T8D02181-80" in said_text and "don't see a separate shipment" in said_text
+    assert "Product model: T8D04121" not in said_text and "Tracking number: no confirmed record yet" not in said_text
+
+
 async def test_t2_conflicting_package_description_is_flagged_not_swapped(l3_runtime):
     text = ("I am reaching out regarding my order Anker002. I have received one package today with tracking number Anker1234567-2. "
             "The package only contains the replacement accessories kit. I have not received the Eufy S1 robot vacuum yet. "

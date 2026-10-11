@@ -17,6 +17,7 @@ from app.context.budget import context_input_budget, measure_input
 from app.context.builder import ContextBudgetExceeded
 from app.context.runtime import prepare_messages
 from app.diagnose.charging import charging_question, check_charging_recipient
+from app.diagnose.decision import concrete
 from app.knowledge.context import render_evidence
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
@@ -273,6 +274,11 @@ def filter_hypotheses(
             continue
         covered = list(dict.fromkeys(s for s in h.get("supported_symptoms", []) if s in symptoms))
         covered_facts = [by_value[s] for s in covered if s in by_value]
+        if covered_facts and len(covered_facts) == len(covered) and not any(concrete(f) for f in covered_facts) and not codes:
+            # 覆盖的「现象」全是客户的愿望句（T60「I just want my hoover to clean」）：不是可判定的故障，不能据此选方案，
+            # 交给检索落空的追问（missing_for_retrieval 同样不把愿望句算作现象）
+            dropped.append(f"wish_only:{pid}")
+            continue
         uncertain = next((f for f in covered_facts if f.get("polarity") == "uncertain"), None) or only_uncertain
         if uncertain:
             dropped.append(f"polarity_uncertain:{pid}")

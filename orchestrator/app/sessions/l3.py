@@ -785,6 +785,7 @@ async def consult(state):
     if view["status"] == "ambiguous":
         reads = reads or ["warranty.check"]
     logistics_note = ""
+    mismatch = None
     offer = None
     for kind in reads:
         binding = workflow.bind(kind)
@@ -858,7 +859,9 @@ async def consult(state):
             "requested_remedy": offer, "logistics_announced": True,
             "completed_task_intent": intent, "l3_route": "service_context",
         }
-    say(state, logistics_note if logistics_only else render_answer(request, view))
+    # 客户问的商品与订单记录对不上（T47：问泵头 T8D02181-80 的运单，订单里只有整机 T8D04121）：客户顺带贴的表单字段
+    # 让 answer_request 超出物流字段，也不能逐字段列「Product model: T8D04121」把整机当成客户问的那件，先说差异
+    say(state, logistics_note if logistics_only or mismatch else render_answer(request, view))
     return {
         **case_update,
         "business_context": business.model_dump(mode="json"),

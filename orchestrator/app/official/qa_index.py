@@ -225,6 +225,8 @@ HANDOFF = re.compile(
 )
 HEADING = re.compile(r"^(?:step\s*\w+\s*[:：]\s*)?[A-Z][\w &/,()'-]{2,60}:?$")
 STATEMENT_LEAD = re.compile(r"^(?:when|if|this|it is normal|the (?:robot|device|app|noise|base station)|note|during|after|under)\b", re.IGNORECASE)
+# 「We recommend / suggest doing X」是在让客户做 X，不是说明
+RECOMMEND = re.compile(r"^[\s*•\-]*(?:we|i)\s+(?:would\s+)?(?:recommend|suggest|advise)\s+(?:that\s+you\s+)?\w+ing\b", re.IGNORECASE)
 DESCRIPTIVE = re.compile(
     r"\b(?:will|may|can)\b|^(?:the\s+.+?\s+(?:is|are|has|uses?)\b)",
     re.IGNORECASE,
@@ -260,7 +262,9 @@ def classify_step(text: str) -> StepKind:
     # A condition describing the warranty outcome is not a customer operation.
     if WARRANTY.search(text) and not REQUEST.search(text):
         return "handoff"
-    if DESCRIPTIVE.search(head) and not REQUEST.search(text):
+    # 「We recommend cleaning the filter…, then starting a new task… so that we can provide…」是操作建议，
+    # 后半句的 can 不让它变成说明（T60 rv-0527 被判成说明，整条指南走「已解释」出口直接结束，客户没有反馈入口）
+    if DESCRIPTIVE.search(head) and not REQUEST.search(text) and not RECOMMEND.match(first_sentence):
         return "statement"
     if HEADING.match(head) and not ACTION_VERB.search(head):
         return "action" if ACTION_VERB.search(" ".join(body)) else "statement"
