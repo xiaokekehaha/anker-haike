@@ -214,7 +214,7 @@ ACTION_VERB = re.compile(
     re.IGNORECASE,
 )
 MATERIAL = re.compile(
-    r"\b(?:please\s+)?(?:record|send(?: us)?|provide(?: us with)?|upload|share|attach|take)\b[^.]{0,60}"
+    r"\b(?:please\s+)?(?:record|send(?: us)?|provide(?: us with)?|upload|share|attach|take|donate|submit)\b[^.]{0,60}"
     r"\b(?:photo|picture|image|video|audio|clip|screenshot|screen recording)s?\b",
     re.IGNORECASE,
 )

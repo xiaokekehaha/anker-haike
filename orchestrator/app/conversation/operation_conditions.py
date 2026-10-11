@@ -300,8 +300,16 @@ def resource_recheck(state: dict) -> dict | None:
     return {"kind": "operation_blocker", "resource": resource, "question": RESOURCE_RECHECK[resource]}
 
 
+EMOTION_PAUSE_TEXT = (
+    "I'm sorry this is taking your time. Rather than keep adding steps, I can prepare a summary for our support team now: "
+    "just say \"human agent\". If you'd prefer to try the next official step, reply \"continue\"."
+)
+
+
 def pause_text(state: dict) -> str:
     conditions = conditions_for(state)
+    if (state.get("next_action") or {}).get("reason") == "emotion_prefer_proposal":
+        return EMOTION_PAUSE_TEXT
     if conditions.paused:
         return "Troubleshooting is paused; everything reported and tried is kept. Say \"continue\" when you're ready, or I can prepare a summary for our support team."
     if conditions.resources.get("device") is False:

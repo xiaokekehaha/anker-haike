@@ -222,6 +222,19 @@ def precondition_status(missing_fact: str | None, facts: list[dict[str, Any]]) -
     return "unknown", None
 
 
+def answered_precondition(h: dict[str, Any], answered: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """这个候选要确认的前提，客户是否已经答过：同一计划、同一问句或同一前提原话。"""
+    question = _norm(h.get("clarification_question"))
+    missing = h.get("missing_fact")
+    for item in answered:
+        if item.get("plan_id") != h.get("plan_id"):
+            continue
+        if (question and question == _norm(item.get("question"))) or (
+                missing and item.get("missing_fact") and _stems(missing) & _stems(item["missing_fact"])):
+            return item
+    return None
+
+
 CLARIFY_TEMPLATES = {
     "polarity_uncertain": 'You mentioned "{quote}". Which side or part has the problem, and what exactly is it doing?',
     "timing_mismatch": "You said it happened {timing}. Is that right, and does the app show any warning at that moment?",
@@ -231,7 +244,7 @@ CLARIFY_TEMPLATES = {
 
 def filter_hypotheses(
     raw: list[dict[str, Any]], *, allowed: dict[str, Plan], evidence_ids: set[str], symptoms: set[str],
-    facts: list[dict[str, Any]] = (), error_codes: list[str] = (), max_n: int,
+    facts: list[dict[str, Any]] = (), error_codes: list[str] = (), answered: list[dict[str, Any]] = (), max_n: int,
 ) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     """模型的假设先过服务端核对，再决定可执行 / 待澄清 / 丢弃。
 
@@ -257,7 +270,8 @@ def filter_hypotheses(
         if codes and any(code.casefold() in question.casefold() for code in codes):
             return  # 不问用户已经告诉我们的错误码（T18）
         clarifications.append({"plan_id": h["plan_id"], "question": question.strip(), "evidence_ids": ev,
-                               "confidence": float(h.get("confidence", 0)), "reason": reason})
+                               "confidence": float(h.get("confidence", 0)), "reason": reason,
+                               **({"missing_fact": h["missing_fact"]} if h.get("missing_fact") else {})})
 
     for h in raw:
         pid = h.get("plan_id")
@@ -275,9 +289,9 @@ def filter_hypotheses(
         covered = list(dict.fromkeys(s for s in h.get("supported_symptoms", []) if s in symptoms))
         covered_facts = [by_value[s] for s in covered if s in by_value]
         if covered_facts and len(covered_facts) == len(covered) and not any(concrete(f) for f in covered_facts) and not codes:
-            # 覆盖的「现象」全是客户的愿望句（T60「I just want my hoover to clean」）：不是可判定的故障，不能据此选方案，
-            # 交给检索落空的追问（missing_for_retrieval 同样不把愿望句算作现象）
-            dropped.append(f"wish_only:{pid}")
+            # 覆盖的「现象」全是客户的愿望（T60「I just want my hoover to clean」）或评价（T58「cameras suck」）：
+            # 不是可判定的故障，不能据此选方案，交给检索落空的追问（missing_for_retrieval 同样不算作现象）
+            dropped.append(f"not_concrete:{pid}")
             continue
         uncertain = next((f for f in covered_facts if f.get("polarity") == "uncertain"), None) or only_uncertain
         if uncertain:
@@ -307,9 +321,15 @@ def filter_hypotheses(
                 if known == "negated":
                     dropped.append(f"precondition_negated:{pid}")  # 用户已说没做过 / 没发生：不适用，也不再问
                     continue
+                reply = answered_precondition(h, answered)
                 if known == "affirmed":
                     dropped.append(f"precondition_known:{pid}")  # 用户已说做过 / 观察到：前提成立，按 supported 继续
                     h = {**h, "applicability": "supported", "rationale": f"前提已知：{(fact or {}).get('value', '')}"[:80]}
+                elif reply is not None:
+                    # 同一前提客户已经答过（dbc144：答了 yes，同一句又问一遍）：再问拿不到新信息。回答已作为
+                    # answered_preconditions 交给模型，模型看了回答仍确认不了前提成立，这条候选就不适用
+                    dropped.append(f"precondition_unconfirmed:{pid}")
+                    continue
                 else:
                     dropped.append(f"not_supported:{pid}")
                     clarify(h, "needs_confirmation", h.get("clarification_question") or "")
@@ -357,7 +377,7 @@ INSTRUCTION = (
     "- 标为「未解决工单」的片段只说明该次服务未确认解决，不能作为方案依据，只可用作反证；\n"
     "- 先判断 applicability：supported 必须是同一现象且必要前提已成立；前提未知用 needs_confirmation；现象矛盾用 not_applicable。\n"
     "- 入口前提是用户观察到的现象/操作条件，不是尚待检查的故障原因。步骤本来用于检查某个可能原因时，不要求用户先证明该原因。\n"
-    "- needs_confirmation 必须填写 clarification_question：只问一个缺失的入口前提，用英文，不给操作指令；结合上一问和本轮回答，已回答的不重复问。\n"
+    "- needs_confirmation 必须填写 clarification_question：只问一个缺失的入口前提，用英文，不给操作指令；answered_preconditions 里客户已经回答的前提按回答判断 supported 或 not_applicable，不再问。\n"
     "- 必须区分方向、时间和结果，例如提前发生与未能发生、始终离线与偶发离线不能仅凭共享关键词相互代用。\n"
     "- 文档有错误码而用户没有提供错误码，不是拒绝依据；用户现象和文档适用条件一致仍可 supported。\n"
     "- supported_symptoms 只能逐字选择给定的有效症状；不能把共同主题当作覆盖，不能声称一个方案解决所有并列问题。\n"
@@ -411,6 +431,9 @@ def synthesis_messages(state, allowed, evidence, observations, max_hypotheses) -
             str({"question": (state.get("diagnose_outcome") or {}).get("question"),
                  "answer": state.get("text")}), kind="current_turn",
         )
+        + "\n"
+        + wrap_data("\n".join(f"- {a.get('plan_id')}: Q: {a.get('question')} A: {a.get('answer')}"
+                              for a in state.get("precondition_answers") or []) or "（无）", kind="answered_preconditions")
         + "\n"
         + wrap_data(ev_text, kind="retrieved_snippets")
     )
@@ -525,6 +548,7 @@ async def synthesize(
         symptoms={str(s) for s in [*(state.get("symptoms") or []), *observations] if str(s).strip()},
         facts=active_facts(state),
         error_codes=list(state.get("error_codes") or []),
+        answered=list(state.get("precondition_answers") or []),
         max_n=max_hypotheses,
     )
     dropped = budget_dropped + dropped

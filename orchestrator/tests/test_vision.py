@@ -867,6 +867,9 @@ def test_customer_facing_copy_from_the_backend_is_english():
     })
     assert echoed and not CJK.search(echoed), echoed
     assert "roller brush tangled" in echoed
+    # 「其他」说不出看到了什么（会话 dbc144 回显成「base station 其他」）：不回显
+    assert echo_findings({"image_quality": {"usable": True},
+                          "findings": [{"part": "基站", "phenomenon": "其他", "evidence": "基站坡道盖板敞开"}]}) is None
 
 
 def test_official_qa_agent_voice_is_rewritten_for_the_customer():

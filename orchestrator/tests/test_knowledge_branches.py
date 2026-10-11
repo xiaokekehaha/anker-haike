@@ -100,3 +100,29 @@ async def test_http_answer_reaches_selected_branch(conversation, qa_id, product,
     assert card["step_id"] == expected
     state = await conversation.state()
     assert state["counters"]["executed"] == 0
+
+
+def _two_steps_done(library, plan_id):
+    plan = library.get(plan_id)
+    steps = [s for s in plan.steps][:2]
+    return [{"plan_id": plan_id, "step_id": s.step_id, "instruction_src": s.instruction_src, "card_id": f"c-{s.step_id}",
+             "kind": "action", "feedback": "not_solved"} for s in steps]
+
+
+def test_emotion_strategy_stop_is_its_own_pause_not_an_operation_condition():
+    """T56 / T58：首封带粗口 → angry → direct_resolution，两步后 decide_next 压掉本来要发的 s3，
+    返回「operation_conditions_unavailable」，客户看到「I can't confirm the cause yet」，并不缺任何操作条件。
+    情绪止步有自己的原因与文案（继续 / 转人工二选一）；客户说过继续后不再拦。"""
+    from app.conversation.operation_conditions import EMOTION_PAUSE_TEXT, pause_text
+
+    library = qa_plan_library()
+    state = {"category": "security_cam", "product_confirmed": {"sku": "T8170"}, "input_id": "now",
+             "plans_ranked": [{"plan_id": "qa_bp_0186", "confidence": 0.9}],
+             "step_attempts": _two_steps_done(library, "qa_bp_0186")}
+    assert decide_next(state, library=library).plan_cursor["step_id"] == "s3"
+    angry = {**state, "emotion_actions": ["skip_optional_clarify", "prefer_proposal_over_more_steps"]}
+    action = decide_next(angry, library=library)
+    assert (action.kind, action.reason) == ("pause", "emotion_prefer_proposal")
+    assert pause_text({**angry, "next_action": action.snapshot(angry)}) == EMOTION_PAUSE_TEXT
+    resumed = {**angry, "operation_conditions": {"continue_input_id": "earlier"}}
+    assert decide_next(resumed, library=library).plan_cursor["step_id"] == "s3"

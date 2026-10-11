@@ -58,6 +58,8 @@ ISSUE_FIELDS = {
     "displayed_knowledge_nodes": [],
     "step_attempts": [],
     "step_checks": {},
+    # 客户答过的候选前提追问：{plan_id, missing_fact, question, answer, input_id}。答过就是证据，同一前提不再问
+    "precondition_answers": [],
     "operation_conditions": {},
     "counters": {},
     "exhausted_plans": [],

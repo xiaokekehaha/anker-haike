@@ -156,3 +156,14 @@ async def test_http_query_after_handoff_preserves_exact_fields_and_order(l3_runt
     update = await graph.understand({**state, "entry": "message", "text": "Continue that pending query.",
                                     "input_id": "resume-input", "task_queue": queue})
     assert update["turn_decision"]["answer_request"] == task["answer_request"]
+
+
+def test_unknown_context_field_drops_only_that_field_not_the_whole_turn():
+    """intake 给 facts.context_field 填了枚举外的值：只让这条事实不带字段，不让整轮理解校验失败重试
+    （T4 三次运行都先 schema_error，重试后的意图与查询字段各不相同）。"""
+    meaning = TurnInterpretation.model_validate({
+        "primary_intent": "logistics_query", "device_relation": "current",
+        "facts": [{"kind": "context", "context_field": "order_no", "value": "Anker004", "quote": "Anker004"},
+                  {"kind": "context", "context_field": "country", "value": "AU", "quote": "Australia"}],
+    })
+    assert [f.context_field for f in meaning.facts] == [None, "country"]

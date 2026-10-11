@@ -836,7 +836,11 @@ async def consult(state):
             if intent == "logistics_query" and verdict in {"reship_eligible", "delivered"}:
                 # 物流工单的典型诉求就是「没收到」（主办方 11 单全部如此）：直接按 SOP 给出补发 / 承运商调查方案，客户可暂不办理。
                 offer = "reship" if verdict == "reship_eligible" else "carrier_investigation"
-            receipt = {**receipt, "data": {**order_facts(order), "logistics_status": logistics.STATUS_TEXT[logistics.main_package(order).status]}}
+            main = logistics.main_package(order)
+            # 运单号与承运商随状态一起记下：只记状态时，按字段答复会说「Tracking number / Carrier: no confirmed record」，
+            # 而订单里明明有 Australia Post 运单（T4 重复 1）
+            receipt = {**receipt, "data": {**order_facts(order), "logistics_status": logistics.STATUS_TEXT[main.status],
+                                           "tracking_no": main.tracking_no, "carrier": main.carrier}}
         elif kind == "warranty.check":
             order = await services.backend.get_order(receipt["order_no"])
             receipt = {**receipt, "data": order_facts(order)}

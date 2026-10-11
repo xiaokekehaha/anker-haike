@@ -41,3 +41,11 @@ def test_library_validates_branch_targets():
     plan = library.get("qa_bp_0032")
     assert plan.step("s1").branches["Bottle connection"] == "s3"
     assert plan.step("s1").kind == "question"
+
+
+def test_request_to_donate_a_video_is_a_material_request():
+    """bp-0199 第 2 段「Donate a video for further analysis」是请客户交视频，不是设备操作；按操作卡发会问「解决了吗」（T58）。
+    判定看客户要交付什么（照片 / 视频交给售后），donate / submit 与 send / upload 同属交付动词；全库只有这一段因此改变。"""
+    plan, _ = plan_of(get_qa_index().guides["bp-0199"], "v")
+    kinds = {s["step_id"]: s["kind"] for s in plan["steps"]}
+    assert kinds == {"s1": "action", "s2": "material_request", "s3": "action", "s4": "action"}

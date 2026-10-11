@@ -165,7 +165,8 @@ def echo_findings(localization) -> str | None:
     facts = [
         f"{en(f['part'])} {en(f['phenomenon'])}"
         for f in usable_findings(localization)
-        if f["phenomenon"] not in ("正常", "不可辨")
+        # 「其他」是词表外的现象，说不出看到了什么（会话 dbc144 回显成「base station 其他」），不回显
+        if f["phenomenon"] not in ("正常", "不可辨", "其他")
     ]
     if not facts:
         return None

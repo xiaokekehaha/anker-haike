@@ -11,6 +11,15 @@ def load_policy():
     return yaml.safe_load((CONFIG_DIR / "emotion_policy.yaml").read_text())
 
 
+def load_terms() -> dict[str, list[str]]:
+    return yaml.safe_load((CONFIG_DIR / "rules/complaint_terms.yaml").read_text())
+
+
+def emotion_terms() -> list[str]:
+    """全部情绪词（不分级）：判断一句话是否只是在表达情绪。"""
+    return [word for level in LEVELS if level != "calm" for word in load_terms().get(level, [])]
+
+
 def complaint_flagged(state) -> bool:
     """Case priority follows the strategy's action, so an angry-and-rising customer is flagged too."""
     return (state.get("emotion") or {}).get("level") == "complaint_risk" or "flag_complaint_risk" in (
@@ -48,7 +57,7 @@ def evaluate_emotion(level, text, track, input_id, *, unresolved_turns=0, risk=F
         # The model saw something it could not quote. Dropping it loses the signal
         # entirely; cap it at the lowest non-calm level instead.
         level, source = "dissatisfied", "cues_missing"
-    terms = yaml.safe_load((CONFIG_DIR / "rules/complaint_terms.yaml").read_text())
+    terms = load_terms()
     for candidate in ("complaint_risk", "angry", "dissatisfied"):
         hits = [word for word in terms[candidate] if term_hit(word, text)]
         if hits and LEVELS[candidate] > LEVELS.get(level, -1):

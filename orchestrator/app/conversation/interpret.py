@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Annotated, Literal
+from typing import Annotated, Literal, get_args
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
@@ -56,11 +56,17 @@ type Intent = Literal[
 ]
 
 
+ContextFieldName = Literal["address", "serial_number", "purchase_date", "seller", "country"]
+# 枚举外的值只让这一条事实不带字段，不让整轮理解校验失败重试：重试后意图与查询字段各不相同
+# （T4 三次运行都先 schema_error，答复路径随之波动）。schema 仍列出枚举提示模型
+ContextField = Annotated[ContextFieldName | None, BeforeValidator(lambda v: v if v in get_args(ContextFieldName) else None)]
+
+
 class FactCandidate(BaseModel):
     model_config = ConfigDict(extra="forbid")
     kind: Literal["symptom", "observation", "preference", "context", "action_taken"] = "symptom"
     value: str
-    context_field: Literal["address", "serial_number", "purchase_date", "seller", "country"] | None = None
+    context_field: ContextField = None
     quote: str = Field(description="本条用户消息中支持此事实的逐字原文，不能引用助手建议")
     subject: str | None = Field(default=None, description="部件或对象原话")
     polarity: Literal["affirmed", "negated", "uncertain"] = "affirmed"

@@ -119,18 +119,45 @@ async def test_failed_recovery_does_not_execute_unverified_plan(conversation):
 
 
 async def test_unknown_conditions_have_bounded_questions(conversation):
-    candidate = {"hypotheses": [{
-        "plan_id": "qa_rv_0272", "confidence": 0.8, "evidence_ids": ["c12"],
-        "applicability": "needs_confirmation", "supported_symptoms": [],
-        "clarification_question": "Is the hair wrapped around the roller brush?",
-    }]}
-    conversation.models["diagnose.synthesize"].script = [candidate] * 3
+    def candidate(question):
+        return {"hypotheses": [{
+            "plan_id": "qa_rv_0272", "confidence": 0.8, "evidence_ids": ["c12"],
+            "applicability": "needs_confirmation", "supported_symptoms": [], "clarification_question": question,
+        }]}
+    # 客户答「不确定」后换一种问法再问一次可以；问满后交人工
+    conversation.models["diagnose.synthesize"].script = [
+        candidate("Is the hair wrapped around the roller brush?"),
+        candidate("When you remove the roller brush, do you see hair on its ends?"),
+        candidate("Is there anything stuck on the roller brush?"),
+    ]
     first = await conversation.send(REPORT_TEXT, REPORT)
     second = await conversation.send("I am not sure", {"primary_intent": "answer_pending"})
     third = await conversation.send("I still cannot tell", {"primary_intent": "answer_pending"})
     assert not any(e["type"] in {"step_card", "escalation_summary"} for e in first + second)
     assert any(e["type"] == "escalation_summary" for e in third)
     assert not any(e["type"] == "step_card" for e in third)
+
+
+async def test_answered_precondition_is_not_asked_again(conversation):
+    """会话 dbc144：客户答了 yes，synthesize 又给出同一句前提追问，同一问题出现两次。
+    答过的前提记进 precondition_answers 交给模型；模型仍拿同一句来问时不再发问，这条候选按前提未确认丢弃。"""
+    question = "Is the hair wrapped around the roller brush?"
+    candidate = {"hypotheses": [{
+        "plan_id": "qa_rv_0272", "confidence": 0.8, "evidence_ids": ["c12"],
+        "applicability": "needs_confirmation", "supported_symptoms": [], "clarification_question": question,
+    }]}
+    model = conversation.models["diagnose.synthesize"]
+    model.script = [candidate, candidate]
+    first = await conversation.send(REPORT_TEXT, REPORT)
+    assert question in "".join(e.get("delta", "") for e in first)
+    second = await conversation.send("yes", {"primary_intent": "answer_pending"})
+    assert question not in "".join(e.get("delta", "") for e in second)
+    state = await conversation.state()
+    assert [(a["question"], a["answer"]) for a in state["precondition_answers"]] == [(question, "yes")]
+    # 第二次 synthesize 看得到客户的回答
+    assert "answered_preconditions" in str(model.calls[-1]) and "A: yes" in str(model.calls[-1])
+    assert any("precondition_unconfirmed:qa_rv_0272" in str(t.get("dropped")) for t in state["retrieval_trace"]
+               if t.get("event") == "synthesize")
 
 
 @pytest.mark.parametrize(("plan_id", "evidence_id"), [("invented", "c12"), ("qa_rv_0272", "invented")])

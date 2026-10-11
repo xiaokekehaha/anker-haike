@@ -182,6 +182,19 @@ def test_concrete_symptoms_from_real_tickets_are_not_flagged():
     assert not concrete({"value": "hoover not cleaning properly", "quote": "I just want my hoover to clean"})
 
 
+def test_evaluation_without_device_behaviour_is_not_a_symptom():
+    """T58「You're fucking cameras suck」被抽成现象 poor quality（subject=cameras），据此选了画质指南。
+    引文去掉情绪词（与情绪分级同一份词表）后只剩指代整机的词，就是评价，不是设备在做什么；
+    情绪词修饰具体部件或现象时仍是现象。"""
+    from app.diagnose.decision import concrete
+
+    for quote, subject in [("cameras suck", "cameras"), ("You’re fucking cameras suck", "cameras"), ("这个机器太烂了", None)]:
+        assert not concrete({"value": "poor quality", "quote": quote, "subject": subject}), quote
+    for quote in ["the suction is terrible", "camera keeps going offline, so frustrating",
+                  "the app is useless, it never connects", "吸力太烂了"]:
+        assert concrete({"value": quote, "quote": quote}), quote
+
+
 async def test_error_code_missing_from_official_qa_is_a_knowledge_gap(conversation):
     """T13：带错误码、官方未收录 —— 型号和现象都明确，摘要原因写知识缺失，而不是笼统的「没有可用计划」。"""
     text = ("Productnaam: X10 Pro Omni\nProduct-PN: T2351\nProbleemtype: WARNING\nProbleemcode: 5116-Communicatiefout.\n"
@@ -209,7 +222,7 @@ async def test_t60_wish_only_candidate_is_not_executed_after_the_model_is_chosen
     assert "describe what the device is doing" in said(events)
     state = await conversation.state()
     assert state["stage"] != "done"
-    assert any("wish_only:qa_rv_0527" in str(t.get("dropped")) for t in state["retrieval_trace"] if t.get("event") == "synthesize")
+    assert any("not_concrete:qa_rv_0527" in str(t.get("dropped")) for t in state["retrieval_trace"] if t.get("event") == "synthesize")
 
 
 def test_rv_0527_recommendation_is_an_action_not_an_explanation():

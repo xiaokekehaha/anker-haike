@@ -236,7 +236,7 @@ class BusinessContext(BaseModel):
         for key, value in observed.items():
             current.identifiers[key] = Value(value=value, source="backend", input_id=input_id)
         data = receipt.get("data") or receipt
-        fields = ("sku", "purchase_date", "warranty_end", "amount") if action == "warranty.check" else ("sku", "purchase_date", "warranty_end", "amount", "logistics_status") if action == "logistics.query" else ()
+        fields = ("sku", "purchase_date", "warranty_end", "amount") if action == "warranty.check" else ("sku", "purchase_date", "warranty_end", "amount", "logistics_status", "tracking_no", "carrier") if action == "logistics.query" else ()
         for key in fields:
             value = data.get(key) or receipt.get(key)
             if value is not None:

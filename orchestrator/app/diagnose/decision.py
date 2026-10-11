@@ -96,12 +96,41 @@ def parse_codes(text: str) -> tuple[str, ...]:
 # 不是现象词表；模型有时改写成「not cleaning properly」，有时原样抄成现象（T60 复跑两种都出现）。
 WISH = re.compile(r"\b(?:i|we)\s+(?:just\s+|only\s+|really\s+)?(?:want|wish|would like|need)\b[^.!?]*\bto\b"
                   r"|我(?:只|就)?(?:想|希望|要)(?:让)?它", re.IGNORECASE)
+# 引文去掉情绪词后只剩这些词（指代整机 / 系动词 / 语气），说的是客户的评价，不是设备在做什么
+_EVALUATION_REST = {
+    "you", "your", "you're", "youre", "re", "my", "the", "this", "these", "that", "it", "its", "it's", "is", "are", "was",
+    "were", "so", "really", "very", "just", "all", "they", "them", "a", "an", "and", "of", "eufy", "anker",
+    "device", "devices", "machine", "machines", "product", "products", "thing", "things", "robot", "robots",
+    "vacuum", "vacuums", "pump", "pumps", "camera", "cameras", "了", "的", "啊", "吧", "呢", "这个", "东西", "机器", "产品",
+}
+
+
+def evaluation_only(fact: dict) -> bool:
+    """引文只有情绪 / 评价词（「cameras suck」「太烂了」）：客户在表达不满，没说设备在做什么。
+    情绪词用情绪分级的同一份词表（config/rules/complaint_terms.yaml），不另立现象词表。"""
+    from app.emotion.policy import emotion_terms, term_hit
+
+    quote = fact.get("quote") or ""
+    hits = [word for word in emotion_terms() if term_hit(word, quote)]
+    if not hits:
+        return False
+    rest = quote.casefold()
+    for word in sorted(hits, key=len, reverse=True):
+        rest = re.sub(rf"(?<![\w]){re.escape(word.casefold())}(?![\w])" if word.isascii() else re.escape(word), " ", rest)
+    subject = set(re.findall(r"[^\W\d_]+", (fact.get("subject") or "").casefold()))
+    words = re.findall(r"[a-zà-ÿ']+", rest)
+    # 汉字没有词边界：去掉指代与语气字串后看还剩什么
+    han = "".join(re.findall(r"[一-鿿]+", rest))
+    for filler in sorted((w for w in _EVALUATION_REST if not w.isascii()), key=len, reverse=True):
+        han = han.replace(filler, "")
+    return not han and not [w for w in words if w not in _EVALUATION_REST and w not in subject]
 
 
 def concrete(fact: dict) -> bool:
-    """客户原话支持的具体现象：引文不是一句愿望。模型对现象的正常归纳（「going off 2 hours before」→
-    「starts two hours early」）不算改写，不按词面比对。"""
-    return not WISH.search(fact.get("quote") or "")
+    """客户原话支持的具体现象：引文不是一句愿望，也不只是评价。模型对现象的正常归纳（「going off 2 hours before」→
+    「starts two hours early」）不算改写，不按词面比对。T58「You're fucking cameras suck」被抽成现象 poor quality，
+    据此选了画质指南；评价不是现象，交给症状追问。"""
+    return not WISH.search(fact.get("quote") or "") and not evaluation_only(fact)
 
 
 def missing_for_retrieval(state, issue=None) -> list[str]:
@@ -364,16 +393,17 @@ def decide_next(state, *, library) -> NextAction:
         conditions.continue_input_id and conditions.continue_input_id == state.get("input_id")
     )
     burden_stop = int((state.get("counters") or {}).get("skipped", 0)) - conditions.skip_baseline >= BURDEN_SKIP_LIMIT
-    # A bare complaint already returned pause above, so only the emotion action is left here.
-    emotion_stop = (
-        "prefer_proposal_over_more_steps" in state.get("emotion_actions", [])
-        and len(executed) + len(blocked) >= 2
-        and conditions.continue_input_id != state.get("input_id")
-        and not decision.get("diagnostic_request")
-    )
-    if pending_step is not None and not (unresolved_blocker or burden_stop or emotion_stop):
+    if pending_step is not None and not (unresolved_blocker or burden_stop):
+        # 情绪策略「少加步骤、多给方案」：已做两步后先让客户选继续还是转人工，不冒用操作条件暂停的文案（T56 / T58
+        # 首封带粗口，两步后被说成「I can't confirm the cause yet」，客户不知道还能继续）。说过「继续」就不再拦
+        # （客户点卡的轮次不重算情绪，否则每张卡后都会再停一次）。A bare complaint already returned pause above.
+        if ("prefer_proposal_over_more_steps" in state.get("emotion_actions", [])
+                and len(executed) + len(blocked) >= 2
+                and conditions.continue_input_id is None
+                and not decision.get("diagnostic_request")):
+            return result("pause", "emotion_prefer_proposal", trace=trace)
         return pending_step
-    if blocked or any(v is False for v in conditions.resources.values()) or burden_stop or emotion_stop:
+    if blocked or any(v is False for v in conditions.resources.values()) or burden_stop:
         recheck = resource_recheck(state)
         if recheck:
             return result("ask", "operation_conditions_recheck", question=recheck, trace=trace)

@@ -212,6 +212,7 @@ class SessionState(TypedDict, total=False):
     step_attempts: list[dict]
     # 计划步骤与用户原话的核对结果 {plan_id: {issue_revision, steps: {step_id: {status, quote, skip?}}}}（app/guide/fact_check.py）
     step_checks: dict[str, Any]
+    precondition_answers: list[dict]  # 客户答过的候选前提追问（synthesize 不再重复问）
     operation_conditions: dict
     counters: dict[str, int]
     exhausted_plans: list[str]
@@ -1186,6 +1187,16 @@ async def understand(state: SessionState) -> SessionState:
     update["turn_decision"]["request_rejections"] = request_rejections
     if context.get("source") == "product_question":
         update["turn_decision"]["product_answered"] = True
+    asked = state.get("diagnose_outcome") or {}
+    if (update.get("issues") and state.get("entry") == "message" and asked.get("mode") == "clarify"
+            and asked.get("reason") == "needs_confirmation"
+            and update.get("active_issue_id") == state.get("active_issue_id") and text.strip()):
+        # 客户对候选前提追问的回答是证据：记下来交给 synthesize，同一前提不再问（dbc144 答了 yes 又被问一遍）
+        answers = [*(update.get("precondition_answers") or []), {
+            "plan_id": asked.get("plan_id"), "missing_fact": asked.get("missing_fact"), "question": asked.get("question"),
+            "answer": text.strip()[:300], "input_id": state["input_id"]}]
+        update["precondition_answers"] = answers
+        update["issues"][update["active_issue_id"]]["precondition_answers"] = answers
     update["l3_route"] = None
     if state.get("entry") == "message":
         emotion_update = evaluate_emotion(
