@@ -386,6 +386,9 @@ def reduce_turn(state: dict, meaning: TurnInterpretation, *, precheck_risk: bool
         resumed_pending = False
     if (english := search_query_en(meaning, text)) is not None:
         issue["search_query_en"] = english
+    elif applied:
+        # 本轮只更正了事实、没报新现象：旧的英文描述是按更正前的事实写的，作废；下一轮有现象再生成
+        issue["search_query_en"] = None
     # 否定句（「没有冒烟」「no suction loss」）是反证，不是现象：留在 facts 里供摘要与适用性核对，不进症状。
     issue["symptoms"] = [
         f["value"] for f in facts

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 from app.context.budget import context_input_budget
 from app.context.builder import ContextBudgetExceeded, build_context
@@ -97,6 +97,10 @@ class HistoryRequest(BaseModel):
     to_time: str | None = None
 
 
+# 只用于检索的辅助字段：超长截断，不让整轮理解（意图 / 事实）因为它校验失败而作废；上限仍写在 schema 里提示模型
+SearchQueryEn = Annotated[str | None, BeforeValidator(lambda v: v[:160] if isinstance(v, str) else v)]
+
+
 class TurnInterpretation(BaseModel):
     model_config = ConfigDict(extra="forbid")
     primary_intent: Intent
@@ -126,7 +130,7 @@ class TurnInterpretation(BaseModel):
     history_request: HistoryRequest | None = None
     device_safety_assertion: Literal["reported", "negated", "uncertain", "none"] = Field(default="none", description="仅判断设备物理安全隐患，如冒烟、漏液、鼓包、触电；没有此类设备安全内容时必须 none。投诉、差评和生气不属于设备安全隐患")
     device_safety_quote: str | None = Field(default=None, description="本轮设备物理安全描述的逐字原话；不能引用投诉或情绪表达")
-    search_query_en: str | None = Field(
+    search_query_en: SearchQueryEn = Field(
         default=None, max_length=160,
         description="有故障现象时用英文转述现象供检索；不加原因、型号、错误码；无现象留空",
     )

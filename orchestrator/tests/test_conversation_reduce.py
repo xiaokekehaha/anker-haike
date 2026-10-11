@@ -361,3 +361,20 @@ def test_english_search_query_follows_the_issue_and_later_symptoms():
     other = turn(detail, "i4", "Mis auriculares no suenan", primary_intent="report_problem", device_relation="other",
                  product_hints=["auriculares"], device_category="earbuds", facts=[{"value": "no suenan", "quote": "no suenan"}])
     assert other["active_issue_id"] != detail["active_issue_id"] and other.get("search_query_en") is None
+
+
+def test_english_search_query_is_dropped_when_a_fact_is_corrected_without_a_new_symptom():
+    """评审 §7：更正了事实、本轮没有新现象时，按更正前事实写的英文描述作废，不能继续参与检索。"""
+    state = turn({}, "i1", T43, primary_intent="report_problem", device_relation="current", product_hints=["X10 Pro Omni"],
+                 facts=[{"value": "desconectado", "quote": "El robot está desconectado."}], search_query_en="robot is disconnected")
+    fact_id = state["issues"][state["active_issue_id"]]["facts"][0]["fact_id"]
+    corrected = turn(state, "i2", "Perdón, no está desconectado, no carga.", primary_intent="correct", device_relation="current",
+                     corrections=[{"fact_id": fact_id, "value": "no carga", "quote": "no carga"}])
+    assert corrected.get("search_query_en") is None
+
+
+def test_over_long_english_search_query_is_clipped_not_rejected():
+    """只用于检索的字段超长时截断，不让整轮 intake 输出校验失败（意图 / 事实全部作废）。"""
+    meaning = TurnInterpretation.model_validate({"primary_intent": "report_problem", "device_relation": "current",
+                                                 "search_query_en": "robot is disconnected " * 20})
+    assert len(meaning.search_query_en) == 160
