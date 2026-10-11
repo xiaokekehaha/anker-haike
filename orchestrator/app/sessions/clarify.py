@@ -34,6 +34,9 @@ FIXED_QUESTIONS: dict[str, str] = {
         "S1 Pro wearable breast pump; or SoloCam S340 camera. The model number (e.g. T2351) also works."
     ),
     "symptom": "Could you describe what the device is doing, or tell me any warning message or error code shown in the app?",
+    # 现象只有一两个词、检索落空（T43「desconectado」）：请客户把那个词说具体，不预设品类的典型故障（不能给吸奶器举「robot offline」）
+    "vague_symptom": ("I want to make sure I find the right official guidance. Could you describe \"{symptom}\" in a bit more detail: "
+                      "what exactly happens, when it happens, and is there any message or error code in the app?"),
     "conflict": "Earlier we confirmed {confirmed}, and now you mentioned {mentioned}. Which one should we look at?",
 }
 

@@ -242,8 +242,14 @@ async def test_t43_one_word_symptom_with_no_applicable_candidate_asks_once_befor
         "facts": [{"value": "desconectado", "quote": "El robot está desconectado."}],
     })
     assert not any(e["type"] in {"step_card", "escalation_summary"} for e in first)
-    assert "describe it in a bit more detail" in "".join(e.get("delta", "") for e in first)
-    assert (await conversation.state())["stage"] != "awaiting_human"
+    asked = "".join(e.get("delta", "") for e in first)
+    # 引客户原话，不按扫地机举例（摄像头 / 吸奶器的一两个词现象也会走这里）
+    assert 'describe "El robot está desconectado." in a bit more detail' in asked
+    assert "Wi-Fi" not in asked and "stops while cleaning" not in asked
+    state = await conversation.state()
+    assert state["stage"] != "awaiting_human"
+    # 与 symptom_missing 记在同一个症状澄清预算上
+    assert state["clarification"]["reason"] == "symptom" and state["clarification"]["attempts"] == 1
     second = await conversation.send("La app dice que el robot está sin conexión.", {
         "primary_intent": "answer_pending", "device_relation": "current",
         "facts": [{"value": "app shows the robot offline", "quote": "La app dice que el robot está sin conexión."}],
