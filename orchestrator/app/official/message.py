@@ -31,8 +31,11 @@ LABELS: dict[str, tuple[str, ...]] = {
     # App 账号的登录 / 注册国家（T22 的 Inlogland: NL）：不是购买国家，不能当购买渠道或经销商判定依据
     "login_country": ("Inlogland", "Land van accountregistratie"),
     "source": ("Source", "Bron"),
+    "problem_type": ("Problem Type", "Probleemtype", "Problemtyp", "Type de problème", "Tipo de problema"),
 }
-APP_MARKERS = re.compile(r"Product\s*PN|Product-PN|Produktnummer|Référence produit|Número de parte|Problem Type|Probleemtype|Problemtyp", re.IGNORECASE)
+APP_MARKERS = re.compile(r"Product\s*PN|Product-PN|Produktnummer|Référence produit|Número de parte|Problem Type|Probleemtype|Problemtyp|Tipo de problema|Type de problème", re.IGNORECASE)
+# App 反馈表单「问题类型」里的咨询类取值；其余（ERROR / WARNING / Issue / Probleem met het toestel / Problema…）都是设备在报故障
+ENQUIRY_TYPES = re.compile(r"\b(?:ask us|app usage|usage|question|consult|how to)\b", re.IGNORECASE)
 RMA_MARKERS = re.compile(r"----RMA----|Submit Date|Prodcut SN|Purchase proof", re.IGNORECASE)
 URLS = re.compile(r"\[?\s*\"?https?://\S+|\[\s*\]")
 SELLER = re.compile(r"(?:ordered|bought|purchased)[ \t]+(?:it[ \t]+)?(?:from|at|on)[ \t]+(?:the[ \t]+)?(?:reseller[ \t]+)?([A-Z][\w&'.-]*(?:[ \t]+[A-Z][\w&'.-]*){0,3})", re.IGNORECASE)
@@ -68,6 +71,12 @@ class ParsedMessage:
         parts = list(dict.fromkeys(v for k in ("push", "description") if (v := self.fields.get(k))))
         text = URLS.sub(" ", " ".join(parts)).strip()
         return text or None
+
+    @property
+    def device_fault_form(self) -> bool:
+        """App 反馈表单，且问题类型不是咨询类：用户在报设备故障（T43「Tipo de problema: Problema」无错误码）。"""
+        kind = (self.fields.get("problem_type") or "").strip()
+        return self.format == "app_report" and bool(kind) and not ENQUIRY_TYPES.search(kind)
 
     @property
     def has_facts(self) -> bool:

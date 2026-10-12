@@ -336,8 +336,12 @@ def decide_next(state, *, library) -> NextAction:
     # 诊断树的一支直接得出官方交售后结论时，没有「未解决」也进质保判断（rv-0341「拆下滚刷后噪音消失」）。
     ends = {pid: replay_end(library, pid, state) for pid in exhausted}
     counted = [pid for pid in exhausted if ends[pid] != "question_exit"]
+    # 客户原话说已经做过这条指南的步骤、问题仍在（fact_check 判 done 跳过），与点「未解决」是同一个事实：
+    # 指南走完仍未解决，按 SOP 进质保判断并说明理由（T27 走到「没有可用后续」，索凭证前没有任何理由）
+    done_by_customer = any(v.get("status") == "done" and v.get("skip")
+                           for pid in counted for v in (((state.get("step_checks") or {}).get(pid) or {}).get("steps") or {}).values())
     if len(counted) >= MAX_GUIDES and (any(s.get("feedback") == "not_solved" for s in executed)
-                                       or "handoff" in ends.values()):
+                                       or done_by_customer or "handoff" in ends.values()):
         return result("handoff_offer", "guide_exhausted")
     if decision.get("primary_intent") == "complaint" and not decision.get("diagnostic_request"):
         return result("pause", "complaint_reduce_burden")

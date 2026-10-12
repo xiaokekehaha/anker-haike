@@ -200,3 +200,16 @@ async def test_new_question_with_model_while_awaiting_product_replaces_the_quest
     state = await conversation.state()
     assert state["product_question"]["question"] == DIRECT
     assert knowledge[1][0]["query_text"] == DIRECT
+
+
+def test_product_question_with_a_photo_reads_the_photo_first():
+    """T48：客户拍指示灯问绿灯含义，判成产品咨询后直接进 product_help，读图只挂在排障路径上，图里的外壳裂纹丢了。
+    读图不随意图走：有未读的图先读，读完回到产品咨询。"""
+    from app.sessions.graph import route_after_vision, route_entry
+
+    state = {"entry": "message", "run_id": "r", "active_issue_id": "i", "turn_decision": {"primary_intent": "product_question"},
+             "image_refs": [{"image_id": "img", "purpose": "fault", "issue_id": "i"}]}
+    assert route_entry(state) == "vision"
+    read = {**state, "processed_fault_image_ids": ["img"], "image_quality": {"usable": True}}
+    assert route_entry(read) == "product_help"
+    assert route_after_vision(read) == "product_help"

@@ -66,6 +66,9 @@ NOT_RUN_MOP = {"kind": "symptom", "value": "have not run mop cycles", "quote": "
     ("the error appears", [NOT_RUN_MOP], "unknown"),  # 只有泛词，不算覆盖
     ("firmware updated to the latest version", [NOT_RUN_MOP], "unknown"),
     (None, [NOT_RUN_MOP], "unknown"),
+    # 只共享一个内容词不是同一前提（T37：「水管正常」不能证明「App 显示水量不准」，讲 App 估算的 rv-0163 被当成前提已知）
+    ("water volume displayed in the app is inaccurate",
+     [{"kind": "observation", "value": "Slang in tank is in orde", "quote": "Slang in tank is in orde.", "polarity": "affirmed"}], "unknown"),
 ])
 def test_precondition_status(missing, facts, expected):
     assert precondition_status(missing, facts)[0] == expected

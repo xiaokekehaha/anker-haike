@@ -60,6 +60,7 @@ ISSUE_FIELDS = {
     "step_checks": {},
     # 客户答过的候选前提追问：{plan_id, missing_fact, question, answer, input_id}。答过就是证据，同一前提不再问
     "precondition_answers": [],
+    "fallback_clarification": None,
     "operation_conditions": {},
     "counters": {},
     "exhausted_plans": [],

@@ -201,10 +201,17 @@ def _stems(text: str | None) -> set[str]:
     return out
 
 
+def _same(need: str, have: str) -> bool:
+    """词干相同或互为前缀（mopp ~ mop、charg ~ charging）；前提词太短时只认相同。"""
+    return need == have or (len(need) >= 4 and (need.startswith(have) or have.startswith(need)))
+
+
 def _covers(missing_fact: str, fact: dict[str, Any]) -> bool:
+    """事实说的是不是这个前提：前提的每个内容词都要在事实里出现。只共享一个词不算（T37「Slang in tank is in orde」
+    与「水箱显示的水量不准」只共享 tank，被当成前提已知，把讲 App 估算的 rv-0163 升级成可执行）。"""
     need = _stems(missing_fact)
     have = _stems(" ".join(str(fact.get(k) or "") for k in ("value", "subject", "quote")))
-    return any(a == b or (len(a) >= 4 and (a.startswith(b) or b.startswith(a))) for a in need for b in have)
+    return bool(need) and all(any(_same(a, b) for b in have) for a in need)
 
 
 def precondition_status(missing_fact: str | None, facts: list[dict[str, Any]]) -> tuple[str, dict[str, Any] | None]:
@@ -567,4 +574,7 @@ async def synthesize(
             "degraded": "no_applicable_plan",
             "clarifications": clarifications[:1],
         }
-    return {"plans_ranked": kept, "dropped": dropped, "model_trace": trace, "degraded": None}
+    # 待确认的候选随可执行方案一起带上：可执行方案走不下去（全被跳过、原文缺后续说明）时，按它的前提追问，
+    # 而不是直接交人工（T40：断链的 rv-0371 判可执行，对症的 rv-0073 待确认被整个丢掉）
+    return {"plans_ranked": kept, "dropped": dropped, "model_trace": trace, "degraded": None,
+            "clarifications": clarifications[:1]}

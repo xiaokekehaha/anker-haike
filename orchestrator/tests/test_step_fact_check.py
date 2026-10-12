@@ -394,3 +394,17 @@ async def test_angry_first_turn_that_only_gets_a_card_is_acknowledged_once(conve
     assert said.count("I'm sorry about the frustration.") == 1
     card = next(e for e in events if e["type"] == "step_card")["step"]
     assert "sorry" not in (card.get("context") or "").casefold()
+
+
+def test_app_fault_form_without_code_is_not_a_product_question():
+    """T43「Tipo de problema: Problema / El robot está desconectado」无错误码，4 次里 1 次判 product_question，
+    答成一串无关报码就结束。App 反馈表单的问题类型不是咨询类就是在报故障；Ask Us / App usage issue 不约束（T31 / T34）。"""
+    from app.conversation.interpret import TurnInterpretation, device_code_report
+    from app.official.models import OfficialData
+
+    tickets = {t.id: t.body for t in OfficialData().tickets}
+    question = TurnInterpretation(primary_intent="product_question")
+    for tid in ("T43", "T20", "T21", "T35"):
+        assert device_code_report(question, tickets[tid]).primary_intent == "report_problem", tid
+    for tid in ("T31", "T34"):
+        assert device_code_report(question, tickets[tid]).primary_intent == "product_question", tid

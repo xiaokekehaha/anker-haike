@@ -259,14 +259,16 @@ async def test_failed_handoff_cannot_claim_submission(conversation, l3_runtime, 
     assert not any(e["type"] in {"message", "escalation_summary", "case_changed"} for e in emitted)
 
 
-async def test_t43_one_word_symptom_with_no_applicable_candidate_asks_once_before_handoff(conversation):
+@pytest.mark.parametrize("value", ["desconectado", "robot está desconectado"])
+async def test_t43_one_word_symptom_with_no_applicable_candidate_asks_once_before_handoff(conversation, value):
     """21:03 续测 T43：西语「El robot está desconectado」→ 症状只有一个词「desconectado」，召回 12 条全是离地 / 被困，
     synthesize 空列表 → 直接 R5。现象太笼统、检索词与英文资料对不上，不是资料没有：先请客户具体说一次，答完仍查不到再交人工。"""
     model = conversation.models["diagnose.synthesize"]
     model.script = [{"hypotheses": []}, {"hypotheses": []}]
+    # 2026-10-12 重放：同一句模型有时抽成「robot está desconectado」，整机词与系动词不是现象信息，同样算笼统
     first = await conversation.send("X10 Pro Omni: El robot está desconectado.", {
         "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
-        "facts": [{"value": "desconectado", "quote": "El robot está desconectado."}],
+        "facts": [{"value": value, "quote": "El robot está desconectado."}],
     })
     assert not any(e["type"] in {"step_card", "escalation_summary"} for e in first)
     asked = "".join(e.get("delta", "") for e in first)

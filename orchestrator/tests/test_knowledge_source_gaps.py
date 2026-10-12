@@ -64,3 +64,28 @@ async def test_http_incomplete_official_source_is_not_marked_answered(conversati
     text = "".join(e.get("delta", "") for e in events)
     assert "does not include them or a link" in text and "found at:" not in text
     assert not any(e["type"] == "step_card" for e in events)
+
+
+async def test_source_gap_falls_back_to_the_candidate_awaiting_its_precondition(conversation):
+    """T40：synthesize 把缺后续说明的 rv-0371 判可执行，对症的 rv-0073（检查清洁液瓶安装）判待确认。
+    原先只要有可执行方案，待确认候选的追问就整个丢掉；rv-0371 碰到缺失内容又直接交人工，rv-0073 从没用上。
+    缺失内容照旧如实告知，然后先按 rv-0073 的前提问一次，不交人工。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0371", "rv-0073"))
+    question = "Is the cleaning solution bottle installed on the robot?"
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [
+        {"plan_id": "qa_rv_0371", "confidence": 0.72, "evidence_ids": ["chunk-rv-0371"],
+         "applicability": "supported", "supported_symptoms": ["cleaning solution stays at 660ml"]},
+        {"plan_id": "qa_rv_0073", "confidence": 0.6, "evidence_ids": ["chunk-rv-0073"],
+         "applicability": "needs_confirmation", "supported_symptoms": ["cleaning solution stays at 660ml"],
+         "clarification_question": question, "missing_fact": "cleaning solution bottle installed"},
+    ]}]
+    events = await conversation.send("Product PN: T2080\nProblem Description: cleaning solution stays at 660ml", {
+        "primary_intent": "report_problem", "device_relation": "current",
+        "facts": [{"value": "cleaning solution stays at 660ml", "quote": "cleaning solution stays at 660ml"}],
+    })
+    state = await conversation.state()
+    text = "".join(e.get("delta", "") for e in events)
+    assert "does not include them or a link" in text and question in text
+    assert not state.get("escalate_reason") and state["stage"] != "awaiting_human"
+    assert (state["diagnose_outcome"] or {}).get("plan_id") == "qa_rv_0073"
+    assert any(t["event"] == "knowledge_source_gap" and t.get("fallback") == "qa_rv_0073" for t in state["guide_trace"])

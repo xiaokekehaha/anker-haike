@@ -213,6 +213,7 @@ class SessionState(TypedDict, total=False):
     # 计划步骤与用户原话的核对结果 {plan_id: {issue_revision, steps: {step_id: {status, quote, skip?}}}}（app/guide/fact_check.py）
     step_checks: dict[str, Any]
     precondition_answers: list[dict]  # 客户答过的候选前提追问（synthesize 不再重复问）
+    fallback_clarification: dict | None  # 选中可执行方案时旁边待确认的候选追问：方案走不下去时先问它
     operation_conditions: dict
     counters: dict[str, int]
     exhausted_plans: list[str]
@@ -646,6 +647,8 @@ def route_after_vision(state: SessionState) -> str:
                 # fault-photo retake before knowing which device is involved.
                 return "disambiguate"
             return 'prepare_retake'
+    if not state.get("escalate_reason") and handles_product_question(dict(state)):
+        return "product_help"
     return "escalate" if state.get("escalate_reason") else "disambiguate"
 
 
@@ -1500,7 +1503,9 @@ def route_entry(state: SessionState) -> str:
         # must be applied before free-text business routing can advance a flow.
         return "apply_action"
     if handles_product_question(state):
-        return "product_help"
+        # 读图不随意图走：客户带图问产品（T48 拍指示灯问绿灯含义，图里还有外壳裂纹）也先读图，
+        # 读到的事实进问题记录、过安全检查，再回到产品咨询
+        return "vision" if _new_fault_images(state) else "product_help"
     if get_services() is not None:
         intent = decision.get("primary_intent")
         from app.conversation.answers import FACTUAL_INTENTS
@@ -2363,6 +2368,14 @@ async def _synthesize_step(
     return update
 
 
+# 现象里不带信息的词：整机 / 品类词、系动词、冠词与指代（英 / 荷 / 德 / 法 / 西，63 单工单语言）
+_NON_SYMPTOM_WORDS = {
+    "the", "a", "an", "my", "it", "is", "are", "was", "keeps", "robot", "vacuum", "device", "machine", "pump", "camera",
+    "de", "het", "een", "mijn", "der", "die", "das", "ist", "mein", "le", "la", "les", "mon", "est",
+    "el", "los", "las", "mi", "está", "esta", "es", "roboter", "robotstofzuiger", "aspiradora", "stofzuiger",
+}
+
+
 def vague_symptoms(state: SessionState) -> list[str]:
     """本问题的现象全都只有一两个词、又没有错误码时返回这些现象原话：一句话太笼统，检索词和英文资料对不上
     （T43「desconectado」）；否则返回空列表。"""
@@ -2372,8 +2385,11 @@ def vague_symptoms(state: SessionState) -> list[str]:
     symptoms = [f for f in issue.get("facts", []) if f.get("status") == "active" and f.get("kind") == "symptom"
                 and f.get("polarity", "affirmed") == "affirmed"]
     def short(value: str) -> bool:
-        # 拉丁字母按词数，汉字按字数（「不吸了」「滚刷缠头发」本身就是具体现象）
-        return not re.search(r"[一-鿿]", value) and len(re.findall(r"[^\W\d_]+", value)) <= 2
+        # 拉丁字母按内容词数，汉字按字数（「不吸了」「滚刷缠头发」本身就是具体现象）。整机词、系动词、冠词不是现象信息：
+        # 同一句「El robot está desconectado」模型有时抽成「desconectado」、有时抽成「robot está desconectado」，
+        # 按原始词数后者算具体，追问不触发、直接交人工（2026-10-12 重放 2/3）
+        words = [w for w in re.findall(r"[^\W\d_]+", value.casefold()) if w not in _NON_SYMPTOM_WORDS]
+        return not re.search(r"[一-鿿]", value) and len(words) <= 2
 
     values = [str(f.get("quote") or f.get("value") or "").strip() for f in symptoms]
     return [v for v in values if v] if symptoms and all(short(str(f.get("value") or "")) for f in symptoms) else []
@@ -2479,6 +2495,9 @@ def _diagnose_outcome(
             **settled,
         }
     first = available[0]
+    # 可执行方案旁待确认的候选（T40 对症的 rv-0073）留作后备：方案碰到原文缺后续说明时先按它追问，再谈交人工
+    fallback = {"fallback_clarification": clarifications[0]} if clarifications and attempts < clarify_mod.MAX_CLARIFICATIONS \
+        else {"fallback_clarification": None}
     mode = "exact_code" if exact_hits else "evidence"
     note = {"evidence": None, "exact_code": "依据官方错误码说明"}[mode]
     plan = get_plan_library().get(first["plan_id"])
@@ -2515,6 +2534,7 @@ def _diagnose_outcome(
             "source": first.get("source"),
         },
         **answered,
+        **fallback,
         **settled,
     }
 
@@ -2664,6 +2684,14 @@ async def guide(state: SessionState) -> SessionState:
                 update["evidence"] = {**state.get("evidence", {}), **prep.evidence}
                 update["current_evidence_ids"] = list(dict.fromkeys([*state.get("current_evidence_ids", []), *prep.evidence]))
         if prep.outcome == "source_gap":
+            fallback = state.get("fallback_clarification") or {}
+            if fallback.get("question") and fallback.get("plan_id") not in (work.get("exhausted_plans") or []):
+                # 原文缺后续说明（已如实告知）不等于没有可用指南：旁边待确认前提的候选（T40 对症的 rv-0073）先问一次，
+                # 答完重新检索；没有后备才交人工
+                return {**update, "pending_card": None, "plan_cursor": None, "fallback_clarification": None,
+                        "diagnose_outcome": {"mode": "clarify", **fallback, "attempts": 1},
+                        "_decision": {"outcome": "clarify", "reason": "applicability", "question": fallback["question"]},
+                        "guide_trace": [*trace, {"event": "knowledge_source_gap", "fallback": fallback.get("plan_id")}]}
             return {**update, "pending_card": None, "plan_cursor": None, "consult_answered": False,
                     "escalate_reason": "R5", "_verify": {"outcome": "escalate", "rule": "R5"},
                     "next_action": {"kind": "handoff_offer", "reason": "knowledge_coverage_missing", "compat_rule": "R5",
@@ -2719,6 +2747,8 @@ async def guide(state: SessionState) -> SessionState:
 def route_after_guide(state: SessionState) -> str:
     if state.get("escalate_reason"):
         return "escalate"
+    if (state.get("_decision") or {}).get("outcome") == "clarify":
+        return "clarify"
     verify = state.get("_verify") or {}
     if verify.get("outcome") == "explained":
         return route_after_close(state)
@@ -3224,7 +3254,8 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_node("vision_conflict",durable_node(l3.vision_conflict))
     g.add_edge("vision_conflict","commit_issue")
     g.add_conditional_edges(
-        "vision", route_after_vision, {"disambiguate": "disambiguate", "escalate": "escalate", "prepare_retake":"prepare_retake", "vision_conflict":"vision_conflict"}
+        "vision", route_after_vision, {"disambiguate": "disambiguate", "escalate": "escalate", "prepare_retake":"prepare_retake",
+                                        "vision_conflict":"vision_conflict", "product_help": "product_help"}
     )
     g.add_node("clarify", durable_node(clarify))
     g.add_node("out_of_scope", durable_node(out_of_scope))
@@ -3300,7 +3331,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None) -> CompiledStateGraph:
     g.add_conditional_edges(
         "guide", route_after_guide,
         {"await_input": "await_input", "escalate": "escalate", "ask_operation": "ask_operation", "close": "close", "dialogue": "dialogue",
-         "advance_tasks": "advance_tasks", "commit_issue": "commit_issue"},
+         "advance_tasks": "advance_tasks", "commit_issue": "commit_issue", "clarify": "clarify"},
     )
     g.add_edge("commit_issue", END)
     return g.compile(checkpointer=checkpointer)

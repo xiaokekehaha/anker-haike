@@ -226,10 +226,12 @@ def normal_operation_is_uncertain(facts: list[FactCandidate]) -> list[FactCandid
 
 
 def device_code_report(meaning: TurnInterpretation, text: str) -> TurnInterpretation:
-    """设备 App 报错表单带错误码 = 设备在报故障，不是功能咨询（T22：7002 表单约 1/6 被判 product_question，
-    走产品咨询不发卡）。官方 63 单里 17 张带码的 App 报错单金标全是 report_problem。无码表单不约束。"""
+    """设备 App 反馈表单在报故障，不是功能咨询：带错误码（T22：7002 表单约 1/6 被判 product_question，走产品咨询不发卡），
+    或问题类型不是咨询类（T43「Tipo de problema: Problema / El robot está desconectado」无码，4 次里 1 次判咨询，
+    答成一串无关报码就结束）。官方 63 单 30 张 App 表单金标全是 report_problem；问题类型为 Ask Us / App usage issue
+    的（T31 / T34）不约束。"""
     parsed = parse_message(text)
-    if meaning.primary_intent != "product_question" or parsed.format != "app_report" or not parsed.codes:
+    if meaning.primary_intent != "product_question" or parsed.format != "app_report" or not (parsed.codes or parsed.device_fault_form):
         return meaning
     return meaning.model_copy(update={
         "primary_intent": "report_problem",
