@@ -8,6 +8,7 @@ import re
 
 from app.context.budget import context_input_budget
 from app.context.builder import ContextBudgetExceeded, build_context
+from app.conversation.effects import turn_has_spoken
 from app.conversation.history import ConversationEntry
 from app.conversation.operation_conditions import feedback_history, pause_text
 from app.conversation.reduce import stable_id
@@ -57,7 +58,11 @@ def acknowledge_current_turn(state: dict, text: str) -> str:
     """Acknowledge this turn's quoted emotion, but only the first time it appears or worsens.
 
     Repeating one apology on every unhappy turn reads as a template, not as a reply.
+    Only the turn's first message carries it: a turn can say several things (task order, order-number ask),
+    and every fixed-text exit goes through here, so later messages in the same turn stay plain.
     """
+    if turn_has_spoken():
+        return text
     track = state.get("emotion_track") or []
     current_input = state.get("input_id")
     observed = _observed_now(state)
@@ -242,6 +247,7 @@ STREAM_FAILED_TEXT = (
 
 
 def say_text(state: dict, writer, mid: str, text: str) -> None:
+    text = acknowledge_current_turn(state, text)
     writer(
         {
             "type": "message_start",

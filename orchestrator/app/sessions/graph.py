@@ -25,7 +25,7 @@ from app.actions.runtime import get_services
 from app.cases.service import case_event
 from app.context.budget import fit_prompt_budget
 from app.conversation.answers import AnswerRequest
-from app.conversation.effects import durable_node
+from app.conversation.effects import durable_node, turn_has_spoken
 from app.conversation.effects import writer as get_stream_writer
 from app.conversation.operation_conditions import conditions_for, effective_exhausted
 from app.conversation.product_questions import answer_product_question, handles_product_question
@@ -685,6 +685,11 @@ async def await_input(state: SessionState) -> SessionState:
         pc["card_id"] = stable_id(state["input_id"], state["active_issue_id"], pc["card_id"])
         pc["input_token"] = stable_id(pc["card_id"], "token")
     writer = get_stream_writer()
+    if not turn_has_spoken():
+        # 本轮只发卡、没有文字（首轮直接出步骤卡 / 型号卡）：情绪致歉单独一条发在卡前，不写进卡片正文
+        lead = acknowledge_current_turn(dict(state), "").strip().replace("  ", " ")
+        if lead:
+            say_text(dict(state), writer, stable_id(state["input_id"], "acknowledge"), lead)
     writer(
         {
             "type": "pending_changed",

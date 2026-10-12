@@ -92,6 +92,29 @@ def test_unquoted_request_cannot_create_a_diagnostic_task():
     assert "report_problem" not in logistics_correction(meaning, text).secondary_intents
 
 
+def test_t56_help_question_restores_troubleshooting_when_the_model_omits_the_quote():
+    """T56 实测（2026-10-11，同一原文 4 次里 1 次）：模型只读出查保修、没填求助原话，补救规则不触发，
+    客户只收到「请给订单号」。故障现象出现在 Why 问句里，就是在为这个故障求助，按原话补回排障。"""
+    text = TICKETS["T56"]
+    meaning = TurnInterpretation(primary_intent="warranty_query", facts=[{"value": "offline", "quote": "offline"}])
+    fixed = logistics_correction(meaning, text)
+    assert "report_problem" in fixed.secondary_intents
+    assert fixed.diagnostic_request_quote == "Why is it when I need my SoloCam S340 there offline"
+    # 模型已读出排障时不替它补求助原话：diagnostic_request 会关掉情绪止步（c5ffc5a 的 T56 路径）
+    read = TurnInterpretation(primary_intent="report_problem", facts=[{"value": "offline", "quote": "offline"}])
+    assert logistics_correction(read, text).diagnostic_request_quote is None
+
+
+@pytest.mark.parametrize("text", [
+    "My camera is offline. What is the warranty period?",
+    "Why is my warranty so short? My camera is offline.",
+    "My camera is offline, but don't troubleshoot. Why is the warranty so short?",
+])
+def test_symptom_outside_a_help_question_does_not_create_troubleshooting(text):
+    meaning = TurnInterpretation(primary_intent="warranty_query", facts=[{"value": "offline", "quote": "offline"}])
+    assert "report_problem" not in logistics_correction(meaning, text).secondary_intents
+
+
 def test_explicit_warranty_only_overrides_wrong_model_priority_but_keeps_facts():
     text = "My SoloCam S340 is offline, but don't troubleshoot; only check my warranty."
     wrong = TurnInterpretation(
@@ -273,3 +296,18 @@ def test_handoff_marks_uncovered_symptom_without_erasing_either_problem():
     assert "brush tangled" in summary.problem and "history missing" in summary.problem
     assert "尚无适用步骤，待人工核实：history missing" in summary.observations
     assert "尚无适用步骤，待人工核实：brush tangled" not in summary.observations
+
+
+async def test_t56_angry_warranty_question_is_acknowledged_before_the_order_ask(conversation):
+    """T56 实测（2026-10-11）：模型只读出查保修，回复只有「I need the order number…」，粗口没有任何回应。
+    查订单 / 保修走 l3.say，也要带本轮致歉，且一轮只说一次。"""
+    text = TICKETS["T56"]
+    rows = await conversation.send(text, {
+        "primary_intent": "warranty_query", "device_relation": "current", "product_hints": ["SoloCam S340"],
+        "emotion_level": "angry", "emotion_cues": ["I'm sick of this shit"],
+        "request_quotes": {"warranty_query": "Is that your warranty?"},
+        "facts": [{"value": "offline", "quote": "offline"}],
+    })
+    said = [e["delta"] for e in rows if e["type"] == "message"]
+    assert said and said[0].startswith("I'm sorry about the frustration.")
+    assert sum("sorry" in s.casefold() for s in said) == 1

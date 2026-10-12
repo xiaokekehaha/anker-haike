@@ -41,6 +41,14 @@ REFUND_WORDS = re.compile(
     r"|退款|退钱|退货|terugbetal|terugsturen|rückerstatt|zurückschicken|rembours|reembols|devoluci",
     re.IGNORECASE,
 )
+# 针对故障本身的求助问句。「My camera is offline. What is the warranty period?」的问句问的是保修期，故障只是背景，不算。
+HELP_CLAUSE = re.compile(
+    r"^(?:so\s+|but\s+|and\s+)?(?:why\b|how\s+(?:do|can|should|to)\b|what\s+(?:should|can|do)\s+I\s+do\b)"
+    r"|\b(?:can|could)\s+you\s+(?:help|fix)\b|\bplease\s+(?:help|fix)\b|\bhelp\s+me\b",
+    re.IGNORECASE,
+)
+# 主意图是这些时，客户为故障求助的原话可以补回漏掉的排障任务
+REPAIRABLE = frozenset({"warranty_query", "order_query", "complaint", "unknown", "replacement_request", "refund_request"})
 QUERY_INTENTS = frozenset({"order_query", "warranty_query", "logistics_query"})
 # 「I don't have my receipt right now」是在说缺资料，不是要查订单（B17 被读成 order_query，
 # 回复前多出「按顺序处理：换货 → 订单详情」）。问句不受影响：「I don't have my order number, can you find it?」
@@ -161,10 +169,21 @@ def constrain_requests(meaning: TurnInterpretation, text: str) -> TurnInterpreta
             "secondary_intents": [i for i in meaning.secondary_intents if i == "complaint"],
             "diagnostic_request_quote": None,
         })
+    if not request and meaning.primary_intent in REPAIRABLE and "report_problem" not in meaning.secondary_intents:
+        # 模型漏填求助原话时（T56 同一原文 4 次里 1 次只读出查保修），按原话补：故障现象出现在求助问句里，
+        # 这句就是在为这个故障求助。只认原话分句，不凭现象本身补任务。已有排障任务时不补：
+        # diagnostic_request 会关掉情绪止步与投诉减负（decide_next），不能由这条规则替模型打开。
+        symptoms = [normalize(f.quote) for f in meaning.facts
+                    if f.kind == "symptom" and f.quote and f.polarity != "negated"]
+        request = next((part.strip() for part in re.split(r"[.!?;\n]+", text)
+                        if HELP_CLAUSE.search(normalize(part).strip())
+                        and any(q in normalize(part) for q in symptoms)), None)
+        if request:
+            meaning = meaning.model_copy(update={"diagnostic_request_quote": request})
     # A fact may be refund background or a past event. Only a grounded, current
     # request for diagnostic help can repair a missing troubleshooting task.
     if (
-        meaning.primary_intent in {"warranty_query", "order_query", "complaint", "unknown", "replacement_request", "refund_request"}
+        meaning.primary_intent in REPAIRABLE
         and request and request in text and not DECLINES_DIAGNOSIS.search(normalized)
         and any(f.kind == "symptom" and f.quote and f.quote in text for f in meaning.facts)
         and "report_problem" not in meaning.secondary_intents

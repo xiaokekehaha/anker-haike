@@ -27,6 +27,7 @@ from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.quotes import quoted
 from app.conversation.reduce import stable_id
+from app.conversation.reply import acknowledge_current_turn
 from app.conversation.tasks import NOT_EXECUTABLE, REMEDY_INTENTS, settle
 from app.emotion.policy import complaint_flagged
 from app.escalation.summary import build_summary
@@ -87,6 +88,8 @@ def type_detail(kind: str, order=None, as_of_date=None) -> str:
 
 def say(state, text):
     mid = stable_id(state["input_id"], "l3", text)
+    # 查订单 / 保修 / 办理都从这里出声：本轮情绪致歉随首条消息发出（T56 只收到「请给订单号」）
+    text = acknowledge_current_turn(state, text)
     emit = writer()
     emit(
         {

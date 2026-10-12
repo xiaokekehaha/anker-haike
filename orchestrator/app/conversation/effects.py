@@ -58,6 +58,19 @@ def writer():
     return emit
 
 
+def turn_has_spoken() -> bool:
+    """本轮（同一输入）是否已发出过文字消息：之前节点的 effect 已并入 state，本节点的在 captured 里。
+    不在 durable 节点内（单测直接调用）时视为未发言。"""
+    scope = _scope.get()
+    if scope is None:
+        return False
+    state, _, captured, _, _ = scope
+    return any(
+        e["payload"]["type"] == "message" and e.get("input_id") == state.get("input_id")
+        for e in [*(state.get("pending_effects") or []), *captured]
+    )
+
+
 def durable_node(fn):
     @wraps(fn)
     async def run(state):

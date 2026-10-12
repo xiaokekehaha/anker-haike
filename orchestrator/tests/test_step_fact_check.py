@@ -271,7 +271,8 @@ async def test_t16_installed_filter_goes_straight_to_the_magnet_check(conversati
     card = next(e for e in events if e["type"] == "step_card")
     assert (card["step"]["plan_id"], card["step"]["step_id"]) == ("qa_rv_0056", "s2")
     # 跳过的那一步在下一张卡上说明，并引客户原话
-    assert 'I\'ve skipped "' in card["step"]["context"] and "It is fully installed and clean" in card["step"]["context"]
+    assert 'You\'ve already covered "' in card["step"]["context"] and "It is fully installed and clean" in card["step"]["context"]
+    assert "every step in the official guide" not in card["step"]["context"]
     state = await conversation.state()
     assert state["step_checks"]["qa_rv_0056"]["steps"]["s1"] == {
         "status": "done", "quote": "It is fully installed and clean", "skip": True}
@@ -312,7 +313,9 @@ async def test_t37_full_tank_does_not_get_the_refill_card(conversation, l3_runti
     assert not any(e["type"] == "step_card" for e in events)
     # 唯一一步被跳过、计划耗尽：没有下一张卡，跳过说明作为消息发出
     said = "".join(e.get("delta", "") for e in events if e["type"] == "message")
-    assert 'I\'ve skipped "' in said and "Terwijl de schoonwater tank nog vol is" in said
+    assert 'You\'ve already covered "' in said and "Terwijl de schoonwater tank nog vol is" in said
+    # 唯一一步被覆盖：补一句说明官方指南已无可做的步骤，不让跳过说明后直接跳到质保
+    assert "every step in the official guide" in said
     state = await conversation.state()
     assert state["step_checks"]["qa_rv_0021"]["steps"]["s1"]["skip"] is True
     assert "qa_rv_0021" in state["exhausted_plans"]
@@ -367,7 +370,7 @@ async def test_t32_reinstalling_the_tank_does_not_skip_the_tape_fix(conversation
     assert "tape" in card["instruction"] and card["media"]
     # 问候与原因作为说明附在卡上（官方原文），但不是跳过说明
     assert "slight misalignment of the detection sensor" in card["context"]
-    assert "I've skipped" not in card["context"]
+    assert "already covered" not in card["context"]
 
 
 def test_skip_note_uses_the_reviewed_card_title_not_a_greeting():
@@ -375,4 +378,19 @@ def test_skip_note_uses_the_reviewed_card_title_not_a_greeting():
 
     step = LIB.get("qa_rv_0061").step("s1b")
     note = skipped_note(step, LIB.evidence_snippet(step.instruction_src), "I took out the water tank and reinstalled it.")
-    assert note.startswith('I\'ve skipped "Fix the dirty water reservoir sensor with a piece of tape"') and "hope" not in note
+    assert note.startswith('You\'ve already covered "Fix the dirty water reservoir sensor with a piece of tape"') and "hope" not in note
+
+
+async def test_angry_first_turn_that_only_gets_a_card_is_acknowledged_once(conversation, l3_runtime):
+    """首轮直接出步骤卡、没有文字时，情绪致歉单独一条发在卡前；卡片正文不带致歉。"""
+    set_knowledge_adapter(QAHitAdapter("rv-0056"))
+    text = T16.replace("It is fully installed and clean", "It is fully installed and clean. I'm sick of this")
+    events = await conversation.send(text, {
+        "primary_intent": "report_problem", "device_relation": "current", "product_hints": ["X10 Pro Omni"],
+        "emotion_level": "angry", "emotion_cues": ["I'm sick of this"],
+        "facts": [{"value": "insert dustbin and filter", "quote": "Please insert dustbin and filter."}],
+    })
+    said = [e["delta"] for e in events if e["type"] == "message"]
+    assert said.count("I'm sorry about the frustration.") == 1
+    card = next(e for e in events if e["type"] == "step_card")["step"]
+    assert "sorry" not in (card.get("context") or "").casefold()

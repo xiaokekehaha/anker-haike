@@ -78,7 +78,12 @@ def skipped_note(step: PlanStep, instruction: str, quote: str | None) -> str:
     title = step.title.replace("*", "").strip()
     name = (title if title and not title.endswith("…") else first).rstrip(" .…")
     said = f' ("{quote.strip()}")' if quote and quote.strip() else ""
-    return f'I\'ve skipped "{name}" because what you told us already covers it{said}.'
+    return f'You\'ve already covered "{name}"{said}, so I won\'t ask you to repeat it.'
+
+
+# 计划的操作步骤全被客户已做事项跳过时补一句（T27 / T37）：否则跳过说明后紧接着进质保或下一条指南，客户看不出原因。
+# 下一步由 decide_next 决定（质保 / 人工 / 其他指南），这里不预告。
+ALL_COVERED_NOTE = "That covers every step in the official guide for this issue, so there's nothing left in it for you to try."
 
 
 def _advance_in_plan(plan: Plan, step_id: str, *, option: str | None = None) -> str | None:
@@ -266,6 +271,9 @@ async def prepare_step(
         )
     announce_done_before(None)
     only_explanation = all(s.kind == "statement" for s in plan.steps)
+    actionable = [s for s in plan.steps if s.kind not in {"statement", "handoff"}]
+    if actionable and all(f"skipped:{s.instruction_src}" in displayed_nodes for s in actionable):
+        context.append(ALL_COVERED_NOTE)
     return StepPrep("explained" if only_explanation else "exhausted", dropped=dropped,
                     explanation="\n\n".join(context), evidence=explanation_evidence, displayed_nodes=displayed_nodes)
 
