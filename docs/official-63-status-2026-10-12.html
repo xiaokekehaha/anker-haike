@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="官方63单考点与流程的阶段复盘：最新独立全量评测、后续定向修复、剩余问题与逐案证据。">
+<title>官方 63 单 · 当前解决到哪一步 | 2026.10.12</title>
+<style>
+:root{--ink:#132a35;--muted:#536775;--bg:#f4f6f5;--paper:#fff;--line:#dce4e5;--navy:#102f3c;--teal:#087c75;--soft:#e7f3ef;--amber:#9b5709;--warm:#fff2dc;--red:#aa3940;--pink:#faecee;--blue:#34598e;--radius:16px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:30px}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--teal);text-underline-offset:4px}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #258baf;outline-offset:4px}button{border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:8px 14px}button:hover{border-color:var(--teal)}h1,h2,h3,p{margin:0}h1,h2,h3{line-height:1.35}h2{font-size:29px;letter-spacing:-.7px}h3{font-size:18px}p+p{margin-top:12px}small,.small{font-size:13px;color:var(--muted)}code{font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}strong{font-weight:650}.ref{font:11px ui-monospace,monospace;text-decoration:none;vertical-align:super;margin-left:4px}.tag{display:inline-block;border-radius:5px;padding:3px 8px;font-size:12px;line-height:1.5;background:#edf1f2;color:var(--muted)}.tag.good{background:var(--soft);color:var(--teal)}.tag.warn{background:var(--warm);color:var(--amber)}.tag.bad{background:var(--pink);color:var(--red)}.tag.info{background:#edf2fa;color:var(--blue)}
+.layout{max-width:1600px;margin:auto;display:grid;grid-template-columns:222px minmax(0,1fr)}aside{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);padding:36px 22px;display:flex;flex-direction:column;gap:28px;background:var(--bg)}.brand{font-size:12px;letter-spacing:2px;font-weight:750}.brand b{display:block;font-size:23px;letter-spacing:-.5px;margin-top:4px}.edition{border-top:1px solid var(--line);padding-top:17px;font-size:12px;color:var(--muted)}nav{display:grid;gap:5px}nav a{display:flex;gap:13px;color:var(--muted);text-decoration:none;padding:9px 10px;border-radius:7px;font-size:14px}nav a:hover{background:var(--soft);color:var(--teal)}nav span{font:11px/25px ui-monospace,monospace;color:#7d969e}.sidefoot{margin-top:auto;font-size:12px;color:var(--muted)}main{min-width:0;padding:34px 42px 26px;max-width:1250px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;color:var(--muted);font-size:12px;letter-spacing:.8px}.topline button{font-size:12px}.hero{border-radius:20px;background:var(--navy);color:white;padding:42px 42px 32px;position:relative;overflow:hidden}.hero:after{content:"63";position:absolute;right:12px;top:-28px;color:#a3d8ca0d;font:800 215px/1 sans-serif;pointer-events:none}.eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700;color:#a6d9d0;margin-bottom:20px}.hero h1{font-size:42px;letter-spacing:-1.5px;position:relative;z-index:1}.hero h1 em{font-style:normal;color:#8bdac2}.hero .lead{max-width:740px;color:#ceddde;font-size:16px;margin-top:22px}.hero-bottom{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px;padding-top:24px;border-top:1px solid #ffffff26}.hero-bottom span{font-size:12px;border:1px solid #ffffff35;border-radius:30px;padding:4px 12px;color:#d9e7e8}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}.metric{padding:25px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius)}.metric-label{font-size:13px;color:var(--muted)}.metric-value{font-size:48px;font-weight:750;line-height:1.2;margin:12px 0;color:var(--teal);font-variant-numeric:tabular-nums;letter-spacing:-2px}.metric-value small{font-size:20px;color:#7a9099;letter-spacing:0}.metric-value .percent{font-size:15px;color:var(--muted);letter-spacing:0;margin-left:8px}.metric:nth-child(3) .metric-value{color:var(--amber)}.note{font-size:13px;color:var(--muted);padding:16px 0;border-bottom:1px solid var(--line)}section{margin-top:64px;scroll-margin-top:25px}.sectionhead{display:flex;align-items:flex-start;gap:20px;margin-bottom:22px}.sectionnum{font:14px/39px ui-monospace,monospace;color:var(--teal)}.sectionhead p{color:var(--muted);margin-top:8px;max-width:800px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px}.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.bigquote{font-size:23px;font-weight:650;line-height:1.6;letter-spacing:-.5px}.callout{border-left:3px solid var(--teal);background:var(--soft);padding:16px 20px;margin-top:20px}.callout.warn{border-color:var(--amber);background:var(--warm)}.callout p{font-size:14px}.stack{display:flex;height:20px;border-radius:4px;overflow:hidden;margin:20px 0 12px}.stack span{display:block}.legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}.bars{display:grid;gap:15px;margin-top:22px}.bar-row{display:grid;grid-template-columns:74px 1fr 65px;gap:12px;align-items:center;font-size:13px}.bar-track{height:9px;border-radius:4px;background:#edf1f1;overflow:hidden}.bar-track i{display:block;height:100%;background:var(--teal)}.bar-row b{text-align:right;font-size:13px}.stats-line{display:flex;justify-content:space-between;gap:8px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:13px}.stats-line strong{font-size:24px;display:block}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}table{border-collapse:collapse;width:100%;font-size:14px}th{text-align:left;background:#eef3f3;color:var(--muted);font-size:12px;font-weight:650;padding:14px 18px}td{padding:17px 18px;vertical-align:top;border-top:1px solid var(--line)}td:first-child{font-weight:650}td p{font-size:13px;margin-top:6px;color:var(--muted)}.matrix{min-width:760px}.matrix th:nth-child(1){width:16%}.matrix th:nth-child(2){width:25%}.matrix th:nth-child(3){width:43%}.matrix th:nth-child(4){width:16%}.terms{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}.terms span{font-size:12px;color:var(--muted);background:#eaf0f0;padding:5px 10px;border-radius:5px}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}.pipe{background:#fff;border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:8px;padding:17px;position:relative}.pipe:not(:last-child):after{content:"→";position:absolute;right:-12px;top:35%;z-index:1;color:var(--teal);font-size:19px}.pipe b{display:block;font-size:15px}.pipe small{display:block;margin-top:8px;font-size:12px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 16px}.tabs button[aria-pressed="true"],.filters button[aria-pressed="true"]{background:var(--navy);color:white;border-color:var(--navy)}.flow-panel{display:grid;grid-template-columns:1.1fr 1fr;gap:24px}.flow-steps{margin:0;padding:0;list-style:none;counter-reset:step}.flow-steps li{position:relative;padding:0 0 20px 37px;counter-increment:step;border-left:1px solid var(--line);margin-left:12px}.flow-steps li:last-child{border-left:0;padding-bottom:0}.flow-steps li:before{content:counter(step);position:absolute;left:-13px;top:0;width:25px;height:25px;border-radius:50%;background:var(--soft);color:var(--teal);text-align:center;font:12px/25px ui-monospace,monospace}.flow-steps p{color:var(--muted);font-size:13px;margin-top:3px}.flow-aside{background:#f1f5f5;border-radius:12px;padding:22px}.flow-aside h3{margin:10px 0 12px}.flow-aside p{font-size:14px}.flow-aside .next{padding-top:16px;border-top:1px solid var(--line);margin-top:16px}.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.time-card{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:24px}.time-card time{font:12px ui-monospace,monospace;color:var(--teal);display:block;margin-bottom:16px}.time-card h3{margin-bottom:12px}.time-card p{font-size:14px;color:var(--muted)}.time-card ul{padding-left:18px;font-size:14px}.time-card li+li{margin-top:8px}.case-examples{display:grid;grid-template-columns:1fr 1fr;gap:18px}.example{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:25px}.example-top{display:flex;gap:10px;align-items:center;margin-bottom:14px}.case-id{font:700 14px ui-monospace,monospace;color:var(--teal)}.example h3{margin-bottom:16px}.trace{display:grid;gap:13px}.trace div{display:grid;grid-template-columns:54px 1fr;gap:12px;font-size:14px}.trace dt{font-size:12px;color:var(--muted);margin:0}.trace dd{margin:0}.example-foot{border-top:1px solid var(--line);padding-top:13px;margin-top:18px;font-size:12px;color:var(--muted)}.priority{display:grid;gap:15px}.priority-row{display:grid;grid-template-columns:80px 1fr 1fr;gap:20px;background:white;border:1px solid var(--line);padding:22px;border-radius:12px}.priority-row h3{font-size:16px;margin-bottom:7px}.priority-row p{font-size:13px;color:var(--muted)}.priority-row .acceptance{border-left:1px solid var(--line);padding-left:20px}.priority-row .acceptance b{font-size:12px;color:var(--teal)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}.filters button{font-size:13px}.search{flex:1;min-width:210px;padding:9px 13px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.case-detail{background:white;border:1px solid var(--line);border-radius:10px;align-self:start;overflow:hidden}.case-detail summary{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;list-style:none}.case-detail summary::-webkit-details-marker{display:none}.case-detail summary:after{content:"+";margin-left:auto;color:var(--muted);font-size:18px}.case-detail[open] summary:after{content:"−"}.case-detail summary .case-topic{font-size:13px;flex:1}.case-body{border-top:1px solid var(--line);padding:17px;font-size:13px}.case-body p+p{margin-top:10px}.case-body b{color:var(--teal)}.case-body .original{font-size:11px;color:var(--muted);margin-bottom:9px}.case-count{font-size:13px;color:var(--muted);margin-bottom:13px}.empty{padding:25px;background:#fff;border-radius:10px;text-align:center;color:var(--muted)}[hidden]{display:none!important}.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.source{border-top:1px solid var(--line);padding:16px 0;scroll-margin-top:25px}.source h3{font-size:14px;margin-bottom:8px}.source p{font-size:12px;color:var(--muted);margin-top:6px}.source code{display:block;margin-top:7px;color:#697d87}footer{margin-top:45px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px}.no-script{background:var(--warm);padding:15px}
+@media(min-width:1450px){main{padding-left:55px;padding-right:55px}}@media(max-width:1120px){.layout{grid-template-columns:185px minmax(0,1fr)}aside{padding:30px 13px}main{padding:26px}.hero{padding:32px}.hero h1{font-size:35px}.metric{padding:20px}.metric-value{font-size:39px}.timeline{grid-template-columns:1fr}.time-card{padding:22px}.two{grid-template-columns:1fr 1fr}.priority-row{grid-template-columns:65px 1fr 1fr;gap:14px}}
+@media(max-width:800px){.layout{display:block}aside{position:static;height:auto;padding:18px 20px;border-right:0;border-bottom:1px solid var(--line);gap:12px}.brand b{display:inline;font-size:17px;margin-left:12px}.edition,.sidefoot{display:none}nav{display:flex;overflow-x:auto;gap:4px}nav a{white-space:nowrap;padding:4px 8px;font-size:12px}nav span{display:none}main{padding:20px}.hero{padding:28px}.hero h1{font-size:33px}.hero .lead{font-size:14px}.metrics{gap:10px}.metric{padding:16px}.metric-value{font-size:35px}.metric-value small{font-size:16px}.metric-value .percent{display:block;margin:5px 0 0;font-size:12px}.metric p{font-size:11px}section{margin-top:45px}.sectionhead{gap:12px}h2{font-size:24px}.two,.three,.case-examples,.case-grid,.flow-panel,.source-grid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr 1fr}.pipe:nth-child(2):after{display:none}.priority-row{grid-template-columns:50px 1fr}.priority-row .acceptance{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:12px 0 0}.panel{padding:22px}.bigquote{font-size:20px}.example{padding:22px}.sectionhead p{font-size:14px}footer{display:block}.topline{letter-spacing:0}}
+@media(max-width:420px){main{padding:14px}.hero{padding:25px 20px}.hero h1{font-size:29px}.metrics{gap:7px}.metric{padding:13px 10px}.metric-label{font-size:11px}.metric-value{font-size:30px}.metric p{line-height:1.5}.pipeline{gap:10px}.pipe{padding:14px}.case-detail summary{gap:7px}.case-topic{line-height:1.4}.case-detail .tag{font-size:11px}.topline{font-size:10px}.topline button{font-size:11px;padding:6px 9px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{@page{size:A4;margin:15mm}body{background:white;font-size:10pt}.layout{display:block}aside,.topline,.filters,.tabs,.no-print{display:none!important}main{padding:0;max-width:none}.hero{background:#102f3c!important;color:#fff!important;padding:25px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.hero h1{font-size:27pt}.hero .lead{font-size:11pt}.hero:after{display:none}section{margin-top:28px}h2{font-size:20pt}.metrics{gap:10px}.metric-value{font-size:32pt}.panel,.example,.time-card,.priority-row,.case-detail,.source{break-inside:avoid}.table-wrap{overflow:visible}.matrix{min-width:0;font-size:9pt}th,td{padding:9px}.tag,.stack,.bar-track i{print-color-adjust:exact;-webkit-print-color-adjust:exact}.case-grid,.source-grid{grid-template-columns:1fr 1fr}.flow-panel{grid-template-columns:1fr 1fr}.flow-section{break-inside:avoid}.source code{font-size:8pt}footer{font-size:9pt}.case-detail[hidden]{display:block!important}.case-detail summary{padding:10px;font-size:10pt}.case-body{font-size:9pt}a{color:inherit;text-decoration:none}.print-flow{display:block!important}.flow-panel[hidden]{display:grid!important;margin-top:15px}.hero,.metric,.panel{box-shadow:none}noscript{display:none}}
+</style>
+<noscript><style>.flow-panel[hidden]{display:grid!important;margin-top:16px}</style></noscript>
+</head>
+<body>
+<div class="layout">
+<aside aria-label="报告导航">
+  <div class="brand">HAIKE / SERVICE AI<b>63 单阶段复盘</b></div>
+  <div class="edition">2026.10.12 · 北京时间<br>考点 × 流程 × 当前证据</div>
+  <nav>
+    <a href="#overview"><span>01</span>当前结论</a><a href="#coverage"><span>02</span>考点完成度</a><a href="#flows"><span>03</span>业务怎样运转</a><a href="#changes"><span>04</span>近期修复证据</a><a href="#examples"><span>05</span>典型案例追踪</a><a href="#next"><span>06</span>剩余工作</a><a href="#cases"><span>07</span>63 单逐案查看</a><a href="#sources"><span>08</span>依据与口径</a>
+  </nav>
+  <div class="sidefoot">单文件 · 可离线阅读<br>可搜索案例 · 支持打印<br><br>本页结论由 AI 基于项目记录整理，人工评测数据保留原裁定。</div>
+</aside>
+<main>
+<div class="topline"><span>REVIEW NOTE / 2026-10-12 / 代码核对 22517ac</span><button id="print-button" type="button">打印 / 存为 PDF</button></div>
+<header class="hero">
+  <div class="eyebrow">Official 63 · Evidence review</div>
+  <h1>流程主干已具备，<br><em>回答质量仍未全面达标。</em></h1>
+  <p class="lead">对照 10 月 11 日的《考点、难点与回答流程》，系统已能区分物流、排障、核保与人工办理；当前短板集中在事实判断、附带诉求、客户语言和知识口径。近期修复有可观察改善，但尚不足以宣称“63 单稳定解决”。</p>
+  <div class="hero-bottom"><span>最新独立全量：10 月 12 日 10:23</span><span>后续定向回放：10:35–10:41</span><span>本页为离线复核，未新增模型测评</span></div>
+</header>
+<div class="metrics" aria-label="最近独立全量评测指标">
+  <article class="metric"><div class="metric-label">综合质量合格</div><div class="metric-value">46<small> / 63</small><span class="percent">73.02%</span></div><p class="small">同时检查流程、事实、语言与回答完整性。</p></article>
+  <article class="metric"><div class="metric-label">流程方向合理</div><div class="metric-value">59<small> / 63</small><span class="percent">93.65%</span></div><p class="small">仅评价已观察到的分支和业务边界。</p></article>
+  <article class="metric"><div class="metric-label">仍需改进 / 官方口径待核</div><div class="metric-value">16<small> + 1</small></div><p class="small">需改进 16 单；T53 的例外资格仍待官方确认。</p></article>
+</div>
+<p class="note">这些是 10:23 运行版本的观察路径评级，不能解释为客户问题解决率，也不能直接代表当前代码全部通过。后续修复另列，不回填这组分数。<a class="ref" href="#s2">[S2]</a><a class="ref" href="#s4">[S4]</a></p>
+<noscript><p class="no-script">JavaScript 未开启：仍可阅读全部报告与63单记录；筛选、流程切换与打印按钮需要 JavaScript。可直接使用浏览器打印。</p></noscript>
+
+<section id="overview">
+  <div class="sectionhead"><span class="sectionnum">01</span><div><h2>现在可以怎样评价</h2><p>“流程走对”和“客户问题答充分”分开看，才能看清实际进展。</p></div></div>
+  <div class="two">
+    <article class="panel"><span class="tag good">已观察到的能力</span><p class="bigquote" style="margin-top:15px">必要时追问、核验、转人工，<br>主要业务路径已能运转。</p><p style="margin-top:16px">物流不直接承诺补发；未收录错误码不套相近码；缺必要事实先问；核保与实际办理保留确认边界。这些停点可以是正确行为。</p><div class="stats-line"><div><strong>16</strong>合理权限边界</div><div><strong>14</strong>信息不足待补充</div><div><strong>16</strong>正常排障 / 说明</div></div><p class="small" style="margin-top:12px">按主分类互斥统计，上述三项合计 46 个综合合格案例。等待材料或人工不等于故障已经解决。<a class="ref" href="#s2">[S2]</a></p></article>
+    <article class="panel"><h3>质量分布与业务组</h3><div class="stack" aria-label="合格46，需改进16，待核1"><span style="width:73.0159%;background:var(--teal)"></span><span style="width:25.3968%;background:#d69a4d"></span><span style="width:1.5873%;background:#8191a4"></span></div><div class="legend"><span><i class="dot" style="background:var(--teal)"></i>合格 46</span><span><i class="dot" style="background:#d69a4d"></i>需改进 16</span><span><i class="dot" style="background:#8191a4"></i>待核 1</span></div><div class="bars"><div class="bar-row"><span>订单物流</span><div class="bar-track"><i style="width:90%"></i></div><b>9 / 10</b></div><div class="bar-row"><span>机器人</span><div class="bar-track"><i style="width:64.8649%"></i></div><b>24 / 37</b></div><div class="bar-row"><span>乳泵</span><div class="bar-track"><i style="width:75%"></i></div><b>9 / 12</b></div><div class="bar-row"><span>摄像头</span><div class="bar-track"><i style="width:100%"></i></div><b>4 / 4</b></div></div><p class="small" style="margin-top:20px">业务组采用最新评审分组，机器人包含 T60–T63；柱条是各组综合合格数，不代表总体稳定率或品类解决率。</p></article>
+  </div>
+  <div class="callout warn"><p><strong>进展是局部且有波动的。</strong> 同口径最近两轮综合合格 45 → 46：T29、T40 改善，T51 降级；流程仍是 59 / 63，但 T37、T43 变好，T20、T28 变差。更早的 57、59 使用不同评分口径，不能连成“准确率趋势”。<a class="ref" href="#s2">[S2]</a><a class="ref" href="#s5">[S5]</a></p></div>
+</section>
+
+<section id="coverage">
+  <div class="sectionhead"><span class="sectionnum">02</span><div><h2>基线里的考点，完成到哪一步</h2><p>将原 spec 的要求映射到最新证据；“有机制”与“已稳定达标”分开记录。</p></div></div>
+  <div class="terms"><span>SOP = 官方售后标准流程</span><span>Q&amp;A = 官方知识问答</span><span>金标 = 项目维护的期望标注，非主办方逐题答案</span></div>
+  <div class="table-wrap"><table class="matrix"><thead><tr><th>考点</th><th>基线要求</th><th>当前证据与差距</th><th>判断</th></tr></thead><tbody>
+  <tr><td>意图与任务</td><td>意图识别 ≥90%；多诉求不丢、不多加</td><td>T9 同时处理暂停与物流，T43 恢复故障澄清；T28 却将德语“推送通知”字段当成物流诉求。<p>未单独测得同口径意图准确率；不能用 59 / 63 的流程指标替代。</p></td><td><span class="tag warn">部分达到</span></td></tr>
+  <tr><td>物流分支</td><td>送达不直接补发；退回 / 逾期提出待确认补发；预售说明</td><td>T1–T10 的流程方向均合格；T47 能区分整机订单与替换件。T6 因英文回复荷兰语而综合降级。</td><td><span class="tag good">主干有证据</span></td></tr>
+  <tr><td>排障与核保</td><td>指南未解决进入核保；保内材料齐全后办理；过保按规则说明</td><td>多案停在真实问题、凭证或方案确认处，未代客户补答案。T53 “保内发生、过保申报”的例外口径仍待确认。<p>未操作实物，也未覆盖每案的最终审批与换货。</p></td><td><span class="tag good">观察路径合理</span></td></tr>
+  <tr><td>事实与对象</td><td>不反转肯定句，不重复已做步骤，不混充电对象</td><td>T50 忠实保留“左侧能工作”，T52 问充电盒自身灯态；T51 却将“充过电”当“已充满”。T29 部分已做的呈现仍有波动。</td><td><span class="tag warn">仍有缺口</span></td></tr>
+  <tr><td>知识适用性</td><td>错误码精确；核对对象、时机和前提；不套相近码</td><td>T13 的 5116 未用 5112 替代；T37 不再强套 App 水量估算；T40 采用完整候选或先确认后备候选。T48 绿灯知识仍缺。</td><td><span class="tag good">局部已改善</span></td></tr>
+  <tr><td>安全风险</td><td>明确风险时停止操作并转人工</td><td>T45 明确烫伤正确转人工；T20 的“未见明显电池鼓包”却触发停用。现有否定遮蔽不跨部件名。</td><td><span class="tag bad">需优先修正</span></td></tr>
+  <tr><td>幻觉与承诺</td><td>不编事实，不在核保前承诺更换；目标“幻觉 = 0”</td><td>T28 凭空多出任务，T51 无依据增强事实；T32 源文“安排更换前 / 成功率较高”仍被呈现。<p>本轮没有统一幻觉率指标，不能宣称零幻觉。</p></td><td><span class="tag bad">尚未达标</span></td></tr>
+  <tr><td>客户语言</td><td>客户可见文字 100% 跟随输入语言</td><td>10 个非英语案例主要回复或卡片仍英文；8 案仅因此降级，T20 / T28 另有流程问题。回复提示词仍明确要求英文。</td><td><span class="tag bad">明确未达标</span></td></tr>
+  <tr><td>体验与完整性</td><td>不复读；情绪降负担；多问题都承接</td><td>T56 给继续或人工选择，T58 不再替抱怨编故障；T27 的持续异响、T34 的历史地图、T63 的损坏与性能问题仍未充分回答。</td><td><span class="tag warn">部分达到</span></td></tr>
+  </tbody></table></div><p class="small" style="margin-top:12px">考点来源 [S1]；最新评分与问题台账 [S2]；后续修复 [S3][S4]；源码核对 [S6]。<a class="ref" href="#sources">查看依据</a></p>
+</section>
+
+<section id="flows">
+  <div class="sectionhead"><span class="sectionnum">03</span><div><h2>系统怎样回答一单</h2><p>先保留客户原话和事实，再决定业务路径；每一步都要知道“还缺什么”。下图是目标流程，旁边标注当前证据。</p></div></div>
+  <div class="pipeline"><div class="pipe"><b>1. 理解输入</b><small>表单 / 邮件 / 图片<br>识别诉求、对象、否定与已做事实</small></div><div class="pipe"><b>2. 检查边界</b><small>安全优先<br>多任务排序，缺信息先澄清</small></div><div class="pipe"><b>3. 执行业务</b><small>查物流 / 精确码 / 知识候选<br>前提核对，再提供步骤或说明</small></div><div class="pipe"><b>4. 明确下一步</b><small>等真实答案 / 核资格 / 客户确认<br>必要时交人工，保留未答问题</small></div></div>
+  <div class="tabs" role="group" aria-label="选择业务流程"><button type="button" data-flow="logistics" aria-pressed="true">物流</button><button type="button" data-flow="diagnose" aria-pressed="false">排障</button><button type="button" data-flow="warranty" aria-pressed="false">换货 / 核保</button><button type="button" data-flow="consult" aria-pressed="false">咨询 / 灯态</button><button type="button" data-flow="handoff" aria-pressed="false">人工 / 多诉求</button></div>
+  <div class="panel flow-panel" id="flow-logistics"><ol class="flow-steps"><li><strong>确认订单与包裹对象</strong><p>缺号码先收；主机与配件记录冲突时保留两份说法。</p></li><li><strong>依据记录选择物流分支</strong><p>已送达：说明并可调查；退回 / 逾期：提出补发；预售：说明原计划日期。</p></li><li><strong>客户确认后提交，由人工办理</strong><p>方案卡不是补发完成；暂停与取消也需实际人工处理。</p></li></ol><div class="flow-aside"><span class="tag good">主干有证据</span><h3>T9：暂停申请与物流都保留</h3><p>暂停进入人工队列，同时说明主机预售及滤芯已送达。没有把“已申请暂停”说成“暂停成功”。</p><p class="next"><strong>仍需关注：</strong>T6 语言适配；历史商家背景的事实归属。物流字段修复只证明主流程不被附加字段挤掉。<a class="ref" href="#s2">[S2]</a><a class="ref" href="#s7">[S7]</a></p></div></div>
+  <div class="panel flow-panel" id="flow-diagnose" hidden><ol class="flow-steps"><li><strong>先确认型号与具体现象</strong><p>只说“效果差”先澄清；只说一侧正常，不替客户指定坏的一侧。</p></li><li><strong>找资料，并核对是否适用</strong><p>有码先精确匹配；未收录不套相近码。语义候选核对部件、时机和前提。</p></li><li><strong>核对已做事实，再发卡</strong><p>问句等真实答案；部分已做说明剩余部分；未解决沿分支继续。</p></li><li><strong>指南耗尽，说明原因并进入售后</strong><p>说明尚未查明的症状，不把索凭证当成已经解释根因。</p></li></ol><div class="flow-aside"><span class="tag warn">步骤与事实仍有波动</span><h3>T40 改善；T51 仍跳错步骤</h3><p>缺链指南不再直接封死其他候选；但“充过电”仍可能被当成“已经充满”。</p><p class="next"><strong>必要修正：</strong>逐字引文存在，只能证明客户说过这句话；还必须判断这句话是否真的足以完成该步骤。<a class="ref" href="#s3">[S3]</a><a class="ref" href="#s6">[S6]</a></p></div></div>
+  <div class="panel flow-panel" id="flow-warranty" hidden><ol class="flow-steps"><li><strong>确认购买记录与资格</strong><p>有订单读质保结束日期；无订单先收凭证 / 商家 / 国家，再按项目规则核验。</p></li><li><strong>按资格进入对应分支</strong><p>过保说明常规边界；保内继续收订单或凭证、地址、故障媒体、序列号。</p></li><li><strong>确认方案 → 提交服务单 → 转人工</strong><p>核资格前不承诺更换，未实际提交不说已经办理。</p></li></ol><div class="flow-aside"><span class="tag info">观察停点不等于最终办理</span><h3>T55：只收缺少的材料</h3><p>保内继续收故障媒体与序列号，没有重复索已提供的购买凭证。</p><p class="next"><strong>待核：</strong>T53 主张保内发生故障、过保才申报。常规日期计算不能替代官方例外政策与人工审核。<a class="ref" href="#s1">[S1]</a><a class="ref" href="#s2">[S2]</a></p></div></div>
+  <div class="panel flow-panel" id="flow-consult" hidden><ol class="flow-steps"><li><strong>确认型号；有图先读图</strong><p>位置、颜色、常亮 / 闪烁分别确认，单帧照片不能证明动态灯态。</p></li><li><strong>按官方资料解释</strong><p>有答案给依据；资料不足明确缺口，不从颜色常识猜产品含义。</p></li><li><strong>缺答案时给出下一步</strong><p>继续澄清，或交技术核查，并保留真正要回答的问题。</p></li></ol><div class="flow-aside"><span class="tag warn">读图改善，答案仍缺</span><h3>T48：看到灯，不等于解释灯</h3><p>本轮已读图，检索 15 条结果仍没有绿灯定义；只列红灯资料，后续澄清 / 核查入口不明确。</p><p class="next"><strong>必要工作：</strong>把官方分型号灯态图转为可检索内容；还要收灯位置和动态状态。<a class="ref" href="#s2">[S2]</a><a class="ref" href="#s3">[S3]</a></p></div></div>
+  <div class="panel flow-panel" id="flow-handoff" hidden><ol class="flow-steps"><li><strong>识别交人工的真实理由</strong><p>客户明确要求、安全风险、知识缺失、办理权限不足等分开记录。</p></li><li><strong>保留每项诉求与证据</strong><p>采购对象来自采购原话；故障事实不能替代购买对象；记录缺少的型号与材料。</p></li><li><strong>如实报告提交状态</strong><p>已整理、已提交、已接单不同；人工接手不自动免除其他问题的解释义务。</p></li></ol><div class="flow-aside"><span class="tag warn">边界正确仍可能答不全</span><h3>T63：刷罩正确，问题还没承接完</h3><p>定向回放 3/3 交接为 brush guard；但型号、断卡扣、胶带固定、清扫表现仍需收集和交接。</p><p class="next"><strong>另一个边界：</strong>T20 无危险观察不应触发安全转人工；T45 明确烫伤仍应停止操作。<a class="ref" href="#s2">[S2]</a><a class="ref" href="#s4">[S4]</a></p></div></div>
+  <div class="callout"><p><strong>知识库在工作，但检索成功不等于回答充分。</strong> 27 案有检索记录，共 55 条：53 条成功，2 条在型号未确认、允许文档为 0 时无匹配。其余 36 案包含本地错误码匹配、订单、安全和资格路径，不能全部算作“未用知识”。<a class="ref" href="#s2">[S2]</a></p></div>
+</section>
+
+<section id="changes">
+  <div class="sectionhead"><span class="sectionnum">04</span><div><h2>近期修复，证据到哪里为止</h2><p>按实际运行时间排序。代码提交时间不等于运行版本变化时间。</p></div></div>
+  <div class="timeline">
+    <article class="time-card"><time>10/12 · 10:09–10:18</time><span class="tag good">候选与分流定向回放</span><h3 style="margin-top:14px">5 个典型问题有改善</h3><ul><li>T37：不再把水箱事实升级为 App 估算问题的前提。</li><li>T40：缺链时先问对症的后备候选。</li><li>T27：跳完已做步骤后说明售后升级原因。</li><li>T43：表单故障进入澄清，不再泛咨询列码。</li><li>T48：带图咨询先读图，再回咨询。</li></ul><p>各案最终定向回放 3/3 达到本次局部验收；T43 首次回放发现波动，补修后再测。不能作为稳定率估计。<a class="ref" href="#s3">[S3]</a></p></article>
+    <article class="time-card"><time>10/12 · 10:23–10:27</time><span class="tag info">独立全量 + 6 次重复</span><h3 style="margin-top:14px">改善与新缺口同时出现</h3><ul><li>综合 46 / 16 / 1；流程 59 / 4。</li><li>T29、T40 综合改善；T37、T43 流程改善。</li><li>T20 安全否定误读；T28 无依据物流任务；T51 充过电当充满。</li><li>T27、T48、T63 有局部改善，仍不够完整。</li></ul><p>运行容器全程固定；期间工作区另有改动未进入容器。评分只对应这次运行清单。<a class="ref" href="#s2">[S2]</a></p></article>
+    <article class="time-card"><time>10/12 · 10:35–10:41</time><span class="tag warn">后续事实承接回放</span><h3 style="margin-top:14px">已修一部分，仍需复验</h3><ul><li>T63：采购对象只取采购原话，3/3 保持刷罩。</li><li>T29：步骤“部分已做”可说明剩余检查；深入路径 2/3 呈现，1/3 仍原样发卡。</li><li>T37：跨指南沿用已做判定已实现，本次实测未触达该分支，仅单测覆盖。</li><li>T34：未增加附带问题结构，缺口保留。</li></ul><p>另有 63 单路径回放，但没有新的独立完整综合评分；不能生成更新后的通过率。<a class="ref" href="#s4">[S4]</a></p></article>
+  </div>
+  <p class="note">当前代码核对到 <code>22517ac</code>：候选修复已收录于 <code>00a37c2</code>，事实承接 / 采购对象修复于 <code>1885e05</code>。本页没有重新部署或运行真实模型，不对当前线上版本作推断。</p>
+</section>
+
+<section id="examples">
+  <div class="sectionhead"><span class="sectionnum">05</span><div><h2>用六个案例看清“修到哪了”</h2><p>以下为记录的中文概述；历史与本轮分开，不把“现在看起来更好”写成稳定结论。</p></div></div>
+  <div class="case-examples">
+    <article class="example"><div class="example-top"><span class="case-id">T40</span><span class="tag good">候选采用改善</span></div><h3>有完整指南，不该被缺链条目挡住</h3><dl class="trace"><div><dt>问题</dt><dd>清洁液不消耗；历史选到 rv-0371，原文缺后续链接，直接转人工。</dd></div><div><dt>本轮</dt><dd>补型号后采用 rv-0073，给安装检查及官方链接；模拟未解决后解释转售后原因。</dd></div><div><dt>方案</dt><dd>保留其他待确认候选，缺链时先问一次必要前提，使可用知识继续有机会被采用。</dd></div></dl><div class="example-foot">仍未验证链接内每个步骤，也未证明实物问题已修复。[S2][S3]</div></article>
+    <article class="example"><div class="example-top"><span class="case-id">T29</span><span class="tag warn">已实现，仍有波动</span></div><h3>“清洁盘洗过”只完成了复合步骤的一部分</h3><dl class="trace"><div><dt>问题</dt><dd>同一张卡既要求查格栅，又要求清洗；客户已经洗过，整卡重复容易让人误以为没被理解。</dd></div><div><dt>后测</dt><dd>增加“部分已做”说明，保留尚未检查的格栅内容；深入路径 3 次中 2 次出现该说明。</dd></div><div><dt>方案</dt><dd>剩余检查必须摘自官方步骤，不由模型另造；仍需约束模型何时判“部分已做”。</dd></div></dl><div class="example-foot">10:23 主层只走到锁扣追问；10:35 后测 1/3 仍原样发卡。[S2][S4]</div></article>
+    <article class="example"><div class="example-top"><span class="case-id">T20</span><span class="tag bad">规则缺口</span></div><h3>“未见危险”被当成“有危险”</h3><dl class="trace"><div><dt>追踪</dt><dd>视觉摘要“未见明显电池鼓包” → 风险词命中“鼓包” → 停用、停充、人工。</dd></div><div><dt>根因</dt><dd>否定遮蔽只越过限定连接词，遇到部件名“电池”就中断，后面的风险词仍被匹配。</dd></div><div><dt>方案</dt><dd>安全判断保留对象、否定和来源；不能靠删掉风险词来消除误报。</dd></div></dl><div class="example-foot">重复 2 次没出现同一句摘要，不等于修复；同句离线已复现，当前相关代码仍在。[S2][S6]</div></article>
+    <article class="example"><div class="example-top"><span class="case-id">T28</span><span class="tag bad">虚构次要任务</span></div><h3>主意图对了，任务队列仍可能错</h3><dl class="trace"><div><dt>原意</dt><dd>德语表单报告 2111 滚刷故障，没有查物流的请求。</dd></div><div><dt>本轮</dt><dd>系统宣布“设备排障 → 物流”；3 次会话中 2 次把推送通知字段当物流请求依据。</dd></div><div><dt>方案</dt><dd>每项任务都要有独立客户诉求证据；设备通知字段不能凭空创建业务请求。</dd></div></dl><div class="example-foot">重启指南正确，不能抵消额外任务错误；德语回复也未达标。[S2]</div></article>
+    <article class="example"><div class="example-top"><span class="case-id">T51</span><span class="tag bad">事实强度不足</span></div><h3>做过充电，不等于已经充满</h3><dl class="trace"><div><dt>追踪</dt><dd>客户“给泵充过电” → 判断“确保充满”已完成 → 跳过该检查。</dd></div><div><dt>本轮</dt><dd>主层及两次重复均出现；同时执行官方源文中的 speaker cover 和蓝牙检查，其术语与相关性待核。</dd></div><div><dt>方案</dt><dd>分清尝试动作与达成结果，缺满电证据时保留检查或追问；知识术语交资料方核定。</dd></div></dl><div class="example-foot">新“部分已做”机制不能自动证明本问题已修复；未见后续定向销账证据。[S2][S4][S6]</div></article>
+    <article class="example"><div class="example-top"><span class="case-id">T63</span><span class="tag warn">对象正确，承接未完</span></div><h3>交接的是刷罩，还要交接完整问题</h3><dl class="trace"><div><dt>旧问题</dt><dd>客户要买 brush guard，历史摘要却取故障事实里的 detangle elements 作为购买对象。</dd></div><div><dt>后测</dt><dd>只从采购原话提对象，3/3 保持刷罩；缺型号记入交接缺失字段。</dd></div><div><dt>还缺</dt><dd>对客补收型号与照片，承接卡扣断裂、胶带固定及清扫异常，不能以转人工结束全部回应。</dd></div></dl><div class="example-foot">对象修复有证据；最新完整评分仍为需改进，未用局部通过覆盖整体缺口。[S2][S4]</div></article>
+  </div>
+</section>
+
+<section id="next">
+  <div class="sectionhead"><span class="sectionnum">06</span><div><h2>接下来，先修什么才有意义</h2><p>以下为本页建议，尚未实施。必要工作是修正可复现的判断与输出约束；更复杂的任务结构可按收益再决定。</p></div></div>
+  <div class="priority">
+    <article class="priority-row"><span class="tag bad" style="align-self:start">优先 1</span><div><h3>事实与诉求约束</h3><p>T20 否定风险、T28 虚构物流、T51 动作当结果。共同问题是文本存在，却不充分支持系统作出的结论。</p></div><div class="acceptance"><b>验收证据</b><p>无风险否定不误触发，明确危险仍能拦截；无物流原话不建物流任务；无满电证据不跳满电检查。保留成功与失败重复样本。</p></div></article>
+    <article class="priority-row"><span class="tag warn" style="align-self:start">优先 2</span><div><h3>语言与回答完整性</h3><p>10 个非英语案例覆盖消息、问题、操作、方案与错误通知。T27 / T34 / T63 明确已知、未答与下一步。</p></div><div class="acceptance"><b>验收证据</b><p>按客户语言检查全部可见字段，型号与错误码不变；转售后时仍保留原问题。先保证回应完整，不必先造通用子问题框架。</p></div></article>
+    <article class="priority-row"><span class="tag info" style="align-self:start">资料协作</span><div><h3>官方知识与口径</h3><p>T13 的 5116、T48 绿灯图表、T32 未核资格的更换预设、T51 部件与蓝牙相关性、T53 例外政策。</p></div><div class="acceptance"><b>验收证据</b><p>补可追溯、分型号的正式来源；缺资料时给清晰核查入口。未经确认不编产品事实，不将政策待核包装为系统已解决。</p></div></article>
+    <article class="priority-row"><span class="tag good" style="align-self:start">固定方法</span><div><h3>同版本、同口径再测</h3><p>固定运行源码、知识快照、输入和评分表；先覆盖定向分支，再独立复核 63 单。</p></div><div class="acceptance"><b>报告口径</b><p>分别报告流程、事实、覆盖、知识、语言、图片与口径；单测、定向回放和全量人工评级分别呈现，不拼成一个通过率。</p></div></article>
+  </div>
+  <div class="callout"><p><strong>分享时可直接使用的结论：</strong>已建立有证据约束的售后流程，近期候选选择与事实沿用有改善；最新独立评测中 59 / 63 流程合理、46 / 63 综合合格。尚需补齐事实强度、多诉求完整性和多语言输出，并与资料方核清知识及政策缺口。</p></div>
+</section>
+
+<section id="cases">
+  <div class="sectionhead"><span class="sectionnum">07</span><div><h2>63 单，逐案展开看</h2><p>保留 10:23 独立全量的原始裁定与下一步；后续修复见第 04 节。可按编号、问题或标签搜索。</p></div></div>
+  <div class="filters"><button type="button" data-grade="all" aria-pressed="true">全部 63</button><button type="button" data-grade="合格" aria-pressed="false">合格 46</button><button type="button" data-grade="需改进" aria-pressed="false">需改进 16</button><button type="button" data-grade="待核" aria-pressed="false">待核 1</button><input class="search" id="case-search" type="search" placeholder="搜索 T40、语言、灯态…" aria-label="搜索案例"></div>
+  <div class="case-count" id="case-count" aria-live="polite">显示 63 / 63 单 · 展开查看判定理由与下一步</div>
+  <div class="case-grid" id="case-grid">
+    <details class="case-detail" id="case-T1" data-id="T1" data-grade="合格">
+      <summary><span class="case-id">T1</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>展示两票物流并等待客户确认承运商调查，未将签收记录等同客户实际收到主机，也未声称已补发。</p><p><b>下一步：</b>确认箱件标签及缺失主机对应运单，再提交调查。</p><p class="small">物流 · 签收争议</p></div>
+    </details>
+    <details class="case-detail" id="case-T2" data-id="T2" data-grade="合格">
+      <summary><span class="case-id">T2</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>明确保留订单标主机与客户称配件的冲突，索箱标签而不强行覆盖客户陈述。done只是该段流程结束。</p><p><b>下一步：</b>补标签并核对两票箱件，不能将本次done记作解决。</p><p class="small">物流 · 事实冲突</p></div>
+    </details>
+    <details class="case-detail" id="case-T3" data-id="T3" data-grade="合格">
+      <summary><span class="case-id">T3</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>以已妥投记录回答何时寄出，并提供待确认调查，未编造将来发货时间。</p><p><b>下一步：</b>客户确认仍未收到后调查。</p><p class="small">物流</p></div>
+    </details>
+    <details class="case-detail" id="case-T4" data-id="T4" data-grade="合格">
+      <summary><span class="case-id">T4</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>回复澳邮妥投记录和调查方案，未把之前在Good Guys购买误作当前订单渠道。</p><p><b>下一步：</b>核对物流与实际收货差异。</p><p class="small">物流</p></div>
+    </details>
+    <details class="case-detail" id="case-T5" data-id="T5" data-grade="合格">
+      <summary><span class="case-id">T5</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>区分主机在途逾期与配件妥投，补寄仅为待确认方案。</p><p><b>下一步：</b>确认后由人工办理；不能把方案卡当已补寄。</p><p class="small">物流 · 补寄确认</p></div>
+    </details>
+    <details class="case-detail" id="case-T6" data-id="T6" data-grade="需改进">
+      <summary><span class="case-id">T6</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>物流查询及调查边界正确，但荷兰语客户收到全英文消息和方案卡。</p><p><b>下一步：</b>消息与卡片保持客户语言，保留运单和日期原值。</p><p class="small">非英语回复 · 物流</p></div>
+    </details>
+    <details class="case-detail" id="case-T7" data-id="T7" data-grade="合格">
+      <summary><span class="case-id">T7</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>没有实际号码，先索订单或运单是查询必要前提。</p><p><b>下一步：</b>取得号码后查询，不猜送达日期。</p><p class="small">缺业务标识</p></div>
+    </details>
+    <details class="case-detail" id="case-T8" data-id="T8" data-grade="合格">
+      <summary><span class="case-id">T8</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>退回寄件人按项目SOP提出待确认补寄，未虚构已发货。</p><p><b>下一步：</b>客户确认后提交申请。</p><p class="small">物流 · 补寄确认</p></div>
+    </details>
+    <details class="case-detail" id="case-T9" data-id="T9" data-grade="合格">
+      <summary><span class="case-id">T9</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>暂停申请进入人工队列，同时答复主机预售和滤芯已送达，明确暂停结果尚待人工。</p><p><b>下一步：</b>人工确认暂停后再讨论替代产品；原预计日期不等于暂停成功。</p><p class="small">多诉求 · 订单变更</p></div>
+    </details>
+    <details class="case-detail" id="case-T10" data-id="T10" data-grade="合格">
+      <summary><span class="case-id">T10</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>展示两票不同产品物流并提供调查，未单凭另一产品签收认定C10收到。</p><p><b>下一步：</b>核对C10对应箱件。</p><p class="small">物流 · 多包裹</p></div>
+    </details>
+    <details class="case-detail" id="case-T11" data-id="T11" data-grade="合格">
+      <summary><span class="case-id">T11</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>EB1L准确匹配水路指南，五步依次发出，模拟未解决后说明升级理由并核保修。</p><p><b>下一步：</b>收订单和实际检查结果，人工核售后。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T12" data-id="T12" data-grade="合格">
+      <summary><span class="case-id">T12</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>保留空箱补水、同楼层持续异常及无基站楼层正常切吸尘三个条件，未直接宣称硬件坏。</p><p><b>下一步：</b>实际客户应分别确认楼层和补水结果；复合长卡可拆分。</p><p class="small">条件保留</p></div>
+    </details>
+    <details class="case-detail" id="case-T13" data-id="T13" data-grade="需改进">
+      <summary><span class="case-id">T13</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>5116缺少匹配官方指导时转人工合理，没有套用相似错误码；荷兰语输入仍回复英文。</p><p><b>下一步：</b>翻译通知，由知识维护者补可靠5116依据。</p><p class="small">非英语回复 · 知识缺失 · Agent边界</p></div>
+    </details>
+    <details class="case-detail" id="case-T14" data-id="T14" data-grade="合格">
+      <summary><span class="case-id">T14</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>依4090官方码指南进入售后资格核验，未先承诺免费更换；硬件结论来自码指南而非照片。</p><p><b>下一步：</b>补订单凭证，人工核实硬件和资格。</p><p class="small">图片边界 · 资格核验</p></div>
+    </details>
+    <details class="case-detail" id="case-T15" data-id="T15" data-grade="合格">
+      <summary><span class="case-id">T15</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>按EB03检查尘袋、尘盒、入口和底部风道，拆底盖前保留移除两水箱要求；操作条件仍宜由官方补充断电提示。</p><p><b>下一步：</b>核真实检查结果和售后资格；不把源文操作条件完善记作模型编造。</p><p class="small">知识已执行 · 官方操作条件待完善</p></div>
+    </details>
+    <details class="case-detail" id="case-T16" data-id="T16" data-grade="合格">
+      <summary><span class="case-id">T16</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮跳过已安装清洁步骤，只查尚未确认的磁铁，事实承接合理。</p><p><b>下一步：</b>根据磁铁真实检查结果核后续。</p><p class="small">已知事实沿用</p></div>
+    </details>
+    <details class="case-detail" id="case-T17" data-id="T17" data-grade="合格">
+      <summary><span class="case-id">T17</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>6063检查微动开关、放置及供电，保留软管收纳和电源线注意事项。</p><p><b>下一步：</b>收集开关回弹、重放和供电检查结果。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T18" data-id="T18" data-grade="需改进">
+      <summary><span class="case-id">T18</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>移除保护贴不等于排除滚拖缠绕，按3212检查有依据；荷兰语客户收到英文卡片。</p><p><b>下一步：</b>翻译操作和条件，不把安装时卡扣声解释为持续异响正常。</p><p class="small">非英语回复 · 知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T19" data-id="T19" data-grade="合格">
+      <summary><span class="case-id">T19</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>检查水箱后停在独立结果问题，没有以模拟未解决代替密封圈正常等事实。</p><p><b>下一步：</b>取得实际答案后判断，保留硬件结论条件。</p><p class="small">独立问题 · 条件判断</p></div>
+    </details>
+    <details class="case-detail" id="case-T20" data-id="T20" data-grade="需改进">
+      <summary><span class="case-id">T20</span><span class="case-topic">系统安全否定处理</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：需改进</div><p><b>判定依据：</b>视觉摘要明确说“未见明显电池鼓包”，案件却记录命中词“鼓包”并触发R4停用停充。图像没有肯定危险，错误发生在否定事实被安全判断消费的环节。</p><p><b>下一步：</b>安全信号保留否定极性和来源，不能只以风险词命中；正常定位问题回到必要澄清。</p><p class="small">非英语回复 · 安全误触发 · 图片事实消费错误</p></div>
+    </details>
+    <details class="case-detail" id="case-T21" data-id="T21" data-grade="需改进">
+      <summary><span class="case-id">T21</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>清洁重启不等于检查保护膜，先问顶板保护膜仍贴着或翘起是有增量的前提；回复未用法语。</p><p><b>下一步：</b>用法语承接已做步骤，只确认保护膜。</p><p class="small">非英语回复 · 必要前提</p></div>
+    </details>
+    <details class="case-detail" id="case-T22" data-id="T22" data-grade="需改进">
+      <summary><span class="case-id">T22</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>7002按卡边缘与平地持续错误分别给禁区和重启，条件仍保留；荷兰语输入回复英文。</p><p><b>下一步：</b>按原语言呈现条件，避免无条件要求设禁区。</p><p class="small">非英语回复 · 条件保留</p></div>
+    </details>
+    <details class="case-detail" id="case-T23" data-id="T23" data-grade="合格">
+      <summary><span class="case-id">T23</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>E41按指南升级固件及重启，没有从电池报码擅自扩展成物理危险。</p><p><b>下一步：</b>若客户另报鼓包、烫伤等再进入安全流程。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T24" data-id="T24" data-grade="合格">
+      <summary><span class="case-id">T24</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>6013按官方步骤断开基站电源、等待10秒再接电，失败转核资格，未承诺更换。</p><p><b>下一步：</b>收凭证和持续错误证据。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T25" data-id="T25" data-grade="合格">
+      <summary><span class="case-id">T25</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>E53定位到3D MATRIX EYE清洁和重启，没有跨传感器推荐步骤。</p><p><b>下一步：</b>失败后技术与资格审核。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T26" data-id="T26" data-grade="合格">
+      <summary><span class="case-id">T26</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>E23执行源文翻转检查与接口检查后，独立询问第三方清洁剂，没有擅自认定客户用过。</p><p><b>下一步：</b>等清洁剂答案；翻转摇晃条件由官方进一步核定。</p><p class="small">独立问题 · 官方操作条件待完善</p></div>
+    </details>
+    <details class="case-detail" id="case-T27" data-id="T27" data-grade="需改进">
+      <summary><span class="case-id">T27</span><span class="case-topic">系统回应不完整</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>跳过已做异物检查并新增售后升级理由有改善，但仍没有明确承接反复裂响、无法启动，也没有提供技术采证下一步。</p><p><b>下一步：</b>明确保留四项事实和未确认根因，优先索已有视频、设备信息交技术审核。</p><p class="small">事实承接 · 技术采证</p></div>
+    </details>
+    <details class="case-detail" id="case-T28" data-id="T28" data-grade="需改进">
+      <summary><span class="case-id">T28</span><span class="case-topic">意图不准</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：需改进</div><p><b>判定依据：</b>德语原文只有2111滚刷故障，本轮却宣告排障之后处理物流；重启指南正确，但额外物流任务没有客户依据。</p><p><b>下一步：</b>保留故障意图，消除对表单通知字段的物流误读，并用德语回复。</p><p class="small">凭空新增物流诉求 · 非英语回复</p></div>
+    </details>
+    <details class="case-detail" id="case-T29" data-id="T29" data-grade="合格">
+      <summary><span class="case-id">T29</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮只问污水箱锁扣是否扣牢，未重复清水盘；客户检查软管和接口不等于已核锁扣。</p><p><b>下一步：</b>取得锁扣答案后只执行有增量步骤；主层没有验证后续不会重复清洁。</p><p class="small">已知事实沿用 · 必要前提</p></div>
+    </details>
+    <details class="case-detail" id="case-T30" data-id="T30" data-grade="合格">
+      <summary><span class="case-id">T30</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>两天前更换不能排除新缠绕，按E4检查边刷仍合理，照片污迹未被用作电机故障结论。</p><p><b>下一步：</b>核安装及实际缠绕情况；单帧不能判断灯在闪。</p><p class="small">图片边界 · 知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T31" data-id="T31" data-grade="合格">
+      <summary><span class="case-id">T31</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>跳过已擦触点，检查基站供电、插座和复位，未重复已做清洁。恢复出厂影响在源文中交代不足。</p><p><b>下一步：</b>官方补充重置影响，系统呈现前确认客户理解；失败后核售后。</p><p class="small">已知事实沿用 · 官方操作条件待完善</p></div>
+    </details>
+    <details class="case-detail" id="case-T32" data-id="T32" data-grade="需改进">
+      <summary><span class="case-id">T32</span><span class="case-topic">官方口径治理</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>胶带临时方案来自rv-0061，非模型编造；面客上下文仍有“安排更换前”“成功率较高”，未核资格前容易造成承诺预期。</p><p><b>下一步：</b>来源保留供审计，面客层去掉未经核验的更换预设及效果保证。</p><p class="small">源文承诺 · 系统呈现</p></div>
+    </details>
+    <details class="case-detail" id="case-T33" data-id="T33" data-grade="合格">
+      <summary><span class="case-id">T33</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>E5A按对应指南重启，模拟失败后核资格，未跨码推断。</p><p><b>下一步：</b>收订单后技术审核。</p><p class="small">知识已执行</p></div>
+    </details>
+    <details class="case-detail" id="case-T34" data-id="T34" data-grade="需改进">
+      <summary><span class="case-id">T34</span><span class="case-topic">系统回应不完整</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：需改进</div><p><b>判定依据：</b>提供地图管理、重启重建及红键清图说明，却未回答维修后为何历史可见而不可调用；不能据此假设客户按过红键。最后索保修也未解释与地图恢复的关系。</p><p><b>下一步：</b>分别处理历史记录与可用地图、恢复可能性和维修影响；不清楚处明确转技术核查。</p><p class="small">多问题覆盖 · 知识采用</p></div>
+    </details>
+    <details class="case-detail" id="case-T35" data-id="T35" data-grade="合格">
+      <summary><span class="case-id">T35</span><span class="case-topic">正常说明</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>解释低电回充、够电后继续清扫的正常机制，流程结束合理。虽内部归报障，实际未发多余操作。</p><p><b>下一步：</b>仅在客户报告不能回充或续扫时继续排查。</p><p class="small">产品咨询</p></div>
+    </details>
+    <details class="case-detail" id="case-T36" data-id="T36" data-grade="需改进">
+      <summary><span class="case-id">T36</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮以问题卡询问拆下滚刷和罩后异响是否消失，未直接判断电机坏；荷兰语客户收到英文。原文远程媒体不等于本轮已上传或读取。</p><p><b>下一步：</b>按荷兰语提问并确认拆件条件，取得真实声音证据。</p><p class="small">非英语回复 · 独立问题 · 媒体未读取</p></div>
+    </details>
+    <details class="case-detail" id="case-T37" data-id="T37" data-grade="需改进">
+      <summary><span class="case-id">T37</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮用满箱事实跳过水量检查，说明指南耗尽后核售后，没有再执行仅针对App估算显示的rv-0163；语言仍为英文。</p><p><b>下一步：</b>按荷兰语承接满箱、管路和密封已查事实，明确后续技术核查范围。</p><p class="small">非英语回复 · 已知事实沿用 · 候选适用性改善</p></div>
+    </details>
+    <details class="case-detail" id="case-T38" data-id="T38" data-grade="合格">
+      <summary><span class="case-id">T38</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>先检查密封圈再停在条件结果问题，没有用购买凭证或未解决反馈直接证明硬件损坏。</p><p><b>下一步：</b>得到密封和重装答案后继续，凭证只用于资格。</p><p class="small">图片凭证 · 条件判断</p></div>
+    </details>
+    <details class="case-detail" id="case-T39" data-id="T39" data-grade="合格">
+      <summary><span class="case-id">T39</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮只问是否固件升级后立即离线，保留假设为问题，没有断言升级导致。</p><p><b>下一步：</b>否定时继续查网络/App表现，不能锁死升级方向。</p><p class="small">故障时机澄清</p></div>
+    </details>
+    <details class="case-detail" id="case-T40" data-id="T40" data-grade="合格">
+      <summary><span class="case-id">T40</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>补S1 Pro机器人型号后，本轮选完整rv-0073安装检查和官方链接，未停在rv-0371断链；模拟失败后说明理由并核售后。链接里的步骤未被逐项结构化验证。</p><p><b>下一步：</b>实际客户按官方液位实验条件检查，必要照片可单独上传；不能把液位变化慢直接判出液故障。</p><p class="small">知识采用改善 · 型号消歧</p></div>
+    </details>
+    <details class="case-detail" id="case-T41" data-id="T41" data-grade="合格">
+      <summary><span class="case-id">T41</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>保留排障与替换胶塞物流两个任务，先确认6014而非假定已报码；没有要求未拖地的设备盲目再烘干。</p><p><b>下一步：</b>开放索取完整错误文本，并取得替换件案件号，避免物流长期排队。</p><p class="small">多诉求 · 引导性澄清</p></div>
+    </details>
+    <details class="case-detail" id="case-T42" data-id="T42" data-grade="合格">
+      <summary><span class="case-id">T42</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>塑料脱落且漏水转售后核资格，未要求继续运行；物损判断有原文依据，不能从图确定具体配件SKU和成因。</p><p><b>下一步：</b>保留照片、型号和购买材料，人工核件。</p><p class="small">物损 · 图片边界</p></div>
+    </details>
+    <details class="case-detail" id="case-T43" data-id="T43" data-grade="需改进">
+      <summary><span class="case-id">T43</span><span class="case-topic">系统语言适配</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮正确归设备故障，先问具体断连表现、时机及App消息，不再堆无关错误码；但西语输入仍回复英文。</p><p><b>下一步：</b>用西语确认App离线、配网失败或基站通信，再选资料。</p><p class="small">非英语回复 · 意图改善</p></div>
+    </details>
+    <details class="case-detail" id="case-T44" data-id="T44" data-grade="合格">
+      <summary><span class="case-id">T44</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>针脚卡住/损坏且已排查，先核购买资格合理，没有要求损坏触点反复充电或承诺换新。</p><p><b>下一步：</b>收订单和损坏照片，人工核库存与资格。</p><p class="small">物损 · 更换核验</p></div>
+    </details>
+    <details class="case-detail" id="case-T45" data-id="T45" data-grade="合格">
+      <summary><span class="case-id">T45</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>客户明确报告烫伤，停用停充并实际转人工有依据；不用先把购买凭证当伤情图识别。</p><p><b>下一步：</b>人工处理产品安全与售后材料，不由Agent诊断伤情。</p><p class="small">安全 · 图片非必要</p></div>
+    </details>
+    <details class="case-detail" id="case-T46" data-id="T46" data-grade="合格">
+      <summary><span class="case-id">T46</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>先问噪声连续或间歇，等待真实答案；购买凭证不证明电机噪声根因。</p><p><b>下一步：</b>结合声音和使用场景选后续步骤。</p><p class="small">独立问题 · 图片凭证</p></div>
+    </details>
+    <details class="case-detail" id="case-T47" data-id="T47" data-grade="合格">
+      <summary><span class="case-id">T47</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>区分主机订单T8D04121与所问泵头T8D02181-80，缺独立记录时索案件或订单号。</p><p><b>下一步：</b>取得替换件标识再查，不用主机签收代替泵头结果。</p><p class="small">物流 · 对象核对</p></div>
+    </details>
+    <details class="case-detail" id="case-T48" data-id="T48" data-grade="需改进">
+      <summary><span class="case-id">T48</span><span class="case-topic">知识缺失与答复闭环</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮已读图后回到产品咨询，如实说明所获资料没有绿灯定义；仍仅列红灯，既未解释所问绿灯，也未确认灯位置/常亮闪烁或给明确后续。</p><p><b>下一步：</b>将官方型号灯态图纳入可检索资料，按位置与动态状态匹配；不能猜绿灯含义。</p><p class="small">图片链路改善 · 灯态未解答</p></div>
+    </details>
+    <details class="case-detail" id="case-T49" data-id="T49" data-grade="合格">
+      <summary><span class="case-id">T49</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>更换与无法开机都排入任务，先核材料，没有将保险付款直接当保修资格。</p><p><b>下一步：</b>保留唯一乳泵的紧迫性，尽快核材料；后续排障仍待客户补充。</p><p class="small">保险与保修分离 · 多诉求</p></div>
+    </details>
+    <details class="case-detail" id="case-T50" data-id="T50" data-grade="合格">
+      <summary><span class="case-id">T50</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>忠实保留“左侧确实能工作”，问哪侧或部件异常，没有擅自改成左泵坏。</p><p><b>下一步：</b>明确症状后再检索。</p><p class="small">肯定句保护</p></div>
+    </details>
+    <details class="case-detail" id="case-T51" data-id="T51" data-grade="需改进">
+      <summary><span class="case-id">T51</span><span class="case-topic">系统事实推断</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：需改进</div><p><b>判定依据：</b>用“充过电”跳过“确保充满”，证据强度不够；本轮又执行bp-0111的speaker cover和蓝牙检查，均来自源文而非模型编造，但术语及其与使用中断电的关系需官方核定。</p><p><b>下一步：</b>明确充电时长、满电指示与关机时机；治理疑似错误部件名及无因果解释的蓝牙步骤，不直接删有意功能。</p><p class="small">充过电不等于充满 · 官方术语疑点 · 官方相关性待核</p></div>
+    </details>
+    <details class="case-detail" id="case-T52" data-id="T52" data-grade="合格">
+      <summary><span class="case-id">T52</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>明确问盒本身接电时的灯态，没有偷换成泵在盒内充不进电。</p><p><b>下一步：</b>根据盒灯与电源条件继续，承接客户完全依赖吸乳的紧迫性。</p><p class="small">充电对象正确</p></div>
+    </details>
+    <details class="case-detail" id="case-T53" data-id="T53" data-grade="待核">
+      <summary><span class="case-id">T53</span><span class="case-topic">官方口径待确认</span><span class="tag info">待核</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>按项目日历判过保仍继续排障，未承诺换新；客户主张保内发生、过保才申报，是否适用例外及如何审核，现有资料不能确认，回复也未处理争议。</p><p><b>下一步：</b>保留故障发生时间主张及凭证差异，交人工确认官方例外口径；不自行给出现实权利结论。</p><p class="small">保内发生过保申报 · Agent边界</p></div>
+    </details>
+    <details class="case-detail" id="case-T54" data-id="T54" data-grade="合格">
+      <summary><span class="case-id">T54</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>依次检查阀膜、密封、佩戴、尺寸、舒适吸力、复位及主机吸力，最后核资格；源文hose例子需核型号术语，未让拆不存在的软管。</p><p><b>下一步：</b>依据实际吸力结果分支；统一官方部件名。</p><p class="small">知识已执行 · 官方术语待完善</p></div>
+    </details>
+    <details class="case-detail" id="case-T55" data-id="T55" data-grade="合格">
+      <summary><span class="case-id">T55</span><span class="case-topic">正常排障</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>隔膜坐好不等于无裂损，检查仍有增量；保内只索缺失故障媒体和SN，没有重复索购买凭证。</p><p><b>下一步：</b>补技术材料后办理，源文软管例子单独治理。</p><p class="small">图片凭证 · 缺材料 · 官方术语待完善</p></div>
+    </details>
+    <details class="case-detail" id="case-T56" data-id="T56" data-grade="合格">
+      <summary><span class="case-id">T56</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>两步后明确给人工接手或继续排障选择，没有直接声称已转人工；停止点合理。</p><p><b>下一步：</b>由客户选择，主层未替客户决定。</p><p class="small">情绪止步</p></div>
+    </details>
+    <details class="case-detail" id="case-T57" data-id="T57" data-grade="合格">
+      <summary><span class="case-id">T57</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>询问不工作的摄像头接充电器是否亮灯，仍是待确认问题；但型号和供电类型未知，提问应更开放。</p><p><b>下一步：</b>先明确型号、供电与离线/不录像差别，不能将客户说Wi-Fi好当排除所有网络问题。</p><p class="small">多设备 · 供电澄清可优化</p></div>
+    </details>
+    <details class="case-detail" id="case-T58" data-id="T58" data-grade="合格">
+      <summary><span class="case-id">T58</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>只有泛泛负评时先问实际表现，没有推成镜头脏或画质差。</p><p><b>下一步：</b>取得具体症状再选知识。</p><p class="small">情绪不等于故障</p></div>
+    </details>
+    <details class="case-detail" id="case-T59" data-id="T59" data-grade="合格">
+      <summary><span class="case-id">T59</span><span class="case-topic">人工 / 权限边界</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>S340换C20诉求先核购买资格，没有承诺跨型号更换。</p><p><b>下一步：</b>人工核跨型号政策，保留两台持续断连事实。</p><p class="small">跨型号更换</p></div>
+    </details>
+    <details class="case-detail" id="case-T60" data-id="T60" data-grade="合格">
+      <summary><span class="case-id">T60</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>选择官方产品列型号后仍问具体表现和错误消息，没有把希望正常清扫当具体机械故障。</p><p><b>下一步：</b>明确App和设备实际行为后检索。</p><p class="small">愿望不等于现象</p></div>
+    </details>
+    <details class="case-detail" id="case-T61" data-id="T61" data-grade="合格">
+      <summary><span class="case-id">T61</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮复述提前启动再询问App警告，未执行错误操作；重复确认已知事实效率低，清扫记录缺失仍待承接。</p><p><b>下一步：</b>下一轮明确时区/计划设置和记录缺失，避免重复问是否提前。</p><p class="small">重复确认可优化 · 多症状待续</p></div>
+    </details>
+    <details class="case-detail" id="case-T62" data-id="T62" data-grade="合格">
+      <summary><span class="case-id">T62</span><span class="case-topic">信息不足</span><span class="tag good">合格</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>先问重复清扫和路径重叠，没有从不走直线直接认定导航硬件坏。</p><p><b>下一步：</b>取得地图、环境和实际路径再判断。</p><p class="small">路径形态澄清</p></div>
+    </details>
+    <details class="case-detail" id="case-T63" data-id="T63" data-grade="需改进">
+      <summary><span class="case-id">T63</span><span class="case-topic">系统回应不完整</span><span class="tag warn">需改进</span></summary>
+      <div class="case-body"><div class="original">10:23 独立全量原裁定 [S2] · 流程：合格</div><p><b>判定依据：</b>本轮准确写brush guard并转人工核库存，较旧轮对象错误改善；仍未索型号/损坏照片，未明确承接断卡扣、胶带固定和清扫/防缠绕异常，排障只排队。</p><p><b>下一步：</b>确认型号和刷罩损坏照片，保留全部诉求供人工；不在兼容性未核时推荐零件或让损坏设备试跑。</p><p class="small">Agent边界 · 多问题覆盖 · 配件对象改善</p></div>
+    </details>
+  </div><p id="empty" class="empty" hidden>没有匹配案例。请更换关键词或选择“全部”。</p>
+</section>
+
+<section id="sources">
+  <div class="sectionhead"><span class="sectionnum">08</span><div><h2>依据、版本与阅读边界</h2><p>以下路径为项目内资料定位，不依赖外部网站。本文件已内嵌核心结论与全部逐案裁定，可单独发送。</p></div></div>
+  <div class="panel"><h3>本次怎样核对</h3><p style="margin-top:12px">读取指定 spec、最新独立全量报告、逐案评分、指标与问题清单，再对照两组修复回放、历史口径复核和当前相关源码。统计直接来自冻结指标与 63 条评分；本页没有重新调用真实模型、执行实物排障或验证线上部署。</p><p class="small">全量评测的客户策略：操作卡统一模拟“未解决”；独立问题、材料、方案确认及人工处停止。仅用官方独立产品列补必要型号，不替客户填写未知事实。主层 63 案 / 124 轮；另有 T20、T28、T51 各 2 次重复，共 69 个新会话。技术调用成功不代表业务质量合格。</p></div>
+  <div class="source-grid">
+    <article class="source" id="s1"><h3>[S1] 考点与流程基线 · 2026-10-11</h3><p>题目构成、目标、流程和当时的难点状态。63 单：英文 53、非英语 10；App 表单 30、邮件 27、售后申请（RMA）表单 6。官方 Q&amp;A 共 875 条。基线状态不自动等于今天的验收结论。</p><code>docs/claude/spec_2026-10-11-1003_official-63-exam-points-and-flows.md</code></article>
+    <article class="source" id="s2"><h3>[S2] 最新独立全量 · 2026-10-12 10:23</h3><p>报告、方法、逐案评分、指标、问题台账及 T20/T28/T51 实际记录。运行镜像前缀 81dcc074；预检 HEAD 为 95196f4，并含当时未提交修复，以运行清单为准。</p><code>docs/planning/2026-10-12-1023_official-63-review/{report.md, method.md, manual-review.yaml, metrics.json, issue-register.md, comparison.md, conversations/}</code></article>
+    <article class="source" id="s3"><h3>[S3] 候选选择与意图分流回放</h3><p>T27 / T37 / T40 / T43 / T48 的修复机制、定向结果与 63 单路径差异。小样本通过只支持各自局部验收。</p><code>docs/planning/2026-10-12-1009_candidate-selection-replay/results.md</code></article>
+    <article class="source" id="s4"><h3>[S4] 已知事实与多问题承接回放</h3><p>全量采证结束后才重建运行镜像。T63 对象、T29 部分已做、T37 跨指南与 T34 未修改的范围、限制分开记录。</p><code>docs/planning/2026-10-12-1040_known-facts-replay/results.md</code></article>
+    <article class="source" id="s5"><h3>[S5] 跨轮评分口径复核</h3><p>解释历史 57 → 45：既有问题改判与真实不利变化同时存在。未对所有历史轮次统一重评，不能虚构“校正后准确率”。</p><code>docs/planning/2026-10-12-0848_official-63-trend/report.md</code></article>
+    <article class="source" id="s6"><h3>[S6] 当前实现核对 · HEAD 22517ac</h3><p>reply.py 明确要求英文；rules/service.py 否定遮蔽遇部件名中断；fact_check.py 校验引文与步骤身份，完成状态仍依赖模型判断。采购对象已改为只从采购原话提取。</p><code>orchestrator/app/conversation/reply.py<br>orchestrator/app/rules/service.py<br>orchestrator/app/guide/fact_check.py<br>orchestrator/app/escalation/summary.py</code></article>
+    <article class="source" id="s7"><h3>[S7] 物流主诉求与附加字段</h3><p>物流主诉求先查包裹，附加字段另答，不再挡掉调查 / 补发方案；离线回归验证执行逻辑，不代表背景事实归属已正确。11:01 提交是此前改动的收录。</p><code>docs/planning/2026-10-11-1935_logistics-consult-obligation/addendum.md<br>commit ecb001f</code></article>
+    <article class="source"><h3>结果边界</h3><p>未实际操作设备，未代客户确认方案，未代人工审批。资料缺失、正常等待与系统错误分别判断。所有时间为北京时间；本页为 2026-10-12 的静态快照。</p><p>页面中的“方案 / 验收”是建议工作，不表示已经实现；待核政策仅复述项目记录，不作外部政策或法律判断。</p></article>
+  </div>
+</section>
+<footer><span>HAIKE · 官方 63 单阶段复盘 · 2026.10.12</span><span>离线 HTML / 数据内嵌 / AI 整理</span></footer>
+</main></div>
+<script>
+const gradeButtons = [...document.querySelectorAll('[data-grade]')];
+const caseItems = [...document.querySelectorAll('.case-detail')];
+const searchInput = document.getElementById('case-search');
+let selectedGrade = 'all';
+function filterCases() {
+  const query = searchInput.value.trim().toLocaleLowerCase();
+  let visible = 0;
+  for (const item of caseItems) {
+    const exactId = /^t\d+$/i.test(query);
+    const matches = !query || (exactId ? item.dataset.id.toLowerCase() === query : item.textContent.toLocaleLowerCase().includes(query));
+    const show = (selectedGrade === 'all' || item.dataset.grade === selectedGrade) && matches;
+    item.hidden = !show;
+    if (show) visible++;
+  }
+  document.getElementById('case-count').textContent = `显示 ${visible} / 63 单 · 展开查看判定理由与下一步`;
+  document.getElementById('empty').hidden = visible !== 0;
+}
+for (const button of gradeButtons) button.addEventListener('click', () => {
+  selectedGrade = button.dataset.grade;
+  for (const item of gradeButtons) item.setAttribute('aria-pressed', String(item === button));
+  filterCases();
+});
+searchInput.addEventListener('input', filterCases);
+const flowButtons = [...document.querySelectorAll('[data-flow]')];
+for (const button of flowButtons) button.addEventListener('click', () => {
+  for (const item of flowButtons) item.setAttribute('aria-pressed', String(item === button));
+  for (const panel of document.querySelectorAll('.flow-panel')) panel.hidden = panel.id !== `flow-${button.dataset.flow}`;
+});
+let printState = [];
+window.addEventListener('beforeprint', () => {
+  printState = caseItems.map(item => item.open);
+  for (const item of caseItems) item.open = true;
+});
+window.addEventListener('afterprint', () => {
+  for (const [index, item] of caseItems.entries()) item.open = printState[index] || false;
+});
+document.getElementById('print-button').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
