@@ -76,17 +76,12 @@ export const NODE_TEXT: Record<string, string> = {
   understand: '理解诉求', dialogue: '对话回应', commit_issue: '保存问题',
   service_context: '核实服务信息', propose: '计算方案', authorize: '检查授权', execute: '办理业务', track: '跟踪服务单', await_human: '等待人工审核', consult: '业务查询', apply_human_decision: '应用审核决定', advance_tasks: '接续下一需求', prepare_retake: '请求补拍', vision_conflict: '核实图文差异',
   reopen_case: '重开案件', apply_case_command: '执行案件指令', product_help: '产品咨询', reassess: '重新决策', ask_operation: '追问操作条件',
-  __start__: '开始', __end__: '结束', intake: '理解诉求', rediagnose: '补充信息',
-  reassure: '安抚', disambiguate: '产品消歧', prepare_card: '准备产品卡', clarify: '澄清追问',
+  __start__: '开始', __end__: '结束',
+  disambiguate: '产品消歧', prepare_card: '准备产品卡', clarify: '澄清追问',
   vision: '读图', retrieve: '检索知识', reply: '生成回复', guide: '下发步骤',
   await_input: '等待用户', apply_action: '处理动作', escalate: '升级', summarize: '生成摘要',
-  prepare_receipt: '索取凭证', receipt_extract: '识别凭证', human_request: '转人工',
+  prepare_receipt: '索取凭证', receipt_extract: '识别凭证',
   out_of_scope: '范围外', close: '收尾',
-};
-
-export const STAGE_TEXT: Record<string, string> = {
-  start: '入口', intake: '理解', disambiguate: '消歧', diagnose: '诊断', guide: '排障',
-  wait: '等待', escalate: '升级', out_of_scope: '范围外', done: '完成', end: '结束',
 };
 
 export function nodeLabel(node: string): string {

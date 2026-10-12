@@ -11,7 +11,7 @@ import { NodeDetail } from '../components/NodeDetail';
 import { RunWaterfall } from '../components/RunWaterfall';
 import { LabelDialog } from '../components/LabelDialog';
 import { SessionRecord, SessionView, useSnapshotState } from '../components/SessionView';
-import { EMOTION_TEXT, ms, nodeLabel, reasonText, when } from '../format';
+import { EMOTION_TEXT, defaultWindow, ms, nodeLabel, reasonText, when } from '../format';
 import { useAsync } from '../useAsync';
 import type { ModelCall, NodeRun, RetrievalCall } from '../types';
 
@@ -21,6 +21,9 @@ export function Journey() {
   const { id = '' } = useParams();
   const journey = useAsync(() => api.journey(id), [id]);
   const topology = useAsync(() => api.topology(), []);
+  // 与研发诊断页同一份近 7 天流量：节点位置按全局平均步序固定，切换轮次 / 会话时不重排
+  const from = useMemo(() => defaultWindow(7).from, []);
+  const flow = useAsync(() => api.flow({ from }), [from]);
   const cases = useAsync(() => l3Api.queue(''), []);
   const [runIdx, setRunIdx] = useState(0);
   const [view, setView] = useState<View>('chat');
@@ -94,13 +97,13 @@ export function Journey() {
           {view === 'chat' && <SessionView snapshot={journey.data.snapshot} onHover={setHover} />}
           {view === 'difficulties' && <Difficulties sections={difficulties} />}
           {view === 'waterfall' && <RunWaterfall nodes={nodes} models={models} retrievals={retrievals} selected={nodeIdx} onSelect={setNodeIdx} />}
-          {view === 'graph' && (topology.data ? (
+          {view === 'graph' && (topology.data && flow.data ? (
             <>
-              <p className="sub">高亮的是这一轮实际走过的节点，序号即先后。</p>
-              <GraphView topology={topology.data} path={path} selected={selected?.node ?? null} small onSelect={(node) => setNodeIdx(nodes.find((n) => n.node === node)?.idx ?? null)} />
+              <p className="sub">高亮的是这一轮实际走过的节点，序号即先后。节点位置与整体流程图相同，从左到右按平均步序排列。</p>
+              <GraphView topology={topology.data} traffic={flow.data} path={path} selected={selected?.node ?? null} small onSelect={(node) => setNodeIdx(nodes.find((n) => n.node === node)?.idx ?? null)} />
               <p className="muted" style={{ fontSize: 12, marginTop: 8 }}>路径：{path.map(nodeLabel).join(' → ') || '（无节点轨迹）'}</p>
             </>
-          ) : <p className="empty">加载流程图…</p>)}
+          ) : <p className="empty">{topology.error ?? flow.error ?? '加载流程图…'}</p>)}
         </div>
 
         {showRecord ? (

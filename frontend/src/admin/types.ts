@@ -102,7 +102,6 @@ export type Flow = {
 };
 
 export type Topology = {
-  nodes: { id: string; stage: string }[];
+  nodes: { id: string }[];
   edges: { source: string; target: string; conditional: boolean }[];
-  stage_order: string[];
 };

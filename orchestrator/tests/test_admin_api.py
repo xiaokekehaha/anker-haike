@@ -13,7 +13,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from psycopg_pool import AsyncConnectionPool
 
-from app.admin.graph_export import NODE_STAGE, topology
+from app.admin.graph_export import topology
 from app.analytics.queries import _rates
 from app.main import app
 from app.settings import settings
@@ -29,11 +29,6 @@ def test_topology_matches_the_compiled_graph():
     ids = {n["id"] for n in topo["nodes"]}
     assert {"__start__", "understand", "await_input", "close", "__end__"} <= ids
     assert len(topo["edges"]) > len(ids)  # 条件边多于节点
-    # 每个节点都有阶段归类，前端才能着色
-    assert all(n["stage"] != "other" for n in topo["nodes"]), [
-        n for n in topo["nodes"] if n["stage"] == "other"
-    ]
-    assert set(NODE_STAGE) >= ids
 
 
 def test_topology_marks_conditional_edges():
@@ -293,7 +288,7 @@ async def test_graph_endpoint_serves_the_topology(api):
     body = resp.json()
     assert resp.headers["cache-control"].startswith("public")
     assert {n["id"] for n in body["nodes"]} >= {"understand", "guide", "close"}
-    assert body["stage_order"][0] == "start"
+    assert set(body) == {"nodes", "edges"}  # 排列交给前端按 avg_step 算
 
 
 # ---------------------------------------------------------------- 案例标注

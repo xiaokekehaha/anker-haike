@@ -22,29 +22,40 @@ const { ms, percent, outcomeLabel, reasonText, STACK_ORDER } = await import('../
 
 const TOPOLOGY = {
   nodes: [
-    { id: '__start__', stage: 'start' }, { id: 'intake', stage: 'intake' },
-    { id: 'disambiguate', stage: 'disambiguate' }, { id: 'retrieve', stage: 'diagnose' },
-    { id: 'guide', stage: 'guide' }, { id: 'await_input', stage: 'wait' },
+    { id: '__start__' }, { id: 'understand' }, { id: 'disambiguate' },
+    { id: 'retrieve' }, { id: 'guide' }, { id: 'await_input' },
   ],
   edges: [
-    { source: '__start__', target: 'intake', conditional: true },
-    { source: 'intake', target: 'disambiguate', conditional: true },
+    { source: '__start__', target: 'understand', conditional: false },
+    { source: 'understand', target: 'disambiguate', conditional: true },
     { source: 'disambiguate', target: 'retrieve', conditional: true },
-    { source: 'retrieve', target: 'guide', conditional: false },
-    { source: 'guide', target: 'await_input', conditional: false },
+    { source: 'retrieve', target: 'guide', conditional: true },
+    { source: 'guide', target: 'await_input', conditional: true },
   ],
-  stage_order: ['start', 'intake', 'disambiguate', 'diagnose', 'guide', 'wait'],
+};
+
+const row = (node: string, n: number, avg_step: number) => ({ node, n, avg_step, errors: 0, interrupts: 0, p50_ms: null });
+const NO_TRAFFIC = { edges: [], nodes: [], entries: [] };
+// 拓扑结构里 retrieve 在 guide 前；实际数据里 guide 平均第 2 步、retrieve 第 3 步
+const TRAFFIC = {
+  edges: [{ source: 'understand', target: 'disambiguate', n: 100 }, { source: 'retrieve', target: 'guide', n: 5 }],
+  nodes: [row('understand', 100, 1), row('guide', 8, 2), row('retrieve', 5, 3)],
+  entries: [],
 };
 
 function lastFlow() {
   return flowProps[flowProps.length - 1]!;
 }
 
+function xOf(nodes: any[]) {
+  return (id: string) => nodes.find((n: any) => n.id === id).position.x;
+}
+
 describe('GraphView', () => {
   test('把走过的边高亮、没走过的压暗', () => {
-    render(<GraphView topology={TOPOLOGY} path={['intake', 'disambiguate', 'retrieve']} />);
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} path={['understand', 'disambiguate', 'retrieve']} />);
     const { edges } = lastFlow();
-    const walked = edges.find((e: any) => e.id === 'intake->disambiguate');
+    const walked = edges.find((e: any) => e.id === 'understand->disambiguate');
     const notWalked = edges.find((e: any) => e.id === 'retrieve->guide');
     expect(walked.animated).toBe(true);
     expect(walked.style.opacity).toBe(1);
@@ -52,56 +63,56 @@ describe('GraphView', () => {
     expect(notWalked.style.opacity).toBeLessThan(1);
   });
 
-  test('节点按阶段分列，列序与 stage_order 一致', () => {
-    render(<GraphView topology={TOPOLOGY} />);
-    const { nodes } = lastFlow();
-    const x = (id: string) => nodes.find((n: any) => n.id === id).position.x;
-    expect(x('__start__')).toBeLessThan(x('intake'));
-    expect(x('intake')).toBeLessThan(x('disambiguate'));
-    expect(x('disambiguate')).toBeLessThan(x('retrieve'));
-    expect(x('retrieve')).toBeLessThan(x('guide'));
-  });
-
-  test('有流量时按平均步序分列，回跳边不影响先后', () => {
-    // 拓扑里阶段顺序是 retrieve 在 guide 前；实际数据里 guide 平均第 2 步、retrieve 第 3 步
-    render(<GraphView topology={{
-      ...TOPOLOGY,
-      edges: [...TOPOLOGY.edges, { source: 'guide', target: 'retrieve', conditional: true }],
-    }} traffic={{
-      edges: [],
-      nodes: [
-        { node: 'intake', n: 10, avg_step: 1, errors: 0, interrupts: 0, p50_ms: null },
-        { node: 'guide', n: 8, avg_step: 2, errors: 0, interrupts: 0, p50_ms: null },
-        { node: 'retrieve', n: 5, avg_step: 3, errors: 0, interrupts: 0, p50_ms: null },
-      ],
-      entries: [],
-    }} />);
-    const { nodes, edges } = lastFlow();
-    const x = (id: string) => nodes.find((n: any) => n.id === id).position.x;
-    expect(x('__start__')).toBeLessThan(x('intake'));
+  test('按平均步序分列，不按拓扑结构', () => {
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} />);
+    const x = xOf(lastFlow().nodes);
+    expect(x('__start__')).toBeLessThan(x('understand'));
     expect(x('guide')).toBeLessThan(x('retrieve'));
-    // retrieve -> guide 是回跳：画出来从右指向左，但不撑开列
-    expect(edges.some((e: any) => e.id === 'retrieve->guide')).toBe(true);
+    // retrieve -> guide 变成回跳边：照画，不撑开列
+    expect(lastFlow().edges.some((e: any) => e.id === 'retrieve->guide')).toBe(true);
     // 窗口内没走过的节点也有位置
     expect(Number.isFinite(x('await_input'))).toBe(true);
   });
 
+  test('单次 run 视图与整体视图节点位置相同', () => {
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} />);
+    const overall = lastFlow().nodes.map((n: any) => [n.id, n.position]);
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} path={['understand', 'guide']} />);
+    expect(lastFlow().nodes.map((n: any) => [n.id, n.position])).toEqual(overall);
+  });
+
+  test('没有运行数据时按拓扑结构的最长路径分列', () => {
+    render(<GraphView topology={{
+      ...TOPOLOGY,
+      edges: [...TOPOLOGY.edges, { source: 'guide', target: 'disambiguate', conditional: true }],
+    }} traffic={NO_TRAFFIC} />);
+    const x = xOf(lastFlow().nodes);
+    expect(x('__start__')).toBeLessThan(x('understand'));
+    expect(x('understand')).toBeLessThan(x('disambiguate'));
+    expect(x('disambiguate')).toBeLessThan(x('retrieve'));
+    expect(x('retrieve')).toBeLessThan(x('guide'));
+    expect(x('guide')).toBeLessThan(x('await_input'));
+  });
+
   test('同一节点走过两次时标第一次的序号', () => {
-    render(<GraphView topology={TOPOLOGY} path={['intake', 'disambiguate', 'intake']} />);
-    const { nodes } = lastFlow();
-    const intake = nodes.find((n: any) => n.id === 'intake');
-    const { getByText } = render(<>{intake.data.label}</>);
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} path={['understand', 'disambiguate', 'understand']} />);
+    const understand = lastFlow().nodes.find((n: any) => n.id === 'understand');
+    const { getByText } = render(<>{understand.data.label}</>);
     expect(getByText('1')).toBeInTheDocument();
   });
 
+  test('单次 run 视图不显示聚合次数', () => {
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} path={['understand']} />);
+    const understand = lastFlow().nodes.find((n: any) => n.id === 'understand');
+    const { queryByText } = render(<>{understand.data.label}</>);
+    expect(queryByText('100 次')).toBeNull();
+    expect(lastFlow().edges.every((e: any) => e.label === undefined)).toBe(true);
+  });
+
   test('聚合模式下边宽随经过次数增长，没走过的边最细', () => {
-    render(<GraphView topology={TOPOLOGY} traffic={{
-      edges: [{ source: 'intake', target: 'disambiguate', n: 100 }, { source: 'retrieve', target: 'guide', n: 5 }],
-      nodes: [{ node: 'intake', n: 100, avg_step: 1, errors: 0, interrupts: 0, p50_ms: 900 }],
-      entries: [],
-    }} />);
+    render(<GraphView topology={TOPOLOGY} traffic={TRAFFIC} />);
     const { edges } = lastFlow();
-    const busy = edges.find((e: any) => e.id === 'intake->disambiguate').style.strokeWidth;
+    const busy = edges.find((e: any) => e.id === 'understand->disambiguate').style.strokeWidth;
     const quiet = edges.find((e: any) => e.id === 'retrieve->guide').style.strokeWidth;
     const unused = edges.find((e: any) => e.id === 'guide->await_input').style.strokeWidth;
     expect(busy).toBeGreaterThan(quiet);
@@ -110,8 +121,8 @@ describe('GraphView', () => {
 });
 
 const NODES = [
-  { run_id: 'r1', idx: 1, node: 'intake', prev_node: null, started_at: '', duration_ms: 2500, status: 'ok' as const, summary: null },
-  { run_id: 'r1', idx: 2, node: 'retrieve', prev_node: 'intake', started_at: '', duration_ms: 500, status: 'ok' as const, summary: null },
+  { run_id: 'r1', idx: 1, node: 'understand', prev_node: null, started_at: '', duration_ms: 2500, status: 'ok' as const, summary: null },
+  { run_id: 'r1', idx: 2, node: 'retrieve', prev_node: 'understand', started_at: '', duration_ms: 500, status: 'ok' as const, summary: null },
   { run_id: 'r1', idx: 3, node: 'await_input', prev_node: 'retrieve', started_at: '', duration_ms: 100, status: 'interrupt' as const, summary: null },
 ];
 
@@ -125,14 +136,14 @@ describe('RunWaterfall', () => {
     expect(names[1]).toContain('检索知识');
     expect(names[2]).toContain('等待用户');
     const fills = [...container.querySelectorAll('.fill')] as HTMLElement[];
-    // intake 占 2500/3100，明显比 retrieve 的 500/3100 宽
+    // understand 占 2500/3100，明显比 retrieve 的 500/3100 宽
     expect(parseFloat(fills[0]!.style.width)).toBeGreaterThan(parseFloat(fills[1]!.style.width));
   });
 
   test('把模型调用与检索挂到对应节点下', () => {
     render(
       <RunWaterfall nodes={NODES} selected={null} onSelect={() => {}}
-        models={[{ run_id: 'r1', node: 'intake', task: 'intake', model_used: 'deepseek/chat', lane: 'domestic', status: 'ok', attempts: 1, fallback_used: true, stream: false, latency_ms: 2400, tokens_in: 600, tokens_out: 40, error_type: null, created_at: '' }]}
+        models={[{ run_id: 'r1', node: 'understand', task: 'intake', model_used: 'deepseek/chat', lane: 'domestic', status: 'ok', attempts: 1, fallback_used: true, stream: false, latency_ms: 2400, tokens_in: 600, tokens_out: 40, error_type: null, created_at: '' }]}
         retrievals={[{ run_id: 'r1', node: 'retrieve', round: 1, kb: 'kb_qa', status: 'ok', allowed_count: 2, hits: 5, top_score: 0.02, latency_ms: 240, query: null, created_at: '' }]} />,
     );
     expect(screen.getByText(/deepseek\/chat/)).toHaveTextContent('已降级');

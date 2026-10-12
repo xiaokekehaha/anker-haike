@@ -33,7 +33,7 @@ export function Lab() {
       <div className="card" style={{ marginBottom: 16 }}>
         <h2>整体流程（近 7 天）</h2>
         <p className="sub">从左到右按一轮里的平均步序排列；边越粗经过次数越多，节点颜色越深经过次数越多。往回跳的边不参与排序。点节点看名称，滚轮缩放。</p>
-        {topology.data ? <GraphView topology={topology.data} traffic={flow.data} /> : <p className="empty">{topology.error ?? '加载流程图…'}</p>}
+        {topology.data && flow.data ? <GraphView topology={topology.data} traffic={flow.data} /> : <p className="empty">{topology.error ?? flow.error ?? '加载流程图…'}</p>}
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>
