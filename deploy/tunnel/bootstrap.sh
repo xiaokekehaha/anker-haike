@@ -18,6 +18,9 @@ sudo systemctl stop caddy
 sudo install -d -m 700 /etc/haike
 sudo install -d -m 755 /etc/systemd/system/caddy.service.d
 sudo install -m 644 /home/ubuntu/Caddyfile /etc/caddy/Caddyfile
+sudo install -m 644 /home/ubuntu/sshd-keepalive.conf /etc/ssh/sshd_config.d/30-haike-tunnel-keepalive.conf
+sudo /usr/sbin/sshd -t
+sudo systemctl reload ssh
 
 if ! sudo test -s /etc/haike/haike.env; then
 	umask 077

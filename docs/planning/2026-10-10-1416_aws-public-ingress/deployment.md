@@ -48,6 +48,7 @@ SSH 反向隧道是由本机主动连接云服务器的端口转发；AWS 收到
 2. 已关联 Elastic IP，访问地址 `https://52.221.175.117/`。
 3. 安装官方 Caddy 2.11.7 的 Linux amd64 包。读取该版本发布说明，校验官方 checksum 后安装；该版本修复了 POST SSE 流被 60 秒超时截断的问题。
 4. 将 `deploy/tunnel/Caddyfile` 放到 `/etc/caddy/Caddyfile`。
+   同时将 `deploy/tunnel/sshd-keepalive.conf` 放到 `/etc/ssh/sshd_config.d/30-haike-tunnel-keepalive.conf`，执行 `/usr/sbin/sshd -t` 验证后重载 SSH 服务。运行 bootstrap 前，需将 Caddyfile 与 sshd-keepalive.conf 一起上传到 `/home/ubuntu/`。
 5. `/etc/haike/haike.env` 保存 `PUBLIC_IP`、`BASIC_AUTH_USER` 与 `BASIC_AUTH_HASH`。独立访问密码不复用 AWS 控制台密码；明文仅保存在本机 `deploy/tunnel/.env`，权限 600。密码散列用 `caddy hash-password` 的标准输入生成，避免进入命令参数、历史或日志。
 6. `/etc/haike/haike.env` 属主为 root，权限 600。给 Caddy 的 systemd 单元增加以下 drop-in，使服务从该文件读取环境变量：
 
@@ -88,6 +89,8 @@ make -f deploy/tunnel/Makefile restart
 ```
 
 不要在后台隧道运行时再启动手动连接，同一云端监听端口只能由一个连接占用。SSH 的 `ExitOnForwardFailure` 让监听失败时立即退出；keepalive 让断开的连接及时退出，由 launchd 重新启动。电脑休眠时隧道不能工作。
+
+云端设置 `ClientAliveInterval 30` 与 `ClientAliveCountMax 3`，约 90 秒未能确认客户端存活时结束连接，释放反向转发端口。2026-10-11 检查发现原配置未启用云端探测，失联会话占用端口并阻止本机重连；已释放该会话并验证新的配置生效。此设置不改变电脑关机时应用不可用的限制。
 
 Caddy 将 HTTP Host 改为 `127.0.0.1:5173`，匹配 Vite 已允许的回环地址；保留正常域名校验。浏览器中的 API 使用同源相对地址，由 Vite 继续代理到本机 8000。
 
