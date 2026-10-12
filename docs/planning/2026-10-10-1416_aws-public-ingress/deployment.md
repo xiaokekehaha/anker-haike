@@ -1,6 +1,6 @@
 # AWS 本机服务 HTTPS 接入步骤
 
-用一台 EC2 提供公网 HTTPS 入口，前后端、数据库和知识库继续运行在本机。用户没有域名，因此使用固定公网 IP 和受浏览器信任的 IP 地址证书。访问地址为 https://52.221.175.117/，独立访问账号为 viewer，密码读取本机 deploy/tunnel/.env 中的 BASIC_AUTH_PASSWORD；不要把该文件提交或整份发给访问者。
+用一台 EC2 提供公网 HTTPS 入口，前后端、数据库和知识库继续运行在本机。用户没有域名，因此使用固定公网 IP 和受浏览器信任的 IP 地址证书。访客地址为 https://52.221.175.117/，账号 viewer；管理地址为 https://52.221.175.117/admin/，账号 admin。两个密码分别读取本机 deploy/tunnel/.env 的 BASIC_AUTH_PASSWORD 与 ADMIN_AUTH_PASSWORD；不要把该文件提交或整份发给访问者。
 
 ## 资源与访问范围
 
@@ -38,7 +38,9 @@
 | TCP 443 | HTTPS 网站与证书验证 | 公网 |
 | TCP 15173 | SSH 反向转发的监听端口 | 仅云端 127.0.0.1，不加公网安全组规则 |
 
-网页需要独立的演示访问账号。公网入口的 /admin 与 /admin/* 返回 403；本机管理页面继续使用原地址。数据库、知识库和后端 8000 不配置公网规则。
+访客和管理员使用独立账号。/admin 与 /admin/* 只接受管理员认证，viewer 访问返回 401 并提示管理员登录；普通路径同时接受 viewer 和 admin，以便管理员加载共享前端资源。本机管理页面继续使用原地址。数据库、知识库和后端 8000 不配置公网规则。
+
+管理员认证成功后，代理覆盖 X-Authenticated-User 为已验证账号，供案件操作记录身份；普通路径删除该身份头，所有路径都删除基础认证 Authorization 后再转发。浏览器认证提示区域分别为 haike 与 haike-admin，可在访客登录后独立输入管理凭据。
 
 SSH 反向隧道是由本机主动连接云服务器的端口转发；AWS 收到的网页请求经该连接返回本机。电脑休眠、前端停止或隧道断开时，公网网站不能提供服务。
 
@@ -49,7 +51,7 @@ SSH 反向隧道是由本机主动连接云服务器的端口转发；AWS 收到
 3. 安装官方 Caddy 2.11.7 的 Linux amd64 包。读取该版本发布说明，校验官方 checksum 后安装；该版本修复了 POST SSE 流被 60 秒超时截断的问题。
 4. 将 `deploy/tunnel/Caddyfile` 放到 `/etc/caddy/Caddyfile`。
    同时将 `deploy/tunnel/sshd-keepalive.conf` 放到 `/etc/ssh/sshd_config.d/30-haike-tunnel-keepalive.conf`，执行 `/usr/sbin/sshd -t` 验证后重载 SSH 服务。运行 bootstrap 前，需将 Caddyfile 与 sshd-keepalive.conf 一起上传到 `/home/ubuntu/`。
-5. `/etc/haike/haike.env` 保存 `PUBLIC_IP`、`BASIC_AUTH_USER` 与 `BASIC_AUTH_HASH`。独立访问密码不复用 AWS 控制台密码；明文仅保存在本机 `deploy/tunnel/.env`，权限 600。密码散列用 `caddy hash-password` 的标准输入生成，避免进入命令参数、历史或日志。
+5. `/etc/haike/haike.env` 保存 `PUBLIC_IP`、`BASIC_AUTH_USER`、`BASIC_AUTH_HASH`、`ADMIN_AUTH_USER` 与 `ADMIN_AUTH_HASH`。独立访问密码不复用 AWS 控制台密码；明文仅保存在本机 `deploy/tunnel/.env`，权限 600。密码散列用 `caddy hash-password` 的标准输入生成，避免进入命令参数、历史或日志。bootstrap 首次创建的明文仅在云端 /home/ubuntu/.env 供管理员安全取回，不进入 Caddy 环境。
 6. `/etc/haike/haike.env` 属主为 root，权限 600。给 Caddy 的 systemd 单元增加以下 drop-in，使服务从该文件读取环境变量：
 
 ```ini
@@ -96,18 +98,27 @@ Caddy 将 HTTP Host 改为 `127.0.0.1:5173`，匹配 Vite 已允许的回环地�
 
 ## 验证步骤
 
-已完成：公网未认证首页 401；认证后首页、/health、/@vite/client 均 200；/admin 与 /admin/api/health 均 403；所有 HTTPS 请求的 curl ssl_verify_result 为 0。本机 /admin 仍正常。模拟 POST SSE 事件在 0.3 / 32.3 / 64.3 秒到达，确认跨越 60 秒持续流式返回；测试后已切换为实际 5173 隧道。云端 15173 仅绑定回环地址，LaunchAgent 实际处于 running 状态。
+2026-10-12 已完成：未认证首页和管理路径 401；viewer 的首页与 /health 为 200、管理页面和 API 为 401；admin 的首页、管理页面、深链、共享模块与 graph / overview / cases/queue 只读 API 均 200；所有 HTTPS 请求的 ssl_verify_result 为 0。本机 /admin 仍正常。此前模拟 POST SSE 事件在 0.3 / 32.3 / 64.3 秒到达，确认跨越 60 秒持续流式返回；现使用实际 5173 隧道。云端 15173 仅绑定回环地址，LaunchAgent 保持运行。
 
 1. 本机 `http://127.0.0.1:5173/` 与 `/health` 返回 200。
 2. 云端 `http://127.0.0.1:15173/` 能返回首页。
 3. 从外部网络访问 HTTPS 公网 IP，证书链受浏览器信任；未认证时返回 401，认证后首页与 `/health` 返回 200。
 4. 使用临时本机响应器发送 0/32/64 秒的 POST SSE 事件，验证代理链路跨越 60 秒持续流式返回，再切换到实际 5173。配置验证不调用模型或知识库；图片上传和真实聊天属于应用演示，不计入本轮只读部署验收。
-5. 公网 `/admin` 返回 403；本机 `/admin` 正常。
+5. 公网管理路径拒绝 viewer，接受 admin；本机 `/admin` 正常。代理测试额外检查 URL 编码、点路径和伪造管理员身份头。
 6. 云端 `ss -lntp` 确认 15173 仅绑定回环地址；后端、数据库和知识库端口不在公网安全组中。
 
 本机出口公网 IP 改变时，SSH 的 /32 来源规则需更新，隧道才能恢复连接；不要把 22 端口改为全网开放。
 
 后台隧道由 launchd 自动重启；需要停用时应卸载该 launchd 服务。停止 EC2 后根盘和已分配的 Elastic IP 仍会收费；结束演示后是否释放资源需另外确认。
+
+代理认证和身份转发回归检查：
+
+```bash
+make -f deploy/tunnel/Makefile check
+make -f deploy/tunnel/Makefile check-access
+```
+
+check-access 使用禁网 Caddy 容器、临时凭据和无应用数据的回显服务，不调用模型或知识库。临时挂载文件放到用户缓存目录以适配 Colima，测试后删除。
 
 ## 参考
 

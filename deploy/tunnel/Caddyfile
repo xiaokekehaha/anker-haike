@@ -11,17 +11,30 @@ https://{$PUBLIC_IP} {
 		}
 	}
 
-	basic_auth {
-		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	@admin path /admin /admin/*
+	handle @admin {
+		basic_auth bcrypt haike-admin {
+			{$ADMIN_AUTH_USER} {$ADMIN_AUTH_HASH}
+		}
+		reverse_proxy 127.0.0.1:15173 {
+			header_up Host 127.0.0.1:5173
+			header_up -Authorization
+			# 覆盖客户端身份，只传递代理认证成功的管理员账号。
+			header_up X-Authenticated-User {http.auth.user.id}
+		}
 	}
 
-	# 公网入口用于客户聊天；管理员页面仍从本机访问。
-	@admin path /admin /admin/*
-	respond @admin 403
-
-	reverse_proxy 127.0.0.1:15173 {
-		# 本机 Vite 接受回环地址的 Host，SSE 和 WebSocket 由 Caddy 透传。
-		header_up Host 127.0.0.1:5173
-		header_up -Authorization
+	handle {
+		# 管理员也需加载管理页面使用的同源共享资源。
+		basic_auth bcrypt haike {
+			{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+			{$ADMIN_AUTH_USER} {$ADMIN_AUTH_HASH}
+		}
+		reverse_proxy 127.0.0.1:15173 {
+			# 本机 Vite 接受回环地址的 Host，SSE 和 WebSocket 由 Caddy 透传。
+			header_up Host 127.0.0.1:5173
+			header_up -Authorization
+			header_up -X-Authenticated-User
+		}
 	}
 }

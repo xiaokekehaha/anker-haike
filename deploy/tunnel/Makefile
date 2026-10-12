@@ -1,6 +1,6 @@
 TUNNEL_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-.PHONY: connect start restart status check
+.PHONY: connect start restart status check check-access
 
 connect:
 	@sh "$(TUNNEL_DIR)connect.sh"
@@ -19,3 +19,6 @@ restart:
 check:
 	@sh -n "$(TUNNEL_DIR)bootstrap.sh"
 	@sh -n "$(TUNNEL_DIR)connect.sh"
+
+check-access:
+	@python3 "$(TUNNEL_DIR)test_access.py"

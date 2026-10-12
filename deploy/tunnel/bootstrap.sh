@@ -3,6 +3,7 @@
 set -eu
 
 public_ip=${1:?PUBLIC_IP is required}
+umask 077
 caddy_version=2.11.7
 task_dir=$(mktemp -d)
 trap 'rm -rf "$task_dir"' EXIT HUP INT TERM
@@ -34,6 +35,17 @@ if ! sudo test -s /etc/haike/haike.env; then
 	} | sudo tee /etc/haike/haike.env >/dev/null
 	# 首次生成的明文密码仅供管理员安全取回，不进入 Caddy 的进程环境。
 	printf 'BASIC_AUTH_PASSWORD=%s\n' "$basic_password" > /home/ubuntu/.env
+	chmod 600 /home/ubuntu/.env
+fi
+
+if ! sudo grep -q '^ADMIN_AUTH_HASH=' /etc/haike/haike.env; then
+	admin_password=$(openssl rand -hex 16)
+	admin_hash=$(printf '%s\n' "$admin_password" | caddy hash-password)
+	{
+		printf 'ADMIN_AUTH_USER=admin\n'
+		printf "ADMIN_AUTH_HASH='%s'\n" "$admin_hash"
+	} | sudo tee -a /etc/haike/haike.env >/dev/null
+	printf 'ADMIN_AUTH_PASSWORD=%s\n' "$admin_password" >> /home/ubuntu/.env
 	chmod 600 /home/ubuntu/.env
 fi
 
