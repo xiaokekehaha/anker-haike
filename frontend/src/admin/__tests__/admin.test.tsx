@@ -62,6 +62,30 @@ describe('GraphView', () => {
     expect(x('retrieve')).toBeLessThan(x('guide'));
   });
 
+  test('有流量时按平均步序分列，回跳边不影响先后', () => {
+    // 拓扑里阶段顺序是 retrieve 在 guide 前；实际数据里 guide 平均第 2 步、retrieve 第 3 步
+    render(<GraphView topology={{
+      ...TOPOLOGY,
+      edges: [...TOPOLOGY.edges, { source: 'guide', target: 'retrieve', conditional: true }],
+    }} traffic={{
+      edges: [],
+      nodes: [
+        { node: 'intake', n: 10, avg_step: 1, errors: 0, interrupts: 0, p50_ms: null },
+        { node: 'guide', n: 8, avg_step: 2, errors: 0, interrupts: 0, p50_ms: null },
+        { node: 'retrieve', n: 5, avg_step: 3, errors: 0, interrupts: 0, p50_ms: null },
+      ],
+      entries: [],
+    }} />);
+    const { nodes, edges } = lastFlow();
+    const x = (id: string) => nodes.find((n: any) => n.id === id).position.x;
+    expect(x('__start__')).toBeLessThan(x('intake'));
+    expect(x('guide')).toBeLessThan(x('retrieve'));
+    // retrieve -> guide 是回跳：画出来从右指向左，但不撑开列
+    expect(edges.some((e: any) => e.id === 'retrieve->guide')).toBe(true);
+    // 窗口内没走过的节点也有位置
+    expect(Number.isFinite(x('await_input'))).toBe(true);
+  });
+
   test('同一节点走过两次时标第一次的序号', () => {
     render(<GraphView topology={TOPOLOGY} path={['intake', 'disambiguate', 'intake']} />);
     const { nodes } = lastFlow();
@@ -73,7 +97,7 @@ describe('GraphView', () => {
   test('聚合模式下边宽随经过次数增长，没走过的边最细', () => {
     render(<GraphView topology={TOPOLOGY} traffic={{
       edges: [{ source: 'intake', target: 'disambiguate', n: 100 }, { source: 'retrieve', target: 'guide', n: 5 }],
-      nodes: [{ node: 'intake', n: 100, errors: 0, interrupts: 0, p50_ms: 900 }],
+      nodes: [{ node: 'intake', n: 100, avg_step: 1, errors: 0, interrupts: 0, p50_ms: 900 }],
       entries: [],
     }} />);
     const { edges } = lastFlow();

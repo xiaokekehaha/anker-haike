@@ -1,9 +1,11 @@
-/** DAG：静态拓扑做底图，按阶段分列自动布局（阶段本身就是有意义的泳道，比通用分层更好读）。
+/** DAG：静态拓扑做底图。
  *
  *  三种用法共用一套渲染：
  *  - path：单次 run 实际走过的节点，高亮并标顺序号，其余置灰（dataviz 的「强调」形式）；
  *  - traffic：聚合流量，边宽 = 经过次数，节点底色深浅 = 经过次数（单色顺序标度）；
  *  - 两者都没有：纯拓扑。
+ *
+ *  布局：有流量时按实际先后分列（见 layoutBySteps）；没有流量时按阶段分列。
  */
 import { useCallback, useMemo } from 'react';
 import { Background, Controls, Position, ReactFlow, type Edge, type Node } from '@xyflow/react';
@@ -20,6 +22,60 @@ const BLUE = ['#cde2fb', '#9ec5f4', '#6da7ec', '#3987e5', '#2a78d6', '#1c5cab'];
 function shade(ratio: number): string {
   const step = Math.min(BLUE.length - 1, Math.max(0, Math.round(ratio * (BLUE.length - 1))));
   return BLUE[step] ?? BLUE[BLUE.length - 1]!;
+}
+
+type Layout = { columns: string[][]; columnOf: Map<string, number> };
+
+function toLayout(columnOf: Map<string, number>, ids: string[]): Layout {
+  const columns: string[][] = [];
+  for (const id of ids) (columns[columnOf.get(id)!] ??= []).push(id);
+  // 跳过空列，列号压紧
+  const kept = columns.filter((list) => list && list.length > 0);
+  const compact = new Map<string, number>();
+  kept.forEach((list, i) => list.forEach((id) => compact.set(id, i)));
+  return { columns: kept, columnOf: compact };
+}
+
+/** 没有流量数据时（单次 run 的路径视图、纯拓扑）：按阶段分列，列内按拓扑出现顺序。 */
+function layoutByStage(topology: Topology): Layout {
+  const stages = topology.stage_order.filter((stage) => topology.nodes.some((node) => node.stage === stage));
+  const columnOf = new Map(topology.nodes.map((node) => [node.id, Math.max(0, stages.indexOf(node.stage))]));
+  return toLayout(columnOf, topology.nodes.map((node) => node.id));
+}
+
+/** 按实际先后分列。
+ *
+ *  每个节点的排序键 = 它在一轮里的平均步序（node_runs.idx 的均值）。只有「键更小 → 键更大」的边算前进边，
+ *  其余（如 读图 → 产品消歧、升级后回到核实服务信息）是回跳，不参与排序；键是全序，前进边必然无环。
+ *  列号 = 沿前进边从开始到该节点的最长路径，保证每条前进边都从左指向右。
+ *  窗口内没走过的节点没有步序：取其已知上游与下游键的中点，只是为了有个位置，画出来是置灰的。
+ *  列内按经过次数从多到少排。
+ */
+function layoutBySteps(topology: Topology, steps: Map<string, number>, traffic: Map<string, number>): Layout {
+  const ids = topology.nodes.map((node) => node.id);
+  const key = new Map<string, number>(steps);
+  key.set('__start__', 0);
+  key.set('__end__', Number.MAX_SAFE_INTEGER);
+  for (const id of ids) {
+    if (key.has(id)) continue;
+    const before = topology.edges.filter((e) => e.target === id && steps.has(e.source)).map((e) => steps.get(e.source)!);
+    const after = topology.edges.filter((e) => e.source === id && steps.has(e.target)).map((e) => steps.get(e.target)!);
+    const lo = before.length > 0 ? Math.max(...before) : null;
+    const hi = after.length > 0 ? Math.min(...after) : null;
+    key.set(id, lo !== null && hi !== null ? (lo + hi) / 2 : lo !== null ? lo + 0.5 : hi !== null ? hi - 0.5 : Number.MAX_SAFE_INTEGER - 1);
+  }
+  const preds = new Map<string, string[]>();
+  for (const e of topology.edges) {
+    if (key.get(e.source)! < key.get(e.target)!) preds.set(e.target, [...(preds.get(e.target) ?? []), e.source]);
+  }
+  const columnOf = new Map<string, number>();
+  // 按键升序处理，前驱的列号必然先算好
+  for (const id of [...ids].sort((a, b) => key.get(a)! - key.get(b)!)) {
+    const before = preds.get(id) ?? [];
+    columnOf.set(id, before.length === 0 ? 0 : 1 + Math.max(...before.map((p) => columnOf.get(p)!)));
+  }
+  const byTraffic = [...ids].sort((a, b) => (traffic.get(b) ?? 0) - (traffic.get(a) ?? 0));
+  return toLayout(columnOf, byTraffic);
 }
 
 export type GraphMode = { path?: string[]; traffic?: Flow | null };
@@ -47,19 +103,16 @@ export function GraphView({ topology, path, traffic, onSelect, selected, small }
   }, [traffic]);
   const maxNodeTraffic = Math.max(1, ...trafficByNode.values());
 
+  const layout = useMemo(() => {
+    const steps = new Map((traffic?.nodes ?? []).map((row) => [row.node, row.avg_step]));
+    return steps.size > 0 ? layoutBySteps(topology, steps, trafficByNode) : layoutByStage(topology);
+  }, [topology, traffic, trafficByNode]);
+
   const nodes: Node[] = useMemo(() => {
-    // 按阶段分列；列内按拓扑里的出现顺序堆叠
-    const columns = new Map<string, string[]>();
-    for (const node of topology.nodes) {
-      const list = columns.get(node.stage) ?? [];
-      list.push(node.id);
-      columns.set(node.stage, list);
-    }
-    const stages = topology.stage_order.filter((stage) => columns.has(stage));
-    const tallest = Math.max(...stages.map((stage) => columns.get(stage)!.length));
+    const tallest = Math.max(...layout.columns.map((list) => list.length));
     return topology.nodes.map((node) => {
-      const column = stages.indexOf(node.stage);
-      const list = columns.get(node.stage)!;
+      const column = layout.columnOf.get(node.id)!;
+      const list = layout.columns[column]!;
       const row = list.indexOf(node.id);
       const offset = (tallest - list.length) / 2;
       const hit = onPath.has(node.id);
@@ -88,7 +141,7 @@ export function GraphView({ topology, path, traffic, onSelect, selected, small }
         targetPosition: Position.Left,
       };
     });
-  }, [topology, onPath, order, trafficByNode, maxNodeTraffic, traffic, path, selected]);
+  }, [topology, layout, onPath, order, trafficByNode, maxNodeTraffic, traffic, path, selected]);
 
   const edges: Edge[] = useMemo(() => {
     const counts = new Map<string, number>();

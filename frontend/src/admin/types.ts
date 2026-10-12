@@ -97,7 +97,7 @@ export type Overview = {
 
 export type Flow = {
   edges: { source: string; target: string; n: number }[];
-  nodes: { node: string; n: number; errors: number; interrupts: number; p50_ms: number | null }[];
+  nodes: { node: string; n: number; avg_step: number; errors: number; interrupts: number; p50_ms: number | null }[];
   entries: { node: string; n: number }[];
 };
 

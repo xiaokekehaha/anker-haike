@@ -323,7 +323,10 @@ class Queries:
         category: str | None = None,
         outcome: str | None = None,
     ) -> dict[str, Any]:
-        """边计数与节点耗时：边宽 = 经过次数，节点色 = 中位耗时 / 错误率。"""
+        """边计数与节点耗时：边宽 = 经过次数，节点色 = 中位耗时 / 错误率。
+
+        avg_step 是节点在一轮里的平均步序（node_runs.idx），前端据此按实际先后排列。
+        """
         start, end = _window(frm, to)
         params = {"start": start, "end": end, "category": category, "outcome": outcome}
         scope = f"""
@@ -341,6 +344,7 @@ class Queries:
         )
         nodes = await self._rows(
             f"""select n.node, count(*) as n,
+                       round(avg(n.idx)::numeric, 2)::float as avg_step,
                        count(*) filter (where n.status = 'error') as errors,
                        count(*) filter (where n.status = 'interrupt') as interrupts,
                        percentile_disc(0.5) within group (order by n.duration_ms)

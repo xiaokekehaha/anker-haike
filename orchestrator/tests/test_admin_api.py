@@ -282,6 +282,8 @@ async def test_flow_returns_edges_nodes_and_entries(api, seeded):
     edges = {(e["source"], e["target"]): e["n"] for e in body["edges"]}
     assert edges[("intake", "disambiguate")] >= 3
     assert any(n["node"] == "intake" and n["p50_ms"] is not None for n in body["nodes"])
+    steps = {n["node"]: n["avg_step"] for n in body["nodes"]}
+    assert steps["intake"] < steps["disambiguate"]  # 平均步序：前端按实际先后排列
     assert any(e["node"] == "intake" for e in body["entries"])  # 入口节点
 
 
