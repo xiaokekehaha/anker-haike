@@ -44,6 +44,8 @@ logs/
 reports/bakeoff/*.json
 # 阶段 0/1 的字段级评测：结论表 bakeoff.md 入库，逐样本明细 JSON 不入库
 reports/bakeoff-*/*.json
+# 评测运行产物：会话、方法和校验快照 JSON 只留本机，结论文档入库
+/reports/eval/**/*.json
 # 真实评测照片只在本机
 data/bakeoff-images/
 reports/inspection/*.json

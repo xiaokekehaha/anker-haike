@@ -60,6 +60,7 @@
 - 只提交本次会话自己改的文件；`git add` 显式路径；提交前 `git status` 核对。
 - 提交信息格式 `{feat,fix,docs,test,chore,style}(scope): 中文描述`，scope 用模块名（diagnose / sessions / knowledge / contracts / release / spec / planning 等），信息量足且简洁。
 - 用户要求才提交。
+- 评测运行产生的 JSON（如 `reports/eval/` 下的会话、method、verification、health、version 快照）默认只留本机；新增此类产物时主动补齐 `.gitignore`，无需用户重复提醒。结论文档正常入库。
 - 禁止：`git reset --hard`、`git checkout .`、`git clean -fd`、`git stash`、`git add -A`、`git add .`、`git commit --no-verify`、force push。
 - rebase 冲突只解自己改过的文件；别人文件冲突时 abort 并问用户。
 
