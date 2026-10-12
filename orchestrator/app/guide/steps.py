@@ -81,6 +81,11 @@ def skipped_note(step: PlanStep, instruction: str, quote: str | None) -> str:
     return f'You\'ve already covered "{name}"{said}, so I won\'t ask you to repeat it.'
 
 
+def partial_note(quote: str, remaining: str) -> str:
+    """客户已做了这一步的一部分（T29：已洗清洁盘，第二卡仍是「查格栅并清洗清洁盘」）：照发整张卡，说明这次要看的是没做的那部分。"""
+    return f'You mentioned you\'ve already done part of this ("{quote.strip()}"). This time, please focus on: {customer_text(remaining).strip().rstrip(",;")}.'
+
+
 # 计划的操作步骤全被客户已做事项跳过时补一句（T27 / T37）：否则跳过说明后紧接着进质保或下一条指南，客户看不出原因。
 # 下一步由 decide_next 决定（质保 / 人工 / 其他指南），这里不预告。
 ALL_COVERED_NOTE = "That covers every step in the official guide for this issue, so there's nothing left in it for you to try."
@@ -234,6 +239,9 @@ async def prepare_step(
         if last and last.get("retry"):
             # 上次答的是「还没检查 / 不知道」（B21）：重发这张卡，说明为什么还要回答
             context.append(RETRY_NOTE)
+        check = step_check(state, plan.plan_id, step_id)
+        if check.get("status") == "partial":
+            context.append(partial_note(check.get("quote") or "", check.get("remaining") or ""))
         return StepPrep(
             "ready",
             step={

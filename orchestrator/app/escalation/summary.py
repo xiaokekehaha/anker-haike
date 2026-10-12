@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import re
 import uuid
 from typing import Any
 
@@ -337,8 +338,10 @@ def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product
     if condition:
         known["condition"] = condition
     if kind == "parts_purchase":
-        part = next((f.get("subject") or f["value"] for f in facts if f["kind"] == "symptom" and f.get("subject")), None) \
-            or next((t["quote"] for t in tasks if t.get("intent") == "parts_purchase" and t.get("quote")), None)
+        # 要买的部件只从采购原话里取，不借故障事实的部件（T63：要买 brush guard，摘要写成第一个故障部件 detangle elements）。
+        # 原话里认不出部件就记缺失，对客文字不点名
+        quote = next((t.get("request_quote") or t.get("quote") for t in tasks if t.get("intent") == "parts_purchase"), None)
+        part = purchase_object(quote or "")
         if part:
             known["part"] = part
     parsed = parse_message(state.get("text") or "")
@@ -350,6 +353,18 @@ def handoff_business(state: dict[str, Any], facts: list[dict[str, Any]], product
     pending = [PendingRequest(intent=t["intent"], quote=t.get("quote") or "", status=t["status"])
                for t in tasks if t.get("status") in {"pending", "active", "waiting_human"}]
     return HandoffBusiness(kind=kind, known=known, missing=missing, pending_requests=pending)
+
+
+def purchase_object(quote: str) -> str | None:
+    """采购原话里购买动词后面的对象（「can't get a brush guard anywhere」→ brush guard）。"""
+    from app.conversation.interpret import PARTS_PURCHASE_WORDS
+
+    match = PARTS_PURCHASE_WORDS.search(quote.replace("’", "'"))
+    if match is None:
+        return None
+    words = re.sub(r"^.*?\b(?:get|buy|order|find|purchase|source)\s+", "", match.group(0), flags=re.IGNORECASE)
+    words = re.sub(r"^(?:(?:a|an|the|some|new|replacement|spare)\s+)+", "", words, flags=re.IGNORECASE).strip()
+    return words or None
 
 
 def _receipt_facts_text(facts: dict[str, str]) -> str:

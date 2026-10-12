@@ -408,3 +408,56 @@ def test_app_fault_form_without_code_is_not_a_product_question():
         assert device_code_report(question, tickets[tid]).primary_intent == "report_problem", tid
     for tid in ("T31", "T34"):
         assert device_code_report(question, tickets[tid]).primary_intent == "product_question", tid
+
+
+def test_partial_action_is_kept_with_what_remains_from_the_step_text():
+    """T29：rv-0254 第 2 步「查格栅是否堵塞，并清洗清洁盘」，客户说清洁盘洗过了。原先只有 done / unknown 两档，
+    整卡原样重发「洗清洁盘」。partial：照发这张卡，卡上说明已做部分与这次要查的部分；
+    remaining 必须逐字出自步骤原文，不让模型自拟检查项。"""
+    plan = LIB.get("qa_rv_0254")
+    steps = candidates(plan, {})
+    text = {s.step_id: LIB.evidence_snippet(s.instruction_src) for s in steps}
+    corpus = ["Water tray will not empty. I have already cleaned it."]
+    grille = "Check whether the station cleaning tray grille is blocked by sediment or foreign matter"
+    verdicts = accept(steps, [StepCheck(step_id="s2", status="partial", quote="I have already cleaned it", remaining=grille)],
+                      corpus, "", text)
+    assert verdicts == {"s2": {"status": "partial", "quote": "I have already cleaned it", "remaining": grille}}
+    assert accept(steps, [StepCheck(step_id="s2", status="partial", quote="I have already cleaned it",
+                                    remaining="Replace the pump")], corpus, "", text) == {}
+    # 部分已做不跳过
+    assert _skips(plan, verdicts, {"s1", "s2", "s3"})["s2"].get("skip") is None
+
+
+async def test_t29_partially_done_step_card_says_what_to_focus_on(conversation, l3_runtime):
+    set_knowledge_adapter(QAHitAdapter("rv-0254"))
+    conversation.models["diagnose.synthesize"].script = [{"hypotheses": [{
+        "plan_id": "qa_rv_0254", "confidence": 0.8, "evidence_ids": ["chunk-rv-0254"],
+        "applicability": "supported", "supported_symptoms": ["water tray will not empty"],
+    }]}]
+    grille = "Check whether the station cleaning tray grille is blocked by sediment or foreign matter"
+    conversation.models["guide.step"].script = [{"steps": [
+        {"step_id": "s2", "status": "partial", "quote": "I have already cleaned it", "remaining": grille}]}]
+    text = "Product PN: T2351\nProblem Description: Water tray will not empty. I have already cleaned it."
+    await conversation.send(text, {
+        "primary_intent": "report_problem", "device_relation": "current",
+        "facts": [{"value": "water tray will not empty", "quote": "Water tray will not empty"},
+                  {"kind": "action_taken", "value": "cleaned the water tray", "quote": "I have already cleaned it"}],
+    })
+    await act(conversation.client, conversation.sid, "step_feedback", {"feedback": "not_solved"})
+    state = await conversation.state()
+    card = state["pending_card"]["payload"]["step"]
+    assert card["step_id"] == "s2"
+    assert "already done part of this" in card["context"] and "grille is blocked" in card["context"]
+
+
+def test_fact_check_sees_what_another_guide_already_judged_done():
+    """T37 重复：rv-0111「检查水箱有没有水」判 done，切到 rv-0021 时同一检查判 unknown，又发了一张查水箱的卡。
+    别的指南判过 done 的步骤与原话交给本计划的 fact_check 作对照。"""
+    from app.guide.fact_check import judged_elsewhere
+
+    state = {"step_checks": {"qa_rv_0111": {"steps": {"s1": {"status": "done", "quote": "tank nog vol", "skip": True}}}}}
+    lines = judged_elsewhere(LIB.get("qa_rv_0021"), state, LIB)
+    assert len(lines) == 1 and "[done elsewhere]" in lines[0] and "tank nog vol" in lines[0]
+    assert judged_elsewhere(LIB.get("qa_rv_0111"), state, LIB) == []
+    text = _steps_text(candidates(LIB.get("qa_rv_0021"), {}), LIB, elsewhere=lines)
+    assert "[done elsewhere]" in text

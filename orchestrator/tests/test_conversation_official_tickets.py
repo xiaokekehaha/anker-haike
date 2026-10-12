@@ -1018,9 +1018,43 @@ def test_a_parts_purchase_request_is_kept_whatever_the_model_reads():
 
     fixed = logistics_correction(TurnInterpretation(primary_intent="report_problem", secondary_intents=["complaint"]), TICKETS["T63"])
     assert "parts_purchase" in fixed.secondary_intents and fixed.primary_intent == "report_problem"
+    # 采购原话一并记下：要买什么只从这句取
+    assert "brush guard" in fixed.request_quotes["parts_purchase"]
     # 没有采购原话的故障描述不受影响
     plain = TurnInterpretation(primary_intent="report_problem")
     assert logistics_correction(plain, "The brush guard snapped off and it doesn't clean well.") == plain
+
+
+async def test_t63_purchase_part_comes_from_the_purchase_words_not_the_first_faulty_part(l3_runtime, monkeypatch):
+    """2026-10-11 21:45 评测 T63：模型的症状顺序是 detangle elements 在前、brush guard 在后，parts_purchase 没有原话，
+    摘要取第一个带部件的症状，交接写成要买 detangle elements。要买的部件只从采购原话里取。"""
+    from app.conversation.interpret import logistics_correction
+
+    async def interpret(router, state, **kwargs):
+        # 生产路径里模型输出都过 logistics_correction（采购诉求与原话在这里补上）
+        return logistics_correction(TurnInterpretation(
+            primary_intent="report_problem", secondary_intents=["complaint"], device_relation="current",
+            facts=[
+                {"value": "detangle elements not working", "quote": "The detangle elements don’t work properly any more", "subject": "detangle elements"},
+                {"value": "brush guard snaps off the clips", "quote": "the brush guard just snaps off the clips that hold it in", "subject": "brush guard"},
+            ],
+        ), state.get("text", "")), {"source": "test"}
+
+    monkeypatch.setattr(semantic, "interpret_turn", interpret)
+    rows, state = await _first_turn("T63")
+    case = await l3_runtime.cases.store.get(state["case_id"])
+    summary = [e["payload"] for e in case["events"] if e["type"] == "handoff_summary"][-1]
+    assert summary["business"]["known"]["part"] == "brush guard"
+    assert "detangle" not in said(rows).casefold()
+
+
+def test_purchase_part_unknown_is_left_missing():
+    """原话里认不出要买的部件：不猜、不借故障部件，对客文字不点名。"""
+    from app.escalation.summary import purchase_object
+
+    assert purchase_object("Why is it I can’t get a brush guard anywhere for this model") == "brush guard"
+    assert purchase_object("I want to buy a new filter") == "filter"
+    assert purchase_object("Please help") is None
 
 
 async def test_t23_battery_error_push_gets_the_official_step_not_r4(l3_runtime, monkeypatch):

@@ -38,10 +38,11 @@ TASK = "guide.step"
 class StepCheck(BaseModel):
     model_config = ConfigDict(extra="forbid")
     step_id: str
-    status: Literal["answered", "satisfied", "negated", "done", "unknown"]
+    status: Literal["answered", "satisfied", "negated", "done", "partial", "unknown"]
     option: str | None = Field(default=None, description="question 步骤：逐字取选项之一；对不上留空")
     text: str | None = Field(default=None, max_length=200, description="question 步骤选项对不上时的简短回答")
     quote: str | None = Field(default=None, description="支撑判定的用户原话，逐字摘录")
+    remaining: str | None = Field(default=None, max_length=200, description="partial：步骤里用户还没做的那部分，逐字摘自步骤原文")
 
 
 class FactCheck(BaseModel):
@@ -64,7 +65,10 @@ INSTRUCTION = (
     "例：用户说「Alle filters en borstels zijn vervangen en alles is schoongemaakt」，"
     "对「检查尘盒、滤网是否堵塞」是 done；对「检查滚刷是否缠绕变形，并检查滚刷盖条与安装位的磨损」是 unknown（盖条、安装位没换）；"
     "对「拆下万向轮检查轮轴脏污」是 unknown（没点名万向轮）。\n"
-    "- [reference] 是已处理过的步骤，只用来对照，不要输出它们。\n"
+    "  一个步骤含几件事、用户只做了其中一部分时用 partial：quote 引用户说做过的原话，remaining 逐字摘步骤原文里用户还没做的那部分。"
+    "例：步骤「检查清洁盘格栅是否被泥沙堵塞，并清洗清洁盘」，用户说「清洁盘已经洗过了」→ partial，remaining=「检查清洁盘格栅是否被泥沙堵塞」。\n"
+    "- [reference] 是已处理过的步骤，只用来对照，不要输出它们。[done elsewhere] 是别的指南里已判为做过的步骤与用户原话："
+    "本计划里要做的是同一件事就同样判 done、引同一句原话。\n"
     "- answered / satisfied / negated / done 必须在 quote 逐字引用支撑它的用户原话；助手说过的话和步骤原文都不是依据。\n"
     "- 不确定一律 unknown。只输出 JSON。"
 )
@@ -112,8 +116,28 @@ def carried_answers(plan: Plan, state: dict[str, Any], *, session_id: str, now: 
     return out
 
 
-def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[PlanStep] = ()) -> str:
-    lines = [f"- {s.step_id} [reference] {s.condition}" for s in reference]
+def judged_elsewhere(plan: Plan, state: dict[str, Any], library: PlanLibrary) -> list[str]:
+    """别的指南里已判为做过的步骤与引文：同一件事在新指南里换了说法，判定要一致
+    （T37 重复：rv-0111「检查水箱有没有水」判 done，切到 rv-0021 同一检查判 unknown，又发了一张查水箱的卡）。"""
+    lines = []
+    for pid, checked in (state.get("step_checks") or {}).items():
+        if pid == plan.plan_id:
+            continue
+        try:
+            other = library.get(pid)
+        except KeyError:
+            continue
+        for sid, verdict in (checked.get("steps") or {}).items():
+            if verdict.get("status") != "done" or not verdict.get("quote"):
+                continue
+            step = next((s for s in other.steps if s.step_id == sid), None)
+            if step is not None:
+                lines.append(f"- [done elsewhere] {library.evidence_snippet(step.instruction_src)[:200]}（用户原话：{verdict['quote']}）")
+    return lines
+
+
+def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[PlanStep] = (), elsewhere: list[str] = ()) -> str:
+    lines = [f"- {s.step_id} [reference] {s.condition}" for s in reference] + list(elsewhere)
     for s in steps:
         if s.kind == "question":
             options = f"（选项：{' / '.join(s.options)}）" if s.options else ""
@@ -124,10 +148,12 @@ def _steps_text(steps: list[PlanStep], library: PlanLibrary, reference: list[Pla
     return "\n".join(lines)
 
 
-def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str], push: str = "") -> dict[str, dict[str, Any]]:
+def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str], push: str = "",
+           instructions: dict[str, str] | None = None) -> dict[str, dict[str, Any]]:
     """服务端校验：步骤 id 在候选内、判定与步骤类型相符、引文逐字出自用户原话、选项逐字在卡上。
     done 的引文不能只是设备推送原文（「Please insert dustbin and filter」是设备在说话，不是客户做过）。"""
     by_id = {s.step_id: s for s in steps}
+    instructions = instructions or {}
     out: dict[str, dict[str, Any]] = {}
     for item in raw:
         step = by_id.get(item.step_id)
@@ -143,6 +169,12 @@ def accept(steps: list[PlanStep], raw: list[StepCheck], corpus: list[str], push:
             out[step.step_id] = {"status": "answered", "option": option, "text": None if option else text, "quote": item.quote}
         elif item.status == "done" and not (push and normalize(item.quote) in normalize(push)):
             out[step.step_id] = {"status": "done", "quote": item.quote}
+        elif item.status == "partial" and step.kind == "action" and item.remaining \
+                and normalize(item.remaining) in normalize(instructions.get(step.step_id, "")) \
+                and not (push and normalize(item.quote) in normalize(push)):
+            # 部分已做：照发这张卡，卡上说明客户已做的部分与这次要查的部分（T29：已洗清洁盘，第二卡整卡重发「洗清洁盘」）。
+            # remaining 必须逐字出自步骤原文，不让模型自拟检查项
+            out[step.step_id] = {"status": "partial", "quote": item.quote, "remaining": item.remaining.strip()}
         elif item.status in {"satisfied", "negated"} and step.condition:
             out[step.step_id] = {"status": item.status, "quote": item.quote}
     return out
@@ -157,6 +189,7 @@ def _skips(plan: Plan, verdicts: dict[str, dict[str, Any]], pending: set[str]) -
     satisfied = [i for i, sid in enumerate(conditioned) if (verdicts.get(sid) or {}).get("status") == "satisfied"]
     last = satisfied[-1] if satisfied else -1
     steps = {sid: {**v, "skip": True} for sid, v in verdicts.items() if v.get("status") == "done"}
+    steps.update({sid: v for sid, v in verdicts.items() if v.get("status") == "partial"})  # 照发，卡上说明已做部分
     for i, sid in enumerate(conditioned):
         if sid in steps:
             continue
@@ -211,7 +244,7 @@ async def check_plan_facts(
         ("system", compose_system_prompt((state.get("emotion") or {}).get("strategy", "normal"), {
             "stage": "guide", "product": (state.get("product_confirmed") or {}).get("name"), "symptoms": state.get("symptoms"),
         })),
-        ("human", INSTRUCTION + "\n排障步骤：\n" + wrap_data(_steps_text(steps, library, reference), kind="plan_steps") + "\n"
+        ("human", INSTRUCTION + "\n排障步骤：\n" + wrap_data(_steps_text(steps, library, reference, judged_elsewhere(plan, state, library)), kind="plan_steps") + "\n"
          + wrap_data("\n---\n".join(corpus), kind="user_messages") + "\n" + wrap_data(facts_text, kind="structured_facts")),
     ]
     try:
@@ -220,7 +253,8 @@ async def check_plan_facts(
         log.warning("fact check unavailable session=%s plan=%s: %s", session_id, plan.plan_id, type(exc).__name__)
         return carried_update
     push = "\n".join(parse_message(text).fields.get("push") or "" for text in corpus)
-    verdicts = accept(steps, result.parsed.steps, corpus, push)
+    verdicts = accept(steps, result.parsed.steps, corpus, push,
+                      {s.step_id: library.evidence_snippet(s.instruction_src) for s in steps})
     pending = {s.step_id for s in plan.steps if s.instruction_src not in {a.get("instruction_src") for a in answered_history(state)}}
     checks[plan.plan_id] = {"issue_revision": revision, "steps": _skips(plan, verdicts, pending)}
     answered = [

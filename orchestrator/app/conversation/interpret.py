@@ -247,9 +247,14 @@ def logistics_correction(meaning: TurnInterpretation, text: str) -> TurnInterpre
     meaning = constrain_requests(meaning, text)
     meaning = device_code_report(meaning, text)
     meaning = meaning.model_copy(update={"facts": normal_operation_is_uncertain(meaning.facts)})
-    if PARTS_PURCHASE_WORDS.search(text.replace("’", "'")) and "parts_purchase" not in (meaning.primary_intent, *meaning.secondary_intents):
+    purchase = PARTS_PURCHASE_WORDS.search(text.replace("’", "'"))
+    if purchase and "parts_purchase" not in (meaning.primary_intent, *meaning.secondary_intents):
         # 保留模型读到的故障诉求，把配件采购作为并列诉求补进队列（优先级由 tasks 决定）
         meaning = meaning.model_copy(update={"secondary_intents": [*meaning.secondary_intents, "parts_purchase"]})
+    if purchase and not meaning.request_quotes.get("parts_purchase"):
+        # 采购原话是要买什么的唯一依据：没有它时交接摘要曾借用第一个故障部件（T63 要买 brush guard，写成 detangle elements）
+        clause = text[purchase.start():purchase.end()]
+        meaning = meaning.model_copy(update={"request_quotes": {**meaning.request_quotes, "parts_purchase": clause}})
     # 主办方工单里的撇号多数是中文输入法的 ’（63 单里 15 处），而不是 '。
     # 在入口统一成 '，下面所有模式只需写一种写法（T9 的「don’t」曾因此整条漏掉）。
     text = text.replace("’", "'").replace("ʼ", "'")
