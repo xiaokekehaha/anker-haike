@@ -297,6 +297,33 @@ def count_attempt(state_clar: dict[str, Any] | None, reason: Reason, run_id: str
     }
 
 
+# 文字追问待答时，这些意图表示用户明确在问别的，本轮不当作回答（待答状态保留到下一轮）。
+# 转人工、退换货、咨询、产品问题、风险在路由更前面已有各自出口，不必列入。
+CONVERSATIONAL_INTENTS = frozenset({
+    "history_query", "explain", "handoff_status", "social", "preference", "complaint", "new_issue", "resume_issue",
+})
+
+
+def awaiting_text_answer(state: dict[str, Any]) -> dict[str, Any] | None:
+    """系统刚发出的文字追问、还在等回答时返回该 clarification，否则 None。
+
+    卡片问句由 pending_card 的 card_id / input_token 绑定回答；文字追问原先没有对应绑定，回答能否回到诊断取决于
+    intake 的意图标签（会话 44ba4626：「yes」被标成 step_feedback，连回两次「nothing waiting」）。
+    这里以 clarification 为唯一待答状态：最后一条助手消息就是这个问题（之后系统说过别的，旧问题不再待答），
+    且没有卡片、没有转人工。问句前后可能带安抚语或转人工提示（acknowledge_current_turn），按包含判断。"""
+    clar = state.get("clarification") or {}
+    question = clar.get("question")
+    if not question or state.get("pending_card") or state.get("escalate_reason"):
+        return None
+    if state.get("stage") in {"awaiting_human", "done"}:
+        return None
+    latest = next((e for e in reversed(state.get("history") or [])
+                   if e.get("role") == "assistant" and e.get("kind") == "message"), None)
+    if latest is None or question not in (latest.get("text") or ""):
+        return None
+    return clar
+
+
 def _confirm(cand: dict[str, Any]) -> dict[str, Any]:
     return {
         "product_confirmed": cand,

@@ -363,12 +363,14 @@ def _after_product(state: SessionState) -> str:
     issue = (state.get("issues") or {}).get(state.get("active_issue_id")) or {}
     if (
         state.get("plans_ranked")
+        and not (state.get("turn_decision") or {}).get("answers_text_question")
         and basis.get("issue_revision") == issue.get("issue_revision")
         and basis.get("plans_version") == get_plan_library().version
         and basis.get("sku") == (state.get("product_confirmed") or {}).get("sku")
     ):
         # 事实修订号与计划库都没变：再检索一次得到的仍是同一份候选（会话 37cea3 第 7 轮重发同一句话，
         # 重新 retrieve + synthesize 后只多了一份相同摘要）。直接依据已有排序重新决策。
+        # 文字追问的回答（「yes」）常常不改事实修订号，但它是给 synthesize 的新证据（precondition_answers），不能短路。
         return "reassess"
     return "retrieve"
 
@@ -1195,10 +1197,19 @@ async def understand(state: SessionState) -> SessionState:
     update["turn_decision"]["request_rejections"] = request_rejections
     if context.get("source") == "product_question":
         update["turn_decision"]["product_answered"] = True
+    # 文字追问的回答由服务端绑定，不看 intake 的意图标签（会话 44ba4626：「yes」被标成 step_feedback 落进 dialogue）。
+    # 明确在问别的（查历史、要解释…）时回答留到下一轮；intake 理解失败的说明文案要让用户看到，也不算回答。
+    awaiting = clarify_mod.awaiting_text_answer(dict(state))
+    answers_text_question = bool(
+        awaiting and state.get("entry") == "message" and text.strip()
+        and meaning.primary_intent not in clarify_mod.CONVERSATIONAL_INTENTS
+        and context.get("source") not in {"unavailable", "degraded", "context_budget"}
+        and update.get("active_issue_id") == state.get("active_issue_id")
+    )
+    update["turn_decision"]["answers_text_question"] = answers_text_question
     asked = state.get("diagnose_outcome") or {}
-    if (update.get("issues") and state.get("entry") == "message" and asked.get("mode") == "clarify"
-            and asked.get("reason") == "needs_confirmation"
-            and update.get("active_issue_id") == state.get("active_issue_id") and text.strip()):
+    if (answers_text_question and update.get("issues") and asked.get("mode") == "clarify"
+            and asked.get("reason") == "needs_confirmation" and (awaiting or {}).get("reason") == "applicability"):
         # 客户对候选前提追问的回答是证据：记下来交给 synthesize，同一前提不再问（dbc144 答了 yes 又被问一遍）
         answers = [*(update.get("precondition_answers") or []), {
             "plan_id": asked.get("plan_id"), "missing_fact": asked.get("missing_fact"), "question": asked.get("question"),
@@ -1541,7 +1552,7 @@ def route_entry(state: SessionState) -> str:
                 return "dialogue"
             return "disambiguate"
     if decision.get("reply_mode") in {"dialogue", "clarify"}:
-        if (state.get("diagnose_outcome") or {}).get("mode") == "clarify" and decision.get("primary_intent") in {"answer_pending", "supplement"} and decision.get("allowed_operations", True):
+        if decision.get("answers_text_question") and decision.get("allowed_operations", True):
             return "disambiguate"
         if (decision.get("primary_intent") in {"report_problem", "supplement", "unknown", "answer_pending"}
                 and decision.get("allowed_operations", True) and _new_fault_images(state)):
@@ -2469,8 +2480,9 @@ def _diagnose_outcome(
             else {"reason": "symptom", "attempts": 0, "subject": subject},
             "escalate_reason": None, "plan_cursor": None,
         }
-    # 走到这里，症状追问已经有了结果（命中方案或交人工）：澄清预算用完，不再带到下一轮
-    settled = {"clarification": None} if (state or {}).get("clarification", {}) and (state or {})["clarification"].get("reason") == "symptom" else {}
+    # 走到这里，症状追问 / 前提追问已经有了结果（命中方案或交人工）：澄清不再带到下一轮。前提追问的次数记在
+    # diagnose_outcome.attempts，清掉 clarification 不影响 R7；残留会让检索一直按「澄清中」关闭改写（in_clarify）
+    settled = {"clarification": None} if ((state or {}).get("clarification") or {}).get("reason") in {"symptom", "applicability"} else {}
     if not plans_ranked:
         return {
             "diagnose_outcome": {

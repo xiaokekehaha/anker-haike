@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from app.conversation.quotes import quoted
 from app.guide.verify import step_payload_error
+from app.sessions.clarify import awaiting_text_answer
 
 ANSWERED_STEP_KINDS = {"question", "material_request"}
 
@@ -38,6 +39,9 @@ def resolve_command(state, meaning):
         return None, None
     pending = state.get("pending_card")
     if not pending:
+        if awaiting_text_answer(state):
+            # 无卡时的 feedback / pending_answer 没有指向对象：这句话是对文字追问的回答，交给诊断（会话 44ba4626）
+            return None, None
         return None, "There's nothing waiting for an answer right now. Which step is this about?"
     decision = state["turn_decision"]
     step_answer = _step_answer(pending, candidate, meaning)
