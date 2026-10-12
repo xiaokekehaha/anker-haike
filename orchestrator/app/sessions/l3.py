@@ -22,7 +22,14 @@ from app.actions.store import ExecutionBusy, ExecutionNeedsReview
 from app.backends import logistics
 from app.backends.protocol import BackendError
 from app.cases.service import case_event
-from app.conversation.answers import record_mismatch_note
+from app.conversation.answers import (
+    AnswerRequest,
+    conversation_view,
+    record_mismatch_note,
+    render_answer,
+    request_of,
+    required_reads,
+)
 from app.conversation.business import BusinessContext
 from app.conversation.effects import writer
 from app.conversation.quotes import quoted
@@ -37,7 +44,8 @@ from app.sessions import evidence as evidence_mod
 from app.warranty.service import decide_by_dealer, decide_by_order, today
 
 CONSULT_INTENTS = {"logistics_query", "warranty_query", "order_query"}
-LOGISTICS_FIELDS = {"logistics_status", "updated_at", "carrier", "tracking_no", "order_no"}
+# 包裹摘要已经展示的字段，仅用于回复去重，不决定执行哪些查询或是否给方案。
+LOGISTICS_SUMMARY_FIELDS = {"logistics_status", "carrier", "tracking_no", "order_no"}
 REQUESTED_REMEDY = {"replacement_request": "replace", "refund_request": "refund",
                     "address_update": "address_update", "order_change": "order_change",
                     "parts_purchase": "parts_purchase"}
@@ -755,14 +763,6 @@ async def _record_handoff(state, row, reason=None):
 
 
 async def consult(state):
-    from app.conversation.answers import (
-        AnswerRequest,
-        conversation_view,
-        render_answer,
-        request_of,
-        required_reads,
-    )
-
     services = require_services()
     decision = state.get("turn_decision") or {}
     intent = decision.get("primary_intent")
@@ -782,9 +782,9 @@ async def consult(state):
     business.subjects.update(workflow.subjects)
     view = conversation_view(state, scope)
     reads = required_reads(request, view)
-    if intent == "logistics_query" and set(request.fields) <= LOGISTICS_FIELDS:
-        # 模型给物流问题附带的字段请求（订单号 / 物流单号 / 状态）不改变诉求：仍按物流 SOP 查包裹并给方案（T5 实测）
-        reads = ["logistics.query"]
+    if intent == "logistics_query":
+        # 物流诉求必须查包裹；附加字段不能取代主任务。先查物流也能把运单绑定到订单，供后续订单查询使用。
+        reads = ["logistics.query", *[kind for kind in reads if kind != "logistics.query"]]
     if view["status"] == "ambiguous":
         reads = reads or ["warranty.check"]
     logistics_note = ""
@@ -856,9 +856,17 @@ async def consult(state):
         if case:
             case_update["case_status"] = case["status"]
             view["fields"]["case_status"] = {"value": case["status"], "source": "case"}
-    logistics_only = bool(logistics_note) and set(request.fields) <= LOGISTICS_FIELDS
-    if offer and logistics_only and not state.get("pending_card"):
-        say(state, logistics_note.rsplit("\n", 1)[0])
+    propose_logistics = bool(offer) and not state.get("pending_card")
+    answer = render_answer(request, view)
+    if logistics_note:
+        answer = logistics_note.rsplit("\n", 1)[0] if propose_logistics else logistics_note
+        extra_fields = [field for field in request.fields if field not in LOGISTICS_SUMMARY_FIELDS]
+        # 查询对象不匹配时先澄清，不能把旧整机的字段当成所问配件的答案（T47 / T2）。
+        if extra_fields and not mismatch:
+            extra_request = request.model_copy(update={"fields": extra_fields})
+            answer += "\n" + render_answer(extra_request, view)
+    say(state, answer)
+    if propose_logistics:
         return {
             **case_update,
             "business_context": business.model_dump(mode="json"),
@@ -866,9 +874,6 @@ async def consult(state):
             "requested_remedy": offer, "logistics_announced": True,
             "completed_task_intent": intent, "l3_route": "service_context",
         }
-    # 客户问的商品与订单记录对不上（T47：问泵头 T8D02181-80 的运单，订单里只有整机 T8D04121）：客户顺带贴的表单字段
-    # 让 answer_request 超出物流字段，也不能逐字段列「Product model: T8D04121」把整机当成客户问的那件，先说差异
-    say(state, logistics_note if logistics_only or mismatch else render_answer(request, view))
     return {
         **case_update,
         "business_context": business.model_dump(mode="json"),
