@@ -59,3 +59,49 @@ rv-0271 / rv-0014（连不上 Wi-Fi）中英文都不出现。含义：
 - 英语工单不应改变行为（摘要与原文同义时合并后命中集合不变）；精确码路径不受影响。
 - 合并方式要能在 trace 里区分原文与英文两路各自的命中，便于按上面 §3 / §4 归因。
 - intake 输出字段增加后，抽取准确率与输出预算需在真实模型上回归（INTERPRET_PROMPT_VERSION 递增）。
+
+## 8. A2 运行配置复核（2026-10-11，Codex）
+
+本节为只读核查，更新 §4 的“实际配置未核”状态；不改权重、日志级别或应用代码，不重启服务，不发起新的模型/检索调用。
+
+### 已确认
+
+- 当前本机容器 `haike-weknora-app-1` 镜像为 `wechatopenai/weknora-app:v0.8.0`，镜像 ID `sha256:14953fcb990c59b2546f00e94673d2a4c88689e3319bfcf2b06f82feaccec9b4`，revision 标签为 `1edcd54b43606d9079bb36650efe3f68707a79ea`。
+- 只读查询 `SELECT id, retrieval_config IS NULL AS uses_defaults FROM tenants ORDER BY id;`：租户 10000、10001 均为 true。具体检索日志 effectiveTenantID 为 10001。
+- 对应源码 `GetEffectiveRRFWeights()` 在 nil 配置返回向量 0.7、关键词 0.3；`GetEffectiveRRFK()` 返回 60；HybridSearch 将 tenantInfo.RetrievalConfig 传给融合函数。因此当前本机该路径使用默认值。此结论不外推到远程生产环境。
+- 项目适配器只传 query_text、match_count 和 knowledge_ids，未设置融合权重，也未禁用任一路。
+- Hit 定义与 adapter.py:309 的构造都未保留 match_type；上游原始响应字段在此被丢弃。
+
+### 可关联的当前日志
+
+| 时间（容器日志） | 请求 ID | 查询 | 向量候选 | 关键词候选 | 融合后候选 |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-11 11:24:33 | 61a5242e-139a-4dea-b0ff-c6b9ca586a9b | The robot is offline. a | 75 | 75 | 82 |
+| 2026-10-11 11:24:33 | 2f54a6ac-22f9-451a-98a3-390cca99da62 | El robot está desconectado | 75 | 75 | 82 |
+
+英语查询末尾的 `a` 是日志原样，不能将该记录伪装为严格的英文孪生对照。两条记录证实向量、关键词均工作，但数量不证明候选质量或排序贡献。本轮未关联到用户所指中文查询的确定请求，不宣称已复现中西对照。
+
+### 权重的准确含义
+
+RRF（倒数名次融合）对同一 chunk 按两榜排名加分：`0.7/(60+vector_rank) + 0.3/(60+keyword_rank)`；未进入某一路榜单则该项为 0。它不是向量相似度乘 0.7，也不保证最终结果 70% 来自向量。仅一路有结果时，源码绕过 RRF，保留原始分数。
+
+### match_type 不能单独做归因
+
+上游 fuseWithRRF 按 chunk 合并时优先保留向量结果对象，再把 score 改成融合分；buildChunkIndex 和 buildSearchResult 沿用该对象的 MatchType。同一 chunk 两路均命中时，标签可能仍显示向量，不会完整表达两路贡献。附近块、关联块还会使用扩展类型。
+
+因此补回原始 match_type 有观测价值，但不应把它转成 vector-only / keyword-only / both 的确定分类。真正的贡献需要 vector_rank、keyword_rank、各自贡献分、融合名次和最终保留情况。源码已有逐条 RRF rank 的 Debug 日志；本轮最近 3 小时日志未找到该项。
+
+### 对假设的裁决与下一步
+
+- 同意先核对检索配置与来源；现在权重已确认。
+- “关键词主导”尚未证实；两路都返回候选，标题含 robot 也可能是向量同样未识别离线语义或两路共同偏向泛词。也不能反向根据 0.7 权重声称向量结果必然正确。
+- 下一项最小对照是同一查询、同一知识库和产品范围下的 vector-only / keyword-only / hybrid；保持 match_count、阈值、上下文扩展选项一致，记录正确条目的候选名次与最终进入上下文情况。
+- 使用请求级 disable_keywords_match / disable_vector_match 做单路对照；不能把权重设 0 当作禁用，GetEffectiveRRFWeights 会对非正权重回退默认值。
+- 若向量单路已正确、混合后消失，再评估权重；若向量单路也失败，优先检查表示、查询与索引；若候选有而上下文没有，检查截断与合并。不要先改全局权重或把翻译当作已成立的修复。
+
+源码依据：
+
+- [默认参数](https://github.com/Tencent/WeKnora/blob/1edcd54b43606d9079bb36650efe3f68707a79ea/internal/types/retrieval_config.go)
+- [融合与元数据保留](https://github.com/Tencent/WeKnora/blob/1edcd54b43606d9079bb36650efe3f68707a79ea/internal/application/service/knowledgebase_search_fusion.go)
+- [租户配置传入检索](https://github.com/Tencent/WeKnora/blob/1edcd54b43606d9079bb36650efe3f68707a79ea/internal/application/service/knowledgebase_search.go)
+- [结果构造](https://github.com/Tencent/WeKnora/blob/1edcd54b43606d9079bb36650efe3f68707a79ea/internal/application/service/knowledgebase_search_results.go)
