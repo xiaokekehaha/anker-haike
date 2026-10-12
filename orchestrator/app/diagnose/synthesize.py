@@ -22,6 +22,7 @@ from app.knowledge.context import render_evidence
 from app.models.queue import CapacityExceeded
 from app.models.router import ModelInvokeError, ModelRouter
 from app.plans.models import Plan
+from app.plans.runtime import get_plan_library
 from app.prompts import compose_system_prompt, wrap_data
 
 log = logging.getLogger("diagnose.synthesize")
@@ -229,6 +230,28 @@ def precondition_status(missing_fact: str | None, facts: list[dict[str, Any]]) -
     return "unknown", None
 
 
+# 步骤首句是「检查 / 核实某事」：它要确认的事实本身就是这一步的内容。「In multi-floor tasks, …」「When the robot does not
+# start from the station, …」开头的是场景说明，场景对不对仍是入口前提，不在此列。
+CHECK_LEAD = re.compile(
+    r"^\W*(?:please\s+|could\s+you\s+(?:please\s+)?)?(?:check|verify|inspect|ensure|confirm|make\s+sure|test)\b", re.IGNORECASE)
+
+
+def in_plan_check(plan: Plan, missing_fact: str | None) -> str | None:
+    """模型要先确认的「前提」若正是计划里某个检查步骤要查的事，返回该步 step_id（T29：rv-0254 第 1 步就是查门扣，
+    被当成入口前提先问一句，回答后再跳过这一步）。查得出的原因交给步骤卡按官方顺序查，不另起追问。"""
+    if not missing_fact:
+        return None
+    library = get_plan_library()
+    for step in plan.steps:
+        evidence = library.evidence.get(step.evidence_key)
+        if step.kind not in {"action", "question"} or step.condition or evidence is None:
+            continue
+        lead = re.split(r"(?<=[.!?:;])\s|\n", evidence.snippet.strip(), maxsplit=1)[0]
+        if CHECK_LEAD.match(lead) and _covers(missing_fact, {"value": lead}):
+            return step.step_id
+    return None
+
+
 def answered_precondition(h: dict[str, Any], answered: list[dict[str, Any]]) -> dict[str, Any] | None:
     """这个候选要确认的前提，客户是否已经答过：同一计划、同一问句或同一前提原话。"""
     question = _norm(h.get("clarification_question"))
@@ -323,7 +346,13 @@ def filter_hypotheses(
             clarify(h, "subject_mismatch", CLARIFY_TEMPLATES["subject_mismatch"].format(subject=mismatched["subject"]))
             continue
         if h.get("applicability") != "supported":
-            if h.get("applicability") == "needs_confirmation":
+            step_id = in_plan_check(plan, h.get("missing_fact")) if h.get("applicability") == "needs_confirmation" else None
+            if step_id and covered:
+                # 前提是计划自己的检查步骤：按 supported 继续，用户已说过的由 guide 的事实核对跳过该步；
+                # 没有覆盖任何现象时仍按原路追问，不因此丢掉候选
+                dropped.append(f"precondition_in_plan:{pid}:{step_id}")
+                h = {**h, "applicability": "supported"}
+            elif h.get("applicability") == "needs_confirmation":
                 known, fact = precondition_status(h.get("missing_fact"), facts)
                 if known == "negated":
                     dropped.append(f"precondition_negated:{pid}")  # 用户已说没做过 / 没发生：不适用，也不再问
