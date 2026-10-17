@@ -10,42 +10,9 @@
 
 系统按**接入、编排、能力、数据**四层组织。模型承担理解、读图和候选方案判断，服务端代码管理流程状态与操作权限。客户发来新信息或改变诉求时，系统依据已保存的状态继续处理。
 
-```mermaid
-flowchart TB
-    subgraph ACCESS[接入层]
-        UI[React 客户对话与卡片]
-        ADMIN[React 人工工作台与观测台]
-    end
-    subgraph ORCHESTRATION[编排层]
-        API[FastAPI 动作接口与事件流]
-        FLOW[LangGraph 会话状态图]
-        API <--> FLOW
-    end
-    subgraph CAPABILITIES[能力层]
-        MODEL[模型路由与图片处理]
-        SEARCH[知识检索与适用性判断]
-        BUSINESS[业务规则与独立审查]
-        TOOLS[订单查询与服务单工具]
-        BUSINESS --> TOOLS
-    end
-    subgraph DATA[数据与外部服务]
-        LLM[语言与视觉模型服务]
-        KB[WeKnora 知识库]
-        OFFICIAL[官方 Q&A 与订单及经销商资料]
-        DB[(PostgreSQL 状态与事件及案件)]
-    end
-    UI <--> API
-    ADMIN <--> API
-    FLOW --> MODEL
-    FLOW --> SEARCH
-    FLOW --> BUSINESS
-    MODEL --> LLM
-    SEARCH --> KB
-    SEARCH --> OFFICIAL
-    TOOLS --> OFFICIAL
-    TOOLS --> DB
-    FLOW <--> DB
-```
+![决赛路演 PPT 四层系统架构：接入层、编排层、能力层与数据层](docs/images/architecture-roadshow.png)
+
+图取自决赛路演 PPT 第 5 页，点击可查看原图。节点数、模型任务数与知识条目数对应路演时版本，当前配置以仓库代码为准。
 
 **一轮请求如何流转。** 解析邮件或表单后，模型提取诉求与事实，服务端核对原话；故障请求进入产品确认、读图、检索与排障，物流请求可直接查询订单。需要客户补充时保存待答状态，收到反馈后继续。前端通过服务器发送事件（SSE）接收流式更新，通过 REST 接口提交消息和卡片动作。
 
